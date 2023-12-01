@@ -44,6 +44,7 @@ import android.animation.ValueAnimator;
 import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -880,6 +881,17 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             return v -> {
                 mControllers.taskbarPinningController.showPinningView(v);
                 return true;
+            };
+        }
+
+        public View.OnTouchListener getTaskbarDividerRightClickListener() {
+            return (v, event) -> {
+                if (event.isFromSource(InputDevice.SOURCE_MOUSE)
+                        && event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    mControllers.taskbarPinningController.showPinningView(v);
+                    return true;
+                }
+                return false;
             };
         }
 

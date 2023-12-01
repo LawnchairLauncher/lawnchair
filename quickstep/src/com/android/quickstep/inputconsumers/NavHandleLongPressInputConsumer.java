@@ -16,6 +16,8 @@
 package com.android.quickstep.inputconsumers;
 
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_MS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DEEP_PRESS_NAVBAR;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_LONG_PRESS_NAVBAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
@@ -25,9 +27,11 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
+import com.android.quickstep.TopTaskTracker;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
@@ -43,8 +47,11 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     private final float mTouchSlopSquared;
     private final int mLongPressTimeout;
     private final boolean mDeepPressEnabled;
+    private final StatsLogManager mStatsLogManager;
+    private final TopTaskTracker mTopTaskTracker;
 
     private MotionEvent mCurrentDownEvent;
+    private boolean mDeepPressLogged;  // Whether deep press has been logged for the current touch.
 
     public NavHandleLongPressInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, RecentsAnimationDeviceState deviceState) {
@@ -60,6 +67,8 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         }
         mTouchSlopSquared = deviceState.getSquaredTouchSlop();
         mNavHandleLongPressHandler = NavHandleLongPressHandler.newInstance(context);
+        mStatsLogManager = StatsLogManager.newInstance(context);
+        mTopTaskTracker = TopTaskTracker.INSTANCE.get(context);
     }
 
     @Override
@@ -87,8 +96,9 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                     mCurrentDownEvent.recycle();
                 }
                 mCurrentDownEvent = MotionEvent.obtain(ev);
-                if (isInNavBarHorizontalArea(ev.getRawX())
-                        && mNavHandleLongPressHandler.canStartTouch()) {
+                mDeepPressLogged = false;
+                if (isInNavBarHorizontalArea(ev.getRawX())) {
+                    mNavHandleLongPressHandler.onTouchStarted();
                     MAIN_EXECUTOR.getHandler().postDelayed(mTriggerLongPress,
                             mLongPressTimeout);
                 }
@@ -110,25 +120,41 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         }
 
         // If the gesture is deep press then trigger long press asap
-        if (mDeepPressEnabled && MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)
-                && ev.getClassification() == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
-            MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
-            MAIN_EXECUTOR.getHandler().post(mTriggerLongPress);
+        if (MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)
+                && ev.getClassification() == MotionEvent.CLASSIFICATION_DEEP_PRESS
+                && !mDeepPressLogged) {
+            // Log deep press even if feature is disabled.
+            String runningPackage = mTopTaskTracker.getCachedTopTask(
+                    /* filterOnlyVisibleRecents */ true).getPackageName();
+            mStatsLogManager.logger().withPackageName(runningPackage)
+                    .log(LAUNCHER_DEEP_PRESS_NAVBAR);
+            mDeepPressLogged = true;
+
+            // But only trigger if the feature is enabled.
+            if (mDeepPressEnabled) {
+                MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
+                MAIN_EXECUTOR.getHandler().post(mTriggerLongPress);
+            }
         }
     }
 
     private void triggerLongPress() {
+        String runningPackage = mTopTaskTracker.getCachedTopTask(
+                /* filterOnlyVisibleRecents */ true).getPackageName();
+        mStatsLogManager.logger().withPackageName(runningPackage).log(LAUNCHER_LONG_PRESS_NAVBAR);
+
         Runnable longPressRunnable = mNavHandleLongPressHandler.getLongPressRunnable();
-        if (longPressRunnable != null) {
-            OtherActivityInputConsumer oaic = getInputConsumerOfClass(
-                    OtherActivityInputConsumer.class);
-            if (oaic != null && oaic.hasStartedTouchTracking()) {
-                oaic.setForceFinishRecentsTransitionCallback(longPressRunnable);
-                setActive(mCurrentDownEvent);
-            } else {
-                setActive(mCurrentDownEvent);
-                MAIN_EXECUTOR.post(longPressRunnable);
-            }
+        if (longPressRunnable == null) {
+            return;
+        }
+
+        OtherActivityInputConsumer oaic = getInputConsumerOfClass(OtherActivityInputConsumer.class);
+        if (oaic != null && oaic.hasStartedTouchTracking()) {
+            oaic.setForceFinishRecentsTransitionCallback(longPressRunnable);
+            setActive(mCurrentDownEvent);
+        } else {
+            setActive(mCurrentDownEvent);
+            MAIN_EXECUTOR.post(longPressRunnable);
         }
     }
 

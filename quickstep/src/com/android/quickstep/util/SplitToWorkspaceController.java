@@ -16,7 +16,6 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.enableSplitFromFullscreenWithKeyboardShortcuts;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
@@ -53,7 +52,6 @@ import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 public class SplitToWorkspaceController {
 
     private final Launcher mLauncher;
-    private final DeviceProfile mDP;
     private final SplitSelectStateController mController;
 
     private final int mHalfDividerSize;
@@ -61,7 +59,6 @@ public class SplitToWorkspaceController {
 
     public SplitToWorkspaceController(Launcher launcher, SplitSelectStateController controller) {
         mLauncher = launcher;
-        mDP = mLauncher.getDeviceProfile();
         mController = controller;
         mIconCache = LauncherAppState.getInstanceNoCreate().getIconCache();
         mHalfDividerSize = mLauncher.getResources().getDimensionPixelSize(
@@ -136,7 +133,8 @@ public class SplitToWorkspaceController {
 
     private void startWorkspaceAnimation(@NonNull View view, @Nullable Bitmap bitmap,
             @Nullable Drawable icon) {
-        boolean isTablet = mLauncher.getDeviceProfile().isTablet;
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        boolean isTablet = dp.isTablet;
         SplitAnimationTimings timings = AnimUtils.getDeviceSplitToConfirmTimings(isTablet);
         PendingAnimation pendingAnimation = new PendingAnimation(timings.getDuration());
 
@@ -147,7 +145,7 @@ public class SplitToWorkspaceController {
 
         RecentsView recentsView = mLauncher.getOverviewPanel();
         recentsView.getPagedOrientationHandler().getFinalSplitPlaceholderBounds(mHalfDividerSize,
-                mDP, mController.getActiveSplitStagePosition(), firstTaskEndingBounds,
+                dp, mController.getActiveSplitStagePosition(), firstTaskEndingBounds,
                 secondTaskEndingBounds);
 
         FloatingTaskView firstFloatingTaskView = mController.getFirstFloatingTaskView();
@@ -191,8 +189,7 @@ public class SplitToWorkspaceController {
     }
 
     private boolean shouldIgnoreSecondSplitLaunch() {
-        return (!enableSplitFromFullscreenWithKeyboardShortcuts()
-                && !FeatureFlags.enableSplitContextually()
+        return (!FeatureFlags.enableSplitContextually()
                 && !isDesktopModeSupported())
                 || !mController.isSplitSelectActive();
     }

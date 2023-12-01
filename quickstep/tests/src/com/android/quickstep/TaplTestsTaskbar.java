@@ -154,6 +154,11 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
         getTaskbar().openAllApps().dismissByTappingOutsideForTablet(/* tapRight= */ false);
     }
 
+    @Test
+    public void testOpenMenuViaRightClick() {
+        getTaskbar().getAppIcon(TEST_APP_NAME).openDeepShortcutMenuWithRightClick();
+    }
+
     private boolean isTaskbarTestModeTransient() {
         return TRANSIENT == mTaskbarMode;
     }

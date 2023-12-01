@@ -177,6 +177,6 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Pribadi"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Setelan Ruang Pribadi"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Kunci/Buka Kunci Ruang Pribadi"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"Transisi Ruang Pribadi"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Ruang Pribadi Bertransisi"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Menu tambahan"</string>
 </resources>

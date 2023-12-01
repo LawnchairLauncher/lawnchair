@@ -493,7 +493,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     getGridY(atomInfo, true) /* grid_y_parent */,
                     getParentPageId(atomInfo) /* page_id_parent */,
                     getHierarchy(atomInfo) /* hierarchy */,
-                    atomInfo.getIsWork() /* is_work_profile */,
+                    false /* is_work_profile, deprecated */,
                     atomInfo.getRank() /* rank */,
                     atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
@@ -502,8 +502,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     features /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
                     getAttributes(atomInfo) /* attributes */,
-                    inputType /* input_type */
-            );
+                    inputType /* input_type */,
+                    atomInfo.getUserType() /* user_type */);
         }
     }
 

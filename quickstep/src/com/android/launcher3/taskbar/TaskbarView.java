@@ -29,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.InputDevice;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -268,6 +269,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (mTaskbarDivider != null) {
             mTaskbarDivider.setOnLongClickListener(
                     mControllerCallbacks.getTaskbarDividerLongClickListener());
+            mTaskbarDivider.setOnTouchListener(
+                    mControllerCallbacks.getTaskbarDividerRightClickListener());
         }
     }
 
@@ -408,6 +411,16 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     public void setClickAndLongClickListenersForIcon(View icon) {
         icon.setOnClickListener(mIconClickListener);
         icon.setOnLongClickListener(mIconLongClickListener);
+        // Add right-click support to btv icons.
+        icon.setOnTouchListener((v, event) -> {
+            if (event.isFromSource(InputDevice.SOURCE_MOUSE)
+                    && (event.getButtonState() & MotionEvent.BUTTON_SECONDARY) != 0
+                    && v instanceof BubbleTextView) {
+                mActivityContext.showPopupMenuForIcon((BubbleTextView) v);
+                return true;
+            }
+            return false;
+        });
     }
 
     /**

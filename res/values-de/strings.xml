@@ -177,6 +177,6 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Privat"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Einstellungen für privaten Bereich"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Privaten Bereich sperren/entsperren"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"Umstellung des privaten Bereichs"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Sperrzustand des privaten Bereichs wird gerade geändert"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Weitere Optionen"</string>
 </resources>

@@ -19,7 +19,11 @@ import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.util.CellAndSpan;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map.Entry;
 
 /**
@@ -71,7 +75,7 @@ public class ReorderAlgorithm {
             int minSpanX, int minSpanY, int spanX, int spanY, int[] direction, View dragView,
             boolean decX, ItemConfiguration solution) {
         // Copy the current state into the solution. This solution will be manipulated as necessary.
-        mCellLayout.copyCurrentStateToSolution(solution, false);
+        mCellLayout.copyCurrentStateToSolution(solution);
         // Copy the current occupied array into the temporary occupied array. This array will be
         // manipulated as necessary to find a solution.
         mCellLayout.getOccupied().copyTo(mCellLayout.mTmpOccupied);
@@ -84,7 +88,7 @@ public class ReorderAlgorithm {
         boolean success;
         // First we try the exact nearest position of the item being dragged,
         // we will then want to try to move this around to other neighbouring positions
-        success = mCellLayout.rearrangementExists(result[0], result[1], spanX, spanY, direction,
+        success = rearrangementExists(result[0], result[1], spanX, spanY, direction,
                 dragView, solution);
 
         if (!success) {
@@ -108,6 +112,73 @@ public class ReorderAlgorithm {
         return solution;
     }
 
+    private boolean rearrangementExists(int cellX, int cellY, int spanX, int spanY, int[] direction,
+            View ignoreView, ItemConfiguration solution) {
+        // Return early if get invalid cell positions
+        if (cellX < 0 || cellY < 0) return false;
+
+        ArrayList<View> intersectingViews = new ArrayList<>();
+        Rect occupiedRect = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
+
+        // Mark the desired location of the view currently being dragged.
+        if (ignoreView != null) {
+            CellAndSpan c = solution.map.get(ignoreView);
+            if (c != null) {
+                c.cellX = cellX;
+                c.cellY = cellY;
+            }
+        }
+        Rect r0 = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
+        Rect r1 = new Rect();
+        // The views need to be sorted so that the results are deterministic on the views positions
+        // and not by the views hash which is "random".
+        // The views are sorted twice, once for the X position and a second time for the Y position
+        // to ensure same order everytime.
+        Comparator comparator = Comparator.comparing(view ->
+                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellX())
+                .thenComparing(view ->
+                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellY());
+        List<View> views = solution.map.keySet().stream().sorted(comparator).toList();
+        for (View child : views) {
+            if (child == ignoreView) continue;
+            CellAndSpan c = solution.map.get(child);
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
+            r1.set(c.cellX, c.cellY, c.cellX + c.spanX, c.cellY + c.spanY);
+            if (Rect.intersects(r0, r1)) {
+                if (!lp.canReorder) {
+                    return false;
+                }
+                intersectingViews.add(child);
+            }
+        }
+
+        solution.intersectingViews = intersectingViews;
+
+        // First we try to find a solution which respects the push mechanic. That is,
+        // we try to find a solution such that no displaced item travels through another item
+        // without also displacing that item.
+        if (mCellLayout.attemptPushInDirection(intersectingViews, occupiedRect, direction,
+                ignoreView,
+                solution)) {
+            return true;
+        }
+
+        // Next we try moving the views as a block, but without requiring the push mechanic.
+        if (mCellLayout.addViewsToTempLocation(intersectingViews, occupiedRect, direction,
+                ignoreView,
+                solution)) {
+            return true;
+        }
+
+        // Ok, they couldn't move as a block, let's move them individually
+        for (View v : intersectingViews) {
+            if (!mCellLayout.addViewToTempLocation(v, occupiedRect, direction, solution)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Returns a "reorder" if there is empty space without rearranging anything.
      *
@@ -123,7 +194,7 @@ public class ReorderAlgorithm {
         int[] result = mCellLayout.findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY,
                 new int[2]);
         ItemConfiguration solution = new ItemConfiguration();
-        mCellLayout.copyCurrentStateToSolution(solution, false);
+        mCellLayout.copyCurrentStateToSolution(solution);
 
         solution.isSolution = !isConfigurationRegionOccupied(
                 new Rect(result[0], result[1], result[0] + spanX, result[1] + spanY),
@@ -169,7 +240,7 @@ public class ReorderAlgorithm {
         mCellLayout.findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
                 resultSpan);
         if (result[0] >= 0 && result[1] >= 0) {
-            mCellLayout.copyCurrentStateToSolution(solution, false);
+            mCellLayout.copyCurrentStateToSolution(solution);
             solution.cellX = result[0];
             solution.cellY = result[1];
             solution.spanX = resultSpan[0];

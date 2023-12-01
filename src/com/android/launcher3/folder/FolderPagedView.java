@@ -37,6 +37,8 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -99,15 +101,14 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        ActivityContext activityContext = ActivityContext.lookupContext(context);
-        DeviceProfile profile = activityContext.getDeviceProfile();
+        InvariantDeviceProfile profile = LauncherAppState.getIDP(context);
         mOrganizer = new FolderGridOrganizer(profile);
 
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mViewCache = activityContext.getViewCache();
+        mViewCache = ActivityContext.lookupContext(context).getViewCache();
     }
 
     public void setFolder(Folder folder) {
