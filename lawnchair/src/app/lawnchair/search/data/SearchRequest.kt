@@ -1,18 +1,25 @@
 package app.lawnchair.search.data
 
 import android.content.Context
+import android.database.Cursor
+import android.net.Uri
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
 import app.lawnchair.search.data.suggestion.StartPageService
-import app.lawnchair.util.getMimeType
+import app.lawnchair.util.exists
+import app.lawnchair.util.isDirectory
+import app.lawnchair.util.isHidden
+import app.lawnchair.util.isRegularFile
 import app.lawnchair.util.kotlinxJson
+import app.lawnchair.util.mimeType2Extension
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
+import okio.Path.Companion.toPath
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Response
@@ -139,56 +146,96 @@ suspend fun findContactsByName(context: Context, query: String, max: Int): List<
     }
 }
 
-suspend fun findByFileName(context: Context, query: String, max: Int): List<FileInfo> {
-    if (query.isEmpty() || query.isBlank()) return emptyList()
-    val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        Log.e("FileSearch", "Something went wrong ", e)
+suspend fun getSearchFileList(
+    context: Context,
+    uri: Uri = MediaStore.Files.getContentUri("external"),
+    path: String = "",
+    keyword: String,
+    maxResult: Int,
+    mimes: Array<String>? = null,
+): Sequence<IFileInfo> = withContext(Dispatchers.IO) {
+    val selection = "${commonProjection[0]} like ? AND ${commonProjection[0]} like ? ".let {
+        if (mimes == null) it else it + "AND ${commonProjection[4]} IN (${mimes.selectionArgsPlaceHolder})"
     }
-    return withContext(Dispatchers.IO + exceptionHandler) {
-        val fileList = HashMap<String, FileInfo>()
+    val selectionArgs = arrayOf("%$path%", "%$keyword%").let {
+        if (mimes == null) it else it + mimes
+    }
+    getFileListFromMediaStore(
+        context,
+        uri,
+        commonProjection,
+        selection,
+        selectionArgs,
+        maxResult = maxResult,
+    ) { cursor ->
+        val filePath = cursor.getString(cursor.getColumnIndexOrThrow(commonProjection[0])).toPath()
+        if (filePath.isDirectory()) getFolderBean(cursor) else getFileBean(cursor)
+    }
+}
 
-        val projection = arrayOf(
-            MediaStore.Files.FileColumns._ID,
-            MediaStore.Files.FileColumns.DATE_ADDED,
-            MediaStore.Files.FileColumns.DATA,
-            MediaStore.Files.FileColumns.MEDIA_TYPE,
-            MediaStore.Files.FileColumns.DISPLAY_NAME,
-            MediaStore.Files.FileColumns.MIME_TYPE,
-        )
+private val Array<String>.selectionArgsPlaceHolder: String get() = Array(size) { "?" }.joinToString()
 
-        val selection = MediaStore.Files.FileColumns.DISPLAY_NAME + " LIKE ?"
-        val selectionArgs = arrayOf("%$query%")
+private val commonProjection = arrayOf(
+    MediaStore.MediaColumns.DATA,
+    MediaStore.MediaColumns.DISPLAY_NAME,
+    MediaStore.MediaColumns.SIZE,
+    MediaStore.MediaColumns.DATE_MODIFIED,
+    MediaStore.MediaColumns.MIME_TYPE,
+    MediaStore.MediaColumns.TITLE,
+)
 
-        val sortOrder = MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
-
-        context.contentResolver.query(
-            MediaStore.Files.getContentUri("external"),
-            projection,
-            selection,
-            selectionArgs,
-            sortOrder,
-        )?.use {
-            while (it.moveToNext() && fileList.size <= max) {
-                val fileIdIndex = it.getColumnIndex(MediaStore.Files.FileColumns._ID)
-                val displayNameIndex =
-                    it.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
-                val mimeTypeIndex = it.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE)
-                val mediaTypeIndex = it.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
-                val filePathIndex = it.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-
-                val fileId = it.getLong(fileIdIndex)
-                val displayName = it.getString(displayNameIndex)
-                val mimeType = getMimeType(displayName) ?: it.getString(mimeTypeIndex)
-                val mediaType = it.getInt(mediaTypeIndex)
-                val filePath = it.getString(filePathIndex)
-                val key = fileId.toString()
-                fileList[key] = FileInfo(fileId, displayName, filePath, mimeType, mediaType)
-
-                if (fileList.size >= max) {
-                    it.moveToLast()
+private suspend inline fun <T : Any> getFileListFromMediaStore(
+    context: Context,
+    uri: Uri,
+    projection: Array<String>?,
+    selection: String?,
+    selectionArgs: Array<String>?,
+    sortOrder: String = "${commonProjection[3]} DESC",
+    maxResult: Int,
+    crossinline body: (Cursor) -> T?,
+): Sequence<T> = withContext(Dispatchers.IO) {
+    context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+        ?.use { cursor ->
+            var count = 0
+            buildList {
+                while (cursor.moveToNext()) {
+                    val bean = body(cursor) ?: continue
+                    add(bean)
+                    count++
+                    if (count >= maxResult) break
                 }
-            }
-        }
-        fileList.values.toList()
-    }
+            }.asSequence()
+        } ?: emptySequence()
+}
+
+private fun getFileBean(cursor: Cursor): IFileInfo? = cursor.run {
+    val mimeType = getString(getColumnIndexOrThrow(commonProjection[4]))
+    val title = getString(getColumnIndexOrThrow(commonProjection[1]))
+        ?: getString(getColumnIndexOrThrow(commonProjection[5]))?.let {
+            if (mimeType == null) it else "$it.${mimeType.mimeType2Extension()}"
+        } ?: return null
+    val path = getString(getColumnIndexOrThrow(commonProjection[0])).toPath()
+    if (!path.isRegularFile() || path.isHidden) return null
+    val dateModified = getLong(getColumnIndexOrThrow(commonProjection[3])) * 1000
+    return FileInfo(
+        path.toString(),
+        title,
+        getLong(getColumnIndexOrThrow(commonProjection[2])),
+        dateModified,
+        mimeType,
+    )
+}
+
+private fun getFolderBean(cursor: Cursor): FolderInfo? = cursor.run {
+    val title = getString(getColumnIndexOrThrow(commonProjection[1]))
+        ?: getString(getColumnIndexOrThrow(commonProjection[5])) ?: return null
+    val path = getString(getColumnIndexOrThrow(commonProjection[0])).toPath()
+    if (!path.exists || path.isHidden) return null
+    val dateModified = getLong(getColumnIndexOrThrow(commonProjection[3])) * 1000
+    return FolderInfo(
+        path.toString(),
+        title,
+        getLong(getColumnIndexOrThrow(commonProjection[2])),
+        dateModified,
+    )
 }
