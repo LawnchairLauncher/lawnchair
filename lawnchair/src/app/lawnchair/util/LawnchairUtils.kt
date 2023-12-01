@@ -115,13 +115,10 @@ fun getPrefsIfUnlocked(context: Context): PreferenceManager? {
 
 fun getWindowCornerRadius(context: Context): Float {
     val prefs = getPrefsIfUnlocked(context)
-    if (prefs != null && prefs.overrideWindowCornerRadius.get()) {
-        return prefs.windowCornerRadius.get().toFloat()
-    }
-    return if (Utilities.ATLEAST_Q) {
-        QuickStepContract.getWindowCornerRadius(context)
-    } else {
-        false
+    return when {
+        prefs?.overrideWindowCornerRadius?.get() == true -> prefs.windowCornerRadius.get().toFloat()
+        Utilities.ATLEAST_Q -> QuickStepContract.getWindowCornerRadius(context)
+        else -> 0.0f
     }
 }
 
