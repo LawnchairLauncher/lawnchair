@@ -102,6 +102,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.flags.FlagsFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ScreenOnTracker;
@@ -581,13 +582,16 @@ public class TouchInteractionService extends Service {
     }
 
     private void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
-        AccessibilityManager am = getSystemService(AccessibilityManager.class);
+        Executors.UI_HELPER_EXECUTOR.execute(() -> {
+            AccessibilityManager am = getSystemService(AccessibilityManager.class);
 
-        if (isHomeAndOverviewSame) {
-            am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-        } else {
-            am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-        }
+            if (isHomeAndOverviewSame) {
+                am.registerSystemAction(
+                        createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            } else {
+                am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            }
+        });
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
                 .getCreatedActivity();

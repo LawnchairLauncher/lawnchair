@@ -86,6 +86,8 @@ public final class TestProtocol {
     public static final String REQUEST_ICON_HEIGHT =
             "icon-height";
     public static final String REQUEST_IS_LAUNCHER_INITIALIZED = "is-launcher-initialized";
+    public static final String REQUEST_IS_LAUNCHER_LAUNCHER_ACTIVITY_STARTED =
+            "is-launcher-activity-started";
     public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_ENABLE_MANUAL_TASKBAR_STASHING = "enable-taskbar-stashing";
@@ -160,7 +162,6 @@ public final class TestProtocol {
     public static final String TWO_NEXUS_LAUNCHER_ACTIVITY_WHILE_UNLOCKING = "b/273347463";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String ICON_MISSING = "b/282963545";
-    public static final String WORKSPACE_LONG_PRESS = "b/311099513";
     public static final String OVERVIEW_OVER_HOME = "b/279059025";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";

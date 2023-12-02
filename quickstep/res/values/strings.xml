@@ -260,8 +260,8 @@
     <string name="taskbar_edu_stashing">Slow-swipe up to show the Taskbar</string>
     <!-- Text in dialog that lets a user know how the Taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_suggestions">Get app suggestions based on your routine</string>
-    <!-- Text in dialog that lets a user know that Taskbar will auto-hide, if the user switches to gesture navigation in system settings. [CHAR_LIMIT=90] -->
-    <string name="taskbar_edu_settings_persistent">Turn on gesture navigation in Settings to auto-hide the Taskbar</string>
+    <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <string name="taskbar_edu_pinning">Long press on the divider to pin the Taskbar</string>
     <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_features">Do more with the Taskbar</string>
     <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->

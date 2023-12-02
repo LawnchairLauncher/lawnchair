@@ -24,6 +24,8 @@ import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_TAG;
 
+import static org.junit.Assert.assertTrue;
+
 import android.app.Instrumentation;
 import android.app.blob.BlobHandle;
 import android.app.blob.BlobStoreManager;
@@ -250,6 +252,17 @@ public class TestUtil {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Please don't add negative test cases for methods that fail only after a long wait.
+    public static void expectFail(String message, Runnable action) {
+        boolean failed = false;
+        try {
+            action.run();
+        } catch (AssertionError e) {
+            failed = true;
+        }
+        assertTrue(message, failed);
     }
 
     /** Interface to indicate a runnable which can throw any exception. */

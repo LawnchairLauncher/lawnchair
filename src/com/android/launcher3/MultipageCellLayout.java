@@ -56,17 +56,6 @@ public class MultipageCellLayout extends CellLayout {
     }
 
     @Override
-    public void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
-            int spanY, View dragView, int[] resultDirection) {
-        createReorderAlgorithm().simulateSeam(
-                () -> {
-                    super.getDirectionVectorForDrop(dragViewCenterX, dragViewCenterY, spanX, spanY,
-                            dragView, resultDirection);
-                    return 0;
-                });
-    }
-
-    @Override
     public boolean isNearestDropLocationOccupied(int pixelX, int pixelY, int spanX, int spanY,
             View dragView, int[] result) {
         return createReorderAlgorithm().simulateSeam(

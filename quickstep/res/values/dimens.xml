@@ -400,8 +400,8 @@
     <dimen name="taskbar_edu_features_lottie_width">170dp</dimen>
     <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
     <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
-    <dimen name="taskbar_edu_features_tooltip_width_persistent">624dp</dimen>
-    <dimen name="taskbar_edu_features_tooltip_width_transient">428dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_with_two_features">428dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_with_three_features">624dp</dimen>
 
     <!--- Taskbar Pinning -->
     <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
