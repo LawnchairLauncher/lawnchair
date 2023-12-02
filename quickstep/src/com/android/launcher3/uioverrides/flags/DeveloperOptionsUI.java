@@ -359,7 +359,7 @@ public class DeveloperOptionsUI {
             category.addPreference(createSeekBarPreference("Haptic hint scale exponent",
                     1, 5, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT));
             category.addPreference(createSeekBarPreference("Haptic hint iterations (12 ms each)",
-                    0, 100, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS));
+                    0, 200, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS));
             category.addPreference(createSeekBarPreference("Haptic hint delay (ms)",
                     0, 400, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY));
         }

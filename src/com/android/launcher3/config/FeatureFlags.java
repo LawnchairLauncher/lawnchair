@@ -291,7 +291,7 @@ public final class FeatureFlags {
                     "Enables haptic hint while long pressing on the bottom bar nav handle.");
 
     public static final BooleanFlag ENABLE_SEARCH_HAPTIC_COMMIT =
-            getReleaseFlag(314005577, "ENABLE_SEARCH_HAPTIC_COMMIT", DISABLED,
+            getReleaseFlag(314005577, "ENABLE_SEARCH_HAPTIC_COMMIT", ENABLED,
                     "Enables haptic hint at end of long pressing on the bottom bar nav handle.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_START_SCALE_PERCENT =
