@@ -14,6 +14,7 @@ import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.FileInfo
 import app.lawnchair.search.data.FileInfo.Companion.isMediaType
+import app.lawnchair.search.data.FileInfo.Companion.isUnknownType
 import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
@@ -194,7 +195,8 @@ class GenerateSearchTarget(private val context: Context) {
                         null
                     } ?: Icon.createWithResource(context, fileInfo.iconRes)
             }
-            else -> Icon.createWithBitmap(createTextBitmap(context, "U"))
+            fileInfo?.isUnknownType == true -> Icon.createWithBitmap(createTextBitmap(context, "U"))
+            else -> Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_file)
         }
     }
 }
