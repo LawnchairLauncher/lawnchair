@@ -210,20 +210,22 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         } catch (RemoteException e) {
             // Do nothing
         }
-        mPipListener = new TaskStackChangeListener() {
-            @Override
-            public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
-                mPipIsActive = true;
-            }
+        if (Utilities.ATLEAST_Q) {
+            mPipListener = new TaskStackChangeListener() {
+                @Override
+                public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+                    mPipIsActive = true;
+                }
 
-            @Override
-            public void onActivityUnpinned() {
-                mPipIsActive = false;
-            }
-        };
-        TaskStackChangeListeners.getInstance().registerTaskStackListener(mPipListener);
-        runOnDestroy(() ->
+                @Override
+                public void onActivityUnpinned() {
+                    mPipIsActive = false;
+                }
+            };
+            TaskStackChangeListeners.getInstance().registerTaskStackListener(mPipListener);
+            runOnDestroy(() ->
                 TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mPipListener));
+        }
     }
 
     private void runOnDestroy(Runnable action) {
