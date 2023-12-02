@@ -45,36 +45,28 @@ public class ReorderAlgorithm {
      * This method differs from closestEmptySpaceReorder and dropInPlaceSolution because this method
      * will move items around and will change the shape of the item if possible to try to find a
      * solution.
-     *
+     * <p>
      * When changing the size of the widget this method will try first subtracting -1 in the x
      * dimension and then subtracting -1 in the y dimension until finding a possible solution or
      * until it no longer can reduce the span.
      *
-     * @param pixelX    X coordinate in pixels in the screen
-     * @param pixelY    Y coordinate in pixels in the screen
-     * @param minSpanX  minimum possible horizontal span it will try to find a solution for.
-     * @param minSpanY  minimum possible vertical span it will try to find a solution for.
-     * @param spanX     horizontal cell span
-     * @param spanY     vertical cell span
-     * @param direction direction in which it will try to push the items intersecting the desired
-     *                  view
-     * @param dragView  view being dragged in reorder
-     * @param decX      whether it will decrease the horizontal or vertical span if it can't find a
-     *                  solution for the current span.
-     * @param solution  variable to store the solution
+     * @param decX     whether it will decrease the horizontal or vertical span if it can't find a
+     *                 solution for the current span.
      * @return the same solution variable
      */
-    public ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
-            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
-            ItemConfiguration solution) {
-        return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
-                direction, dragView, decX, solution);
+    public ItemConfiguration findReorderSolution(ReorderParameters reorderParameters,
+            boolean decX) {
+        return findReorderSolutionRecursive(reorderParameters.getPixelX(),
+                reorderParameters.getPixelY(), reorderParameters.getMinSpanX(),
+                reorderParameters.getMinSpanY(), reorderParameters.getSpanX(),
+                reorderParameters.getSpanY(), mCellLayout.mDirectionVector,
+                reorderParameters.getDragView(), decX, reorderParameters.getSolution());
     }
 
 
-    private ItemConfiguration findReorderSolutionRecursive(int pixelX, int pixelY,
-            int minSpanX, int minSpanY, int spanX, int spanY, int[] direction, View dragView,
-            boolean decX, ItemConfiguration solution) {
+    private ItemConfiguration findReorderSolutionRecursive(int pixelX, int pixelY, int minSpanX,
+            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
+            ItemConfiguration solution) {
         // Copy the current state into the solution. This solution will be manipulated as necessary.
         mCellLayout.copyCurrentStateToSolution(solution);
         // Copy the current occupied array into the temporary occupied array. This array will be
@@ -89,8 +81,8 @@ public class ReorderAlgorithm {
         boolean success;
         // First we try the exact nearest position of the item being dragged,
         // we will then want to try to move this around to other neighbouring positions
-        success = rearrangementExists(result[0], result[1], spanX, spanY, direction,
-                dragView, solution);
+        success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView,
+                solution);
 
         if (!success) {
             // We try shrinking the widget down to size in an alternating pattern, shrink 1 in
@@ -135,10 +127,11 @@ public class ReorderAlgorithm {
         // and not by the views hash which is "random".
         // The views are sorted twice, once for the X position and a second time for the Y position
         // to ensure same order everytime.
-        Comparator comparator = Comparator.comparing(view ->
-                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellX())
-                .thenComparing(view ->
-                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellY());
+        Comparator comparator = Comparator.comparing(
+                view -> ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellX()
+        ).thenComparing(
+                view -> ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellY()
+        );
         List<View> views = solution.map.keySet().stream().sorted(comparator).toList();
         for (View child : views) {
             if (child == ignoreView) continue;
@@ -158,15 +151,13 @@ public class ReorderAlgorithm {
         // First we try to find a solution which respects the push mechanic. That is,
         // we try to find a solution such that no displaced item travels through another item
         // without also displacing that item.
-        if (attemptPushInDirection(intersectingViews, occupiedRect, direction,
-                ignoreView,
+        if (attemptPushInDirection(intersectingViews, occupiedRect, direction, ignoreView,
                 solution)) {
             return true;
         }
 
         // Next we try moving the views as a block, but without requiring the push mechanic.
-        if (addViewsToTempLocation(intersectingViews, occupiedRect, direction,
-                ignoreView,
+        if (addViewsToTempLocation(intersectingViews, occupiedRect, direction, ignoreView,
                 solution)) {
             return true;
         }
@@ -180,8 +171,8 @@ public class ReorderAlgorithm {
         return true;
     }
 
-    private boolean addViewToTempLocation(View v, Rect rectOccupiedByPotentialDrop,
-            int[] direction, ItemConfiguration currentState) {
+    private boolean addViewToTempLocation(View v, Rect rectOccupiedByPotentialDrop, int[] direction,
+            ItemConfiguration currentState) {
         CellAndSpan c = currentState.map.get(v);
         boolean success = false;
         mCellLayout.mTmpOccupied.markCells(c, false);
@@ -305,16 +296,16 @@ public class ReorderAlgorithm {
             int temp = direction[1];
             direction[1] = 0;
 
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
             direction[1] = temp;
             temp = direction[0];
             direction[0] = 0;
 
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
             // Revert the direction
@@ -325,16 +316,16 @@ public class ReorderAlgorithm {
             direction[1] *= -1;
             temp = direction[1];
             direction[1] = 0;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
 
             direction[1] = temp;
             temp = direction[0];
             direction[0] = 0;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
             // revert the direction
@@ -345,15 +336,15 @@ public class ReorderAlgorithm {
         } else {
             // If the direction vector has a single non-zero component, we push first in the
             // direction of the vector
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
             // Then we try the opposite direction
             direction[0] *= -1;
             direction[1] *= -1;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
             // Switch the direction back
@@ -367,16 +358,16 @@ public class ReorderAlgorithm {
             int temp = direction[1];
             direction[1] = direction[0];
             direction[0] = temp;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
 
             // Then we try the opposite direction
             direction[0] *= -1;
             direction[1] *= -1;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
-                    ignoreView, solution)) {
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                    solution)) {
                 return true;
             }
             // Switch the direction back
@@ -446,63 +437,59 @@ public class ReorderAlgorithm {
     /**
      * Returns a "reorder" if there is empty space without rearranging anything.
      *
-     * @param pixelX   X coordinate in pixels in the screen
-     * @param pixelY   Y coordinate in pixels in the screen
-     * @param spanX    horizontal cell span
-     * @param spanY    vertical cell span
-     * @param dragView view being dragged in reorder
      * @return the configuration that represents the found reorder
      */
-    public ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX,
-            int spanY, View dragView) {
-        int[] result = mCellLayout.findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY,
-                new int[2]);
+    public ItemConfiguration dropInPlaceSolution(ReorderParameters reorderParameters) {
+        int[] result = mCellLayout.findNearestAreaIgnoreOccupied(reorderParameters.getPixelX(),
+                reorderParameters.getPixelY(), reorderParameters.getSpanX(),
+                reorderParameters.getSpanY(), new int[2]);
         ItemConfiguration solution = new ItemConfiguration();
         mCellLayout.copyCurrentStateToSolution(solution);
 
         solution.isSolution = !isConfigurationRegionOccupied(
-                new Rect(result[0], result[1], result[0] + spanX, result[1] + spanY),
-                solution,
-                dragView
-        );
+                new Rect(result[0], result[1], result[0] + reorderParameters.getSpanX(),
+                        result[1] + reorderParameters.getSpanY()), solution,
+                reorderParameters.getDragView());
         if (!solution.isSolution) {
             return solution;
         }
         solution.cellX = result[0];
         solution.cellY = result[1];
-        solution.spanX = spanX;
-        solution.spanY = spanY;
+        solution.spanX = reorderParameters.getSpanX();
+        solution.spanY = reorderParameters.getSpanY();
         return solution;
     }
 
-    private boolean isConfigurationRegionOccupied(Rect region,
-            ItemConfiguration configuration, View ignoreView) {
-        return configuration.map.entrySet()
+    private boolean isConfigurationRegionOccupied(Rect region, ItemConfiguration configuration,
+            View ignoreView) {
+        return configuration.map
+                .entrySet()
                 .stream()
                 .filter(entry -> entry.getKey() != ignoreView)
                 .map(Entry::getValue)
-                .anyMatch(cellAndSpan -> region.intersect(cellAndSpan.cellX, cellAndSpan.cellY,
+                .anyMatch(cellAndSpan -> region.intersect(
+                        cellAndSpan.cellX,
+                        cellAndSpan.cellY,
                         cellAndSpan.cellX + cellAndSpan.spanX,
-                        cellAndSpan.cellY + cellAndSpan.spanY));
+                        cellAndSpan.cellY + cellAndSpan.spanY
+                        )
+                );
     }
 
     /**
      * Returns a "reorder" where we simply drop the item in the closest empty space, without moving
      * any other item in the way.
      *
-     * @param pixelX X coordinate in pixels in the screen
-     * @param pixelY Y coordinate in pixels in the screen
-     * @param spanX  horizontal cell span
-     * @param spanY  vertical cell span
      * @return the configuration that represents the found reorder
      */
-    public ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY,
-            int minSpanX, int minSpanY, int spanX, int spanY) {
+    public ItemConfiguration closestEmptySpaceReorder(ReorderParameters reorderParameters) {
         ItemConfiguration solution = new ItemConfiguration();
         int[] result = new int[2];
         int[] resultSpan = new int[2];
-        mCellLayout.findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
-                resultSpan);
+        mCellLayout.findNearestVacantArea(reorderParameters.getPixelX(),
+                reorderParameters.getPixelY(), reorderParameters.getMinSpanX(),
+                reorderParameters.getMinSpanY(), reorderParameters.getSpanX(),
+                reorderParameters.getSpanY(), result, resultSpan);
         if (result[0] >= 0 && result[1] >= 0) {
             mCellLayout.copyCurrentStateToSolution(solution);
             solution.cellX = result[0];
@@ -521,32 +508,19 @@ public class ReorderAlgorithm {
      * the workspace to make space for the new item, this function return a solution for that
      * reorder.
      *
-     * @param pixelX   X coordinate in the screen of the dragView in pixels
-     * @param pixelY   Y coordinate in the screen of the dragView in pixels
-     * @param minSpanX minimum horizontal span the item can be shrunk to
-     * @param minSpanY minimum vertical span the item can be shrunk to
-     * @param spanX    occupied horizontal span
-     * @param spanY    occupied vertical span
-     * @param dragView the view of the item being draged
      * @return returns a solution for the given parameters, the solution contains all the icons and
      * the locations they should be in the given solution.
      */
-    public ItemConfiguration calculateReorder(int pixelX, int pixelY, int minSpanX,
-            int minSpanY, int spanX, int spanY, View dragView) {
-        getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView,
-                mCellLayout.mDirectionVector);
+    public ItemConfiguration calculateReorder(ReorderParameters reorderParameters) {
+        getDirectionVectorForDrop(reorderParameters, mCellLayout.mDirectionVector);
 
-        ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY, spanX, spanY,
-                dragView);
+        ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(reorderParameters);
 
         // Find a solution involving pushing / displacing any items in the way
-        ItemConfiguration swapSolution = findReorderSolution(pixelX, pixelY, minSpanX,
-                minSpanY, spanX, spanY, mCellLayout.mDirectionVector, dragView, true,
-                new ItemConfiguration());
+        ItemConfiguration swapSolution = findReorderSolution(reorderParameters, true);
 
         // We attempt the approach which doesn't shuffle views at all
-        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(pixelX, pixelY, minSpanX,
-                minSpanY, spanX, spanY);
+        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(reorderParameters);
 
         // If the reorder solution requires resizing (shrinking) the item being dropped, we instead
         // favor a solution in which the item is not resized, but
@@ -586,21 +560,26 @@ public class ReorderAlgorithm {
      * those cells. Instead we use some heuristics to often lock the vector to up, down, left
      * or right, which helps make pushing feel right.
      */
-    private void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
-            int spanY, View dragView, int[] resultDirection) {
+    public void getDirectionVectorForDrop(ReorderParameters reorderParameters,
+            int[] resultDirection) {
 
         //TODO(adamcohen) b/151776141 use the items visual center for the direction vector
         int[] targetDestination = new int[2];
 
-        mCellLayout.findNearestAreaIgnoreOccupied(dragViewCenterX, dragViewCenterY, spanX, spanY,
-                targetDestination);
+        mCellLayout.findNearestAreaIgnoreOccupied(reorderParameters.getPixelX(),
+                reorderParameters.getPixelY(), reorderParameters.getSpanX(),
+                reorderParameters.getSpanY(), targetDestination);
         Rect dragRect = new Rect();
-        mCellLayout.cellToRect(targetDestination[0], targetDestination[1], spanX, spanY, dragRect);
-        dragRect.offset(dragViewCenterX - dragRect.centerX(), dragViewCenterY - dragRect.centerY());
+        mCellLayout.cellToRect(targetDestination[0], targetDestination[1],
+                reorderParameters.getSpanX(), reorderParameters.getSpanY(), dragRect);
+        dragRect.offset(reorderParameters.getPixelX() - dragRect.centerX(),
+                reorderParameters.getPixelY() - dragRect.centerY());
 
         Rect region = new Rect(targetDestination[0], targetDestination[1],
-                targetDestination[0] + spanX, targetDestination[1] + spanY);
-        Rect dropRegionRect = mCellLayout.getIntersectingRectanglesInRegion(region, dragView);
+                targetDestination[0] + reorderParameters.getSpanX(),
+                targetDestination[1] + reorderParameters.getSpanY());
+        Rect dropRegionRect = mCellLayout.getIntersectingRectanglesInRegion(region,
+                reorderParameters.getDragView());
         if (dropRegionRect == null) dropRegionRect = new Rect(region);
 
         int dropRegionSpanX = dropRegionRect.width();
@@ -609,13 +588,17 @@ public class ReorderAlgorithm {
         mCellLayout.cellToRect(dropRegionRect.left, dropRegionRect.top, dropRegionRect.width(),
                 dropRegionRect.height(), dropRegionRect);
 
-        int deltaX = (dropRegionRect.centerX() - dragViewCenterX) / spanX;
-        int deltaY = (dropRegionRect.centerY() - dragViewCenterY) / spanY;
+        int deltaX = (dropRegionRect.centerX() - reorderParameters.getPixelX())
+                / reorderParameters.getSpanX();
+        int deltaY = (dropRegionRect.centerY() - reorderParameters.getPixelY())
+                / reorderParameters.getSpanY();
 
-        if (dropRegionSpanX == mCellLayout.getCountX() || spanX == mCellLayout.getCountX()) {
+        if (dropRegionSpanX == mCellLayout.getCountX()
+                || reorderParameters.getSpanX() == mCellLayout.getCountX()) {
             deltaX = 0;
         }
-        if (dropRegionSpanY == mCellLayout.getCountY() || spanY == mCellLayout.getCountY()) {
+        if (dropRegionSpanY == mCellLayout.getCountY()
+                || reorderParameters.getSpanY() == mCellLayout.getCountY()) {
             deltaY = 0;
         }
 
