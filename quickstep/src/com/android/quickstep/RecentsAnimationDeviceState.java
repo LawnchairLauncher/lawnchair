@@ -261,7 +261,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
             mNavBarPosition = new NavBarPosition(mMode, info);
 
             if (mExclusionListener == null) {
-                return
+                return;
             }
 
             if (mMode == NO_BUTTON) {
