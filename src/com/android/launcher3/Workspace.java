@@ -414,7 +414,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 if (Utilities.ATLEAST_Q) {
                     isDisabledHotseat = getHotseat() != null && getHotseat().getQsb().getSourceLayoutResId() == R.layout.empty_view;
                 } else {
-                    isDisabledHotseat = false;
+                    isDisabledHotseat = true;
                 }
             lp.bottomMargin = (padding.bottom) + grid.hotseatBarBottomSpacePx - (isDisabledHotseat ? grid.workspaceCellPaddingXPx * 3 : 0);
         }
