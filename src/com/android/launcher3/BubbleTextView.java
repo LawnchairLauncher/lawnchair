@@ -389,11 +389,17 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @UiThread
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
+        int mColor;
+        if (Utilities.ATLEAST_Q) {
+            mColor = android.R.color.system_accent3_200;
+        else {
+            mColor = android.R.color.transparent;
+        }
         boolean useTheme = shouldUseTheme();
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
         mDotParams.appColor = iconDrawable.getIconColor();
         mDotParams.color = getContext().getResources()
-                .getColor(android.R.color.system_accent3_200, getContext().getTheme());
+                .getColor(mColor, getContext().getTheme());
         setIcon(iconDrawable);
         applyLabel(info);
     }
