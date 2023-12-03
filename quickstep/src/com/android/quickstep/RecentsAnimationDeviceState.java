@@ -210,7 +210,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         } catch (RemoteException e) {
             // Do nothing
         }
-        
         mPipListener = new TaskStackChangeListener() {
             @Override
             public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
