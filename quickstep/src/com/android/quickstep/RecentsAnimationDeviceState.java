@@ -218,7 +218,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
             @Override
             public void onActivityUnpinned() {
-               mPipIsActive = false;
+                mPipIsActive = false;
             }
         };
         if (Utilities.ATLEAST_Q) {
