@@ -24,6 +24,8 @@ import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VAL
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.view.CrossWindowBlurListeners;
 import android.view.View;
 import android.view.ViewRootImpl;
@@ -68,7 +70,11 @@ public class DepthController extends BaseDepthController implements StateHandler
         if (Utilities.ATLEAST_Q) {
             setSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
         } else {
-            view.draw(view.getDrawingCache());
+            Bitmap bitmap = view.getDrawingCache();
+            if (bitmap != null) {
+                Canvas canvas = new Canvas(bitmap);
+                view.draw(canvas);
+            }
         }
         view.post(() -> view.getViewTreeObserver().removeOnDrawListener(mOnDrawListener));
     }
