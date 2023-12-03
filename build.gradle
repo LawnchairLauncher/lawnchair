@@ -2,9 +2,9 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.2.0-rc03"
-    id 'com.android.library' version "8.2.0-rc03" apply false
-    id 'com.android.test' version '8.2.0-rc03' apply false
+    id 'com.android.application' version "8.2.0"
+    id 'com.android.library' version "8.2.0" apply false
+    id 'com.android.test' version '8.2.0' apply false
     id 'androidx.baselineprofile' version '1.2.0'
     id 'org.jetbrains.kotlin.android' version "1.9.20"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.20"
@@ -14,7 +14,7 @@ plugins {
     id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'org.gradle.android.cache-fix' version '3.0'
-    id 'com.diffplug.spotless' version '6.23.0'
+    id 'com.diffplug.spotless' version '6.23.2'
 }
 
 allprojects {
@@ -76,7 +76,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.48.1'
+        daggerVersion = '2.49'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -412,7 +412,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
 
-    def roomVersion = '2.6.0'
+    def roomVersion = '2.6.1'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
     ksp "androidx.room:room-compiler:$roomVersion"
