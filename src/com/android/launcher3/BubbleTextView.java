@@ -392,7 +392,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         int mColor;
         if (Utilities.ATLEAST_Q) {
             mColor = android.R.color.system_accent3_200;
-        else {
+        } else {
             mColor = android.R.color.transparent;
         }
         boolean useTheme = shouldUseTheme();
