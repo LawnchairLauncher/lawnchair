@@ -15,8 +15,8 @@
  */
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -297,8 +297,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
     }
 
     protected boolean isLauncherInitialized() {
-        return Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null
-                || LauncherAppState.getInstance(mContext).getModel().isModelLoaded();
+        Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+        return launcher == null
+                || (LauncherAppState.getInstance(mContext).getModel().isModelLoaded()
+                && !launcher.isBindingItems());
     }
 
     protected Activity getCurrentActivity() {
