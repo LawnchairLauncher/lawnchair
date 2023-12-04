@@ -1,5 +1,11 @@
 name: Build debug APK
 
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches:
+    
     paths-ignore:
       - '.idea/**'
       - '.gitattributes'
