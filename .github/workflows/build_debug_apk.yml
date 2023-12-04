@@ -1,11 +1,5 @@
 name: Build debug APK
 
-on:
-  workflow_dispatch:
-  workflow_call:
-  push:
-    branches:
-      - '*-dev'
     paths-ignore:
       - '.idea/**'
       - '.gitattributes'
@@ -98,25 +92,3 @@ jobs:
         with:
           name: Debug APK
           path: artifacts/debug-apk
-      - name: Send notifications
-        run: python ci.py
-        env:
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
-          TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
-          TELEGRAM_TEAM_GROUP_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
-          ARTIFACT_DIRECTORY: artifacts/debug-apk
-          GITHUB_REF: ${{ github.ref }}
-          ACTION: internal_notifications
-
-  crowdin-auto-merge:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
-    needs: build-debug-apk
-    steps:
-      - env:
-          GH_TOKEN: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        run: |
-          gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
-          gh pr merge $PR_URL --auto --squash --delete-branch
