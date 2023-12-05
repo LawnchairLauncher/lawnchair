@@ -19,6 +19,7 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEASURE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.PENDING_SPLIT_SELECT_INFO;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE;
@@ -34,8 +35,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_HOME_TRANSITION_LISTENER;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
@@ -1263,24 +1262,19 @@ public class QuickstepLauncher extends Launcher {
 
     /**
      * Launches the given {@link GroupTask} in splitscreen.
-     *
-     * If the second split task is missing, launches the first task normally.
      */
-    public void launchSplitTasks(@NonNull View taskView, @NonNull GroupTask groupTask) {
-        if (groupTask.task2 == null) {
-            UI_HELPER_EXECUTOR.execute(() ->
-                    ActivityManagerWrapper.getInstance().startActivityFromRecents(
-                            groupTask.task1.key,
-                            getActivityLaunchOptions(taskView, null).options));
-            return;
-        }
+    public void launchSplitTasks(@NonNull GroupTask groupTask) {
+        // Top/left and bottom/right tasks respectively.
+        Task task1 = groupTask.task1;
+        // task2 should never be null when calling this method. Allow a crash to catch invalid calls
+        Task task2 = groupTask.task2;
         mSplitSelectStateController.launchExistingSplitPair(
                 null /* launchingTaskView */,
-                groupTask.task1.key.id,
-                groupTask.task2.key.id,
+                task1.key.id,
+                task2.key.id,
                 SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
                 /* callback= */ success -> mSplitSelectStateController.resetState(),
-                /* freezeTaskList= */ true,
+                /* freezeTaskList= */ false,
                 groupTask.mSplitBounds == null
                         ? SNAP_TO_50_50
                         : groupTask.mSplitBounds.snapPosition);
