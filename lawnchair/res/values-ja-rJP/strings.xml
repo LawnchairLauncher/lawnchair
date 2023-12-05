@@ -361,6 +361,7 @@
     <string name="label">ラベル</string>
     <string name="hide_from_drawer">アプリドロワーから隠す</string>
     <string name="suggestion_pref_screen_title">サジェスト</string>
+    <string name="show_suggested_apps_at_drawer_top">ドロワー上部に提案されたアプリを表示</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair のバグレポート</string>
     <string name="crash_report_notif_title">%1$s がクラッシュしました</string>

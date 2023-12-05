@@ -12,7 +12,7 @@ plugins {
     id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'org.gradle.android.cache-fix' version '3.0'
-    id 'com.diffplug.spotless' version '6.23.2'
+    id 'com.diffplug.spotless' version '6.23.3'
 }
 
 allprojects {
@@ -74,7 +74,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.48.1'
+        daggerVersion = '2.49'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)

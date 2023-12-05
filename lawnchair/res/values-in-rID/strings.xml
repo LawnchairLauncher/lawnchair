@@ -361,6 +361,7 @@
     <string name="label">Label</string>
     <string name="hide_from_drawer">Sembunyikan dari Laci Aplikasi</string>
     <string name="suggestion_pref_screen_title">Saran</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Laporkan Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Crash</string>
