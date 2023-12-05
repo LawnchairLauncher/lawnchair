@@ -55,6 +55,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAU
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
+import static com.android.launcher3.testing.shared.TestProtocol.WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE;
 import static com.android.launcher3.util.DisplayController.isTransientTaskbar;
 import static com.android.launcher3.util.Executors.ORDERED_BG_EXECUTOR;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
@@ -120,6 +121,7 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.model.data.ItemInfo;
@@ -1651,6 +1653,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (launcherIsForceInvisibleOrOpening) {
             addCujInstrumentation(anim, playFallBackAnimation
                     ? CUJ_APP_CLOSE_TO_HOME_FALLBACK : CUJ_APP_CLOSE_TO_HOME);
+
+            anim.addListener(new AnimationSuccessListener() {
+                @Override
+                public void onAnimationSuccess(Animator animator) {
+                    AccessibilityManagerCompat.sendTestProtocolEventToTest(
+                            mLauncher, WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE);
+                }
+            });
+
             // Only register the content animation for cancellation when state changes
             mLauncher.getStateManager().setCurrentAnimation(anim);
 
