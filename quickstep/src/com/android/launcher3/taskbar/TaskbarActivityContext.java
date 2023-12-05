@@ -143,6 +143,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     private static final String WINDOW_TITLE = "Taskbar";
 
+    private final @Nullable Context mNavigationBarPanelContext;
+
     private final TaskbarDragLayer mDragLayer;
     private final TaskbarControllers mControllers;
 
@@ -178,11 +180,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     private DeviceProfile mPersistentTaskbarDeviceProfile;
 
-    public TaskbarActivityContext(Context windowContext, DeviceProfile launcherDp,
+    public TaskbarActivityContext(Context windowContext,
+            @Nullable Context navigationBarPanelContext, DeviceProfile launcherDp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
         super(windowContext);
 
+        mNavigationBarPanelContext = navigationBarPanelContext;
         applyDeviceProfile(launcherDp);
         final Resources resources = getResources();
 
@@ -256,8 +260,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarDragController(this),
                 buttonController,
                 isDesktopMode
-                        ? new DesktopNavbarButtonsViewController(this, navButtonsView)
-                        : new NavbarButtonsViewController(this, navButtonsView),
+                        ? new DesktopNavbarButtonsViewController(this, mNavigationBarPanelContext,
+                                navButtonsView)
+                        : new NavbarButtonsViewController(this, mNavigationBarPanelContext,
+                                navButtonsView),
                 rotationButtonController,
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),

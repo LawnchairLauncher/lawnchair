@@ -53,6 +53,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
 import android.annotation.IdRes;
 import android.annotation.LayoutRes;
+import android.content.Context;
 import android.content.pm.ActivityInfo.Config;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -79,6 +80,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAnimUtils;
@@ -146,6 +149,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private int mState;
 
     private final TaskbarActivityContext mContext;
+    private final @Nullable Context mNavigationBarPanelContext;
     private final WindowManagerProxy mWindowManagerProxy;
     private final FrameLayout mNavButtonsView;
     private final LinearLayout mNavButtonContainer;
@@ -203,8 +207,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
     private ImageView mRecentsButton;
 
-    public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
+    public NavbarButtonsViewController(TaskbarActivityContext context,
+            @Nullable Context navigationBarPanelContext, FrameLayout navButtonsView) {
         mContext = context;
+        mNavigationBarPanelContext = navigationBarPanelContext;
         mWindowManagerProxy = WindowManagerProxy.INSTANCE.get(mContext);
         mNavButtonsView = navButtonsView;
         mNavButtonContainer = mNavButtonsView.findViewById(R.id.end_nav_buttons);
@@ -312,7 +318,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             rotationButton.hide();
             mControllers.rotationButtonController.setRotationButton(rotationButton, null);
         } else {
-            mFloatingRotationButton = new FloatingRotationButton(mContext,
+            mFloatingRotationButton = new FloatingRotationButton(
+                    ENABLE_TASKBAR_NAVBAR_UNIFICATION ? mNavigationBarPanelContext : mContext,
                     R.string.accessibility_rotate_button,
                     R.layout.rotate_suggestion,
                     R.id.rotate_suggestion,

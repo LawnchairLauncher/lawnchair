@@ -106,6 +106,7 @@ public class TaskbarManager {
             Settings.Secure.NAV_BAR_KIDS_MODE);
 
     private final Context mContext;
+    private final @Nullable Context mNavigationBarPanelContext;
     private WindowManager mWindowManager;
     private FrameLayout mTaskbarRootLayout;
     private boolean mAddedWindow;
@@ -198,6 +199,9 @@ public class TaskbarManager {
         mContext = service.createWindowContext(display,
                 ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL,
                 null);
+        mNavigationBarPanelContext = ENABLE_TASKBAR_NAVBAR_UNIFICATION
+                ? service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null)
+                : null;
         if (enableTaskbarNoRecreate()) {
             mWindowManager = mContext.getSystemService(WindowManager.class);
             mTaskbarRootLayout = new FrameLayout(mContext) {
@@ -435,8 +439,9 @@ public class TaskbarManager {
             }
 
             if (enableTaskbarNoRecreate() || mTaskbarActivityContext == null) {
-                mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp,
-                        mNavButtonController, mUnfoldProgressProvider);
+                mTaskbarActivityContext = new TaskbarActivityContext(mContext,
+                        mNavigationBarPanelContext, dp, mNavButtonController,
+                        mUnfoldProgressProvider);
             } else {
                 mTaskbarActivityContext.updateDeviceProfile(dp);
             }
