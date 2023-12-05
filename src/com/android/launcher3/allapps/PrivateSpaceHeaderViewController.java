@@ -19,6 +19,9 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_ENABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_TRANSITION;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP;
 
 import android.view.View;
 import android.widget.ImageButton;
@@ -63,13 +66,19 @@ public class PrivateSpaceHeaderViewController {
                 quietModeButton.setVisibility(View.VISIBLE);
                 quietModeButton.setImageResource(R.drawable.bg_ps_lock_button);
                 quietModeButton.setOnClickListener(
-                        view -> mPrivateProfileManager.lockPrivateProfile());
+                        view -> {
+                            mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_LOCK_TAP);
+                            mPrivateProfileManager.lockPrivateProfile();
+                        });
             }
             case STATE_DISABLED -> {
                 quietModeButton.setVisibility(View.VISIBLE);
                 quietModeButton.setImageResource(R.drawable.bg_ps_unlock_button);
                 quietModeButton.setOnClickListener(
-                        view -> mPrivateProfileManager.unlockPrivateProfile());
+                        view -> {
+                            mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
+                            mPrivateProfileManager.unlockPrivateProfile();
+                        });
             }
             default -> quietModeButton.setVisibility(View.GONE);
         }
@@ -79,8 +88,11 @@ public class PrivateSpaceHeaderViewController {
         if (mPrivateProfileManager.getCurrentState() == STATE_ENABLED
                 && mPrivateProfileManager.isPrivateSpaceSettingsAvailable()) {
             settingsButton.setVisibility(View.VISIBLE);
-            settingsButton.setOnClickListener(view ->
-                    mPrivateProfileManager.openPrivateSpaceSettings());
+            settingsButton.setOnClickListener(
+                    view -> {
+                        mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP);
+                        mPrivateProfileManager.openPrivateSpaceSettings();
+                    });
         } else {
             settingsButton.setVisibility(View.GONE);
         }
