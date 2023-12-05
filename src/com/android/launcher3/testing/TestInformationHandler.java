@@ -47,6 +47,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.testing.shared.HotseatCellCenterRequest;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.testing.shared.WorkspaceCellCenterRequest;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
@@ -177,6 +178,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
             case TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS:
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         mDeviceProfile.numShownAllAppsColumns);
+                return response;
+
+            case TestProtocol.REQUEST_IS_TRANSIENT_TASKBAR:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        DisplayController.isTransientTaskbar(mContext));
                 return response;
 
             case TestProtocol.REQUEST_IS_TWO_PANELS:
