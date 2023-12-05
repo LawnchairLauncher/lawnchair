@@ -585,6 +585,7 @@ public final class LauncherInstrumentation {
         if (hasSystemLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
+        if (hasLauncherObject(TASKBAR_RES_ID)) return "Taskbar";
         if (mDevice.hasObject(By.pkg(getLauncherPackageName()).depth(0))) {
             return "<Launcher in invalid state>";
         }
