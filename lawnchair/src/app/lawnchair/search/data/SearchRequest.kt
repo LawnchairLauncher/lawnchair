@@ -144,7 +144,7 @@ suspend fun findContactsByName(context: Context, query: String, max: Int): List<
             }
             contactMap.values.toList()
         }
-    } catch (e : Exception) {
+    } catch (e: Exception) {
         Log.e("ContactSearch", "Something went wrong ", e)
         return emptyList()
     }
@@ -186,6 +186,7 @@ private val commonProjection = arrayOf(
     MediaStore.MediaColumns.DATE_MODIFIED,
     MediaStore.MediaColumns.MIME_TYPE,
     MediaStore.MediaColumns.TITLE,
+    MediaStore.MediaColumns._ID,
 )
 
 private suspend inline fun <T : Any> getFileListFromMediaStore(
@@ -219,9 +220,11 @@ private fun getFileBean(cursor: Cursor): IFileInfo? = cursor.run {
             if (mimeType == null) it else "$it.${mimeType.mimeType2Extension()}"
         } ?: return null
     val path = getString(getColumnIndexOrThrow(commonProjection[0])).toPath()
+    val fileId = getString(getColumnIndexOrThrow(commonProjection[6]))
     if (!path.isRegularFile() || path.isHidden) return null
     val dateModified = getLong(getColumnIndexOrThrow(commonProjection[3])) * 1000
     return FileInfo(
+        fileId,
         path.toString(),
         title,
         getLong(getColumnIndexOrThrow(commonProjection[2])),

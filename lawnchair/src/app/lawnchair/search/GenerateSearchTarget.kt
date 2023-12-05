@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Process
 import android.provider.ContactsContract
+import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.search.data.ContactInfo
@@ -19,7 +20,6 @@ import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.mimeCompat
-import app.lawnchair.util.path2Uri
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -125,10 +125,14 @@ class GenerateSearchTarget(private val context: Context) {
 
     internal fun getFileInfoSearchItem(info: IFileInfo): SearchTargetCompat {
         val fileInfo = info as? FileInfo
+        val fileUri = Uri.withAppendedPath(
+            MediaStore.Files.getContentUri("external"),
+            fileInfo?.fileId.toString(),
+        )
         val fileIntent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .setDataAndType(info.path.path2Uri(), fileInfo?.mimeType.mimeCompat)
+            .setDataAndType(fileUri, fileInfo?.mimeType.mimeCompat)
 
         val action = SearchActionCompat.Builder(info.path, info.name)
             .setIcon(getPreviewIcon(info))

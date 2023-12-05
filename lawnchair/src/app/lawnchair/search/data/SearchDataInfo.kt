@@ -49,6 +49,7 @@ data class FolderInfo(
 ) : IFileInfo
 
 data class FileInfo(
+    val fileId: String,
     override val path: String,
     override val name: String,
     override val size: Long,
