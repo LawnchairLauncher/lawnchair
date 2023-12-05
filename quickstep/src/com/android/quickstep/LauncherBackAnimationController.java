@@ -55,6 +55,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -415,6 +416,10 @@ public class LauncherBackAnimationController {
         }
         if (mLauncher.isDestroyed()) {
             return;
+        }
+        LauncherTaskbarUIController taskbarUIController = mLauncher.getTaskbarUIController();
+        if (taskbarUIController != null) {
+            taskbarUIController.onLauncherVisibilityChanged(true);
         }
         // TODO: Catch the moment when launcher becomes visible after the top app un-occludes
         //  launcher and start animating afterwards. Currently we occasionally get a flicker from
