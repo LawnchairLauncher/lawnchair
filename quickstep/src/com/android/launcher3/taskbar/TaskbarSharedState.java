@@ -86,4 +86,8 @@ public class TaskbarSharedState {
     public void setTaskbarWasPinned(boolean taskbarWasPinned) {
         mTaskbarWasPinned = taskbarWasPinned;
     }
+
+    // To track if taskbar was stashed / unstashed between configuration changes (which recreates
+    // the task bar).
+    public Boolean taskbarWasStashedAuto = true;
 }
