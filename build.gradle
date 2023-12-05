@@ -435,7 +435,7 @@ ksp {
 
 spotless {
     java {
-        palantirJavaFormat()
+        palantirJavaFormat("2.39.0")
         target("lawnchair/src/**/*.java")
     }
     kotlin {
