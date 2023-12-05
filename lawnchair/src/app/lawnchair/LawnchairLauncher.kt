@@ -67,6 +67,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherRootView
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
 import com.android.launcher3.popup.SystemShortcut
@@ -321,6 +322,12 @@ class LawnchairLauncher :
                 )
                 FloatingSurfaceView.show(this, gnc)
             }
+        }
+    }
+
+    override fun onUiChangedWhileSleeping() {
+        if (Utilities.ATLEAST_S) {
+            super.onUiChangedWhileSleeping()
         }
     }
 

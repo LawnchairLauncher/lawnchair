@@ -362,6 +362,7 @@
     <string name="label">Címke</string>
     <string name="hide_from_drawer">Elrejtés az alkalmazásfiókban</string>
     <string name="suggestion_pref_screen_title">Javaslatok</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair hibajelentés</string>
     <string name="crash_report_notif_title">A %1$s összeomlott</string>
