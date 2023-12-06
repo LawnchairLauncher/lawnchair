@@ -32,6 +32,7 @@ import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_PENDIN
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_SHORTCUT;
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_TASK;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.wm.shell.common.split.SplitScreenConstants.KEY_EXTRA_WIDGET_INTENT;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
 
 import android.animation.Animator;
@@ -355,6 +356,10 @@ public class SplitSelectStateController {
         mSplitSelectDataHolder.setSecondTask(pendingIntent);
     }
 
+    public void setSecondWidget(PendingIntent pendingIntent, Intent widgetIntent) {
+        mSplitSelectDataHolder.setSecondWidget(pendingIntent, widgetIntent);
+    }
+
     /**
      * To be called when we want to launch split pairs from Overview. Split can be initiated from
      * either Overview or home, or all apps. Either both taskIds are set, or a pending intent + a
@@ -380,11 +385,13 @@ public class SplitSelectStateController {
         ShortcutInfo secondShortcut = launchData.getSecondShortcut();
         PendingIntent firstPI = launchData.getInitialPendingIntent();
         PendingIntent secondPI = launchData.getSecondPendingIntent();
+        Intent widgetIntent = launchData.getWidgetSecondIntent();
         int firstUserId = launchData.getInitialUserId();
         int secondUserId = launchData.getSecondUserId();
         int initialStagePosition = launchData.getInitialStagePosition();
         Bundle optionsBundle = options1.toBundle();
-
+        Bundle extrasBundle = new Bundle(1);
+        extrasBundle.putParcelable(KEY_EXTRA_WIDGET_INTENT, widgetIntent);
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             final RemoteTransition remoteTransition = getShellRemoteTransition(firstTaskId,
                     secondTaskId, callback, "LaunchSplitPair");
@@ -396,7 +403,7 @@ public class SplitSelectStateController {
 
                 case SPLIT_TASK_PENDINGINTENT ->
                         mSystemUiProxy.startIntentAndTask(secondPI, secondUserId, optionsBundle,
-                                firstTaskId, null /*options2*/, initialStagePosition, snapPosition,
+                                firstTaskId, extrasBundle, initialStagePosition, snapPosition,
                                 remoteTransition, shellInstanceId);
 
                 case SPLIT_TASK_SHORTCUT ->
@@ -411,9 +418,9 @@ public class SplitSelectStateController {
 
                 case SPLIT_PENDINGINTENT_PENDINGINTENT ->
                         mSystemUiProxy.startIntents(firstPI, firstUserId, firstShortcut,
-                                optionsBundle, secondPI, secondUserId, secondShortcut,
-                                null /*options2*/, initialStagePosition, snapPosition,
-                                remoteTransition, shellInstanceId);
+                                optionsBundle, secondPI, secondUserId, secondShortcut, extrasBundle,
+                                initialStagePosition, snapPosition, remoteTransition,
+                                shellInstanceId);
 
                 case SPLIT_SHORTCUT_TASK ->
                         mSystemUiProxy.startShortcutAndTask(firstShortcut, optionsBundle,
