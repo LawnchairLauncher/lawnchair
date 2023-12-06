@@ -37,11 +37,13 @@ object ColorTokens {
 
     val Accent2_50 = SwatchColorToken(Swatch.Accent2, Shade.S50)
     val Accent2_100 = SwatchColorToken(Swatch.Accent2, Shade.S100)
+    val Accent2_300 = SwatchColorToken(Swatch.Accent2, Shade.S300)
     val Accent2_500 = SwatchColorToken(Swatch.Accent2, Shade.S500)
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
     val Accent2_800 = SwatchColorToken(Swatch.Accent2, Shade.S800)
 
     val Accent3_100 = SwatchColorToken(Swatch.Accent3, Shade.S100)
+    val Accent3_200 = SwatchColorToken(Swatch.Accent3, Shade.S200)
     val Accent3_600 = SwatchColorToken(Swatch.Accent3, Shade.S600)
 
     val SurfaceLight = Neutral1_500.setLStar(98.0)
