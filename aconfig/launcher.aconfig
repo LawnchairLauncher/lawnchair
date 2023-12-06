@@ -83,3 +83,10 @@ flag {
     description: "Enables two pane widget picker for unfolded foldables"
     bug: "313922374"
 }
+
+flag {
+    name: "enable_tablet_two_pane_picker_v2"
+    namespace: "launcher"
+    description: "Enables full width two pane widget picker for tablets in landscape and portrait"
+    bug: "315055849"
+}
