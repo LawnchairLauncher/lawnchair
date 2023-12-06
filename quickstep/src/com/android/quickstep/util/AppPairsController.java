@@ -125,6 +125,7 @@ public class AppPairsController {
         ComponentKey app2Key = new ComponentKey(app2.getTargetComponent(), app2.user);
         mSplitSelectStateController.findLastActiveTasksAndRunCallback(
                 Arrays.asList(app1Key, app2Key),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask1 = foundTasks.get(0);
                     Intent task1Intent;
@@ -153,7 +154,8 @@ public class AppPairsController {
 
                     mSplitSelectStateController.launchSplitTasks(
                             AppPairsController.convertRankToSnapPosition(app1.rank));
-                });
+                }
+        );
     }
 
     /**

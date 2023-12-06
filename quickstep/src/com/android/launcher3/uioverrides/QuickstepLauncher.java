@@ -642,6 +642,7 @@ public class QuickstepLauncher extends Launcher {
         // using that.
         mSplitSelectStateController.findLastActiveTasksAndRunCallback(
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks.get(0);
                     boolean taskWasFound = foundTask != null;

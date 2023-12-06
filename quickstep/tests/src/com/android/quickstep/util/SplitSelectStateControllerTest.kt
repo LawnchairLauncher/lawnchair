@@ -114,6 +114,7 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonMatchingComponent),
+                        false /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
@@ -166,6 +167,7 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent),
+                        false /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
@@ -206,6 +208,7 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonPrimaryUserComponent),
+                        false /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
@@ -261,6 +264,7 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonPrimaryUserComponent),
+                        false /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
@@ -313,6 +317,7 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent),
+                        false /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
@@ -366,6 +371,7 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonMatchingComponent, matchingComponent),
+                        false /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
@@ -418,6 +424,7 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent, matchingComponent),
+                        false /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
@@ -483,6 +490,59 @@ class SplitSelectStateControllerTest {
             argumentCaptor<Consumer<ArrayList<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent, matchingComponent),
+                        false /* findExactPairMatch */,
+                        taskConsumer
+                    )
+                    verify(recentsModel).getTasks(capture())
+                }
+                .lastValue
+
+        // Send our mocked tasks
+        consumer.accept(tasks)
+    }
+
+    @Test
+    fun activeTasks_multipleSearchShouldFindExactPairMatch() {
+        val matchingPackage = "hotdog"
+        val matchingClass = "juice"
+        val matchingComponent =
+            ComponentKey(ComponentName(matchingPackage, matchingClass), primaryUserHandle)
+        val matchingPackage2 = "pomegranate"
+        val matchingClass2 = "juice"
+        val matchingComponent2 =
+            ComponentKey(ComponentName(matchingPackage2, matchingClass2), primaryUserHandle)
+
+        val groupTask1 =
+            generateGroupTask(ComponentName("hotdog", "pie"), ComponentName("pumpkin", "pie"))
+        val groupTask2 =
+            generateGroupTask(
+                ComponentName(matchingPackage2, matchingClass2),
+                ComponentName(matchingPackage, matchingClass)
+            )
+        val groupTask3 =
+            generateGroupTask(
+                ComponentName("hotdog", "pie"),
+                ComponentName(matchingPackage, matchingClass)
+            )
+        val tasks: ArrayList<GroupTask> = ArrayList()
+        tasks.add(groupTask3)
+        tasks.add(groupTask2)
+        tasks.add(groupTask1)
+
+        // Assertions happen in the callback we get from what we pass into
+        // #findLastActiveTasksAndRunCallback
+        val taskConsumer =
+            Consumer<List<Task>> {
+                assertEquals("Expected array length 1", 1, it.size)
+                assertEquals("Found wrong task", it[0], groupTask2.task1)
+            }
+
+        // Capture callback from recentsModel#getTasks()
+        val consumer =
+            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+                    splitSelectStateController.findLastActiveTasksAndRunCallback(
+                        listOf(matchingComponent2, matchingComponent),
+                        true /* findExactPairMatch */,
                         taskConsumer
                     )
                     verify(recentsModel).getTasks(capture())
