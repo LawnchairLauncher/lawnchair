@@ -270,10 +270,6 @@ public final class FeatureFlags {
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(270391693,
             "IME_STICKY_SNACKBAR_EDU", ENABLED, "Show sticky IME edu in AllApps");
 
-    public static final BooleanFlag ENABLE_PEOPLE_TILE_PREVIEW = getDebugFlag(270391653,
-            "ENABLE_PEOPLE_TILE_PREVIEW", DISABLED,
-            "Experimental: Shows conversation shortcuts on home screen as search results");
-
     public static final BooleanFlag FOLDER_NAME_MAJORITY_RANKING = getDebugFlag(270391638,
             "FOLDER_NAME_MAJORITY_RANKING", ENABLED,
             "Suggests folder names based on majority based ranking.");
