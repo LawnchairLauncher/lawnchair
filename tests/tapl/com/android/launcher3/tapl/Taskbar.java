@@ -18,8 +18,6 @@ package com.android.launcher3.tapl;
 import static android.view.KeyEvent.KEYCODE_META_RIGHT;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
-import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
-import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -33,6 +31,8 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
+import org.junit.Assert;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +45,15 @@ public final class Taskbar {
 
     Taskbar(LauncherInstrumentation launcher) {
         mLauncher = launcher;
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "expect new taskbar to be visible")) {
+            mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
+        }
+
+        if (!mLauncher.isTransientTaskbar()) {
+            Assert.assertEquals("Persistent taskbar should fill screen width",
+                    getVisibleBounds().width(), mLauncher.getRealDisplaySize().x);
+        }
     }
 
     /**
@@ -61,33 +70,32 @@ public final class Taskbar {
     }
 
     /**
-     * Hides this taskbar.
-     *
-     * The taskbar must already be visible when calling this method.
+     * Stashes this taskbar.
+     * <p>
+     * The taskbar must already be unstashed and in transient mode when calling this method.
      */
-    public void hide() {
-        mLauncher.getTestInfo(REQUEST_ENABLE_MANUAL_TASKBAR_STASHING);
+    public void swipeDownToStash() {
+        mLauncher.assertTrue("Taskbar is not transient, swipe down not supported",
+                mLauncher.isTransientTaskbar());
 
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to hide the taskbar");
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
 
-            final long downTime = SystemClock.uptimeMillis();
-            Point stashTarget = new Point(
-                    mLauncher.getRealDisplaySize().x - 1, mLauncher.getRealDisplaySize().y - 1);
+            Rect taskbarBounds = getVisibleBounds();
+            int startX = taskbarBounds.centerX();
+            int startY = taskbarBounds.centerY();
+            int endX = startX;
+            int endY = mLauncher.getRealDisplaySize().y - 1;
 
-            mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, stashTarget,
+            mLauncher.linearGesture(startX, startY, endX, endY, 10, false,
                     LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
-            LauncherInstrumentation.log("hideTaskbar: sent down");
-
-            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("pressed down")) {
+            LauncherInstrumentation.log("swipeDownToStash: sent linear swipe down gesture");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "expect transient taskbar to be hidden after swipe down")) {
                 mLauncher.waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
-                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, stashTarget,
-                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             }
-        } finally {
-            mLauncher.getTestInfo(REQUEST_DISABLE_MANUAL_TASKBAR_STASHING);
         }
     }
 

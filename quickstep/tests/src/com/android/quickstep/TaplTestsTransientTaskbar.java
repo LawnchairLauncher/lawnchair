@@ -24,6 +24,7 @@ import static org.junit.Assume.assumeTrue;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
 import org.junit.Test;
@@ -63,5 +64,13 @@ public class TaplTestsTransientTaskbar extends AbstractTaplTestsTaskbar {
         assumeTrue(enableCursorHoverStates());
         getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
         mLauncher.getLaunchedAppState().clickStashedTaskbarToGoHome();
+    }
+
+    @Test
+    @TaskbarModeSwitch(mode = TRANSIENT)
+    @PortraitLandscape
+    public void testSwipeToStashAndUnstash() {
+        getTaskbar().swipeDownToStash();
+        mLauncher.getLaunchedAppState().swipeUpToUnstashTaskbar();
     }
 }
