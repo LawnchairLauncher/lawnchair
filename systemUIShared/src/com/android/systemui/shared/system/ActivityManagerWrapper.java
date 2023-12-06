@@ -376,4 +376,5 @@ public class ActivityManagerWrapper {
                 == WindowConfiguration.ACTIVITY_TYPE_HOME;
         }
     }
+}
             
