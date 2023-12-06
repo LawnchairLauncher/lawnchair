@@ -33,29 +33,38 @@ private val retrofit = Retrofit.Builder()
 
 val startPageService: StartPageService = retrofit.create()
 
-suspend fun getStartPageSuggestions(query: String, max: Int): List<String> {
+suspend fun getStartPageSuggestions(query: String, max: Int, callback: SearchCallback) {
     try {
-        if (query.isEmpty() || query.isBlank() || max <= 0) return emptyList()
-        return withContext(Dispatchers.IO) {
+        if (query.isEmpty() || query.isBlank() || max <= 0) {
+            callback.onSearchLoaded(emptyList())
+            return
+        }
+
+        callback.onLoading()
+
+        withContext(Dispatchers.IO) {
             val response: Response<ResponseBody> = startPageService.getStartPageSuggestions(
                 query = query,
                 segment = "startpage.lawnchair",
                 partner = "lawnchair",
                 format = "opensearch",
             )
+
             if (response.isSuccessful) {
                 val responseBody = response.body()?.string()
-                return@withContext JSONArray(responseBody).optJSONArray(1)?.let { array ->
+                val suggestions = JSONArray(responseBody).optJSONArray(1)?.let { array ->
                     (0 until array.length()).take(max).map { array.getString(it) }
                 } ?: emptyList()
+
+                callback.onSearchLoaded(suggestions)
             } else {
                 Log.d("Failed to retrieve suggestions", ": ${response.code()}")
+                callback.onSearchFailed("Failed to retrieve suggestions: ${response.code()}")
             }
-            return@withContext emptyList()
         }
     } catch (e: Exception) {
         Log.e("Exception", "Error during suggestion retrieval: ${e.message}")
-        return emptyList()
+        callback.onSearchFailed("Error during suggestion retrieval: ${e.message}")
     }
 }
 

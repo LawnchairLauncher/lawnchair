@@ -6,6 +6,7 @@ import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
+import app.lawnchair.search.data.SearchCallback
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.findContactsByName
 import app.lawnchair.search.data.getStartPageSuggestions
@@ -159,8 +160,23 @@ sealed class LawnchairSearchAlgorithm(
         }
 
         if (prefs.searchResultStartPageSuggestion.get()) {
-            val suggestionsResults = getStartPageSuggestions(query, 3)
-            results.addAll(suggestionsResults.map { SearchResult(SUGGESTION, it) })
+            getStartPageSuggestions(
+                query,
+                3,
+                object : SearchCallback {
+                    override fun onSearchLoaded(items: List<Any>) {
+                        results.addAll(items.map { SearchResult(SUGGESTION, it) })
+                    }
+
+                    override fun onSearchFailed(error: String) {
+                        results.add(SearchResult(ERROR, error))
+                    }
+
+                    override fun onLoading() {
+                        results.add(SearchResult(LOADING, "Loading"))
+                    }
+                },
+            )
         }
 
         results
