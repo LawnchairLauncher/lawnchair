@@ -370,6 +370,5 @@ public class ActivityManagerWrapper {
     public static boolean isHomeTask(RunningTaskInfo info) {
         return info.configuration.windowConfiguration.getActivityType()
                 == WindowConfiguration.ACTIVITY_TYPE_HOME;
-        }
     }
 }
