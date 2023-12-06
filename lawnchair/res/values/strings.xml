@@ -450,8 +450,6 @@
       <string name="hide_from_drawer">Hide from App Drawer</string>
 
     <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
-
     <string name="n_percent" translatable="false">%1$d%%</string>
 
     <!-- Bug reporting -->

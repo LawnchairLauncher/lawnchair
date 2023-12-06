@@ -253,7 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Ricerca app</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair ha un accordo di condivisione delle entrate.\n\nLa ricerca con %1$s aiuta a supportare Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Sito web</string>
     <string name="qsb_search_provider_app_required">App richiesta.</string>
@@ -362,7 +362,6 @@
     <string name="label">Etichetta</string>
     <string name="hide_from_drawer">Nascondi dal menu delle app</string>
     <string name="suggestion_pref_screen_title">Suggerimenti</string>
-    <string name="show_suggested_apps_at_drawer_top">Mostra le app suggerite nella parte superiore del drawer</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Segnalazione bug di Lawnchair</string>
     <string name="crash_report_notif_title">%1$s è crashato</string>

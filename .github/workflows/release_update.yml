@@ -1,5 +1,4 @@
 name: Release update
-
 on:
   workflow_dispatch:
     inputs:
@@ -19,12 +18,12 @@ on:
         description: Release name
         type: string
         required: true
-
 jobs:
   build-release-apk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
           submodules: true
       - uses: actions/setup-java@v4
@@ -32,20 +31,17 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - uses: gradle/gradle-build-action@v2
-        with:
-          gradle-home-cache-cleanup: true
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepRelease
-      - name: Write sign info
-        if: github.repository_owner == 'LawnchairLauncher'
-        run: |
-          if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
-            echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
-            echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
-            echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
-            echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
-            echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
-          fi
+      - name: Sign release APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign-release-apk
+        with:
+          releaseDirectory: build/outputs/apk/lawnWithQuickstep/release
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
       - name: Rename artifact
         continue-on-error: true
         run: mv "${{ steps.sign-release-apk.outputs.signedReleaseFile }}" "${{ github.event.inputs.artifactName }}"
@@ -54,14 +50,14 @@ jobs:
         with:
           name: Release APK
           path: ${{ github.event.inputs.artifactName }}
-
   publish-github-release:
     runs-on: ubuntu-latest
     needs: build-release-apk
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
@@ -76,18 +72,19 @@ jobs:
           body_path: ${{ github.workspace }}/GITHUB_CHANGELOG.md
           files: artifacts/release-apk/${{ github.event.inputs.artifactName }}
           name: ${{ github.event.inputs.releaseName }}
-
   publish-telegram-update-post:
     runs-on: ubuntu-latest
     needs: build-release-apk
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: Release APK
           path: artifacts/release-apk
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.x
       - name: Install Python packages

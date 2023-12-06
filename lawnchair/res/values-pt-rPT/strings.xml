@@ -362,7 +362,6 @@
     <string name="label">Etiqueta</string>
     <string name="hide_from_drawer">Esconder da Gaveta de Aplicações</string>
     <string name="suggestion_pref_screen_title">Sugestões</string>
-    <string name="show_suggested_apps_at_drawer_top">Mostrar aplicações sugeridas no topo da gaveta</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Relatório de Erros do Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Bloqueou</string>

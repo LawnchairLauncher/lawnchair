@@ -361,7 +361,6 @@
     <string name="label">라벨</string>
     <string name="hide_from_drawer">앱 서랍에서 숨기기</string>
     <string name="suggestion_pref_screen_title">제안</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair 버그 신고하기</string>
     <string name="crash_report_notif_title">%1$s가 종료되었습니다</string>

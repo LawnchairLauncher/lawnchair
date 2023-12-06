@@ -107,29 +107,29 @@
     <string name="icon_pack">चिन्ह_गाठोडा</string>
     <string name="themed_icon_pack">थीम्ड चिन्ह स्रोत</string>
     <string name="system_icons">निरुतीची चिन्हे</string>
-    <string name="themed_icon_title">थीम असलेली चिन्हे</string>
+    <string name="themed_icon_title">Themed Icons</string>
     <string name="themed_icons_off_label">बंद करा</string>
     <string name="themed_icons_home_label">मुख्यपृष्ठ</string>
-    <string name="themed_icons_home_and_drawer_label">प्रमुख पटळ &amp; अनुदेशन काढारी</string>
-    <string name="lawnicons_not_installed_description">लॉनचिन्ह अनुस्थापित नाहीत.</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">निरुती</string>
     <string name="icon_shape_circle">वर्तुळ</string>
-    <string name="icon_shape_cylinder">दंडवर्तुळ</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
     <string name="icon_shape_diamond">हिरक</string>
     <string name="icon_shape_egg">अंड</string>
     <string name="icon_shape_cupertino">आई. ओ. एस(अॅप्पल)</string>
-    <string name="icon_shape_octagon">अष्टकोनी</string>
-    <string name="icon_shape_sammy">वन वापरतकर्ता आंतरपृष्ठ</string>
-    <string name="icon_shape_rounded_square">वर्तुळित चौरस</string>
-    <string name="icon_shape_sharp_square">तीक्ष्ण चौरस</string>
-    <string name="icon_shape_square">चौरस</string>
-    <string name="icon_shape_squircle">वर्तुळस</string>
-    <string name="icon_shape_teardrop">अश्रू थेंब</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_rounded_square">Rounded Square</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
     <!-- FontSelectionPreferences -->
-    <string name="pref_fonts_add_fonts">वर्णमुख जोडा</string>
+    <string name="pref_fonts_add_fonts">Add Fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
     <string name="pref_fonts_missing_font">Font not found.</string>
     <string name="font_variant_italic">Italic</string>
@@ -362,7 +362,6 @@
     <string name="label">Label</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>

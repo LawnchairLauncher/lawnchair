@@ -121,7 +121,7 @@ public class DesktopTaskView extends TaskView {
         Arrays.fill(outerRadii, getTaskCornerRadius());
         RoundRectShape shape = new RoundRectShape(outerRadii, null, null);
         ShapeDrawable background = new ShapeDrawable(shape);
-        background.setTint(getResources().getColor(Utilities.ATLEAST_S ? android.R.color.system_neutral2_300 : android.R.color.transparent,
+        background.setTint(getResources().getColor(android.R.color.system_neutral2_300,
                 getContext().getTheme()));
         // TODO(b/244348395): this should be wallpaper
         mBackgroundView.setBackground(background);

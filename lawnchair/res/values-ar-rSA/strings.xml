@@ -366,7 +366,6 @@
     <string name="label">العلامة</string>
     <string name="hide_from_drawer">إخفاء من قائمة التطبيقات</string>
     <string name="suggestion_pref_screen_title">اقتراحات</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">تقرير الأخطاء Lawnchair</string>
     <string name="crash_report_notif_title">%1$s توقف عن العمل</string>
