@@ -43,7 +43,7 @@ object ColorTokens {
     val Accent2_800 = SwatchColorToken(Swatch.Accent2, Shade.S800)
 
     val Accent3_100 = SwatchColorToken(Swatch.Accent3, Shade.S100)
-    val Accent3_200 = SwatchColorToken(Swatch.Accent3, Shade.S200)
+    val Accent3_400 = SwatchColorToken(Swatch.Accent3, Shade.S400)
     val Accent3_600 = SwatchColorToken(Swatch.Accent3, Shade.S600)
 
     val SurfaceLight = Neutral1_500.setLStar(98.0)
@@ -108,7 +108,7 @@ object ColorTokens {
 
     @JvmField val PopupShadeThird = DayNightColorToken(PopupColorPrimary.setLStar(90.0), PopupColorPrimary.setLStar(10.0))
 
-    @JvmField val QsbIconTintPrimary = DayNightColorToken(Accent3_200, Accent3_100)
+    @JvmField val QsbIconTintPrimary = DayNightColorToken(Accent3_400, Accent3_100)
 
     @JvmField val QsbIconTintSecondary = DayNightColorToken(Accent1_600, Accent1_300)
 
