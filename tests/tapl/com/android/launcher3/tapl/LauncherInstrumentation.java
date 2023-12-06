@@ -2188,7 +2188,8 @@ public final class LauncherInstrumentation {
         };
     }
 
-    boolean isLauncher3() {
+    /** Returns whether the Launcher is a Launcher3 one */
+    public boolean isLauncher3() {
         if (mIsLauncher3 == null) {
             mIsLauncher3 = "com.android.launcher3".equals(getLauncherPackageName());
         }
