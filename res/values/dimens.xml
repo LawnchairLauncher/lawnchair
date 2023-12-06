@@ -176,6 +176,7 @@
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
+    <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
 
     <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
 
