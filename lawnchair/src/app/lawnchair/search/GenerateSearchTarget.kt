@@ -190,7 +190,7 @@ class GenerateSearchTarget(private val context: Context) {
 
         val mimeType = when (info) {
             is FileInfo -> info.mimeType.mimeCompat
-            is FolderInfo -> "*/*"
+            is FolderInfo -> "resource/folder"
         }
 
         val fileIntent = Intent(Intent.ACTION_VIEW).apply {
