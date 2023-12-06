@@ -26,7 +26,6 @@ import android.animation.AnimatorSet;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.TaskTransitionSpec;
-import android.view.View;
 import android.view.WindowManagerGlobal;
 
 import androidx.annotation.NonNull;
@@ -386,8 +385,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void launchSplitTasks(@NonNull View taskView, @NonNull GroupTask groupTask) {
-        mLauncher.launchSplitTasks(taskView, groupTask);
+    public void launchSplitTasks(@NonNull GroupTask groupTask) {
+        mLauncher.launchSplitTasks(groupTask);
     }
 
     @Override

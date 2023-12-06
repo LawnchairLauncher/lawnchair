@@ -105,6 +105,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
             mNavBarScrimPaint.setColor(navBarScrimColor);
             invalidate();
         }
+        setupNavBarColor();
     }
 
     @Override
@@ -218,10 +219,18 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     protected void setupNavBarColor() {
-        boolean isSheetDark = Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark);
-        getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
-                isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
+        boolean isNavBarDark = Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark);
+
+        // In light mode, landscape reverses navbar background color.
+        boolean isPhoneLandscape =
+                !mActivityContext.getDeviceProfile().isTablet && mInsets.bottom == 0;
+        if (!isNavBarDark && isPhoneLandscape) {
+            isNavBarDark = true;
+        }
+
+        getSystemUiController().updateUiState(SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
+                isNavBarDark ? SystemUiController.FLAG_DARK_NAV
+                        : SystemUiController.FLAG_LIGHT_NAV);
     }
 
     protected SystemUiController getSystemUiController() {

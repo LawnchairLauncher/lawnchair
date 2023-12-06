@@ -240,7 +240,7 @@ public class VibratorWrapper {
 
     /** Indicates that search has been invoked. */
     public void vibrateForSearch() {
-        if (mSearchEffect != null && FeatureFlags.ENABLE_SEARCH_HAPTIC_COMMIT.get()) {
+        if (mSearchEffect != null) {
             vibrate(mSearchEffect);
         }
     }

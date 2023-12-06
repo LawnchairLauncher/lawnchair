@@ -203,11 +203,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         Display display = windowContext.getDisplay();
         Context c = getApplicationContext();
         mWindowManager = c.getSystemService(WindowManager.class);
-        mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
-        mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
+
+        boolean phoneMode = TaskbarManager.isPhoneMode(mDeviceProfile);
+        mLeftCorner = phoneMode
+                ? null
+                : display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
+        mRightCorner = phoneMode
+                ? null
+                : display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
 
         // Inflate views.
-        boolean phoneMode = TaskbarManager.isPhoneMode(mDeviceProfile);
         int taskbarLayout = DisplayController.isTransientTaskbar(this) && !phoneMode
                 ? R.layout.transient_taskbar
                 : R.layout.taskbar;

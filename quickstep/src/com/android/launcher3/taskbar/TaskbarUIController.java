@@ -297,11 +297,9 @@ public class TaskbarUIController {
     }
 
     /**
-     * Launches the focused task in splitscreen.
-     *
-     * No-op if the view is not yet open.
+     * Launches the given task in split-screen.
      */
-    public void launchSplitTasks(@NonNull View taskview, @NonNull GroupTask groupTask) { }
+    public void launchSplitTasks(@NonNull GroupTask groupTask) { }
 
     /**
      * Returns the matching view (if any) in the taskbar.
