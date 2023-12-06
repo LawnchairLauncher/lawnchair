@@ -36,53 +36,57 @@ private val retrofit = Retrofit.Builder()
 val startPageService: StartPageService = retrofit.create()
 
 suspend fun getStartPageSuggestions(query: String, max: Int, callback: SearchCallback) {
-    try {
-        if (query.isEmpty() || query.isBlank() || max <= 0) {
-            callback.onSearchLoaded(emptyList())
-            return
-        }
-
-        callback.onLoading()
-
-        withContext(Dispatchers.IO) {
-            val response: Response<ResponseBody> = startPageService.getStartPageSuggestions(
-                query = query,
-                segment = "startpage.lawnchair",
-                partner = "lawnchair",
-                format = "opensearch",
-            )
-
-            if (response.isSuccessful) {
-                val responseBody = response.body()?.string()
-                val suggestions = JSONArray(responseBody).optJSONArray(1)?.let { array ->
-                    (0 until array.length()).take(max).map { array.getString(it) }
-                } ?: emptyList()
-
-                callback.onSearchLoaded(suggestions)
-            } else {
-                Log.d("Failed to retrieve suggestions", ": ${response.code()}")
-                callback.onSearchFailed("Failed to retrieve suggestions: ${response.code()}")
-            }
-        }
-    } catch (e: Exception) {
+    val exceptionHandler = CoroutineExceptionHandler { _, e ->
         Log.e("Exception", "Error during suggestion retrieval: ${e.message}")
         callback.onSearchFailed("Error during suggestion retrieval: ${e.message}")
     }
+    if (query.isEmpty() || query.isBlank() || max <= 0) {
+        callback.onSearchLoaded(emptyList())
+        return
+    }
+
+    callback.onLoading()
+
+    withContext(Dispatchers.IO + exceptionHandler) {
+        val response: Response<ResponseBody> = startPageService.getStartPageSuggestions(
+            query = query,
+            segment = "startpage.lawnchair",
+            partner = "lawnchair",
+            format = "opensearch",
+        )
+
+        if (response.isSuccessful) {
+            val responseBody = response.body()?.string()
+            val suggestions = JSONArray(responseBody).optJSONArray(1)?.let { array ->
+                (0 until array.length()).take(max).map { array.getString(it) }
+            } ?: emptyList()
+
+            callback.onSearchLoaded(suggestions)
+        } else {
+            Log.d("Failed to retrieve suggestions", ": ${response.code()}")
+            callback.onSearchFailed("Failed to retrieve suggestions: ${response.code()}")
+        }
+    }
 }
 
-suspend fun findSettingsByNameAndAction(query: String, max: Int): List<SettingInfo> = try {
-    if (query.isBlank() || max <= 0) {
+suspend fun findSettingsByNameAndAction(query: String, max: Int): List<SettingInfo> {
+    return if (query.isBlank() || max <= 0) {
         emptyList()
     } else {
-        withContext(
-            Dispatchers.IO + CoroutineExceptionHandler { _, e ->
-                Log.e("SettingSearch", "Something went wrong ", e)
-            },
-        ) {
+        val exceptionHandler = CoroutineExceptionHandler { _, e ->
+            Log.e("SettingSearch", "Something went wrong ", e)
+        }
+        withContext(Dispatchers.IO + exceptionHandler) {
             Settings::class.java.fields
                 .asSequence()
-                .filter { it.type == String::class.java && Modifier.isStatic(it.modifiers) && it.name.startsWith("ACTION_") }
-                .map { it.name to it.get(null) as String }
+                .filter {
+                    it.type == String::class.java &&
+                        Modifier.isStatic(it.modifiers) &&
+                        it.name.startsWith("ACTION_")
+                }
+                .map {
+                    it.name to it.get(null) as String
+                }
                 .filter { (name, action) ->
                     name.contains(query, ignoreCase = true) &&
                         !action.contains("REQUEST", ignoreCase = true) &&
@@ -99,99 +103,91 @@ suspend fun findSettingsByNameAndAction(query: String, max: Int): List<SettingIn
                 .toList().takeLast(max)
         }
     }
-} catch (e: Exception) {
-    Log.e("SettingSearch", "Something went wrong ", e)
-    emptyList()
 }
 
 suspend fun findContactsByName(context: Context, query: String, max: Int): List<ContactInfo> {
-    try {
-        if (query.isEmpty() || query.isBlank()) return emptyList()
-        val exceptionHandler = CoroutineExceptionHandler { _, e ->
-            Log.e("ContactSearch", "Something went wrong ", e)
-        }
-        return withContext(Dispatchers.IO + exceptionHandler) {
-            val contactMap = HashMap<String, ContactInfo>()
+    if (query.isEmpty() || query.isBlank()) return emptyList()
+    val exceptionHandler = CoroutineExceptionHandler { _, e ->
+        Log.e("ContactSearch", "Something went wrong ", e)
+    }
+    return withContext(Dispatchers.IO + exceptionHandler) {
+        val contactMap = HashMap<String, ContactInfo>()
 
-            val projection = arrayOf(
-                ContactsContract.Data._ID,
-                ContactsContract.Data.CONTACT_ID,
-                ContactsContract.Data.DISPLAY_NAME,
-                ContactsContract.Data.DATA1,
-                ContactsContract.Data.DATA3,
-                ContactsContract.Data.DATA5,
-                "phonebook_label",
-                "account_type",
-                "account_name",
-                ContactsContract.Data.MIMETYPE,
-                ContactsContract.Data.PHOTO_URI,
-            )
+        val projection = arrayOf(
+            ContactsContract.Data._ID,
+            ContactsContract.Data.CONTACT_ID,
+            ContactsContract.Data.DISPLAY_NAME,
+            ContactsContract.Data.DATA1,
+            ContactsContract.Data.DATA3,
+            ContactsContract.Data.DATA5,
+            "phonebook_label",
+            "account_type",
+            "account_name",
+            ContactsContract.Data.MIMETYPE,
+            ContactsContract.Data.PHOTO_URI,
+        )
 
-            val selection = ContactsContract.Data.DISPLAY_NAME + " LIKE ?"
-            val selectionArgs = arrayOf("%$query%")
+        val selection = ContactsContract.Data.DISPLAY_NAME + " LIKE ?"
+        val selectionArgs = arrayOf("%$query%")
 
-            context.contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-            )?.use {
-                while (it.moveToNext() && contactMap.size <= max) {
-                    val contactIdIndex = it.getColumnIndex(ContactsContract.Data.CONTACT_ID)
-                    val displayNameIndex = it.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)
-                    val data1Index = it.getColumnIndex(ContactsContract.Data.DATA1)
-                    val data3Index = it.getColumnIndex(ContactsContract.Data.DATA3)
-                    val data5Index = it.getColumnIndex(ContactsContract.Data.DATA5)
-                    val phonebookLabelIndex = it.getColumnIndex("phonebook_label")
-                    val accountTypeIndex = it.getColumnIndex("account_type")
-                    val accountNameIndex = it.getColumnIndex("account_name")
-                    val mimeTypeIndex = it.getColumnIndex(ContactsContract.Data.MIMETYPE)
-                    val photoUriIndex = it.getColumnIndex(ContactsContract.Data.PHOTO_URI)
-                    val contactId = it.getString(contactIdIndex)
-                    val displayName = it.getString(displayNameIndex)
-                    val data1 = it.getString(data1Index)
-                    val data3 = it.getString(data3Index)
-                    val data5 = it.getString(data5Index)
-                    val phonebookLabel = it.getString(phonebookLabelIndex)
-                    val accountType = it.getString(accountTypeIndex)
-                    val accountName = it.getString(accountNameIndex)
-                    val mimeType = it.getString(mimeTypeIndex)
-                    val photoUri = it.getString(photoUriIndex)
-                    val phoneNumber = data3 ?: data5 ?: data1
-                    val key = contactId ?: phoneNumber
-                    val imageUri = photoUri ?: ""
-                    val phonebookLabel2 = phonebookLabel ?: ""
-                    if (key != null && !EXCLUDED_MIME_TYPES.contains(mimeType)) {
-                        contactMap[key] = ContactInfo(
-                            contactId,
-                            displayName,
-                            phoneNumber,
-                            phonebookLabel2,
-                            imageUri,
-                            JSONArray().toString(),
-                        )
-                    } else {
-                        if (contactMap.containsKey(contactId)) {
-                            val existingContact = contactMap[contactId]
-                            val jsonArray = JSONArray(existingContact?.packages ?: "")
-                            val jsonObject = JSONObject()
-                            jsonObject.put(CONTACT_ACCOUNT_ID, key)
-                            jsonObject.put(CONTACT_ACCOUNT_TITLE, data5)
-                            jsonObject.put(CONTACT_ACCOUNT_NAME, accountName)
-                            jsonObject.put(CONTACT_ACCOUNT_TYPE, accountType)
-                            jsonObject.put(CONTACT_ACCOUNT_MIME, mimeType)
-                            jsonArray.put(jsonObject)
-                            existingContact?.packages = jsonArray.toString()
-                        }
+        context.contentResolver.query(
+            ContactsContract.Data.CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null,
+        )?.use {
+            while (it.moveToNext() && contactMap.size <= max) {
+                val contactIdIndex = it.getColumnIndex(ContactsContract.Data.CONTACT_ID)
+                val displayNameIndex = it.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)
+                val data1Index = it.getColumnIndex(ContactsContract.Data.DATA1)
+                val data3Index = it.getColumnIndex(ContactsContract.Data.DATA3)
+                val data5Index = it.getColumnIndex(ContactsContract.Data.DATA5)
+                val phonebookLabelIndex = it.getColumnIndex("phonebook_label")
+                val accountTypeIndex = it.getColumnIndex("account_type")
+                val accountNameIndex = it.getColumnIndex("account_name")
+                val mimeTypeIndex = it.getColumnIndex(ContactsContract.Data.MIMETYPE)
+                val photoUriIndex = it.getColumnIndex(ContactsContract.Data.PHOTO_URI)
+                val contactId = it.getString(contactIdIndex)
+                val displayName = it.getString(displayNameIndex)
+                val data1 = it.getString(data1Index)
+                val data3 = it.getString(data3Index)
+                val data5 = it.getString(data5Index)
+                val phonebookLabel = it.getString(phonebookLabelIndex)
+                val accountType = it.getString(accountTypeIndex)
+                val accountName = it.getString(accountNameIndex)
+                val mimeType = it.getString(mimeTypeIndex)
+                val photoUri = it.getString(photoUriIndex)
+                val phoneNumber = data3 ?: data5 ?: data1
+                val key = contactId ?: phoneNumber
+                val imageUri = photoUri ?: ""
+                val phonebookLabel2 = phonebookLabel ?: ""
+                if (key != null && !EXCLUDED_MIME_TYPES.contains(mimeType)) {
+                    contactMap[key] = ContactInfo(
+                        contactId,
+                        displayName,
+                        phoneNumber,
+                        phonebookLabel2,
+                        imageUri,
+                        JSONArray().toString(),
+                    )
+                } else {
+                    if (contactMap.containsKey(contactId)) {
+                        val existingContact = contactMap[contactId]
+                        val jsonArray = JSONArray(existingContact?.packages ?: "")
+                        val jsonObject = JSONObject()
+                        jsonObject.put(CONTACT_ACCOUNT_ID, key)
+                        jsonObject.put(CONTACT_ACCOUNT_TITLE, data5)
+                        jsonObject.put(CONTACT_ACCOUNT_NAME, accountName)
+                        jsonObject.put(CONTACT_ACCOUNT_TYPE, accountType)
+                        jsonObject.put(CONTACT_ACCOUNT_MIME, mimeType)
+                        jsonArray.put(jsonObject)
+                        existingContact?.packages = jsonArray.toString()
                     }
                 }
             }
-            contactMap.values.toList()
         }
-    } catch (e: Exception) {
-        Log.e("ContactSearch", "Something went wrong ", e)
-        return emptyList()
+        contactMap.values.toList()
     }
 }
 
@@ -218,7 +214,7 @@ suspend fun queryFilesInMediaStore(
         maxResult = maxResult,
     ) { cursor ->
         val filePath = cursor.getString(cursor.getColumnIndexOrThrow(commonProjection[0])).toPath()
-        if (filePath.isDirectory()) getFolderBean(cursor) else getFileBean(cursor)
+        if (filePath.isDirectory()) getFolderInfo(cursor) else getFileInfo(cursor)
     }
 }
 
@@ -258,7 +254,7 @@ private suspend inline fun <T : Any> getFileListFromMediaStore(
         } ?: emptySequence()
 }
 
-private fun getFileBean(cursor: Cursor): IFileInfo? = cursor.run {
+private fun getFileInfo(cursor: Cursor): IFileInfo? = cursor.run {
     val mimeType = getString(getColumnIndexOrThrow(commonProjection[4]))
     val title = getString(getColumnIndexOrThrow(commonProjection[1]))
         ?: getString(getColumnIndexOrThrow(commonProjection[5]))?.let {
@@ -278,7 +274,7 @@ private fun getFileBean(cursor: Cursor): IFileInfo? = cursor.run {
     )
 }
 
-private fun getFolderBean(cursor: Cursor): FolderInfo? = cursor.run {
+private fun getFolderInfo(cursor: Cursor): FolderInfo? = cursor.run {
     val title = getString(getColumnIndexOrThrow(commonProjection[1]))
         ?: getString(getColumnIndexOrThrow(commonProjection[5])) ?: return null
     val path = getString(getColumnIndexOrThrow(commonProjection[0])).toPath()

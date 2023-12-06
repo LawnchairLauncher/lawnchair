@@ -13,15 +13,15 @@ internal fun Path.list(
     isShowHidden: Boolean = false,
     isRecursively: Boolean = false,
 ): Sequence<Path> {
-    val list = if (isRecursively) {
-        runCatching { fileSystem.listRecursively(this) }.getOrNull()
-    } else {
-        fileSystem.listOrNull(this)?.asSequence()
-    } ?: emptySequence()
-    return list
-        .filter {
-            if (isShowHidden) true else !it.isHidden
+    return runCatching {
+        if (isRecursively) {
+            fileSystem.listRecursively(this)
+        } else {
+            fileSystem.list(this).asSequence()
         }
+    }.getOrDefault(emptySequence()).filter {
+        if (isShowHidden) true else !it.isHidden
+    }
 }
 
 internal fun Path.getMetadata(fileSystem: FileSystem = FileSystem.SYSTEM): FileMetadata? =

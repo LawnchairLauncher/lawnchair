@@ -33,6 +33,7 @@ import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.util.Locale
 
 class GenerateSearchTarget(private val context: Context) {
 
@@ -122,8 +123,9 @@ class GenerateSearchTarget(private val context: Context) {
             ?.replace("ACTION", "")
             ?.lowercase()
             ?.split(' ')
-            ?.joinToString(" ") { it.capitalize() }
-            ?: ""
+            ?.joinToString(" ") {
+                it.replaceFirstChar { char -> char.uppercase(Locale.ROOT) }
+            }.orEmpty()
     }
 
     internal fun getMarketSearchItem(query: String): SearchTargetCompat? {
@@ -193,11 +195,10 @@ class GenerateSearchTarget(private val context: Context) {
             is FolderInfo -> "resource/folder"
         }
 
-        val fileIntent = Intent(Intent.ACTION_VIEW).apply {
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            setDataAndType(fileUri, mimeType)
-        }
+        val fileIntent = Intent(Intent.ACTION_VIEW)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            .setDataAndType(fileUri, mimeType)
 
         val action = SearchActionCompat.Builder(info.path, info.name)
             .setIcon(getPreviewIcon(info))
@@ -218,7 +219,6 @@ class GenerateSearchTarget(private val context: Context) {
         var inputStream: InputStream? = null
         try {
             inputStream = context.contentResolver.openInputStream(contactUri)
-
             inputStream?.use { input ->
                 val bitmap = BitmapFactory.decodeStream(input)
                 return Icon.createWithAdaptiveBitmap(bitmap)
@@ -243,8 +243,7 @@ class GenerateSearchTarget(private val context: Context) {
         val intent = PackageManagerHelper.getMarketSearchIntent(context, "")
         val resolveInfo = context.packageManager.resolveActivity(intent, 0) ?: return null
         val packageName = resolveInfo.activityInfo.packageName
-        val launchIntent =
-            context.packageManager.getLaunchIntentForPackage(packageName) ?: return null
+        val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName) ?: return null
         return ComponentKey(launchIntent.component, Process.myUserHandle())
     }
 
