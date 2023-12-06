@@ -56,5 +56,5 @@ public class NavHandleLongPressHandler implements ResourceBasedOverride {
      * Called when nav handle gesture is finished by the user lifting their finger or the system
      * cancelling the touch for some other reason.
      */
-    public void onTouchFinished() {}
+    public void onTouchFinished(String reason) {}
 }
