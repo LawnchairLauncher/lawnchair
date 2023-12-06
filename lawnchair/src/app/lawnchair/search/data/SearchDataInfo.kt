@@ -34,6 +34,13 @@ val EXCLUDED_MIME_TYPES = arrayOf(
     "vnd.android.cursor.item/website",
 )
 
+data class SettingInfo(
+    val id: String,
+    val name: String,
+    val action: String,
+    val requiresUri: Boolean = false,
+)
+
 sealed interface IFileInfo {
     val path: String
     val name: String

@@ -2,6 +2,7 @@ package app.lawnchair.search
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
 import android.media.MediaMetadataRetriever
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.os.Process
 import android.provider.ContactsContract
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.os.bundleOf
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.search.data.ContactInfo
@@ -18,6 +20,7 @@ import app.lawnchair.search.data.FileInfo.Companion.isMediaType
 import app.lawnchair.search.data.FileInfo.Companion.isUnknownType
 import app.lawnchair.search.data.FolderInfo
 import app.lawnchair.search.data.IFileInfo
+import app.lawnchair.search.data.SettingInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.file2Uri
@@ -71,6 +74,56 @@ class GenerateSearchTarget(private val context: Context) {
             SearchTargetCompat.RESULT_TYPE_SECTION_HEADER,
             HEADER,
         )
+    }
+
+    internal fun getSettingSearchItem(info: SettingInfo): SearchTargetCompat? {
+        val id = "_${info.id}"
+
+        val intent = Intent(info.action)
+        if (info.requiresUri) {
+            intent.data = Uri.fromParts("package", context.packageName, null)
+        }
+
+        if (intent.resolveActivity(context.packageManager) == null) {
+            Log.w("SettingSearch", "No activity found to handle intent: $intent")
+            return null
+        }
+
+        if (!hasRequiredPermissions(intent)) {
+            Log.w("SettingSearch", "App does not have required permissions for intent: $intent")
+            return null
+        }
+
+        val actionBuilder = SearchActionCompat.Builder(id, formatSettingTitle(info.name))
+            .setIcon(
+                Icon.createWithResource(context, R.drawable.ic_setting)
+                    .setTint(ColorTokens.TextColorPrimary.resolveColor(context)),
+            )
+            .setIntent(intent)
+            .build()
+
+        return createSearchTarget(
+            id,
+            actionBuilder,
+            LayoutType.ICON_SLICE,
+            SearchTargetCompat.RESULT_TYPE_SETTING_TILE,
+            SETTING,
+        )
+    }
+
+    private fun hasRequiredPermissions(intent: Intent): Boolean {
+        val packageManager = context.packageManager
+        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        return resolveInfo?.activityInfo?.exported == true
+    }
+
+    private fun formatSettingTitle(rawTitle: String?): String {
+        return rawTitle?.replace('_', ' ')
+            ?.replace("ACTION", "")
+            ?.lowercase()
+            ?.split(' ')
+            ?.joinToString(" ") { it.capitalize() }
+            ?: ""
     }
 
     internal fun getMarketSearchItem(query: String): SearchTargetCompat? {

@@ -273,6 +273,7 @@ data class SearchTargetCompat(
             RESULT_TYPE_SECTION_HEADER,
             RESULT_TYPE_CONTACT_TILE,
             RESULT_TYPE_FILE_TILE,
+            RESULT_TYPE_SETTING_TILE,
         ],
     )
     @Retention(AnnotationRetention.SOURCE)
@@ -288,6 +289,7 @@ data class SearchTargetCompat(
         const val RESULT_TYPE_SECTION_HEADER = 1 shl 6
         const val RESULT_TYPE_CONTACT_TILE = 1 shl 7
         const val RESULT_TYPE_FILE_TILE = 1 shl 8
+        const val RESULT_TYPE_SETTING_TILE = 1 shl 9
 
         fun wrap(target: SearchTarget): SearchTargetCompat = SearchTargetCompat(target)
     }

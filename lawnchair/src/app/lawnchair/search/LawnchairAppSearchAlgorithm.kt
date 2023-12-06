@@ -8,6 +8,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.search.data.SearchResult
+import app.lawnchair.search.data.SettingInfo
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -113,6 +114,13 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             val contactsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
             searchTargets.add(contactsHeader)
             searchTargets.addAll(contacts.map { generateSearchTarget.getContactSearchItem(it.resultData as ContactInfo) })
+        }
+
+        val settings = filterByType(wideSearchResults, SETTING)
+        if (settings.isNotEmpty()) {
+            val settingsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
+            searchTargets.add(settingsHeader)
+            searchTargets.addAll(settings.mapNotNull { generateSearchTarget.getSettingSearchItem(it.resultData as SettingInfo) })
         }
 
         val suggestions = filterByType(wideSearchResults, SUGGESTION)

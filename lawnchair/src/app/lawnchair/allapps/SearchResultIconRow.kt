@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import app.lawnchair.allapps.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.font.FontManager
+import app.lawnchair.search.SETTING
 import app.lawnchair.search.SUGGESTION
 import app.lawnchair.search.SearchTargetCompat
 import com.android.app.search.LayoutType
@@ -85,6 +86,10 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             target.resultType == SearchTargetCompat.RESULT_TYPE_SUGGESTIONS &&
             target.packageName == SUGGESTION
 
+        val isSetting = target.layoutType == LayoutType.ICON_SLICE &&
+            target.resultType == SearchTargetCompat.RESULT_TYPE_SETTING_TILE &&
+            target.packageName == SETTING
+
         bindShortcuts(shortcuts)
         var showDelimiter = true
         if (isSmall) {
@@ -107,7 +112,7 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
                 target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
             }
         }
-        if (isSuggestion) {
+        if (isSuggestion || isSetting) {
             layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
             setOnClickListener {
                 target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }

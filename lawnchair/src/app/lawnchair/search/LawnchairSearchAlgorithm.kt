@@ -10,6 +10,7 @@ import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import app.lawnchair.search.data.SearchCallback
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.findContactsByName
+import app.lawnchair.search.data.findSettingsByNameAndAction
 import app.lawnchair.search.data.getStartPageSuggestions
 import app.lawnchair.search.data.queryFilesInMediaStore
 import app.lawnchair.util.checkAndRequestFilesPermission
@@ -18,6 +19,7 @@ import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
 import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.ICON_SINGLE_VERTICAL_TEXT
+import com.android.app.search.LayoutType.ICON_SLICE
 import com.android.app.search.LayoutType.PEOPLE_TILE
 import com.android.app.search.LayoutType.SMALL_ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.TEXT_HEADER
@@ -79,13 +81,14 @@ sealed class LawnchairSearchAlgorithm(
         val peopleTileIndices = findIndices(filtered, PEOPLE_TILE)
         val suggestionIndices = findIndices(filtered, HORIZONTAL_MEDIUM_TEXT)
         val fileIndices = findIndices(filtered, THUMBNAIL)
+        val settingIndices = findIndices(filtered, ICON_SLICE)
 
         return filtered.mapIndexedNotNull { index, target ->
             val isFirst = index == 0 || filtered[index - 1].isDivider
             val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
             val background = getBackground(
                 target.layoutType, index, isFirst, isLast,
-                smallIconIndices, iconRowIndices, peopleTileIndices, suggestionIndices, fileIndices,
+                smallIconIndices, iconRowIndices, peopleTileIndices, suggestionIndices, fileIndices, settingIndices,
             )
             SearchAdapterItem.createAdapterItem(target, background)
         }
@@ -107,6 +110,7 @@ sealed class LawnchairSearchAlgorithm(
         peopleTileIndices: List<Int>,
         suggestionIndices: List<Int>,
         fileIndices: List<Int>,
+        settingIndices: List<Int>,
     ): SearchItemBackground = when {
         layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
         layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)
@@ -114,6 +118,7 @@ sealed class LawnchairSearchAlgorithm(
         layoutType == PEOPLE_TILE -> getGroupedBackground(index, peopleTileIndices)
         layoutType == HORIZONTAL_MEDIUM_TEXT -> getGroupedBackground(index, suggestionIndices)
         layoutType == THUMBNAIL -> getGroupedBackground(index, fileIndices)
+        layoutType == ICON_SLICE -> getGroupedBackground(index, settingIndices)
         isFirst && isLast -> normalBackground
         isFirst -> topBackground
         isLast -> bottomBackground
@@ -152,6 +157,7 @@ sealed class LawnchairSearchAlgorithm(
     private var maxPeopleCount = 10
     private var maxSuggestionCount = 3
     private var maxFilesCount = 3
+    private var maxSettingsEntryCount = 5
     val coroutineScope = CoroutineScope(context = Dispatchers.IO)
     val pref2 = PreferenceManager2.getInstance(context)
 
@@ -164,6 +170,9 @@ sealed class LawnchairSearchAlgorithm(
         }
         pref2.maxSuggestionResultCount.onEach(launchIn = coroutineScope) {
             maxSuggestionCount = it
+        }
+        pref2.maxSettingsEntryResultCount.onEach(launchIn = coroutineScope) {
+            maxSettingsEntryCount = it
         }
     }
 
@@ -178,6 +187,11 @@ sealed class LawnchairSearchAlgorithm(
         if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(context, prefs)) {
             val fileResults = queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount).toList()
             results.addAll(fileResults.map { SearchResult(FILES, it) })
+        }
+
+        if (prefs.searchResultSettingsEntry.get()) {
+            val settingResult = findSettingsByNameAndAction(query, maxSettingsEntryCount)
+            results.addAll(settingResult.map { SearchResult(SETTING, it) })
         }
 
         if (prefs.searchResultStartPageSuggestion.get()) {
