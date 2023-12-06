@@ -16,15 +16,18 @@ import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.FileInfo
 import app.lawnchair.search.data.FileInfo.Companion.isMediaType
 import app.lawnchair.search.data.FileInfo.Companion.isUnknownType
+import app.lawnchair.search.data.FolderInfo
 import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
+import app.lawnchair.util.file2Uri
 import app.lawnchair.util.mimeCompat
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -124,15 +127,24 @@ class GenerateSearchTarget(private val context: Context) {
     }
 
     internal fun getFileInfoSearchItem(info: IFileInfo): SearchTargetCompat {
-        val fileInfo = info as? FileInfo
-        val fileUri = Uri.withAppendedPath(
-            MediaStore.Files.getContentUri("external"),
-            fileInfo?.fileId.toString(),
-        )
-        val fileIntent = Intent(Intent.ACTION_VIEW)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .setDataAndType(fileUri, fileInfo?.mimeType.mimeCompat)
+        val fileUri = when (info) {
+            is FileInfo -> Uri.withAppendedPath(
+                MediaStore.Files.getContentUri("external"),
+                info.fileId,
+            )
+            is FolderInfo -> File(info.path).file2Uri() ?: Uri.fromFile(File(info.path))
+        }
+
+        val mimeType = when (info) {
+            is FileInfo -> info.mimeType.mimeCompat
+            is FolderInfo -> "*/*"
+        }
+
+        val fileIntent = Intent(Intent.ACTION_VIEW).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            setDataAndType(fileUri, mimeType)
+        }
 
         val action = SearchActionCompat.Builder(info.path, info.name)
             .setIcon(getPreviewIcon(info))
@@ -200,7 +212,7 @@ class GenerateSearchTarget(private val context: Context) {
                     } ?: Icon.createWithResource(context, fileInfo.iconRes)
             }
             fileInfo?.isUnknownType == true -> Icon.createWithBitmap(createTextBitmap(context, "U"))
-            else -> Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_file)
+            else -> Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_folder)
         }
     }
 }
