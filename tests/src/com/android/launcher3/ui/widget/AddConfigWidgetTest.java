@@ -113,9 +113,11 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     private void setResult(boolean success) {
-        getInstrumentation().getTargetContext().sendBroadcast(
-                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
-                        success ? "clickOK" : "clickCancel"));
+        mLauncher.executeAndWaitForWallpaperAnimation(() ->
+                        getInstrumentation().getTargetContext().sendBroadcast(
+                                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
+                                        success ? "clickOK" : "clickCancel")),
+                "setting widget coinfig result");
     }
 
     /**

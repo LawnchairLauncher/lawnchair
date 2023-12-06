@@ -2313,4 +2313,14 @@ public final class LauncherInstrumentation {
         }
         return result;
     }
+
+    /** Executes a runnable and waits for the wallpaper-open animation completion. */
+    public void executeAndWaitForWallpaperAnimation(Runnable r, String actionName) {
+        executeAndWaitForLauncherEvent(
+                () -> r.run(),
+                event -> TestProtocol.WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE
+                        .equals(event.getClassName().toString()),
+                () -> "Didn't detect finishing wallpaper-open animation",
+                actionName);
+    }
 }
