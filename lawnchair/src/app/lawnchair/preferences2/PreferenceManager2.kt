@@ -325,6 +325,21 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
     )
 
+    val maxSuggestionResultCount = preference(
+        key = intPreferencesKey(name = "max_suggestion_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_suggestion_max_result_count),
+    )
+
+    val maxFileResultCount = preference(
+        key = intPreferencesKey(name = "max_files_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_files_max_result_count),
+    )
+
+    val maxPeopleResultCount = preference(
+        key = intPreferencesKey(name = "max_people_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_people_max_result_count),
+    )
+
     val enableSmartspace = preference(
         key = booleanPreferencesKey(name = "enable_smartspace"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace),

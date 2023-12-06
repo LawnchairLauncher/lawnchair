@@ -4,6 +4,7 @@ import android.content.Context
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import app.lawnchair.search.data.SearchCallback
@@ -25,6 +26,8 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
+import com.patrykmichalik.opto.core.onEach
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -146,23 +149,41 @@ sealed class LawnchairSearchAlgorithm(
         }
     }
 
+    private var maxPeopleCount = 10
+    private var maxSuggestionCount = 3
+    private var maxFilesCount = 3
+    val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+    val pref2 = PreferenceManager2.getInstance(context)
+
+    init {
+        pref2.maxFileResultCount.onEach(launchIn = coroutineScope) {
+            maxFilesCount = it
+        }
+        pref2.maxPeopleResultCount.onEach(launchIn = coroutineScope) {
+            maxPeopleCount = it
+        }
+        pref2.maxSuggestionResultCount.onEach(launchIn = coroutineScope) {
+            maxSuggestionCount = it
+        }
+    }
+
     protected suspend fun performDeviceWideSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> = withContext(Dispatchers.IO) {
         val results = ArrayList<SearchResult>()
 
         if (prefs.searchResultPeople.get() && contactPermissionGranted(context, prefs)) {
-            val contactResults = findContactsByName(context, query, 10)
+            val contactResults = findContactsByName(context, query, maxPeopleCount)
             results.addAll(contactResults.map { SearchResult(CONTACT, it) })
         }
 
         if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(context, prefs)) {
-            val fileResults = queryFilesInMediaStore(context, keyword = query, maxResult = 2).toList()
+            val fileResults = queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount).toList()
             results.addAll(fileResults.map { SearchResult(FILES, it) })
         }
 
         if (prefs.searchResultStartPageSuggestion.get()) {
             getStartPageSuggestions(
                 query,
-                3,
+                maxSuggestionCount,
                 object : SearchCallback {
                     override fun onSearchLoaded(items: List<Any>) {
                         results.addAll(items.map { SearchResult(SUGGESTION, it) })

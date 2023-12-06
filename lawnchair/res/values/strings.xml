@@ -332,6 +332,9 @@
       <string name="fuzzy_search_title">Fuzzy Search</string>
       <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
       <string name="max_search_result_count_title">Max Search Result Count</string>
+      <string name="max_people_result_count_title">Max People Result Count</string>
+      <string name="max_file_result_count_title">Max Files Result Count</string>
+      <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
 
     <!-- <string name="grid" /> -->
       <string name="app_drawer_columns">App Drawer Columns</string>

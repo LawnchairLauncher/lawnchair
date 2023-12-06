@@ -135,12 +135,28 @@ fun AppDrawerPreferences() {
                             description = stringResource(id = R.string.warn_files_permission_content),
                             onClick = { checkAndRequestFilesPermission(context, prefs) },
                         )
+                        ExpandAndShrink(visible = prefs.searchResultFiles.getAdapter().state.value) {
+                            SliderPreference(
+                                label = stringResource(id = R.string.max_file_result_count_title),
+                                adapter = prefs2.maxFileResultCount.getAdapter(),
+                                step = 1,
+                                valueRange = 3..10,
+                            )
+                        }
                         SwitchPreference(
                             adapter = prefs.searchResultPeople.getAdapter(),
                             label = stringResource(id = R.string.search_pref_result_people_title),
                             description = stringResource(id = R.string.warn_contact_permission_content),
                             onClick = { contactPermissionGranted(context, prefs) },
                         )
+                        ExpandAndShrink(visible = prefs.searchResultPeople.getAdapter().state.value) {
+                            SliderPreference(
+                                label = stringResource(id = R.string.max_people_result_count_title),
+                                adapter = prefs2.maxPeopleResultCount.getAdapter(),
+                                step = 1,
+                                valueRange = 3..15,
+                            )
+                        }
                     }
                 }
             }
@@ -153,6 +169,14 @@ fun AppDrawerPreferences() {
                         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
                         label = stringResource(id = R.string.pref_suggestion_title),
                     )
+                    ExpandAndShrink(visible = prefs.searchResultStartPageSuggestion.getAdapter().state.value) {
+                        SliderPreference(
+                            label = stringResource(id = R.string.max_suggestion_result_count_title),
+                            adapter = prefs2.maxSuggestionResultCount.getAdapter(),
+                            step = 1,
+                            valueRange = 3..10,
+                        )
+                    }
                 }
             }
         }

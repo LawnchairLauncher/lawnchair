@@ -5,7 +5,6 @@ import android.content.pm.ShortcutInfo
 import android.os.Handler
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.search.data.SearchResult
@@ -24,7 +23,6 @@ import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
 import java.util.Locale
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.xdrop.fuzzywuzzy.FuzzySearch
@@ -39,8 +37,6 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private lateinit var hiddenApps: Set<String>
     private var showHiddenAppsInSearch = false
     private var enableSmartHide = false
-    private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
-    private val pref2 = PreferenceManager2.getInstance(context)
     private val generateSearchTarget = GenerateSearchTarget(context)
     private var enableWideSearch = false
 
