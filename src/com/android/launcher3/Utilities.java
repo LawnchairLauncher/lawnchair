@@ -79,7 +79,6 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.TintedDrawableSpan;
-import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
@@ -91,6 +90,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.testing.shared.ResourceUtils;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
@@ -676,12 +676,11 @@ public final class Utilities {
         }
 
         if (badge == null) {
-            try (LauncherIcons li = LauncherIcons.obtain(context)) {
-                badge = BitmapInfo.LOW_RES_INFO.withFlags(
-                                li.getBitmapFlagOp(new BaseIconFactory.IconOptions().setUser(
-                                        UserCache.INSTANCE.get(context).getUserInfo(info.user))))
-                        .getBadgeDrawable(context, useTheme);
-            }
+            badge = BitmapInfo.LOW_RES_INFO.withFlags(
+                            UserCache.INSTANCE.get(context)
+                                    .getUserInfo(info.user)
+                                    .applyBitmapInfoFlags(FlagOp.NO_OP))
+                    .getBadgeDrawable(context, useTheme);
             if (badge == null) {
                 badge = new ColorDrawable(Color.TRANSPARENT);
             }
