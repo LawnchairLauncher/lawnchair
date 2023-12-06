@@ -166,12 +166,16 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         return show(activityContext, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
-            ActivityContext activityContext,
+    @Nullable
+    private static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            @Nullable ActivityContext activityContext,
             RectF targetRect,
             List<OptionItem> items,
             boolean shouldAddArrow,
             int width) {
+        if (activityContext == null) {
+            return null;
+        }
         OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;
