@@ -377,4 +377,3 @@ public class ActivityManagerWrapper {
         }
     }
 }
-            
