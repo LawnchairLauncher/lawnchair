@@ -78,10 +78,6 @@ public class ActivityManagerWrapper {
         mAtm = atleastQ ? ActivityTaskManager.getInstance() : null;
     }
 
-    private ActivityTaskManager getAtmInstance() {
-        return mAtm;
-    }
-
     public static ActivityManagerWrapper getInstance() {
         return sInstance;
     }
@@ -114,7 +110,7 @@ public class ActivityManagerWrapper {
         // Note: The set of running tasks from the system is ordered by recency
         if (mAtm == null) return null;
         List<ActivityManager.RunningTaskInfo> tasks =
-                getAtmInstance().getTasks(1, filterOnlyVisibleRecents);
+                mAtm.getTasks(1, filterOnlyVisibleRecents);
         if (tasks.isEmpty()) {
             return null;
         }
@@ -142,7 +138,7 @@ public class ActivityManagerWrapper {
         // Note: The set of running tasks from the system is ordered by recency
         if (mAtm == null) return null;
         List<ActivityManager.RunningTaskInfo> tasks =
-                getAtmInstance().getTasks(NUM_RECENT_ACTIVITIES_REQUEST
+                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST
                     /* keepInExtras= */);
         return tasks.toArray(new RunningTaskInfo[tasks.size()]);
     }
