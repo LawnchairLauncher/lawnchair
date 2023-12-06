@@ -81,7 +81,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         if (mDelegate.allowInterceptByParent()) {
             handleMotionEvent(ev);
         } else if (MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)) {
-            cancelLongPress();
+            cancelLongPress("intercept disallowed by child input consumer");
         }
 
         if (mState != STATE_ACTIVE) {
@@ -113,10 +113,11 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                 float dy = ev.getY() - mCurrentDownEvent.getY();
                 double distanceSquared = (dx * dx) + (dy * dy);
                 if (distanceSquared > touchSlopSquared) {
-                    cancelLongPress();
+                    cancelLongPress("touch slop passed");
                 }
             }
-            case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> cancelLongPress();
+            case MotionEvent.ACTION_UP -> cancelLongPress("touch action up");
+            case MotionEvent.ACTION_CANCEL -> cancelLongPress("touch action cancel");
         }
 
         // If the gesture is deep press then trigger long press asap
@@ -158,9 +159,9 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         }
     }
 
-    private void cancelLongPress() {
+    private void cancelLongPress(String reason) {
         MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
-        mNavHandleLongPressHandler.onTouchFinished();
+        mNavHandleLongPressHandler.onTouchFinished(reason);
     }
 
     private boolean isInNavBarHorizontalArea(float x) {
