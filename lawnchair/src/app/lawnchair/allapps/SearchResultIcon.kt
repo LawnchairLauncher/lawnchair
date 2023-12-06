@@ -11,10 +11,9 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import app.lawnchair.launcher
+import app.lawnchair.search.SHORTCUT
 import app.lawnchair.search.SearchTargetCompat
-import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import app.lawnchair.util.runOnMainThread
-import com.android.app.search.LayoutType.SMALL_ICON_HORIZONTAL_TEXT
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
@@ -214,7 +213,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
                 info.hasFlags(FLAG_PRIMARY_ICON_FROM_TITLE) ->
                     li.createIconBitmap("${info.title}", packageIcon.color)
                 icon == null -> packageIcon
-                else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, target.resultType != RESULT_TYPE_SHORTCUT && target.layoutType != SMALL_ICON_HORIZONTAL_TEXT)
+                else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, target.packageName != SHORTCUT)
             }
             if (info.hasFlags(FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {
                 try {

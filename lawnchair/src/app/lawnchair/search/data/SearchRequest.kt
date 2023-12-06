@@ -106,7 +106,7 @@ suspend fun findSettingsByNameAndAction(query: String, max: Int): List<SettingIn
 
 suspend fun findContactsByName(context: Context, query: String, max: Int): List<ContactInfo> {
     try {
-        if (query.isEmpty() || query.isBlank()) return emptyList()
+        if (query.isEmpty() || query.isBlank() || max <= 0) return emptyList()
         val exceptionHandler = CoroutineExceptionHandler { _, e ->
             Log.e("ContactSearch", "Something went wrong ", e)
         }
@@ -137,7 +137,7 @@ suspend fun findContactsByName(context: Context, query: String, max: Int): List<
                 selectionArgs,
                 null,
             )?.use {
-                while (it.moveToNext() && contactMap.size <= max) {
+                while (it.moveToNext() && contactMap.size < max) {
                     val contactIdIndex = it.getColumnIndex(ContactsContract.Data.CONTACT_ID)
                     val displayNameIndex = it.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)
                     val data1Index = it.getColumnIndex(ContactsContract.Data.DATA1)
