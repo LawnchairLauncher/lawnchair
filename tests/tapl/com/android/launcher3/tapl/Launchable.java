@@ -65,11 +65,9 @@ public abstract class Launchable {
                         + mLauncher.getVisibleBounds(mObject));
 
                 if (launcherStopsAfterLaunch()) {
-                    mLauncher.executeAndWaitForLauncherEvent(
+                    mLauncher.executeAndWaitForLauncherStop(
                             () -> mLauncher.clickLauncherObject(mObject),
-                            event -> TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE
-                                    .equals(event.getClassName().toString()),
-                            () -> "Launcher activity didn't stop", "clicking the launchable");
+                            "clicking the launchable");
                 } else {
                     mLauncher.clickLauncherObject(mObject);
                 }

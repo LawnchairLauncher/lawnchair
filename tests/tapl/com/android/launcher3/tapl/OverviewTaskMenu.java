@@ -20,8 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.shared.TestProtocol;
-
 /** Represents the menu of an overview task. */
 public class OverviewTaskMenu {
 
@@ -61,12 +59,9 @@ public class OverviewTaskMenu {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "before tapping the app info menu item")) {
-            mLauncher.executeAndWaitForLauncherEvent(
+            mLauncher.executeAndWaitForLauncherStop(
                     () -> mLauncher.clickLauncherObject(
                             mLauncher.findObjectInContainer(mMenu, By.text("App info"))),
-                    event -> TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE
-                            .equals(event.getClassName().toString()),
-                    () -> "Launcher activity didn't stop",
                     "tapped app info menu item");
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(

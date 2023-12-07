@@ -81,7 +81,8 @@ interface WorkspaceDragSource {
                     launchable,
                     dest,
                     launchable::addExpectedEventsForLongClick,
-                    /*expectDropEvents= */ null);
+                    /*expectDropEvents= */ null,
+                    /* startsActivity = */ false);
 
             try (LauncherInstrumentation.Closable ignore = launcher.addContextLayer("dragged")) {
                 WorkspaceAppIcon appIcon =
