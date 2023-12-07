@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.os.Process
@@ -16,8 +15,7 @@ import androidx.core.os.bundleOf
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.FileInfo
-import app.lawnchair.search.data.FileInfo.Companion.isMediaType
-import app.lawnchair.search.data.FileInfo.Companion.isUnknownType
+import app.lawnchair.search.data.FileInfo.Companion.isImageType
 import app.lawnchair.search.data.FolderInfo
 import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.search.data.SettingInfo
@@ -27,7 +25,6 @@ import app.lawnchair.util.file2Uri
 import app.lawnchair.util.mimeCompat
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
@@ -249,22 +246,10 @@ class GenerateSearchTarget(private val context: Context) {
 
     private fun getPreviewIcon(info: IFileInfo): Icon {
         val fileInfo = info as? FileInfo
-        return when {
-            fileInfo?.isMediaType == true -> {
-                BitmapFactory.decodeFile(fileInfo.path)?.let { Icon.createWithBitmap(it) }
-                    ?: if (Utilities.ATLEAST_R) {
-                        MediaMetadataRetriever().run {
-                            setDataSource(fileInfo.path)
-                            val videoBitmap = frameAtTime
-                            release()
-                            videoBitmap?.let { Icon.createWithBitmap(it) }
-                        }
-                    } else {
-                        null
-                    } ?: Icon.createWithResource(context, fileInfo.iconRes)
-            }
-            fileInfo?.isUnknownType == true -> Icon.createWithBitmap(createTextBitmap(context, "U"))
-            else -> Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_folder)
+        return if (fileInfo?.isImageType == true) {
+            Icon.createWithFilePath(fileInfo.path)
+        } else {
+            Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_folder)
         }
     }
 }

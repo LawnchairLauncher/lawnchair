@@ -83,10 +83,11 @@ data class FileInfo(
 
     companion object {
         val FileInfo.isMediaType: Boolean get() {
-            return mimeType in imageFileTypes.values ||
-                mimeType in videoFileTypes.values ||
+            return mimeType in videoFileTypes.values ||
                 mimeType in audioFileTypes.values
         }
+
+        val FileInfo.isImageType: Boolean get() = mimeType in imageFileTypes.values
 
         val FileInfo.isUnknownType: Boolean get() {
             return mimeType !in imageFileTypes.values &&

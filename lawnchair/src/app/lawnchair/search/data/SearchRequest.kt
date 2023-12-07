@@ -19,11 +19,13 @@ import java.lang.reflect.Modifier
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import okio.Path.Companion.toPath
 import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.create
@@ -96,7 +98,7 @@ suspend fun findSettingsByNameAndAction(query: String, max: Int): List<SettingIn
                     val requiresUri = action.contains("URI")
                     SettingInfo(id, name, action, requiresUri)
                 }
-                .toList().takeLast(max)
+                .toList().take(max)
         }
     }
 } catch (e: Exception) {
@@ -162,6 +164,7 @@ suspend fun findContactsByName(context: Context, query: String, max: Int): List<
                     val key = contactId ?: phoneNumber
                     val imageUri = photoUri ?: ""
                     val phonebookLabel2 = phonebookLabel ?: ""
+                    val pkg = contactId + displayName + phoneNumber
                     if (key != null && !EXCLUDED_MIME_TYPES.contains(mimeType)) {
                         contactMap[key] = ContactInfo(
                             contactId,
@@ -169,19 +172,22 @@ suspend fun findContactsByName(context: Context, query: String, max: Int): List<
                             phoneNumber,
                             phonebookLabel2,
                             imageUri,
-                            JSONArray().toString(),
+                            pkg,
                         )
                     } else {
                         if (contactMap.containsKey(contactId)) {
                             val existingContact = contactMap[contactId]
-                            val jsonArray = JSONArray(existingContact?.packages ?: "")
-                            val jsonObject = JSONObject()
-                            jsonObject.put(CONTACT_ACCOUNT_ID, key)
-                            jsonObject.put(CONTACT_ACCOUNT_TITLE, data5)
-                            jsonObject.put(CONTACT_ACCOUNT_NAME, accountName)
-                            jsonObject.put(CONTACT_ACCOUNT_TYPE, accountType)
-                            jsonObject.put(CONTACT_ACCOUNT_MIME, mimeType)
-                            jsonArray.put(jsonObject)
+                            val jsonArray = buildJsonArray {
+                                add(
+                                    buildJsonObject {
+                                        put(CONTACT_ACCOUNT_ID, key)
+                                        put(CONTACT_ACCOUNT_TITLE, data5)
+                                        put(CONTACT_ACCOUNT_NAME, accountName)
+                                        put(CONTACT_ACCOUNT_TYPE, accountType)
+                                        put(CONTACT_ACCOUNT_MIME, mimeType)
+                                    },
+                                )
+                            }
                             existingContact?.packages = jsonArray.toString()
                         }
                     }
