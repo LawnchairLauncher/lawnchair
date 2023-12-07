@@ -72,7 +72,8 @@ public class SplitToWorkspaceController {
      * @return {@code true} if we can attempt launch the widget into split, {@code false} otherwise
      *         to allow launcher to handle the click
      */
-    public boolean handleSecondWidgetSelectionForSplit(View view, PendingIntent pendingIntent) {
+    public boolean handleSecondWidgetSelectionForSplit(View view, PendingIntent pendingIntent,
+            Intent remoteResponseIntent) {
         if (shouldIgnoreSecondSplitLaunch()) {
             return false;
         }
@@ -86,7 +87,7 @@ public class SplitToWorkspaceController {
             Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
             view.post(() -> {
-                mController.setSecondTask(pendingIntent);
+                mController.setSecondWidget(pendingIntent, remoteResponseIntent);
                 // Convert original widgetView into bitmap to use for animation
                 Canvas canvas = new Canvas(bitmap);
                 view.draw(canvas);

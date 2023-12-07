@@ -22,7 +22,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.annotation.IntDef;
@@ -41,6 +40,8 @@ import com.android.quickstep.util.LayoutUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * View for showing action buttons in Overview
@@ -89,26 +90,17 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_SCROLL_ALPHA = 5;
     private static final int NUM_ALPHAS = 6;
 
-    public @interface SplitButtonHiddenFlags { }
-    public static final int FLAG_IS_NOT_TABLET = 1 << 0;
-
-    public @interface SplitButtonDisabledFlags { }
-    public static final int FLAG_SINGLE_TASK = 1 << 0;
-
     private MultiValueAlpha mMultiValueAlpha;
-    private Button mSplitButton;
+
+    protected List<ActionButton> mActionButtons = new ArrayList<>();
+    private ScreenshotActionButton mScreenshotButton;
+    private SplitActionButton mSplitButton;
 
     @ActionsHiddenFlags
     private int mHiddenFlags;
 
     @ActionsDisabledFlags
     protected int mDisabledFlags;
-
-    @SplitButtonHiddenFlags
-    private int mSplitButtonHiddenFlags;
-
-    @SplitButtonDisabledFlags
-    private int mSplitButtonDisabledFlags;
 
     @Nullable
     protected T mCallbacks;
@@ -135,9 +127,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), NUM_ALPHAS);
         mMultiValueAlpha.setUpdateVisibility(true);
 
-        findViewById(R.id.action_screenshot).setOnClickListener(this);
+        mScreenshotButton = findViewById(R.id.action_screenshot);
+        mScreenshotButton.setOnClickListener(this);
+        mActionButtons.add(mScreenshotButton);
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
+        mActionButtons.add(mSplitButton);
     }
 
     /**
@@ -201,40 +196,28 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
         boolean isEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
         LayoutUtils.setViewEnabled(this, isEnabled);
-        updateSplitButtonEnabledState();
     }
 
     /**
-     * Updates the proper flags to indicate whether the "Split screen" button should be hidden.
-     *
-     * @param flag   The flag to update.
-     * @param enable Whether to enable the hidden flag: True will cause view to be hidden.
+     * Updates flags to hide and show actions buttons when a grouped task (split screen) is focused.
+     * @param isGroupedTask True if the focused task is a grouped task.
      */
-    public void updateSplitButtonHiddenFlags(@SplitButtonHiddenFlags int flag, boolean enable) {
-        if (enable) {
-            mSplitButtonHiddenFlags |= flag;
-        } else {
-            mSplitButtonHiddenFlags &= ~flag;
+    public void updateForGroupedTask(boolean isGroupedTask) {
+        for (ActionButton button : mActionButtons) {
+            // Update flags to show/hide buttons.
+            button.updateForMultipleTasks(isGroupedTask);
         }
-        if (mSplitButton == null) return;
-        boolean shouldBeVisible = mSplitButtonHiddenFlags == 0;
-        mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
-        findViewById(R.id.action_split_space).setVisibility(shouldBeVisible ? VISIBLE : GONE);
     }
 
     /**
-     * Updates the proper flags to indicate whether the "Split screen" button should be disabled.
-     *
-     * @param flag   The flag to update.
-     * @param enable Whether to enable the disable flag: True will cause view to be disabled.
+     * Updates flags to hide and show actions buttons depending on if the device is a tablet.
+     * @param isTablet True if the current device is a tablet.
      */
-    public void updateSplitButtonDisabledFlags(@SplitButtonDisabledFlags int flag, boolean enable) {
-        if (enable) {
-            mSplitButtonDisabledFlags |= flag;
-        } else {
-            mSplitButtonDisabledFlags &= ~flag;
+    public void updateForTablet(boolean isTablet) {
+        for (ActionButton button : mActionButtons) {
+            // Update flags to show/hide buttons.
+            button.updateForTablet(isTablet);
         }
-        updateSplitButtonEnabledState();
     }
 
     public MultiProperty getContentAlpha() {
@@ -313,18 +296,4 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 : R.drawable.ic_split_vertical;
         mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(splitIconRes, 0, 0, 0);
     }
-
-    /**
-     * Enables/disables the "Split" button based on the status of mSplitButtonDisabledFlags and
-     * mDisabledFlags.
-     */
-    private void updateSplitButtonEnabledState() {
-        if (mSplitButton == null) {
-            return;
-        }
-        boolean isParentEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
-        boolean shouldBeEnabled = mSplitButtonDisabledFlags == 0 && isParentEnabled;
-        mSplitButton.setEnabled(shouldBeEnabled);
-    }
-
 }

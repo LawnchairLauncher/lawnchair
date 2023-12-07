@@ -30,6 +30,8 @@ public final class TestProtocol {
     public static final String FOLDER_OPENED_MESSAGE = "TAPL_FOLDER_OPENED";
     public static final String SEARCH_RESULT_COMPLETE = "SEARCH_RESULT_COMPLETE";
     public static final String LAUNCHER_ACTIVITY_STOPPED_MESSAGE = "TAPL_LAUNCHER_ACTIVITY_STOPPED";
+    public static final String WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE =
+            "TAPL_WALLPAPER_OPEN_ANIMATION_FINISHED";
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
@@ -96,8 +98,9 @@ public final class TestProtocol {
     public static final String REQUEST_DISABLE_BLOCK_TIMEOUT = "disable-block-timeout";
     public static final String REQUEST_ENABLE_TRANSIENT_TASKBAR = "enable-transient-taskbar";
     public static final String REQUEST_DISABLE_TRANSIENT_TASKBAR = "disable-transient-taskbar";
+    public static final String REQUEST_IS_TRANSIENT_TASKBAR = "is-transient-taskbar";
     public static final String REQUEST_UNSTASH_TASKBAR_IF_STASHED = "unstash-taskbar-if-stashed";
-    public static final String REQUEST_STASHED_TASKBAR_HEIGHT = "stashed-taskbar-height";
+    public static final String REQUEST_TASKBAR_FROM_NAV_THRESHOLD = "taskbar-from-nav-threshold";
     public static final String REQUEST_STASHED_TASKBAR_SCALE = "taskbar-stash-handle-scale";
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";

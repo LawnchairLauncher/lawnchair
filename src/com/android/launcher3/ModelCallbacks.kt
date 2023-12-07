@@ -2,6 +2,7 @@ package com.android.launcher3
 
 import androidx.annotation.UiThread
 import com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID
+import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget
 import com.android.launcher3.model.BgDataModel
@@ -18,6 +19,8 @@ import com.android.launcher3.util.IntSet as LIntSet
 import com.android.launcher3.util.IntSet
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Preconditions
+import com.android.launcher3.util.TraceHelper
+import com.android.launcher3.util.ViewOnDrawExecutor
 import com.android.launcher3.widget.PendingAddWidgetInfo
 import com.android.launcher3.widget.model.WidgetsListBaseEntry
 import java.util.function.Predicate
@@ -27,10 +30,54 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     var synchronouslyBoundPages = LIntSet()
     var pagesToBindSynchronously = LIntSet()
 
-    var isFirstPagePinnedItemEnabled =
+    private var isFirstPagePinnedItemEnabled =
         (BuildConfig.QSB_ON_FIRST_SCREEN && !FeatureFlags.ENABLE_SMARTSPACE_REMOVAL.get())
 
     var stringCache: StringCache? = null
+
+    var pendingExecutor: ViewOnDrawExecutor? = null
+
+    var workspaceLoading = true
+
+    /**
+     * Refreshes the shortcuts shown on the workspace.
+     *
+     * Implementation of the method from LauncherModel.Callbacks.
+     */
+    override fun startBinding() {
+        TraceHelper.INSTANCE.beginSection("startBinding")
+        // Floating panels (except the full widget sheet) are associated with individual icons. If
+        // we are starting a fresh bind, close all such panels as all the icons are about
+        // to go away.
+        AbstractFloatingView.closeOpenViews(
+            launcher,
+            true,
+            AbstractFloatingView.TYPE_ALL and AbstractFloatingView.TYPE_REBIND_SAFE.inv()
+        )
+        workspaceLoading = true
+
+        // Clear the workspace because it's going to be rebound
+        launcher.dragController.cancelDrag()
+        launcher.workspace.clearDropTargets()
+        launcher.workspace.removeAllWorkspaceScreens()
+        launcher.appWidgetHolder.clearViews()
+        launcher.hotseat?.resetLayout(launcher.deviceProfile.isVerticalBarLayout)
+        TraceHelper.INSTANCE.endSection()
+    }
+
+    /**
+     * Clear any pending bind callbacks. This is called when is loader is planning to perform a full
+     * rebind from scratch.
+     */
+    override fun clearPendingBinds() {
+        pendingExecutor?.cancel() ?: return
+        pendingExecutor = null
+
+        // We might have set this flag previously and forgot to clear it.
+        launcher.appsView.appsStore.disableDeferUpdatesSilently(
+            AllAppsStore.DEFER_UPDATES_NEXT_DRAW
+        )
+    }
 
     override fun preAddApps() {
         // If there's an undo snackbar, force it to complete to ensure empty screens are removed
@@ -119,7 +166,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         val visibleIds =
             when {
                 !pagesToBindSynchronously.isEmpty -> pagesToBindSynchronously
-                !launcher.isWorkspaceLoading -> launcher.workspace.currentPageScreenIds
+                !workspaceLoading -> launcher.workspace.currentPageScreenIds
                 else -> synchronouslyBoundPages
             }
         // Launcher IntArray has the same name as Kotlin IntArray

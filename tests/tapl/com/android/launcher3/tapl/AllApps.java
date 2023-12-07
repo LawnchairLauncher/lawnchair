@@ -54,6 +54,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
+    private static final String FAST_SCROLLER_RES_ID = "fast_scroller";
 
     private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
@@ -369,9 +370,12 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to tap outside AllApps bottom sheet on the "
                              + (tapRight ? "right" : "left"))) {
-            final UiObject2 allAppsBottomSheet =
+
+            final UiObject2 container = (tapRight)
+                    ? mLauncher.waitForLauncherObject(FAST_SCROLLER_RES_ID) :
                     mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
-            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+
+            mLauncher.touchOutsideContainer(container, tapRight, false);
             try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
                     "tapped outside AllApps bottom sheet")) {
                 verifyVisibleContainerOnDismiss();

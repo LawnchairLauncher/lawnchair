@@ -22,7 +22,6 @@ import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
@@ -351,14 +350,9 @@ public class Launcher extends StatefulActivity<LauncherState>
     // UI and state for the overview panel
     private View mOverviewPanel;
 
-    @Thunk
-    boolean mWorkspaceLoading = true;
-
     // Used to notify when an activity launch has been deferred because launcher is not yet resumed
     // TODO: See if we can remove this later
     private Runnable mOnDeferredActivityLaunchCallback;
-
-    private ViewOnDrawExecutor mPendingExecutor;
     private OnPreDrawListener mOnInitialBindListener;
 
     private LauncherModel mModel;
@@ -1075,7 +1069,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void logStopAndResume(boolean isResume) {
-        if (mPendingExecutor != null) return;
+        if (mModelCallbacks.getPendingExecutor() != null) return;
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
         int statsLogOrdinal = mStateManager.getState().statsLogOrdinal;
 
@@ -1715,7 +1709,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.destroy();
 
         TextKeyListener.getInstance().release();
-        clearPendingBinds();
+        mModelCallbacks.clearPendingBinds();
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed();
@@ -2077,48 +2071,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mModelCallbacks.getPagesToBindSynchronously(orderedScreenIds);
     }
 
-    /**
-     * Clear any pending bind callbacks. This is called when is loader is planning to
-     * perform a full rebind from scratch.
-     */
-    @Override
-    public void clearPendingBinds() {
-        if (mPendingExecutor != null) {
-            mPendingExecutor.cancel();
-            mPendingExecutor = null;
-
-            // We might have set this flag previously and forgot to clear it.
-            mAppsView.getAppsStore()
-                    .disableDeferUpdatesSilently(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
-        }
-    }
-
-    /**
-     * Refreshes the shortcuts shown on the workspace.
-     * <p>
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
     @Override
     public void startBinding() {
-        TraceHelper.INSTANCE.beginSection("startBinding");
-        // Floating panels (except the full widget sheet) are associated with individual icons. If
-        // we are starting a fresh bind, close all such panels as all the icons are about
-        // to go away.
-        AbstractFloatingView.closeOpenViews(this, true, TYPE_ALL & ~TYPE_REBIND_SAFE);
-
-        setWorkspaceLoading(true);
-
-        // Clear the workspace because it's going to be rebound
-        mDragController.cancelDrag();
-
-        mWorkspace.clearDropTargets();
-        mWorkspace.removeAllWorkspaceScreens();
-        mAppWidgetHolder.clearViews();
-
-        if (mHotseat != null) {
-            mHotseat.resetLayout(getDeviceProfile().isVerticalBarLayout());
-        }
-        TraceHelper.INSTANCE.endSection();
+        mModelCallbacks.startBinding();
     }
 
     @Override
@@ -2500,8 +2455,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     public void clearPendingExecutor(ViewOnDrawExecutor executor) {
-        if (mPendingExecutor == executor) {
-            mPendingExecutor = null;
+        if (mModelCallbacks.getPendingExecutor() == executor) {
+            mModelCallbacks.setPendingExecutor(null);
         }
     }
 
@@ -2512,9 +2467,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         mModelCallbacks.setSynchronouslyBoundPages(boundPages);
         mModelCallbacks.setPagesToBindSynchronously(new IntSet());
 
-        clearPendingBinds();
+        mModelCallbacks.clearPendingBinds();
         ViewOnDrawExecutor executor = new ViewOnDrawExecutor(pendingTasks);
-        mPendingExecutor = executor;
+        mModelCallbacks.setPendingExecutor(executor);
         if (!isInState(ALL_APPS)) {
             mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
             pendingTasks.add(() -> mAppsView.getAppsStore().disableDeferUpdates(
@@ -2568,7 +2523,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         TraceHelper.INSTANCE.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
-        setWorkspaceLoading(false);
+        mModelCallbacks.setWorkspaceLoading(false);
 
         if (mPendingActivityResult != null) {
             handleActivityResult(mPendingActivityResult.requestCode,
@@ -2851,7 +2806,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         writer.println(prefix + "Misc:");
         dumpMisc(prefix + "\t", writer);
-        writer.println(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
+        writer.println(prefix + "\tmWorkspaceLoading=" + mModelCallbacks.getWorkspaceLoading());
         writer.println(prefix + "\tmPendingRequestArgs=" + mPendingRequestArgs
                 + " mPendingActivityResult=" + mPendingActivityResult);
         writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
@@ -3079,21 +3034,17 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     // Getters and Setters
 
-    private void setWorkspaceLoading(boolean value) {
-        mWorkspaceLoading = value;
-    }
-
     public boolean isWorkspaceLocked() {
-        return mWorkspaceLoading || mPendingRequestArgs != null;
+        return isWorkspaceLoading() || mPendingRequestArgs != null;
     }
 
     public boolean isWorkspaceLoading() {
-        return mWorkspaceLoading;
+        return mModelCallbacks.getWorkspaceLoading();
     }
 
     @Override
     public boolean isBindingItems() {
-        return mWorkspaceLoading;
+        return isWorkspaceLoading();
     }
 
     /**
