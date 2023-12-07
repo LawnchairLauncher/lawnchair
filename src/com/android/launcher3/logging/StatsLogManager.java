@@ -693,7 +693,16 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASKBAR_PINNED(1490),
 
         @UiEvent(doc = "User has unpinned taskbar using taskbar divider menu")
-        LAUNCHER_TASKBAR_UNPINNED(1491)
+        LAUNCHER_TASKBAR_UNPINNED(1491),
+
+        @UiEvent(doc = "User tapped private space lock button")
+        LAUNCHER_PRIVATE_SPACE_LOCK_TAP(1548),
+
+        @UiEvent(doc = "User tapped private space unlock button")
+        LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP(1549),
+
+        @UiEvent(doc = "User tapped private space settings button")
+        LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP(1550),
 
         // ADD MORE
         ;
