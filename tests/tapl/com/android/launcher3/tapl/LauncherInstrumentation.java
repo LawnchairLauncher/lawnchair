@@ -586,6 +586,7 @@ public final class LauncherInstrumentation {
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
         if (hasLauncherObject(TASKBAR_RES_ID)) return "Taskbar";
+        if (hasLauncherObject("wallpaper_carousel")) return "Launcher Settings Popup";
         if (mDevice.hasObject(By.pkg(getLauncherPackageName()).depth(0))) {
             return "<Launcher in invalid state>";
         }
