@@ -85,7 +85,7 @@ import java.util.function.IntConsumer;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
+public class TaplViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     private SparseArray<ViewConfiguration> mConfigMap;
     private InitTracker mInitTracker;

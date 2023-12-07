@@ -49,7 +49,7 @@ import java.util.Queue;
  * Note running these tests will clear the workspace on the device.
  */
 @LargeTest
-public class ThemeIconsTest extends AbstractLauncherUiTest {
+public class TaplThemeIconsTest extends AbstractLauncherUiTest {
 
     private static final String APP_NAME = "IconThemedActivity";
     private static final String SHORTCUT_NAME = "Shortcut 1";

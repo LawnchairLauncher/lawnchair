@@ -52,7 +52,7 @@ import org.junit.runner.RunWith;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AddConfigWidgetTest extends AbstractLauncherUiTest {
+public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest {
 
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
@@ -81,6 +81,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     public void testConfigCancelled() throws Throwable {
         runTest(false);
     }
+
 
     /**
      * @param acceptConfig accept the config activity
@@ -111,10 +112,12 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         }
     }
 
-    private static void setResult(boolean success) {
-        getInstrumentation().getTargetContext().sendBroadcast(
-                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
-                        success ? "clickOK" : "clickCancel"));
+    private void setResult(boolean success) {
+        mLauncher.executeAndWaitForWallpaperAnimation(() ->
+                        getInstrumentation().getTargetContext().sendBroadcast(
+                                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
+                                        success ? "clickOK" : "clickCancel")),
+                "setting widget coinfig result");
     }
 
     /**
