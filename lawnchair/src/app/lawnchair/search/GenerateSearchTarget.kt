@@ -184,7 +184,7 @@ class GenerateSearchTarget(private val context: Context) {
                 MediaStore.Files.getContentUri("external"),
                 info.fileId,
             )
-            is FolderInfo -> File(info.path).file2Uri() ?: Uri.fromFile(File(info.path))
+            is FolderInfo -> File(info.path).file2Uri()
         }
 
         val mimeType = when (info) {

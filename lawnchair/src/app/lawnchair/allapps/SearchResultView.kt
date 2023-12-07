@@ -3,6 +3,7 @@ package app.lawnchair.allapps
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import app.lawnchair.search.CONTACT
 import app.lawnchair.search.FILES
 import app.lawnchair.search.MARKET_STORE
@@ -46,7 +47,11 @@ sealed interface SearchResultView {
     }
 
     fun handleSearchTargetClick(context: Context, searchTargetIntent: Intent) {
-        context.startActivity(searchTargetIntent)
+        searchTargetIntent.resolveActivity(context.packageManager)?.let {
+            context.startActivity(searchTargetIntent)
+        } ?: run {
+            Toast.makeText(context, "No app found to handle this action", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
