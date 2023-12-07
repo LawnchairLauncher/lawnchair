@@ -82,27 +82,11 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
-            case TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING:
-                runOnTISBinder(tisBinder -> {
-                    enableManualTaskbarStashing(tisBinder, true);
-                });
-                return response;
-
-            case TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING:
-                runOnTISBinder(tisBinder -> {
-                    enableManualTaskbarStashing(tisBinder, false);
-                });
-                return response;
-
             case TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED:
                 runOnTISBinder(tisBinder -> {
-                    enableManualTaskbarStashing(tisBinder, true);
-
                     // Allow null-pointer to catch illegal states.
                     tisBinder.getTaskbarManager().getCurrentActivityContext()
                             .unstashTaskbarIfStashed();
-
-                    enableManualTaskbarStashing(tisBinder, false);
                 });
                 return response;
 
@@ -185,13 +169,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     @Override
     protected boolean isLauncherInitialized() {
         return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
-    }
-
-    private void enableManualTaskbarStashing(
-            TouchInteractionService.TISBinder tisBinder, boolean enable) {
-        // Allow null-pointer to catch illegal states.
-        tisBinder.getTaskbarManager().getCurrentActivityContext().enableManualStashingDuringTests(
-                enable);
     }
 
     private void enableBlockingTimeout(

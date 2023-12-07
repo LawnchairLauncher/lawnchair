@@ -92,8 +92,6 @@ public final class TestProtocol {
             "is-launcher-activity-started";
     public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
-    public static final String REQUEST_ENABLE_MANUAL_TASKBAR_STASHING = "enable-taskbar-stashing";
-    public static final String REQUEST_DISABLE_MANUAL_TASKBAR_STASHING = "disable-taskbar-stashing";
     public static final String REQUEST_ENABLE_BLOCK_TIMEOUT = "enable-block-timeout";
     public static final String REQUEST_DISABLE_BLOCK_TIMEOUT = "disable-block-timeout";
     public static final String REQUEST_ENABLE_TRANSIENT_TASKBAR = "enable-transient-taskbar";

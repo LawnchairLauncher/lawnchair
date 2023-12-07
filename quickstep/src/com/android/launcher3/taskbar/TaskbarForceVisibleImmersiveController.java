@@ -158,8 +158,7 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (!isNavbarShownInImmersiveMode()
-                || mControllers.taskbarStashController.supportsManualStashing()) {
+        if (!isNavbarShownInImmersiveMode()) {
             return false;
         }
         return onControllerTouchEvent(ev);

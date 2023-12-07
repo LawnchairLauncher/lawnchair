@@ -1142,15 +1142,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
-     * Called when we detect a long press in the nav region before passing the gesture slop.
-     *
-     * @return Whether taskbar handled the long press, and thus should cancel the gesture.
-     */
-    public boolean onLongPressToUnstashTaskbar() {
-        return mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
-    }
-
-    /**
      * Called when we want to unstash taskbar when user performs swipes up gesture.
      */
     public void onSwipeToUnstashTaskbar() {
@@ -1205,28 +1196,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * @param animateForward Whether to animate towards the unstashed hint state or back to stashed.
      */
     public void startTaskbarUnstashHint(boolean animateForward) {
-        // TODO(b/270395798): Clean up forceUnstash after removing long-press unstashing code.
-        startTaskbarUnstashHint(animateForward, /* forceUnstash = */ false);
-    }
-
-    /**
-     * Called when we detect a motion down or up/cancel in the nav region while stashed.
-     *
-     * @param animateForward Whether to animate towards the unstashed hint state or back to stashed.
-     * @param forceUnstash   Whether we force the unstash hint.
-     */
-    public void startTaskbarUnstashHint(boolean animateForward, boolean forceUnstash) {
-        // TODO(b/270395798): Clean up forceUnstash after removing long-press unstashing code.
-        mControllers.taskbarStashController.startUnstashHint(animateForward, forceUnstash);
-    }
-
-    /**
-     * Enables manual taskbar stashing. This method should only be used for tests that need to
-     * stash/unstash the taskbar.
-     */
-    @VisibleForTesting
-    public void enableManualStashingDuringTests(boolean enableManualStashing) {
-        mControllers.taskbarStashController.enableManualStashingDuringTests(enableManualStashing);
+        mControllers.taskbarStashController.startUnstashHint(animateForward);
     }
 
     /**
@@ -1239,15 +1209,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
-     * Unstashes the Taskbar if it is stashed. This method should only be used to unstash the
-     * taskbar at the end of a test.
+     * Unstashes the Taskbar if it is stashed.
      */
     @VisibleForTesting
     public void unstashTaskbarIfStashed() {
         if (DisplayController.isTransientTaskbar(this)) {
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
-        } else {
-            mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
         }
     }
 

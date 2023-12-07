@@ -549,12 +549,6 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "Launcher item drop failed since there was not enough room on the screen.")
         LAUNCHER_ITEM_DROP_FAILED_INSUFFICIENT_SPACE(872),
 
-        @UiEvent(doc = "User long pressed on the taskbar background to hide the taskbar")
-        LAUNCHER_TASKBAR_LONGPRESS_HIDE(896),
-
-        @UiEvent(doc = "User long pressed on the taskbar gesture handle to show the taskbar")
-        LAUNCHER_TASKBAR_LONGPRESS_SHOW(897),
-
         @UiEvent(doc = "User clicks on the search icon on header to launch search in app.")
         LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913),
 
