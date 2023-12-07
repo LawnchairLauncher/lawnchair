@@ -86,7 +86,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
             mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
 
             startTestActivity(2);
-            mLauncher.pressBack();
+            mLauncher.getLaunchedAppState().pressBackToWorkspace();
         } finally {
             instrumentation.getUiAutomation().dropShellPermissionIdentity();
         }
