@@ -100,7 +100,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         // Verify that the widget id is valid and bound
         assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
 
-        setResultAndWaitForAnimation(acceptConfig);
+        setResult(acceptConfig);
         if (acceptConfig) {
             Wait.atMost("", new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
@@ -115,16 +115,6 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         getInstrumentation().getTargetContext().sendBroadcast(
                 WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
                         success ? "clickOK" : "clickCancel"));
-    }
-
-    private void setResultAndWaitForAnimation(boolean success) {
-        if (mLauncher.isLauncher3()) {
-            setResult(success);
-        } else {
-            mLauncher.executeAndWaitForWallpaperAnimation(
-                    () -> setResult(success),
-                    "setting widget coinfig result");
-        }
     }
 
     /**
