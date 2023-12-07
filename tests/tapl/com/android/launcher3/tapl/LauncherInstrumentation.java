@@ -973,6 +973,14 @@ public final class LauncherInstrumentation {
         }
     }
 
+    void executeAndWaitForLauncherStop(Runnable command, String actionName) {
+        executeAndWaitForLauncherEvent(
+                () -> command.run(),
+                event -> TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE
+                        .equals(event.getClassName().toString()),
+                () -> "Launcher activity didn't stop", actionName);
+    }
+
     /**
      * Get the resource ID of visible floating view.
      */
