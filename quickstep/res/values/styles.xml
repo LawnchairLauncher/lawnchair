@@ -311,4 +311,9 @@
         <item name="android:letterSpacing">0.025</item>
         <item name="android:lineHeight">20sp</item>
     </style>
+
+    <style name="WidgetPickerActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>
