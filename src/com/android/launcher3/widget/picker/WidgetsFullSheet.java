@@ -17,6 +17,7 @@ package com.android.launcher3.widget.picker;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
@@ -62,7 +63,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.UserCache;
@@ -163,9 +163,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
     @Px private int mMaxSpanPerRow;
-    private final DeviceProfile mDeviceProfile;
-
-    private int mOrientation;
+    private DeviceProfile mDeviceProfile;
 
     protected TextView mNoWidgetsView;
     protected StickyHeaderLayout mSearchScrollView;
@@ -179,7 +177,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDeviceProfile = mActivityContext.getDeviceProfile();
-        mOrientation = context.getResources().getConfiguration().orientation;
         mUserCache = UserCache.INSTANCE.get(context);
         mHasWorkProfile = mUserCache.getUserProfiles()
                 .stream()
@@ -676,28 +673,29 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     /** Shows the {@link WidgetsFullSheet} on the launcher. */
     public static WidgetsFullSheet show(BaseActivity activity, boolean animate) {
-        boolean isTwoPane = activity.getDeviceProfile().isTablet
-                && activity.getDeviceProfile().isLandscape
-                && (!activity.getDeviceProfile().isTwoPanels
-                    || FeatureFlags.UNFOLDED_WIDGET_PICKER.get());
-
-        WidgetsFullSheet sheet;
-        if (isTwoPane) {
-            sheet = (WidgetsTwoPaneSheet) activity.getLayoutInflater().inflate(
-                    R.layout.widgets_two_pane_sheet,
-                    activity.getDragLayer(),
-                    false);
-        } else {
-            sheet = (WidgetsFullSheet) activity.getLayoutInflater().inflate(
-                    R.layout.widgets_full_sheet,
-                    activity.getDragLayer(),
-                    false);
-        }
-
+        WidgetsFullSheet sheet = (WidgetsFullSheet) activity.getLayoutInflater().inflate(
+                getWidgetSheetId(activity),
+                activity.getDragLayer(),
+                false);
         sheet.attachToContainer();
         sheet.mIsOpen = true;
         sheet.open(animate);
         return sheet;
+    }
+
+    private static int getWidgetSheetId(BaseActivity activity) {
+        boolean isTwoPane = (activity.getDeviceProfile().isTablet
+                && activity.getDeviceProfile().isLandscape
+                && !activity.getDeviceProfile().isTwoPanels)
+                // Enables two pane picker for unfolded foldables if the flag is on.
+                || (activity.getDeviceProfile().isTwoPanels && enableUnfoldedTwoPanePicker());
+
+        if (isTwoPane && activity.getDeviceProfile().isTwoPanels) {
+            return R.layout.widgets_two_pane_sheet_foldable;
+        } else if (isTwoPane) {
+            return R.layout.widgets_two_pane_sheet;
+        }
+        return R.layout.widgets_full_sheet;
     }
 
     @Override
@@ -790,17 +788,25 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) {
             mSearchBar.reset();
         }
+    }
 
-        // Checks the orientation of the screen
-        if (mOrientation != newConfig.orientation) {
-            mOrientation = newConfig.orientation;
-            if (mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
-                handleClose(false);
-                show(BaseActivity.fromContext(getContext()), false);
-            } else {
-                reset();
-            }
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        if (mDeviceProfile.isLandscape != dp.isLandscape && dp.isTablet && !dp.isTwoPanels) {
+            handleClose(false);
+            show(BaseActivity.fromContext(getContext()), false);
+        } else {
+            reset();
         }
+
+        // When folding/unfolding the foldables, we need to switch between the regular widget picker
+        // and the two pane picker, so we rebuild the picker with the correct layout.
+        if (mDeviceProfile.isTwoPanels != dp.isTwoPanels && enableUnfoldedTwoPanePicker()) {
+            handleClose(false);
+            show(BaseActivity.fromContext(getContext()), false);
+        }
+
+        mDeviceProfile = dp;
     }
 
     @Override

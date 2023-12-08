@@ -71,13 +71,11 @@ public class PrivateProfileManager extends UserProfileManager {
 
     /** Disables quiet mode for Private Space User Profile. */
     public void unlockPrivateProfile() {
-        // TODO (b/302666597): Log this event to WW.
         enableQuietMode(false);
     }
 
     /** Enables quiet mode for Private Space User Profile. */
     public void lockPrivateProfile() {
-        // TODO (b/302666597): Log this event to WW.
         enableQuietMode(true);
     }
 
@@ -98,7 +96,6 @@ public class PrivateProfileManager extends UserProfileManager {
 
     /** Opens the Private Space Settings Entry Point. */
     public void openPrivateSpaceSettings() {
-        // TODO (b/302666597): Log this event to WW.
         Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
         psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
         mAllApps.getContext().startActivity(psSettingsIntent);
