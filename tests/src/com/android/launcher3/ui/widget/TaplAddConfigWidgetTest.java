@@ -40,6 +40,7 @@ import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import org.junit.Before;
@@ -101,7 +102,7 @@ public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest {
         // Verify that the widget id is valid and bound
         assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
 
-        setResult(acceptConfig);
+        setResultAndWaitForAnimation(acceptConfig);
         if (acceptConfig) {
             Wait.atMost("", new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
@@ -112,12 +113,21 @@ public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest {
         }
     }
 
-    private void setResult(boolean success) {
-        mLauncher.executeAndWaitForWallpaperAnimation(() ->
-                        getInstrumentation().getTargetContext().sendBroadcast(
-                                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
-                                        success ? "clickOK" : "clickCancel")),
-                "setting widget coinfig result");
+    private static void setResult(boolean success) {
+        getInstrumentation().getTargetContext().sendBroadcast(
+                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
+                        success ? "clickOK" : "clickCancel"));
+    }
+
+    private void setResultAndWaitForAnimation(boolean success) {
+        if (mLauncher.isLauncher3()
+                || TestStabilityRule.isPresubmit() /* b/313926097 */) {
+            setResult(success);
+        } else {
+            mLauncher.executeAndWaitForWallpaperAnimation(
+                    () -> setResult(success),
+                    "setting widget coinfig result");
+        }
     }
 
     /**
