@@ -16,7 +16,6 @@
 package com.android.quickstep;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-import static android.app.WindowConfiguration.ACTIVITY_TYPE_ASSISTANT;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
 import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
@@ -210,7 +209,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
 
         @Nullable
         private final RunningTaskInfo mTopTask;
-        private final List<RunningTaskInfo> mAllCachedTasks;
+        public final List<RunningTaskInfo> mAllCachedTasks;
 
         CachedTaskInfo(List<RunningTaskInfo> allCachedTasks) {
             mAllCachedTasks = allCachedTasks;
@@ -229,12 +228,21 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
         }
 
         /**
-         * Returns true if the given task holds an Assistant activity that is excluded from recents
+         * If the given task holds an activity that is excluded from recents, and there
+         * is another running task that is not excluded from recents, returns that underlying task.
          */
-        public boolean isExcludedAssistant() {
-            return mTopTask != null && mTopTask.configuration.windowConfiguration
-                    .getActivityType() == ACTIVITY_TYPE_ASSISTANT
-                    && (mTopTask.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
+        public @Nullable CachedTaskInfo otherVisibleTaskThisIsExcludedOver() {
+            if (mTopTask == null
+                    || (mTopTask.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0) {
+                // Not an excluded task.
+                return null;
+            }
+            List<RunningTaskInfo> visibleNonExcludedTasks = mAllCachedTasks.stream()
+                    .filter(t -> t.isVisible
+                            && (t.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0)
+                    .toList();
+            return visibleNonExcludedTasks.isEmpty() ? null
+                    : new CachedTaskInfo(visibleNonExcludedTasks);
         }
 
         /**

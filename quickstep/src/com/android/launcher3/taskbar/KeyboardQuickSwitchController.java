@@ -22,9 +22,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
+import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -102,19 +106,72 @@ public final class KeyboardQuickSwitchController implements
         mQuickSwitchViewController = new KeyboardQuickSwitchViewController(
                 mControllers, overlayContext, keyboardQuickSwitchView, mControllerCallbacks);
 
+        DesktopVisibilityController desktopController =
+                LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+        final boolean onDesktop =
+                DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED
+                        && desktopController != null
+                        && desktopController.areFreeformTasksVisible();
+
         if (mModel.isTaskListValid(mTaskListChangeId)) {
-            mQuickSwitchViewController.openQuickSwitchView(
-                    mTasks, mNumHiddenTasks, /* updateTasks= */ false, currentFocusedIndex);
+            mQuickSwitchViewController.openQuickSwitchView(mTasks,
+                    mNumHiddenTasks, /* updateTasks= */ false, currentFocusedIndex, onDesktop);
             return;
         }
+
         mTaskListChangeId = mModel.getTasks((tasks) -> {
-            // Only store MAX_TASK tasks, from most to least recent
-            Collections.reverse(tasks);
-            mTasks = tasks.stream().limit(MAX_TASKS).collect(Collectors.toList());
-            mNumHiddenTasks = Math.max(0, tasks.size() - MAX_TASKS);
-            mQuickSwitchViewController.openQuickSwitchView(
-                    mTasks, mNumHiddenTasks, /* updateTasks= */ true, currentFocusedIndex);
+            if (onDesktop) {
+                processLoadedTasksOnDesktop(tasks);
+            } else {
+                processLoadedTasks(tasks);
+            }
+            mQuickSwitchViewController.openQuickSwitchView(mTasks,
+                    mNumHiddenTasks, /* updateTasks= */ true, currentFocusedIndex, onDesktop);
         });
+    }
+
+    private void processLoadedTasks(ArrayList<GroupTask> tasks) {
+        // Only store MAX_TASK tasks, from most to least recent
+        Collections.reverse(tasks);
+
+        // Hide all desktop tasks and show them on the hidden tile
+        int hiddenDesktopTasks = 0;
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            DesktopTask desktopTask = findDesktopTask(tasks);
+            if (desktopTask != null) {
+                hiddenDesktopTasks = desktopTask.tasks.size();
+                tasks = tasks.stream()
+                        .filter(t -> !(t instanceof DesktopTask))
+                        .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
+            }
+        }
+        mTasks = tasks.stream()
+                .limit(MAX_TASKS)
+                .collect(Collectors.toList());
+        mNumHiddenTasks = Math.max(0, tasks.size() - MAX_TASKS) + hiddenDesktopTasks;
+    }
+
+    private void processLoadedTasksOnDesktop(ArrayList<GroupTask> tasks) {
+        // Find the single desktop task that contains a grouping of desktop tasks
+        DesktopTask desktopTask = findDesktopTask(tasks);
+
+        if (desktopTask != null) {
+            mTasks = desktopTask.tasks.stream().map(GroupTask::new).collect(Collectors.toList());
+            // All other tasks, apart from the grouped desktop task, are hidden
+            mNumHiddenTasks = Math.max(0, tasks.size() - 1);
+        } else {
+            // Desktop tasks were visible, but the recents entry is missing. Fall back to empty list
+            mTasks = Collections.emptyList();
+            mNumHiddenTasks = tasks.size();
+        }
+    }
+
+    @Nullable
+    private DesktopTask findDesktopTask(ArrayList<GroupTask> tasks) {
+        return (DesktopTask) tasks.stream()
+                .filter(t -> t instanceof DesktopTask)
+                .findFirst()
+                .orElse(null);
     }
 
     void closeQuickSwitchView() {
@@ -169,7 +226,7 @@ public final class KeyboardQuickSwitchController implements
     class ControllerCallbacks {
 
         int getTaskCount() {
-            return mNumHiddenTasks == 0 ? mTasks.size() : MAX_TASKS + 1;
+            return mTasks.size() + (mNumHiddenTasks == 0 ? 0 : 1);
         }
 
         @Nullable

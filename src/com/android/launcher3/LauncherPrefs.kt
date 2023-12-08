@@ -275,6 +275,9 @@ class LauncherPrefs(private val encryptedContext: Context) {
 
         const val TASKBAR_PINNING_KEY = "TASKBAR_PINNING_KEY"
         @JvmField val ICON_STATE = nonRestorableItem(LauncherAppState.KEY_ICON_STATE, "", true)
+        @JvmField
+        val ALL_APPS_OVERVIEW_THRESHOLD =
+            nonRestorableItem(LauncherAppState.KEY_ALL_APPS_OVERVIEW_THRESHOLD, 180, true)
         @JvmField val THEMED_ICONS = backedUpItem(Themes.KEY_THEMED_ICONS, false, true)
         @JvmField val PROMISE_ICON_IDS = backedUpItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
         @JvmField val WORK_EDU_STEP = backedUpItem(WorkProfileManager.KEY_WORK_EDU_STEP, 0)

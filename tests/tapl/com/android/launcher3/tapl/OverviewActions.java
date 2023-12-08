@@ -19,8 +19,6 @@ package com.android.launcher3.tapl;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.shared.TestProtocol;
-
 /**
  * View containing overview actions
  */
@@ -51,13 +49,6 @@ public class OverviewActions {
                     "clicked screenshot button")) {
                 UiObject2 closeScreenshot = mLauncher.waitForSystemUiObject(
                         "screenshot_dismiss_image");
-                if (mLauncher.getNavigationModel()
-                        != LauncherInstrumentation.NavigationModel.THREE_BUTTON) {
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS,
-                            LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS,
-                            LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
-                }
                 closeScreenshot.click();
                 try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
                         "dismissed screenshot")) {

@@ -15,62 +15,116 @@
  */
 package com.android.launcher3.celllayout;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
+import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 
+import androidx.test.uiautomator.UiDevice;
+
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.ModelDbController;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
+import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 public class FavoriteItemsTransaction {
-    private ArrayList<ItemInfo> mItemsToSubmit;
+    private ArrayList<Supplier<ItemInfo>> mItemsToSubmit;
     private Context mContext;
-    private ContentResolver mResolver;
-    public AbstractLauncherUiTest mTest;
 
-    public FavoriteItemsTransaction(Context context, AbstractLauncherUiTest test) {
+    public FavoriteItemsTransaction(Context context) {
         mItemsToSubmit = new ArrayList<>();
         mContext = context;
-        mResolver = mContext.getContentResolver();
-        mTest = test;
     }
 
-    public FavoriteItemsTransaction addItem(ItemInfo itemInfo) {
+    public FavoriteItemsTransaction addItem(Supplier<ItemInfo> itemInfo) {
         this.mItemsToSubmit.add(itemInfo);
-        return this;
-    }
-
-    public FavoriteItemsTransaction removeLast() {
-        this.mItemsToSubmit.remove(this.mItemsToSubmit.size() - 1);
         return this;
     }
 
     /**
      * Commits all the ItemInfo into the database of Favorites
      **/
-    public void commit() throws ExecutionException, InterruptedException {
-        List<ContentValues> values = new ArrayList<>();
-        for (ItemInfo item : this.mItemsToSubmit) {
-            ContentWriter writer = new ContentWriter(mContext);
-            item.onAddToDatabase(writer);
-            writer.put(LauncherSettings.Favorites._ID, item.id);
-            values.add(writer.getValues(mContext));
-        }
-        // Submit the icons to the database in the model thread to prevent race conditions
-        MODEL_EXECUTOR.submit(() -> mResolver.bulkInsert(LauncherSettings.Favorites.CONTENT_URI,
-                values.toArray(new ContentValues[0]))).get();
-        // Reload the state of the Launcher
-        MAIN_EXECUTOR.submit(() -> LauncherAppState.getInstance(
-                mContext).getModel().forceReload()).get();
+    public void commit() {
+        LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+        // Load the model once so that there is no pending migration:
+        loadModelSync(model);
+
+        runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            ModelDbController controller = model.getModelDbController();
+            // Migrate any previous data so that the DB state is correct
+            controller.tryMigrateDB();
+
+            // Create DB again to load fresh data
+            controller.createEmptyDB();
+            controller.clearEmptyDbFlag();
+
+            // Add new data
+            try (SQLiteTransaction transaction = controller.newTransaction()) {
+                int count = mItemsToSubmit.size();
+                ArrayList<ItemInfo> containerItems = new ArrayList<>();
+                for (int i = 0; i < count; i++) {
+                    ContentWriter writer = new ContentWriter(mContext);
+                    ItemInfo item = mItemsToSubmit.get(i).get();
+
+                    if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+                        FolderInfo folderInfo = (FolderInfo) item;
+                        for (ItemInfo itemInfo : folderInfo.contents) {
+                            itemInfo.container = i;
+                            containerItems.add(itemInfo);
+                        }
+                    }
+
+                    item.onAddToDatabase(writer);
+                    writer.put(LauncherSettings.Favorites._ID, i);
+                    controller.insert(TABLE_NAME, writer.getValues(mContext));
+                }
+
+                for (int i = 0; i < containerItems.size(); i++) {
+                    ContentWriter writer = new ContentWriter(mContext);
+                    ItemInfo item = containerItems.get(i);
+                    item.onAddToDatabase(writer);
+                    writer.put(LauncherSettings.Favorites._ID, count + i);
+                    controller.insert(TABLE_NAME, writer.getValues(mContext));
+                }
+                transaction.commit();
+            }
+        });
+
+        // Reload model
+        runOnExecutorSync(MAIN_EXECUTOR, model::forceReload);
+        loadModelSync(model);
+    }
+
+    private void loadModelSync(LauncherModel model) {
+        Callbacks mockCb = new Callbacks() { };
+        runOnExecutorSync(MAIN_EXECUTOR, () -> model.addCallbacksAndLoad(mockCb));
+        runOnExecutorSync(MODEL_EXECUTOR, () -> { });
+
+        runOnExecutorSync(MAIN_EXECUTOR, () -> { });
+        runOnExecutorSync(MAIN_EXECUTOR, () -> model.removeCallbacks(mockCb));
+    }
+
+    /**
+     * Commits the transaction and waits for home load
+     */
+    public void commitAndLoadHome(LauncherInstrumentation inst) {
+        commit();
+
+        // Launch the home activity
+        UiDevice.getInstance(getInstrumentation()).pressHome();
+        inst.waitForLauncherInitialized();
     }
 }

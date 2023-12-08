@@ -18,11 +18,11 @@ package com.android.launcher3.popup;
 
 import static androidx.core.content.ContextCompat.getColorStateList;
 
-import static com.android.launcher3.anim.Interpolators.ACCELERATED_EASE;
-import static com.android.launcher3.anim.Interpolators.DECELERATED_EASE;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.ACCELERATED_EASE;
+import static com.android.app.animation.Interpolators.DECELERATED_EASE;
+import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 
 import android.animation.Animator;
@@ -672,10 +672,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
             mOpenCloseAnimator.cancel();
         }
         mIsOpen = false;
-
-        mOpenCloseAnimator = getOpenCloseAnimator(false, mCloseDuration, mCloseFadeStartDelay,
-                mCloseFadeDuration, mCloseChildFadeStartDelay, mCloseChildFadeDuration,
-                ACCELERATED_EASE);
 
         mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
                 ? getMaterialUOpenCloseAnimator(

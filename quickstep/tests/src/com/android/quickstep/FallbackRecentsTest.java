@@ -116,12 +116,13 @@ public class FallbackRecentsTest {
             Utilities.enableRunningInTestHarnessForTests();
         }
 
-        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule();
+        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule(
+                RecentsActivity.ACTIVITY_TRACKER::getCreatedActivity);
         mOrderSensitiveRules = RuleChain
                 .outerRule(new SamplerRule())
                 .around(new NavigationModeSwitchRule(mLauncher))
-                .around(viewCaptureRule)
-                .around(new FailureWatcher(mDevice, mLauncher, viewCaptureRule.getViewCapture()));
+                .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
+                .around(viewCaptureRule);
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
                 getHomeIntentInPackage(context),

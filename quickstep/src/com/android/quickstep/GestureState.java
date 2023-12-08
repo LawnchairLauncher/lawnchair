@@ -15,8 +15,9 @@
  */
 package com.android.quickstep;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
 import static com.android.launcher3.MotionEventsUtils.isTrackpadFourFingerSwipe;
-import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadThreeFingerSwipe;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
@@ -37,8 +38,6 @@ import android.view.RemoteAnimationTarget;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.tracing.GestureStateProto;
-import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -46,10 +45,12 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Manages the state for an active system gesture, listens for events from the system and Launcher,
@@ -58,28 +59,37 @@ import java.util.Set;
 @TargetApi(Build.VERSION_CODES.R)
 public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationListener {
 
+    final Predicate<RemoteAnimationTarget> mLastStartedTaskIdPredicate = new Predicate<>() {
+        @Override
+        public boolean test(RemoteAnimationTarget targetCompat) {
+            for (int taskId : mLastStartedTaskId) {
+                if (targetCompat.taskId == taskId) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
+
     /**
      * Defines the end targets of a gesture and the associated state.
      */
     public enum GestureEndTarget {
-        HOME(true, LAUNCHER_STATE_HOME, false, GestureStateProto.GestureEndTarget.HOME),
+        HOME(true, LAUNCHER_STATE_HOME, false),
 
-        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true, GestureStateProto.GestureEndTarget.RECENTS),
+        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true),
 
-        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
-                GestureStateProto.GestureEndTarget.NEW_TASK),
+        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true),
 
-        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
-                GestureStateProto.GestureEndTarget.LAST_TASK),
+        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true),
 
-        ALL_APPS(true, LAUNCHER_STATE_ALLAPPS, false, GestureStateProto.GestureEndTarget.ALL_APPS);
+        ALL_APPS(true, LAUNCHER_STATE_ALLAPPS, false);
 
-        GestureEndTarget(boolean isLauncher, int containerType, boolean recentsAttachedToAppWindow,
-                GestureStateProto.GestureEndTarget protoEndTarget) {
+        GestureEndTarget(boolean isLauncher, int containerType,
+                boolean recentsAttachedToAppWindow) {
             this.isLauncher = isLauncher;
             this.containerType = containerType;
             this.recentsAttachedToAppWindow = recentsAttachedToAppWindow;
-            this.protoEndTarget = protoEndTarget;
         }
 
         /** Whether the target is in the launcher activity. Implicitly, if the end target is going
@@ -89,8 +99,6 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         public final int containerType;
         /** Whether RecentsView should be attached to the window as we animate to this target */
         public final boolean recentsAttachedToAppWindow;
-        /** The GestureStateProto enum value, used for winscope tracing. See launcher_trace.proto */
-        public final GestureStateProto.GestureEndTarget protoEndTarget;
     }
 
     private static final String TAG = "GestureState";
@@ -150,15 +158,10 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
     public enum TrackpadGestureType {
         NONE,
-        // Assigned before we know whether it's a 3-finger or 4-finger gesture.
-        MULTI_FINGER,
         THREE_FINGER,
         FOUR_FINGER;
 
         public static TrackpadGestureType getTrackpadGestureType(MotionEvent event) {
-            if (!isTrackpadMultiFingerSwipe(event)) {
-                return TrackpadGestureType.NONE;
-            }
             if (isTrackpadThreeFingerSwipe(event)) {
                 return TrackpadGestureType.THREE_FINGER;
             }
@@ -166,16 +169,16 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
                 return TrackpadGestureType.FOUR_FINGER;
             }
 
-            return TrackpadGestureType.MULTI_FINGER;
+            return TrackpadGestureType.NONE;
         }
     }
 
     private TrackpadGestureType mTrackpadGestureType = TrackpadGestureType.NONE;
     private CachedTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
-    private RemoteAnimationTarget mLastAppearedTaskTarget;
+    private RemoteAnimationTarget[] mLastAppearedTaskTargets;
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
-    private int mLastStartedTaskId = -1;
+    private int[] mLastStartedTaskId = new int[]{INVALID_TASK_ID, INVALID_TASK_ID};
     private RecentsAnimationController mRecentsAnimationController;
     private HashMap<Integer, ThumbnailData> mRecentsAnimationCanceledSnapshots;
 
@@ -201,7 +204,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mGestureId = other.mGestureId;
         mRunningTask = other.mRunningTask;
         mEndTarget = other.mEndTarget;
-        mLastAppearedTaskTarget = other.mLastAppearedTaskTarget;
+        mLastAppearedTaskTargets = other.mLastAppearedTaskTargets;
         mPreviouslyAppearedTaskIds = other.mPreviouslyAppearedTaskIds;
         mLastStartedTaskId = other.mLastStartedTaskId;
     }
@@ -305,10 +308,29 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * @return the running task id for this gesture.
+     * @param getMultipleTasks Whether multiple tasks or not are to be returned (for split)
+     * @return the running task ids for this gesture.
      */
-    public int getRunningTaskId() {
-        return mRunningTask != null ? mRunningTask.getTaskId() : -1;
+    public int[] getRunningTaskIds(boolean getMultipleTasks) {
+        if (mRunningTask == null) {
+            return new int[]{INVALID_TASK_ID, INVALID_TASK_ID};
+        } else {
+            int cachedTasksSize = mRunningTask.mAllCachedTasks.size();
+            int count = Math.min(cachedTasksSize, getMultipleTasks ? 2 : 1);
+            int[] runningTaskIds = new int[count];
+            for (int i = 0; i < count; i++) {
+                runningTaskIds[i] = mRunningTask.mAllCachedTasks.get(i).taskId;
+            }
+            return runningTaskIds;
+        }
+    }
+
+    /**
+     * @see #getRunningTaskIds(boolean)
+     * @return the single top-most running taskId for this gesture
+     */
+    public int getTopRunningTaskId() {
+        return getRunningTaskIds(false /*getMultipleTasks*/)[0];
     }
 
     /**
@@ -321,18 +343,26 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * Updates the last task that appeared during this gesture.
      */
-    public void updateLastAppearedTaskTarget(RemoteAnimationTarget lastAppearedTaskTarget) {
-        mLastAppearedTaskTarget = lastAppearedTaskTarget;
-        if (lastAppearedTaskTarget != null) {
-            mPreviouslyAppearedTaskIds.add(lastAppearedTaskTarget.taskId);
+    public void updateLastAppearedTaskTargets(RemoteAnimationTarget[] lastAppearedTaskTargets) {
+        mLastAppearedTaskTargets = lastAppearedTaskTargets;
+        for (RemoteAnimationTarget target : lastAppearedTaskTargets) {
+            if (target == null) {
+                continue;
+            }
+            mPreviouslyAppearedTaskIds.add(target.taskId);
         }
     }
 
     /**
      * @return The id of the task that appeared during this gesture.
      */
-    public int getLastAppearedTaskId() {
-        return mLastAppearedTaskTarget != null ? mLastAppearedTaskTarget.taskId : -1;
+    public int[] getLastAppearedTaskIds() {
+        if (mLastAppearedTaskTargets == null) {
+            return new int[]{INVALID_TASK_ID, INVALID_TASK_ID};
+        } else {
+            return Arrays.stream(mLastAppearedTaskTargets)
+                    .mapToInt(target -> target != null ? target.taskId : INVALID_TASK_ID).toArray();
+        }
     }
 
     public void updatePreviouslyAppearedTaskIds(Set<Integer> previouslyAppearedTaskIds) {
@@ -346,7 +376,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * Updates the last task that we started via startActivityFromRecents() during this gesture.
      */
-    public void updateLastStartedTaskId(int lastStartedTaskId) {
+    public void updateLastStartedTaskIds(int[] lastStartedTaskId) {
         mLastStartedTaskId = lastStartedTaskId;
     }
 
@@ -354,7 +384,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * @return The id of the task that was most recently started during this gesture, or -1 if
      * no task has been started yet (i.e. we haven't settled on a new task).
      */
-    public int getLastStartedTaskId() {
+    public int[] getLastStartedTaskIds() {
         return mLastStartedTaskId;
     }
 
@@ -490,21 +520,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         pw.println("  gestureID=" + mGestureId);
         pw.println("  runningTask=" + mRunningTask);
         pw.println("  endTarget=" + mEndTarget);
-        pw.println("  lastAppearedTaskTargetId=" + getLastAppearedTaskId());
-        pw.println("  lastStartedTaskId=" + mLastStartedTaskId);
+        pw.println("  lastAppearedTaskTargetId=" + Arrays.toString(mLastAppearedTaskTargets));
+        pw.println("  lastStartedTaskId=" + Arrays.toString(mLastStartedTaskId));
         pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
-    }
-
-    /**
-     * Used for winscope tracing, see launcher_trace.proto
-     * @see com.android.systemui.shared.tracing.ProtoTraceable#writeToProto
-     * @param swipeHandlerProto The parent of this proto message.
-     */
-    public void writeToProto(SwipeHandlerProto.Builder swipeHandlerProto) {
-        GestureStateProto.Builder gestureStateProto = GestureStateProto.newBuilder();
-        gestureStateProto.setEndTarget(mEndTarget == null
-                ? GestureStateProto.GestureEndTarget.UNSET
-                : mEndTarget.protoEndTarget);
-        swipeHandlerProto.setGestureState(gestureStateProto);
     }
 }

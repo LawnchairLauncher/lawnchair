@@ -105,11 +105,11 @@ public class FolderAnimationManager {
         mDelay = res.getInteger(R.integer.config_folderDelay);
 
         mFolderInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.folder_interpolator);
+                R.interpolator.standard_interpolator);
         mLargeFolderPreviewItemOpenInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.large_folder_preview_item_open_interpolator);
         mLargeFolderPreviewItemCloseInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.large_folder_preview_item_close_interpolator);
+                R.interpolator.standard_accelerate_interpolator);
     }
 
     /**
@@ -236,9 +236,9 @@ public class FolderAnimationManager {
                 mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         // Create reveal animator for the folder content (capture the top 4 icons 2x2)
-        int width = mDeviceProfile.folderCellLayoutBorderSpacePx
+        int width = mDeviceProfile.folderCellLayoutBorderSpacePx.x
                 + mDeviceProfile.folderCellWidthPx * 2;
-        int height = mDeviceProfile.folderCellLayoutBorderSpacePx
+        int height = mDeviceProfile.folderCellLayoutBorderSpacePx.y
                 + mDeviceProfile.folderCellHeightPx * 2;
         int page = mIsOpening ? mContent.getCurrentPage() : mContent.getDestinationPage();
         int left = mContent.getPaddingLeft() + page * lp.width;

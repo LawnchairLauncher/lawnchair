@@ -16,21 +16,18 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentProvider;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
@@ -38,12 +35,11 @@ import android.util.Log;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.ModelDbController;
-import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.function.ToIntFunction;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -74,10 +70,6 @@ public class LauncherProvider extends ContentProvider {
         return true;
     }
 
-    public ModelDbController getModelDbController() {
-        return LauncherAppState.getInstance(getContext()).getModel().getModelDbController();
-    }
-
     @Override
     public String getType(Uri uri) {
         SqlArguments args = new SqlArguments(uri, null, null);
@@ -91,180 +83,91 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
-
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(args.table);
 
-        Cursor result = getModelDbController().query(
-                args.table, projection, args.where, args.args, sortOrder);
-        result.setNotificationUri(getContext().getContentResolver(), uri);
-        return result;
-    }
-
-    private void reloadLauncherIfExternal() {
-        if (Binder.getCallingPid() != Process.myPid()) {
-            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-            if (app != null) {
-                app.getModel().forceReload();
-            }
-        }
+        Cursor[] result = new Cursor[1];
+        executeControllerTask(controller -> {
+            result[0] = controller.query(args.table, projection, args.where, args.args, sortOrder);
+            return 0;
+        });
+        return result[0];
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues initialValues) {
-        // In very limited cases, we support system|signature permission apps to modify the db.
-        if (Binder.getCallingPid() != Process.myPid()) {
-            if (!initializeExternalAdd(initialValues)) {
-                return null;
-            }
-        }
+    public Uri insert(Uri uri, ContentValues values) {
+        int rowId = executeControllerTask(controller -> {
+            // 1. Ensure that externally added items have a valid item id
+            int id = controller.generateNewItemId();
+            values.put(LauncherSettings.Favorites._ID, id);
 
-        SqlArguments args = new SqlArguments(uri);
-        int rowId = getModelDbController().insert(args.table, initialValues);
-        if (rowId < 0) return null;
+            // 2. In the case of an app widget, and if no app widget id is specified, we
+            // attempt allocate and bind the widget.
+            Integer itemType = values.getAsInteger(Favorites.ITEM_TYPE);
+            if (itemType != null
+                    && itemType.intValue() == Favorites.ITEM_TYPE_APPWIDGET
+                    && !values.containsKey(Favorites.APPWIDGET_ID)) {
 
-        uri = ContentUris.withAppendedId(uri, rowId);
-        reloadLauncherIfExternal();
-        return uri;
-    }
+                ComponentName cn = ComponentName.unflattenFromString(
+                        values.getAsString(Favorites.APPWIDGET_PROVIDER));
+                if (cn == null) {
+                    return 0;
+                }
 
-    private boolean initializeExternalAdd(ContentValues values) {
-        // 1. Ensure that externally added items have a valid item id
-        int id = getModelDbController().generateNewItemId();
-        values.put(LauncherSettings.Favorites._ID, id);
-
-        // 2. In the case of an app widget, and if no app widget id is specified, we
-        // attempt allocate and bind the widget.
-        Integer itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        if (itemType != null &&
-                itemType.intValue() == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
-                !values.containsKey(LauncherSettings.Favorites.APPWIDGET_ID)) {
-
-            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
-            ComponentName cn = ComponentName.unflattenFromString(
-                    values.getAsString(Favorites.APPWIDGET_PROVIDER));
-
-            if (cn != null) {
                 LauncherWidgetHolder widgetHolder = LauncherWidgetHolder.newInstance(getContext());
                 try {
                     int appWidgetId = widgetHolder.allocateAppWidgetId();
                     values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
-                    if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
+                    if (!AppWidgetManager.getInstance(getContext())
+                            .bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
                         widgetHolder.deleteAppWidgetId(appWidgetId);
-                        return false;
+                        return 0;
                     }
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Failed to initialize external widget", e);
-                    return false;
+                    return 0;
                 } finally {
                     // Necessary to destroy the holder to free up possible activity context
                     widgetHolder.destroy();
                 }
-            } else {
-                return false;
             }
-        }
 
-        return true;
-    }
+            SqlArguments args = new SqlArguments(uri);
+            return controller.insert(args.table, values);
+        });
 
-    @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
-        SqlArguments args = new SqlArguments(uri);
-        getModelDbController().bulkInsert(args.table, values);
-        reloadLauncherIfExternal();
-        return values.length;
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
-            throws OperationApplicationException {
-        try (SQLiteTransaction t = getModelDbController().newTransaction()) {
-            final int numOperations = operations.size();
-            final ContentProviderResult[] results = new ContentProviderResult[numOperations];
-            for (int i = 0; i < numOperations; i++) {
-                ContentProviderOperation op = operations.get(i);
-                results[i] = op.apply(this, results, i);
-            }
-            t.commit();
-            reloadLauncherIfExternal();
-            return results;
-        }
+        return rowId < 0 ? null : ContentUris.withAppendedId(uri, rowId);
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
-        int count = getModelDbController().delete(args.table, args.where, args.args);
-        if (count > 0) {
-            reloadLauncherIfExternal();
-        }
-        return count;
+        return executeControllerTask(c -> c.delete(args.table, args.where, args.args));
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
-        int count = getModelDbController().update(args.table, values, args.where, args.args);
-        reloadLauncherIfExternal();
-        return count;
+        return executeControllerTask(c -> c.update(args.table, values, args.where, args.args));
     }
 
-    @Override
-    public Bundle call(String method, final String arg, final Bundle extras) {
-        if (Binder.getCallingUid() != Process.myUid()) {
-            return null;
+    private int executeControllerTask(ToIntFunction<ModelDbController> task) {
+        if (Binder.getCallingPid() == Process.myPid()) {
+            throw new IllegalArgumentException("Same process should call model directly");
         }
-
-        switch (method) {
-            case LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG: {
-                getModelDbController().clearEmptyDbFlag();
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
-                Bundle result = new Bundle();
-                result.putIntArray(LauncherSettings.Settings.EXTRA_VALUE,
-                        getModelDbController().deleteEmptyFolders().toArray());
-                return result;
-            }
-            case LauncherSettings.Settings.METHOD_NEW_ITEM_ID: {
-                Bundle result = new Bundle();
-                result.putInt(LauncherSettings.Settings.EXTRA_VALUE,
-                        getModelDbController().generateNewItemId());
-                return result;
-            }
-            case LauncherSettings.Settings.METHOD_NEW_SCREEN_ID: {
-                Bundle result = new Bundle();
-                result.putInt(LauncherSettings.Settings.EXTRA_VALUE,
-                        getModelDbController().getNewScreenId());
-                return result;
-            }
-            case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
-                getModelDbController().createEmptyDB();
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
-                getModelDbController().loadDefaultFavoritesIfNecessary();
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS: {
-                getModelDbController().removeGhostWidgets();
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_NEW_TRANSACTION: {
-                Bundle result = new Bundle();
-                result.putBinder(LauncherSettings.Settings.EXTRA_VALUE,
-                        getModelDbController().newTransaction());
-                return result;
-            }
-            case LauncherSettings.Settings.METHOD_REFRESH_HOTSEAT_RESTORE_TABLE: {
-                getModelDbController().refreshHotseatRestoreTable();
-                return null;
-            }
+        try {
+            return MODEL_EXECUTOR.submit(() -> {
+                LauncherModel model = LauncherAppState.getInstance(getContext()).getModel();
+                int count = task.applyAsInt(model.getModelDbController());
+                if (count > 0) {
+                    MAIN_EXECUTOR.submit(model::forceReload);
+                }
+                return count;
+            }).get();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
-        return null;
     }
 
     static class SqlArguments {

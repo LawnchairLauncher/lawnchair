@@ -22,16 +22,7 @@ import androidx.test.uiautomator.UiObject2;
  */
 class AllAppsQsb extends Qsb {
 
-    private final UiObject2 mAllAppsContainer;
-
     AllAppsQsb(LauncherInstrumentation launcher, UiObject2 allAppsContainer) {
-        super(launcher);
-        mAllAppsContainer = allAppsContainer;
-        waitForQsbObject();
-    }
-
-    @Override
-    protected UiObject2 waitForQsbObject() {
-        return mLauncher.waitForObjectInContainer(mAllAppsContainer, "search_container_all_apps");
+        super(launcher, allAppsContainer, "search_container_all_apps");
     }
 }

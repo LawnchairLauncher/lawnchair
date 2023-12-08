@@ -15,10 +15,10 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.Utilities.mapRange;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 
 import android.animation.Animator;
@@ -95,11 +95,10 @@ public class AllSetActivity extends Activity {
 
     private static final float ANIMATION_PAUSE_ALPHA_THRESHOLD = 0.1f;
 
-    private TISBindHelper mTISBindHelper;
-    private TISBinder mBinder;
-    @Nullable private TaskbarManager mTaskbarManager = null;
-
     private final AnimatedFloat mSwipeProgress = new AnimatedFloat(this::onSwipeProgressUpdate);
+
+    private TISBindHelper mTISBindHelper;
+
     private BgDrawable mBackground;
     private View mRootView;
     private float mSwipeUpShift;
@@ -174,7 +173,7 @@ public class AllSetActivity extends Activity {
                         LOTTIE_TERTIARY_COLOR_TOKEN, R.color.all_set_bg_tertiary),
                 getTheme());
 
-        startBackgroundAnimation();
+        startBackgroundAnimation(dp.isTablet);
     }
 
     private void runOnUiHelperThread(Runnable runnable) {
@@ -185,7 +184,7 @@ public class AllSetActivity extends Activity {
         Executors.UI_HELPER_EXECUTOR.execute(runnable);
     }
 
-    private void startBackgroundAnimation() {
+    private void startBackgroundAnimation(boolean forTablet) {
         if (!Utilities.ATLEAST_S || mVibrator == null) {
             return;
         }
@@ -201,7 +200,7 @@ public class AllSetActivity extends Activity {
                     .addPrimitive(supportsThud
                                     ? VibrationEffect.Composition.PRIMITIVE_THUD
                                     : VibrationEffect.Composition.PRIMITIVE_TICK,
-                            /* scale= */ 1.0f,
+                            /* scale= */ forTablet ? 1.0f : 0.3f,
                             /* delay= */ 50)
                     .compose();
 
@@ -233,29 +232,30 @@ public class AllSetActivity extends Activity {
     }
 
     private void setSetupUIVisible(boolean visible) {
-        if (mBinder == null || mTaskbarManager == null) return;
-        mTaskbarManager.setSetupUIVisible(visible);
+        TaskbarManager taskbarManager = mTISBindHelper.getTaskbarManager();
+        if (taskbarManager == null) return;
+        taskbarManager.setSetupUIVisible(visible);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         maybeResumeOrPauseBackgroundAnimation();
-        if (mBinder != null) {
+        TISBinder binder = mTISBindHelper.getBinder();
+        if (binder != null) {
             setSetupUIVisible(true);
-            mBinder.setSwipeUpProxy(this::createSwipeUpProxy);
+            binder.setSwipeUpProxy(this::createSwipeUpProxy);
         }
     }
 
     private void onTISConnected(TISBinder binder) {
-        mBinder = binder;
-        mTaskbarManager = mBinder.getTaskbarManager();
         setSetupUIVisible(isResumed());
-        mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
-        mBinder.setOverviewTargetChangeListener(mBinder::preloadOverviewForSUWAllSet);
-        mBinder.preloadOverviewForSUWAllSet();
-        if (mTaskbarManager != null) {
-            mLauncherStartAnim = mTaskbarManager.createLauncherStartFromSuwAnim(MAX_SWIPE_DURATION);
+        binder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
+        binder.setOverviewTargetChangeListener(binder::preloadOverviewForSUWAllSet);
+        binder.preloadOverviewForSUWAllSet();
+        TaskbarManager taskbarManager = binder.getTaskbarManager();
+        if (taskbarManager != null) {
+            mLauncherStartAnim = taskbarManager.createLauncherStartFromSuwAnim(MAX_SWIPE_DURATION);
         }
     }
 
@@ -271,10 +271,11 @@ public class AllSetActivity extends Activity {
     }
 
     private void clearBinderOverride() {
-        if (mBinder != null) {
+        TISBinder binder = mTISBindHelper.getBinder();
+        if (binder != null) {
             setSetupUIVisible(false);
-            mBinder.setSwipeUpProxy(null);
-            mBinder.setOverviewTargetChangeListener(null);
+            binder.setSwipeUpProxy(null);
+            binder.setOverviewTargetChangeListener(null);
         }
     }
 
@@ -302,7 +303,7 @@ public class AllSetActivity extends Activity {
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {
-        if (state.getRunningTaskId() != getTaskId()) {
+        if (state.getTopRunningTaskId() != getTaskId()) {
             return null;
         }
         mSwipeProgress.updateValue(0);

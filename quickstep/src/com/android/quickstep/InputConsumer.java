@@ -21,9 +21,6 @@ import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.android.launcher3.tracing.InputConsumerProto;
-import com.android.launcher3.tracing.TouchInteractionServiceProto;
-
 @TargetApi(Build.VERSION_CODES.O)
 public interface InputConsumer {
 
@@ -42,6 +39,7 @@ public interface InputConsumer {
     int TYPE_TASKBAR_STASH = 1 << 12;
     int TYPE_STATUS_BAR = 1 << 13;
     int TYPE_CURSOR_HOVER = 1 << 14;
+    int TYPE_NAV_HANDLE_LONG_PRESS = 1 << 15;
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
@@ -59,6 +57,7 @@ public interface InputConsumer {
             "TYPE_TASKBAR_STASH",           // 12
             "TYPE_STATUS_BAR",              // 13
             "TYPE_CURSOR_HOVER",            // 14
+            "TYPE_NAV_HANDLE_LONG_PRESS",   // 15
     };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;
@@ -127,21 +126,4 @@ public interface InputConsumer {
         }
         return name.toString();
     }
-
-    /**
-     * Used for winscope tracing, see launcher_trace.proto
-     * @see com.android.systemui.shared.tracing.ProtoTraceable#writeToProto
-     * @param serviceProto The parent of this proto message.
-     */
-    default void writeToProto(TouchInteractionServiceProto.Builder serviceProto) {
-        InputConsumerProto.Builder inputConsumerProto = InputConsumerProto.newBuilder();
-        inputConsumerProto.setName(getName());
-        writeToProtoInternal(inputConsumerProto);
-        serviceProto.setInputConsumer(inputConsumerProto);
-    }
-
-    /**
-     * @see #writeToProto - allows subclasses to write additional info to the proto.
-     */
-    default void writeToProtoInternal(InputConsumerProto.Builder inputConsumerProto) {}
 }

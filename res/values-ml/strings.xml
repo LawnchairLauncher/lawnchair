@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"വ്യക്തിപരം"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ജോലി"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"സംഭാഷണങ്ങൾ"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"കുറിപ്പ് രേഖപ്പെടുത്തൽ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ഉപകാരപ്രദമായ വിവരങ്ങൾ നിങ്ങളുടെ വിരൽത്തുമ്പിൽ"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"ആപ്പുകൾ തുറക്കാതെ വിവരങ്ങൾ ലഭിക്കാൻ, നിങ്ങൾക്ക് ഹോം സ്ക്രീനിലേക്ക് വിജറ്റുകൾ ചേർക്കാം"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"വിജറ്റ് ക്രമീകരണം മാറ്റാൻ ടാപ്പ് ചെയ്യുക"</string>
@@ -120,7 +119,7 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"നീക്കംചെയ്യുക"</string>
     <string name="abandoned_search" msgid="891119232568284442">"തിരയുക"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ഈ അപ്ലിക്കേഷൻ ഇൻസ്റ്റാളുചെയ്‌തിട്ടില്ല"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ഈ ഐക്കണുവേണ്ടി അപ്ലിക്കേഷൻ ഇൻസ്റ്റാളുചെയ്‌തിട്ടില്ല. നിങ്ങൾക്കത് നീക്കംചെയ്യാനാകും അല്ലെങ്കിൽ അപ്ലിക്കേഷനുവേണ്ടി തിരഞ്ഞുകൊണ്ട് അത് സ്വയമേവ ഇൻസ്റ്റാളുചെയ്യുക."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ഈ ഐക്കണുവേണ്ടി അപ്ലിക്കേഷൻ ഇൻസ്റ്റാളുചെയ്‌തിട്ടില്ല. നിങ്ങൾക്കത് നീക്കംചെയ്യാനാകും അല്ലെങ്കിൽ അപ്ലിക്കേഷനുവേണ്ടി തിരഞ്ഞുകൊണ്ട് അത് സ്വമേധയാ ഇൻസ്റ്റാളുചെയ്യുക."</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ഇൻസ്‌റ്റാൾ ചെയ്യുന്നു, <xliff:g id="PROGRESS">%2$s</xliff:g> പൂർത്തിയായി"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ഡൗൺലോഡ് ചെയ്യുന്നു, <xliff:g id="PROGRESS">%2$s</xliff:g> പൂർത്തിയായി"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"ഇൻസ്റ്റാൾ ചെയ്യാൻ <xliff:g id="NAME">%1$s</xliff:g> കാക്കുന്നു"</string>

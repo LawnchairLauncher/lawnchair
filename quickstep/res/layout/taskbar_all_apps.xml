@@ -14,18 +14,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView
+<com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:accessibilityPaneTitle="@string/all_apps_label">
-
-    <com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView
-        android:id="@+id/apps_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="true"
-        android:clipToPadding="false"
-        android:focusable="false"
-        android:saveEnabled="false" />
-</com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView>
+    android:clipChildren="true"
+    android:clipToPadding="false"
+    android:focusable="false"
+    android:saveEnabled="false" />

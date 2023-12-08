@@ -15,20 +15,27 @@
  */
 package com.android.launcher3.taskbar.allapps;
 
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 
-import android.animation.PropertyValuesHolder;
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.Interpolator;
 import android.window.OnBackInvokedDispatcher;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsViewController.TaskbarAllAppsCallbacks;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
@@ -37,8 +44,11 @@ import com.android.launcher3.views.AbstractSlideInView;
 /** Wrapper for taskbar all apps with slide-in behavior. */
 public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverlayContext>
         implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
+    private final Handler mHandler;
+
     private TaskbarAllAppsContainerView mAppsView;
     private float mShiftRange;
+    private @Nullable Runnable mShowOnFullyAttachedToWindowRunnable;
 
     // Initialized in init.
     private TaskbarAllAppsCallbacks mAllAppsCallbacks;
@@ -50,6 +60,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mHandler = new Handler(Looper.myLooper());
     }
 
     void init(TaskbarAllAppsCallbacks callbacks) {
@@ -58,20 +69,51 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     /** Opens the all apps view. */
     void show(boolean animate) {
-        if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
             return;
         }
         mIsOpen = true;
-        attachToContainer();
 
-        if (animate) {
-            mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator.setInterpolator(EMPHASIZED);
-            mOpenCloseAnimator.setDuration(mAllAppsCallbacks.getOpenDuration()).start();
-        } else {
+        addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                removeOnAttachStateChangeListener(this);
+                // Wait for view and its descendants to be fully attached before starting open.
+                mShowOnFullyAttachedToWindowRunnable = () -> showOnFullyAttachedToWindow(animate);
+                mHandler.post(mShowOnFullyAttachedToWindowRunnable);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                removeOnAttachStateChangeListener(this);
+            }
+        });
+        attachToContainer();
+    }
+
+    private void showOnFullyAttachedToWindow(boolean animate) {
+        mAllAppsCallbacks.onAllAppsTransitionStart(true);
+        if (!animate) {
+            mAllAppsCallbacks.onAllAppsTransitionEnd(true);
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
+            return;
         }
+
+        setUpOpenAnimation(mAllAppsCallbacks.getOpenDuration());
+        Animator animator = mOpenCloseAnimation.getAnimationPlayer();
+        animator.setInterpolator(EMPHASIZED);
+        animator.addListener(AnimatorListeners.forEndCallback(() -> {
+            if (mIsOpen) {
+                mAllAppsCallbacks.onAllAppsTransitionEnd(true);
+            }
+        }));
+        animator.start();
+    }
+
+    @Override
+    protected void onOpenCloseAnimationPending(PendingAnimation animation) {
+        mAllAppsCallbacks.onAllAppsAnimationPending(
+                animation, mToTranslationShift == TRANSLATION_SHIFT_OPENED);
     }
 
     /** The apps container inside this view. */
@@ -81,7 +123,20 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected void handleClose(boolean animate) {
+        if (mShowOnFullyAttachedToWindowRunnable != null) {
+            mHandler.removeCallbacks(mShowOnFullyAttachedToWindowRunnable);
+            mShowOnFullyAttachedToWindowRunnable = null;
+        }
+        if (mIsOpen) {
+            mAllAppsCallbacks.onAllAppsTransitionStart(false);
+        }
         handleClose(animate, mAllAppsCallbacks.getCloseDuration());
+    }
+
+    @Override
+    protected void onCloseComplete() {
+        mAllAppsCallbacks.onAllAppsTransitionEnd(false);
+        super.onCloseComplete();
     }
 
     @Override
@@ -193,5 +248,12 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     @Override
     protected boolean isEventOverContent(MotionEvent ev) {
         return getPopupContainer().isEventOverView(mAppsView.getVisibleContainerView(), ev);
+    }
+
+    @Override
+    public void onBackInvoked() {
+        if (!mAllAppsCallbacks.handleSearchBackInvoked()) {
+            super.onBackInvoked();
+        }
     }
 }

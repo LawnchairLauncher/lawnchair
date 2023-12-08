@@ -24,16 +24,21 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.taskbar.TaskbarInsetsController;
+import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.SystemUiProxy;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Controller for {@link BubbleBarView}. Manages the visibility of the bubble bar as well as
@@ -51,6 +56,9 @@ public class BubbleBarViewController {
     // Initialized in init.
     private BubbleStashController mBubbleStashController;
     private BubbleBarController mBubbleBarController;
+    private BubbleDragController mBubbleDragController;
+    private TaskbarStashController mTaskbarStashController;
+    private TaskbarInsetsController mTaskbarInsetsController;
     private View.OnClickListener mBubbleClickListener;
     private View.OnClickListener mBubbleBarClickListener;
 
@@ -80,6 +88,9 @@ public class BubbleBarViewController {
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
         mBubbleStashController = bubbleControllers.bubbleStashController;
         mBubbleBarController = bubbleControllers.bubbleBarController;
+        mBubbleDragController = bubbleControllers.bubbleDragController;
+        mTaskbarStashController = controllers.taskbarStashController;
+        mTaskbarInsetsController = controllers.taskbarInsetsController;
 
         mActivity.addOnDeviceProfileChangeListener(dp ->
                 mBarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarHeight
@@ -88,12 +99,15 @@ public class BubbleBarViewController {
         mBubbleBarScale.updateValue(1f);
         mBubbleClickListener = v -> onBubbleClicked(v);
         mBubbleBarClickListener = v -> setExpanded(true);
+        mBubbleDragController.setupBubbleBarView(mBarView);
         mBarView.setOnClickListener(mBubbleBarClickListener);
-        // TODO: when barView layout changes tell taskbarInsetsController the insets have changed.
+        mBarView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
+                mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
+        );
     }
 
     private void onBubbleClicked(View v) {
-        BubbleBarBubble bubble = ((BubbleView) v).getBubble();
+        BubbleBarItem bubble = ((BubbleView) v).getBubble();
         if (bubble == null) {
             Log.e(TAG, "bubble click listener, bubble was null");
         }
@@ -103,9 +117,7 @@ public class BubbleBarViewController {
             setExpanded(false);
             mBubbleStashController.stashBubbleBar();
         } else {
-            mBubbleBarController.setSelectedBubble(bubble);
-            mSystemUiProxy.showBubble(bubble.getKey(),
-                    mBubbleStashController.isBubblesShowingOnHome());
+            mBubbleBarController.showAndSelectBubble(bubble);
         }
     }
 
@@ -133,11 +145,21 @@ public class BubbleBarViewController {
         return mBarView.getVisibility() == VISIBLE;
     }
 
+    /** Whether the bubble bar has bubbles. */
+    public boolean hasBubbles() {
+        return mBubbleBarController.getSelectedBubbleKey() != null;
+    }
+
     /**
      * The bounds of the bubble bar.
      */
     public Rect getBubbleBarBounds() {
         return mBarView.getBubbleBarBounds();
+    }
+
+    /** The horizontal margin of the bubble bar from the edge of the screen. */
+    public int getHorizontalMargin() {
+        return mBarView.getHorizontalMargin();
     }
 
     /**
@@ -176,6 +198,12 @@ public class BubbleBarViewController {
         }
     }
 
+    /** Sets a callback that updates the selected bubble after the bubble bar collapses. */
+    public void setUpdateSelectedBubbleAfterCollapse(
+            Consumer<String> updateSelectedBubbleAfterCollapse) {
+        mBarView.setUpdateSelectedBubbleAfterCollapse(updateSelectedBubbleAfterCollapse);
+    }
+
     /**
      * Sets whether the bubble bar should be hidden due to SysUI state (e.g. on lockscreen).
      */
@@ -188,10 +216,12 @@ public class BubbleBarViewController {
 
     // TODO: (b/273592694) animate it
     private void updateVisibilityForStateChange() {
-        if (!mHiddenForSysui && !mBubbleStashController.isStashed() && !mHiddenForNoBubbles) {
+        if (!mHiddenForSysui && !mHiddenForNoBubbles) {
             mBarView.setVisibility(VISIBLE);
         } else {
             mBarView.setVisibility(INVISIBLE);
+            mBarView.setAlpha(0);
+            mBarView.setExpanded(false);
         }
     }
 
@@ -228,7 +258,7 @@ public class BubbleBarViewController {
     /**
      * Removes the provided bubble from the bubble bar.
      */
-    public void removeBubble(BubbleBarBubble b) {
+    public void removeBubble(BubbleBarItem b) {
         if (b != null) {
             mBarView.removeView(b.getView());
         } else {
@@ -239,10 +269,11 @@ public class BubbleBarViewController {
     /**
      * Adds the provided bubble to the bubble bar.
      */
-    public void addBubble(BubbleBarBubble b) {
+    public void addBubble(BubbleBarItem b) {
         if (b != null) {
             mBarView.addView(b.getView(), 0, new FrameLayout.LayoutParams(mIconSize, mIconSize));
             b.getView().setOnClickListener(mBubbleClickListener);
+            mBubbleDragController.setupBubbleView(b.getView());
         } else {
             Log.w(TAG, "addBubble, bubble was null!");
         }
@@ -260,7 +291,7 @@ public class BubbleBarViewController {
     /**
      * Updates the selected bubble.
      */
-    public void updateSelectedBubble(BubbleBarBubble newlySelected) {
+    public void updateSelectedBubble(BubbleBarItem newlySelected) {
         mBarView.setSelectedBubble(newlySelected.getView());
     }
 
@@ -276,14 +307,9 @@ public class BubbleBarViewController {
             if (!isExpanded) {
                 mSystemUiProxy.collapseBubbles();
             } else {
-                final String selectedKey = mBubbleBarController.getSelectedBubbleKey();
-                if (selectedKey != null) {
-                    mSystemUiProxy.showBubble(selectedKey,
-                            mBubbleStashController.isBubblesShowingOnHome());
-                } else {
-                    Log.w(TAG, "trying to expand bubbles when there isn't one selected");
-                }
-                // TODO: Tell taskbar stash controller to stash without bubbles following
+                mBubbleBarController.showSelectedBubble();
+                mTaskbarStashController.updateAndAnimateTransientTaskbar(true /* stash */,
+                        false /* shouldBubblesFollow */);
             }
         }
     }
@@ -298,5 +324,47 @@ public class BubbleBarViewController {
         } else {
             mBubbleStashController.showBubbleBar(true /* expand the bubbles */);
         }
+    }
+
+    /**
+     * Updates the dragged bubble view in the bubble bar view, and notifies SystemUI
+     * that a bubble is being dragged to dismiss.
+     * @param bubbleView dragged bubble view
+     */
+    public void onDragStart(@NonNull BubbleView bubbleView) {
+        if (bubbleView.getBubble() == null) return;
+        mSystemUiProxy.onBubbleDrag(bubbleView.getBubble().getKey(), /* isBeingDragged = */ true);
+        mBarView.setDraggedBubble(bubbleView);
+    }
+
+    /**
+     * Notifies SystemUI to expand the selected bubble when the bubble is released.
+     * @param bubbleView dragged bubble view
+     */
+    public void onDragRelease(@NonNull BubbleView bubbleView) {
+        if (bubbleView.getBubble() == null) return;
+        mSystemUiProxy.onBubbleDrag(bubbleView.getBubble().getKey(), /* isBeingDragged = */ false);
+    }
+
+    /**
+     * Removes the dragged bubble view in the bubble bar view
+     */
+    public void onDragEnd() {
+        mBarView.setDraggedBubble(null);
+    }
+
+    /**
+     * Called when bubble was dragged into the dismiss target. Notifies System
+     * @param bubble dismissed bubble item
+     */
+    public void onDismissBubbleWhileDragging(@NonNull BubbleBarItem bubble) {
+        mSystemUiProxy.removeBubble(bubble.getKey());
+    }
+
+    /**
+     * Called when bubble stack was dragged into the dismiss target
+     */
+    public void onDismissAllBubblesWhileDragging() {
+        mSystemUiProxy.removeAllBubbles();
     }
 }

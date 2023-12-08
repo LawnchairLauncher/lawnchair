@@ -230,6 +230,7 @@
     <string name="action_split">Split</string>
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
     <string name="toast_split_select_app">Tap another app to use split screen</string>
+    <string name="toast_split_select_cont_desc">Exit split screen selection</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
     <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
@@ -308,4 +309,10 @@
 
     <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
     <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
+
+    <!-- ******* Desktop ******* -->
+    <!-- Text shown in popup to choose a desktop app. [CHAR LIMIT=60] -->
+    <string name="desktop_select_app_toast">Adding app to Desktop</string>
+    <!-- Text shown on a button that closes the popup for choosing a desktop app. [CHAR_LIMIT=40] -->
+    <string name="desktop_button_close_app_toast">Cancel</string>
 </resources>

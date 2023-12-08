@@ -135,7 +135,7 @@ message TaskBarContainer {
   }
 }
 
-// Next value 51
+// Next value 52
 enum Attribute {
   option allow_alias = true;
 
@@ -187,6 +187,7 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_SYSTEM_POINTER = 42;
   ALL_APPS_SEARCH_RESULT_EDUCARD = 43;
   ALL_APPS_SEARCH_RESULT_LOCATION = 50;
+  ALL_APPS_SEARCH_RESULT_TEXT_HEADER = 51;
 
   // Result sources
   DATA_SOURCE_APPSEARCH_APP_PREVIEW = 45;

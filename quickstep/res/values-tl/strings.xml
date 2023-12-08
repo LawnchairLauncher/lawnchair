@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Naka-enable ang mga iminumungkahing app"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Naka-disable ang mga iminumungkahing app"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Hinulaang app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"I-rotate ang iyong device"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Paki-rotate ang iyong device para tapusin ang tutorial sa navigation gamit ang galaw"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Tiyaking magsa-swipe ka mula sa dulong kanan o dulong kaliwang gilid"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Tiyaking magsa-swipe mula sa kanan o kaliwang gilid papunta sa gitna ng screen at iangat ang daliri"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Tiyaking magsa-swipe ka mula sa dulong kanan o dulong kaliwang gilid."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Tiyaking mag-swipe mula sa kanan o kaliwang gilid papunta sa gitna ng screen at iangat ang daliri."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Natuto kang mag-swipe mula sa kanan para bumalik. Sunod, alamin kung paano magpalipat-lipat ng app."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Nakumpleto mo na ang galaw para bumalik"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Tiyaking hindi ka magsa-swipe nang masyadong malapit sa ibaba ng screen"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Nakumpleto mo na ang galaw para bumalik."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Tiyaking hindi ka magsa-swipe nang masyadong malapit sa ibaba ng screen."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Pumunta sa Settings para baguhin ang sensitivity ng pagbalik"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Mag-swipe para bumalik"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para bumalik sa nakaraang screen, mag-swipe mula sa kaliwa o kanang gilid patungo sa gitna ng screen."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para bumalik sa huling screen, mag-swipe gamit ang 2 daliri mula sa kaliwa o kanang gilid hanggang sa gitna ng screen."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Bumalik"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Mag-swipe mula sa kaliwa o kanang gilid papunta sa gitna ng screen"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Tiyaking magsa-swipe ka pataas mula sa pinakaibaba ng screen"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Tiyaking hindi ka magpo-pause bago iangat ang iyong daliri"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Tiyaking magsa-swipe ka nang diretso pataas"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Nakumpleto mo na ang galaw para pumunta sa home. Susunod, alamin kung paano bumalik."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Nakumpleto mo na ang galaw para pumunta sa home"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Tiyaking magsa-swipe ka pataas mula sa pinakaibaba ng screen."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Tiyaking hindi ka magpo-pause bago iangat ang iyong daliri."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Tiyaking magsa-swipe ka nang diretso pataas."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Nakumpleto mo na ang galaw para pumunta sa Home. Susunod, alamin kung paano bumalik."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Nakumpleto mo na ang galaw para pumunta sa Home."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Mag-swipe para pumunta sa home"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Mag-swipe pataas mula sa ibaba ng iyong screen. Dadalhin ka palagi ng galaw na ito sa Home screen."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Mag-swipe pataas gamit ang 2 daliri mula sa ibaba ng screen. Dadalhin ka palagi nito sa Home screen."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Pumunta sa home"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Mag-swipe pataas mula sa ibabang bahagi ng iyong screen"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Magaling!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Tiyaking magsa-swipe ka pataas mula sa pinakaibaba ng screen"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Subukang pindutin nang mas matagal ang window bago ito bitawan"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Tiyaking magsa-swipe ka nang diretso pataas, pagkatapos ay mag-pause"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Para pumunta sa iyong home screen anumang oras, mag-swipe pataas mula sa ibaba ng screen mo"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Tiyaking magsa-swipe ka pataas mula sa pinakaibaba ng screen."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Subukang pindutin nang mas matagal ang window bago ito bitawan."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Tiyaking magsa-swipe ka nang diretso pataas, pagkatapos ay mag-pause."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Alam mo na kung paano gumamit ng mga galaw. Para i-off ang mga galaw, pumunta sa Mga Setting."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Nakumpleto mo na ang galaw para magpalipat-lipat sa mga app"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Nakumpleto mo na ang galaw para magpalipat-lipat sa mga app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Mag-swipe para lumipat ng app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para lumipat ng app, mag-swipe pataas mula sa ibaba ng iyong screen, mag-hold, at iangat ang daliri."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para lumipat ng app, mag-swipe pataas gamit ang 2 daliri mula sa ibaba, mag-hold, at bumitaw."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Lumipat ng app"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Mag-swipe pataas mula sa ibaba ng iyong screen, i-hold ito saka bitawan"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Magaling!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Handa na ang lahat"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Tapos na"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Mga Setting"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Ipinapakita ang taskbar"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Nakatago ang taskbar"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigation bar"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Palaging ipakita ang Taskbar"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Magpalit ng navigation mode"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Divider ng Taskbar"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Ilipat sa itaas/kaliwa"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Ilipat sa ibaba/kanan"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Magpakita ng # pang app.}one{Magpakita ng # pang app.}other{Magpakita ng # pang app.}}"</string>

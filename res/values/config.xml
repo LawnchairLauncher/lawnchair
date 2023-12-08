@@ -84,6 +84,8 @@
     <string name="window_manager_proxy_class" translatable="false"></string>
     <string name="secondary_display_predictions_class" translatable="false"></string>
     <string name="widget_holder_factory_class" translatable="false"></string>
+    <string name="taskbar_search_session_controller_class" translatable="false"></string>
+    <string name="taskbar_model_callbacks_factory_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -102,8 +104,6 @@
 
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
-    <string name="custom_activity_picker" translatable="false">
-        com.android.customization.picker.CustomizationPickerActivity</string>
     <string name="local_colors_extraction_class" translatable="false"></string>
     <string name="search_session_manager_class" translatable="false"></string>
 
@@ -217,4 +217,28 @@
     <!-- Whether the floating rotation button should be on the left/right in the device's natural
          orientation -->
     <bool name="floating_rotation_button_position_left">true</bool>
+
+    <!--  Mapping of visual icon size to XML value http://b/235886078  -->
+    <dimen name="iconSize48dp">52dp</dimen>
+    <dimen name="iconSize50dp">55dp</dimen>
+    <dimen name="iconSize52dp">57dp</dimen>
+    <dimen name="iconSize54dp">59dp</dimen>
+    <dimen name="iconSize56dp">61dp</dimen>
+    <dimen name="iconSize58dp">63dp</dimen>
+    <dimen name="iconSize60dp">66dp</dimen>
+    <dimen name="iconSize66dp">72dp</dimen>
+    <dimen name="iconSize72dp">79dp</dimen>
+
+    <!--  Icon size steps in dp  -->
+    <integer-array name="icon_size_steps">
+        <item>@dimen/iconSize48dp</item>
+        <item>@dimen/iconSize50dp</item>
+        <item>@dimen/iconSize52dp</item>
+        <item>@dimen/iconSize54dp</item>
+        <item>@dimen/iconSize56dp</item>
+        <item>@dimen/iconSize58dp</item>
+        <item>@dimen/iconSize60dp</item>
+        <item>@dimen/iconSize66dp</item>
+        <item>@dimen/iconSize72dp</item>
+    </integer-array>
 </resources>

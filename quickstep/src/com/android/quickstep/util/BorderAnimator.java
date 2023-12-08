@@ -29,9 +29,9 @@ import android.view.animation.Interpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Px;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
-import com.android.launcher3.anim.Interpolators;
 
 /**
  * Utility class for drawing a rounded-rect border around a view.

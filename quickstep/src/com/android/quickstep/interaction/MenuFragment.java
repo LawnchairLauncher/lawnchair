@@ -19,7 +19,6 @@ import static com.android.quickstep.interaction.GestureSandboxActivity.KEY_GESTU
 import static com.android.quickstep.interaction.GestureSandboxActivity.KEY_TUTORIAL_TYPE;
 import static com.android.quickstep.interaction.GestureSandboxActivity.KEY_USE_TUTORIAL_MENU;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,32 +27,22 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 
 /** Displays the gesture nav tutorial menu. */
 public final class MenuFragment extends GestureSandboxFragment {
 
-    @NonNull private Rect mInsets = new Rect();
-
+    @NonNull
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mInsets = InvariantDeviceProfile.INSTANCE.get(getContext())
-                .getDeviceProfile(getContext()).getInsets();
+    GestureSandboxFragment recreateFragment() {
+        return new MenuFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(
+        final View root = inflater.inflate(
                 R.layout.gesture_tutorial_step_menu, container, false);
-
-        root.setPadding(
-                root.getPaddingLeft() + mInsets.left,
-                root.getPaddingTop() + mInsets.top,
-                root.getPaddingRight() + mInsets.right,
-                root.getPaddingBottom() + mInsets.bottom);
 
         root.findViewById(R.id.gesture_tutorial_menu_home_button).setOnClickListener(
                 v -> launchTutorialStep(TutorialController.TutorialType.HOME_NAVIGATION));

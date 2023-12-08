@@ -17,15 +17,21 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
 
 /**
@@ -65,7 +71,7 @@ public class SplitInstructionsView extends FrameLayout {
         mLauncher = (StatefulActivity) context;
     }
 
-    static SplitInstructionsView getSplitInstructionsView(StatefulActivity launcher) {
+    public static SplitInstructionsView getSplitInstructionsView(StatefulActivity launcher) {
         ViewGroup dragLayer = launcher.getDragLayer();
         final SplitInstructionsView splitInstructionsView =
                 (SplitInstructionsView) launcher.getLayoutInflater().inflate(
@@ -73,9 +79,7 @@ public class SplitInstructionsView extends FrameLayout {
                         dragLayer,
                         false
                 );
-
-        splitInstructionsView.mTextView = splitInstructionsView.findViewById(
-                R.id.split_instructions_text);
+        splitInstructionsView.init();
 
         // Since textview overlays base view, and we sometimes manipulate the alpha of each
         // simultaneously, force overlapping rendering to false prevents redrawing of pixels,
@@ -90,6 +94,71 @@ public class SplitInstructionsView extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         ensureProperRotation();
+    }
+
+    private void init() {
+        mTextView = findViewById(R.id.split_instructions_text);
+
+        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            mTextView.setCompoundDrawables(null, null, null, null);
+            return;
+        }
+
+        mTextView.setOnTouchListener((v, event) -> {
+            if (isTouchInsideRightCompoundDrawable(event)) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    exitSplitSelection();
+                }
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void exitSplitSelection() {
+        ((RecentsView) mLauncher.getOverviewPanel()).getSplitSelectController()
+                .getSplitAnimationController().playPlaceholderDismissAnim(mLauncher);
+        mLauncher.getStateManager().goToState(LauncherState.NORMAL);
+    }
+
+    private boolean isTouchInsideRightCompoundDrawable(MotionEvent event) {
+        // Get the right compound drawable of the TextView.
+        Drawable rightDrawable = mTextView.getCompoundDrawablesRelative()[2];
+
+        // Check if the touch event intersects with the drawable's bounds.
+        if (rightDrawable != null) {
+            // We can get away w/o caring about the Y bounds since it's such a small view, if it's
+            // above/below the drawable just assume they meant to touch it. ¯\_(ツ)_/¯
+            return  event.getX() >= (mTextView.getWidth() - rightDrawable.getBounds().width());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            return;
+        }
+
+        info.addAction(new AccessibilityNodeInfo.AccessibilityAction(
+                R.string.toast_split_select_cont_desc,
+                getResources().getString(R.string.toast_split_select_cont_desc)
+        ));
+    }
+
+    @Override
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            return super.performAccessibilityAction(action, arguments);
+        }
+
+        if (action == R.string.toast_split_select_cont_desc) {
+            exitSplitSelection();
+            return true;
+        }
+        return super.performAccessibilityAction(action, arguments);
     }
 
     void ensureProperRotation() {

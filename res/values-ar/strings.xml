@@ -47,10 +47,9 @@
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"محو النص من مربّع البحث"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"الأدوات والاختصارات غير متاحة."</string>
     <string name="no_search_results" msgid="3787956167293097509">"لم يتم العثور على تطبيقات مصغّرة أو اختصارات."</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"التطبيقات الشخصية"</string>
-    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"تطبيقات العمل"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"الأدوات الشخصية"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"أدوات العمل"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"المحادثات"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"تدوين الملاحظات"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"معلومات مفيدة في متناول يديك"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"للحصول على معلومات بدون فتح التطبيقات، يمكنك إضافة التطبيقات المصغّرة إلى الشاشة الرئيسية."</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"انقر لتغيير إعدادات الأداة"</string>
@@ -83,7 +82,7 @@
     <string name="permlab_write_settings" msgid="4820028712156303762">"تعديل الإعدادات والاختصارات على الشاشة الرئيسية"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"يسمح هذا الإذن للتطبيق بتغيير الإعدادات والاختصارات على الشاشة الرئيسية."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"يتعذّر تحميل الأداة."</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"إعدادات التطبيق المصغّر"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"إعدادات الأداة"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"انقر لإكمال الإعداد."</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"تعديل الاسم"</string>
@@ -101,13 +100,14 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"المجلد: <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="SIZE">%2$d</xliff:g> عنصر أو أكثر"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"الخلفيات"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"الخلفية والأسلوب"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"تعديل الشاشة الرئيسية"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"إعدادات الشاشة الرئيسية"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"أوقف المشرف هذه الميزة"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"السماح بتدوير الشاشة الرئيسية"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"عند تدوير الهاتف"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"نقاط الإشعارات"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"الإعداد مفعّل"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"مفعّلة"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"غير مفعّل"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تمكين الوصول إلى الإشعارات"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تفعيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>

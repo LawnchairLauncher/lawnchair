@@ -32,11 +32,11 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -92,7 +92,8 @@ public class WorkspaceRevealAnim {
         }
 
         // Add sysui scrim animation.
-        mAnimators.play(launcher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f));
+        mAnimators.play(launcher.getRootView().getSysUiScrim()
+                .getSysUIMultiplier().animateToValue(0f, 1f));
 
         mAnimators.setDuration(DURATION_MS);
         mAnimators.setInterpolator(Interpolators.DECELERATED_EASE);

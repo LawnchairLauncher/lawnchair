@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -36,7 +35,6 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
@@ -92,12 +90,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         }
 
         setInsets(mActivityContext.getDeviceProfile().getInsets());
-        StringCache cache = mActivityContext.getStringCache();
-        if (cache != null) {
-            mTextView.setText(cache.workProfilePauseButton);
-        }
-
-        getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        updateStringFromCache();
     }
 
     @Override
@@ -108,7 +101,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         if (lp != null) {
             int bottomMargin = getResources().getDimensionPixelSize(R.dimen.work_fab_margin_bottom);
             DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
-            if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            if (mActivityContext.getAppsView().isSearchBarFloating()) {
                 bottomMargin += dp.hotseatQsbHeight;
             }
 
@@ -212,5 +205,12 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public int getScrollThreshold() {
         return mScrollThreshold;
+    }
+
+    public void updateStringFromCache(){
+        StringCache cache = mActivityContext.getStringCache();
+        if (cache != null) {
+            mTextView.setText(cache.workProfilePauseButton);
+        }
     }
 }

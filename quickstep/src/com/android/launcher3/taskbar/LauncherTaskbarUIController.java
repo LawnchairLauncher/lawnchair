@@ -317,6 +317,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                     .getTaskbarNavButtonTranslationYForInAppDisplay()
                     .updateValue(mLauncher.getDeviceProfile().getTaskbarOffsetY()
                             * mTaskbarInAppDisplayProgress.value);
+            mControllers.navbarButtonsViewController
+                    .getOnTaskbarBackgroundNavButtonColorOverride().updateValue(progress);
         }
     }
 

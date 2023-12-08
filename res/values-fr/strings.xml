@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personnels"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Professionnels"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversations"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Prise de notes"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Infos utiles à portée de main"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Pour obtenir des infos sans ouvrir d\'applis, vous pouvez ajouter des widgets à votre écran d\'accueil"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Appuyez pour modifier les paramètres du widget"</string>
@@ -101,14 +100,15 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Dossier : <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> éléments ou plus"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fonds d\'écran"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Fond d\'écran et style"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"Modifier l\'écran d\'accueil"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Paramètres de l\'accueil"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Désactivé par votre administrateur"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Autoriser la rotation de l\'écran d\'accueil"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Lorsque vous faites pivoter le téléphone"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Pastilles de notification"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activé"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Désactivé"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Désactivées"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Accès aux notifications requis"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les pastilles de notification, activez les notifications de l\'application <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
@@ -162,7 +162,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil professionnel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les applis professionnelles sont identifiées par un badge et votre administrateur informatique peut les voir"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Applis professionnelles en pause"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Applications professionnelles en veille"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Vous ne recevrez pas de notifications de vos applications professionnelles"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Vos applis professionnelles ne peuvent pas vous envoyer de notifications, utiliser votre batterie ni accéder à votre position"</string>
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Vous ne recevrez pas d\'appels téléphoniques, de messages ni de notifications de vos applications professionnelles"</string>

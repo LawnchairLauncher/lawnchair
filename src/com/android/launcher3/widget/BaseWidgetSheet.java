@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICKER;
 
 import android.content.Context;

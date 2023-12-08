@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Les suggestions d\'applications sont activées"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Les suggestions d\'applications sont désactivées"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Application prédite : <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Faites pivoter votre appareil"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Veuillez faire pivoter votre appareil pour terminer le tutoriel de navigation par gestes"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite ou gauche"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite ou gauche vers le centre, puis allons-y"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite ou gauche."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Balayez l\'écran de l\'extrémité droite ou gauche jusqu\'au centre de l\'écran, puis levez le doigt."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Vous avez appris à balayer de la droite pour revenir en arrière. Apprenez comment changer d\'appli."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Vous avez appris le geste de retour en arrière"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Assurez-vous de ne pas balayer trop près du bas de l\'écran"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Vous avez appris le geste de retour en arrière."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Assurez-vous de ne pas balayer trop près du bas de l\'écran."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Modifiez la sensibilité du geste de retour dans Paramètres"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Balayez l\'écran pour revenir en arrière"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pour revenir à l\'écran précédent, balayez l\'écran de l\'extrémité gauche ou droite vers le centre."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pour revenir à l\'écran précédent, balayez l\'écran avec deux doigts du bord gauche ou droit jusqu\'au centre."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Retour"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Balayez l\'écran à partir du bord gauche ou droit de l\'écran vers le centre"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Assurez-vous de ne pas interrompre le geste avant de lever le doigt"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Assurez-vous de balayer l\'écran en ligne droite vers le haut"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Vous avez appris le geste de retour à l\'écran d\'accueil. Maintenant, apprenez à revenir en arrière."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Vous avez appris le geste de retour à l\'écran d\'accueil"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Assurez-vous de ne pas interrompre le geste avant de lever le doigt."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Assurez-vous de balayer l\'écran en ligne droite vers le haut."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Vous avez appris le geste de retour à l\'écran d\'accueil. Maintenant, apprenez à revenir en arrière."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Vous avez appris le geste de retour à l\'écran d\'accueil."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Balayez pour revenir à l\'écran d\'accueil"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Balayez l\'écran du bas vers le haut. Ce geste vous ramène toujours à l\'écran d\'accueil."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Balayez l\'écran de bas en haut avec deux doigts. Ce geste vous ramène toujours à l\'écran d\'accueil."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Retour à la page d\'accueil"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Balayez votre écran du bas vers le haut"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Super!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Essayez de tenir la fenêtre plus longtemps avant de relâcher"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Assurez-vous de balayer l\'écran vers le haut, puis de faire une pause"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Pour accéder à votre écran d\'accueil à tout moment, balayez l\'écran du bas vers le haut"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Essayez de tenir la fenêtre plus longtemps avant de relâcher."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Assurez-vous de balayer l\'écran en ligne droite vers le haut, puis de faire une pause."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Vous avez appris à utiliser les gestes. Pour les désactiver, accédez au menu Paramètres."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Vous avez appris le geste de changement d\'application"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Vous avez appris le geste de changement d\'application."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Balayez pour basculer entre les applications"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pour changer d\'application, balayez l\'écran de bas en haut, maintenez le doigt dessus, puis relâchez-le."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pour changer d\'application, balayez l\'écran de bas en haut, maintenez le doigt, puis relâchez-le."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Pour changer d\'appli, balayez l\'écran de bas en haut avec deux doigts, maintenez-les et relâchez-les."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Changer d\'application"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Balayez l\'écran de bas en haut, maintenez le doigt en place, puis relâchez-le"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Bien joué!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Terminé"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"OK"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Paramètres"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Barre des tâches affichée"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Barre des tâches masquée"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barre de navigation"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Touj. afficher barre des tâches"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Changer de mode de navigation"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Séparateur de la barre des tâches"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Déplacer vers le coin supérieur gauche de l\'écran"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Déplacer vers le coin inférieur droit de l\'écran"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Afficher # autre application.}one{Afficher # autre application.}other{Afficher # autres applications.}}"</string>

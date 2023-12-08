@@ -38,6 +38,8 @@
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <!--  The icon size for the focused task, placed in center of touch target  -->
     <dimen name="task_thumbnail_icon_drawable_size">44dp</dimen>
+    <!--  The border width shown when task is hovered  -->
+    <dimen name="task_hover_border_width">4dp</dimen>
     <!--  The space under the focused task icon  -->
     <dimen name="overview_task_margin">16dp</dimen>
     <!--  The horizontal space between tasks  -->
@@ -269,6 +271,9 @@
     <dimen name="floating_rotation_button_taskbar_left_margin">20dp</dimen>
     <dimen name="floating_rotation_button_taskbar_bottom_margin">10dp</dimen>
 
+    <!-- Copied from frameworks/base/packages/SystemUI -->
+    <dimen name="navigation_home_handle_width">108dp</dimen>
+
     <!-- Taskbar -->
     <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
     <dimen name="taskbar_ime_size">48dp</dimen>
@@ -323,6 +328,12 @@
     <!-- Taskbar swipe down threshold -->
     <dimen name="taskbar_to_nav_threshold">24dp</dimen>
 
+    <!-- Taskbar swipe up threshold multipliers -->
+    <item name="taskbar_nav_threshold_mult" format="float" type="dimen">4.5</item>
+    <item name="taskbar_app_window_threshold_mult" format="float" type="dimen">10</item>
+    <item name="taskbar_home_overview_threshold_mult" format="float" type="dimen">18</item>
+    <item name="taskbar_catch_up_threshold_mult" format="float" type="dimen">30</item>
+
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>
     <dimen name="taskbar_button_space_inbetween_phone">40dp</dimen>
@@ -356,12 +367,21 @@
     <dimen name="bubblebar_stashed_size">@dimen/transient_taskbar_stashed_height</dimen>
     <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
     <dimen name="bubblebar_pointer_size">8dp</dimen>
+    <dimen name="bubblebar_elevation">1dp</dimen>
 
     <dimen name="bubblebar_icon_size">50dp</dimen>
     <dimen name="bubblebar_badge_size">24dp</dimen>
     <dimen name="bubblebar_icon_overlap">12dp</dimen>
+    <dimen name="bubblebar_overflow_inset">24dp</dimen>
     <dimen name="bubblebar_icon_spacing">3dp</dimen>
     <dimen name="bubblebar_icon_elevation">1dp</dimen>
+
+    <!-- Bubble bar dismiss view -->
+    <dimen name="bubblebar_dismiss_target_size">96dp</dimen>
+    <dimen name="bubblebar_dismiss_target_small_size">60dp</dimen>
+    <dimen name="bubblebar_dismiss_target_icon_size">24dp</dimen>
+    <dimen name="bubblebar_dismiss_target_bottom_margin">50dp</dimen>
+    <dimen name="bubblebar_dismiss_floating_gradient_height">548dp</dimen>
 
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
@@ -383,4 +403,12 @@
     <dimen name="keyboard_quick_switch_task_view_radius">16dp</dimen>
     <dimen name="keyboard_quick_switch_no_recent_items_icon_size">24dp</dimen>
     <dimen name="keyboard_quick_switch_no_recent_items_icon_margin">8dp</dimen>
+
+    <!-- Desktop mode -->
+    <dimen name="desktop_mode_floating_app_select_height">56dp</dimen>
+    <dimen name="desktop_mode_floating_app_select_elevation">4dp</dimen>
+    <dimen name="desktop_mode_floating_app_select_margin">16dp</dimen>
+    <dimen name="desktop_mode_floating_app_select_text_size">14sp</dimen>
+    <dimen name="desktop_mode_floating_app_select_text_margin">8dp</dimen>
+
 </resources>

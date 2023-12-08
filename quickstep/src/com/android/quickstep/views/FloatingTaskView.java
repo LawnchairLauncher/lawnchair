@@ -1,8 +1,8 @@
 package com.android.quickstep.views;
 
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -213,8 +212,8 @@ public class FloatingTaskView extends FrameLayout {
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
     }
 
-    public void setIcon(Bitmap icon) {
-        mSplitPlaceholderView.setIcon(new BitmapDrawable(icon), mSplitHolderSize);
+    public void setIcon(Drawable drawable) {
+        mSplitPlaceholderView.setIcon(drawable, mSplitHolderSize);
     }
 
     protected void initPosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {

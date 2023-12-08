@@ -17,24 +17,22 @@ package com.android.launcher3.views;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.allapps.AllAppsTransitionController.REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS;
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Property;
+import android.util.FloatProperty;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,10 +45,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.annotation.RequiresApi;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 
@@ -66,8 +67,8 @@ import java.util.Optional;
 public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         extends AbstractFloatingView implements SingleAxisSwipeDetector.Listener {
 
-    protected static final Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
-            new Property<AbstractSlideInView, Float>(Float.class, "translationShift") {
+    protected static final FloatProperty<AbstractSlideInView<?>> TRANSLATION_SHIFT =
+            new FloatProperty<>("translationShift") {
 
                 @Override
                 public Float get(AbstractSlideInView view) {
@@ -75,25 +76,54 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
                 }
 
                 @Override
-                public void set(AbstractSlideInView view, Float value) {
+                public void setValue(AbstractSlideInView view, float value) {
                     view.setTranslationShift(value);
                 }
             };
     protected static final float TRANSLATION_SHIFT_CLOSED = 1f;
     protected static final float TRANSLATION_SHIFT_OPENED = 0f;
     private static final float VIEW_NO_SCALE = 1f;
+    private static final int DEFAULT_DURATION = 300;
 
     protected final T mActivityContext;
 
     protected final SingleAxisSwipeDetector mSwipeDetector;
-    protected final ObjectAnimator mOpenCloseAnimator;
+    protected @NonNull AnimatorPlaybackController mOpenCloseAnimation;
 
     protected ViewGroup mContent;
     protected final View mColorScrim;
-    protected Interpolator mScrollInterpolator;
+
+    /**
+     * Interpolator for {@link #mOpenCloseAnimation} when we are closing due to dragging downwards.
+     */
+    private Interpolator mScrollInterpolator;
+    private long mScrollDuration;
+    /**
+     * End progress for {@link #mOpenCloseAnimation} when we are closing due to dragging downloads.
+     * <p>
+     * There are two cases that determine this value:
+     * <ol>
+     *     <li>
+     *         If the drag interrupts the opening transition (i.e. {@link #mToTranslationShift}
+     *         is {@link #TRANSLATION_SHIFT_OPENED}), we need to animate back to {@code 0} to
+     *         reverse the animation that was paused at {@link #onDragStart(boolean, float)}.
+     *     </li>
+     *     <li>
+     *         If the drag started after the view is fully opened (i.e.
+     *         {@link #mToTranslationShift} is {@link #TRANSLATION_SHIFT_CLOSED}), the animation
+     *         that was set up at {@link #onDragStart(boolean, float)} for closing the view
+     *         should go forward to {@code 1}.
+     *     </li>
+     * </ol>
+     */
+    private float mScrollEndProgress;
 
     // range [0, 1], 0=> completely open, 1=> completely closed
     protected float mTranslationShift = TRANSLATION_SHIFT_CLOSED;
+    protected float mFromTranslationShift;
+    protected float mToTranslationShift;
+    /** {@link #mOpenCloseAnimation} progress at {@link #onDragStart(boolean, float)}. */
+    private float mDragStartProgress;
 
     protected boolean mNoIntercept;
     protected @Nullable OnCloseListener mOnCloseBeginListener;
@@ -102,8 +132,8 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected final AnimatedFloat mSlideInViewScale =
             new AnimatedFloat(this::onScaleProgressChanged, VIEW_NO_SCALE);
     protected boolean mIsBackProgressing;
-    @Nullable private Drawable mContentBackground;
-    @Nullable private View mContentBackgroundParentView;
+    private @Nullable Drawable mContentBackground;
+    private @Nullable View mContentBackgroundParentView;
 
     protected final ViewOutlineProvider mViewOutlineProvider = new ViewOutlineProvider() {
         @Override
@@ -122,20 +152,77 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         mActivityContext = ActivityContext.lookupContext(context);
 
         mScrollInterpolator = Interpolators.SCROLL_CUBIC;
+        mScrollDuration = DEFAULT_DURATION;
         mSwipeDetector = new SingleAxisSwipeDetector(context, this,
                 SingleAxisSwipeDetector.VERTICAL);
 
-        mOpenCloseAnimator = ObjectAnimator.ofPropertyValuesHolder(this);
-        mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mSwipeDetector.finishedScrolling();
-                announceAccessibilityChanges();
-            }
-        });
+        mOpenCloseAnimation = new PendingAnimation(0).createPlaybackController();
+
         int scrimColor = getScrimColor(context);
         mColorScrim = scrimColor != -1 ? createColorScrim(context, scrimColor) : null;
     }
+
+    /**
+     * Sets up a {@link #mOpenCloseAnimation} for opening with default parameters.
+     *
+     * @see #setUpOpenCloseAnimation(float, float, long)
+     */
+    protected final AnimatorPlaybackController setUpDefaultOpenAnimation() {
+        AnimatorPlaybackController animation = setUpOpenCloseAnimation(
+                TRANSLATION_SHIFT_CLOSED, TRANSLATION_SHIFT_OPENED, DEFAULT_DURATION);
+        animation.getAnimationPlayer().setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+        return animation;
+    }
+
+    /**
+     * Sets up a {@link #mOpenCloseAnimation} for opening with a given duration.
+     *
+     * @see #setUpOpenCloseAnimation(float, float, long)
+     */
+    protected final AnimatorPlaybackController setUpOpenAnimation(long duration) {
+        return setUpOpenCloseAnimation(
+                TRANSLATION_SHIFT_CLOSED, TRANSLATION_SHIFT_OPENED, duration);
+    }
+
+    private AnimatorPlaybackController setUpCloseAnimation(long duration) {
+        return setUpOpenCloseAnimation(
+                TRANSLATION_SHIFT_OPENED, TRANSLATION_SHIFT_CLOSED, duration);
+    }
+
+    /**
+     * Initializes a new {@link #mOpenCloseAnimation}.
+     *
+     * @param fromTranslationShift translation shift to animate from.
+     * @param toTranslationShift   translation shift to animate to.
+     * @param duration             animation duration.
+     * @return {@link #mOpenCloseAnimation}
+     */
+    private AnimatorPlaybackController setUpOpenCloseAnimation(
+            float fromTranslationShift, float toTranslationShift, long duration) {
+        mFromTranslationShift = fromTranslationShift;
+        mToTranslationShift = toTranslationShift;
+
+        PendingAnimation animation = new PendingAnimation(duration);
+        animation.addEndListener(b -> {
+            mSwipeDetector.finishedScrolling();
+            announceAccessibilityChanges();
+        });
+
+        animation.addFloat(
+                this, TRANSLATION_SHIFT, fromTranslationShift, toTranslationShift, LINEAR);
+        onOpenCloseAnimationPending(animation);
+
+        mOpenCloseAnimation = animation.createPlaybackController();
+        return mOpenCloseAnimation;
+    }
+
+    /**
+     * Invoked when a {@link #mOpenCloseAnimation} is being set up.
+     * <p>
+     * Subclasses can override this method to modify the animation before it's used to create a
+     * {@link AnimatorPlaybackController}.
+     */
+    protected void onOpenCloseAnimationPending(PendingAnimation animation) {}
 
     protected void attachToContainer() {
         if (mColorScrim != null) {
@@ -279,19 +366,28 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     private boolean isOpeningAnimationRunning() {
-        return mIsOpen && mOpenCloseAnimator.isRunning();
+        return mIsOpen && mOpenCloseAnimation.getAnimationPlayer().isRunning();
     }
 
     /* SingleAxisSwipeDetector.Listener */
 
     @Override
-    public void onDragStart(boolean start, float startDisplacement) { }
+    public void onDragStart(boolean start, float startDisplacement) {
+        if (mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
+            mOpenCloseAnimation.pause();
+            mDragStartProgress = mOpenCloseAnimation.getProgressFraction();
+        } else {
+            setUpCloseAnimation(DEFAULT_DURATION);
+            mDragStartProgress = 0;
+        }
+    }
 
     @Override
     public boolean onDrag(float displacement) {
-        float range = getShiftRange();
-        displacement = Utilities.boundToRange(displacement, 0, range);
-        setTranslationShift(displacement / range);
+        float progress = mDragStartProgress
+                + Math.signum(mToTranslationShift - mFromTranslationShift)
+                * (displacement / getShiftRange());
+        mOpenCloseAnimation.setPlayFraction(Utilities.boundToRange(progress, 0, 1));
         return true;
     }
 
@@ -302,16 +398,18 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         if ((mSwipeDetector.isFling(velocity) && velocity > 0)
                 || mTranslationShift > successfulShiftThreshold) {
             mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
-            mOpenCloseAnimator.setDuration(BaseSwipeDetector.calculateDuration(
-                    velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
+            mScrollDuration = BaseSwipeDetector.calculateDuration(
+                    velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift);
+            mScrollEndProgress = mToTranslationShift == TRANSLATION_SHIFT_OPENED ? 0 : 1;
             close(true);
         } else {
-            mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-                    TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator.setDuration(
-                    BaseSwipeDetector.calculateDuration(velocity, mTranslationShift))
-                    .setInterpolator(Interpolators.DEACCEL);
-            mOpenCloseAnimator.start();
+            ValueAnimator animator = mOpenCloseAnimation.getAnimationPlayer();
+            animator.setInterpolator(Interpolators.DECELERATE);
+            animator.setFloatValues(
+                    mOpenCloseAnimation.getProgressFraction(),
+                    mToTranslationShift == TRANSLATION_SHIFT_OPENED ? 1 : 0);
+            animator.setDuration(BaseSwipeDetector.calculateDuration(velocity, mTranslationShift))
+                    .start();
         }
     }
 
@@ -332,32 +430,31 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         Optional.ofNullable(mOnCloseBeginListener).ifPresent(OnCloseListener::onSlideInViewClosed);
 
         if (!animate) {
-            mOpenCloseAnimator.cancel();
+            mOpenCloseAnimation.pause();
             setTranslationShift(TRANSLATION_SHIFT_CLOSED);
             onCloseComplete();
             return;
         }
-        mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED));
-        mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mOpenCloseAnimator.removeListener(this);
-                onCloseComplete();
-            }
-        });
+
+        final ValueAnimator animator;
         if (mSwipeDetector.isIdleState()) {
-            mOpenCloseAnimator
-                    .setDuration(defaultDuration)
-                    .setInterpolator(getIdleInterpolator());
+            setUpCloseAnimation(defaultDuration);
+            animator = mOpenCloseAnimation.getAnimationPlayer();
+            animator.setInterpolator(getIdleInterpolator());
         } else {
-            mOpenCloseAnimator.setInterpolator(mScrollInterpolator);
+            animator = mOpenCloseAnimation.getAnimationPlayer();
+            animator.setInterpolator(mScrollInterpolator);
+            animator.setDuration(mScrollDuration);
+            mOpenCloseAnimation.getAnimationPlayer().setFloatValues(
+                    mOpenCloseAnimation.getProgressFraction(), mScrollEndProgress);
         }
-        mOpenCloseAnimator.start();
+
+        animator.addListener(AnimatorListeners.forEndCallback(this::onCloseComplete));
+        animator.start();
     }
 
     protected Interpolator getIdleInterpolator() {
-        return Interpolators.ACCEL;
+        return Interpolators.ACCELERATE;
     }
 
     protected void onCloseComplete() {

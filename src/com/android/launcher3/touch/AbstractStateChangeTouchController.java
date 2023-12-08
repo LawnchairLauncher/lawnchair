@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.touch;
 
+import static com.android.app.animation.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
@@ -22,7 +23,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
@@ -384,8 +384,8 @@ public abstract class AbstractStateChangeTouchController
         } else {
             logReachedState(targetState);
         }
-        mLauncher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(
-                1f).setDuration(0).start();
+        mLauncher.getRootView().getSysUiScrim().getSysUIMultiplier().animateToValue(1f)
+                .setDuration(0).start();
     }
 
     private void logReachedState(LauncherState targetState) {

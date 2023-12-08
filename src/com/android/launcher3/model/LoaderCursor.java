@@ -193,9 +193,7 @@ public class LoaderCursor extends CursorWrapper {
 
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
-        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                || restoreFlag != 0
+        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
                 ? getIconBlob() : null;
 
         return new IconRequestInfo<>(wai, mActivityInfo, iconBlob, useLowResIcon);
@@ -347,7 +345,6 @@ public class LoaderCursor extends CursorWrapper {
         }
 
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
-        info.itemType = Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.intent = newIntent;
 

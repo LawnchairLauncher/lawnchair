@@ -34,13 +34,9 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -49,12 +45,12 @@ import android.util.Size;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
-import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.TextClock;
 
 import androidx.annotation.NonNull;
@@ -74,12 +70,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceLayoutManager;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.icons.BaseIconFactory;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -98,6 +93,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
+import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
@@ -183,7 +179,6 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final DeviceProfile mDp;
     private final DeviceProfile mDpOrig;
     private final Rect mInsets;
-    private final WorkspaceItemInfo mWorkspaceItemInfo;
     private final LayoutInflater mHomeElementInflater;
     private final InsettableFrameLayout mRootView;
     private final Hotseat mHotseat;
@@ -211,28 +206,8 @@ public class LauncherPreviewRenderer extends ContextWrapper
         } else {
             mDpOrig = mDp;
         }
-
-        WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
-                .getCurrentWindowMetrics().getWindowInsets();
-        mInsets = new Rect(
-                currentWindowInsets.getSystemWindowInsetLeft(),
-                currentWindowInsets.getSystemWindowInsetTop(),
-                currentWindowInsets.getSystemWindowInsetRight(),
-                mDp.isTaskbarPresent ? 0 : currentWindowInsets.getSystemWindowInsetBottom());
+        mInsets = getInsets(context);
         mDp.updateInsets(mInsets);
-
-        BaseIconFactory iconFactory =
-                new BaseIconFactory(context, mIdp.fillResIconDpi, mIdp.iconBitmapSize) { };
-        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(
-                new AdaptiveIconDrawable(
-                        new ColorDrawable(Color.WHITE),
-                        new ColorDrawable(Color.WHITE)));
-
-        mWorkspaceItemInfo = new WorkspaceItemInfo();
-        mWorkspaceItemInfo.bitmap = iconInfo;
-        mWorkspaceItemInfo.intent = new Intent();
-        mWorkspaceItemInfo.contentDescription = mWorkspaceItemInfo.title =
-                context.getString(R.string.label_application);
 
         mHomeElementInflater = LayoutInflater.from(
                 new ContextThemeWrapper(this, R.style.HomeScreenElementTheme));
@@ -281,6 +256,26 @@ public class LauncherPreviewRenderer extends ContextWrapper
             mWallpaperColorResources = null;
         }
         mAppWidgetHost = new LauncherPreviewAppWidgetHost(context);
+    }
+
+    /**
+     * Returns the insets of the screen closest to the display given by the context
+     */
+    private Rect getInsets(Context context) {
+        DisplayController.Info info = DisplayController.INSTANCE.get(context).getInfo();
+        float maxDiff = Float.MAX_VALUE;
+        Display display = context.getDisplay();
+        Rect insets = new Rect();
+        for (WindowBounds supportedBound : info.supportedBounds) {
+            double diff = Math.pow(display.getWidth() - supportedBound.availableSize.x, 2)
+                    + Math.pow(display.getHeight() - supportedBound.availableSize.y, 2);
+            if (supportedBound.rotationHint == context.getDisplay().getRotation()
+                    && diff < maxDiff) {
+                maxDiff = (float) diff;
+                insets = supportedBound.insets;
+            }
+        }
+        return new Rect(insets);
     }
 
     /** Populate preview and render it. */
@@ -378,12 +373,13 @@ public class LauncherPreviewRenderer extends ContextWrapper
         addInScreenFromBind(icon, info);
     }
 
-    private void inflateAndAddFolder(FolderInfo info) {
+    private void inflateAndAddCollectionIcon(FolderInfo info) {
         CellLayout screen = info.container == Favorites.CONTAINER_DESKTOP
                 ? mWorkspaceScreens.get(info.screenId)
                 : mHotseat;
-        FolderIcon folderIcon = FolderIcon.inflateIcon(R.layout.folder_icon, this, screen,
-                info);
+        FrameLayout folderIcon = info.itemType == Favorites.ITEM_TYPE_FOLDER
+                ? FolderIcon.inflateIcon(R.layout.folder_icon, this, screen, info)
+                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, info);
         addInScreenFromBind(folderIcon, info);
     }
 
@@ -483,12 +479,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
         for (ItemInfo itemInfo : currentWorkspaceItems) {
             switch (itemInfo.itemType) {
                 case Favorites.ITEM_TYPE_APPLICATION:
-                case Favorites.ITEM_TYPE_SHORTCUT:
                 case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     inflateAndAddIcon((WorkspaceItemInfo) itemInfo);
                     break;
                 case Favorites.ITEM_TYPE_FOLDER:
-                    inflateAndAddFolder((FolderInfo) itemInfo);
+                case Favorites.ITEM_TYPE_APP_PAIR:
+                    inflateAndAddCollectionIcon((FolderInfo) itemInfo);
                     break;
                 default:
                     break;

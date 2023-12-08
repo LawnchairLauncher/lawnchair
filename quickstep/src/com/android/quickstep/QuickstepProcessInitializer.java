@@ -19,6 +19,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Looper;
+import android.os.Trace;
 import android.os.UserManager;
 import android.util.Log;
 import android.view.ThreadedRenderer;
@@ -60,5 +62,14 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         // Elevate GPU priority for Quickstep and Remote animations.
         ThreadedRenderer.setContextPriority(
                 ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+
+        // Enable Looper trace points.
+        // This allows us to see Handler callbacks on traces.
+        Looper.getMainLooper().setTraceTag(Trace.TRACE_TAG_APP);
+
+        if (BuildConfig.IS_STUDIO_BUILD) {
+            BinderTracker.startTracking(call ->  Log.e("BinderCall",
+                    call.descriptor + " called on mainthread under " + call.activeTrace));
+        }
     }
 }

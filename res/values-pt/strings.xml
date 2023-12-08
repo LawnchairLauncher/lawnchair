@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Pessoais"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabalho"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversas"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Anotações"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informações úteis ao seu alcance"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Para ver informações sem precisar abrir os apps, adicione widgets à sua tela inicial"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Toque para mudar as configurações do widget"</string>
@@ -107,7 +106,7 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permitir a rotação da tela inicial"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Quando o smartphone for girado"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Pontos de notificação"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Ativados"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Ativado"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desativado"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Acesso a notificações necessário"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar pontos de notificação, ative as notificações de app para <xliff:g id="NAME">%1$s</xliff:g>"</string>

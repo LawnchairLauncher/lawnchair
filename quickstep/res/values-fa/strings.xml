@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"«پیشنهاد برنامه» فعال است"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"«پیشنهاد برنامه» غیرفعال است"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"برنامه پیش‌بینی‌شده: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"دستگاهتان را بچرخانید"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"لطفاً برای تکمیل آموزش گام‌به‌گام پیمایش اشاره‌ای، دستگاهتان را بچرخانید"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"دقت کنید که از انتهای لبه سمت راست یا سمت چپ تند بکشید"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"دقت کنید که از لبه سمت راست یا سمت چپ تند به وسط صفحه بکشید و رها کنید"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"دقت کنید که از انتهای لبه سمت راست یا سمت چپ تند بکشید."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"دقت کنید که از لبه سمت راست یا سمت چپ تند به وسط صفحه بکشید و رها کنید."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"یاد گرفتید چگونه برای رفتن به عقب از سمت راست تند بکشید. مورد بعدی، با نحوه جابه‌جا شدن بین برنامه‌ها آشنا شوید."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"اشاره برگشتن را تکمیل کردید"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"دقت کنید که موقع تند کشیدن، بیش‌از حد به پایین صفحه نزدیک نشوید"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"اشاره برگشتن را تکمیل کردید."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"دقت کنید که موقع تند کشیدن بیش‌از حد به پایین صفحه نزدیک نشوید."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"برای تغییر حساسیت اشاره برگشت، به «تنظیمات» بروید"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"تند بکشید تا به‌عقب برگردید"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"برای برگشتن به صفحه آخر، از لبه سمت چپ یا راست تند به وسط صفحه بکشید."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"برای برگشتن به صفحه قبلی، با ۲ انگشت از لبه سمت چپ یا راست تند به‌وسط صفحه بکشید."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"برگشتن"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"از لبه سمت راست یا سمت چپ تند به وسط صفحه بکشید"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"دقت کنید که قبل‌از رها کردن مکث نکنید"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"دقت کنید که مستقیماً تند به بالا بکشید"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"اشاره رفتن به صفحه اصلی را تکمیل کردید. مورد بعدی، با نحوه برگشتن به عقب آشنا شوید."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"اشاره رفتن به صفحه اصلی را تکمیل کردید"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"دقت کنید که تا قبل‌از رها کردن، کشیدن را متوقف نکنید."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"دقت کنید که مستقیماً تند به بالا بکشید."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"اشاره رفتن به «صفحه اصلی» را تکمیل کردید. مورد بعدی، با نحوه برگشتن به عقب آشنا شوید."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"اشاره رفتن به «صفحه اصلی» را تکمیل کردید."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"تند کشیدن برای رفتن به صفحه اصلی"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"از پایین صفحه، تند به‌سمت بالا بکشید. این اشاره همیشه شما را به صفحه اصلی می‌برد."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"با ۲ انگشت از پایین صفحه تند به‌بالا بکشید. این اشاره همیشه شما را به صفحه اصلی می‌برد."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"رفتن به صفحه اصلی"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"از پایین صفحه تند به بالا بکشید"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"عالی است!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"قبل‌از رها کردن پنجره، آن را برای مدت طولانی‌تری نگه دارید"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"دقت کنید که مستقیماً تند به بالا بکشید و سپس توقف کنید"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"برای رفتن به صفحه اصلی در هر زمانی، از پایین صفحه تند به‌بالا بکشید"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"سعی کنید قبل‌از رها کردن، پنجره را برای مدت طولانی‌تری نگه دارید."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"دقت کنید که مستقیماً تند به بالا بکشید و سپس توقف کنید."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"با نحوه استفاده از اشاره‌ها آشنا شدید. برای خاموش کردن اشاره‌ها، به «تنظیمات» بروید."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"اشاره جابه‌جایی بین برنامه‌ها را تکمیل کردید"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"اشاره جابه‌جا شدن بین برنامه‌ها را تکمیل کردید."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"برای جابه‌جا شدن بین برنامه‌ها، تند به‌بالا بکشید"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"برای جابه‌جا شدن بین برنامه‌ها، از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"برای جابه‌جایی بین برنامه‌ها، با ۲ انگشت از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"جابه‌جایی بین برنامه‌ها"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"از پایین صفحه تند به‌بالا بکشید، نگه دارید، سپس رها کنید"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"آفرین!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"همه چیز آماده است"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"تمام"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"تنظیمات"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"نوار وظیفه نمایان است"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"نوار وظیفه پنهان است"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"نوار پیمایش"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"نوار وظیفه همیشه نشان داده شود"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"تغییر حالت پیمایش"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"جداکننده نوار وظیفه"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"انتقال به بالا/ چپ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"انتقال به پایین/ راست"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{نمایش # برنامه دیگر.}one{نمایش # برنامه دیگر.}other{نمایش # برنامه دیگر.}}"</string>

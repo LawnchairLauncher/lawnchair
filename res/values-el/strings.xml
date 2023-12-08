@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Προσωπικά"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Εργασίας"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Συζητήσεις"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Δημιουργία σημειώσεων"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Χρήσιμες πληροφορίες στη διάθεσή σας"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Για να λάβετε πληροφορίες χωρίς να ανοίξετε εφαρμογές, μπορείτε να προσθέσετε γραφικά στοιχεία στην αρχική οθόνη."</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Πατήστε για αλλαγή των ρυθμίσεων του γραφικού στοιχείου"</string>
@@ -101,7 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ή περισσότερα στοιχεία"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Ταπετσαρίες"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Ταπετσαρία και στιλ"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"Επεξεργασία αρχικής οθόνης"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Ρυθμίσεις Αρχ. Οθ."</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Απενεργοποιήθηκε από τον διαχειριστή σας"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Να επιτρέπεται η περιστροφή της αρχικής οθόνης"</string>

@@ -226,13 +226,11 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             return;
         }
         Matrix scaleMatrix = new Matrix();
-        float pivotX = mScreenWidth / 2f;
-        float pivotY = mScreenHeight;
         float scaleFactor = mScreenWidth / animationBoundsRect.width();
+        float heightTranslate = (mScreenHeight - (scaleFactor * animationBoundsRect.height()));
 
-        scaleMatrix.postScale(scaleFactor, scaleFactor, pivotX, pivotY);
-        scaleMatrix.postTranslate(0,
-                mTutorialFragment.getDeviceProfile().heightPx - animationBoundsRect.height());
+        scaleMatrix.postScale(scaleFactor, scaleFactor);
+        scaleMatrix.postTranslate(0, heightTranslate);
         mAnimatedGestureDemonstration.setImageMatrix(scaleMatrix);
     }
 
@@ -487,10 +485,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     public boolean isGestureCompleted() {
         return mGestureCompleted;
-    }
-
-    public boolean skipGestureAttempt() {
-        return isGestureCompleted() || mTutorialFragment.isRotationPromptShowing();
     }
 
     void hideFeedback() {

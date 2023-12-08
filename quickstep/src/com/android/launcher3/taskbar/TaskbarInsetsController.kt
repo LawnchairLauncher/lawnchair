@@ -15,12 +15,15 @@
  */
 package com.android.launcher3.taskbar
 
+import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.graphics.Insets
 import android.graphics.Region
 import android.os.Binder
 import android.os.IBinder
+import android.view.Gravity
 import android.view.InsetsFrameProvider
 import android.view.InsetsFrameProvider.SOURCE_DISPLAY
+import android.view.InsetsSource.FLAG_INSETS_ROUNDED_CORNER
 import android.view.InsetsSource.FLAG_SUPPRESS_SCRIM
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
@@ -41,6 +44,7 @@ import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
+import kotlin.jvm.optionals.getOrNull
 
 /** Handles the insets that Taskbar provides to underlying apps and the IME. */
 class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTaskbarController {
@@ -55,13 +59,13 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     private val touchableRegion: Region = Region()
     private val insetsOwner: IBinder = Binder()
     private val deviceProfileChangeListener = { _: DeviceProfile ->
-        onTaskbarWindowHeightOrInsetsChanged()
+        onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
     }
     private val gestureNavSettingsObserver =
         GestureNavigationSettingsObserver(
             context.mainThreadHandler,
             context,
-            this::onTaskbarWindowHeightOrInsetsChanged
+            this::onTaskbarOrBubblebarWindowHeightOrInsetsChanged
         )
 
     // Initialized in init.
@@ -71,7 +75,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     fun init(controllers: TaskbarControllers) {
         this.controllers = controllers
         windowLayoutParams = context.windowLayoutParams
-        onTaskbarWindowHeightOrInsetsChanged()
+        onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
 
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
         gestureNavSettingsObserver.registerForCallingUser()
@@ -82,109 +86,165 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         gestureNavSettingsObserver.unregister()
     }
 
-    fun onTaskbarWindowHeightOrInsetsChanged() {
-        if (context.isGestureNav) {
-            windowLayoutParams.providedInsets =
-                arrayOf(
-                    InsetsFrameProvider(insetsOwner, 0, navigationBars())
-                        .setFlags(FLAG_SUPPRESS_SCRIM, FLAG_SUPPRESS_SCRIM),
-                    InsetsFrameProvider(insetsOwner, 0, tappableElement()),
-                    InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
-                    InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
-                        .setSource(SOURCE_DISPLAY),
-                    InsetsFrameProvider(insetsOwner, INDEX_RIGHT, systemGestures())
-                        .setSource(SOURCE_DISPLAY)
-                )
-        } else {
-            windowLayoutParams.providedInsets =
-                arrayOf(
-                    InsetsFrameProvider(insetsOwner, 0, navigationBars()),
-                    InsetsFrameProvider(insetsOwner, 0, tappableElement()),
-                    InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures())
-                )
-        }
-
-        val touchableHeight = controllers.taskbarStashController.touchableHeight
-        touchableRegion.set(
-            0,
-            windowLayoutParams.height - touchableHeight,
-            context.deviceProfile.widthPx,
-            windowLayoutParams.height
-        )
-        val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
+    fun onTaskbarOrBubblebarWindowHeightOrInsetsChanged() {
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
-        val res = context.resources
-        for (provider in windowLayoutParams.providedInsets) {
-            if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
-                provider.insetsSize = getInsetsByNavMode(contentHeight)
-            } else if (provider.type == tappableElement()) {
-                provider.insetsSize = getInsetsByNavMode(tappableHeight)
-            } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
-                provider.insetsSize =
-                    Insets.of(
-                        gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res),
-                        0,
-                        0,
-                        0
-                    )
-            } else if (provider.type == systemGestures() && provider.index == INDEX_RIGHT) {
-                provider.insetsSize =
-                    Insets.of(
-                        0,
-                        0,
-                        gestureNavSettingsObserver.getRightSensitivityForCallingUser(res),
-                        0
-                    )
-            }
-        }
-
-        val imeInsetsSize = getInsetsByNavMode(taskbarHeightForIme)
-        val insetsSizeOverride =
-            arrayOf(
-                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-            )
-        // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
-        val visInsetsSizeForGestureNavTappableElement = getInsetsByNavMode(0)
-        val insetsSizeOverrideForGestureNavTappableElement =
-            arrayOf(
-                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-                InsetsFrameProvider.InsetsSizeOverride(
-                    TYPE_VOICE_INTERACTION,
-                    visInsetsSizeForGestureNavTappableElement
-                ),
-            )
-        for (provider in windowLayoutParams.providedInsets) {
-            if (context.isGestureNav && provider.type == tappableElement()) {
-                provider.insetsSizeOverrides = insetsSizeOverrideForGestureNavTappableElement
-            } else if (provider.type != systemGestures()) {
-                // We only override insets at the bottom of the screen
-                provider.insetsSizeOverrides = insetsSizeOverride
-            }
-        }
-
         // We only report tappableElement height for unstashed, persistent taskbar,
         // which is also when we draw the rounded corners above taskbar.
-        windowLayoutParams.insetsRoundedCornerFrame = tappableHeight > 0
+        val insetsRoundedCornerFlag =
+            if (tappableHeight > 0) {
+                FLAG_INSETS_ROUNDED_CORNER
+            } else {
+                0
+            }
+
+        windowLayoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
+        if (!context.isGestureNav) {
+            if (windowLayoutParams.paramsForRotation != null) {
+                for (layoutParams in windowLayoutParams.paramsForRotation) {
+                    layoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
+                }
+            }
+        }
+
+        val taskbarTouchableHeight = controllers.taskbarStashController.touchableHeight
+        val bubblesTouchableHeight =
+            if (controllers.bubbleControllers.isPresent) {
+                controllers.bubbleControllers.get().bubbleStashController.touchableHeight
+            } else {
+                0
+            }
+        val touchableHeight = Math.max(taskbarTouchableHeight, bubblesTouchableHeight)
+
+        if (
+            controllers.bubbleControllers.isPresent &&
+                controllers.bubbleControllers.get().bubbleStashController.isBubblesShowingOnHome
+        ) {
+            val iconBounds =
+                controllers.bubbleControllers.get().bubbleBarViewController.bubbleBarBounds
+            touchableRegion.set(
+                iconBounds.left,
+                iconBounds.top,
+                iconBounds.right,
+                iconBounds.bottom
+            )
+        } else {
+            touchableRegion.set(
+                0,
+                windowLayoutParams.height - touchableHeight,
+                context.deviceProfile.widthPx,
+                windowLayoutParams.height
+            )
+        }
+
+        val gravity = windowLayoutParams.gravity
+        for (provider in windowLayoutParams.providedInsets) {
+            setProviderInsets(provider, gravity)
+        }
+
+        if (windowLayoutParams.paramsForRotation != null) {
+            // Add insets for navbar rotated params
+            for (layoutParams in windowLayoutParams.paramsForRotation) {
+                for (provider in layoutParams.providedInsets) {
+                    setProviderInsets(provider, layoutParams.gravity)
+                }
+            }
+        }
 
         context.notifyUpdateLayoutParams()
     }
 
     /**
-     * @return [Insets] where the [bottomInset] is either used as a bottom inset or
-     *
-     * ```
-     *         right/left inset if using 3 button nav
-     * ```
+     * The inset types and number of insets provided have to match for both gesture nav and button
+     * nav. The values and the order of the elements in array are allowed to differ.
+     * Reason being WM does not allow types and number of insets changing for a given window once it
+     * is added into the hierarchy for performance reasons.
      */
-    private fun getInsetsByNavMode(bottomInset: Int): Insets {
-        val devicePortrait = !context.deviceProfile.isLandscape
-        if (!TaskbarManager.isPhoneButtonNavMode(context) || devicePortrait) {
+    private fun getProvidedInsets(insetsRoundedCornerFlag: Int): Array<InsetsFrameProvider> {
+        val navBarsFlag =
+                (if (context.isGestureNav) FLAG_SUPPRESS_SCRIM else 0) or insetsRoundedCornerFlag
+        return arrayOf(
+                InsetsFrameProvider(insetsOwner, 0, navigationBars())
+                        .setFlags(
+                                navBarsFlag,
+                                FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
+                        ),
+                InsetsFrameProvider(insetsOwner, 0, tappableElement()),
+                InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
+                InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
+                        .setSource(SOURCE_DISPLAY),
+                InsetsFrameProvider(insetsOwner, INDEX_RIGHT, systemGestures())
+                        .setSource(SOURCE_DISPLAY)
+        )
+    }
+
+    private fun setProviderInsets(provider: InsetsFrameProvider, gravity: Int) {
+        val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
+        val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
+        val res = context.resources
+        if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
+            provider.insetsSize = getInsetsForGravity(contentHeight, gravity)
+        } else if (provider.type == tappableElement()) {
+            provider.insetsSize = getInsetsForGravity(tappableHeight, gravity)
+        } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
+            val leftIndexInset =
+                    if (context.isThreeButtonNav) 0
+                    else gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res)
+            provider.insetsSize = Insets.of(leftIndexInset, 0, 0, 0)
+        } else if (provider.type == systemGestures() && provider.index == INDEX_RIGHT) {
+            val rightIndexInset =
+                    if (context.isThreeButtonNav) 0
+                    else gestureNavSettingsObserver.getRightSensitivityForCallingUser(res)
+            provider.insetsSize = Insets.of(0, 0, rightIndexInset, 0)
+        }
+
+
+        // When in gesture nav, report the stashed height to the IME, to allow hiding the
+        // IME navigation bar.
+        val imeInsetsSize = if (ENABLE_HIDE_IME_CAPTION_BAR && context.isGestureNav) {
+            getInsetsForGravity(controllers.taskbarStashController.stashedHeight, gravity);
+        } else {
+            getInsetsForGravity(taskbarHeightForIme, gravity)
+        }
+        val imeInsetsSizeOverride =
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                )
+        // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
+        val visInsetsSizeForTappableElement =
+                if (context.isGestureNav) getInsetsForGravity(0, gravity)
+                else getInsetsForGravity(tappableHeight, gravity)
+        val insetsSizeOverrideForTappableElement =
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                        InsetsFrameProvider.InsetsSizeOverride(
+                                TYPE_VOICE_INTERACTION,
+                                visInsetsSizeForTappableElement
+                        ),
+                )
+        if ((context.isGestureNav || TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+                && provider.type == tappableElement()) {
+            provider.insetsSizeOverrides = insetsSizeOverrideForTappableElement
+        } else if (provider.type != systemGestures()) {
+            // We only override insets at the bottom of the screen
+            provider.insetsSizeOverrides = imeInsetsSizeOverride
+        }
+    }
+
+    /**
+     * @return [Insets] where the [inset] is either used as a bottom inset or
+     * right/left inset if using 3 button nav
+     */
+    private fun getInsetsForGravity(inset: Int, gravity: Int): Insets {
+        if ((gravity and Gravity.BOTTOM) == Gravity.BOTTOM) {
             // Taskbar or portrait phone mode
-            return Insets.of(0, 0, 0, bottomInset)
+            return Insets.of(0, 0, 0, inset)
         }
 
         // TODO(b/230394142): seascape
-        return Insets.of(0, 0, bottomInset, 0)
+        val isSeascape = (gravity and Gravity.START) == Gravity.START
+        val leftInset = if (isSeascape) inset else 0
+        val rightInset = if (isSeascape) 0 else inset
+        return Insets.of(leftInset , 0, rightInset, 0)
     }
 
     /**
@@ -199,6 +259,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             context.dragLayer,
             insetsInfo.touchableRegion
         )
+        val bubbleBarVisible =
+            controllers.bubbleControllers.isPresent &&
+                controllers.bubbleControllers.get().bubbleBarViewController.isBubbleBarVisible()
         var insetsIsTouchableRegion = true
         if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
@@ -219,16 +282,33 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME)
             insetsIsTouchableRegion = false
         } else if (
-            controllers.taskbarViewController.areIconsVisible() || context.isNavBarKidsModeActive
+            controllers.taskbarViewController.areIconsVisible() ||
+                context.isNavBarKidsModeActive ||
+                bubbleBarVisible
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
             if (
                 controllers.uiController.isInOverview &&
                     DisplayController.isTransientTaskbar(context)
             ) {
-                insetsInfo.touchableRegion.set(
+                val region =
                     controllers.taskbarActivityContext.dragLayer.lastDrawnTransientRect.toRegion()
-                )
+                val bubbleBarBounds =
+                    controllers.bubbleControllers.getOrNull()?.let { bubbleControllers ->
+                        if (!bubbleControllers.bubbleStashController.isBubblesShowingOnOverview) {
+                            return@let null
+                        }
+                        if (!bubbleControllers.bubbleBarViewController.isBubbleBarVisible) {
+                            return@let null
+                        }
+                        bubbleControllers.bubbleBarViewController.bubbleBarBounds
+                    }
+
+                // Include the bounds of the bubble bar in the touchable region if they exist.
+                if (bubbleBarBounds != null) {
+                    region.op(bubbleBarBounds, Region.Op.UNION)
+                }
+                insetsInfo.touchableRegion.set(region)
             } else {
                 insetsInfo.touchableRegion.set(touchableRegion)
             }

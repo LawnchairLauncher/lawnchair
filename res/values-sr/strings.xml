@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Лично"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Посао"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Конверзације"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Прављење бележака"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Корисне информације надохват руке"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Да бисте пронашли информације без отварања апликација, можете да додате виџете на почетни екран"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Додирните да бисте променили подешавања виџета"</string>
@@ -157,8 +156,8 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Одбаци"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Затвори"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Обавештење је одбачено"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Лично"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"Посао"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личне"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Пословне"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Пословни профил"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Пословне апликације су означене значком и ИТ администратор може да их види"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Важи"</string>
@@ -169,7 +168,7 @@
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Пословне апликације су означене значком и ИТ администратор може да их види"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Важи"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Паузирај пословне апликације"</string>
-    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Поново активирај"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Опозови паузу"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтер"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Претражите телефон"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Претражите таблет"</string>

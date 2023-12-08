@@ -15,17 +15,20 @@
  */
 package com.android.launcher3.touch;
 
+import static com.android.app.animation.Interpolators.DECELERATED_EASE;
+import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.clampToProgress;
+import static com.android.app.animation.Interpolators.mapToProgress;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_BOTTOM_SHEET_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_KEYBOARD_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
@@ -40,11 +43,11 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 
 /**
@@ -209,8 +212,8 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             if (!config.userControlled) {
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
-            config.setInterpolator(ANIM_WORKSPACE_SCALE, EMPHASIZED);
-            config.setInterpolator(ANIM_DEPTH, EMPHASIZED);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
+            config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
         } else {
             if (config.userControlled) {
                 config.setInterpolator(ANIM_DEPTH, Interpolators.reverse(BLUR_MANUAL));
@@ -250,8 +253,8 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             if (!config.userControlled) {
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
-            config.setInterpolator(ANIM_WORKSPACE_SCALE, EMPHASIZED);
-            config.setInterpolator(ANIM_DEPTH, EMPHASIZED);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
+            config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
         } else {
             config.setInterpolator(ANIM_DEPTH, config.userControlled ? BLUR_MANUAL : BLUR_ATOMIC);
             config.setInterpolator(ANIM_WORKSPACE_FADE,
@@ -293,20 +296,15 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             config.setInterpolator(ANIM_WORKSPACE_SCALE, INSTANT);
             config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, INSTANT);
         } else {
-            // Remove scrim for this transition.
-            config.setInterpolator(ANIM_SCRIM_FADE, progress -> 0);
-
-            // For now, pop the background panel in at full opacity at the threshold.
+            // Pop the background panel, keyboard, and content in at full opacity at the threshold.
             config.setInterpolator(ANIM_ALL_APPS_BOTTOM_SHEET_FADE,
                     thresholdInterpolator(threshold, INSTANT));
-
-            // Fade the apps in when the scrim normally does, so it's apparent sooner what is
-            // happening (in this case we are fading them on top of the background panel).
-            config.setInterpolator(ANIM_ALL_APPS_FADE,
-                    thresholdInterpolator(threshold, SCRIM_FADE_MANUAL));
+            config.setInterpolator(ANIM_ALL_APPS_KEYBOARD_FADE,
+                    thresholdInterpolator(threshold, INSTANT));
+            config.setInterpolator(ANIM_ALL_APPS_FADE, thresholdInterpolator(threshold, INSTANT));
 
             config.setInterpolator(ANIM_VERTICAL_PROGRESS,
-                    thresholdInterpolator(threshold, ALL_APPS_VERTICAL_PROGRESS_MANUAL));
+                    thresholdInterpolator(threshold, mapToProgress(LINEAR, threshold, 1f)));
         }
     }
 

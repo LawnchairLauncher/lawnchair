@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Személyes"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Munka"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Beszélgetések"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Jegyzetelés"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Hasznos információk egy koppintásnyira"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Ha az alkalmazások megnyitása nélkül szeretne információhoz jutni, felvehet modulokat a kezdőképernyőre"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ide koppintva módosíthatja a modulbeállításokat"</string>
@@ -101,7 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mappa: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> vagy több elem"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Háttérképek"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Háttérkép és stílus"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"Kezdőképernyő szerkesztése"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Kezdőképernyő beállításai"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"A rendszergazda letiltotta"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"A kezdőképernyő elforgatásának engedélyezése"</string>
@@ -160,13 +160,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Személyes"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Munkahelyi"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Munkaprofil"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és ezeket láthatja a rendszergazda"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és láthatók a rendszergazda számára"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Értem"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"A munkahelyi alkalmazások szüneteltetve vannak"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"A munkahelyi alkalmazásoktól nem kap értesítést."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"A munkahelyi alkalmazások nem küldhetnek Önnek értesítéseket, nem használhatják az akkumulátorát, és nem férhetnek hozzá a tartózkodási helyéhez."</string>
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"A munkahelyi alkalmazásoktól nem kap telefonhívásokat, szöveges üzeneteket vagy értesítéseket."</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és ezeket láthatja a rendszergazda"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és láthatók a rendszergazda számára"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Értem"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Munkahelyi alkalmazások szüneteltetése"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Folytatás"</string>

@@ -57,6 +57,10 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
         mBtn = findViewById(R.id.enable_work_apps);
         mBtn.setOnClickListener(this);
 
+        updateStringFromCache();
+    }
+
+    public void updateStringFromCache() {
         StringCache cache = mActivityContext.getStringCache();
         if (cache != null) {
             setWorkProfilePausedResources(cache);

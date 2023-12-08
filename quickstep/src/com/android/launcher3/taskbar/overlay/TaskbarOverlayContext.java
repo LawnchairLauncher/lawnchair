@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar.overlay;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.dot.DotInfo;
@@ -29,6 +31,7 @@ import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView;
+import com.android.launcher3.taskbar.allapps.TaskbarSearchSessionController;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 
 /**
@@ -47,6 +50,8 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     private final int mStashedTaskbarHeight;
     private final TaskbarUIController mUiController;
 
+    private @Nullable TaskbarSearchSessionController mSearchSessionController;
+
     public TaskbarOverlayContext(
             Context windowContext,
             TaskbarActivityContext taskbarContext,
@@ -60,6 +65,15 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         mStashedTaskbarHeight = controllers.taskbarStashController.getStashedHeight();
 
         mUiController = controllers.uiController;
+    }
+
+    public @Nullable TaskbarSearchSessionController getSearchSessionController() {
+        return mSearchSessionController;
+    }
+
+    public void setSearchSessionController(
+            @Nullable TaskbarSearchSessionController searchSessionController) {
+        mSearchSessionController = searchSessionController;
     }
 
     int getStashedTaskbarHeight() {
@@ -109,6 +123,11 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     @Override
     public View.OnClickListener getItemOnClickListener() {
         return mTaskbarContext.getItemOnClickListener();
+    }
+
+    @Override
+    public View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return mDragController::startDragOnLongClick;
     }
 
     @Override

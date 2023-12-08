@@ -40,8 +40,11 @@ import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
+import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Stream;
 
 /**
@@ -204,9 +207,10 @@ public class TaskbarUIController {
             return;
         }
 
-        recentsView.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                splitSelectSource.itemInfo.getComponentKey(),
-                foundTask -> {
+        recentsView.getSplitSelectController().findLastActiveTasksAndRunCallback(
+                Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
+                foundTasks -> {
+                    @Nullable Task foundTask = foundTasks.get(0);
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
                             : foundTask.key.id;
@@ -221,9 +225,10 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
-        recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                info.getComponentKey(),
-                foundTask -> {
+        recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
+                Collections.singletonList(info.getComponentKey()),
+                foundTasks -> {
+                    @Nullable Task foundTask = foundTasks.get(0);
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         // TODO (b/266482558): This additional null check is needed because there

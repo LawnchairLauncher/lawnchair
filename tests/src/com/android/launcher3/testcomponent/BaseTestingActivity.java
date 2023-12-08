@@ -69,7 +69,10 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
         mView.setBackgroundColor(Color.BLUE);
         setContentView(mView);
 
-        registerReceiver(mCommandReceiver, new IntentFilter(mAction + SUFFIX_COMMAND));
+        registerReceiver(
+                mCommandReceiver,
+                new IntentFilter(mAction + SUFFIX_COMMAND),
+                RECEIVER_EXPORTED);
     }
 
     protected void addButton(String title, String method) {

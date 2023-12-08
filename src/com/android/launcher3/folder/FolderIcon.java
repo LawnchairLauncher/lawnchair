@@ -16,6 +16,7 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
@@ -42,6 +43,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -56,7 +58,6 @@ import com.android.launcher3.Reorderable;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
@@ -260,7 +261,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     private boolean willAcceptItem(ItemInfo item) {
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
                 item != mInfo && !mFolder.isOpen());
     }
@@ -407,7 +407,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             final int finalIndex = index;
             dragLayer.animateView(animateView, to, finalAlpha,
                     finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
-                    Interpolators.DEACCEL_2,
+                    Interpolators.DECELERATE_2,
                     () -> {
                         mPreviewItemManager.hidePreviewItem(finalIndex, false);
                         mFolder.showItem(item);
@@ -628,7 +628,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             Utilities.scaleRectAboutCenter(iconBounds, iconScale);
 
             // If we are animating to the accepting state, animate the dot out.
-            mDotParams.scale = Math.max(0, mDotScale - mBackground.getScaleProgress());
+            mDotParams.scale = Math.max(0, mDotScale - mBackground.getAcceptScaleProgress());
             mDotParams.dotColor = mBackground.getDotColor();
             mDotRenderer.draw(canvas, mDotParams);
         }
@@ -799,6 +799,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         } else {
             return getContext().getString(R.string.folder_name_format_overflow, title,
                     MAX_NUM_ITEMS_IN_PREVIEW);
+        }
+    }
+
+    @Override
+    public void onHoverChanged(boolean hovered) {
+        super.onHoverChanged(hovered);
+        if (ENABLE_CURSOR_HOVER_STATES.get()) {
+            mBackground.setHovered(hovered);
         }
     }
 

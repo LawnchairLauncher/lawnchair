@@ -27,25 +27,22 @@ import com.android.launcher3.util.NavigationMode;
  */
 public class NavBarPosition {
 
+    private final boolean mIsTablet;
     private final NavigationMode mMode;
     private final int mDisplayRotation;
 
     public NavBarPosition(NavigationMode mode, Info info) {
+        mIsTablet = info.isTablet(info.realBounds);
         mMode = mode;
         mDisplayRotation = info.rotation;
     }
 
-    public NavBarPosition(NavigationMode mode, int displayRotation) {
-        mMode = mode;
-        mDisplayRotation = displayRotation;
-    }
-
     public boolean isRightEdge() {
-        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_90;
+        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_90 && !mIsTablet;
     }
 
     public boolean isLeftEdge() {
-        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_270;
+        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_270 && !mIsTablet;
     }
 
     public float getRotation() {

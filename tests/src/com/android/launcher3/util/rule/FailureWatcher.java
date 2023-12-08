@@ -8,10 +8,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.uiautomator.UiDevice;
 
-import com.android.app.viewcapture.ViewCapture;
+import com.android.app.viewcapture.data.ExportedData;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 
@@ -24,22 +23,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
     private static boolean sSavedBugreport = false;
-    final private UiDevice mDevice;
     private final LauncherInstrumentation mLauncher;
     @NonNull
-    private final ViewCapture mViewCapture;
+    private final Supplier<ExportedData> mViewCaptureDataSupplier;
 
-    public FailureWatcher(UiDevice device, LauncherInstrumentation launcher,
-            @NonNull ViewCapture viewCapture) {
-        mDevice = device;
+    public FailureWatcher(LauncherInstrumentation launcher,
+            @NonNull Supplier<ExportedData> viewCaptureDataSupplier) {
         mLauncher = launcher;
-        mViewCapture = viewCapture;
+        mViewCaptureDataSupplier = viewCaptureDataSupplier;
     }
 
     @Override
@@ -71,7 +69,7 @@ public class FailureWatcher extends TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        onError(mLauncher, description, e, mViewCapture);
+        onError(mLauncher, description, e, mViewCaptureDataSupplier);
     }
 
     static File diagFile(Description description, String prefix, String ext) {
@@ -86,7 +84,7 @@ public class FailureWatcher extends TestWatcher {
     }
 
     private static void onError(LauncherInstrumentation launcher, Description description,
-            Throwable e, @Nullable ViewCapture viewCapture) {
+            Throwable e, @Nullable Supplier<ExportedData> viewCaptureDataSupplier) {
 
         final File sceenshot = diagFile(description, "TestScreenshot", "png");
         final File hierarchy = diagFile(description, "Hierarchy", "zip");
@@ -103,9 +101,10 @@ public class FailureWatcher extends TestWatcher {
             dumpCommand("cmd window dump-visible-window-views", out);
             out.closeEntry();
 
-            if (viewCapture != null) {
+            if (viewCaptureDataSupplier != null) {
                 out.putNextEntry(new ZipEntry("FS/data/misc/wmtrace/failed_test.vc"));
-                viewCapture.dumpTo(out, ApplicationProvider.getApplicationContext());
+                final ExportedData exportedData = viewCaptureDataSupplier.get();
+                if (exportedData != null) exportedData.writeTo(out);
                 out.closeEntry();
             }
         } catch (Exception ignored) {

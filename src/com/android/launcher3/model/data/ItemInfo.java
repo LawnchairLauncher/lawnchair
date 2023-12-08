@@ -30,7 +30,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.EXTENDED_CONTAINE
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.CONTAINER_NOT_SET;
 import static com.android.launcher3.shortcuts.ShortcutKey.EXTRA_SHORTCUT_ID;
@@ -50,7 +49,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Animation;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
@@ -88,7 +86,6 @@ public class ItemInfo {
 
     /**
      * One of {@link Favorites#ITEM_TYPE_APPLICATION},
-     * {@link Favorites#ITEM_TYPE_SHORTCUT},
      * {@link Favorites#ITEM_TYPE_DEEP_SHORTCUT}
      * {@link Favorites#ITEM_TYPE_FOLDER},
      * {@link Favorites#ITEM_TYPE_APP_PAIR},
@@ -325,9 +322,7 @@ public class ItemInfo {
      * Returns whether this item should use the background animation.
      */
     public boolean shouldUseBackgroundAnimation() {
-        return animationType == LauncherSettings.Animation.VIEW_BACKGROUND
-                && FeatureFlags.ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES.get()
-                && FeatureFlags.ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION.get();
+        return animationType == LauncherSettings.Animation.VIEW_BACKGROUND;
     }
 
     /**
@@ -366,13 +361,6 @@ public class ItemInfo {
                                             .ifPresent(lsb::setShortcutId);
                                     return lsb;
                                 })
-                                .orElse(LauncherAtom.Shortcut.newBuilder()));
-                break;
-            case ITEM_TYPE_SHORTCUT:
-                itemBuilder
-                        .setShortcut(nullableComponent
-                                .map(component -> LauncherAtom.Shortcut.newBuilder()
-                                        .setShortcutName(component.flattenToShortString()))
                                 .orElse(LauncherAtom.Shortcut.newBuilder()));
                 break;
             case ITEM_TYPE_APPWIDGET:

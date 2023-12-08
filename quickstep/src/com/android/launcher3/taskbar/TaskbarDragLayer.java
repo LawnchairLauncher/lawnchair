@@ -21,6 +21,7 @@ import static android.view.KeyEvent.KEYCODE_BACK;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.media.permission.SafeCloseable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.KeyEvent;
@@ -31,6 +32,7 @@ import android.view.ViewTreeObserver;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -68,6 +70,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     // Initialized in init.
     private TaskbarDragLayerController.TaskbarDragLayerCallbacks mControllerCallbacks;
+    private SafeCloseable mViewCaptureCloseable;
 
     private float mTaskbarBackgroundOffset;
 
@@ -128,12 +131,14 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnComputeInternalInsetsListener(mTaskbarInsetsComputer);
+        mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
+                .startCapture(getRootView(), ".Taskbar");
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
+        mViewCaptureCloseable.close();
         onDestroy(true);
     }
 

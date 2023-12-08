@@ -20,6 +20,7 @@ import static android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
 import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+import static android.view.MotionEvent.AXIS_GESTURE_SWIPE_FINGER_COUNT;
 
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
@@ -98,17 +99,8 @@ public final class LauncherInstrumentation {
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
     private static final int GESTURE_STEP_MS = 16;
 
-    static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
-    static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
-    private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
     static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START = Pattern.compile("start:");
-
-    static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
-    static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
-    static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
-    static final Pattern EVENT_HOVER_ENTER_TIS = getTouchEventPatternTIS("ACTION_HOVER_ENTER");
-    static final Pattern EVENT_HOVER_EXIT_TIS = getTouchEventPatternTIS("ACTION_HOVER_EXIT");
 
     private static final Pattern EVENT_KEY_BACK_DOWN =
             getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
@@ -129,25 +121,18 @@ public final class LauncherInstrumentation {
 
     public enum NavigationModel {ZERO_BUTTON, THREE_BUTTON}
 
-    // Where the gesture happens: outside of Launcher, inside or from inside to outside and
-    // whether the gesture recognition triggers pilfer.
+    // Defines whether the gesture recognition triggers pilfer.
     public enum GestureScope {
-        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE,
-        INSIDE_TO_OUTSIDE_WITHOUT_PILFER,
-        INSIDE_TO_OUTSIDE_WITH_KEYCODE, // For gestures that will trigger a keycode from TIS.
-        OUTSIDE_WITH_KEYCODE,
+        DONT_EXPECT_PILFER,
+        EXPECT_PILFER,
     }
 
-    /**
-     * Represents a point in the code at which a callback can run.
-     */
-    public enum CALLBACK_RUN_POINT {
-        CALLBACK_HOLD_BEFORE_DROP,
-        CALLBACK_HOVER_ENTER,
-        CALLBACK_HOVER_EXIT,
+    public enum TrackpadGestureType {
+        NONE,
+        TWO_FINGER,
+        THREE_FINGER,
+        FOUR_FINGER
     }
-
-    private Consumer<CALLBACK_RUN_POINT> mCallbackAtRunPoint = null;
 
     // Base class for launcher containers.
     abstract static class VisibleContainer {
@@ -176,7 +161,7 @@ public final class LauncherInstrumentation {
         void close();
     }
 
-    private static final String WORKSPACE_RES_ID = "workspace";
+    static final String WORKSPACE_RES_ID = "workspace";
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
@@ -208,20 +193,8 @@ public final class LauncherInstrumentation {
     private boolean mCheckEventsForSuccessfulGestures = false;
     private Runnable mOnLauncherCrashed;
 
-    private static Pattern getTouchEventPattern(String prefix, String action) {
-        // The pattern includes checks that we don't get a multi-touch events or other surprises.
-        return Pattern.compile(
-                prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
-                        + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount=1");
-    }
-
-    private static Pattern getTouchEventPattern(String action) {
-        return getTouchEventPattern("Touch event", action);
-    }
-
-    private static Pattern getTouchEventPatternTIS(String action) {
-        return getTouchEventPattern("TouchInteractionService.onInputEvent", action);
-    }
+    private TrackpadGestureType mTrackpadGestureType = TrackpadGestureType.NONE;
+    private int mPointerCount = 0;
 
     private static Pattern getKeyEventPattern(String action, String keyCode) {
         return Pattern.compile("Key event: KeyEvent.*action=" + action + ".*keyCode=" + keyCode);
@@ -715,6 +688,19 @@ public final class LauncherInstrumentation {
     }
 
     /**
+     * Set the trackpad gesture type of the interaction.
+     * @param trackpadGestureType whether it's not from trackpad, two-finger, three-finger, or
+     *                            four-finger gesture.
+     */
+    public void setTrackpadGestureType(TrackpadGestureType trackpadGestureType) {
+        mTrackpadGestureType = trackpadGestureType;
+    }
+
+    TrackpadGestureType getTrackpadGestureType() {
+        return mTrackpadGestureType;
+    }
+
+    /**
      * Sets expected rotation.
      * TAPL periodically checks that Launcher didn't suddenly change the rotation to unexpected one.
      * Null parameter disables checks. The initial state is "no checks".
@@ -957,8 +943,8 @@ public final class LauncherInstrumentation {
         GestureScope gestureScope = gestureStartFromLauncher
                 // Without the navigation bar layer, the gesture scope on tablets remains inside the
                 // launcher process.
-                ? (isTablet() ? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
-                : GestureScope.OUTSIDE_WITH_PILFER;
+                ? (isTablet() ? GestureScope.DONT_EXPECT_PILFER : GestureScope.EXPECT_PILFER)
+                : GestureScope.EXPECT_PILFER;
         linearGesture(
                 displaySize.x / 2, displaySize.y - 1,
                 displaySize.x / 2, 0,
@@ -1003,8 +989,11 @@ public final class LauncherInstrumentation {
             // We need waiting for any accessibility event generated after pressing Home because
             // otherwise waitForIdle may return immediately in case when there was a big enough
             // pause in accessibility events prior to pressing Home.
+            boolean isThreeFingerTrackpadGesture =
+                    mTrackpadGestureType == TrackpadGestureType.THREE_FINGER;
             final String action;
-            if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+            if (getNavigationModel() == NavigationModel.ZERO_BUTTON
+                    || isThreeFingerTrackpadGesture) {
                 checkForAnomaly(false, true);
 
                 final Point displaySize = getRealDisplaySize();
@@ -1020,21 +1009,19 @@ public final class LauncherInstrumentation {
                 } else {
                     action = "swiping up to home";
 
+                    int startY = isThreeFingerTrackpadGesture ? displaySize.y * 3 / 4
+                            : displaySize.y - 1;
+                    int endY = isThreeFingerTrackpadGesture ? displaySize.y / 4 : displaySize.y / 2;
                     swipeToState(
-                            displaySize.x / 2, displaySize.y - 1,
-                            displaySize.x / 2, displaySize.y / 2,
+                            displaySize.x / 2, startY,
+                            displaySize.x / 2, endY,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
-                            gestureStartFromLauncher ? GestureScope.INSIDE_TO_OUTSIDE
-                                    : GestureScope.OUTSIDE_WITH_PILFER);
+                            GestureScope.EXPECT_PILFER);
                 }
             } else {
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 action = "clicking home button";
-                if (isTablet()) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
-                }
 
                 runToState(
                         waitForNavigationUiObject("home")::click,
@@ -1059,21 +1046,19 @@ public final class LauncherInstrumentation {
             waitForLauncherInitialized();
             final boolean launcherVisible =
                     isTablet() ? isLauncherContainerVisible() : isLauncherVisible();
-            if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+            boolean isThreeFingerTrackpadGesture =
+                    mTrackpadGestureType == TrackpadGestureType.THREE_FINGER;
+            if (getNavigationModel() == NavigationModel.ZERO_BUTTON
+                    || isThreeFingerTrackpadGesture) {
                 final Point displaySize = getRealDisplaySize();
-                final GestureScope gestureScope =
-                        launcherVisible ? GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
-                                : GestureScope.OUTSIDE_WITH_KEYCODE;
                 // TODO(b/225505986): change startY and endY back to displaySize.y / 2 once the
                 //  issue is solved.
-                linearGesture(0, displaySize.y / 4, displaySize.x / 2, displaySize.y / 4,
-                        10, false, gestureScope);
+                int startX = isThreeFingerTrackpadGesture ? displaySize.x / 4 : 0;
+                int endX = isThreeFingerTrackpadGesture ? displaySize.x * 3 / 4 : displaySize.x / 2;
+                linearGesture(startX, displaySize.y / 4, endX, displaySize.y / 4,
+                        10, false, GestureScope.DONT_EXPECT_PILFER);
             } else {
                 waitForNavigationUiObject("back").click();
-                if (isTablet()) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
-                }
             }
             if (launcherVisible) {
                 if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
@@ -1481,15 +1466,17 @@ public final class LauncherInstrumentation {
      * animations because in some scenarios there is a playing animations when the click is
      * attempted.
      */
-    void clickObject(UiObject2 uiObject, GestureScope gestureScope) {
+    void clickObject(UiObject2 uiObject) {
         final long clickTime = SystemClock.uptimeMillis();
         final Point center = uiObject.getVisibleCenter();
-        sendPointer(clickTime, clickTime, MotionEvent.ACTION_DOWN, center, gestureScope);
-        sendPointer(clickTime, clickTime, MotionEvent.ACTION_UP, center, gestureScope);
+        sendPointer(clickTime, clickTime, MotionEvent.ACTION_DOWN, center,
+                GestureScope.DONT_EXPECT_PILFER);
+        sendPointer(clickTime, clickTime, MotionEvent.ACTION_UP, center,
+                GestureScope.DONT_EXPECT_PILFER);
     }
 
     void clickLauncherObject(UiObject2 object) {
-        clickObject(object, GestureScope.INSIDE);
+        clickObject(object);
     }
 
     void scrollToLastVisibleRow(
@@ -1582,7 +1569,8 @@ public final class LauncherInstrumentation {
 
         executeAndWaitForLauncherEvent(
                 () -> linearGesture(
-                        startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
+                        startX, startY, endX, endY, steps, slowDown,
+                        GestureScope.DONT_EXPECT_PILFER),
                 event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 () -> "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY,
@@ -1592,16 +1580,41 @@ public final class LauncherInstrumentation {
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
     public void linearGesture(int startX, int startY, int endX, int endY, int steps,
-            boolean slowDown,
-            GestureScope gestureScope) {
+            boolean slowDown, GestureScope gestureScope) {
         log("linearGesture: " + startX + ", " + startY + " -> " + endX + ", " + endY);
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+        if (mTrackpadGestureType != TrackpadGestureType.NONE) {
+            sendPointer(downTime, downTime, getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 1),
+                    start, gestureScope);
+            if (mTrackpadGestureType == TrackpadGestureType.THREE_FINGER
+                    || mTrackpadGestureType == TrackpadGestureType.FOUR_FINGER) {
+                sendPointer(downTime, downTime,
+                        getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 2),
+                        start, gestureScope);
+                if (mTrackpadGestureType == TrackpadGestureType.FOUR_FINGER) {
+                    sendPointer(downTime, downTime,
+                            getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 3),
+                            start, gestureScope);
+                }
+            }
+        }
         final long endTime = movePointer(
                 start, end, steps, false, downTime, downTime, slowDown, gestureScope);
+        if (mTrackpadGestureType != TrackpadGestureType.NONE) {
+            for (int i = mPointerCount; i >= 2; i--) {
+                sendPointer(downTime, downTime,
+                        getPointerAction(MotionEvent.ACTION_POINTER_UP, i - 1),
+                        start, gestureScope);
+            }
+        }
         sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end, gestureScope);
+    }
+
+    private static int getPointerAction(int action, int index) {
+        return action + (index << MotionEvent.ACTION_POINTER_INDEX_SHIFT);
     }
 
     long movePointer(Point start, Point end, int steps, boolean isDecelerating, long downTime,
@@ -1627,74 +1640,104 @@ public final class LauncherInstrumentation {
         return getContext().getResources();
     }
 
-    private static MotionEvent getMotionEvent(long downTime, long eventTime, int action,
-            float x, float y) {
-        MotionEvent.PointerProperties properties = new MotionEvent.PointerProperties();
-        properties.id = 0;
-        properties.toolType = Configurator.getInstance().getToolType();
+    private static MotionEvent getTrackpadMotionEvent(long downTime, long eventTime,
+            int action, float x, float y, int pointerCount, TrackpadGestureType gestureType) {
+        MotionEvent.PointerProperties[] pointerProperties =
+                new MotionEvent.PointerProperties[pointerCount];
+        MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[pointerCount];
+        boolean isMultiFingerGesture = gestureType != TrackpadGestureType.TWO_FINGER;
+        for (int i = 0; i < pointerCount; i++) {
+            pointerProperties[i] = getPointerProperties(i);
+            pointerCoords[i] = getPointerCoords(x, y);
+            if (isMultiFingerGesture) {
+                pointerCoords[i].setAxisValue(AXIS_GESTURE_SWIPE_FINGER_COUNT,
+                        gestureType == TrackpadGestureType.THREE_FINGER ? 3 : 4);
+            }
+        }
+        return MotionEvent.obtain(downTime, eventTime, action, pointerCount, pointerProperties,
+                pointerCoords, 0, 0, 1.0f, 1.0f, 0, 0,
+                InputDevice.SOURCE_MOUSE | InputDevice.SOURCE_CLASS_POINTER, 0, 0,
+                isMultiFingerGesture ? MotionEvent.CLASSIFICATION_MULTI_FINGER_SWIPE
+                        : MotionEvent.CLASSIFICATION_TWO_FINGER_SWIPE);
+    }
 
+    private static MotionEvent getMotionEvent(long downTime, long eventTime, int action,
+            float x, float y, int source) {
+        return MotionEvent.obtain(downTime, eventTime, action, 1,
+                new MotionEvent.PointerProperties[]{getPointerProperties(0)},
+                new MotionEvent.PointerCoords[]{getPointerCoords(x, y)},
+                0, 0, 1.0f, 1.0f, 0, 0, source, 0);
+    }
+
+    private static MotionEvent.PointerProperties getPointerProperties(int pointerId) {
+        MotionEvent.PointerProperties properties = new MotionEvent.PointerProperties();
+        properties.id = pointerId;
+        properties.toolType = Configurator.getInstance().getToolType();
+        return properties;
+    }
+
+    private static MotionEvent.PointerCoords getPointerCoords(float x, float y) {
         MotionEvent.PointerCoords coords = new MotionEvent.PointerCoords();
         coords.pressure = 1;
         coords.size = 1;
         coords.x = x;
         coords.y = y;
-
-        return MotionEvent.obtain(downTime, eventTime, action, 1,
-                new MotionEvent.PointerProperties[]{properties},
-                new MotionEvent.PointerCoords[]{coords},
-                0, 0, 1.0f, 1.0f, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0);
+        return coords;
     }
 
     private boolean hasTIS() {
-        return getTestInfo(TestProtocol.REQUEST_HAS_TIS).getBoolean(TestProtocol.REQUEST_HAS_TIS);
+        return getTestInfo(TestProtocol.REQUEST_HAS_TIS).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    boolean isGridOnlyOverviewEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
+        sendPointer(downTime, currentTime, action, point, gestureScope,
+                InputDevice.SOURCE_TOUCHSCREEN);
+    }
+
+    public void sendPointer(long downTime, long currentTime, int action, Point point,
+            GestureScope gestureScope, int source) {
         final boolean hasTIS = hasTIS();
-        switch (action) {
+        int pointerCount = mPointerCount;
+
+        boolean isTrackpadGesture = mTrackpadGestureType != TrackpadGestureType.NONE;
+        switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
-                }
-                if (hasTIS && getNavigationModel() != NavigationModel.THREE_BUTTON) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                if (isTrackpadGesture) {
+                    mPointerCount = 1;
+                    pointerCount = mPointerCount;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (hasTIS && gestureScope != GestureScope.INSIDE
-                        && gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
-                        && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
-                        || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
+                if (hasTIS && gestureScope == GestureScope.EXPECT_PILFER) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
                 }
-                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            gestureScope == GestureScope.INSIDE
-                                    || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
-                                    ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
-                }
-                if (hasTIS && getNavigationModel() != NavigationModel.THREE_BUTTON) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS,
-                            gestureScope == GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
-                                    || gestureScope == GestureScope.OUTSIDE_WITH_KEYCODE
-                                    ? EVENT_TOUCH_CANCEL_TIS : EVENT_TOUCH_UP_TIS);
-                }
                 break;
-            case MotionEvent.ACTION_HOVER_ENTER:
-                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_HOVER_ENTER_TIS);
+            case MotionEvent.ACTION_POINTER_DOWN:
+                mPointerCount++;
+                pointerCount = mPointerCount;
                 break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_HOVER_EXIT_TIS);
+            case MotionEvent.ACTION_POINTER_UP:
+                // When the gesture is handled outside, it's cancelled within launcher.
+                mPointerCount--;
                 break;
         }
 
-        final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
+        final MotionEvent event = isTrackpadGesture
+                ? getTrackpadMotionEvent(
+                        downTime, currentTime, action, point.x, point.y, pointerCount,
+                        mTrackpadGestureType)
+                : getMotionEvent(downTime, currentTime, action, point.x, point.y, source);
+        if (action == MotionEvent.ACTION_BUTTON_PRESS
+                || action == MotionEvent.ACTION_BUTTON_RELEASE) {
+            event.setActionButton(MotionEvent.BUTTON_PRIMARY);
+        }
         assertTrue("injectInputEvent failed",
                 mInstrumentation.getUiAutomation().injectInputEvent(event, true, false));
         event.recycle();
@@ -1702,8 +1745,7 @@ public final class LauncherInstrumentation {
 
     public long movePointer(long downTime, long startTime, long duration, Point from, Point to,
             GestureScope gestureScope) {
-        return movePointer(
-                downTime, startTime, duration, false, from, to, gestureScope);
+        return movePointer(downTime, startTime, duration, false, from, to, gestureScope);
     }
 
     public long movePointer(long downTime, long startTime, long duration, boolean isDecelerating,
@@ -1763,11 +1805,12 @@ public final class LauncherInstrumentation {
             @NonNull final UiObject2 target, @NonNull String resName, Pattern longClickEvent) {
         final Point targetCenter = target.getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
-        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter, GestureScope.INSIDE);
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter,
+                GestureScope.DONT_EXPECT_PILFER);
         expectEvent(TestProtocol.SEQUENCE_MAIN, longClickEvent);
         final UiObject2 result = waitForLauncherObject(resName);
         sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter,
-                GestureScope.INSIDE);
+                GestureScope.DONT_EXPECT_PILFER);
         return result;
     }
 
@@ -1851,6 +1894,12 @@ public final class LauncherInstrumentation {
         return tasks;
     }
 
+    /** Reinitializes the workspace to its default layout. */
+    public void reinitializeLauncherData() {
+        getTestInfo(TestProtocol.REQUEST_REINITIALIZE_DATA);
+    }
+
+    /** Clears the workspace, leaving it empty. */
     public void clearLauncherData() {
         getTestInfo(TestProtocol.REQUEST_CLEAR_DATA);
     }
@@ -2042,25 +2091,9 @@ public final class LauncherInstrumentation {
             final long downTime = SystemClock.uptimeMillis();
             final Point tapTarget = new Point(x, y);
             sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
-        }
-    }
-
-    /**
-     * Sets the consumer to run callbacks at all run-points.
-     */
-    public void setRunPointCallback(Consumer<CALLBACK_RUN_POINT> callback) {
-        mCallbackAtRunPoint = callback;
-    }
-
-    /**
-     * Runs the callback at the specified point if it exists.
-     */
-    void runCallbackIfActive(CALLBACK_RUN_POINT runPoint) {
-        if (mCallbackAtRunPoint != null) {
-            mCallbackAtRunPoint.accept(runPoint);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
         }
     }
 
