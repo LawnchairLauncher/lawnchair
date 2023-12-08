@@ -75,6 +75,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private var bgVisible = true
     private var bgAlpha = 1f
     private val suggestionsRecent = SearchRecentSuggestions(launcher, LawnchairRecentSuggestionProvider.AUTHORITY, LawnchairRecentSuggestionProvider.MODE)
+    private val pref = PreferenceManager.getInstance(launcher)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -87,7 +88,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         input = ViewCompat.requireViewById(this, R.id.input)
         with(input) {
-            if (LawnchairSearchAlgorithm.isDeviceSearchEnabled(context)) {
+            if (pref.performWideSearchExperimental.get()) {
                 setHint(R.string.all_apps_device_search_hint)
             } else {
                 setHint(R.string.all_apps_search_bar_hint)
@@ -105,10 +106,12 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
         }
 
-        input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                val query = editText.text.toString()
-                suggestionsRecent.saveRecentQuery(query, null)
+        if (pref.searchResulRecentSuggestion.get()) {
+            input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    val query = editText.text.toString()
+                    suggestionsRecent.saveRecentQuery(query, null)
+                }
             }
         }
 
