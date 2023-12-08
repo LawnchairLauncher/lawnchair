@@ -33,7 +33,10 @@ import com.android.launcher3.search.SearchAlgorithm
 import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
@@ -204,23 +207,16 @@ sealed class LawnchairSearchAlgorithm(
         }
 
         if (prefs.searchResultStartPageSuggestion.get()) {
-            getStartPageSuggestions(
-                query,
-                maxSuggestionCount,
-                object : SearchCallback {
-                    override fun onSearchLoaded(items: List<Any>) {
-                        results.addAll(items.map { SearchResult(SUGGESTION, it) })
+            val startPageSuggestions = async {
+                try {
+                    withTimeout(3000) {
+                        getStartPageSuggestions(query, maxSuggestionCount)
                     }
-
-                    override fun onSearchFailed(error: String) {
-                        results.add(SearchResult(ERROR, error))
-                    }
-
-                    override fun onLoading() {
-                        results.add(SearchResult(LOADING, "Loading"))
-                    }
-                },
-            )
+                } catch (e: TimeoutCancellationException) {
+                    emptyList()
+                }
+            }
+            results.addAll(startPageSuggestions.await().map { SearchResult(SUGGESTION, it) })
         }
 
         if (prefs.searchResulRecentSuggestion.get()) {
