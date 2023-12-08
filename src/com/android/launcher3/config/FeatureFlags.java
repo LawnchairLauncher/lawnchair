@@ -308,7 +308,7 @@ public final class FeatureFlags {
                     "Long press of nav handle is instantly triggered if deep press is detected.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_DELAY =
-            getIntFlag(309972570, "LPNH_HAPTIC_HINT_ITERATIONS", 0,
+            getIntFlag(309972570, "LPNH_HAPTIC_HINT_DELAY", 0,
                     "Delay before haptic hint starts.");
 
     // TODO(Block 17): Clean up flags
