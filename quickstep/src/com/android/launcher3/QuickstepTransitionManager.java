@@ -1654,9 +1654,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             addCujInstrumentation(anim, playFallBackAnimation
                     ? CUJ_APP_CLOSE_TO_HOME_FALLBACK : CUJ_APP_CLOSE_TO_HOME);
 
-            anim.addListener(new AnimationSuccessListener() {
+            anim.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationSuccess(Animator animator) {
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
                     AccessibilityManagerCompat.sendTestProtocolEventToTest(
                             mLauncher, WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE);
                 }
