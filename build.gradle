@@ -417,7 +417,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$roomVersion"
     ksp "androidx.room:room-compiler:$roomVersion"
 
-    def libsuVersion = '5.2.1'
+    def libsuVersion = '5.2.2'
     implementation "com.github.topjohnwu.libsu:core:$libsuVersion"
     implementation "com.github.topjohnwu.libsu:service:$libsuVersion"
 
