@@ -34,6 +34,8 @@ import app.lawnchair.ui.preferences.components.SuggestionsPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.contactPermissionGranted
+import app.lawnchair.util.filesAndStorageGranted
+import app.lawnchair.util.requestContactPermissionGranted
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
@@ -134,7 +136,7 @@ fun AppDrawerPreferences() {
                             label = stringResource(id = R.string.perform_wide_search_file),
                             description = stringResource(
                                 id = if (
-                                    checkAndRequestFilesPermission(context, prefs)
+                                    filesAndStorageGranted(context)
                                 ) {
                                     R.string.all_apps_search_result_files_description
                                 } else {
@@ -156,14 +158,14 @@ fun AppDrawerPreferences() {
                             label = stringResource(id = R.string.search_pref_result_people_title),
                             description = stringResource(
                                 id = if (
-                                    contactPermissionGranted(context, prefs)
+                                    contactPermissionGranted(context)
                                 ) {
                                     R.string.all_apps_search_result_contacts_description
                                 } else {
                                     R.string.warn_contact_permission_content
                                 },
                             ),
-                            onClick = { contactPermissionGranted(context, prefs) },
+                            onClick = { requestContactPermissionGranted(context, prefs) },
                         )
                         ExpandAndShrink(visible = prefs.searchResultPeople.getAdapter().state.value) {
                             SliderPreference(

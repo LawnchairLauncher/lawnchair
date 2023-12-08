@@ -349,7 +349,7 @@
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts and files in app drawer search. Enable in App Drawer settings.</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
     <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
@@ -509,8 +509,8 @@
     <string name="warn_contact_permission_content">Requires contact permission</string>
     <string name="warn_files_permission_content">Requires storage permission</string>
 
-    <string name="all_apps_search_result_files_description">Show files in search result</string>
-    <string name="all_apps_search_result_contacts_description">Show contacts in search result</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
 
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>

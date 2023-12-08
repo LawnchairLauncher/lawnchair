@@ -15,7 +15,7 @@ import app.lawnchair.search.data.getRecentKeyword
 import app.lawnchair.search.data.getStartPageSuggestions
 import app.lawnchair.search.data.queryFilesInMediaStore
 import app.lawnchair.util.checkAndRequestFilesPermission
-import app.lawnchair.util.contactPermissionGranted
+import app.lawnchair.util.requestContactPermissionGranted
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
 import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
@@ -191,14 +191,18 @@ sealed class LawnchairSearchAlgorithm(
     protected suspend fun performDeviceWideSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> = withContext(Dispatchers.IO) {
         val results = ArrayList<SearchResult>()
 
-        if (prefs.searchResultPeople.get() && contactPermissionGranted(context, prefs)) {
-            val contactResults = findContactsByName(context, query, maxPeopleCount)
-            results.addAll(contactResults.map { SearchResult(CONTACT, it) })
+        if (prefs.searchResultPeople.get()) {
+            if (requestContactPermissionGranted(context, prefs)) {
+                val contactResults = findContactsByName(context, query, maxPeopleCount)
+                results.addAll(contactResults.map { SearchResult(CONTACT, it) })
+            }
         }
 
-        if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(context, prefs)) {
-            val fileResults = queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount).toList()
-            results.addAll(fileResults.map { SearchResult(FILES, it) })
+        if (prefs.searchResultFiles.get()) {
+            if (checkAndRequestFilesPermission(context, prefs)) {
+                val fileResults = queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount).toList()
+                results.addAll(fileResults.map { SearchResult(FILES, it) })
+            }
         }
 
         if (prefs.searchResultSettingsEntry.get()) {

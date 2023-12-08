@@ -17,9 +17,8 @@ import app.lawnchair.preferences.PreferenceManager
 
 private const val TAG: String = "PackagePermissionManager"
 
-fun contactPermissionGranted(context: Context, prefs: PreferenceManager): Boolean {
-    val isGranted =
-        context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+fun requestContactPermissionGranted(context: Context, prefs: PreferenceManager): Boolean {
+    val isGranted = contactPermissionGranted(context)
     if (!isGranted) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", context.packageName, null)
@@ -39,6 +38,10 @@ fun contactPermissionGranted(context: Context, prefs: PreferenceManager): Boolea
     return isGranted
 }
 
+fun contactPermissionGranted(context: Context): Boolean {
+    return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+}
+
 fun checkAndRequestFilesPermission(context: Context, prefs: PreferenceManager): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         if (!Environment.isExternalStorageManager()) {
@@ -53,6 +56,10 @@ fun checkAndRequestFilesPermission(context: Context, prefs: PreferenceManager): 
         }
     }
     return true
+}
+
+fun filesAndStorageGranted(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) Environment.isExternalStorageManager() else hasReadExternalStoragePermission(context)
 }
 
 @RequiresApi(Build.VERSION_CODES.R)
