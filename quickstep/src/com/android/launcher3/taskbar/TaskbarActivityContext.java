@@ -987,15 +987,20 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             FolderIcon folderIcon = (FolderIcon) view;
             Folder folder = folderIcon.getFolder();
 
-            folder.setOnFolderStateChangedListener(newState -> {
-                if (newState == Folder.STATE_OPEN) {
-                    setTaskbarWindowFocusableForIme(true);
-                } else if (newState == Folder.STATE_CLOSED) {
-                    // Defer by a frame to ensure we're no longer fullscreen and thus won't jump.
-                    getDragLayer().post(() -> setTaskbarWindowFocusableForIme(false));
-                    folder.setOnFolderStateChangedListener(null);
-                }
-            });
+            folder.setPriorityOnFolderStateChangedListener(
+                    new Folder.OnFolderStateChangedListener() {
+                        @Override
+                        public void onFolderStateChanged(int newState) {
+                            if (newState == Folder.STATE_OPEN) {
+                                setTaskbarWindowFocusableForIme(true);
+                            } else if (newState == Folder.STATE_CLOSED) {
+                                // Defer by a frame to ensure we're no longer fullscreen and thus
+                                // won't jump.
+                                getDragLayer().post(() -> setTaskbarWindowFocusableForIme(false));
+                                folder.setPriorityOnFolderStateChangedListener(null);
+                            }
+                        }
+                    });
 
             setTaskbarWindowFullscreen(true);
 
@@ -1055,7 +1060,21 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
                         return;
                     }
+                }
 
+                // If the app was launched from a folder, stash the taskbar after it closes
+                Folder f = Folder.getOpen(this);
+                if (f != null && f.getInfo().id == info.container) {
+                    f.addOnFolderStateChangedListener(new Folder.OnFolderStateChangedListener() {
+                        @Override
+                        public void onFolderStateChanged(int newState) {
+                            if (newState == Folder.STATE_CLOSED) {
+                                f.removeOnFolderStateChangedListener(this);
+                                mControllers.taskbarStashController
+                                        .updateAndAnimateTransientTaskbar(true);
+                            }
+                        }
+                    });
                 }
                 mControllers.uiController.onTaskbarIconLaunched(info);
                 mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
