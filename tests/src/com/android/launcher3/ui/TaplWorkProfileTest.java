@@ -48,7 +48,7 @@ import org.junit.Test;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public class WorkProfileTest extends AbstractLauncherUiTest {
+public class TaplWorkProfileTest extends AbstractLauncherUiTest {
 
     private static final int WORK_PAGE = ActivityAllAppsContainerView.AdapterHolder.WORK;
 

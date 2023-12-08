@@ -59,7 +59,7 @@ import java.util.UUID;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RequestPinItemTest extends AbstractLauncherUiTest {
+public class TaplRequestPinItemTest extends AbstractLauncherUiTest {
 
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();

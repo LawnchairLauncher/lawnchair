@@ -41,7 +41,7 @@ import java.util.UUID;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class PromiseIconUiTest extends AbstractLauncherUiTest {
+public class TaplPromiseIconUiTest extends AbstractLauncherUiTest {
 
     private int mSessionId = -1;
 

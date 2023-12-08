@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
+public class TaplStartLauncherViaGestureTests extends AbstractQuickStepTest {
 
     static final int STRESS_REPEAT_COUNT = 10;
 

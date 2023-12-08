@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public final class SecondaryDisplayLauncherTest extends AbstractLauncherUiTest {
+public final class TaplSecondaryDisplayLauncherTest extends AbstractLauncherUiTest {
     private static final int WAIT_TIME_MS = 5000;
     private static final int LONG_PRESS_DURATION_MS = 1000;
     private static final int DRAG_TIME_MS = 160;
