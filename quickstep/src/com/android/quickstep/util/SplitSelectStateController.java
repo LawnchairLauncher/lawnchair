@@ -634,7 +634,11 @@ public class SplitSelectStateController {
             };
 
             MAIN_EXECUTOR.execute(() -> {
-                TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
+                // Only animate from taskView if it's already visible
+                boolean shouldLaunchFromTaskView = mLaunchingTaskView != null &&
+                        mLaunchingTaskView.getRecentsView().isTaskViewVisible(mLaunchingTaskView);
+                TaskViewUtils.composeRecentsSplitLaunchAnimator(shouldLaunchFromTaskView
+                                ? mLaunchingTaskView : null, mStateManager,
                         mDepthController, mInitialTaskId, mSecondTaskId, info, t, () -> {
                             finishAdapter.run();
                             cleanup(true /*success*/);
