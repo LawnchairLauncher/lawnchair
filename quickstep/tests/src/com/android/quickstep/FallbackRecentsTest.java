@@ -144,7 +144,7 @@ public class FallbackRecentsTest {
                 .around(new TestStabilityRule())
                 .around(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
-                .around(viewCaptureRule)
+                // .around(viewCaptureRule) b/315482167
                 .around(new TestIsolationRule(mLauncher, false))
                 .around(setLauncherCommand);
 
