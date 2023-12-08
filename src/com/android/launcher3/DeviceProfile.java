@@ -1451,7 +1451,7 @@ public class DeviceProfile {
             }
 
             // Recalculating padding and cell height
-            folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
+            folderChildDrawablePaddingPx = mResponsiveWorkspaceCellSpec.getIconDrawablePadding();
 
             CellContentDimensions cellContentDimensions = new CellContentDimensions(
                     folderChildIconSizePx,
