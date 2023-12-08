@@ -1711,7 +1711,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         TextKeyListener.getInstance().release();
         mModelCallbacks.clearPendingBinds();
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
-
+        // if Launcher activity is recreated, {@link Window} including {@link ViewTreeObserver}
+        // could be preserved in {@link ActivityThread#scheduleRelaunchActivity(IBinder)} if the
+        // previous activity has not stopped, which could happen when wallpaper detects a color
+        // changes while launcher is still loading.
+        getRootView().getViewTreeObserver().removeOnPreDrawListener(mOnInitialBindListener);
         mOverlayManager.onActivityDestroyed();
     }
 
