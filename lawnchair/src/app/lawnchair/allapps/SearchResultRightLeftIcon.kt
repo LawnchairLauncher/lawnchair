@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
 import app.lawnchair.launcher
 import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.data.SearchResultActionCallBack
 import app.lawnchair.util.AppInfo
 import app.lawnchair.util.AppInfoHelper
 import app.lawnchair.util.ImageViewWrapper
@@ -77,6 +78,7 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
     override fun bind(
         target: SearchTargetCompat,
         shortcuts: List<SearchTargetCompat>,
+        callBack: SearchResultActionCallBack?,
     ) {
         title.text = target.searchAction?.title
         val isNewFile = target.resultType == SearchTargetCompat.RESULT_TYPE_FILE_TILE &&

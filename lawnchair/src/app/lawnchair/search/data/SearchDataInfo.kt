@@ -41,6 +41,14 @@ data class SettingInfo(
     val requiresUri: Boolean = false,
 )
 
+data class RecentKeyword(
+    val data: Map<String, String>,
+) {
+    fun getValueByKey(key: String): String? {
+        return data[key]
+    }
+}
+
 sealed interface IFileInfo {
     val path: String
     val name: String

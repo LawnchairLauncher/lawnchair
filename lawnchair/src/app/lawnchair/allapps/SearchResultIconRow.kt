@@ -9,9 +9,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import app.lawnchair.allapps.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.font.FontManager
+import app.lawnchair.search.RECENT_KEYWORD
 import app.lawnchair.search.SETTING
 import app.lawnchair.search.SUGGESTION
 import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.data.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.touch.ItemClickHandler
@@ -73,7 +75,7 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         return true
     }
 
-    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
+    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>, callBack: SearchResultActionCallBack?) {
         if (boundId == target.id) return
         boundId = target.id
         flags = getFlags(target.extras)
@@ -82,9 +84,9 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             title.text = it.title
             tag = it
         }
-        val isSuggestion = target.layoutType == LayoutType.HORIZONTAL_MEDIUM_TEXT &&
+        val isSuggestion = (target.layoutType == LayoutType.HORIZONTAL_MEDIUM_TEXT || target.layoutType == LayoutType.WIDGET_LIVE) &&
             target.resultType == SearchTargetCompat.RESULT_TYPE_SUGGESTIONS &&
-            target.packageName == SUGGESTION
+            (target.packageName == SUGGESTION || target.packageName == RECENT_KEYWORD)
 
         val isSetting = target.layoutType == LayoutType.ICON_SLICE &&
             target.resultType == SearchTargetCompat.RESULT_TYPE_SETTING_TILE &&
@@ -135,7 +137,7 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         shortcutIcons.forEachIndexed { index, icon ->
             if (index < shortcuts.size) {
                 icon.isVisible = true
-                icon.bind(shortcuts[index], emptyList())
+                icon.bind(shortcuts[index], emptyList(), null)
             } else {
                 icon.isVisible = false
             }

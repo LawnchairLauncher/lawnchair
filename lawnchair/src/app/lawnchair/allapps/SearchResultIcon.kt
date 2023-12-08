@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import app.lawnchair.launcher
 import app.lawnchair.search.SHORTCUT
 import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.data.SearchResultActionCallBack
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAppState
@@ -69,7 +70,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         return true
     }
 
-    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
+    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>, callBack: SearchResultActionCallBack?) {
         if (boundId == target.id) return
         boundId = target.id
         flags = getFlags(target.extras)
@@ -102,7 +103,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
 
     fun bind(target: SearchTargetCompat, callback: (info: ItemInfoWithIcon) -> Unit) {
         this.callback = callback
-        bind(target, emptyList())
+        bind(target, emptyList(), null)
         if (!hasFlag(flags, SearchResultView.FLAG_HIDE_ICON)) {
             isVisible = true
             val lp = layoutParams as ViewGroup.MarginLayoutParams

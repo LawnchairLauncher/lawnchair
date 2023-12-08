@@ -336,6 +336,10 @@
       <string name="max_file_result_count_title">Max Files Result Count</string>
       <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
       <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+      <string name="max_recent_result_count_title">Max History Result Count</string>
+
+      <string name="clear_history">Clear</string>
+
 
     <!-- <string name="grid" /> -->
       <string name="app_drawer_columns">App Drawer Columns</string>
@@ -346,6 +350,7 @@
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Advanced Search</string>
     <string name="perform_wide_search_description">Search your contacts and files in app drawer search. Enable in App Drawer settings.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />

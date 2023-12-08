@@ -189,6 +189,19 @@ fun AppDrawerPreferences() {
                             valueRange = 3..10,
                         )
                     }
+                    SwitchPreference(
+                        adapter = prefs.searchResulRecentSuggestion.getAdapter(),
+                        label = stringResource(id = R.string.pref_recent_suggestion_title),
+                    )
+
+                    ExpandAndShrink(visible = prefs.searchResulRecentSuggestion.getAdapter().state.value) {
+                        SliderPreference(
+                            label = stringResource(id = R.string.max_recent_result_count_title),
+                            adapter = prefs2.maxRecentResultCount.getAdapter(),
+                            step = 1,
+                            valueRange = 1..10,
+                        )
+                    }
                 }
             }
         }

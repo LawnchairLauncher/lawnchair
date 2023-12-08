@@ -7,6 +7,7 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.IFileInfo
+import app.lawnchair.search.data.RecentKeyword
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.SettingInfo
 import app.lawnchair.util.isDefaultLauncher
@@ -121,6 +122,13 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             val settingsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
             searchTargets.add(settingsHeader)
             searchTargets.addAll(settings.mapNotNull { generateSearchTarget.getSettingSearchItem(it.resultData as SettingInfo) })
+        }
+
+        val recentKeyword = filterByType(wideSearchResults, RECENT_KEYWORD)
+        if (recentKeyword.isNotEmpty()) {
+            val recentKeywordHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.pref_recent_suggestion_title), HEADER_JUSTIFY)
+            searchTargets.add(recentKeywordHeader)
+            searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword) })
         }
 
         val suggestions = filterByType(wideSearchResults, SUGGESTION)

@@ -18,6 +18,7 @@ import app.lawnchair.search.data.FileInfo
 import app.lawnchair.search.data.FileInfo.Companion.isImageType
 import app.lawnchair.search.data.FolderInfo
 import app.lawnchair.search.data.IFileInfo
+import app.lawnchair.search.data.RecentKeyword
 import app.lawnchair.search.data.SettingInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
@@ -56,7 +57,28 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    internal fun getHeaderTarget(header: String): SearchTargetCompat {
+    internal fun getRecentKeywordTarget(recentKeyword: RecentKeyword): SearchTargetCompat {
+        val value = recentKeyword.getValueByKey("display1") ?: ""
+        val url = getStartPageUrl(value)
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val id = recentKeyword.data.toString() + url
+        val action = SearchActionCompat.Builder(id, value)
+            .setIcon(
+                Icon.createWithResource(context, R.drawable.ic_recent)
+                    .setTint(ColorTokens.TextColorSecondary.resolveColor(context)),
+            )
+            .setIntent(browserIntent)
+            .build()
+        return createSearchTarget(
+            id,
+            action,
+            LayoutType.WIDGET_LIVE,
+            SearchTargetCompat.RESULT_TYPE_SUGGESTIONS,
+            RECENT_KEYWORD,
+        )
+    }
+
+    internal fun getHeaderTarget(header: String, pkg: String = HEADER): SearchTargetCompat {
         val id = "header_$header"
         val action = SearchActionCompat.Builder(id, header)
             .setIcon(
@@ -70,7 +92,7 @@ class GenerateSearchTarget(private val context: Context) {
             action,
             LayoutType.TEXT_HEADER,
             SearchTargetCompat.RESULT_TYPE_SECTION_HEADER,
-            HEADER,
+            pkg,
         )
     }
 

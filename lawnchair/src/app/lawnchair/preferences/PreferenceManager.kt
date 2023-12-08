@@ -82,6 +82,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val searchResultStartPageSuggestion = BoolPref("pref_searchResultStartPageSuggestion", true, recreate)
     val performWideSearchExperimental = BoolPref("pref_searchWideExperimental", false, recreate)
     val searchResultSettingsEntry = BoolPref("pref_searchResultSettingsEntry", false, recreate)
+    val searchResulRecentSuggestion = BoolPref("pref_searchResultRecentSuggestion", false, recreate)
 
     val themedIcons = BoolPref("themed_icons", true, recreate)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, recreate)

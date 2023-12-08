@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.provider.SearchRecentSuggestions
 import android.text.Selection
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_POINT_MARK
@@ -23,6 +24,7 @@ import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
 import com.android.launcher3.Insettable
@@ -72,6 +74,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private val bgAlphaAnimator = ValueAnimator.ofFloat(0f, 1f).apply { duration = 300 }
     private var bgVisible = true
     private var bgAlpha = 1f
+    private val suggestionsRecent = SearchRecentSuggestions(launcher, LawnchairRecentSuggestionProvider.AUTHORITY, LawnchairRecentSuggestionProvider.MODE)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -99,6 +102,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             isVisible = false
             setOnClickListener {
                 input.reset()
+            }
+        }
+
+        input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val query = editText.text.toString()
+                suggestionsRecent.saveRecentQuery(query, null)
             }
         }
 
@@ -133,6 +143,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     override fun setFocusedResultTitle(title: CharSequence?, sub: CharSequence?) {
         focusedResultTitle = title?.toString().orEmpty()
         updateHint()
+    }
+
+    override fun refreshResults() {
+        onAppsUpdated()
     }
 
     private fun updateHint() {

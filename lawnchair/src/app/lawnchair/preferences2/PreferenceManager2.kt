@@ -345,6 +345,11 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = resourceProvider.getInt(R.dimen.config_default_settings_entry_max_result_count),
     )
 
+    val maxRecentResultCount = preference(
+        key = intPreferencesKey(name = "max_recent_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_recent_max_result_count),
+    )
+
     val enableSmartspace = preference(
         key = booleanPreferencesKey(name = "enable_smartspace"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace),

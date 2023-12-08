@@ -123,6 +123,7 @@
     <item name="config_default_people_max_result_count" type="dimen" format="integer">10</item>
     <item name="config_default_suggestion_max_result_count" type="dimen" format="integer">3</item>
     <item name="config_default_settings_entry_max_result_count" type="dimen" format="integer">5</item>
+    <item name="config_default_recent_max_result_count" type="dimen" format="integer">2</item>
 
 
     <!-- The max scale for the wallpaper when it's zoomed in -->

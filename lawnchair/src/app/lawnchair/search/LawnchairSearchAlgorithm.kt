@@ -11,6 +11,7 @@ import app.lawnchair.search.data.SearchCallback
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.findContactsByName
 import app.lawnchair.search.data.findSettingsByNameAndAction
+import app.lawnchair.search.data.getRecentKeyword
 import app.lawnchair.search.data.getStartPageSuggestions
 import app.lawnchair.search.data.queryFilesInMediaStore
 import app.lawnchair.util.checkAndRequestFilesPermission
@@ -24,6 +25,7 @@ import com.android.app.search.LayoutType.PEOPLE_TILE
 import com.android.app.search.LayoutType.SMALL_ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.TEXT_HEADER
 import com.android.app.search.LayoutType.THUMBNAIL
+import com.android.app.search.LayoutType.WIDGET_LIVE
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.BaseAllAppsAdapter
@@ -82,13 +84,14 @@ sealed class LawnchairSearchAlgorithm(
         val suggestionIndices = findIndices(filtered, HORIZONTAL_MEDIUM_TEXT)
         val fileIndices = findIndices(filtered, THUMBNAIL)
         val settingIndices = findIndices(filtered, ICON_SLICE)
+        val recentIndices = findIndices(filtered, WIDGET_LIVE)
 
         return filtered.mapIndexedNotNull { index, target ->
             val isFirst = index == 0 || filtered[index - 1].isDivider
             val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
             val background = getBackground(
                 target.layoutType, index, isFirst, isLast,
-                smallIconIndices, iconRowIndices, peopleTileIndices, suggestionIndices, fileIndices, settingIndices,
+                smallIconIndices, iconRowIndices, peopleTileIndices, suggestionIndices, fileIndices, settingIndices, recentIndices,
             )
             SearchAdapterItem.createAdapterItem(target, background)
         }
@@ -111,6 +114,7 @@ sealed class LawnchairSearchAlgorithm(
         suggestionIndices: List<Int>,
         fileIndices: List<Int>,
         settingIndices: List<Int>,
+        recentIndices: List<Int>,
     ): SearchItemBackground = when {
         layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
         layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)
@@ -119,6 +123,7 @@ sealed class LawnchairSearchAlgorithm(
         layoutType == HORIZONTAL_MEDIUM_TEXT -> getGroupedBackground(index, suggestionIndices)
         layoutType == THUMBNAIL -> getGroupedBackground(index, fileIndices)
         layoutType == ICON_SLICE -> getGroupedBackground(index, settingIndices)
+        layoutType == WIDGET_LIVE -> getGroupedBackground(index, recentIndices)
         isFirst && isLast -> normalBackground
         isFirst -> topBackground
         isLast -> bottomBackground
@@ -158,6 +163,7 @@ sealed class LawnchairSearchAlgorithm(
     private var maxSuggestionCount = 3
     private var maxFilesCount = 3
     private var maxSettingsEntryCount = 5
+    private var maxRecentResultCount = 2
     val coroutineScope = CoroutineScope(context = Dispatchers.IO)
     val pref2 = PreferenceManager2.getInstance(context)
 
@@ -173,6 +179,9 @@ sealed class LawnchairSearchAlgorithm(
         }
         pref2.maxSettingsEntryResultCount.onEach(launchIn = coroutineScope) {
             maxSettingsEntryCount = it
+        }
+        pref2.maxRecentResultCount.onEach(launchIn = coroutineScope) {
+            maxRecentResultCount = it
         }
     }
 
@@ -201,6 +210,27 @@ sealed class LawnchairSearchAlgorithm(
                 object : SearchCallback {
                     override fun onSearchLoaded(items: List<Any>) {
                         results.addAll(items.map { SearchResult(SUGGESTION, it) })
+                    }
+
+                    override fun onSearchFailed(error: String) {
+                        results.add(SearchResult(ERROR, error))
+                    }
+
+                    override fun onLoading() {
+                        results.add(SearchResult(LOADING, "Loading"))
+                    }
+                },
+            )
+        }
+
+        if (prefs.searchResulRecentSuggestion.get()) {
+            getRecentKeyword(
+                context,
+                query,
+                maxRecentResultCount,
+                object : SearchCallback {
+                    override fun onSearchLoaded(items: List<Any>) {
+                        results.addAll(items.map { SearchResult(RECENT_KEYWORD, it) })
                     }
 
                     override fun onSearchFailed(error: String) {
