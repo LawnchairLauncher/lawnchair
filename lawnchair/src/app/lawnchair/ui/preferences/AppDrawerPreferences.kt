@@ -132,7 +132,15 @@ fun AppDrawerPreferences() {
                         SwitchPreference(
                             adapter = prefs.searchResultFiles.getAdapter(),
                             label = stringResource(id = R.string.perform_wide_search_file),
-                            description = stringResource(id = R.string.warn_files_permission_content),
+                            description = stringResource(
+                                id = if (
+                                    checkAndRequestFilesPermission(context, prefs)
+                                ) {
+                                    R.string.all_apps_search_result_files_description
+                                } else {
+                                    R.string.warn_files_permission_content
+                                },
+                            ),
                             onClick = { checkAndRequestFilesPermission(context, prefs) },
                         )
                         ExpandAndShrink(visible = prefs.searchResultFiles.getAdapter().state.value) {
@@ -146,7 +154,15 @@ fun AppDrawerPreferences() {
                         SwitchPreference(
                             adapter = prefs.searchResultPeople.getAdapter(),
                             label = stringResource(id = R.string.search_pref_result_people_title),
-                            description = stringResource(id = R.string.warn_contact_permission_content),
+                            description = stringResource(
+                                id = if (
+                                    contactPermissionGranted(context, prefs)
+                                ) {
+                                    R.string.all_apps_search_result_contacts_description
+                                } else {
+                                    R.string.warn_contact_permission_content
+                                },
+                            ),
                             onClick = { contactPermissionGranted(context, prefs) },
                         )
                         ExpandAndShrink(visible = prefs.searchResultPeople.getAdapter().state.value) {

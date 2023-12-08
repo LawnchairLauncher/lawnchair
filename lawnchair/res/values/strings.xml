@@ -509,6 +509,9 @@
     <string name="warn_contact_permission_content">Requires contact permission</string>
     <string name="warn_files_permission_content">Requires storage permission</string>
 
+    <string name="all_apps_search_result_files_description">Show files in search result</string>
+    <string name="all_apps_search_result_contacts_description">Show contacts in search result</string>
+
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
 
