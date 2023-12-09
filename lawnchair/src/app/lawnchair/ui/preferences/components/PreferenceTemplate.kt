@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.addIf
 
+@Suppress("ktlint:compose:modifier-not-used-at-root")
 @Composable
 fun PreferenceTemplate(
     title: @Composable () -> Unit,
