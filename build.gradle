@@ -441,7 +441,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.3.3",
+            "io.nlopez.compose.rules:ktlint:0.3.5",
         ]).editorConfigOverride([
             "compose_allowed_composition_locals": "LocalRoute,LocalNavController,LocalPreferenceInteractor,LocalBottomSheetHandler,LocalMinimumTouchTargetEnforcement,LocalLifecycleState",
         ])
