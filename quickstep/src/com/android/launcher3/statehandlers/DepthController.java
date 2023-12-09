@@ -32,6 +32,7 @@ import android.view.ViewTreeObserver;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -64,7 +65,9 @@ public class DepthController extends BaseDepthController implements StateHandler
     private void onLauncherDraw() {
         View view = mLauncher.getDragLayer();
         ViewRootImpl viewRootImpl = view.getViewRootImpl();
-        setSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
+        if (Utilities.ATLEAST_Q) {
+            setSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
+        }
         view.post(() -> view.getViewTreeObserver().removeOnDrawListener(mOnDrawListener));
     }
 
