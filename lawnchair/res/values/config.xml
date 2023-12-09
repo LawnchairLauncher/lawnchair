@@ -96,6 +96,7 @@
     <bool name="config_default_hide_app_drawer_search_bar">false</bool>
     <bool name="config_default_show_hidden_apps_in_search">false</bool>
     <bool name="config_default_enable_smart_hide">false</bool>
+    <bool name="config_default_show_suggested_apps_at_drawer_top">true</bool>
     <bool name="config_default_enable_font_selection">true</bool>
     <bool name="config_default_enable_smartspace_calendar_selection">true</bool>
     <bool name="config_default_dts2">true</bool>
@@ -109,6 +110,7 @@
     <bool name="config_default_show_component_names">false</bool>
     <bool name="config_default_smartspace_show_date">true</bool>
     <bool name="config_default_smartspace_show_time">false</bool>
+    <bool name="config_default_perform_wide_search">true</bool>
 
     <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
@@ -117,6 +119,12 @@
     <item name="config_default_drawer_icon_label_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_drawer_cell_height_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_search_max_result_count" type="dimen" format="integer">5</item>
+    <item name="config_default_files_max_result_count" type="dimen" format="integer">3</item>
+    <item name="config_default_people_max_result_count" type="dimen" format="integer">10</item>
+    <item name="config_default_suggestion_max_result_count" type="dimen" format="integer">3</item>
+    <item name="config_default_settings_entry_max_result_count" type="dimen" format="integer">5</item>
+    <item name="config_default_recent_max_result_count" type="dimen" format="integer">2</item>
+
 
     <!-- The max scale for the wallpaper when it's zoomed in -->
     <item name="config_wallpaperMaxScale" format="float" type="dimen">1.10</item>

@@ -1,7 +1,17 @@
 package app.lawnchair.allapps
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import app.lawnchair.search.CONTACT
+import app.lawnchair.search.FILES
+import app.lawnchair.search.MARKET_STORE
+import app.lawnchair.search.START_PAGE
+import app.lawnchair.search.SUGGESTION
 import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.data.SearchResultActionCallBack
+import com.android.app.search.LayoutType
 
 sealed interface SearchResultView {
 
@@ -10,7 +20,7 @@ sealed interface SearchResultView {
 
     fun launch(): Boolean
 
-    fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>)
+    fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>, callBack: SearchResultActionCallBack?)
 
     fun getFlags(extras: Bundle): Int {
         var flags = 0
@@ -28,6 +38,21 @@ sealed interface SearchResultView {
 
     fun hasFlag(flags: Int, flag: Int): Boolean {
         return (flags and flag) != 0
+    }
+
+    fun shouldHandleClick(targetCompat: SearchTargetCompat): Boolean {
+        val packageName = targetCompat.packageName
+        return (packageName in listOf(START_PAGE, MARKET_STORE, SUGGESTION, CONTACT, FILES)) &&
+            targetCompat.layoutType != LayoutType.SMALL_ICON_HORIZONTAL_TEXT &&
+            targetCompat.resultType != SearchTargetCompat.RESULT_TYPE_SHORTCUT
+    }
+
+    fun handleSearchTargetClick(context: Context, searchTargetIntent: Intent) {
+        searchTargetIntent.resolveActivity(context.packageManager)?.let {
+            context.startActivity(searchTargetIntent)
+        } ?: run {
+            Toast.makeText(context, "No app found to handle this action", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {

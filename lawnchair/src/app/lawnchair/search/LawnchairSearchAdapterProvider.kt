@@ -9,13 +9,13 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.allapps.SearchItemDecorator
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
+import app.lawnchair.search.data.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.AllAppsGridAdapter
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider
-import com.android.launcher3.util.PackageManagerHelper
 
 class LawnchairSearchAdapterProvider(
     launcher: LawnchairLauncher,
@@ -28,7 +28,12 @@ class LawnchairSearchAdapterProvider(
         append(SEARCH_RESULT_ICON_ROW, R.layout.search_result_tall_icon_row)
         append(SEARCH_RESULT_SMALL_ICON_ROW, R.layout.search_result_small_icon_row)
         append(SEARCH_RESULT_DIVIDER, R.layout.search_result_divider)
-        append(SEARCH_RESULT_MARKET, R.layout.search_result_market)
+        append(SEARCH_TEXT_HEADER, R.layout.search_result_text_header)
+        append(SEARCH_PEOPLE_TILE, R.layout.search_result_icon_right_left)
+        append(SEARCH_RESULT_FILE_TILE, R.layout.search_result_icon_right_left)
+        append(SEARCH_RESULT_SUGGESTION_TILE, R.layout.search_result_small_icon_row)
+        append(SEARCH_RESULT_SETTINGS_TILE, R.layout.search_result_small_icon_row)
+        append(SEARCH_RESULT_RECENT_TILE, R.layout.search_result_small_icon_row)
     }
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
@@ -40,8 +45,17 @@ class LawnchairSearchAdapterProvider(
 
     override fun onBindView(holder: BaseAllAppsAdapter.ViewHolder, position: Int) {
         val adapterItem = appsView.mSearchRecyclerView.mApps.adapterItems[position] as SearchAdapterItem
+        adapterItem.setRippleEffect(holder.itemView)
         val itemView = holder.itemView as SearchResultView
-        itemView.bind(adapterItem.searchTarget, emptyList())
+        itemView.bind(
+            adapterItem.searchTarget,
+            emptyList(),
+            object : SearchResultActionCallBack {
+                override fun action() {
+                    appsView.searchUiManager.refreshResults()
+                }
+            },
+        )
         if (itemView.isQuickLaunch) {
             quickLaunchItem = itemView
         }
@@ -53,18 +67,6 @@ class LawnchairSearchAdapterProvider(
         viewType: Int,
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
-        if (viewType == SEARCH_RESULT_MARKET) {
-            val marketSearchIntent = PackageManagerHelper
-                .getMarketSearchIntent(
-                    view.context,
-                    appsView.searchUiManager.editText?.text.toString(),
-                )
-            val marketView = layoutInflater.inflate(R.layout.search_result_market, parent, false)
-            marketView.setOnClickListener {
-                mLauncher.startActivitySafely(it, marketSearchIntent, null)
-            }
-            return BaseAllAppsAdapter.ViewHolder(marketView)
-        }
         return BaseAllAppsAdapter.ViewHolder(view)
     }
 
@@ -82,15 +84,24 @@ class LawnchairSearchAdapterProvider(
         private const val SEARCH_RESULT_ICON_ROW = 1 shl 9
         private const val SEARCH_RESULT_SMALL_ICON_ROW = 1 shl 10
         private const val SEARCH_RESULT_DIVIDER = 1 shl 11
-        private const val SEARCH_RESULT_MARKET = 1 shl 12
+        private const val SEARCH_TEXT_HEADER = 1 shl 12
+        private const val SEARCH_PEOPLE_TILE = 1 shl 13
+        private const val SEARCH_RESULT_FILE_TILE = 1 shl 14
+        private const val SEARCH_RESULT_SUGGESTION_TILE = 1 shl 15
+        private const val SEARCH_RESULT_SETTINGS_TILE = 1 shl 16
+        private const val SEARCH_RESULT_RECENT_TILE = 1 shl 17
 
         val viewTypeMap = mapOf(
             LayoutType.ICON_SINGLE_VERTICAL_TEXT to SEARCH_RESULT_ICON,
             LayoutType.ICON_HORIZONTAL_TEXT to SEARCH_RESULT_ICON_ROW,
             LayoutType.SMALL_ICON_HORIZONTAL_TEXT to SEARCH_RESULT_SMALL_ICON_ROW,
-            LayoutType.HORIZONTAL_MEDIUM_TEXT to SEARCH_RESULT_SMALL_ICON_ROW,
+            LayoutType.HORIZONTAL_MEDIUM_TEXT to SEARCH_RESULT_SUGGESTION_TILE,
             LayoutType.EMPTY_DIVIDER to SEARCH_RESULT_DIVIDER,
-            LayoutType.ICON_HORIZONTAL_TEXT to SEARCH_RESULT_MARKET,
+            LayoutType.TEXT_HEADER to SEARCH_TEXT_HEADER,
+            LayoutType.PEOPLE_TILE to SEARCH_PEOPLE_TILE,
+            LayoutType.THUMBNAIL to SEARCH_RESULT_FILE_TILE,
+            LayoutType.ICON_SLICE to SEARCH_RESULT_SETTINGS_TILE,
+            LayoutType.WIDGET_LIVE to SEARCH_RESULT_RECENT_TILE,
         )
 
         fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {

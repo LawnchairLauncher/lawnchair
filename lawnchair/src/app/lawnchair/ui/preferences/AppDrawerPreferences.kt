@@ -32,6 +32,10 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SuggestionsPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.util.checkAndRequestFilesPermission
+import app.lawnchair.util.contactPermissionGranted
+import app.lawnchair.util.filesAndStorageGranted
+import app.lawnchair.util.requestContactPermissionGranted
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
@@ -48,7 +52,9 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    val resources = LocalContext.current.resources
+    val context = LocalContext.current
+    val resources = context.resources
+
     PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SliderPreference(
@@ -112,6 +118,108 @@ fun AppDrawerPreferences() {
                         step = 1,
                         valueRange = 5..15,
                     )
+                }
+            }
+        }
+
+        val isDeviceSearch = prefs.performWideSearchExperimental.get() && showDrawerSearchBar.state.value
+        if (isDeviceSearch) {
+            PreferenceGroup(heading = stringResource(id = R.string.pref_advance_search_category)) {
+                SwitchPreference(
+                    adapter = prefs2.performWideSearch.getAdapter(),
+                    label = stringResource(id = R.string.perform_wide_search_title),
+                )
+                ExpandAndShrink(visible = prefs2.performWideSearch.getAdapter().state.value) {
+                    DividerColumn {
+                        SwitchPreference(
+                            adapter = prefs.searchResultFiles.getAdapter(),
+                            label = stringResource(id = R.string.perform_wide_search_file),
+                            description = stringResource(
+                                id = if (
+                                    filesAndStorageGranted(context)
+                                ) {
+                                    R.string.all_apps_search_result_files_description
+                                } else {
+                                    R.string.warn_files_permission_content
+                                },
+                            ),
+                            onClick = { checkAndRequestFilesPermission(context, prefs) },
+                        )
+                        ExpandAndShrink(visible = prefs.searchResultFiles.getAdapter().state.value) {
+                            SliderPreference(
+                                label = stringResource(id = R.string.max_file_result_count_title),
+                                adapter = prefs2.maxFileResultCount.getAdapter(),
+                                step = 1,
+                                valueRange = 3..10,
+                            )
+                        }
+                        SwitchPreference(
+                            adapter = prefs.searchResultPeople.getAdapter(),
+                            label = stringResource(id = R.string.search_pref_result_people_title),
+                            description = stringResource(
+                                id = if (
+                                    contactPermissionGranted(context)
+                                ) {
+                                    R.string.all_apps_search_result_contacts_description
+                                } else {
+                                    R.string.warn_contact_permission_content
+                                },
+                            ),
+                            onClick = { requestContactPermissionGranted(context, prefs) },
+                        )
+                        ExpandAndShrink(visible = prefs.searchResultPeople.getAdapter().state.value) {
+                            SliderPreference(
+                                label = stringResource(id = R.string.max_people_result_count_title),
+                                adapter = prefs2.maxPeopleResultCount.getAdapter(),
+                                step = 1,
+                                valueRange = 3..15,
+                            )
+                        }
+                        SwitchPreference(
+                            adapter = prefs.searchResultSettingsEntry.getAdapter(),
+                            label = stringResource(id = R.string.search_pref_result_settings_entry_title),
+                        )
+                        ExpandAndShrink(visible = prefs.searchResultSettingsEntry.getAdapter().state.value) {
+                            SliderPreference(
+                                label = stringResource(id = R.string.max_settings_entry_result_count_title),
+                                adapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
+                                step = 1,
+                                valueRange = 2..10,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
+            PreferenceGroup {
+                DividerColumn {
+                    SwitchPreference(
+                        adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
+                        label = stringResource(id = R.string.pref_suggestion_title),
+                    )
+                    ExpandAndShrink(visible = prefs.searchResultStartPageSuggestion.getAdapter().state.value) {
+                        SliderPreference(
+                            label = stringResource(id = R.string.max_suggestion_result_count_title),
+                            adapter = prefs2.maxSuggestionResultCount.getAdapter(),
+                            step = 1,
+                            valueRange = 3..10,
+                        )
+                    }
+                    SwitchPreference(
+                        adapter = prefs.searchResulRecentSuggestion.getAdapter(),
+                        label = stringResource(id = R.string.pref_recent_suggestion_title),
+                    )
+
+                    ExpandAndShrink(visible = prefs.searchResulRecentSuggestion.getAdapter().state.value) {
+                        SliderPreference(
+                            label = stringResource(id = R.string.max_recent_result_count_title),
+                            adapter = prefs2.maxRecentResultCount.getAdapter(),
+                            step = 1,
+                            valueRange = 1..10,
+                        )
+                    }
                 }
             }
         }

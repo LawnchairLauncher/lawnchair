@@ -363,6 +363,7 @@
     <string name="label">Etichetă</string>
     <string name="hide_from_drawer">Ascunde din sertarul de aplicații</string>
     <string name="suggestion_pref_screen_title">Sugestii</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Raport de erori Lawnchair</string>
     <string name="crash_report_notif_title">%1$s a eșuat</string>

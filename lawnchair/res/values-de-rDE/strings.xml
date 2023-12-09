@@ -362,6 +362,7 @@
     <string name="label">Titel</string>
     <string name="hide_from_drawer">Aus der App-Übersicht ausblenden</string>
     <string name="suggestion_pref_screen_title">Vorschläge</string>
+    <string name="show_suggested_apps_at_drawer_top">Vorschläge oben in der App-Übersicht anzeigen</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair-Fehlerbericht</string>
     <string name="crash_report_notif_title">%1$s abgestürzt</string>

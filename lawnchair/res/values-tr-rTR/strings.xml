@@ -362,6 +362,7 @@
     <string name="label">Etiket</string>
     <string name="hide_from_drawer">Uygulama Çekmecesini Gizle</string>
     <string name="suggestion_pref_screen_title">Öneriler</string>
+    <string name="show_suggested_apps_at_drawer_top">Uygulama menüsünün üstünde önerilen uygulamaları göster</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair Hata Bildirme</string>
     <string name="crash_report_notif_title">%1$s Çalışmayı Durdurdu</string>

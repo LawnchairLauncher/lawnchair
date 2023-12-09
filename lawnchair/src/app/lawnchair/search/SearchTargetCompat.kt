@@ -262,7 +262,20 @@ data class SearchTargetCompat(
     /**
      * @hide
      */
-    @IntDef(value = [RESULT_TYPE_APPLICATION, RESULT_TYPE_SHORTCUT, RESULT_TYPE_SLICE, RESULT_TYPE_WIDGETS])
+    @IntDef(
+        value = [
+            RESULT_TYPE_APPLICATION,
+            RESULT_TYPE_SHORTCUT,
+            RESULT_TYPE_SLICE,
+            RESULT_TYPE_WIDGETS,
+            RESULT_TYPE_SUGGESTIONS,
+            RESULT_TYPE_REDIRECTION,
+            RESULT_TYPE_SECTION_HEADER,
+            RESULT_TYPE_CONTACT_TILE,
+            RESULT_TYPE_FILE_TILE,
+            RESULT_TYPE_SETTING_TILE,
+        ],
+    )
     @Retention(AnnotationRetention.SOURCE)
     annotation class SearchResultType
 
@@ -271,6 +284,12 @@ data class SearchTargetCompat(
         const val RESULT_TYPE_SHORTCUT = 1 shl 1
         const val RESULT_TYPE_SLICE = 1 shl 2
         const val RESULT_TYPE_WIDGETS = 1 shl 3
+        const val RESULT_TYPE_SUGGESTIONS = 1 shl 4
+        const val RESULT_TYPE_REDIRECTION = 1 shl 5
+        const val RESULT_TYPE_SECTION_HEADER = 1 shl 6
+        const val RESULT_TYPE_CONTACT_TILE = 1 shl 7
+        const val RESULT_TYPE_FILE_TILE = 1 shl 8
+        const val RESULT_TYPE_SETTING_TILE = 1 shl 9
 
         fun wrap(target: SearchTarget): SearchTargetCompat = SearchTargetCompat(target)
     }

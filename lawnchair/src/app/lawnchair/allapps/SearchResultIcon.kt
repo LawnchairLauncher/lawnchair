@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import app.lawnchair.launcher
+import app.lawnchair.search.SHORTCUT
 import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.data.SearchResultActionCallBack
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAppState
@@ -68,7 +70,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         return true
     }
 
-    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
+    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>, callBack: SearchResultActionCallBack?) {
         if (boundId == target.id) return
         boundId = target.id
         flags = getFlags(target.extras)
@@ -101,7 +103,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
 
     fun bind(target: SearchTargetCompat, callback: (info: ItemInfoWithIcon) -> Unit) {
         this.callback = callback
-        bind(target, emptyList())
+        bind(target, emptyList(), null)
         if (!hasFlag(flags, SearchResultView.FLAG_HIDE_ICON)) {
             isVisible = true
             val lp = layoutParams as ViewGroup.MarginLayoutParams
@@ -184,7 +186,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         notifyApplied(si)
         val cache = LauncherAppState.getInstance(launcher).iconCache
         MODEL_EXECUTOR.handler.postAtFrontOfQueue {
-            cache.getShortcutInfoBadge(shortcutInfo)
+            cache.getShortcutIcon(si, shortcutInfo)
             runOnMainThread { applyFromWorkspaceItem(si) }
         }
     }
@@ -210,9 +212,9 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
 
             info.bitmap = when {
                 info.hasFlags(FLAG_PRIMARY_ICON_FROM_TITLE) ->
-                    li.createIconBitmap("${info.title?.get(0)}", packageIcon.color)
+                    li.createIconBitmap("${info.title}", packageIcon.color)
                 icon == null -> packageIcon
-                else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, false)
+                else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, target.packageName != SHORTCUT)
             }
             if (info.hasFlags(FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {
                 try {
@@ -235,7 +237,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         val las = LauncherAppState.getInstance(context)
         val info = PackageItemInfo(packageName, user)
         info.user = user
-        las.iconCache.getTitleAndIconForApp(info, false)
+        las.iconCache.getTitleAndIcon(info, false)
         return info.bitmap
     }
 
