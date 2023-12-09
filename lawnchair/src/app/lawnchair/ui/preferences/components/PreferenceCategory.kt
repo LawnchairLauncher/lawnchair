@@ -36,7 +36,6 @@ fun PreferenceCategory(
     label: String,
     @DrawableRes iconResource: Int,
     route: String,
-    modifier: Modifier = Modifier,
     description: String? = null,
 ) {
     val navController = LocalNavController.current

@@ -83,7 +83,6 @@ fun NavGraphBuilder.restoreBackupGraph(route: String) {
 
 @Composable
 fun RestoreBackupScreen(
-    modifier: Modifier = Modifier,
     viewModel: RestoreBackupViewModel = viewModel(),
 ) {
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -118,7 +117,6 @@ fun RestoreBackupScreen(
 fun ColumnScope.RestoreBackupOptions(
     isPortrait: Boolean,
     backup: LawnchairBackup,
-    modifier: Modifier = Modifier,
     viewModel: RestoreBackupViewModel = viewModel(),
 ) {
     val backupContents = backup.info.contents

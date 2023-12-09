@@ -46,9 +46,7 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 @Composable
-fun PreferencesDashboard(
-    modifier: Modifier = Modifier,
-) {
+fun PreferencesDashboard() {
     val context = LocalContext.current
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
@@ -131,9 +129,7 @@ fun PreferencesDashboard(
 }
 
 @Composable
-fun PreferencesOverflowMenu(
-    modifier: Modifier = Modifier,
-) {
+fun PreferencesOverflowMenu() {
     val navController = LocalNavController.current
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
     val experimentalFeaturesRoute = subRoute(name = Routes.EXPERIMENTAL_FEATURES)
@@ -182,9 +178,7 @@ fun PreferencesOverflowMenu(
 }
 
 @Composable
-fun PreferencesDebugWarning(
-    modifier: Modifier = Modifier,
-) {
+fun PreferencesDebugWarning() {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
@@ -198,9 +192,7 @@ fun PreferencesDebugWarning(
 }
 
 @Composable
-fun PreferencesSetDefaultLauncherWarning(
-    modifier: Modifier = Modifier,
-) {
+fun PreferencesSetDefaultLauncherWarning() {
     val context = LocalContext.current
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),

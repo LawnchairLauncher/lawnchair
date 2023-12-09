@@ -35,7 +35,6 @@ import com.google.accompanist.insets.ui.Scaffold
 @Composable
 fun PreferenceScaffold(
     label: String,
-    modifier: Modifier = Modifier,
     backArrowVisible: Boolean = true,
     actions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = { BottomSpacer() },

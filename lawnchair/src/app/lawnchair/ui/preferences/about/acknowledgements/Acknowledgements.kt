@@ -81,7 +81,6 @@ fun Acknowledgements() {
 fun OssLibraryItem(
     ossLibrary: OssLibrary,
     index: Int,
-    modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
     val destination = subRoute(name = "$index")
@@ -102,7 +101,6 @@ fun OssLibraryItem(
 @Composable
 fun NoticePage(
     index: Int,
-    modifier: Modifier = Modifier,
 ) {
     val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
     val ossLibrary = ossLibraries.getOrNull(index)

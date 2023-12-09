@@ -63,7 +63,6 @@ fun NavGraphBuilder.createBackupGraph(route: String) {
 @Composable
 fun CreateBackupScreen(
     viewModel: CreateBackupViewModel,
-    modifier: Modifier = Modifier,
 ) {
     val contents by viewModel.backupContents.collectAsState()
     val screenshot by viewModel.screenshot.collectAsState()

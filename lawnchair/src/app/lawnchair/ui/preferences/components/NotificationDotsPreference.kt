@@ -59,7 +59,6 @@ import kotlinx.coroutines.flow.callbackFlow
 fun NotificationDotsPreference(
     enabled: Boolean,
     serviceEnabled: Boolean,
-    modifier: Modifier = Modifier,
 ) {
     val bottomSheetHandler = bottomSheetHandler
     val context = LocalContext.current
@@ -107,7 +106,6 @@ fun NotificationDotsPreference(
 
 @Composable
 fun NotificationAccessConfirmation(
-    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current

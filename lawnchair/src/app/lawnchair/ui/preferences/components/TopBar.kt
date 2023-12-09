@@ -48,7 +48,6 @@ import androidx.compose.ui.unit.dp
 fun TopBar(
     backArrowVisible: Boolean,
     label: String,
-    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {

@@ -74,7 +74,6 @@ fun PreferenceGroup(
 @Composable
 fun PreferenceGroupHeading(
     heading: String?,
-    modifier: Modifier = Modifier,
 ) {
     if (heading != null) {
         Column(
@@ -97,7 +96,6 @@ fun PreferenceGroupHeading(
 
 @Composable
 fun PreferenceGroupDescription(
-    modifier: Modifier = Modifier,
     description: String? = null,
     showDescription: Boolean = true,
 ) {

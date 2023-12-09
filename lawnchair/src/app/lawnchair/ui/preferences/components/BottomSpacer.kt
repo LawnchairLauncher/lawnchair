@@ -14,9 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
-fun BottomSpacer(
-    modifier: Modifier = Modifier,
-) {
+fun BottomSpacer() {
     Box(
         contentAlignment = Alignment.BottomStart,
     ) {

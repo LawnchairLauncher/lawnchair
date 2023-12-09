@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PreferenceLayout(
     label: String,
-    modifier: Modifier = Modifier,
     backArrowVisible: Boolean = true,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(8.dp),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,

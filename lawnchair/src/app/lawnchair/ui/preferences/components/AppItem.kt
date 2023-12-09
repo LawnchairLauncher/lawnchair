@@ -53,7 +53,6 @@ fun AppItem(
     label: String,
     icon: Bitmap,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     widget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(
@@ -73,7 +72,6 @@ fun AppItem(
 
 @Composable
 fun AppItemPlaceholder(
-    modifier: Modifier = Modifier,
     widget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(

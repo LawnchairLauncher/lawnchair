@@ -189,7 +189,6 @@ class ComposeBottomSheet<T>(context: Context) :
 
     @Composable
     private fun Providers(
-        modifier: Modifier = Modifier,
         content: @Composable () -> Unit,
     ) {
         LawnchairTheme {
@@ -206,7 +205,6 @@ class ComposeBottomSheet<T>(context: Context) :
 
     @Composable
     private fun ContentWrapper(
-        modifier: Modifier = Modifier,
         contentPaddings: PaddingValues = PaddingValues(all = 0.dp),
         content: @Composable ComposeBottomSheet<T>.() -> Unit,
     ) {

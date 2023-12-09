@@ -80,7 +80,6 @@ data class IconPackInfo(
 
 enum class ThemedIconsState(
     @StringRes val labelResourceId: Int,
-    modifier: Modifier = Modifier,
     val themedIcons: Boolean = true,
     val drawerThemedIcons: Boolean = false,
 ) {
@@ -107,9 +106,7 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 }
 
 @Composable
-fun IconPackPreferences(
-    modifier: Modifier = Modifier,
-) {
+fun IconPackPreferences() {
     val prefs = preferenceManager()
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
@@ -225,7 +222,6 @@ fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
     drawerThemedIcons: Boolean,
     isThemedIconPack: Boolean,
-    modifier: Modifier = Modifier,
 ) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsState()

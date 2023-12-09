@@ -73,7 +73,6 @@ fun SliderPreference(
     adapter: PreferenceAdapter<Float>,
     valueRange: ClosedFloatingPointRange<Float>,
     step: Float,
-    modifier: Modifier = Modifier,
     showAsPercentage: Boolean = false,
 ) {
     var adapterValue by adapter

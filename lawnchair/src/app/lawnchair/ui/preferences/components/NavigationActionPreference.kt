@@ -26,7 +26,6 @@ import app.lawnchair.ui.preferences.LocalNavController
 fun NavigationActionPreference(
     label: String,
     destination: String,
-    modifier: Modifier = Modifier,
     subtitle: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {

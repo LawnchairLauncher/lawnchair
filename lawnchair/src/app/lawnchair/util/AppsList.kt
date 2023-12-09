@@ -26,7 +26,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherAppState
@@ -40,7 +39,6 @@ import java.util.Locale
 
 @Composable
 fun appsState(
-    modifier: Modifier = Modifier,
     filter: AppFilter = AppFilter(LocalContext.current),
     comparator: Comparator<App> = appComparator,
 ): State<List<App>> {

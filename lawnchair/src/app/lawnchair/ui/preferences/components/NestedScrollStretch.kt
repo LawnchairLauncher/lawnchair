@@ -20,7 +20,6 @@ import app.lawnchair.ui.StretchEdgeEffect
 
 @Composable
 fun NestedScrollStretch(
-    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     val invalidateTick = remember { mutableIntStateOf(0) }

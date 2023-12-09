@@ -35,9 +35,7 @@ fun NavGraphBuilder.homeScreenGridGraph(route: String) {
 }
 
 @Composable
-fun HomeScreenGridPreferences(
-    modifier: Modifier = Modifier,
-) {
+fun HomeScreenGridPreferences() {
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
     PreferenceLayout(

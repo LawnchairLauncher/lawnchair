@@ -288,7 +288,6 @@ private fun HsvColorPicker(
     selectedColor: Int,
     onSelectedColorChange: () -> Unit,
     onSliderValuesChange: (Int) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val hsv = remember { intColorToHsvColorArray(selectedColor) }
     var hue by remember { mutableFloatStateOf(hsv[0]) }
@@ -356,7 +355,6 @@ private fun RgbColorPicker(
     selectedColor: Int,
     onSelectedColorChange: () -> Unit,
     onSliderValuesChange: (Int) -> Unit,
-    modifier: Modifier = Modifier,
     selectedColorCompose: Color = Color(selectedColor),
 ) {
     var red by remember { mutableIntStateOf(selectedColor.red) }

@@ -121,7 +121,6 @@ class BottomSheetHandler(
 
 @Composable
 fun StatusBarOffset(
-    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     val statusBar = WindowInsets.statusBars.getTop(LocalDensity.current)

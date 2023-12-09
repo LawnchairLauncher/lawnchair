@@ -48,9 +48,7 @@ fun NavGraphBuilder.hiddenAppsGraph(route: String) {
 }
 
 @Composable
-fun HiddenAppsPreferences(
-    modifier: Modifier = Modifier,
-) {
+fun HiddenAppsPreferences() {
     val adapter = preferenceManager2().hiddenApps.getAdapter()
     val hiddenApps by adapter.state
     val pageTitle =

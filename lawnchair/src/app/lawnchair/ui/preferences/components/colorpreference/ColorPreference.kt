@@ -39,7 +39,6 @@ import com.patrykmichalik.opto.domain.Preference
 @Composable
 fun ColorPreference(
     preference: Preference<ColorOption, String, Preferences.Key<String>>,
-    modifier: Modifier = Modifier,
 ) {
     val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
     val model = modelList[preference.key.name]

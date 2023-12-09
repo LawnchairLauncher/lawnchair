@@ -44,7 +44,6 @@ fun ContributorRow(
     description: String,
     photoUrl: String,
     url: String,
-    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 

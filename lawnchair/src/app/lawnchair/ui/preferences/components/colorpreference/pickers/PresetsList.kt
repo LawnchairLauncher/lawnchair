@@ -23,7 +23,6 @@ fun PresetsList(
     dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>>,
     onPresetClick: (ColorOption) -> Unit,
     isPresetSelected: (ColorOption) -> Boolean,
-    modifier: Modifier = Modifier,
 ) {
     PreferenceGroup(
         heading = stringResource(id = R.string.dynamic),

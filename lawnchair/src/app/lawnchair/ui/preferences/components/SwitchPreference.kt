@@ -35,7 +35,6 @@ import app.lawnchair.ui.theme.dividerColor
 fun SwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
-    modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
@@ -56,7 +55,6 @@ fun SwitchPreference(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     label: String,
-    modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
