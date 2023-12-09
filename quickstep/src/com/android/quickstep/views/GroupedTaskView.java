@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
@@ -390,7 +391,11 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void setOverlayEnabled(boolean overlayEnabled) {
-        // Intentional no-op to prevent setting smart actions overlay on thumbnails
+        if (FeatureFlags.enableAppPairs()) {
+            super.setOverlayEnabled(overlayEnabled);
+        } else {
+            // Intentional no-op to prevent setting smart actions overlay on thumbnails
+        }
     }
 
     @Override

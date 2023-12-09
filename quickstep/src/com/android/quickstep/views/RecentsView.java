@@ -62,8 +62,7 @@ import static com.android.quickstep.util.TaskGridNavHelper.DIRECTION_TAB;
 import static com.android.quickstep.util.TaskGridNavHelper.DIRECTION_UP;
 import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
-import static com.android.quickstep.views.OverviewActionsView.FLAG_IS_NOT_TABLET;
-import static com.android.quickstep.views.OverviewActionsView.FLAG_SINGLE_TASK;
+import static com.android.quickstep.views.OverviewActionsView.FLAG_IS_NOT_TABLET_HIDE_SPLIT;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_ACTIONS_IN_MENU;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_DESKTOP;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
@@ -3941,18 +3940,25 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Hides all overview actions if current page is for split apps, shows otherwise
-     * If actions are showing, we only show split option if
+     * Hides all overview actions if user is halfway through split selection, shows otherwise.
+     * We only show split option if:
+     * * Focused view is a single app
      * * Device is large screen
-     * * There are at least 2 tasks to invoke split
      */
     private void updateCurrentTaskActionsVisibility() {
         boolean isCurrentSplit = getCurrentPageTaskView() instanceof GroupedTaskView;
-        mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isCurrentSplit);
+        // Update flags to see if entire actions bar should be hidden.
+        if (!FeatureFlags.enableAppPairs()) {
+            mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isCurrentSplit);
+        }
         mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SELECT_ACTIVE, isSplitSelectionActive());
-        mActionsView.updateSplitButtonHiddenFlags(FLAG_IS_NOT_TABLET,
+        // Update flags to see if actions bar should show buttons for a single task or a pair of
+        // tasks.
+        mActionsView.updateForGroupedTask(isCurrentSplit);
+        // Update flags to see if split button should be hidden or disabled.
+        mActionsView.updateSplitButtonHiddenFlags(FLAG_IS_NOT_TABLET_HIDE_SPLIT,
                 !mActivity.getDeviceProfile().isTablet);
-        mActionsView.updateSplitButtonDisabledFlags(FLAG_SINGLE_TASK, /*enable=*/ false);
+
         if (isDesktopModeSupported()) {
             boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
             mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
