@@ -88,6 +88,7 @@ import java.util.Locale;
 
 import app.lawnchair.font.FontManager;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
@@ -392,8 +393,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         boolean useTheme = shouldUseTheme();
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
         mDotParams.appColor = iconDrawable.getIconColor();
-        mDotParams.color = getContext().getResources()
-                .getColor(android.R.color.system_accent3_200, getContext().getTheme());
+        mDotParams.color = ColorTokens.DotColor.resolveColor(getContext());
         setIcon(iconDrawable);
         applyLabel(info);
     }

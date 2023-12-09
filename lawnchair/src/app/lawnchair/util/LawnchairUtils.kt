@@ -43,6 +43,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
@@ -114,17 +115,21 @@ fun getPrefsIfUnlocked(context: Context): PreferenceManager? {
 
 fun getWindowCornerRadius(context: Context): Float {
     val prefs = getPrefsIfUnlocked(context)
-    if (prefs != null && prefs.overrideWindowCornerRadius.get()) {
-        return prefs.windowCornerRadius.get().toFloat()
+    return when {
+        prefs?.overrideWindowCornerRadius?.get() == true -> prefs.windowCornerRadius.get().toFloat()
+        Utilities.ATLEAST_Q -> QuickStepContract.getWindowCornerRadius(context)
+        else -> 0.0f
     }
-    return QuickStepContract.getWindowCornerRadius(context)
 }
 
 fun supportsRoundedCornersOnWindows(context: Context): Boolean {
-    if (getPrefsIfUnlocked(context)?.overrideWindowCornerRadius?.get() == true) {
-        return true
+    val prefs = getPrefsIfUnlocked(context)
+
+    return when {
+        prefs?.overrideWindowCornerRadius?.get() == true -> true
+        Utilities.ATLEAST_Q -> QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
+        else -> false
     }
-    return QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
 }
 
 fun overrideAllAppsTextColor(textView: TextView) {
