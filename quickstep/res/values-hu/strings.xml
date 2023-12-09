@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Alkalmazásjavaslatok engedélyezve"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Alkalmazásjavaslatok letiltva"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Várható alkalmazás: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Forgassa el eszközét"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Forgassa el eszközét a kézmozdulatokkal való navigáció útmutatójának befejezéséhez"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Csúsztasson a képernyő jobb vagy bal széléről."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Csúsztassa ujját a képernyő jobb vagy bal széléről a képernyő közepéig, majd emelje fel."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Csúsztasson a képernyő jobb vagy bal széléről."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Csúsztassa ujját a képernyő jobb vagy bal széléről a képernyő közepéig, majd emelje fel."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Megtanulta, hogyan léphet vissza jobbról csúsztatva. A következő az appok közötti váltás."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Teljesítette a visszalépési kézmozdulatot."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Ne csúsztasson túl közel a képernyő aljához."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Teljesítette a visszalépési kézmozdulatot."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Ne csúsztasson túl közel a képernyő aljához."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"A vissza mozdulat érzékenysége a Beállításokban módosítható"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Csúsztasson a visszalépéshez"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ha visszatérne a legutóbbi képernyőre, csúsztasson a képernyő közepére a bal vagy a jobb széléről."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Ha vissza szeretne térni a legutóbbi képernyőre, csúsztasson gyorsan két ujjal a képernyő bal vagy jobb széléről a közepe felé."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Vissza"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Csúsztasson bal vagy jobb szélről a képernyő közepe felé."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Csúsztasson felfelé a képernyő aljától."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Ne álljon meg, mielőtt elengedi a képernyőt."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Csúsztasson egyenesen felfelé."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Teljesítette a kezdőképernyőre lépés kézmozdulatát. Most megtanulhatja, hogyan léphet vissza."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Teljesítette a kezdőképernyőre lépés kézmozdulatát."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Csúsztasson felfelé a képernyő aljától."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Ne álljon meg, mielőtt elengedi a képernyőt."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Csúsztasson egyenesen felfelé."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Teljesítette a kezdőképernyőre lépés kézmozdulatát. Most megtanulhatja, hogyan léphet vissza."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Teljesítette a kezdőképernyőre lépés kézmozdulatát."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Csúsztatás a kezdőképernyőre lépéshez"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Csúsztassa ujját felfelé a képernyő aljától. Ez a mozdulat mindig a kezdőképernyőre visz."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Csúsztasson felfelé két ujjal a képernyő aljáról. Ez a kézmozdulat mindig a kezdőképernyőre viszi."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ugrás a kezdőképernyőre"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Húzza ujját felfelé a képernyő aljától."</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Kiváló!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Csúsztasson felfelé a képernyő aljától."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Próbálja tovább lenyomva tartani az ablakot, mielőtt elengedi a képernyőt."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Csúsztasson egyenesen felfelé, majd várjon egy kicsit"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Ha vissza szeretne térni a kezdőképernyőre, bármikor felfelé csúsztathat ujjával a képernyő aljáról"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Csúsztasson felfelé a képernyő aljától."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Próbálja tovább lenyomva tartani az ablakot, mielőtt elengedi a képernyőt."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Csúsztasson egyenesen felfelé, majd várjon egy kicsit."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Eddig megismerhette a kézmozdulatok használatát. A kézmozdulatokat a Beállításokban kapcsolhatja ki."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Teljesítette az alkalmazásváltás kézmozdulatát."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Teljesítette az alkalmazásváltás kézmozdulatát."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Alkalmazásváltás csúsztatással"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Appok közti váltáshoz csúsztasson felfelé a kép aljáról, tartsa lenyomva az ujját, majd emelje fel."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Appváltáshoz csúsztasson fel két ujjal a kép aljáról, tartsa lenyomva ujjait, majd emelje fel őket."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Váltás az alkalmazások között"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Csúsztasson felfelé a képernyő aljáról, tartsa lenyomva ujját, majd emelje fel"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Szép munka!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Minden kész"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Kész"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Beállítások"</string>
@@ -88,7 +82,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Kész is!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Felfelé csúsztatva megjelenik a kezdőképernyő"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"A kezdőképernyőre való lépéshez koppintson a kezdőképernyő gombra"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Készen áll az <xliff:g id="DEVICE">%1$s</xliff:g> használatára"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Készen áll a(z) <xliff:g id="DEVICE">%1$s</xliff:g> használatára"</string>
     <string name="default_device_name" msgid="6660656727127422487">"eszköz"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Rendszer-navigációs beállítások"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Megosztás"</string>
@@ -104,7 +98,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Képernyő elforgatása"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Tálca használatának ismertetése"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Húzzon egy appot oldalra, ha kettőt használna egyidejűleg"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Lassan csúsztassa fel az ujját a Feladatsáv megjelenítéséhez"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Csúsztassa ujját lassan fel a Feladatsáv megjelenítéséhez"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Alkalmazásjavaslatokat kaphat a rutinja alapján"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"A Feladatsáv automatikus elrejtéséhez aktiválja a navigációs kézmozdulatokat a beállításokban"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Jobban kihasználhatja a Feladatsávot"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Feladatsáv megjelenítve"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Feladatsáv elrejtve"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigációs sáv"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Mindig megjelenő feladatsáv"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Navigációs mód módosítása"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Feladatsáv-elválasztó"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mozgatás felülre vagy a bal oldalra"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mozgatás alulra vagy a jobb oldalra"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# további alkalmazás megjelenítése.}other{# további alkalmazás megjelenítése.}}"</string>

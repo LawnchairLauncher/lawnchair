@@ -16,13 +16,12 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.provider.LauncherDbUtils.itemIdMatch;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -32,9 +31,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
@@ -45,6 +42,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -80,7 +78,7 @@ public class ModelWriter {
     private final boolean mVerifyChanges;
 
     // Keep track of delete operations that occur when an Undo option is present; we may not commit.
-    private final List<Runnable> mDeleteRunnables = new ArrayList<>();
+    private final List<ModelTask> mDeleteRunnables = new ArrayList<>();
     private boolean mPreparingToUndo;
     private final CellPosMapper mCellPosMapper;
 
@@ -217,8 +215,7 @@ public class ModelWriter {
         item.spanX = spanX;
         item.spanY = spanY;
         notifyItemModified(item);
-
-        MODEL_EXECUTOR.execute(new UpdateItemRunnable(item, () ->
+        new UpdateItemRunnable(item, () ->
                 new ContentWriter(mContext)
                         .put(Favorites.CONTAINER, item.container)
                         .put(Favorites.CELLX, item.cellX)
@@ -226,7 +223,8 @@ public class ModelWriter {
                         .put(Favorites.RANK, item.rank)
                         .put(Favorites.SPANX, item.spanX)
                         .put(Favorites.SPANY, item.spanY)
-                        .put(Favorites.SCREEN, item.screenId)));
+                        .put(Favorites.SCREEN, item.screenId))
+                .executeOnModelThread();
     }
 
     /**
@@ -234,11 +232,11 @@ public class ModelWriter {
      */
     public void updateItemInDatabase(ItemInfo item) {
         notifyItemModified(item);
-        MODEL_EXECUTOR.execute(new UpdateItemRunnable(item, () -> {
+        new UpdateItemRunnable(item, () -> {
             ContentWriter writer = new ContentWriter(mContext);
             item.onAddToDatabase(writer);
             return writer;
-        }));
+        }).executeOnModelThread();
     }
 
     private void notifyItemModified(ItemInfo item) {
@@ -253,13 +251,12 @@ public class ModelWriter {
             int container, int screenId, int cellX, int cellY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
 
-        final ContentResolver cr = mContext.getContentResolver();
-        item.id = Settings.call(cr, Settings.METHOD_NEW_ITEM_ID).getInt(Settings.EXTRA_VALUE);
+        item.id = mModel.getModelDbController().generateNewItemId();
         notifyOtherCallbacks(c -> c.bindItems(Collections.singletonList(item), false));
 
         ModelVerifier verifier = new ModelVerifier();
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        MODEL_EXECUTOR.execute(() -> {
+        newModelTask(() -> {
             // Write the item on background thread, as some properties might have been updated in
             // the background.
             final ContentWriter writer = new ContentWriter(mContext);
@@ -272,7 +269,7 @@ public class ModelWriter {
                 mBgDataModel.addItem(mContext, item, true);
                 verifier.verifyModel();
             }
-        });
+        }).executeOnModelThread();
     }
 
     /**
@@ -303,15 +300,13 @@ public class ModelWriter {
                 Collectors.joining(","))
                 + ". Reason: [" + (TextUtils.isEmpty(reason) ? "unknown" : reason) + "]");
         notifyDelete(items);
-        enqueueDeleteRunnable(() -> {
+        enqueueDeleteRunnable(newModelTask(() -> {
             for (ItemInfo item : items) {
-                final Uri uri = Favorites.getContentUri(item.id);
-                mContext.getContentResolver().delete(uri, null, null);
-
+                mModel.getModelDbController().delete(TABLE_NAME, itemIdMatch(item.id), null);
                 mBgDataModel.removeItem(mContext, item);
                 verifier.verifyModel();
             }
-        });
+        }));
     }
 
     /**
@@ -321,7 +316,7 @@ public class ModelWriter {
         ModelVerifier verifier = new ModelVerifier();
         notifyDelete(Collections.singleton(info));
 
-        enqueueDeleteRunnable(() -> {
+        enqueueDeleteRunnable(newModelTask(() -> {
             mModel.getModelDbController().delete(Favorites.TABLE_NAME,
                     Favorites.CONTAINER + "=" + info.id, null);
             mBgDataModel.removeItem(mContext, info.contents);
@@ -331,7 +326,7 @@ public class ModelWriter {
                     Favorites._ID + "=" + info.id, null);
             mBgDataModel.removeItem(mContext, info);
             verifier.verifyModel();
-        });
+        }));
     }
 
     /**
@@ -343,7 +338,7 @@ public class ModelWriter {
         if (holder != null && !info.isCustomWidget() && info.isWidgetIdAllocated()) {
             // Deleting an app widget ID is a void call but writes to disk before returning
             // to the caller...
-            enqueueDeleteRunnable(() -> holder.deleteAppWidgetId(info.appWidgetId));
+            enqueueDeleteRunnable(newModelTask(() -> holder.deleteAppWidgetId(info.appWidgetId)));
         }
         deleteItemFromDatabase(info, reason);
     }
@@ -373,19 +368,17 @@ public class ModelWriter {
      * {@link #commitDelete()} is called (or abandoned if {@link #abortDelete} is called).
      * Otherwise, we run the Runnable immediately.
      */
-    private void enqueueDeleteRunnable(Runnable r) {
+    private void enqueueDeleteRunnable(ModelTask r) {
         if (mPreparingToUndo) {
             mDeleteRunnables.add(r);
         } else {
-            MODEL_EXECUTOR.execute(r);
+            r.executeOnModelThread();
         }
     }
 
     public void commitDelete() {
         mPreparingToUndo = false;
-        for (Runnable runnable : mDeleteRunnables) {
-            MODEL_EXECUTOR.execute(runnable);
-        }
+        mDeleteRunnables.forEach(ModelTask::executeOnModelThread);
         mDeleteRunnables.clear();
     }
 
@@ -426,10 +419,9 @@ public class ModelWriter {
         }
 
         @Override
-        public void run() {
-            Uri uri = Favorites.getContentUri(mItemId);
-            mContext.getContentResolver().update(uri, mWriter.get().getValues(mContext),
-                    null, null);
+        public void runImpl() {
+            mModel.getModelDbController().update(
+                    TABLE_NAME, mWriter.get().getValues(mContext), itemIdMatch(mItemId), null);
             updateItemArrays(mItem, mItemId);
         }
     }
@@ -444,27 +436,24 @@ public class ModelWriter {
         }
 
         @Override
-        public void run() {
-            ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-            int count = mItems.size();
-            for (int i = 0; i < count; i++) {
-                ItemInfo item = mItems.get(i);
-                final int itemId = item.id;
-                final Uri uri = Favorites.getContentUri(itemId);
-                ContentValues values = mValues.get(i);
-
-                ops.add(ContentProviderOperation.newUpdate(uri).withValues(values).build());
-                updateItemArrays(item, itemId);
-            }
-            try {
-                mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, ops);
+        public void runImpl() {
+            try (SQLiteTransaction t = mModel.getModelDbController().newTransaction()) {
+                int count = mItems.size();
+                for (int i = 0; i < count; i++) {
+                    ItemInfo item = mItems.get(i);
+                    final int itemId = item.id;
+                    mModel.getModelDbController().update(
+                            TABLE_NAME, mValues.get(i), itemIdMatch(itemId), null);
+                    updateItemArrays(item, itemId);
+                }
+                t.commit();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private abstract class UpdateItemBaseRunnable implements Runnable {
+    private abstract class UpdateItemBaseRunnable extends ModelTask {
         private final StackTraceElement[] mStackTrace;
         private final ModelVerifier mVerifier = new ModelVerifier();
 
@@ -498,9 +487,9 @@ public class ModelWriter {
                                 modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
                     switch (modelItem.itemType) {
                         case Favorites.ITEM_TYPE_APPLICATION:
-                        case Favorites.ITEM_TYPE_SHORTCUT:
                         case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case Favorites.ITEM_TYPE_FOLDER:
+                        case Favorites.ITEM_TYPE_APP_PAIR:
                             if (!mBgDataModel.workspaceItems.contains(modelItem)) {
                                 mBgDataModel.workspaceItems.add(modelItem);
                             }
@@ -514,6 +503,35 @@ public class ModelWriter {
                 mVerifier.verifyModel();
             }
         }
+    }
+
+    private abstract class ModelTask implements Runnable {
+
+        private final int mLoadId = mBgDataModel.lastLoadId;
+
+        @Override
+        public final void run() {
+            if (mLoadId != mModel.getLastLoadId()) {
+                Log.d(TAG, "Model changed before the task could execute");
+                return;
+            }
+            runImpl();
+        }
+
+        public final void executeOnModelThread() {
+            MODEL_EXECUTOR.execute(this);
+        }
+
+        public abstract void runImpl();
+    }
+
+    private ModelTask newModelTask(Runnable r) {
+        return new ModelTask() {
+            @Override
+            public void runImpl() {
+                r.run();
+            }
+        };
     }
 
     /**

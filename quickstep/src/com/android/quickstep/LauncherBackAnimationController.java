@@ -129,7 +129,7 @@ public class LauncherBackAnimationController {
         mWindowMaxDeltaY = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_max_delta_y);
         mCancelInterpolator =
-                AnimationUtils.loadInterpolator(mLauncher, R.interpolator.back_cancel);
+                AnimationUtils.loadInterpolator(mLauncher, R.interpolator.standard_interpolator);
     }
 
     /**

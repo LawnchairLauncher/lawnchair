@@ -30,7 +30,7 @@ import android.view.ViewDebug;
 import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.anim.Interpolators;
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -42,7 +42,7 @@ public class DropTargetBar extends FrameLayout
         implements DragListener, Insettable {
 
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
-    protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCEL;
+    protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCELERATE;
 
     private final Runnable mFadeAnimationEndRunnable =
             () -> updateVisibility(DropTargetBar.this);

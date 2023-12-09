@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -33,7 +30,6 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -77,7 +73,6 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     @Override
     public final void run() {
         boolean isModelLoaded = Objects.requireNonNull(mModel).isModelLoaded();
-        testLogD(WORK_TAB_MISSING, "modelLoaded: " + isModelLoaded + " forTask: " + this);
         if (!isModelLoaded) {
             if (DEBUG_TASKS) {
                 Log.d(TAG, "Ignoring model task since loader is pending=" + this);
@@ -115,10 +110,6 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         List<WorkspaceItemInfo> workspaceUpdates = allUpdates.stream()
                 .filter(info -> info.id != ItemInfo.NO_ID)
                 .collect(Collectors.toList());
-        if (TestProtocol.sDebugTracing) {
-            Log.d(WORK_TAB_MISSING, "allUpdates: " + allUpdates.size() + ", workspaceUpdates "
-                    + workspaceUpdates.size());
-        }
         if (!workspaceUpdates.isEmpty()) {
             scheduleCallbackTask(c -> c.bindWorkspaceItemsChanged(workspaceUpdates));
         }
@@ -157,12 +148,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindApplicationsIfNeeded() {
-        boolean changeFlag = mAllAppsList.getAndResetChangeFlag();
-        if (TestProtocol.sDebugTracing) {
-            Log.d(WORK_TAB_MISSING, "bindApplicationsIfNeeded changeFlag? " +
-                    changeFlag);
-        }
-        if (changeFlag) {
+        if (mAllAppsList.getAndResetChangeFlag()) {
             AppInfo[] apps = mAllAppsList.copyData();
             int flags = mAllAppsList.getFlags();
             Map<PackageUserKey, Integer> packageUserKeytoUidMap = Arrays.stream(apps).collect(

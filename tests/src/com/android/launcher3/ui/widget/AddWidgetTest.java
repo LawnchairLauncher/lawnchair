@@ -18,17 +18,18 @@ package com.android.launcher3.ui.widget;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import android.platform.test.annotations.PlatinumTest;
+import android.platform.test.rule.ScreenRecordRule;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.celllayout.FavoriteItemsTransaction;
 import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -51,25 +52,21 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
+    @ScreenRecordRule.ScreenRecord // b/289161193
     public void testDragIcon() throws Throwable {
-        clearHomescreen();
-        mDevice.pressHome();
+        mLauncher.enableDebugTracing(); // b/289161193
+        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
 
         waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
 
         final LauncherAppWidgetProviderInfo widgetInfo =
-                TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);
+                TestViewHelpers.findWidgetProvider(false /* hasConfigureScreen */);
 
         WidgetResizeFrame resizeFrame = mLauncher
                 .getWorkspace()
                 .openAllWidgets()
                 .getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager()))
                 .dragWidgetToWorkspace();
-
-        assertTrue(mActivityMonitor.itemExists(
-                (info, view) -> info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName().equals(
-                                widgetInfo.provider.getClassName())).call());
 
         assertNotNull("Widget resize frame not shown after widget add", resizeFrame);
         resizeFrame.dismiss();
@@ -78,6 +75,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
                 DEFAULT_UI_TIMEOUT);
         assertNotNull("Widget not found on the workspace", widget);
         widget.launch(getAppPackageName());
+        mLauncher.disableDebugTracing(); // b/289161193
     }
 
     /**
@@ -90,8 +88,8 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragCustomShortcut() throws Throwable {
-        clearHomescreen();
-        mDevice.pressHome();
+        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
+
         mLauncher.getWorkspace().openAllWidgets()
                 .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
                 .dragToWorkspace(false, true);

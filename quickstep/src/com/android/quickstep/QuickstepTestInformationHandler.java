@@ -80,8 +80,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_HAS_TIS: {
-                response.putBoolean(
-                        TestProtocol.REQUEST_HAS_TIS, true);
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
                 return response;
             }
 

@@ -24,12 +24,15 @@
     android:paddingTop="@dimen/split_instructions_vertical_padding"
     android:paddingBottom="@dimen/split_instructions_vertical_padding"
     android:elevation="@dimen/split_instructions_elevation"
-    android:visibility="gone">
+    android:visibility="gone"
+    android:importantForAccessibility="yes">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/split_instructions_text"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:gravity="center"
         android:textColor="?androidprv:attr/textColorOnAccent"
+        android:drawableEnd="@drawable/ic_split_exit"
+        android:drawablePadding="@dimen/split_instructions_drawable_padding"
         android:text="@string/toast_split_select_app" />
 </com.android.quickstep.views.SplitInstructionsView>

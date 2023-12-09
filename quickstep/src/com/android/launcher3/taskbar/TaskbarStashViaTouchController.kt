@@ -16,9 +16,9 @@
 package com.android.launcher3.taskbar
 
 import android.view.MotionEvent
+import com.android.app.animation.Interpolators.LINEAR
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.anim.Interpolators.LINEAR
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.touch.SingleAxisSwipeDetector
 import com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE
@@ -108,7 +108,17 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
         }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (!enabled || controllers.taskbarStashController.isStashed) {
+        if (!enabled) {
+            return false
+        }
+        val bubbleControllers = controllers.bubbleControllers.orElse(null)
+        if (bubbleControllers != null && bubbleControllers.bubbleBarViewController.isExpanded) {
+            return false
+        }
+        if (
+            (bubbleControllers == null || bubbleControllers.bubbleStashController.isStashed) &&
+                controllers.taskbarStashController.isStashed
+        ) {
             return false
         }
 
@@ -122,7 +132,12 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
                 return true
             }
         } else if (ev.action == MotionEvent.ACTION_DOWN) {
-            if (screenCoordinatesEv.y < gestureHeightYThreshold) {
+            val isDownOnBubbleBar =
+                (bubbleControllers != null &&
+                    bubbleControllers.bubbleBarViewController.isEventOverAnyItem(
+                        screenCoordinatesEv
+                    ))
+            if (!isDownOnBubbleBar && screenCoordinatesEv.y < gestureHeightYThreshold) {
                 controllers.taskbarStashController.updateAndAnimateTransientTaskbar(true)
             }
         }

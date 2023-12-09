@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Okwabantu siqu"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Umsebenzi"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Izingxoxo"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Ukuthatha amanothi"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Ulwazi oluwusizo phambi nje kwakho"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Ukuze uthole ulwazi ngaphandle kokuvula ama-app, ungakwazi ukwengeza amawijethi kusikrini sakho sasekhaya"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Thepha ukuze ushintshe amasethingi ewijethi"</string>
@@ -60,7 +59,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Ilayisha izinhlelo zokusebenza..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Azikho izinhlelo zokusebenza ezitholiwe ezifana ne-\"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="label_application" msgid="8531721983832654978">"Uhlelo lokusebenza"</string>
-    <string name="all_apps_label" msgid="5015784846527570951">"Wonke ama-app"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"Zonke izinhlelo zokusebenza"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Izaziso"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Thinta uphinde ubambe ukuze uhambise isinqamuleli."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Thepha kabili uphinde ubambe ukuze uhambise isinqamuleli noma usebenzise izenzo ezingokwezifiso."</string>

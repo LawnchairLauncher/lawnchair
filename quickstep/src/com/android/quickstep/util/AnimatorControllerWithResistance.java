@@ -15,9 +15,9 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.AbsSwipeUpHandler.ALL_APPS_SHIFT_THRESHOLD;
+import static com.android.app.animation.Interpolators.DECELERATE;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -55,7 +56,7 @@ public class AnimatorControllerWithResistance {
 
     private enum RecentsResistanceParams {
         FROM_APP(0.75f, 0.5f, 1f, false),
-        FROM_APP_TO_ALL_APPS(0.75f, 0.5f, 0.8f, false),
+        FROM_APP_TO_ALL_APPS(1f, 0.6f, 0.8f, false),
         FROM_APP_TABLET(1f, 0.7f, 1f, true),
         FROM_APP_TO_ALL_APPS_TABLET(1f, 0.5f, 0.5f, false),
         FROM_OVERVIEW(1f, 0.75f, 0.5f, false);
@@ -91,7 +92,7 @@ public class AnimatorControllerWithResistance {
         public final boolean stopScalingAtTop;
     }
 
-    private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DEACCEL;
+    private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DECELERATE;
     private static final TimeInterpolator RECENTS_TRANSLATE_RESIST_INTERPOLATOR = LINEAR;
 
     private static final Rect TEMP_RECT = new Rect();
@@ -188,7 +189,8 @@ public class AnimatorControllerWithResistance {
                         recentsOrientedState.getOrientationHandler());
         float dragLengthFactor = (float) dp.heightPx / transitionDragLength;
         // -1s are because 0-1 is reserved for the normal transition.
-        return (ALL_APPS_SHIFT_THRESHOLD - 1) / (dragLengthFactor - 1);
+        float threshold = LauncherPrefs.get(context).get(ALL_APPS_OVERVIEW_THRESHOLD) / 100f;
+        return (threshold - 1) / (dragLengthFactor - 1);
     }
 
     /**

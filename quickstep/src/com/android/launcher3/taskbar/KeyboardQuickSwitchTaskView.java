@@ -80,7 +80,7 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
         setWillNotDraw(false);
 
         mBorderColor = ta.getColor(
-                R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR);
+                R.styleable.TaskView_focusBorderColor, DEFAULT_BORDER_COLOR);
         ta.recycle();
     }
 

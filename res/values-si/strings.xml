@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"පුද්ගලික"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"කාර්යාලය"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"සංවාද"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"සටහන් කර ගැනීම"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ප්‍රයෝජනවත් තොරතුරු ඔබගේ ඇඟිලි තුඩු අග"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"යෙදුම් විවෘත නොකර තොරතුරු ලබා ගැනීම සඳහා, ඔබට ඔබගේ මුල් තිරයට විජට් එක් කළ හැකිය"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"විජට් සැකසීම් වෙනස් කිරීමට තට්ටු කරන්න"</string>
@@ -101,7 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ෆෝල්ඩර: <xliff:g id="NAME">%1$s</xliff:g>, අයිතම <xliff:g id="SIZE">%2$d</xliff:g>ක් හෝ වැඩි ගණනක්"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"වෝල්පේපර"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"වෝල්පේපරය සහ මෝස්තරය"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"මුල් තිරය සංස්කරණය කරන්න"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"නිවසේ සැකසීම්"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ඔබගේ පරිපාලක විසින් අබල කරන ලදී"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"මුල් තිරය කරකැවීමට ඉඩ දෙන්න"</string>

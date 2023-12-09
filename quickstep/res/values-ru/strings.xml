@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Функция \"Рекомендуемые приложения\" включена."</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Функция \"Рекомендуемые приложения\" отключена."</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Рекомендуемое приложение: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Поверните устройство"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Чтобы перейти к руководству по жестам, нужно повернуть устройство."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Проведите справа налево или слева направо от самого края экрана."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Проведите от правого или левого края экрана к центру и отпустите палец."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Проведите справа налево или слева направо от самого края экрана."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Проведите от правого или левого края экрана до середины дисплея и отпустите палец."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Теперь вы знаете, как вернуться, проведя справа налево. Далее мы расскажем, как переключаться между приложениями."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Вы выполнили жест для возврата на предыдущий экран."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Проведите пальцем не слишком близко к нижнему краю экрана."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Вы выполнили жест для перехода назад."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Проведите пальцем не слишком близко к нижнему краю экрана."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Уровень чувствительности можно изменить в настройках."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Возврат к предыдущему экрану"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Чтобы вернуться к предыдущему экрану, проведите от левого или правого края дисплея к центру."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Чтобы вернуться на предыдущий экран, проведите двумя пальцами от левого или правого края экрана к центру."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Как вернуться к предыдущему экрану"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Проведите от левого или правого края экрана к центру."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Проведите снизу вверх от самого края экрана."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Прежде чем отпустить палец, не задерживайте его в одной точке."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Проведите по экрану ровно вверх."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Вы выполнили жест для перехода на главный экран. Далее мы расскажем, как возвращаться назад."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Вы выполнили жест для перехода на главный экран."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Проведите снизу вверх от самого края экрана."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не приостанавливайтесь перед тем, как отпустить палец."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Проведите по экрану ровно вверх."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Вы выполнили жест для перехода на главный экран. Далее мы расскажем, как вернуться назад."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Вы выполнили жест для перехода на главный экран."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Переход на главный экран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Проведите вверх от нижнего края дисплея. Этот жест открывает главный экран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Проведите двумя пальцами вверх от нижнего края экрана. Этот жест открывает главный экран."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Как перейти на главный экран"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Проведите вверх от нижнего края экрана."</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"У вас получилось!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Проведите снизу вверх от самого края экрана."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Прежде чем отпустить палец, задержите его на экране немного дольше."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Проведите по экрану ровно вверх и задержите палец в конце."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Переход на главный экран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Чтобы открыть главный экран, проведите снизу вверх по экрану."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Проведите снизу вверх от самого края экрана."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Прежде чем отпускать палец, задержите его на дисплее подольше."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Проведите по экрану ровно вверх, а затем задержите палец в крайнем положении."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Теперь вы знаете, как использовать жесты. Чтобы отключить их, перейдите в настройки."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Вы выполнили жест для переключения между приложениями."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Вы выполнили жест для переключения между приложениями."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Переключение между приложениями"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Чтобы переключиться между приложениями‚ проведите по экрану снизу вверх, задержите палец, а затем отпустите."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Чтобы сменить приложение, проведите двумя пальцами снизу вверх, задержите пальцы, а затем отпустите."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Как переключаться между приложениями"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Проведите вверх от нижнего края экрана, задержите палец в одной точке и отпустите."</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Отлично!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Настройки"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Панель задач показана"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Панель задач скрыта"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Панель навигации"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Всегда показывать панель задач"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Изменить режим навигации"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Разделитель панели задач"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Переместить вверх или влево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Переместить вниз или вправо"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Показать ещё # приложение}one{Показать ещё # приложение}few{Показать ещё # приложения}many{Показать ещё # приложений}other{Показать ещё # приложения}}"</string>

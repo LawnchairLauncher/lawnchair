@@ -324,13 +324,16 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         if (!hasTasks() || isClearAllVisible()) {
             return false;
         }
-        OverviewTask task = mLauncher.isTablet() ? getFocusedTaskForTablet() : getCurrentTask();
+        boolean isTablet = mLauncher.isTablet();
+        if (isTablet && mLauncher.isGridOnlyOverviewEnabled()) {
+            return false;
+        }
+        OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
         if (task == null) {
             return false;
         }
         // In tablets, if focused task is not in center, overview actions aren't visible.
-        if (mLauncher.isTablet()
-                && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
+        if (isTablet && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
             return false;
         }
         // Overview actions aren't visible for split screen tasks.

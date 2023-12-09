@@ -18,12 +18,15 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
@@ -54,10 +57,13 @@ import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
+import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TISBindRule;
+import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
@@ -94,7 +100,12 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
-        test.clearLauncherData();
+        initialize(test, false);
+    }
+
+    public static void initialize(
+            AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
+        test.reinitializeLauncherData(clearWorkspace);
         test.mDevice.pressHome();
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
         test.waitForState("Launcher internal state didn't switch to Home",
@@ -147,7 +158,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -221,7 +231,18 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     public void testAllAppsSwitchToWorkspace() {
         assertNotNull("switchToWorkspace() returned null",
-                mLauncher.getWorkspace().switchToAllApps().switchToWorkspace());
+                mLauncher.getWorkspace().switchToAllApps()
+                        .switchToWorkspace(/* swipeDown= */ true));
+        assertTrue("Launcher internal state is not Workspace",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testAllAppsSwipeUpToWorkspace() {
+        assertNotNull("testAllAppsSwipeUpToWorkspace() returned null",
+                mLauncher.getWorkspace().switchToAllApps()
+                        .switchToWorkspace(/* swipeDown= */ false));
         assertTrue("Launcher internal state is not Workspace",
                 isInState(() -> LauncherState.NORMAL));
     }
@@ -245,7 +266,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         LauncherLayoutBuilder builder = new LauncherLayoutBuilder()
                 .atHotseat(0).putApp("com.android.chrome", "com.google.android.apps.chrome.Main");
         mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, builder);
-        clearLauncherData();
+        reinitializeLauncherData();
 
         final Workspace workspace = mLauncher.getWorkspace();
 
@@ -310,6 +331,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/293191790
+    @ScreenRecord
     @PortraitLandscape
     public void testWidgets() throws Exception {
         // Test opening widgets.
@@ -358,6 +381,28 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             final AppIconMenu menu = allApps.
                     getAppIcon(APP_NAME).
                     openDeepShortcutMenu();
+
+            executeOnLauncher(
+                    launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
+                            isOptionsPopupVisible(launcher)));
+
+            final AppIconMenuItem menuItem = menu.getMenuItem(1);
+            assertEquals("Wrong menu item", "Shortcut 2", menuItem.getText());
+            menuItem.launch(getAppPackageName());
+        } finally {
+            allApps.unfreeze();
+        }
+    }
+
+    @Test
+    public void testLaunchHomeScreenMenuItem() {
+        // Drag the test app icon to home screen and open short cut menu from the icon
+        final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
+            final AppIconMenu menu = mLauncher.getWorkspace().getWorkspaceAppIcon(
+                    APP_NAME).openDeepShortcutMenu();
 
             executeOnLauncher(
                     launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
@@ -503,19 +548,16 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     private void verifyAppUninstalledFromAllApps(Workspace workspace, String appName) {
         final HomeAllApps allApps = workspace.switchToAllApps();
-        allApps.freeze();
-        try {
-            assertNull(appName + " app was found on all apps after being uninstalled",
-                    allApps.tryGetAppIcon(appName));
-        } finally {
-            allApps.unfreeze();
-        }
+        Wait.atMost(appName + " app was found on all apps after being uninstalled",
+                () -> allApps.tryGetAppIcon(appName) == null,
+                DEFAULT_UI_TIMEOUT, mLauncher);
     }
 
-    @Ignore("b/256615483")
     @Test
     @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
+    // TODO(b/293944634): Remove Screenrecord after flaky debug, and add
+    // @PlatinumTest(focusArea = "launcher") back
+    @ScreenRecord
     public void testUninstallFromWorkspace() throws Exception {
         installDummyAppAndWaitForUIUpdate();
         try {
@@ -527,7 +569,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord // b/258071914
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
     public void testUninstallFromAllApps() throws Exception {
@@ -536,7 +577,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             Workspace workspace = mLauncher.getWorkspace();
             final HomeAllApps allApps = workspace.switchToAllApps();
             workspace = allApps.getAppIcon(DUMMY_APP_NAME).uninstall();
-            waitForLauncherUIUpdate();
             verifyAppUninstalledFromAllApps(workspace, DUMMY_APP_NAME);
         } finally {
             TestUtil.uninstallDummyApp();
@@ -560,7 +600,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 allApps.unfreeze();
             }
             // Reset the workspace for the next shortcut creation.
-            initialize(this);
+            initialize(this, true);
             endTime = SystemClock.uptimeMillis();
             elapsedTime = endTime - startTime;
             Log.d("testDragAppIconToWorkspaceCellTime",
@@ -579,11 +619,19 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    /**
+     * Adds three icons to the workspace and removes one of them by dragging to uninstall.
+     */
     @Test
     @ScreenRecord // b/241821721
     @PlatinumTest(focusArea = "launcher")
-    public void getIconsPosition_afterIconRemoved_notContained() throws IOException {
+    public void uninstallWorkspaceIcon() throws IOException {
         Point[] gridPositions = getCornersAndCenterPositions();
+        StringBuilder sb = new StringBuilder();
+        for (Point p : gridPositions) {
+            sb.append(p).append(", ");
+        }
+        Log.d(ICON_MISSING, "allGridPositions: " + sb);
         createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
         createShortcutIfNotExist(MAPS_APP_NAME, gridPositions[1]);
         installDummyAppAndWaitForUIUpdate();
@@ -598,6 +646,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             mLauncher.getWorkspace().verifyWorkspaceAppIconIsGone(
                     DUMMY_APP_NAME + " was expected to disappear after uninstall.", DUMMY_APP_NAME);
 
+            // Debug for b/288944469 I want to test if we are not waiting enough after removing
+            // the icon to request the list of icons again, since the items are not removed
+            // immediately. This should reduce the flake rate
+            SystemClock.sleep(500);
             Map<String, Point> finalPositions =
                     mLauncher.getWorkspace().getWorkspaceIconsPositions();
             assertThat(finalPositions).doesNotContainKey(DUMMY_APP_NAME);
@@ -677,8 +729,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
         try {
-            HomeAppIcon icon = allApps.getAppIcon(APP_NAME);
-            assertEquals("Wrong app icon name.", icon.getIconName(), APP_NAME);
+            // getAppIcon() already verifies that the icon is not null and is the correct icon name.
+            allApps.getAppIcon(APP_NAME);
         } finally {
             allApps.unfreeze();
         }

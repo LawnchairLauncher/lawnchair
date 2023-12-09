@@ -18,6 +18,7 @@ package com.android.launcher3.notification;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACTION_POPUP;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS;
+import static com.android.launcher3.Utilities.allowBGLaunch;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_LAUNCH_TAP;
 
 import android.app.ActivityOptions;
@@ -26,7 +27,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
-import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
 
@@ -103,10 +103,10 @@ public class NotificationInfo implements View.OnClickListener {
             return;
         }
         final ActivityContext context = ActivityContext.lookupContext(view.getContext());
-        Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
-                view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
+        ActivityOptions options = allowBGLaunch(ActivityOptions.makeClipRevealAnimation(
+                view, 0, 0, view.getWidth(), view.getHeight()));
         try {
-            intent.send(null, 0, null, null, null, null, activityOptions);
+            intent.send(null, 0, null, null, null, null, options.toBundle());
             context.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_NOTIFICATION_LAUNCH_TAP);
         } catch (PendingIntent.CanceledException e) {

@@ -13,16 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout
+<com.android.launcher3.views.IconButtonView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/taskbar_icon_min_touch_size"
     android:layout_height="@dimen/taskbar_icon_min_touch_size"
     android:contentDescription="@string/taskbar_divider_a11y_title"
-    android:backgroundTint="@android:color/transparent">
-
-    <View
-        android:layout_height="32dp"
-        android:layout_width="2dp"
-        android:layout_gravity="center"
-        android:background="@drawable/taskbar_divider_bg" />
-</FrameLayout>
+    android:backgroundTint="@android:color/transparent" />

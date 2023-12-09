@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.config.FeatureFlags.ALL_APPS_GONE_VISIBILITY;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import static com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_DOWN;
@@ -26,6 +27,8 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_COLLAPSE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_EXTEND;
+import static com.android.launcher3.recyclerview.AllAppsRecyclerViewPoolKt.EXTRA_ICONS_COUNT;
+import static com.android.launcher3.recyclerview.AllAppsRecyclerViewPoolKt.PREINFLATE_ICONS_ROW_COUNT;
 import static com.android.launcher3.util.LogConfig.SEARCH_LOGGING;
 
 import android.content.Context;
@@ -96,8 +99,18 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows
-                * (mNumAppsPerRow + 1));
+
+        // If all apps' hidden visibility is INVISIBLE, we will need to preinflate one page of
+        // all apps icons for smooth scrolling.
+        int maxPoolSizeForAppIcons = (approxRows + 1) * grid.numShownAllAppsColumns;
+        if (ALL_APPS_GONE_VISIBILITY.get()) {
+            // If all apps' hidden visibility is GONE, we need to increase prefinated icons number
+            // by [PREINFLATE_ICONS_ROW_COUNT] rows + [EXTRA_ICONS_COUNT] for fast opening all apps.
+            maxPoolSizeForAppIcons +=
+                    PREINFLATE_ICONS_ROW_COUNT * grid.numShownAllAppsColumns + EXTRA_ICONS_COUNT;
+        }
+        pool.setMaxRecycledViews(
+                AllAppsGridAdapter.VIEW_TYPE_ICON, maxPoolSizeForAppIcons);
     }
 
     @Override

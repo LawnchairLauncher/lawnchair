@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static android.content.pm.LauncherApps.EXTRA_PIN_ITEM_REQUEST;
+
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
@@ -25,6 +27,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.PinItemRequest;
 import android.content.pm.PackageManager;
@@ -41,6 +44,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.util.StartActivityParams;
 
 import java.util.function.Supplier;
 
@@ -105,7 +109,11 @@ public class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
 
     @Override
     public boolean startConfigActivity(Activity activity, int requestCode) {
-        return false;
+        new StartActivityParams(activity, requestCode).deliverResult(
+                activity,
+                Activity.RESULT_OK,
+                new Intent().putExtra(EXTRA_PIN_ITEM_REQUEST, mRequestSupplier.get()));
+        return true;
     }
 
     @Override

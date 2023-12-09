@@ -41,6 +41,12 @@ public class HomeGestureTutorialFragment extends TutorialFragment {
         super(fromTutorialMenu);
     }
 
+    @NonNull
+    @Override
+    TutorialType getDefaultTutorialType() {
+        return TutorialType.HOME_NAVIGATION;
+    }
+
     @Nullable
     @Override
     Integer getEdgeAnimationResId() {

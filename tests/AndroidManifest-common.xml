@@ -32,12 +32,24 @@
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWidgetNoConfig"
             android:exported="true"
+            android:icon="@drawable/test_widget_no_config_icon"
             android:label="No Config">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/appwidget_no_config"/>
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetNoConfigLarge"
+            android:exported="true"
+            android:label="No Config Large">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_no_config_large"/>
         </receiver>
 
         <receiver
@@ -54,6 +66,7 @@
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWidgetWithConfig"
             android:exported="true"
+            android:icon="@drawable/test_widget_with_config_icon"
             android:label="With Config">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -65,6 +78,7 @@
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWidgetWithDialog"
             android:exported="true"
+            android:icon="@drawable/test_widget_with_dialog_icon"
             android:label="With Dialog">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -76,6 +90,7 @@
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWidgetDynamicColors"
             android:exported="true"
+            android:icon="@drawable/test_widget_dynamic_colors_icon"
             android:label="Dynamic Colors">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -288,6 +303,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <activity-alias android:name="MaxShortcutsActivity"
+            android:label="TestActivityMaxShortcuts"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/max_shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="SingleShortcutActivity"
+            android:label="TestActivitySingleShortcut"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/single_shortcut"/>
+        </activity-alias>
         <activity
             android:name="com.android.launcher3.testcomponent.DialogTestActivity"
             android:label="Dialog Activity"
@@ -308,6 +345,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity-alias android:name="WebSearchActivity"
+            android:label="WebSearchActivity"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.WEB_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
 
         <!-- [b/197780098] Disable eager initialization of Jetpack libraries. -->
         <provider

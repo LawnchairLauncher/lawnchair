@@ -17,9 +17,7 @@
 package com.android.launcher3.widget;
 
 import static com.android.launcher3.Utilities.ATLEAST_R;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
-import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Insets;
@@ -130,14 +128,11 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     }
 
     private void animateOpen() {
-        if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
             return;
         }
         mIsOpen = true;
-        mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(FAST_OUT_SLOW_IN);
-        mOpenCloseAnimator.start();
+        setUpDefaultOpenAnimation().start();
     }
 
     @Override

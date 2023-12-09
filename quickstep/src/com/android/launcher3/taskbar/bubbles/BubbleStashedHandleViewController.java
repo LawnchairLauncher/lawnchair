@@ -52,6 +52,7 @@ public class BubbleStashedHandleViewController {
     private BubbleStashController mBubbleStashController;
     private RegionSamplingHelper mRegionSamplingHelper;
     private int mBarSize;
+    private int mStashedTaskbarHeight;
     private int mStashedHandleWidth;
     private int mStashedHandleHeight;
 
@@ -92,7 +93,7 @@ public class BubbleStashedHandleViewController {
 
         mTaskbarStashedHandleAlpha.get(0).setValue(0);
 
-        final int stashedTaskbarHeight = resources.getDimensionPixelSize(
+        mStashedTaskbarHeight = resources.getDimensionPixelSize(
                 R.dimen.bubblebar_stashed_size);
         mStashedHandleView.setOutlineProvider(new ViewOutlineProvider() {
             @Override
@@ -115,22 +116,27 @@ public class BubbleStashedHandleViewController {
                     }
                 }, Executors.UI_HELPER_EXECUTOR);
 
-        mStashedHandleView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> {
-            // As more bubbles get added, the icon bounds become larger. To ensure a consistent
-            // handle bar position, we pin it to the edge of the screen.
-            Rect bubblebarRect = mBarViewController.getBubbleBarBounds();
-            final int stashedCenterY = view.getHeight() - stashedTaskbarHeight / 2;
+        mStashedHandleView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
+                updateBounds());
+    }
 
-            mStashedHandleBounds.set(
-                    bubblebarRect.right - mStashedHandleWidth,
-                    stashedCenterY - mStashedHandleHeight / 2,
-                    bubblebarRect.right,
-                    stashedCenterY + mStashedHandleHeight / 2);
-            mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
+    private void updateBounds() {
+        // As more bubbles get added, the icon bounds become larger. To ensure a consistent
+        // handle bar position, we pin it to the edge of the screen.
+        final int right =
+                mActivity.getDeviceProfile().widthPx - mBarViewController.getHorizontalMargin();
 
-            view.setPivotX(view.getWidth());
-            view.setPivotY(view.getHeight() - stashedTaskbarHeight / 2f);
-        });
+        final int stashedCenterY = mStashedHandleView.getHeight() - mStashedTaskbarHeight / 2;
+
+        mStashedHandleBounds.set(
+                right - mStashedHandleWidth,
+                stashedCenterY - mStashedHandleHeight / 2,
+                right,
+                stashedCenterY + mStashedHandleHeight / 2);
+        mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
+
+        mStashedHandleView.setPivotX(mStashedHandleView.getWidth());
+        mStashedHandleView.setPivotY(mStashedHandleView.getHeight() - mStashedTaskbarHeight / 2f);
     }
 
     public void onDestroy() {
@@ -188,6 +194,7 @@ public class BubbleStashedHandleViewController {
             mStashedHandleView.setVisibility(VISIBLE);
         } else {
             mStashedHandleView.setVisibility(INVISIBLE);
+            mStashedHandleView.setAlpha(0);
         }
         updateRegionSampling();
     }
@@ -203,12 +210,14 @@ public class BubbleStashedHandleViewController {
     private void updateRegionSampling() {
         boolean handleVisible = mStashedHandleView.getVisibility() == VISIBLE
                 && mBubbleStashController.isStashed();
-        mRegionSamplingHelper.setWindowVisible(handleVisible);
-        if (handleVisible) {
-            mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
-            mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
-        } else {
-            mRegionSamplingHelper.stop();
+        if (mRegionSamplingHelper != null) {
+            mRegionSamplingHelper.setWindowVisible(handleVisible);
+            if (handleVisible) {
+                mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
+                mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
+            } else {
+                mRegionSamplingHelper.stop();
+            }
         }
     }
 

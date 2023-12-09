@@ -16,16 +16,19 @@
 
 package com.android.launcher3.pm;
 
-import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
-import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
+import static com.android.launcher3.Utilities.ATLEAST_U;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
-import android.util.LongSparseArray;
+
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SafeCloseable;
@@ -34,136 +37,121 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * Class which manages a local cache of user handles to avoid system rpc
  */
-public class UserCache {
+public class UserCache implements SafeCloseable {
+
+    public static final String ACTION_PROFILE_ADDED = ATLEAST_U
+            ? Intent.ACTION_PROFILE_ADDED : Intent.ACTION_MANAGED_PROFILE_ADDED;
+    public static final String ACTION_PROFILE_REMOVED = ATLEAST_U
+            ? Intent.ACTION_PROFILE_REMOVED : Intent.ACTION_MANAGED_PROFILE_REMOVED;
+
+    public static final String ACTION_PROFILE_UNLOCKED = ATLEAST_U
+            ? Intent.ACTION_PROFILE_ACCESSIBLE : Intent.ACTION_MANAGED_PROFILE_UNLOCKED;
+    public static final String ACTION_PROFILE_LOCKED = ATLEAST_U
+            ? Intent.ACTION_PROFILE_INACCESSIBLE : Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE;
 
     public static final MainThreadInitializedObject<UserCache> INSTANCE =
             new MainThreadInitializedObject<>(UserCache::new);
 
-    private final Context mContext;
-    private final UserManager mUserManager;
-    private final ArrayList<Runnable> mUserChangeListeners = new ArrayList<>();
+    private final List<BiConsumer<UserHandle, String>> mUserEventListeners = new ArrayList<>();
     private final SimpleBroadcastReceiver mUserChangeReceiver =
             new SimpleBroadcastReceiver(this::onUsersChanged);
 
-    private LongSparseArray<UserHandle> mUsers;
-    // Create a separate reverse map as LongSparseArray.indexOfValue checks if objects are same
-    // and not {@link Object#equals}
-    private ArrayMap<UserHandle, Long> mUserToSerialMap;
+    private final Context mContext;
+
+    @NonNull
+    private Map<UserHandle, Long> mUserToSerialMap;
 
     private UserCache(Context context) {
         mContext = context;
-        mUserManager = context.getSystemService(UserManager.class);
+        mUserToSerialMap = Collections.emptyMap();
+        MODEL_EXECUTOR.execute(this::initAsync);
     }
 
+    @Override
+    public void close() {
+        MODEL_EXECUTOR.execute(() -> mUserChangeReceiver.unregisterReceiverSafely(mContext));
+    }
+
+    @WorkerThread
+    private void initAsync() {
+        mUserChangeReceiver.register(mContext,
+                Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
+                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
+                ACTION_PROFILE_ADDED,
+                ACTION_PROFILE_REMOVED,
+                ACTION_PROFILE_UNLOCKED,
+                ACTION_PROFILE_LOCKED);
+        updateCache();
+    }
+
+    @AnyThread
     private void onUsersChanged(Intent intent) {
-        testLogD(WORK_TAB_MISSING, "onUsersChanged intent: " + intent);
-        enableAndResetCache();
-        mUserChangeListeners.forEach(Runnable::run);
+        MODEL_EXECUTOR.execute(this::updateCache);
+        UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
+        if (user == null) {
+            return;
+        }
+        String action = intent.getAction();
+        mUserEventListeners.forEach(l -> l.accept(user, action));
+    }
+
+    @WorkerThread
+    private void updateCache() {
+        mUserToSerialMap = queryAllUsers(mContext.getSystemService(UserManager.class));
     }
 
     /**
      * Adds a listener for user additions and removals
      */
-    public SafeCloseable addUserChangeListener(Runnable command) {
-        synchronized (this) {
-            if (mUserChangeListeners.isEmpty()) {
-                // Enable caching and start listening for user broadcast
-                mUserChangeReceiver.register(mContext,
-                        Intent.ACTION_MANAGED_PROFILE_ADDED,
-                        Intent.ACTION_MANAGED_PROFILE_REMOVED);
-                enableAndResetCache();
-            }
-            mUserChangeListeners.add(command);
-            return () -> removeUserChangeListener(command);
-        }
-    }
-
-    private void enableAndResetCache() {
-        synchronized (this) {
-            mUsers = new LongSparseArray<>();
-            mUserToSerialMap = new ArrayMap<>();
-            List<UserHandle> users = mUserManager.getUserProfiles();
-            if (users != null) {
-                for (UserHandle user : users) {
-                    testLogD(WORK_TAB_MISSING, "caching user: " + user);
-                    long serial = mUserManager.getSerialNumberForUser(user);
-                    mUsers.put(serial, user);
-                    mUserToSerialMap.put(user, serial);
-                }
-            }
-        }
-    }
-
-    private void removeUserChangeListener(Runnable command) {
-        synchronized (this) {
-            mUserChangeListeners.remove(command);
-            if (mUserChangeListeners.isEmpty()) {
-                // Disable cache and stop listening
-                mContext.unregisterReceiver(mUserChangeReceiver);
-
-                mUsers = null;
-                mUserToSerialMap = null;
-            }
-        }
+    public SafeCloseable addUserEventListener(BiConsumer<UserHandle, String> listener) {
+        mUserEventListeners.add(listener);
+        return () -> mUserEventListeners.remove(listener);
     }
 
     /**
      * @see UserManager#getSerialNumberForUser(UserHandle)
      */
     public long getSerialNumberForUser(UserHandle user) {
-        synchronized (this) {
-            if (mUserToSerialMap != null) {
-                Long serial = mUserToSerialMap.get(user);
-                return serial == null ? 0 : serial;
-            }
-        }
-        return mUserManager.getSerialNumberForUser(user);
+        Long serial = mUserToSerialMap.get(user);
+        return serial == null ? 0 : serial;
     }
 
     /**
      * @see UserManager#getUserForSerialNumber(long)
      */
     public UserHandle getUserForSerialNumber(long serialNumber) {
-        synchronized (this) {
-            if (mUsers != null) {
-                return mUsers.get(serialNumber);
-            }
-        }
-        return mUserManager.getUserForSerialNumber(serialNumber);
+        Long value = serialNumber;
+        return mUserToSerialMap
+                .entrySet()
+                .stream()
+                .filter(entry -> value.equals(entry.getValue()))
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(Process.myUserHandle());
     }
 
     /**
      * @see UserManager#getUserProfiles()
      */
     public List<UserHandle> getUserProfiles() {
-        StringBuilder usersToReturn = new StringBuilder();
-        List<UserHandle> users;
-        if (sDebugTracing) {
-            users = mUserManager.getUserProfiles();
-            for (UserHandle u : users) {
-                usersToReturn.append(u).append(" && ");
-            }
-            testLogD(WORK_TAB_MISSING, "users from userManager: " + usersToReturn);
-        }
+        return List.copyOf(mUserToSerialMap.keySet());
+    }
 
-        synchronized (this) {
-            if (mUsers != null) {
-                usersToReturn = new StringBuilder();
-                for (UserHandle u : mUserToSerialMap.keySet()) {
-                    usersToReturn.append(u).append(" && ");
-                }
-                testLogD(WORK_TAB_MISSING, "users from cache: " + usersToReturn);
-                return new ArrayList<>(mUserToSerialMap.keySet());
-            } else {
-                testLogD(WORK_TAB_MISSING, "users from cache null");
+    private static Map<UserHandle, Long> queryAllUsers(UserManager userManager) {
+        Map<UserHandle, Long> users = new ArrayMap<>();
+        List<UserHandle> usersActual = userManager.getUserProfiles();
+        if (usersActual != null) {
+            for (UserHandle user : usersActual) {
+                long serial = userManager.getSerialNumberForUser(user);
+                users.put(user, serial);
             }
         }
-
-        users = mUserManager.getUserProfiles();
-        return users == null ? Collections.emptyList() : users;
+        return users;
     }
 }

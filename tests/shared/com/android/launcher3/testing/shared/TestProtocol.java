@@ -39,7 +39,6 @@ public final class TestProtocol {
     public static final int HINT_STATE_TWO_BUTTON_ORDINAL = 8;
     public static final int OVERVIEW_SPLIT_SELECT_ORDINAL = 9;
     public static final int EDIT_MODE_STATE_ORDINAL = 10;
-    public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
     public static final String SEQUENCE_PILFER = "Pilfer";
@@ -110,6 +109,7 @@ public final class TestProtocol {
     public static final String REQUEST_GET_TEST_EVENTS = "get-test-events";
     public static final String REQUEST_GET_HAD_NONTEST_EVENTS = "get-had-nontest-events";
     public static final String REQUEST_STOP_EVENT_LOGGING = "stop-event-logging";
+    public static final String REQUEST_REINITIALIZE_DATA = "reinitialize-data";
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_HOTSEAT_ICON_NAMES = "get-hotseat-icon-names";
     public static final String REQUEST_IS_TABLET = "is-tablet";
@@ -152,14 +152,19 @@ public final class TestProtocol {
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
-    public static final String WORK_TAB_MISSING = "b/243688989";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
-    public static final String FLAKY_ACTIVITY_COUNT = "b/260260325";
+    public static final String FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP = "b/286084688";
+    public static final String ICON_MISSING = "b/282963545";
+    public static final String LAUNCH_SPLIT_PAIR = "b/288939273";
 
+    public static final String OVERVIEW_OVER_HOME = "b/279059025";
+    public static final String INCORRECT_HOME_STATE = "b/293191790";
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
     public static final String REQUEST_IS_EMULATE_DISPLAY_RUNNING = "is-emulate-display-running";
     public static final String REQUEST_EMULATE_PRINT_DEVICE = "emulate-print-device";
+
+    public static final String REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW = "enable-grid-only-overview";
 
     /** Logs {@link Log#d(String, String)} if {@link #sDebugTracing} is true. */
     public static void testLogD(String tag, String message) {

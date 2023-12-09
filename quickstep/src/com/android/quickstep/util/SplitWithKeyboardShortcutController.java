@@ -27,21 +27,15 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityManager;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.SystemClock;
-import android.os.UserHandle;
-import android.view.View;
 
 import androidx.annotation.BinderThread;
 
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
@@ -143,11 +137,7 @@ public class SplitWithKeyboardShortcutController {
                     .updateIconInBackground(
                             Task.from(new Task.TaskKey(runningTaskInfo), runningTaskInfo,
                                     false /* isLocked */),
-                            (task) -> {
-                                if (task.thumbnail != null) {
-                                    floatingTaskView.setIcon(task.thumbnail.thumbnail);
-                                }
-                            });
+                            (task) -> floatingTaskView.setIcon(task.icon));
             floatingTaskView.setAlpha(1);
             floatingTaskView.addStagingAnimation(anim, startingTaskRect, mTempRect,
                     false /* fadeWithThumbnail */, true /* isStagedTask */);

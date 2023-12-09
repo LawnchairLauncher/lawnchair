@@ -32,11 +32,8 @@ import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
-
-import java.util.List;
 
 /**
  * Handles the user event logging in R+.
@@ -59,6 +56,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     private InstanceId mInstanceId;
 
     protected @Nullable ActivityContext mActivityContext = null;
+    protected @Nullable Context mContext = null;
     private KeyboardStateManager mKeyboardStateManager;
 
     /**
@@ -623,6 +621,12 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User has invoked split to left half with a keyboard shortcut.")
         LAUNCHER_KEYBOARD_SHORTCUT_SPLIT_LEFT_TOP(1233),
 
+        @UiEvent(doc = "User has invoked split to right half from desktop mode.")
+        LAUNCHER_DESKTOP_MODE_SPLIT_RIGHT_BOTTOM(1412),
+
+        @UiEvent(doc = "User has invoked split to left half from desktop mode.")
+        LAUNCHER_DESKTOP_MODE_SPLIT_LEFT_TOP(1464),
+
         @UiEvent(doc = "User has collapsed the work FAB button by scrolling down in the all apps"
                 + " work A-Z list.")
         LAUNCHER_WORK_FAB_BUTTON_COLLAPSE(1276),
@@ -643,11 +647,17 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User has swiped upwards from the gesture handle to show transient taskbar.")
         LAUNCHER_TRANSIENT_TASKBAR_SHOW(1331),
 
+        @UiEvent(doc = "User has clicked an app pair and launched directly into split screen.")
+        LAUNCHER_APP_PAIR_LAUNCH(1374),
+
+        @UiEvent(doc = "User saved an app pair.")
+        LAUNCHER_APP_PAIR_SAVE(1456),
+
         @UiEvent(doc = "App launched through pending intent")
-        LAUNCHER_APP_LAUNCH_PENDING_INTENT(1394),
-        ;
+        LAUNCHER_APP_LAUNCH_PENDING_INTENT(1394)
 
         // ADD MORE
+        ;
 
         private final int mId;
 
@@ -831,6 +841,10 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public interface StatsLatencyLogger {
 
+        /**
+         * Should be in sync with:
+         * google3/wireless/android/sysui/aster/asterstats/launcher_event_processed.proto
+         */
         enum LatencyType {
             UNKNOWN(0),
             // example: launcher restart that happens via daily backup and restore
@@ -956,33 +970,32 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
-         * Sets list of {@link com.android.app.search.ResultType} for the impression event.
+         * Sets {@link com.android.app.search.ResultType} for the impression event.
          */
-        default StatsImpressionLogger withResultType(IntArray resultType) {
+        default StatsImpressionLogger withResultType(int resultType) {
             return this;
         }
 
         /**
-         * Sets list of count for each of {@link com.android.app.search.ResultType} for the
-         * impression event.
-         */
-        default StatsImpressionLogger withResultCount(IntArray resultCount) {
-            return this;
-        }
-
-        /**
-         * Sets list of boolean for each of {@link com.android.app.search.ResultType} that indicates
+         * Sets boolean for each of {@link com.android.app.search.ResultType} that indicates
          * if this result is above keyboard or not for the impression event.
          */
-        default StatsImpressionLogger withAboveKeyboard(List<Boolean> aboveKeyboard) {
+        default StatsImpressionLogger withAboveKeyboard(boolean aboveKeyboard) {
             return this;
         }
 
         /**
-         * Sets list of uid for each of {@link com.android.app.search.ResultType} that indicates
+         * Sets uid for each of {@link com.android.app.search.ResultType} that indicates
          * package name for the impression event.
          */
-        default StatsImpressionLogger withUids(IntArray uid) {
+        default StatsImpressionLogger withUid(int uid) {
+            return this;
+        }
+
+        /**
+         * Sets result source that indicates the origin of the result for the impression event.
+         */
+        default StatsImpressionLogger withResultSource(int resultSource) {
             return this;
         }
 
@@ -1031,7 +1044,9 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public KeyboardStateManager keyboardStateManager() {
         if (mKeyboardStateManager == null) {
-            mKeyboardStateManager = new KeyboardStateManager();
+            mKeyboardStateManager = new KeyboardStateManager(
+                    mContext != null ? mContext.getResources().getDimensionPixelSize(
+                            R.dimen.default_ime_height) : 0);
         }
         return mKeyboardStateManager;
     }
@@ -1067,6 +1082,7 @@ public class StatsLogManager implements ResourceBasedOverride {
         StatsLogManager manager = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
         manager.mActivityContext = ActivityContext.lookupContextNoThrow(context);
+        manager.mContext = context;
         return manager;
     }
 }

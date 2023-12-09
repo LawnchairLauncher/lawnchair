@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Appforslag er på"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Appforslag er slått av"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Foreslått app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Roter enheten"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Roter enheten for å fullføre veiledningen for navigasjon med bevegelser"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Sørg for at du sveiper fra kanten helt til høyre eller venstre"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Sørg for at du sveiper fra den høyre eller venstre kanten til midten av skjermen og slipper"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Sørg for at du sveiper fra kanten helt til høyre eller venstre."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Sørg for at du sveiper fra den høyre eller venstre kanten til midten av skjermen og slipper."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Du har lært hvordan du sveiper fra høyre for å gå tilbake. I neste trinn lærer du å bytte app."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Du har fullført bevegelsen for å gå tilbake"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Sørg for at du ikke sveiper for nær bunnen av skjermen"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Du har fullført bevegelsen for å gå tilbake."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Sørg for at du ikke sveiper for nær bunnen av skjermen."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Gå til Innstillinger for å endre tilbakebevegelsefølsomheten"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Sveip for å gå tilbake"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"For å gå tilbake til forrige skjerm, sveip fra venstre eller høyre kant til midten av skjermen."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"For å gå tilbake til den forrige skjermen, sveip med to fingre fra den venstre eller høyre kanten til midten av skjermen."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Gå tilbake"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Sveip fra venstre eller høyre kant til midten av skjermen"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Sørg for at du sveiper opp fra den nederste kanten av skjermen"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Sørg for at du ikke setter på pause før du slipper"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Sørg for at du sveiper rett opp"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Du har fullført bevegelsen for å gå til startskjermen. I neste trinn ser du hvordan du går tilbake."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Du har fullført bevegelsen for å gå til startskjermen"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Sørg for at du sveiper opp fra den nederste kanten av skjermen."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Sørg for at du ikke setter på pause før du slipper."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Sørg for at du sveiper rett opp."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Du har fullført bevegelsen for å gå til startskjermen. I neste trinn ser du hvordan du går tilbake."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Du har fullført bevegelsen for å gå til startskjermen."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Sveip for å gå til startskjermen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Sveip opp fra bunnen av skjermen. Denne bevegelsen tar deg alltid til startskjermen."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Sveip opp med to fingre fra bunnen av skjermen. Denne bevegelsen tar deg alltid til startskjermen."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Gå til startskjermen"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Sveip opp fra bunnen av skjermen"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Bra jobbet!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Sørg for at du sveiper opp fra den nederste kanten av skjermen"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Prøv å holde vinduet lenger før du slipper"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Sørg for at du sveiper rett opp, og så stopper du"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"For å gå til startskjermen, sveip opp fra bunnen av skjermen når som helst"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Sørg for at du sveiper opp fra den nederste kanten av skjermen."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prøv å holde vinduet lenger før du slipper."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Sørg for at du sveiper rett opp, og så stopper du."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Du har lært hvordan du bruker bevegelser. For å slå av bevegelser, gå til Innstillinger."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Du har fullført bevegelsen for å bytte app"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Du har fullført bevegelsen for å bytte app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Sveip for å bytte app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"For å bytte mellom apper, sveip opp fra bunnen av skjermen, hold, og slipp"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"For å bytte mellom apper, sveip opp med to fingre fra bunnen av skjermen, hold, og slipp."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Bytt app"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Sveip opp fra bunnen av skjermen, hold, og slipp"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Bra!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Ferdig"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Ferdig"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Innstillinger"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Oppgavelinjen vises"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Oppgavelinjen er skjult"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigasjonsrad"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Vis alltid oppgavelinjen"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Endre navigasjonsmodus"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Skille for oppgavelinjen"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytt til øverst/venstre"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytt til nederst/høyre"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Vis # app til.}other{Vis # apper til.}}"</string>

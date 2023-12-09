@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -79,9 +80,14 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void startHome(boolean animated) {
+    protected void handleStartHome(boolean animated) {
         mActivity.startHome();
         AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
+    }
+
+    @Override
+    protected boolean canStartHomeSafely() {
+        return mActivity.canStartHomeSafely();
     }
 
     /**
@@ -246,7 +252,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             setOverviewSelectEnabled(false);
         }
         if (finalState != OVERVIEW_SPLIT_SELECT) {
-            resetFromSplitSelectionState();
+            if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                mSplitSelectStateController.resetState();
+            } else {
+                resetFromSplitSelectionState();
+            }
         }
 
         if (isOverlayEnabled) {

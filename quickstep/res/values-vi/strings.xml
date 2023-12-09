@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Đã bật tính năng Ứng dụng đề xuất"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Tính năng Ứng dụng đề xuất bị tắt"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Ứng dụng dự đoán: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Xoay thiết bị của bạn"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Vui lòng xoay thiết bị của bạn để hoàn tất hướng dẫn thao tác bằng cử chỉ"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Hãy vuốt từ mép ngoài cùng bên phải hoặc ngoài cùng bên trái"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Hãy vuốt từ mép phải hoặc mép trái tới giữa màn hình rồi nhấc ngón tay ra"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Hãy vuốt từ mép ngoài cùng bên phải hoặc ngoài cùng bên trái."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Hãy vuốt từ mép phải hoặc mép trái tới giữa màn hình rồi thả tay ra."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Bạn đã học được cách vuốt từ mép phải để quay lại. Tiếp theo, hãy tìm hiểu cách chuyển đổi ứng dụng."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Bạn đã thực hiện xong cử chỉ quay lại"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Hãy nhớ không được vuốt quá gần phần dưới cùng của màn hình"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Bạn đã thực hiện xong cử chỉ quay lại."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Hãy nhớ không được vuốt quá gần phần cuối màn hình."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Để thay đổi độ nhạy của cử chỉ quay lại, hãy vào mục Cài đặt"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Vuốt để quay lại"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Để quay lại màn hình gần đây nhất, hãy vuốt từ mép trái hoặc mép phải tới chính giữa màn hình."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Để quay lại màn hình trước đó, hãy vuốt 2 ngón tay từ cạnh trái hoặc phải vào giữa màn hình."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Quay lại"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Hãy vuốt từ mép trái hoặc mép phải tới giữa màn hình"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Hãy vuốt lên từ mép dưới cùng của màn hình"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Hãy nhớ không được dừng trước khi nhấc ngón tay"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Hãy vuốt thẳng lên"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Bạn đã thực hiện xong cử chỉ chuyển đến Màn hình chính. Tiếp theo, hãy tìm hiểu cách quay lại."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Bạn đã thực hiện xong cử chỉ chuyển đến Màn hình chính"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Hãy vuốt lên từ mép dưới cùng của màn hình."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Hãy nhớ không được tạm dừng trước khi nhấc ngón tay."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Hãy vuốt thẳng lên."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Bạn đã thực hiện xong cử chỉ chuyển đến Màn hình chính. Tiếp theo, hãy tìm hiểu cách quay lại."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Bạn đã thực hiện xong cử chỉ chuyển đến Màn hình chính."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Vuốt để chuyển đến Màn hình chính"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Vuốt lên từ cuối màn hình. Cử chỉ này luôn đưa bạn đến Màn hình chính."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Vuốt 2 ngón tay lên từ cuối màn hình. Cử chỉ này luôn đưa bạn về Màn hình chính."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Chuyển đến màn hình chính"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Vuốt lên từ mép dưới cùng của màn hình"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Tuyệt vời!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Hãy vuốt lên từ mép dưới cùng của màn hình"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Hãy thử giữ cửa sổ lâu hơn trước khi nhấc ngón tay ra"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Hãy vuốt thẳng lên rồi tạm dừng"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Để chuyển đến màn hình chính bất cứ lúc nào, hãy vuốt lên từ cuối màn hình"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Hãy vuốt lên từ mép dưới cùng của màn hình."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hãy thử giữ cửa sổ lâu hơn trước khi thả tay ra."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Hãy vuốt thẳng lên, sau đó tạm dừng."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Bạn đã tìm hiểu cách sử dụng cử chỉ. Để tắt cử chỉ, hãy chuyển đến phần Cài đặt."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Bạn đã thực hiện xong cử chỉ chuyển đổi ứng dụng"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Bạn đã thực hiện xong cử chỉ chuyển đổi ứng dụng."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Vuốt để chuyển đổi ứng dụng"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Để chuyển đổi ứng dụng, hãy vuốt lên từ cuối màn hình, giữ rồi thả ra."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Để chuyển đổi giữa các ứng dụng, hãy vuốt lên từ cuối màn hình, giữ rồi thả ra."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Để chuyển đổi giữa các ứng dụng, hãy vuốt 2 ngón tay lên từ cuối màn hình, giữ rồi thả ra."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Chuyển đổi ứng dụng"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Vuốt lên từ mép dưới cùng của màn hình, giữ rồi nhấc ngón tay ra"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Rất tốt!"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Chuyển đổi giữa các ứng dụng"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Đã hoàn tất"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Xong"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Cài đặt"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Đã hiện thanh thao tác"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Đã ẩn thanh thao tác"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Thanh điều hướng"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Luôn hiển thị Taskbar"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Thay đổi chế độ điều hướng"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Đường phân chia Taskbar"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Chuyển lên trên cùng/sang bên trái"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Chuyển xuống dưới cùng/sang bên phải"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Hiện thêm # ứng dụng.}other{Hiện thêm # ứng dụng.}}"</string>

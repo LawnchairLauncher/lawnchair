@@ -18,9 +18,7 @@ package com.android.launcher3.secondarydisplay;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import android.content.Context;
-import android.view.View;
 
-import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.model.BgDataModel;
@@ -55,13 +53,5 @@ public final class SecondaryDisplayPredictionsImpl extends SecondaryDisplayPredi
         mActivityContext.getAppsView().getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(item.items);
-    }
-
-    @Override
-    public void setLongClickListener(ActivityAllAppsContainerView<?> appsView,
-            View.OnLongClickListener onIconLongClickListener) {
-        appsView.getFloatingHeaderView()
-                .findFixedRowByType(PredictionRowView.class)
-                .setOnIconLongClickListener(onIconLongClickListener);
     }
 }

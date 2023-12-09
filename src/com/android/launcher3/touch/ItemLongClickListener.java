@@ -67,7 +67,7 @@ public class ItemLongClickListener {
         if (!(v.getTag() instanceof ItemInfo)) return false;
 
         launcher.setWaitingForResult(null);
-        beginDrag(v, launcher, (ItemInfo) v.getTag(), launcher.getDefaultWorkspaceDragOptions());
+        beginDrag(v, launcher, (ItemInfo) v.getTag(), new DragOptions());
         return true;
     }
 

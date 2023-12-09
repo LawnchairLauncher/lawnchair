@@ -115,8 +115,8 @@ public class RecentsAnimationController {
      * {@link RecentsAnimationCallbacks#onTasksAppeared}}.
      */
     @UiThread
-    public void removeTaskTarget(@NonNull RemoteAnimationTarget target) {
-        UI_HELPER_EXECUTOR.execute(() -> mController.removeTask(target.taskId));
+    public void removeTaskTarget(int targetTaskId) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.removeTask(targetTaskId));
     }
 
     @UiThread
@@ -167,7 +167,6 @@ public class RecentsAnimationController {
                 /* event= */ "finishRecentsAnimation",
                 /* extras= */ toRecents,
                 /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
-
         // Finish not yet requested
         mFinishRequested = true;
         mFinishTargetIsLauncher = toRecents;

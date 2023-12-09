@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"個人"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"工作"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"對話"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"做筆記"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"實用資訊隨手可得"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"只要將小工具新增到主畫面，就可以直接查看資訊，不必開啟應用程式"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"輕觸即可變更小工具設定"</string>

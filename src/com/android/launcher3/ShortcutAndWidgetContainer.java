@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Trace;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         mActivity = ActivityContext.lookupContext(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
+        setClipChildren(false);
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY,
@@ -154,14 +156,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
                     mBorderSpace);
             // Center the icon/folder
             int cHeight = getCellContentHeight();
-            int cellPaddingY = dp.isScalableGrid && mContainerType == WORKSPACE
-                    ? dp.cellYPaddingPx
-                    : (int) Math.max(0, ((lp.height - cHeight) / 2f));
+            int cellPaddingY =
+                    dp.cellYPaddingPx >= 0 && mContainerType == WORKSPACE
+                            ? dp.cellYPaddingPx
+                            : (int) Math.max(0, ((lp.height - cHeight) / 2f));
 
             // No need to add padding when cell layout border spacing is present.
             boolean noPaddingX =
                     (dp.cellLayoutBorderSpacePx.x > 0 && mContainerType == WORKSPACE)
-                            || (dp.folderCellLayoutBorderSpacePx > 0 && mContainerType == FOLDER)
+                            || (dp.folderCellLayoutBorderSpacePx.x > 0 && mContainerType == FOLDER)
                             || (dp.hotseatBorderSpace > 0 && mContainerType == HOTSEAT);
             int cellPaddingX = noPaddingX
                     ? 0
@@ -181,6 +184,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Trace.beginSection("ShortcutAndWidgetConteiner#onLayout");
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -188,6 +192,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
                 layoutChild(child);
             }
         }
+        Trace.endSection();
     }
 
     /**

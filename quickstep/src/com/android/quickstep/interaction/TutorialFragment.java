@@ -100,6 +100,19 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         return fragment;
     }
 
+    @Nullable
+    @Override
+    GestureSandboxFragment recreateFragment() {
+        TutorialType tutorialType = mTutorialController == null
+                ? (mTutorialType == null
+                        ? getDefaultTutorialType() : mTutorialType)
+                : mTutorialController.mTutorialType;
+        return newInstance(tutorialType, isGestureComplete(), mFromTutorialMenu);
+    }
+
+    @NonNull
+    abstract TutorialType getDefaultTutorialType();
+
     TutorialFragment(boolean fromTutorialMenu) {
         mFromTutorialMenu = fromTutorialMenu;
     }
@@ -496,11 +509,6 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         GestureSandboxActivity activity = getGestureSandboxActivity();
 
         return activity != null ? activity.getStatsLogManager() : null;
-    }
-
-    protected boolean isRotationPromptShowing() {
-        GestureSandboxActivity activity = getGestureSandboxActivity();
-        return activity != null && activity.isRotationPromptShowing();
     }
 
     @Nullable

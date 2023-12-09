@@ -243,6 +243,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         } else {
             widgetView = new LauncherAppWidgetHostView(context);
         }
+        widgetView.setIsWidgetCachingDisabled(true);
         widgetView.setInteractionHandler(mInteractionHandler);
         widgetView.setAppWidget(appWidgetId, appWidget);
         mViews.put(appWidgetId, widgetView);

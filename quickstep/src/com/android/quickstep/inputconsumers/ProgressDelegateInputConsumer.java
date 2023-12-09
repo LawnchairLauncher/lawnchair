@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.inputconsumers;
 
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.app.animation.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.touch.BaseSwipeDetector.calculateDuration;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSITIVE;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;

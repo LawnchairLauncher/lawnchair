@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabaho"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Mga Pag-uusap"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Pagtatala"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Abot-kamay na mahalagang impormasyon"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Para makakuha ng impormasyon nang hindi nagbubukas ng mga app, puwede kang magdagdag ng mga widget sa iyong home screen"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"I-tap para baguhin ang mga setting ng widget"</string>

@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Жеке виджеттер"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Жұмыс виджеттері"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Әңгімелер"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Ескертпе жазу"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Саусақпен түртсеңіз болғаны – пайдалы ақпарат көз алдыңызда"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Қолданбаларды ашпай-ақ ақпарат алу үшін негізгі экранға тиісті виджеттерді қосыңыз."</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Виджет параметрлерін өзгерту үшін түртіңіз."</string>
@@ -101,7 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Қалта: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> не одан көп элемент бар"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тұсқағаздар"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Тұсқағаз және стиль"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"Негізгі экранды өзгерту"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Негізгі экран параметрлері"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Әкімші өшірді"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Негізгі экранды бұруға рұқсат ету"</string>
@@ -152,7 +152,7 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Енін азайту"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Биіктігін азайту"</string>
     <string name="widget_resized" msgid="9130327887929620">"Виджет өлшемінің ені <xliff:g id="NUMBER_0">%1$s</xliff:g>, биіктігі <xliff:g id="NUMBER_1">%2$s</xliff:g> болып өзгертілді"</string>
-    <string name="action_deep_shortcut" msgid="2864038805849372848">"Жылдам пәрмендер"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Таңбашалар"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Таңбашалар мен хабарландырулар"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Бас тарту"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Жабу"</string>
@@ -168,7 +168,7 @@
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Жұмыс қолданбаларынан телефон қоңырауларын, мәтіндік хабарлар немесе хабарландырулар алмайсыз."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Жұмыс қолданбаларының танымбелгілері бар және олар әкімшіңізге көрінеді."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Түсінікті"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жұмыс қолданбаларын кідірту"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жұмыс қолданбаларын тоқтата тұру"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Қайта қосу"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Сүзгі"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Телефоннан іздеу"</string>

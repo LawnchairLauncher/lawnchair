@@ -103,6 +103,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         public static final char IGNORE = 'x';
         // The cells marked by this will be filled by app icons
         public static final char ICON = 'i';
+        // The cells marked by FOLDER will be filled by folders with 27 app icons inside
+        public static final char FOLDER = 'Z';
         // Empty space
         public static final char EMPTY = '-';
         // Widget that will be saved as "main widget" for easier retrieval
@@ -139,9 +141,14 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
             return this.mType == CellType.IGNORE;
         }
 
+        boolean contains(int x, int y) {
+            return mBounds.contains(x, y);
+        }
+
         @Override
         public String toString() {
-            return "WidgetRect type = " + mType + " bounds = " + mBounds.toString();
+            return "WidgetRect type = " + mType + " x = " + getCellX() + " | y " + getCellY()
+                    + " xs = " + getSpanX() + " ys = " + getSpanY();
         }
     }
 
@@ -171,6 +178,25 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         }
     }
 
+    public static class FolderPoint {
+        public Point coord;
+        public char mType;
+
+        public FolderPoint(Point coord, char type) {
+            this.coord = coord;
+            mType = type;
+        }
+
+        /**
+         * [A-Z]: Represents a folder and number of icons in the folder is represented by
+         * the order of letter in the alphabet, A=2, B=3, C=4 ... etc.
+         */
+        public int getNumberIconsInside() {
+            return (mType - 'A') + 2;
+        }
+    }
+
+
     private HashSet<Character> mUsedWidgetTypes = new HashSet<>();
 
     static final int INFINITE = 99999;
@@ -181,6 +207,7 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     Map<Character, WidgetRect> mWidgetsMap = new HashMap<>();
 
     List<IconPoint> mIconPoints = new ArrayList<>();
+    List<FolderPoint> mFolderPoints = new ArrayList<>();
 
     WidgetRect mMain = null;
 
@@ -205,12 +232,27 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         }
     }
 
+    public boolean pointInsideRect(int x, int y, WidgetRect rect) {
+        Boolean isXInRect = x >= rect.getCellX() && x < rect.getCellX() + rect.getSpanX();
+        Boolean isYInRect = y >= rect.getCellY() && y < rect.getCellY() + rect.getSpanY();
+        return isXInRect && isYInRect;
+    }
+
+    public WidgetRect getWidgetAt(int x, int y) {
+        return mWidgetsRects.stream()
+                .filter(widgetRect -> pointInsideRect(x, y, widgetRect)).findFirst().orElse(null);
+    }
+
     public List<WidgetRect> getWidgets() {
         return mWidgetsRects;
     }
 
     public List<IconPoint> getIcons() {
         return mIconPoints;
+    }
+
+    public List<FolderPoint> getFolders() {
+        return mFolderPoints;
     }
 
     public WidgetRect getMain() {
@@ -248,6 +290,17 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
             }
             return true;
         }).collect(Collectors.toList());
+
+        // Remove overlapping folders and remove them from the board
+        mFolderPoints = mFolderPoints.stream().filter(folderPoint -> {
+            int x = folderPoint.coord.x;
+            int y = folderPoint.coord.y;
+            if (rect.contains(x, y)) {
+                mWidget[x][y] = '-';
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
     }
 
     private void removeOverlappingItems(Point p) {
@@ -263,6 +316,17 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         mIconPoints = mIconPoints.stream().filter(iconPoint -> {
             int x = iconPoint.coord.x;
             int y = iconPoint.coord.y;
+            if (p.x == x && p.y == y) {
+                mWidget[x][y] = '-';
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+
+        // Remove overlapping folders and remove them from the board
+        mFolderPoints = mFolderPoints.stream().filter(folderPoint -> {
+            int x = folderPoint.coord.x;
+            int y = folderPoint.coord.y;
             if (p.x == x && p.y == y) {
                 mWidget[x][y] = '-';
                 return false;
@@ -373,12 +437,35 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         return iconPoints;
     }
 
+    private static List<FolderPoint> getFolderPoints(char[][] board) {
+        List<FolderPoint> folderPoints = new ArrayList<>();
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[0].length; y++) {
+                if (isFolder(board[x][y])) {
+                    folderPoints.add(new FolderPoint(new Point(x, y), board[x][y]));
+                }
+            }
+        }
+        return folderPoints;
+    }
+
     public static WidgetRect getMainFromList(List<CellLayoutBoard> boards) {
         for (CellLayoutBoard board : boards) {
             WidgetRect main = board.getMain();
             if (main != null) {
                 return main;
             }
+        }
+        return null;
+    }
+
+    public static WidgetRect getWidgetIn(List<CellLayoutBoard> boards, int x, int y) {
+        for (CellLayoutBoard board : boards) {
+            WidgetRect main = board.getWidgetAt(x, y);
+            if (main != null) {
+                return main;
+            }
+            x -= board.mWidth;
         }
         return null;
     }
@@ -406,6 +493,7 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
             board.mWidgetsMap.put(widgetRect.mType, widgetRect);
         });
         board.mIconPoints = getIconPoints(board.mWidget);
+        board.mFolderPoints = getFolderPoints(board.mWidget);
         return board;
     }
 

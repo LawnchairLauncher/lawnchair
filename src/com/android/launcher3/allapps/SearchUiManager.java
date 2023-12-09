@@ -49,6 +49,14 @@ public interface SearchUiManager {
     ExtendedEditText getEditText();
 
     /**
+     * Hint to the edit text that it is about to be focused or unfocused. This can be used to start
+     * animating the edit box accordingly, e.g. after a gesture completes.
+     *
+     * @param focused true if the edit text is about to be focused, false if it will be unfocused
+     */
+    default void prepareToFocusEditText(boolean focused) {}
+
+    /**
      * Sets whether EditText background should be visible
      * @param maxAlpha defines the maximum alpha the background should animates to
      */

@@ -52,6 +52,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -93,11 +94,14 @@ public class QuickstepModelDelegate extends ModelDelegate {
     private static final boolean IS_DEBUG = false;
     private static final String TAG = "QuickstepModelDelegate";
 
-    private final PredictorState mAllAppsState =
+    @VisibleForTesting
+    final PredictorState mAllAppsState =
             new PredictorState(CONTAINER_PREDICTION, "all_apps_predictions");
-    private final PredictorState mHotseatState =
+    @VisibleForTesting
+    final PredictorState mHotseatState =
             new PredictorState(CONTAINER_HOTSEAT_PREDICTION, "hotseat_predictions");
-    private final PredictorState mWidgetsRecommendationState =
+    @VisibleForTesting
+    final PredictorState mWidgetsRecommendationState =
             new PredictorState(CONTAINER_WIDGETS_PREDICTION, "widgets_prediction");
 
     private final InvariantDeviceProfile mIDP;
@@ -348,18 +352,36 @@ public class QuickstepModelDelegate extends ModelDelegate {
                         .build()));
 
         // TODO: get bundle
-        registerPredictor(mHotseatState, apm.createAppPredictionSession(
-                new AppPredictionContext.Builder(context)
-                        .setUiSurface("hotseat")
-                        .setPredictedTargetCount(mIDP.numDatabaseHotseatIcons)
-                        .setExtras(convertDataModelToAppTargetBundle(context, mDataModel))
-                        .build()));
+        registerHotseatPredictor(apm, context);
 
         registerWidgetsPredictor(apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(context)
                         .setUiSurface("widgets")
                         .setExtras(getBundleForWidgetsOnWorkspace(context, mDataModel))
                         .setPredictedTargetCount(NUM_OF_RECOMMENDED_WIDGETS_PREDICATION)
+                        .build()));
+    }
+
+    @WorkerThread
+    private void recreateHotseatPredictor() {
+        mHotseatState.destroyPredictor();
+        if (!mActive) {
+            return;
+        }
+        Context context = mApp.getContext();
+        AppPredictionManager apm = context.getSystemService(AppPredictionManager.class);
+        if (apm == null) {
+            return;
+        }
+        registerHotseatPredictor(apm, context);
+    }
+
+    private void registerHotseatPredictor(AppPredictionManager apm, Context context) {
+        registerPredictor(mHotseatState, apm.createAppPredictionSession(
+                new AppPredictionContext.Builder(context)
+                        .setUiSurface("hotseat")
+                        .setPredictedTargetCount(mIDP.numDatabaseHotseatIcons)
+                        .setExtras(convertDataModelToAppTargetBundle(context, mDataModel))
                         .build()));
     }
 
@@ -393,7 +415,8 @@ public class QuickstepModelDelegate extends ModelDelegate {
         mWidgetsRecommendationState.predictor.requestPredictionUpdate();
     }
 
-    private void onAppTargetEvent(AppTargetEvent event, int client) {
+    @VisibleForTesting
+    void onAppTargetEvent(AppTargetEvent event, int client) {
         PredictorState state;
         switch(client) {
             case CONTAINER_PREDICTION:
@@ -411,6 +434,13 @@ public class QuickstepModelDelegate extends ModelDelegate {
             state.predictor.notifyAppTargetEvent(event);
             Log.d(TAG, "notifyAppTargetEvent action=" + event.getAction()
                     + " launchLocation=" + event.getLaunchLocation());
+            if (state == mHotseatState
+                    && (event.getAction() == AppTargetEvent.ACTION_PIN
+                            || event.getAction() == AppTargetEvent.ACTION_UNPIN)) {
+                // Recreate hot seat predictor when we need to query for hot seat due to pin or
+                // unpin app icons.
+                recreateHotseatPredictor();
+            }
         }
     }
 

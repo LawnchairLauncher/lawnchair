@@ -36,13 +36,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
@@ -65,7 +63,6 @@ public class PredictionRowView<T extends Context & ActivityContext>
     private FloatingHeaderView mParent;
 
     private boolean mPredictionsEnabled = false;
-    private OnLongClickListener mOnIconLongClickListener = ItemLongClickListener.INSTANCE_ALL_APPS;
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -106,22 +103,12 @@ public class PredictionRowView<T extends Context & ActivityContext>
                 mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);
             }
         }
-
-        // Set the predicted row in All Apps' text line to 1.
-        if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
-                || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
-            for (int i = 0; i < getChildCount(); i++) {
-                BubbleTextView icon = (BubbleTextView) getChildAt(i);
-                icon.setMaxLines(1);
-            }
-        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(getExpectedHeight(),
                 MeasureSpec.EXACTLY));
-        updateVisibility();
     }
 
     @Override
@@ -185,15 +172,6 @@ public class PredictionRowView<T extends Context & ActivityContext>
         applyPredictionApps();
     }
 
-    /**
-     * Sets the long click listener for predictions for any future predictions.
-     *
-     * Existing predictions in the container are not updated with this new callback.
-     */
-    public void setOnIconLongClickListener(OnLongClickListener onIconLongClickListener) {
-        mOnIconLongClickListener = onIconLongClickListener;
-    }
-
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         mNumPredictedAppsPerRow = dp.numShownAllAppsColumns;
@@ -209,9 +187,9 @@ public class PredictionRowView<T extends Context & ActivityContext>
             LayoutInflater inflater = mActivityContext.getAppsView().getLayoutInflater();
             while (getChildCount() < mNumPredictedAppsPerRow) {
                 BubbleTextView icon = (BubbleTextView) inflater.inflate(
-                        R.layout.all_apps_icon, this, false);
+                        R.layout.all_apps_prediction_row_icon, this, false);
                 icon.setOnClickListener(mActivityContext.getItemOnClickListener());
-                icon.setOnLongClickListener(mOnIconLongClickListener);
+                icon.setOnLongClickListener(mActivityContext.getAllAppsItemLongClickListener());
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mFocusHelper);
 

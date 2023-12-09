@@ -47,10 +47,9 @@
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Ryd teksten i søgefeltet"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"Der er ingen tilgængelige widgets eller genveje"</string>
     <string name="no_search_results" msgid="3787956167293097509">"Der blev ikke fundet nogen widgets eller genveje"</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personlig"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personlige"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Arbejde"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Samtaler"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Notetagning"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Nyttige oplysninger lige ved hånden"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Hvis du vil have oplysninger uden at åbne apps, kan du føje widgets til din startskærm"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tryk for at ændre widgetindstillinger"</string>
@@ -101,7 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> eller flere elementer"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Baggrunde"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Baggrund og stil"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"Rediger startskærm"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Indst. for startskærm"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Deaktiveret af din administrator"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Tillad rotation af startskærmen"</string>

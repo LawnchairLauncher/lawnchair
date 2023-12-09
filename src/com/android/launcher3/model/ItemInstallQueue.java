@@ -286,7 +286,6 @@ public class ItemInstallQueue {
 
                     final WorkspaceItemInfo si = new WorkspaceItemInfo();
                     si.user = user;
-                    si.itemType = ITEM_TYPE_APPLICATION;
 
                     LauncherActivityInfo lai;
                     boolean usePackageIcon = laiList.isEmpty();

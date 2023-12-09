@@ -29,6 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
@@ -177,14 +178,15 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     public void testDragIconToPage3() {
         Workspace workspace = mLauncher.getWorkspace();
 
-        workspace.dragIcon(workspace.getHotseatAppIcon("Phone"), 3);
+        // b/299522368 sometimes the phone app is not present in the hotseat.
+        workspace.dragIcon(workspace.getHotseatAppIcon("Chrome"), 3);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
             assertItemsOnPage(launcher, 0, "Play Store", "Maps");
             assertPageEmpty(launcher, 1);
             assertPageEmpty(launcher, 2);
-            assertItemsOnPage(launcher, 3, "Phone");
+            assertItemsOnPage(launcher, 3, "Chrome");
         });
     }
 

@@ -103,8 +103,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
                 if (mState == STATE_INACTIVE) {
                     int pointerIndex = ev.getActionIndex();
                     if (mDeviceState.getRotationTouchHelper().isInSwipeUpTouchRegion(ev,
-                            pointerIndex, mGestureState.getActivityInterface())
-                            && mDelegate.allowInterceptByParent()) {
+                            pointerIndex) && mDelegate.allowInterceptByParent()) {
                         setActive(ev);
 
                         mActivePointerId = ev.getPointerId(pointerIndex);
@@ -152,5 +151,10 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
         if (mState != STATE_ACTIVE) {
             mDelegate.onMotionEvent(ev);
         }
+    }
+
+    @Override
+    protected String getDelegatorName() {
+        return "AccessibilityInputConsumer";
     }
 }

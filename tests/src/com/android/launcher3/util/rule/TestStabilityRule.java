@@ -17,6 +17,8 @@ package com.android.launcher3.util.rule;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static org.junit.Assume.assumeTrue;
+
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
@@ -69,12 +71,9 @@ public class TestStabilityRule implements TestRule {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    if ((stability.flavors() & getRunFlavor()) != 0) {
-                        Log.d(TAG, "Running " + description.getDisplayName());
-                        base.evaluate();
-                    } else {
-                        Log.d(TAG, "Skipping " + description.getDisplayName());
-                    }
+                    assumeTrue("Ignoring the test due to @Stability annotation",
+                            (stability.flavors() & getRunFlavor()) != 0);
+                    base.evaluate();
                 }
             };
         } else {

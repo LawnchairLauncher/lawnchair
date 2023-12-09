@@ -22,11 +22,16 @@ import android.graphics.Rect
 import android.util.DisplayMetrics
 import android.view.Surface
 import androidx.test.core.app.ApplicationProvider
+import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
+import java.io.BufferedReader
+import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
 import org.junit.After
@@ -154,41 +159,55 @@ abstract class AbstractDeviceProfileTest {
     }
 
     protected fun initializeVarsForTwoPanel(
-        deviceTabletSpec: DeviceSpec,
-        deviceSpec: DeviceSpec,
+        deviceSpecUnfolded: DeviceSpec,
+        deviceSpecFolded: DeviceSpec,
         isLandscape: Boolean = false,
-        isGestureMode: Boolean = true
+        isGestureMode: Boolean = true,
+        isFolded: Boolean = false
     ) {
-        val (tabletNaturalX, tabletNaturalY) = deviceTabletSpec.naturalSize
-        val tabletWindowsBounds =
-            tabletWindowsBounds(deviceTabletSpec, tabletNaturalX, tabletNaturalY)
-        val tabletDisplayInfo =
+        val (unfoldedNaturalX, unfoldedNaturalY) = deviceSpecUnfolded.naturalSize
+        val unfoldedWindowsBounds =
+            tabletWindowsBounds(deviceSpecUnfolded, unfoldedNaturalX, unfoldedNaturalY)
+        val unfoldedDisplayInfo =
             CachedDisplayInfo(
-                Point(tabletNaturalX, tabletNaturalY),
+                Point(unfoldedNaturalX, unfoldedNaturalY),
                 Surface.ROTATION_0,
                 Rect(0, 0, 0, 0)
             )
 
-        val (phoneNaturalX, phoneNaturalY) = deviceSpec.naturalSize
-        val phoneWindowsBounds =
-            phoneWindowsBounds(deviceSpec, isGestureMode, phoneNaturalX, phoneNaturalY)
-        val phoneDisplayInfo =
+        val (foldedNaturalX, foldedNaturalY) = deviceSpecFolded.naturalSize
+        val foldedWindowsBounds =
+            phoneWindowsBounds(deviceSpecFolded, isGestureMode, foldedNaturalX, foldedNaturalY)
+        val foldedDisplayInfo =
             CachedDisplayInfo(
-                Point(phoneNaturalX, phoneNaturalY),
+                Point(foldedNaturalX, foldedNaturalY),
                 Surface.ROTATION_0,
                 Rect(0, 0, 0, 0)
             )
 
         val perDisplayBoundsCache =
-            mapOf(tabletDisplayInfo to tabletWindowsBounds, phoneDisplayInfo to phoneWindowsBounds)
+            mapOf(
+                unfoldedDisplayInfo to unfoldedWindowsBounds,
+                foldedDisplayInfo to foldedWindowsBounds
+            )
 
-        initializeCommonVars(
-            perDisplayBoundsCache,
-            tabletDisplayInfo,
-            rotation = if (isLandscape) Surface.ROTATION_0 else Surface.ROTATION_90,
-            isGestureMode,
-            densityDpi = deviceTabletSpec.densityDpi
-        )
+        if (isFolded) {
+            initializeCommonVars(
+                perDisplayBoundsCache = perDisplayBoundsCache,
+                displayInfo = foldedDisplayInfo,
+                rotation = if (isLandscape) Surface.ROTATION_90 else Surface.ROTATION_0,
+                isGestureMode = isGestureMode,
+                densityDpi = deviceSpecFolded.densityDpi
+            )
+        } else {
+            initializeCommonVars(
+                perDisplayBoundsCache = perDisplayBoundsCache,
+                displayInfo = unfoldedDisplayInfo,
+                rotation = if (isLandscape) Surface.ROTATION_0 else Surface.ROTATION_90,
+                isGestureMode = isGestureMode,
+                densityDpi = deviceSpecUnfolded.densityDpi
+            )
+        }
     }
 
     private fun phoneWindowsBounds(
@@ -196,7 +215,7 @@ abstract class AbstractDeviceProfileTest {
         isGestureMode: Boolean,
         naturalX: Int,
         naturalY: Int
-    ): Array<WindowBounds> {
+    ): List<WindowBounds> {
         val buttonsNavHeight = Utilities.dpToPx(48f, deviceSpec.densityDpi)
 
         val rotation0Insets =
@@ -231,7 +250,7 @@ abstract class AbstractDeviceProfileTest {
                 if (isGestureMode) deviceSpec.gesturePx else 0
             )
 
-        return arrayOf(
+        return listOf(
             WindowBounds(Rect(0, 0, naturalX, naturalY), rotation0Insets, Surface.ROTATION_0),
             WindowBounds(Rect(0, 0, naturalY, naturalX), rotation90Insets, Surface.ROTATION_90),
             WindowBounds(Rect(0, 0, naturalX, naturalY), rotation180Insets, Surface.ROTATION_180),
@@ -243,11 +262,11 @@ abstract class AbstractDeviceProfileTest {
         deviceSpec: DeviceSpec,
         naturalX: Int,
         naturalY: Int
-    ): Array<WindowBounds> {
+    ): List<WindowBounds> {
         val naturalInsets = Rect(0, deviceSpec.statusBarNaturalPx, 0, 0)
         val rotatedInsets = Rect(0, deviceSpec.statusBarRotatedPx, 0, 0)
 
-        return arrayOf(
+        return listOf(
             WindowBounds(Rect(0, 0, naturalX, naturalY), naturalInsets, Surface.ROTATION_0),
             WindowBounds(Rect(0, 0, naturalY, naturalX), rotatedInsets, Surface.ROTATION_90),
             WindowBounds(Rect(0, 0, naturalX, naturalY), naturalInsets, Surface.ROTATION_180),
@@ -256,7 +275,7 @@ abstract class AbstractDeviceProfileTest {
     }
 
     private fun initializeCommonVars(
-        perDisplayBoundsCache: Map<CachedDisplayInfo, Array<WindowBounds>>,
+        perDisplayBoundsCache: Map<CachedDisplayInfo, List<WindowBounds>>,
         displayInfo: CachedDisplayInfo,
         rotation: Int,
         isGestureMode: Boolean = true,
@@ -286,5 +305,28 @@ abstract class AbstractDeviceProfileTest {
         val info = DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache)
         whenever(displayController.info).thenReturn(info)
         whenever(displayController.isTransientTaskbar).thenReturn(isGestureMode)
+    }
+
+    /** Create a new dump of DeviceProfile, saves to a file in the device and returns it */
+    protected fun dump(context: Context, dp: DeviceProfile, fileName: String): String {
+        val stringWriter = StringWriter()
+        PrintWriter(stringWriter).use { dp.dump(context, "", it) }
+        return stringWriter.toString().also { content -> writeToDevice(context, fileName, content) }
+    }
+
+    /** Read a file from assets/ and return it as a string */
+    protected fun readDumpFromAssets(context: Context, fileName: String): String =
+        context.assets.open("dumpTests/$fileName").bufferedReader().use(BufferedReader::readText)
+
+    private fun writeToDevice(context: Context, fileName: String, content: String) {
+        File(context.getDir("dumpTests", Context.MODE_PRIVATE), fileName).writeText(content)
+    }
+
+    protected fun Float.dpToPx(): Float {
+        return ResourceUtils.pxFromDp(this, context!!.resources.displayMetrics).toFloat()
+    }
+
+    protected fun Int.dpToPx(): Int {
+        return ResourceUtils.pxFromDp(this.toFloat(), context!!.resources.displayMetrics)
     }
 }

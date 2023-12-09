@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
 
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
+import static com.android.launcher3.Utilities.allowBGLaunch;
 import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_PENDING_INTENT;
@@ -38,7 +39,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Process;
-import android.os.StrictMode;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.Display;
@@ -239,6 +239,11 @@ public interface ActivityContext {
         };
     }
 
+    /** Long-click callback used for All Apps items. */
+    default View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return v -> false;
+    }
+
     @Nullable
     default PopupDataProvider getPopupDataProvider() {
         return null;
@@ -338,6 +343,12 @@ public interface ActivityContext {
             return null;
         }
 
+        boolean isShortcut = (item instanceof WorkspaceItemInfo)
+                && item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                && !((WorkspaceItemInfo) item).isPromise();
+        if (isShortcut && GO_DISABLE_WIDGETS) {
+            return null;
+        }
         ActivityOptionsWrapper options = v != null ? getActivityLaunchOptions(v, item)
                 : makeDefaultActivityOptions(item != null && item.animationType == DEFAULT_NO_ICON
                         ? SPLASH_SCREEN_STYLE_SOLID_COLOR : -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */);
@@ -349,13 +360,11 @@ public interface ActivityContext {
             intent.setSourceBounds(Utilities.getViewBounds(v));
         }
         try {
-            boolean isShortcut = (item instanceof WorkspaceItemInfo)
-                    && (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                    || item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((WorkspaceItemInfo) item).isPromise();
             if (isShortcut) {
-                // Shortcuts need some special checks due to legacy reasons.
-                startShortcutIntentSafely(intent, optsBundle, item);
+                String id = ((WorkspaceItemInfo) item).getDeepShortcutId();
+                String packageName = intent.getPackage();
+                ((Context) this).getSystemService(LauncherApps.class).startShortcut(
+                        packageName, id, intent.getSourceBounds(), optsBundle, user);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
                 context.startActivity(intent, optsBundle);
@@ -410,8 +419,7 @@ public interface ActivityContext {
             }
         }
         ActivityOptions options =
-                ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-
+                allowBGLaunch(ActivityOptions.makeClipRevealAnimation(v, left, top, width, height));
         options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
@@ -423,60 +431,11 @@ public interface ActivityContext {
      * Creates a default activity option and we do not want association with any launcher element.
      */
     default ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
-        ActivityOptions options = ActivityOptions.makeBasic();
+        ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
         if (Utilities.ATLEAST_T) {
             options.setSplashScreenStyle(splashScreenStyle);
         }
         return new ActivityOptionsWrapper(options, new RunnableList());
-    }
-
-    /**
-     * Safely launches an intent for a shortcut.
-     *
-     * @param intent Intent to start.
-     * @param optsBundle Optional launch arguments.
-     * @param info Shortcut information.
-     */
-    default void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
-        try {
-            StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
-            try {
-                // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
-                // containing file Uri's would cause a crash as penaltyDeathOnFileUriExposure
-                // is enabled by default on NYC.
-                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-                        .penaltyLog().build());
-
-                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
-                    String packageName = intent.getPackage();
-                    startShortcut(packageName, id, intent.getSourceBounds(), optsBundle, info.user);
-                } else {
-                    // Could be launching some bookkeeping activity
-                    ((Context) this).startActivity(intent, optsBundle);
-                }
-            } finally {
-                StrictMode.setVmPolicy(oldPolicy);
-            }
-        } catch (SecurityException e) {
-            throw e;
-        }
-    }
-
-    /**
-     * A wrapper around the platform method with Launcher specific checks.
-     */
-    default void startShortcut(String packageName, String id, Rect sourceBounds,
-            Bundle startActivityOptions, UserHandle user) {
-        if (GO_DISABLE_WIDGETS) {
-            return;
-        }
-        try {
-            ((Context) this).getSystemService(LauncherApps.class).startShortcut(packageName, id,
-                    sourceBounds, startActivityOptions, user);
-        } catch (SecurityException | IllegalStateException e) {
-            Log.e(TAG, "Failed to start shortcut", e);
-        }
     }
 
     default CellPosMapper getCellPosMapper() {

@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Лични"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Служебни"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Разговори"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Водене на бележки"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Лесен достъп до полезна информация"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"За да получавате информация, без да отваряте приложенията, можете да добавите приспособления към началния екран"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Докоснете, за да промените настройките на приспособлението"</string>

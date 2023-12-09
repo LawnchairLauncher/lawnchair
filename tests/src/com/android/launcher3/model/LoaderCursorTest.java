@@ -30,7 +30,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.ICON;
 import static com.android.launcher3.LauncherSettings.Favorites.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.OPTIONS;
 import static com.android.launcher3.LauncherSettings.Favorites.PROFILE_ID;
 import static com.android.launcher3.LauncherSettings.Favorites.RANK;
@@ -158,13 +158,13 @@ public class LoaderCursorTest {
 
     @Test
     public void loadSimpleShortcut() {
-        initCursor(ITEM_TYPE_SHORTCUT, "my-shortcut");
+        initCursor(ITEM_TYPE_DEEP_SHORTCUT, "my-shortcut");
         assertTrue(mLoaderCursor.moveToNext());
 
         WorkspaceItemInfo info = mLoaderCursor.loadSimpleWorkspaceItem();
         assertTrue(mApp.getIconCache().isDefaultIcon(info.bitmap, info.user));
         assertEquals("my-shortcut", info.title);
-        assertEquals(ITEM_TYPE_SHORTCUT, info.itemType);
+        assertEquals(ITEM_TYPE_DEEP_SHORTCUT, info.itemType);
     }
 
     @Test
