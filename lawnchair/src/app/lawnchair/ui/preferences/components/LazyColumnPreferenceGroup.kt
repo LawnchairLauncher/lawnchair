@@ -31,13 +31,13 @@ import androidx.compose.ui.unit.dp
 
 fun LazyListScope.preferenceGroupItems(
     count: Int,
-    heading: (@Composable () -> String)? = null,
     isFirstChild: Boolean,
-    key: ((index: Int) -> Any)? = null,
-    contentType: (index: Int) -> Any? = { null },
     showDividers: Boolean = true,
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
+    heading: (@Composable () -> String)? = null,
+    key: ((index: Int) -> Any)? = null,
+    contentType: (index: Int) -> Any? = { null },
     itemContent: @Composable LazyItemScope.(index: Int) -> Unit,
 ) {
     item {
@@ -58,24 +58,24 @@ fun LazyListScope.preferenceGroupItems(
 
 inline fun <T> LazyListScope.preferenceGroupItems(
     items: List<T>,
-    noinline heading: (@Composable () -> String)? = null,
     isFirstChild: Boolean,
-    noinline key: ((index: Int, item: T) -> Any)? = null,
-    noinline contentType: (index: Int) -> Any? = { null },
     showDividers: Boolean = true,
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
+    noinline heading: (@Composable () -> String)? = null,
+    noinline key: ((index: Int, item: T) -> Any)? = null,
+    noinline contentType: (index: Int) -> Any? = { null },
     crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit,
 ) {
     preferenceGroupItems(
         items.size,
-        heading,
         isFirstChild,
-        if (key != null) { index: Int -> key(index, items[index]) } else null,
-        contentType = contentType,
         showDividers = showDividers,
         dividerStartIndent = dividerStartIndent,
         dividerEndIndent = dividerEndIndent,
+        heading,
+        key = if (key != null) { index: Int -> key(index, items[index]) } else null,
+        contentType = contentType,
     ) {
         itemContent(it, items[it])
     }

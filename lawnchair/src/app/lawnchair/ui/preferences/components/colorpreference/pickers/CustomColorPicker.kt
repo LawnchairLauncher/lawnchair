@@ -79,8 +79,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomColorPicker(
-    modifier: Modifier = Modifier,
     selectedColor: Int,
+    modifier: Modifier = Modifier,
     onSelect: (Int) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -208,8 +208,8 @@ fun CustomColorPicker(
 
 @Composable
 private fun HexColorPicker(
-    modifier: Modifier = Modifier,
     textFieldValue: TextFieldValue,
+    modifier: Modifier = Modifier,
     onTextFieldValueChange: (TextFieldValue) -> Unit,
 ) {
     val context = LocalContext.current
@@ -353,9 +353,9 @@ private fun HsvColorPicker(
 @Composable
 private fun RgbColorPicker(
     selectedColor: Int,
-    selectedColorCompose: Color = Color(selectedColor),
     onSelectedColorChange: () -> Unit,
     onSliderValuesChange: (Int) -> Unit,
+    selectedColorCompose: Color = Color(selectedColor),
 ) {
     var red by remember { mutableIntStateOf(selectedColor.red) }
     var green by remember { mutableIntStateOf(selectedColor.green) }

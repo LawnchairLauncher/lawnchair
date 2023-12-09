@@ -70,6 +70,7 @@ import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.collections.immutable.toPersistentList
 
 data class IconPackInfo(
     val name: String,
@@ -190,7 +191,7 @@ fun IconPackPreferences() {
                             value = it,
                             label = { stringResource(id = it.labelResourceId) },
                         )
-                    },
+                    }.toPersistentList(),
                     value = ThemedIconsState.getForSettings(
                         themedIcons = themedIconsAdapter.state.value,
                         drawerThemedIcons = drawerThemedIconsEnabled,
@@ -228,7 +229,6 @@ fun IconPackGrid(
     val padding = 12.dp
     var iconPacksLocal = iconPacks
     val themedIconPacksName = themedIconPacks.map { it.name }
-    val modifier = Modifier.padding(bottom = 6.dp, top = 6.dp)
 
     if (isThemedIconPack) {
         iconPacksLocal = if (drawerThemedIcons) {
@@ -259,7 +259,7 @@ fun IconPackGrid(
                 state = lazyListState,
                 horizontalArrangement = Arrangement.spacedBy(space = padding),
                 contentPadding = PaddingValues(horizontal = padding),
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.padding(bottom = 6.dp, top = 6.dp).fillMaxWidth(),
             ) {
                 itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
                     IconPackItem(
@@ -300,7 +300,7 @@ private fun getIconPackItemWidth(
 fun IconPackItem(
     item: IconPackInfo,
     selected: Boolean,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Surface(

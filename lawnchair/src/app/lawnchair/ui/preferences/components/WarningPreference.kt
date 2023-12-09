@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun WarningPreference(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     PreferenceTemplate(
         modifier = modifier,

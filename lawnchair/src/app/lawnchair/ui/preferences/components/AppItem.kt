@@ -75,7 +75,6 @@ fun AppItemPlaceholder(
     widget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(
-        widget = widget,
         icon = {
             Spacer(
                 modifier = Modifier
@@ -86,25 +85,27 @@ fun AppItemPlaceholder(
                     ),
             )
         },
-    ) {
-        Spacer(
-            modifier = Modifier
-                .width(120.dp)
-                .height(24.dp)
-                .placeholder(
-                    visible = true,
-                    highlight = PlaceholderHighlight.fade(),
-                ),
-        )
-    }
+        title = {
+            Spacer(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(24.dp)
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.fade(),
+                    ),
+            )
+        },
+        widget = widget,
+    )
 }
 
 @Composable
 private fun AppItemLayout(
-    modifier: Modifier = Modifier,
-    widget: (@Composable () -> Unit)? = null,
     icon: @Composable () -> Unit,
     title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    widget: (@Composable () -> Unit)? = null,
 ) {
     PreferenceTemplate(
         title = title,

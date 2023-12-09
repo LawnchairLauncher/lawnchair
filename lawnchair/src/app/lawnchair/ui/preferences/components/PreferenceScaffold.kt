@@ -34,8 +34,8 @@ import com.google.accompanist.insets.ui.Scaffold
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreferenceScaffold(
-    backArrowVisible: Boolean = true,
     label: String,
+    backArrowVisible: Boolean = true,
     actions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = { BottomSpacer() },
     content: @Composable (PaddingValues) -> Unit,

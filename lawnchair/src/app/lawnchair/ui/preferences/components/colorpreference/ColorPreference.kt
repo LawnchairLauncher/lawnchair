@@ -37,7 +37,9 @@ import com.patrykmichalik.opto.domain.Preference
  * @see ColorSelection
  */
 @Composable
-fun ColorPreference(preference: Preference<ColorOption, String, Preferences.Key<String>>) {
+fun ColorPreference(
+    preference: Preference<ColorOption, String, Preferences.Key<String>>,
+) {
     val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
     val model = modelList[preference.key.name]
     val adapter: PreferenceAdapter<ColorOption> = model.prefObject.getAdapter()

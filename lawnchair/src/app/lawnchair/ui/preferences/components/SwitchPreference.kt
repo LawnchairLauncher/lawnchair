@@ -36,8 +36,8 @@ fun SwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
     description: String? = null,
-    onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
+    onClick: (() -> Unit)? = null,
 ) {
     val checked = adapter.state.value
     SwitchPreference(
@@ -56,8 +56,8 @@ fun SwitchPreference(
     onCheckedChange: (Boolean) -> Unit,
     label: String,
     description: String? = null,
-    onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
+    onClick: (() -> Unit)? = null,
 ) {
     PreferenceTemplate(
         modifier = Modifier.clickable(enabled = enabled) {

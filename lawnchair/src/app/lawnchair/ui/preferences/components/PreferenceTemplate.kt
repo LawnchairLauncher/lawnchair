@@ -37,19 +37,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.addIf
 
+@Suppress("ktlint:compose:modifier-not-used-at-root")
 @Composable
 fun PreferenceTemplate(
+    title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
-    title: @Composable () -> Unit,
-    description: @Composable () -> Unit = {},
-    startWidget: (@Composable () -> Unit)? = null,
-    endWidget: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
     applyPaddings: Boolean = true,
     horizontalPadding: Dp = 16.dp,
     verticalPadding: Dp = 16.dp,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    description: @Composable () -> Unit = {},
+    startWidget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
 ) {
     val contentAlphaDisabled = ContentAlpha.disabled
     Column {

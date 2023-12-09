@@ -78,7 +78,10 @@ fun Acknowledgements() {
 }
 
 @Composable
-fun OssLibraryItem(ossLibrary: OssLibrary, index: Int) {
+fun OssLibraryItem(
+    ossLibrary: OssLibrary,
+    index: Int,
+) {
     val navController = LocalNavController.current
     val destination = subRoute(name = "$index")
 
@@ -96,7 +99,9 @@ fun OssLibraryItem(ossLibrary: OssLibrary, index: Int) {
 }
 
 @Composable
-fun NoticePage(index: Int) {
+fun NoticePage(
+    index: Int,
+) {
     val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
     val ossLibrary = ossLibraries.getOrNull(index)
     val dataState = ossLibrary?.let { loadNotice(ossLibrary = it) }

@@ -11,8 +11,8 @@ fun FlagSwitchPreference(
     mask: Int,
     label: String,
     description: String? = null,
-    onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
+    onClick: (() -> Unit)? = null,
 ) {
     SwitchPreference(
         checked = flags.hasFlag(mask),
