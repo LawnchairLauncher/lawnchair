@@ -36,8 +36,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
 import android.graphics.Rect;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -64,7 +62,6 @@ public class ActivityManagerWrapper {
     private static final String TAG = "ActivityManagerWrapper";
     private static final int NUM_RECENT_ACTIVITIES_REQUEST = 3;
     private static final ActivityManagerWrapper sInstance = new ActivityManagerWrapper();
-    private static final boolean atleastQ = VERSION.SDK_INT >= VERSION_CODES.Q;
 
     // Should match the values in PhoneWindowManager
     public static final String CLOSE_SYSTEM_WINDOWS_REASON_RECENTS = "recentapps";
@@ -73,10 +70,8 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-    private final ActivityTaskManager mAtm;
-    private ActivityManagerWrapper() {
-        mAtm = atleastQ ? ActivityTaskManager.getInstance() : null;
-    }
+    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
+    private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
         return sInstance;
@@ -108,7 +103,6 @@ public class ActivityManagerWrapper {
      */
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
-        if (mAtm == null) return null;
         List<ActivityManager.RunningTaskInfo> tasks =
                 mAtm.getTasks(1, filterOnlyVisibleRecents);
         if (tasks.isEmpty()) {
@@ -136,7 +130,6 @@ public class ActivityManagerWrapper {
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents,
             int displayId) {
         // Note: The set of running tasks from the system is ordered by recency
-        if (mAtm == null) return null;
         List<ActivityManager.RunningTaskInfo> tasks =
                 mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST
                     /* keepInExtras= */);
@@ -352,16 +345,10 @@ public class ActivityManagerWrapper {
     public boolean supportsFreeformMultiWindow(Context context) {
         final boolean freeformDevOption = Settings.Global.getInt(context.getContentResolver(),
                 Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0;
-        if (atleastQ) {
-            return ActivityTaskManager.supportsMultiWindow(context)
-                    && (context.getPackageManager().hasSystemFeature(
-                    PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)
-                    || freeformDevOption);
-        } else {
-            return context.getPackageManager().hasSystemFeature(
-                    PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)
-                    || freeformDevOption;
-        }
+        return ActivityTaskManager.supportsMultiWindow(context)
+                && (context.getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)
+                || freeformDevOption);
     }
 
     /**
