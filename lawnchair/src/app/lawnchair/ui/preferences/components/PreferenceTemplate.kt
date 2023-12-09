@@ -55,7 +55,7 @@ fun PreferenceTemplate(
     Column {
         Row(
             verticalAlignment = verticalAlignment,
-            modifier = Modifier
+            modifier = modifier
                 .height(IntrinsicSize.Min)
                 .fillMaxWidth()
                 .addIf(applyPaddings) {
