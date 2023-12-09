@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -27,9 +28,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.getSteps
-import app.lawnchair.ui.preferences.components.snapSliderValue
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.controls.getSteps
+import app.lawnchair.ui.preferences.components.controls.snapSliderValue
 import com.android.launcher3.R
 import kotlin.math.roundToInt
 
@@ -59,7 +60,7 @@ fun RgbColorSlider(
                 Text(text = label)
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides androidx.compose.material.MaterialTheme.colors.onBackground,
+                    LocalContentColor provides MaterialTheme.colors.onBackground,
                 ) {
                     val valueText = snapSliderValue(rgbRange.start, value.toFloat(), step)
                         .roundToInt().toString()
@@ -137,7 +138,7 @@ fun HsbColorSlider(
                 Text(text = label)
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides androidx.compose.material.MaterialTheme.colors.onBackground,
+                    LocalContentColor provides MaterialTheme.colors.onBackground,
                 ) {
                     val valueText = snapSliderValue(range.start, value, step)
                     Text(

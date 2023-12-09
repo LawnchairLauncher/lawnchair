@@ -39,7 +39,7 @@ import androidx.core.content.FileProvider
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.AlertBottomSheetContent
-import app.lawnchair.ui.preferences.openAppInfo
+import app.lawnchair.ui.preferences.destinations.openAppInfo
 import app.lawnchair.util.restartLauncher
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.ComposeBottomSheet

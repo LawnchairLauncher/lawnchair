@@ -10,7 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.preferences.components.ClickableIcon
+import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 
 @Composable
 fun OverflowMenu(

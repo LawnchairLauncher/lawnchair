@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences
 
 import app.lawnchair.ui.preferences.about.acknowledgements.OssLibrary
+import app.lawnchair.ui.preferences.destinations.IconPackInfo
 import kotlinx.coroutines.flow.StateFlow
 
 sealed interface PreferenceInteractor {

@@ -27,7 +27,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.patrykmichalik.opto.domain.Preference
 
 /**

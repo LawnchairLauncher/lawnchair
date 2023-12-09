@@ -29,9 +29,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.components.BottomSpacer
-import app.lawnchair.ui.preferences.components.Chip
-import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.layout.BottomSpacer
+import app.lawnchair.ui.preferences.components.layout.Chip
+import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.CustomColorPicker
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsList
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
