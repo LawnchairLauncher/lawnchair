@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.ui.preferences.components.colorpreference.ColorDot
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.colorpreference.ColorDot
-import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import com.android.launcher3.R
 import kotlinx.collections.immutable.ImmutableList
 

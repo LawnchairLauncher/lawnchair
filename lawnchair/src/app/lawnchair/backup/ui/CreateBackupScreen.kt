@@ -41,10 +41,10 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
+import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.controls.FlagSwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.BackHandler
 import app.lawnchair.util.hasFlag
