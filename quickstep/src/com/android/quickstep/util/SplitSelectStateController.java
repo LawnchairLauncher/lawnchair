@@ -214,15 +214,16 @@ public class SplitSelectStateController {
     }
 
     /**
-     * Maps a List<ComponentKey> to List<@Nullable Task>, searching through active Tasks in
-     * RecentsModel. If found, the Task will be the most recently-interacted-with instance of that
-     * Task. Then runs the given callback on that List.
-     * <p>
-     * Used in various task-switching or splitscreen operations when we need to check if there is a
-     * currently running Task of a certain type and use the most recent one.
+     * Given a list of task keys, searches through active Tasks in RecentsModel to find the last
+     * active instances of these tasks. Returns an empty array if there is no such running task.
+     *
+     * @param componentKeys The list of ComponentKeys to search for.
+     * @param callback The callback that will be executed on the list of found tasks.
+     * @param findExactPairMatch If {@code true}, only finds tasks that contain BOTH of the wanted
+     *                           tasks (i.e. searching for a running pair of tasks.)
      */
-    public void findLastActiveTasksAndRunCallback(
-            @Nullable List<ComponentKey> componentKeys, Consumer<List<Task>> callback) {
+    public void findLastActiveTasksAndRunCallback(@Nullable List<ComponentKey> componentKeys,
+            boolean findExactPairMatch, Consumer<List<Task>> callback) {
         mRecentTasksModel.getTasks(taskGroups -> {
             if (componentKeys == null || componentKeys.isEmpty()) {
                 callback.accept(Collections.emptyList());
@@ -230,27 +231,40 @@ public class SplitSelectStateController {
             }
 
             List<Task> lastActiveTasks = new ArrayList<>();
-            // For each key we are looking for, add to lastActiveTasks with the corresponding Task
-            // (or null if not found).
-            for (ComponentKey key : componentKeys) {
-                Task lastActiveTask = null;
+
+            if (findExactPairMatch) {
                 // Loop through tasks in reverse, since they are ordered with most-recent tasks last
                 for (int i = taskGroups.size() - 1; i >= 0; i--) {
                     GroupTask groupTask = taskGroups.get(i);
-                    Task task1 = groupTask.task1;
-                    // Don't add duplicate Tasks
-                    if (isInstanceOfComponent(task1, key) && !lastActiveTasks.contains(task1)) {
-                        lastActiveTask = task1;
-                        break;
-                    }
-                    Task task2 = groupTask.task2;
-                    if (isInstanceOfComponent(task2, key) && !lastActiveTasks.contains(task2)) {
-                        lastActiveTask = task2;
+                    if (isInstanceOfAppPair(
+                            groupTask, componentKeys.get(0), componentKeys.get(1))) {
+                        lastActiveTasks.add(groupTask.task1);
                         break;
                     }
                 }
+            } else {
+                // For each key we are looking for, add to lastActiveTasks with the corresponding
+                // Task (or do nothing if not found).
+                for (ComponentKey key : componentKeys) {
+                    Task lastActiveTask = null;
+                    // Loop through tasks in reverse, since they are ordered with recent tasks last
+                    for (int i = taskGroups.size() - 1; i >= 0; i--) {
+                        GroupTask groupTask = taskGroups.get(i);
+                        Task task1 = groupTask.task1;
+                        // Don't add duplicate Tasks
+                        if (isInstanceOfComponent(task1, key) && !lastActiveTasks.contains(task1)) {
+                            lastActiveTask = task1;
+                            break;
+                        }
+                        Task task2 = groupTask.task2;
+                        if (isInstanceOfComponent(task2, key) && !lastActiveTasks.contains(task2)) {
+                            lastActiveTask = task2;
+                            break;
+                        }
+                    }
 
-                lastActiveTasks.add(lastActiveTask);
+                    lastActiveTasks.add(lastActiveTask);
+                }
             }
 
             callback.accept(lastActiveTasks);
@@ -269,6 +283,19 @@ public class SplitSelectStateController {
 
         return task.key.baseIntent.getComponent().equals(componentKey.componentName)
                 && task.key.userId == componentKey.user.getIdentifier();
+    }
+
+    /**
+     * Checks if a given GroupTask is a pair of apps that matches two given ComponentKeys. We check
+     * both permutations because task order is not guaranteed in GroupTasks.
+     */
+    public boolean isInstanceOfAppPair(GroupTask groupTask, @NonNull ComponentKey componentKey1,
+            @NonNull ComponentKey componentKey2) {
+        return ((isInstanceOfComponent(groupTask.task1, componentKey1)
+                && isInstanceOfComponent(groupTask.task2, componentKey2))
+                ||
+                (isInstanceOfComponent(groupTask.task1, componentKey2)
+                        && isInstanceOfComponent(groupTask.task2, componentKey1)));
     }
 
     /**

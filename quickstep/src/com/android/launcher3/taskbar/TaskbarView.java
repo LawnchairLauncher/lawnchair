@@ -19,6 +19,8 @@ import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
@@ -47,6 +49,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.FolderInfo;
@@ -307,12 +310,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
             // Replace any Hotseat views with the appropriate type if it's not already that type.
             final int expectedLayoutResId;
-            boolean isFolder = false;
+            boolean isCollection = false;
             if (hotseatItemInfo.isPredictedItem()) {
                 expectedLayoutResId = R.layout.taskbar_predicted_app_icon;
-            } else if (hotseatItemInfo instanceof FolderInfo) {
-                expectedLayoutResId = R.layout.folder_icon;
-                isFolder = true;
+            } else if (hotseatItemInfo instanceof FolderInfo fi) {
+                expectedLayoutResId = fi.itemType == ITEM_TYPE_APP_PAIR
+                        ? R.layout.app_pair_icon
+                        : R.layout.folder_icon;
+                isCollection = true;
             } else {
                 expectedLayoutResId = R.layout.taskbar_app_icon;
             }
@@ -323,7 +328,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
                 // see if the view can be reused
                 if ((hotseatView.getSourceLayoutResId() != expectedLayoutResId)
-                        || (isFolder && (hotseatView.getTag() != hotseatItemInfo))) {
+                        || (isCollection && (hotseatView.getTag() != hotseatItemInfo))) {
                     // Unlike for BubbleTextView, we can't reapply a new FolderInfo after inflation,
                     // so if the info changes we need to reinflate. This should only happen if a new
                     // folder is dragged to the position that another folder previously existed.
@@ -336,12 +341,23 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             }
 
             if (hotseatView == null) {
-                if (isFolder) {
+                if (isCollection) {
                     FolderInfo folderInfo = (FolderInfo) hotseatItemInfo;
-                    FolderIcon folderIcon = FolderIcon.inflateFolderAndIcon(expectedLayoutResId,
-                            mActivityContext, this, folderInfo);
-                    folderIcon.setTextVisible(false);
-                    hotseatView = folderIcon;
+                    switch (hotseatItemInfo.itemType) {
+                        case ITEM_TYPE_FOLDER:
+                            hotseatView = FolderIcon.inflateFolderAndIcon(
+                                    expectedLayoutResId, mActivityContext, this, folderInfo);
+                            ((FolderIcon) hotseatView).setTextVisible(false);
+                            break;
+                        case ITEM_TYPE_APP_PAIR:
+                            hotseatView = AppPairIcon.inflateIcon(
+                                    expectedLayoutResId, mActivityContext, this, folderInfo);
+                            ((AppPairIcon) hotseatView).setTextVisible(false);
+                            break;
+                        default:
+                            throw new IllegalStateException(
+                                    "Unexpected item type: " + hotseatItemInfo.itemType);
+                    }
                 } else {
                     hotseatView = inflate(expectedLayoutResId);
                 }

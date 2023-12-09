@@ -30,9 +30,11 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.Collections;
@@ -44,7 +46,7 @@ import java.util.Comparator;
  * The app pair icon is two parallel background rectangles with rounded corners. Icons of the two
  * member apps are set into these rectangles.
  */
-public class AppPairIcon extends FrameLayout implements DraggableView {
+public class AppPairIcon extends FrameLayout implements DraggableView, Reorderable {
     /**
      * Design specs -- the below ratios are in relation to the size of a standard app icon.
      */
@@ -76,6 +78,10 @@ public class AppPairIcon extends FrameLayout implements DraggableView {
     private BubbleTextView mAppPairName;
     // The underlying ItemInfo that stores info about the app pair members, etc.
     private FolderInfo mInfo;
+
+    // Required for Reorderable -- handles translation and bouncing movements
+    private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
+    private float mScaleForReorderBounce = 1f;
 
     public AppPairIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -207,14 +213,45 @@ public class AppPairIcon extends FrameLayout implements DraggableView {
         return getContext().getString(R.string.app_pair_name_format, app1, app2);
     }
 
+    // Required for DraggableView
     @Override
     public int getViewType() {
         return DRAGGABLE_ICON;
     }
 
+    // Required for DraggableView
     @Override
     public void getWorkspaceVisualDragBounds(Rect bounds) {
         mAppPairName.getIconBounds(bounds);
+    }
+
+    /** Sets the visibility of the icon's title text */
+    public void setTextVisible(boolean visible) {
+        if (visible) {
+            mAppPairName.setVisibility(VISIBLE);
+        } else {
+            mAppPairName.setVisibility(INVISIBLE);
+        }
+    }
+
+    // Required for Reorderable
+    @Override
+    public MultiTranslateDelegate getTranslateDelegate() {
+        return mTranslateDelegate;
+    }
+
+    // Required for Reorderable
+    @Override
+    public void setReorderBounceScale(float scale) {
+        mScaleForReorderBounce = scale;
+        super.setScaleX(scale);
+        super.setScaleY(scale);
+    }
+
+    // Required for Reorderable
+    @Override
+    public float getReorderBounceScale() {
+        return mScaleForReorderBounce;
     }
 
     public FolderInfo getInfo() {
