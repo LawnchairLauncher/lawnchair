@@ -55,8 +55,8 @@ fun PreferenceColumn(
 fun PreferenceLazyColumn(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    state: LazyListState = rememberLazyListState(),
     isChild: Boolean = false,
+    state: LazyListState = rememberLazyListState(),
     content: LazyListScope.() -> Unit,
 ) {
     if (!enabled) {

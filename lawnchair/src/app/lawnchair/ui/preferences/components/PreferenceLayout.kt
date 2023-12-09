@@ -33,12 +33,12 @@ import androidx.compose.ui.unit.dp
 fun PreferenceLayout(
     label: String,
     modifier: Modifier = Modifier,
+    backArrowVisible: Boolean = true,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(8.dp),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState? = rememberScrollState(),
     actions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = { BottomSpacer() },
-    backArrowVisible: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     PreferenceScaffold(
@@ -61,9 +61,9 @@ fun PreferenceLayoutLazyColumn(
     label: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    backArrowVisible: Boolean = true,
     state: LazyListState = rememberLazyListState(),
     actions: @Composable RowScope.() -> Unit = {},
-    backArrowVisible: Boolean = true,
     content: LazyListScope.() -> Unit,
 ) {
     PreferenceScaffold(

@@ -25,8 +25,8 @@ fun TextPreference(
     adapter: PreferenceAdapter<String>,
     label: String,
     modifier: Modifier = Modifier,
-    description: (String) -> String? = { it },
     enabled: Boolean = true,
+    description: (String) -> String? = { it },
 ) {
     val value = adapter.state.value
     TextPreference(
@@ -44,8 +44,8 @@ fun TextPreference(
     onChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    description: (String) -> String? = { it },
     enabled: Boolean = true,
+    description: (String) -> String? = { it },
 ) {
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(

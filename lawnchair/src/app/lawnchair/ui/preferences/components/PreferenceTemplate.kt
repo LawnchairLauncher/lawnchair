@@ -42,14 +42,14 @@ fun PreferenceTemplate(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
-    description: @Composable () -> Unit = {},
-    startWidget: (@Composable () -> Unit)? = null,
-    endWidget: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
     applyPaddings: Boolean = true,
     horizontalPadding: Dp = 16.dp,
     verticalPadding: Dp = 16.dp,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    description: @Composable () -> Unit = {},
+    startWidget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
 ) {
     val contentAlphaDisabled = ContentAlpha.disabled
     Column {
