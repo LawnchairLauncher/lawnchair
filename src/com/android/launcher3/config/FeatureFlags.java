@@ -219,9 +219,6 @@ public final class FeatureFlags {
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag(270393108, "NOTIFY_CRASHES",
             TEAMFOOD, "Sends a notification whenever launcher encounters an uncaught exception.");
 
-    public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,
-            "ENABLE_TRANSIENT_TASKBAR", ENABLED, "Enables transient taskbar.");
-
     public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
             enableTaskbarNavbarUnification();
 
@@ -487,10 +484,10 @@ public final class FeatureFlags {
 
     // TODO(Block 33): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,
-            "ENABLE_ALL_APPS_RV_PREINFLATION", ENABLED,
+            "ENABLE_ALL_APPS_RV_PREINFLATION", TEAMFOOD,
             "Enables preinflating all apps icons to avoid scrolling jank.");
     public static final BooleanFlag ALL_APPS_GONE_VISIBILITY = getDebugFlag(291651514,
-            "ALL_APPS_GONE_VISIBILITY", ENABLED,
+            "ALL_APPS_GONE_VISIBILITY", TEAMFOOD,
             "Set all apps container view's hidden visibility to GONE instead of INVISIBLE.");
 
     // TODO(Block 34): Empty block

@@ -58,12 +58,12 @@ import java.util.Map;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class ReorderWidgets extends AbstractLauncherUiTest {
+public class TaplReorderWidgetsTest extends AbstractLauncherUiTest {
 
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
-    private static final String TAG = ReorderWidgets.class.getSimpleName();
+    private static final String TAG = TaplReorderWidgetsTest.class.getSimpleName();
 
     private static final List<String> FOLDABLE_GRIDS = List.of("normal", "practical", "reasonable");
 

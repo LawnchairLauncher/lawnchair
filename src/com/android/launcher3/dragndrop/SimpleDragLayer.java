@@ -20,18 +20,20 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
 /**
- * Drag layer for {@link AddItemActivity}.
+ * A concrete {@link BaseDragLayer} that creates an empty list of {@link TouchController}s.
+ * @param <T> The {@link ActivityContext} hosting the drag layer.
  */
-public class AddItemDragLayer extends BaseDragLayer<AddItemActivity> {
+public class SimpleDragLayer<T extends Context & ActivityContext> extends BaseDragLayer<T> {
 
-    public AddItemDragLayer(Context context, AttributeSet attrs) {
+    public SimpleDragLayer(Context context, AttributeSet attrs) {
         this(context, attrs, /*alphaChannelCount= */ 1);
     }
 
-    public AddItemDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
+    public SimpleDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
         super(context, attrs, alphaChannelCount);
     }
 

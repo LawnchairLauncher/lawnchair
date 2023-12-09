@@ -22,15 +22,12 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
-import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -39,7 +36,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
@@ -51,22 +47,13 @@ import com.android.quickstep.OverviewCommandHelper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
- * Listens for touch and hover events to unstash the Taskbar.
- *
- * <p>Cancels the current gesture if the long press causes the Taskbar to be unstashed.
+ * Listens for touch (swipe) and hover events to unstash the Taskbar.
  */
 public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
     private final TaskbarActivityContext mTaskbarActivityContext;
     private final OverviewCommandHelper mOverviewCommandHelper;
-    private final GestureDetector mLongPressDetector;
-    private final float mSquaredTouchSlop;
-
-    private float mLongPressDownX, mLongPressDownY;
-    private boolean mCanceledUnstashHint;
     private final float mUnstashArea;
-    private final float mScreenWidth;
-
     private final int mTaskbarNavThreshold;
     private final int mTaskbarNavThresholdY;
     private final boolean mIsTaskbarAllAppsOpen;
@@ -96,10 +83,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
         super(delegate, inputMonitor);
         mTaskbarActivityContext = taskbarActivityContext;
         mOverviewCommandHelper = overviewCommandHelper;
-        // TODO(b/270395798): remove this when cleaning up old Persistent Taskbar code.
-        mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        mScreenWidth = taskbarActivityContext.getDeviceProfile().widthPx;
 
         Resources res = context.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
@@ -110,13 +94,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
         mIsTaskbarAllAppsOpen = mTaskbarActivityContext.isTaskbarAllAppsOpen();
 
         mIsTransientTaskbar = DisplayController.isTransientTaskbar(context);
-
-        mLongPressDetector = new GestureDetector(context, new SimpleOnGestureListener() {
-            @Override
-            public void onLongPress(MotionEvent motionEvent) {
-                onLongPressDetected(motionEvent);
-            }
-        });
 
         mBottomScreenEdge = res.getDimensionPixelSize(
                 R.dimen.taskbar_stashed_screen_edge_hover_deadzone_height);
@@ -135,7 +112,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        mLongPressDetector.onTouchEvent(ev);
         if (mState != STATE_ACTIVE) {
             boolean isStashedTaskbarHovered = isMouseEvent(ev)
                     && isStashedTaskbarHovered((int) ev.getX(), (int) ev.getY());
@@ -152,15 +128,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                         mHasPassedTaskbarNavThreshold = false;
                         mTaskbarActivityContext.setAutohideSuspendFlag(
                                 FLAG_AUTOHIDE_SUSPEND_TOUCHING, true);
-                        if (isInTaskbarArea(x)) {
-                            if (!mIsTransientTaskbar) {
-                                mLongPressDownX = x;
-                                mLongPressDownY = y;
-                                mTaskbarActivityContext.startTaskbarUnstashHint(
-                                        /* animateForward = */ true);
-                                mCanceledUnstashHint = false;
-                            }
-                        }
                         if (mTransitionCallback != null && !mIsTaskbarAllAppsOpen) {
                             mTransitionCallback.onActionDown();
                         }
@@ -181,15 +148,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if (!mIsTransientTaskbar
-                                && !mCanceledUnstashHint
-                                && squaredHypot(mLongPressDownX - x, mLongPressDownY - y)
-                                > mSquaredTouchSlop) {
-                            mTaskbarActivityContext.startTaskbarUnstashHint(
-                                    /* animateForward = */ false);
-                            mCanceledUnstashHint = true;
-                        }
-
                         int pointerIndex = ev.findPointerIndex(mActivePointerId);
                         if (pointerIndex == INVALID_POINTER_ID) {
                             break;
@@ -283,10 +241,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
     }
 
     private void cleanupAfterMotionEvent() {
-        if (!mIsTransientTaskbar && !mCanceledUnstashHint) {
-            mTaskbarActivityContext.startTaskbarUnstashHint(
-                    /* animateForward = */ false);
-        }
         mTaskbarActivityContext.setAutohideSuspendFlag(
                 FLAG_AUTOHIDE_SUSPEND_TOUCHING, false);
         if (mTransitionCallback != null) {
@@ -296,12 +250,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
         mIsInBubbleBarArea = false;
         mIsVerticalGestureOverBubbleBar = false;
         mIsPassedBubbleBarSlop = false;
-    }
-
-    private boolean isInTaskbarArea(float x) {
-        float areaFromMiddle = mUnstashArea / 2.0f;
-        float distFromMiddle = Math.abs(mScreenWidth / 2.0f - x);
-        return distFromMiddle < areaFromMiddle;
     }
 
     private boolean isInBubbleBarArea(float x) {
@@ -317,17 +265,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
         } else {
             Rect bubbleBarBounds = controllers.bubbleBarViewController.getBubbleBarBounds();
             return x >= bubbleBarBounds.left && x <= bubbleBarBounds.right;
-        }
-    }
-
-    private void onLongPressDetected(MotionEvent motionEvent) {
-        if (mTaskbarActivityContext != null
-                && isInTaskbarArea(motionEvent.getRawX())
-                && !mIsTransientTaskbar) {
-            boolean taskBarPressed = mTaskbarActivityContext.onLongPressToUnstashTaskbar();
-            if (taskBarPressed) {
-                setActive(motionEvent);
-            }
         }
     }
 
@@ -389,7 +326,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
     }
 
     private void startStashedTaskbarHover(boolean isHovered) {
-        mTaskbarActivityContext.startTaskbarUnstashHint(isHovered, /* forceUnstash = */ true);
+        mTaskbarActivityContext.startTaskbarUnstashHint(isHovered);
         mIsStashedTaskbarHovered = isHovered;
     }
 

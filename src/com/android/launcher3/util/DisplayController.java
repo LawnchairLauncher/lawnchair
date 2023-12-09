@@ -22,7 +22,6 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
 import static com.android.launcher3.Utilities.dpiFromPx;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TRANSIENT_TASKBAR;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
@@ -410,18 +409,19 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
          * Returns whether taskbar is transient.
          */
         public boolean isTransientTaskbar() {
-            // TODO(b/258604917): Once ENABLE_TASKBAR_PINNING is enabled, remove usage of
-            //  sTransientTaskbarStatusForTests and update test to directly
-            //  toggle shred preference to switch transient taskbar on/of
-            if (!Utilities.isRunningInTestHarness()
-                    && enableTaskbarPinning()
-                    && mIsTaskbarPinned) {
+            if (navigationMode != NavigationMode.NO_BUTTON) {
                 return false;
             }
-            return navigationMode == NavigationMode.NO_BUTTON
-                    && (Utilities.isRunningInTestHarness()
-                    ? sTransientTaskbarStatusForTests
-                    : ENABLE_TRANSIENT_TASKBAR.get() && !mIsTaskbarPinned);
+            if (Utilities.isRunningInTestHarness()) {
+                // TODO(b/258604917): Once ENABLE_TASKBAR_PINNING is enabled, remove usage of
+                //  sTransientTaskbarStatusForTests and update test to directly
+                //  toggle shared preference to switch transient taskbar on/off.
+                return sTransientTaskbarStatusForTests;
+            }
+            if (enableTaskbarPinning()) {
+                return !mIsTaskbarPinned;
+            }
+            return true;
         }
 
         /**
@@ -485,6 +485,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         pw.println("  currentSize=" + info.currentSize);
         info.mPerDisplayBounds.forEach((key, value) -> pw.println(
                 "  perDisplayBounds - " + key + ": " + value));
+        pw.println("  isTransientTaskbar=" + info.isTransientTaskbar());
     }
 
     /**

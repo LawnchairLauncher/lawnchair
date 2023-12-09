@@ -216,6 +216,7 @@ public class TaskbarUIController {
 
         recentsView.getSplitSelectController().findLastActiveTasksAndRunCallback(
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks.get(0);
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
@@ -234,6 +235,7 @@ public class TaskbarUIController {
         RecentsView recents = getRecentsView();
         recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
                 Collections.singletonList(info.getComponentKey()),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks.get(0);
                     if (foundTask != null) {

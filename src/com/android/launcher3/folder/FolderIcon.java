@@ -86,7 +86,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
@@ -634,6 +633,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         }
     }
 
+    /** Sets the visibility of the icon's title text */
     public void setTextVisible(boolean visible) {
         if (visible) {
             mFolderName.setVisibility(VISIBLE);

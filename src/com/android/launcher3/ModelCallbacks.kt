@@ -14,7 +14,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.popup.PopupContainerWithArrow
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.IntArray as LIntArray
-import com.android.launcher3.util.IntArray
 import com.android.launcher3.util.IntSet as LIntSet
 import com.android.launcher3.util.IntSet
 import com.android.launcher3.util.PackageUserKey
@@ -63,6 +62,38 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.appWidgetHolder.clearViews()
         launcher.hotseat?.resetLayout(launcher.deviceProfile.isVerticalBarLayout)
         TraceHelper.INSTANCE.endSection()
+    }
+
+    /**
+     * Callback saying that there aren't any more items to bind.
+     *
+     * Implementation of the method from LauncherModel.Callbacks.
+     */
+    override fun finishBindingItems(pagesBoundFirst: LIntSet?) {
+        TraceHelper.INSTANCE.beginSection("finishBindingItems")
+        val deviceProfile = launcher.deviceProfile
+        launcher.workspace.restoreInstanceStateForRemainingPages()
+        workspaceLoading = false
+        launcher.processActivityResult()
+        val currentPage =
+            if (pagesBoundFirst != null && !pagesBoundFirst.isEmpty)
+                launcher.workspace.getPageIndexForScreenId(pagesBoundFirst.array[0])
+            else PagedView.INVALID_PAGE
+        // When undoing the removal of the last item on a page, return to that page.
+        // Since we are just resetting the current page without user interaction,
+        // override the previous page so we don't log the page switch.
+        launcher.workspace.setCurrentPage(currentPage, currentPage /* overridePrevPage */)
+        pagesToBindSynchronously = IntSet()
+
+        // Cache one page worth of icons
+        launcher.viewCache.setCacheSize(
+            R.layout.folder_application,
+            deviceProfile.inv.numFolderColumns * deviceProfile.inv.numFolderRows
+        )
+        launcher.viewCache.setCacheSize(R.layout.folder_page, 2)
+        TraceHelper.INSTANCE.endSection()
+        launcher.workspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true)
+        launcher.workspace.pageIndicator.setAreScreensBinding(false, deviceProfile.isTwoPanels)
     }
 
     /**
@@ -225,7 +256,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         )
     }
 
-    override fun bindScreens(orderedScreenIds: IntArray) {
+    override fun bindScreens(orderedScreenIds: LIntArray) {
         launcher.workspace.pageIndicator.setAreScreensBinding(
             true,
             launcher.deviceProfile.isTwoPanels
@@ -255,7 +286,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     }
 
     override fun bindAppsAdded(
-        newScreens: IntArray?,
+        newScreens: LIntArray?,
         addNotAnimated: java.util.ArrayList<ItemInfo?>?,
         addAnimated: java.util.ArrayList<ItemInfo?>?
     ) {
@@ -280,7 +311,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.workspace.removeExtraEmptyScreen(false)
     }
 
-    private fun bindAddScreens(orderedScreenIdsArg: IntArray) {
+    private fun bindAddScreens(orderedScreenIdsArg: LIntArray) {
         var orderedScreenIds = orderedScreenIdsArg
         if (launcher.deviceProfile.isTwoPanels) {
             if (FeatureFlags.FOLDABLE_SINGLE_PAGE.get()) {
@@ -311,7 +342,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
      * Remove odd number because they are already included when isTwoPanels and add the pair screen
      * if not present.
      */
-    private fun filterTwoPanelScreenIds(orderedScreenIds: IntArray): IntArray {
+    private fun filterTwoPanelScreenIds(orderedScreenIds: LIntArray): LIntArray {
         val screenIds = IntSet.wrap(orderedScreenIds)
         orderedScreenIds
             .filter { screenId -> screenId % 2 == 1 }

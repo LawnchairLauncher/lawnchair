@@ -106,6 +106,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.NavigationMode;
@@ -127,6 +128,7 @@ import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -975,6 +977,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     protected void onTaskbarIconClicked(View view) {
+        TaskbarUIController taskbarUIController = mControllers.uiController;
+        RecentsView recents = taskbarUIController.getRecentsView();
         boolean shouldCloseAllOpenViews = true;
         Object tag = view.getTag();
         if (tag instanceof Task) {
@@ -982,41 +986,26 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key,
                     ActivityOptions.makeBasic());
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
-        } else if (tag instanceof FolderInfo) {
+        } else if (tag instanceof FolderInfo fi && fi.itemType == Favorites.ITEM_TYPE_FOLDER) {
+            // Tapping an expandable folder icon on Taskbar
             shouldCloseAllOpenViews = false;
-            FolderIcon folderIcon = (FolderIcon) view;
-            Folder folder = folderIcon.getFolder();
-
-            folder.setOnFolderStateChangedListener(newState -> {
-                if (newState == Folder.STATE_OPEN) {
-                    setTaskbarWindowFocusableForIme(true);
-                } else if (newState == Folder.STATE_CLOSED) {
-                    // Defer by a frame to ensure we're no longer fullscreen and thus won't jump.
-                    getDragLayer().post(() -> setTaskbarWindowFocusableForIme(false));
-                    folder.setOnFolderStateChangedListener(null);
-                }
-            });
-
-            setTaskbarWindowFullscreen(true);
-
-            getDragLayer().post(() -> {
-                folder.animateOpen();
-                getStatsLogManager().logger().withItemInfo(folder.mInfo).log(LAUNCHER_FOLDER_OPEN);
-
-                folder.iterateOverItems((itemInfo, itemView) -> {
-                    mControllers.taskbarViewController
-                            .setClickAndLongClickListenersForIcon(itemView);
-                    // To play haptic when dragging, like other Taskbar items do.
-                    itemView.setHapticFeedbackEnabled(true);
-                    return false;
-                });
-            });
+            expandFolder((FolderIcon) view);
+        } else if (tag instanceof FolderInfo fi && fi.itemType == Favorites.ITEM_TYPE_APP_PAIR) {
+            // Tapping an app pair icon on Taskbar
+            if (recents != null && recents.isSplitSelectionActive()) {
+                // TODO (b/274835596): Implement "can't split with this" bounce animation
+                Toast.makeText(this, "Unable to split with an app pair. Select another app.",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Else launch the selected app pair
+                launchFromTaskbarPreservingSplitIfVisible(recents, fi.contents);
+                mControllers.uiController.onTaskbarIconLaunched(fi);
+                mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            }
         } else if (tag instanceof WorkspaceItemInfo) {
             // Tapping a launchable icon on Taskbar
             WorkspaceItemInfo info = (WorkspaceItemInfo) tag;
             if (!info.isDisabled() || !ItemClickHandler.handleDisabledItemClicked(info, this)) {
-                TaskbarUIController taskbarUIController = mControllers.uiController;
-                RecentsView recents = taskbarUIController.getRecentsView();
                 if (recents != null && recents.isSplitSelectionActive()) {
                     // If we are selecting a second app for split, launch the split tasks
                     taskbarUIController.triggerSecondAppForSplit(info, info.intent, view);
@@ -1044,7 +1033,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                             getSystemService(LauncherApps.class)
                                     .startShortcut(packageName, id, null, null, info.user);
                         } else {
-                            launchFromTaskbarPreservingSplitIfVisible(recents, info);
+                            launchFromTaskbarPreservingSplitIfVisible(
+                                    recents, Collections.singletonList(info));
                         }
 
                     } catch (NullPointerException
@@ -1055,7 +1045,21 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
                         return;
                     }
+                }
 
+                // If the app was launched from a folder, stash the taskbar after it closes
+                Folder f = Folder.getOpen(this);
+                if (f != null && f.getInfo().id == info.container) {
+                    f.addOnFolderStateChangedListener(new Folder.OnFolderStateChangedListener() {
+                        @Override
+                        public void onFolderStateChanged(int newState) {
+                            if (newState == Folder.STATE_CLOSED) {
+                                f.removeOnFolderStateChangedListener(this);
+                                mControllers.taskbarStashController
+                                        .updateAndAnimateTransientTaskbar(true);
+                            }
+                        }
+                    });
                 }
                 mControllers.uiController.onTaskbarIconLaunched(info);
                 mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
@@ -1063,14 +1067,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         } else if (tag instanceof AppInfo) {
             // Tapping an item in AllApps
             AppInfo info = (AppInfo) tag;
-            TaskbarUIController taskbarUIController = mControllers.uiController;
-            RecentsView recents = taskbarUIController.getRecentsView();
             if (recents != null
                     && taskbarUIController.getRecentsView().isSplitSelectionActive()) {
                 // If we are selecting a second app for split, launch the split tasks
                 taskbarUIController.triggerSecondAppForSplit(info, info.intent, view);
             } else {
-                launchFromTaskbarPreservingSplitIfVisible(recents, info);
+                launchFromTaskbarPreservingSplitIfVisible(recents, Collections.singletonList(info));
             }
             mControllers.uiController.onTaskbarIconLaunched(info);
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
@@ -1092,17 +1094,22 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * (potentially breaking a split pair).
      */
     private void launchFromTaskbarPreservingSplitIfVisible(@Nullable RecentsView recents,
-            ItemInfo info) {
+            List<? extends ItemInfo> itemInfos) {
         if (recents == null) {
             return;
         }
+
+        boolean findExactPairMatch = itemInfos.size() == 2;
+        // Convert the list of ItemInfo instances to a list of ComponentKeys
+        List<ComponentKey> componentKeys =
+                itemInfos.stream().map(ItemInfo::getComponentKey).toList();
         recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
-                Collections.singletonList(info.getComponentKey()),
+                componentKeys,
+                findExactPairMatch,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks.get(0);
                     if (foundTask != null) {
-                        TaskView foundTaskView =
-                                recents.getTaskViewByTaskId(foundTask.key.id);
+                        TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         if (foundTaskView != null
                                 && foundTaskView.isVisibleToUser()) {
                             TestLogging.recordEvent(
@@ -1111,8 +1118,17 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                             return;
                         }
                     }
-                    startItemInfoActivity(info);
-                });
+
+                    if (findExactPairMatch) {
+                        // We did not find the app pair we were looking for, so launch one.
+                        recents.getSplitSelectController().getAppPairsController().launchAppPair(
+                                (WorkspaceItemInfo) itemInfos.get(0),
+                                (WorkspaceItemInfo) itemInfos.get(1));
+                    } else {
+                        startItemInfoActivity(itemInfos.get(0));
+                    }
+                }
+        );
     }
 
     private void startItemInfoActivity(ItemInfo info) {
@@ -1134,20 +1150,46 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
     }
 
+    /** Expands a folder icon when it is clicked */
+    private void expandFolder(FolderIcon folderIcon) {
+        Folder folder = folderIcon.getFolder();
+
+        folder.setPriorityOnFolderStateChangedListener(
+                new Folder.OnFolderStateChangedListener() {
+                    @Override
+                    public void onFolderStateChanged(int newState) {
+                        if (newState == Folder.STATE_OPEN) {
+                            setTaskbarWindowFocusableForIme(true);
+                        } else if (newState == Folder.STATE_CLOSED) {
+                            // Defer by a frame to ensure we're no longer fullscreen and thus
+                            // won't jump.
+                            getDragLayer().post(() -> setTaskbarWindowFocusableForIme(false));
+                            folder.setPriorityOnFolderStateChangedListener(null);
+                        }
+                    }
+                });
+
+        setTaskbarWindowFullscreen(true);
+
+        getDragLayer().post(() -> {
+            folder.animateOpen();
+            getStatsLogManager().logger().withItemInfo(folder.mInfo).log(LAUNCHER_FOLDER_OPEN);
+
+            folder.iterateOverItems((itemInfo, itemView) -> {
+                mControllers.taskbarViewController
+                        .setClickAndLongClickListenersForIcon(itemView);
+                // To play haptic when dragging, like other Taskbar items do.
+                itemView.setHapticFeedbackEnabled(true);
+                return false;
+            });
+        });
+    }
+
     /**
      * Returns whether the taskbar is currently visually stashed.
      */
     public boolean isTaskbarStashed() {
         return mControllers.taskbarStashController.isStashed();
-    }
-
-    /**
-     * Called when we detect a long press in the nav region before passing the gesture slop.
-     *
-     * @return Whether taskbar handled the long press, and thus should cancel the gesture.
-     */
-    public boolean onLongPressToUnstashTaskbar() {
-        return mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
     }
 
     /**
@@ -1205,28 +1247,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * @param animateForward Whether to animate towards the unstashed hint state or back to stashed.
      */
     public void startTaskbarUnstashHint(boolean animateForward) {
-        // TODO(b/270395798): Clean up forceUnstash after removing long-press unstashing code.
-        startTaskbarUnstashHint(animateForward, /* forceUnstash = */ false);
-    }
-
-    /**
-     * Called when we detect a motion down or up/cancel in the nav region while stashed.
-     *
-     * @param animateForward Whether to animate towards the unstashed hint state or back to stashed.
-     * @param forceUnstash   Whether we force the unstash hint.
-     */
-    public void startTaskbarUnstashHint(boolean animateForward, boolean forceUnstash) {
-        // TODO(b/270395798): Clean up forceUnstash after removing long-press unstashing code.
-        mControllers.taskbarStashController.startUnstashHint(animateForward, forceUnstash);
-    }
-
-    /**
-     * Enables manual taskbar stashing. This method should only be used for tests that need to
-     * stash/unstash the taskbar.
-     */
-    @VisibleForTesting
-    public void enableManualStashingDuringTests(boolean enableManualStashing) {
-        mControllers.taskbarStashController.enableManualStashingDuringTests(enableManualStashing);
+        mControllers.taskbarStashController.startUnstashHint(animateForward);
     }
 
     /**
@@ -1239,15 +1260,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
-     * Unstashes the Taskbar if it is stashed. This method should only be used to unstash the
-     * taskbar at the end of a test.
+     * Unstashes the Taskbar if it is stashed.
      */
     @VisibleForTesting
     public void unstashTaskbarIfStashed() {
         if (DisplayController.isTransientTaskbar(this)) {
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
-        } else {
-            mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
         }
     }
 

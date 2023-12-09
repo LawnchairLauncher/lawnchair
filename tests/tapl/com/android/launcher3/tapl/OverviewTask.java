@@ -201,11 +201,8 @@ public final class OverviewTask {
     public LaunchedAppState open() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             verifyActiveContainer();
-            mLauncher.executeAndWaitForLauncherEvent(
+            mLauncher.executeAndWaitForLauncherStop(
                     () -> mLauncher.clickLauncherObject(mTask),
-                    event -> TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE
-                            .equals(event.getClassName().toString()),
-                    () -> "Launcher activity didn't stop",
                     "clicking an overview task");
             if (mOverview.getContainerType()
                     == LauncherInstrumentation.ContainerType.SPLIT_SCREEN_SELECT) {

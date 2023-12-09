@@ -586,6 +586,7 @@ public final class LauncherInstrumentation {
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
         if (hasLauncherObject(TASKBAR_RES_ID)) return "Taskbar";
+        if (hasLauncherObject("wallpaper_carousel")) return "Launcher Settings Popup";
         if (mDevice.hasObject(By.pkg(getLauncherPackageName()).depth(0))) {
             return "<Launcher in invalid state>";
         }
@@ -971,6 +972,14 @@ public final class LauncherInstrumentation {
                 return null;
             }
         }
+    }
+
+    void executeAndWaitForLauncherStop(Runnable command, String actionName) {
+        executeAndWaitForLauncherEvent(
+                () -> command.run(),
+                event -> TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE
+                        .equals(event.getClassName().toString()),
+                () -> "Launcher activity didn't stop", actionName);
     }
 
     /**

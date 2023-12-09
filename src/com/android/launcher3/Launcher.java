@@ -847,6 +847,17 @@ public class Launcher extends StatefulActivity<LauncherState>
         return screenId;
     }
 
+    /**
+     * Process any pending activity result if it was put on hold for any reason like item binding.
+     */
+    public void processActivityResult() {
+        if (mPendingActivityResult != null) {
+            handleActivityResult(mPendingActivityResult.requestCode,
+                    mPendingActivityResult.resultCode, mPendingActivityResult.data);
+            mPendingActivityResult = null;
+        }
+    }
+
     private void handleActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         if (isWorkspaceLoading()) {
@@ -1711,7 +1722,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         TextKeyListener.getInstance().release();
         mModelCallbacks.clearPendingBinds();
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
-
+        // if Launcher activity is recreated, {@link Window} including {@link ViewTreeObserver}
+        // could be preserved in {@link ActivityThread#scheduleRelaunchActivity(IBinder)} if the
+        // previous activity has not stopped, which could happen when wallpaper detects a color
+        // changes while launcher is still loading.
+        getRootView().getViewTreeObserver().removeOnPreDrawListener(mOnInitialBindListener);
         mOverlayManager.onActivityDestroyed();
     }
 
@@ -2520,34 +2535,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(IntSet pagesBoundFirst) {
-        TraceHelper.INSTANCE.beginSection("finishBindingItems");
-        mWorkspace.restoreInstanceStateForRemainingPages();
-
-        mModelCallbacks.setWorkspaceLoading(false);
-
-        if (mPendingActivityResult != null) {
-            handleActivityResult(mPendingActivityResult.requestCode,
-                    mPendingActivityResult.resultCode, mPendingActivityResult.data);
-            mPendingActivityResult = null;
-        }
-
-        int currentPage = pagesBoundFirst != null && !pagesBoundFirst.isEmpty()
-                ? mWorkspace.getPageIndexForScreenId(pagesBoundFirst.getArray().get(0))
-                : PagedView.INVALID_PAGE;
-        // When undoing the removal of the last item on a page, return to that page.
-        // Since we are just resetting the current page without user interaction,
-        // override the previous page so we don't log the page switch.
-        mWorkspace.setCurrentPage(currentPage, currentPage /* overridePrevPage */);
-        mModelCallbacks.setPagesToBindSynchronously(new IntSet());
-
-        // Cache one page worth of icons
-        getViewCache().setCacheSize(R.layout.folder_application,
-                mDeviceProfile.inv.numFolderColumns * mDeviceProfile.inv.numFolderRows);
-        getViewCache().setCacheSize(R.layout.folder_page, 2);
-
-        TraceHelper.INSTANCE.endSection();
-        mWorkspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true);
-        mWorkspace.mPageIndicator.setAreScreensBinding(false, mDeviceProfile.isTwoPanels);
+        mModelCallbacks.finishBindingItems(pagesBoundFirst);
     }
 
     private boolean canAnimatePageChange() {

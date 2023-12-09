@@ -76,7 +76,7 @@ import java.util.function.Consumer;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class BindWidgetTest extends AbstractLauncherUiTest {
+public class TaplBindWidgetTest extends AbstractLauncherUiTest {
 
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
