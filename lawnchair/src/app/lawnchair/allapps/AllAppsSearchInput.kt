@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.provider.SearchRecentSuggestions
 import android.text.Selection
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_POINT_MARK
@@ -23,6 +24,7 @@ import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
 import com.android.launcher3.Insettable
@@ -72,6 +74,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private val bgAlphaAnimator = ValueAnimator.ofFloat(0f, 1f).apply { duration = 300 }
     private var bgVisible = true
     private var bgAlpha = 1f
+    private val suggestionsRecent = SearchRecentSuggestions(launcher, LawnchairRecentSuggestionProvider.AUTHORITY, LawnchairRecentSuggestionProvider.MODE)
+    private val pref = PreferenceManager.getInstance(launcher)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -84,7 +88,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         input = ViewCompat.requireViewById(this, R.id.input)
         with(input) {
-            if (LawnchairSearchAlgorithm.isDeviceSearchEnabled(context)) {
+            if (pref.performWideSearchExperimental.get()) {
                 setHint(R.string.all_apps_device_search_hint)
             } else {
                 setHint(R.string.all_apps_search_bar_hint)
@@ -102,6 +106,15 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
         }
 
+        if (pref.searchResulRecentSuggestion.get()) {
+            input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    val query = editText.text.toString()
+                    suggestionsRecent.saveRecentQuery(query, null)
+                }
+            }
+        }
+
         input.addTextChangedListener(
             beforeTextChanged = { _, _, _, _ ->
                 hint.isInvisible = true
@@ -112,6 +125,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     val enableDebugMenu = PreferenceManager.getInstance(context).enableDebugMenu
                     enableDebugMenu.set(!enableDebugMenu.get())
                     launcher.stateManager.goToState(LauncherState.NORMAL)
+                }
+                // Make sure to empty
+                // if user used backspace instead of clear action btn
+                if (input.text.isEmpty() || input.text.isBlank()) {
+                    input.reset()
+                    resetSearch()
+                    clearSearchResult()
                 }
             },
         )
@@ -126,6 +146,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     override fun setFocusedResultTitle(title: CharSequence?, sub: CharSequence?) {
         focusedResultTitle = title?.toString().orEmpty()
         updateHint()
+    }
+
+    override fun refreshResults() {
+        onAppsUpdated()
     }
 
     private fun updateHint() {
@@ -204,16 +228,6 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             apps.setSearchResults(items)
             notifyResultChanged()
             appsView.setSearchResults(items)
-        }
-    }
-
-    fun onAppendSearchResult(
-        query: String,
-        items: ArrayList<AdapterItem>?,
-    ) {
-        if (items != null) {
-            apps.setSearchResults(items)
-            notifyResultChanged()
         }
     }
 

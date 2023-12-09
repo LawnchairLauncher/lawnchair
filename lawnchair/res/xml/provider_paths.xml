@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <cache-path name="log_files" path="logs"/>
+    <external-path name="external_files" path="." />
+    <external-path name="external_storage" path="/"/>
 </paths>

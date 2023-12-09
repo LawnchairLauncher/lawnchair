@@ -52,10 +52,13 @@
     <dimen name="search_result_hero_subtitle_size">14sp</dimen>
     <dimen name="search_result_margin">8dp</dimen>
     <dimen name="search_result_padding">16dp</dimen>
+    <dimen name="search_result_padding_medium">12dp</dimen>
     <dimen name="search_result_radius">4dp</dimen>
     <dimen name="search_result_row_height">88dp</dimen>
     <dimen name="search_result_row_medium_height">72dp</dimen>
     <dimen name="search_result_small_row_height">56dp</dimen>
+    <dimen name="search_result_files_row_height">96dp</dimen>
+    <dimen name="search_result_text_height">52dp</dimen>
     <dimen name="search_result_subtitle_padding_start">4dp</dimen>
 
     <!-- smartspace -->
@@ -91,4 +94,13 @@
     <dimen name="status_bar_header_height_keyguard">40dp</dimen>
 
     <dimen name="theme_icon_size">24dp</dimen>
+
+    <dimen name="search_row_medium_icon_size">24dp</dimen>
+    <dimen name="search_row_mini_icon_size">22dp</dimen>
+    <dimen name="space_layout_height">14dp</dimen>
+    <dimen name="space_layout_mini_height">8dp</dimen>
+    <dimen name="search_row_files_preview_width">80dp</dimen>
+    <dimen name="search_row_files_preview_height">64dp</dimen>
+    <dimen name="search_row_preview_radius">18dp</dimen>
+
 </resources>
