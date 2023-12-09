@@ -254,6 +254,11 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
     )
 
+    val performWideSearch = preference(
+        key = booleanPreferencesKey(name = "performWideSearch"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_perform_wide_search),
+    )
+
     val workspaceTextColor = preference(
         key = stringPreferencesKey(name = "workspace_text_color"),
         defaultValue = ColorMode.AUTO,
@@ -318,6 +323,31 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val maxSearchResultCount = preference(
         key = intPreferencesKey(name = "max_search_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
+    )
+
+    val maxSuggestionResultCount = preference(
+        key = intPreferencesKey(name = "max_suggestion_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_suggestion_max_result_count),
+    )
+
+    val maxFileResultCount = preference(
+        key = intPreferencesKey(name = "max_files_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_files_max_result_count),
+    )
+
+    val maxPeopleResultCount = preference(
+        key = intPreferencesKey(name = "max_people_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_people_max_result_count),
+    )
+
+    val maxSettingsEntryResultCount = preference(
+        key = intPreferencesKey(name = "max_settings_entry_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_settings_entry_max_result_count),
+    )
+
+    val maxRecentResultCount = preference(
+        key = intPreferencesKey(name = "max_recent_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_recent_max_result_count),
     )
 
     val enableSmartspace = preference(
