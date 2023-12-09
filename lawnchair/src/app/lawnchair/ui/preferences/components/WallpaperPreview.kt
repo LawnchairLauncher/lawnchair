@@ -24,7 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun WallpaperPreview(modifier: Modifier = Modifier) {
+fun WallpaperPreview(
+    modifier: Modifier = Modifier,
+) {
     val painter = rememberDrawablePainter(wallpaperDrawable())
     Image(
         painter = painter,

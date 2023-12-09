@@ -228,7 +228,6 @@ private fun ClipboardButton(
 ) {
     PreferenceTemplate(
         modifier = modifier.clickable(enabled = enabled, onClick = onClick),
-        contentModifier = Modifier,
         title = { Text(text = label) },
         description = { description?.let { Text(text = it) } },
         startWidget = {
