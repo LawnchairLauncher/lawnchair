@@ -1,4 +1,4 @@
-package com.snebula.android.file.util
+package app.lawnchair.util
 
 import android.webkit.MimeTypeMap
 

@@ -253,7 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Αναζήτηση Εφαρμογής</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair έχουν συμφωνία μεριδίου εσόδων.\n\nΑναζήτηση με το %1$s βοηθά στην υποστήριξη του Lawnchair.</string>
     <string name="app_label">Εφαρμογή</string>
     <string name="website_label">Ιστοσελίδα</string>
     <string name="qsb_search_provider_app_required">Απαιτείται εφαρμογή.</string>
@@ -362,6 +362,7 @@
     <string name="label">Ετικέτα</string>
     <string name="hide_from_drawer">Απόκρυψη από Συρτάρι Εφαρμογών</string>
     <string name="suggestion_pref_screen_title">Προτάσεις</string>
+    <string name="show_suggested_apps_at_drawer_top">Εμφάνιση προτεινόμενων εφαρμογών στην κορυφή του συρταριού εφαρμογών</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Αναφορά σφάλματος του Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Κράσαρε</string>

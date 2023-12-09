@@ -4,15 +4,17 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id 'com.android.application' version "8.2.0"
     id 'com.android.library' version "8.2.0" apply false
-    id 'org.jetbrains.kotlin.android' version "1.9.20"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.20"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.20"
-    id "com.google.devtools.ksp" version "1.9.20-1.0.14"
+    id 'com.android.test' version '8.2.0' apply false
+    id 'androidx.baselineprofile' version '1.2.2'
+    id 'org.jetbrains.kotlin.android' version "1.9.21"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.21"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.21"
+    id "com.google.devtools.ksp" version "1.9.21-1.0.15"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'org.gradle.android.cache-fix' version '3.0'
-    id 'com.diffplug.spotless' version '6.23.2'
+    id 'com.diffplug.spotless' version '6.23.3'
 }
 
 allprojects {
@@ -74,7 +76,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.48.1'
+        daggerVersion = '2.49'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -160,7 +162,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -364,12 +366,15 @@ dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
+    implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
+    baselineProfile projects.baselineProfile
+
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.3.2"
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
@@ -412,9 +417,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$roomVersion"
     ksp "androidx.room:room-compiler:$roomVersion"
 
-    def libsuVersion = '5.2.1'
-    implementation "com.github.topjohnwu.libsu:core:$libsuVersion"
-    implementation "com.github.topjohnwu.libsu:service:$libsuVersion"
+    implementation "com.github.topjohnwu.libsu:service:5.2.2"
 
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
@@ -436,7 +439,7 @@ ksp {
 spotless {
     kotlin {
         ktlint()
-        target("lawnchair/src/**/*.kt")
+        target("lawnchair/src/**/*.kt", "baseline-profile/src/**/*.kt")
     }
 }
 
@@ -444,6 +447,8 @@ licensee {
     allow("Apache-2.0")
     allow("BSD-3-Clause")
     allow("GPL-2.0-or-later")
+    allowDependency("com.github.topjohnwu.libsu", "core", "5.2.2")
+    allowDependency("com.github.topjohnwu.libsu", "service", "5.2.2")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
     allowUrl("https://opensource.org/licenses/mit-license.php")
