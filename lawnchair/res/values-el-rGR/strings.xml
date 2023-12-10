@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Ασαφής Αναζήτηση</string>
     <string name="fuzzy_search_desc">Κατά προσέγγιση αντιστοίχιση για αναζητήσεις εφαρμογών.</string>
     <string name="max_search_result_count_title">Μέγιστο Πλήθος Αποτελεσμάτων Αναζήτησης</string>
+    <string name="max_people_result_count_title">Μέγιστο Πλήθος Αποτελεσμάτων Αναζήτησης Επαφών</string>
+    <string name="max_file_result_count_title">Μέγιστο Πλήθος Αποτελεσμάτων Αναζήτησης Αρχείων</string>
+    <string name="max_suggestion_result_count_title">Μέγιστο Πλήθος Αποτελεσμάτων Αναζήτησης Προτεινόμενων</string>
+    <string name="max_settings_entry_result_count_title">Μέγιστος Αριθμός Αποτελεσμάτων Ρυθμίσεων Εισόδου</string>
+    <string name="max_recent_result_count_title">Μέγιστο Πλήθος Αποτελεσμάτων Αναζήτησης Αρχείων</string>
+    <string name="clear_history">Εκκαθάριση</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Στήλες Συρταριού Εφαρμογών</string>
     <string name="row_height_label">Ύψος Γραμμής</string>
+    <string name="perform_wide_search_title">Αναζήτηση Συσκευής</string>
+    <string name="perform_wide_search_file">Αρχεία</string>
+    <string name="pref_suggestion_title">Προτάσεις ιστού (μέσω <xliff:g id="startpage">Σελίδα έναρξης</xliff:g>)</string>
+    <string name="pref_advance_search_category">Προχωρημένη Αναζήτηση</string>
+    <string name="perform_wide_search_description">Αναζητήστε τις επαφές, τα αρχεία και τις ρυθμίσεις σας στην αναζήτηση του συρταριού εφαρμογών.</string>
+    <string name="pref_recent_suggestion_title">Ιστορικό</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -384,8 +396,18 @@
     <string name="label_search">Αναζήτηση</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Φωνητική Αναζήτηση</string>
+    <string name="search_pref_result_settings_entry_title">Ρυθμίσεις Εισαγωγής</string>
     <string name="all_apps_search_market_message">Αναζήτηση για περισσότερες εφαρμογές</string>
+    <string name="all_apps_search_startpage_message">Αναζήτηση σε <xliff:g id="Σελίδα έναρξης">Σελίδα έναρξης</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Δεν υπάρχει εγκατεστημένο κατάστημα εφαρμογών ή πρόγραμμα περιήγησης.</string>
+    <string name="all_apps_search_result_suggestions">Από το διαδίκτυο</string>
+    <string name="all_apps_search_result_contacts_from_device">Από τις επαφές σας</string>
+    <string name="all_apps_search_result_files">Από τα αρχεία σας</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Από τις ρυθμίσεις σας</string>
+    <string name="warn_contact_permission_content">Απαιτεί άδεια πρόσβασης επαφών</string>
+    <string name="warn_files_permission_content">Απαιτεί άδεια πρόσβασης χώρου αποθήκευσης</string>
+    <string name="all_apps_search_result_files_description">Πολυμέσα, έγγραφα, φακέλους και πολλά άλλα.</string>
+    <string name="all_apps_search_result_contacts_description">Επαφές και άλλα</string>
     <string name="quickstep_incompatible">Μη Συμβατή Ενσωμάτωση Συστήματος</string>
     <string name="quickstep_incompatible_description">Η συσκευή σας έχει ρυθμιστεί ώστε να διαθέτει χειρονομίες συστήματος (γνωστές ως Quickstep) που παρέχονται από το %1$s, αλλά αυτή η έκδοση του %1$s δεν είναι συμβατή με την έκδοση Android που διαθέτετε. Για να συνεχίσετε να χρησιμοποιείτε τη συσκευή σας, απεγκαταστήστε τις ενημερώσεις %1$s ή απενεργοποιήστε το %1$s ως πάροχο χειρονομιών συστήματος.</string>
     <string name="delete">Διαγραφή</string>

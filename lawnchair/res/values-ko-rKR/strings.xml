@@ -253,7 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">앱 검색</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s과 Lawnchair는 수익 공유 계약을 맺었습니다.\n\n%1$s로 검색하면 Lawnchair 지원에 도움이 됩니다.</string>
     <string name="app_label">앱</string>
     <string name="website_label">웹사이트</string>
     <string name="qsb_search_provider_app_required">앱이 필요합니다.</string>
@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">유사 검색어 검색</string>
     <string name="fuzzy_search_desc">앱을 검색할 때 검색어와 유사한 앱을 찾아줍니다.</string>
     <string name="max_search_result_count_title">최대 검색 결과 수</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">앱 서랍 아이콘 가로 배치 수</string>
     <string name="row_height_label">가로 행 높이</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -361,7 +373,7 @@
     <string name="label">라벨</string>
     <string name="hide_from_drawer">앱 서랍에서 숨기기</string>
     <string name="suggestion_pref_screen_title">제안</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">앱 서랍 상단에 추천 앱 표시</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair 버그 신고하기</string>
     <string name="crash_report_notif_title">%1$s가 종료되었습니다</string>
@@ -383,8 +395,18 @@
     <string name="label_search">검색</string>
     <string name="label_lens">구글 렌즈</string>
     <string name="label_voice_search">음성 검색</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">더 많은 앱 검색하기</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">앱 스토어나 브라우저가 설치되어 있지 않습니다.</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
+    <string name="all_apps_search_result_files">From your files</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">호환되지 않는 시스템 통합</string>
     <string name="quickstep_incompatible_description">기기가 %1$s에서 제공하는 시스템 제스처(Quickstep으로 알려져 있음)가 설정되어 있지만 %1$s의 이 버전은 Android 버전과 호환되지 않습니다. 장치를 계속 사용하려면 %1$s 업데이트를 제거하거나 시스템 제스처 공급자로 %1$s을(를) 비활성화하십시오.</string>
     <string name="delete">삭제</string>

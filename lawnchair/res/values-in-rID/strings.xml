@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Pencarian Samar</string>
     <string name="fuzzy_search_desc">Memperkirakan kecocokan untuk pencarian aplikasi.</string>
     <string name="max_search_result_count_title">Jumlah Hasil Pencarian Maksimal</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
     <string name="row_height_label">Tinggi Baris</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -383,8 +395,18 @@
     <string name="label_search">Pencarian</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Penelusuran Suara</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">Cari Lebih Banyak Aplikasi</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Tidak ada toko aplikasi atau browser yang terinstal.</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
+    <string name="all_apps_search_result_files">From your files</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">Integrasi Sistem yang Tidak Kompatibel</string>
     <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasikan untuk menggunakan sistem gestur (dikenal sebagai Quickstep) yang disediakan oleh %1$s, tetapi versi %1$s ini tidak kompatibel dengan versi Android Anda. Untuk terus menggunakan perangkat Anda, mohon uninstal pembaruan %1$s atau menonaktifkan %1$s sebagai penyedia sistem gestur.</string>
     <string name="delete">Hapus</string>

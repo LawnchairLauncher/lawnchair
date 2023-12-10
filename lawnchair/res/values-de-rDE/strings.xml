@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Unscharfe Suche</string>
     <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Appsuche.</string>
     <string name="max_search_result_count_title">Max. Suchergebnisanzahl</string>
+    <string name="max_people_result_count_title">Max. Anzahl Personen-Ergebnisse</string>
+    <string name="max_file_result_count_title">Max. Anzahl Datei-Ergebnisse</string>
+    <string name="max_suggestion_result_count_title">Max. Anzahl Vorschläge</string>
+    <string name="max_settings_entry_result_count_title">Max. Anzahl Einstellungen-Ergebnisse</string>
+    <string name="max_recent_result_count_title">Max. Anzahl Verlaufs-Ergebnisse</string>
+    <string name="clear_history">Leeren</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Spalten der App-Übersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>
+    <string name="perform_wide_search_title">Geräte-Suche</string>
+    <string name="perform_wide_search_file">Dateien</string>
+    <string name="pref_suggestion_title">Internet-Ergebnisse (von <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Erweiterte Suche</string>
+    <string name="perform_wide_search_description">Durchsuche Deine Kontakte, Dateien und Einstellungen im Suchfeld der App-Übersicht.</string>
+    <string name="pref_recent_suggestion_title">Verlauf</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -384,8 +396,18 @@
     <string name="label_search">Suchen</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Sprachsuche</string>
+    <string name="search_pref_result_settings_entry_title">Einstellungs-Eintrag</string>
     <string name="all_apps_search_market_message">Weitere Apps suchen</string>
+    <string name="all_apps_search_startpage_message">Suche bei <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Kein Appstore oder Browser installiert.</string>
+    <string name="all_apps_search_result_suggestions">Aus dem Internet</string>
+    <string name="all_apps_search_result_contacts_from_device">Aus Deinen Kontakten</string>
+    <string name="all_apps_search_result_files">Aus Deinen Dateien</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Aus Deinen Einstellungen</string>
+    <string name="warn_contact_permission_content">Erfordert Kontaktberechtigung</string>
+    <string name="warn_files_permission_content">Erfordert Speicherberechtigung</string>
+    <string name="all_apps_search_result_files_description">Medien, Dokumente, Ordner und mehr.</string>
+    <string name="all_apps_search_result_contacts_description">Kontakte und mehr</string>
     <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
     <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s-Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
     <string name="delete">Löschen</string>
