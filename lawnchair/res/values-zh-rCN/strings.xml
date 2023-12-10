@@ -48,10 +48,10 @@
     <string name="font_picker_description">部分文本保持不变。</string>
     <string name="smartspace_calendar_label">资讯一览日历自定义</string>
     <string name="smartspace_calendar_description">允许显示非公历日期</string>
-    <string name="workspace_increase_max_grid_size_label">提高主屏幕最大网格大小</string>
+    <string name="workspace_increase_max_grid_size_label">增加主屏幕最大网格大小</string>
     <string name="workspace_increase_max_grid_size_description">将最大允许的主屏幕网格大小从 10 x 10 增加到 20 x 20。</string>
     <string name="always_reload_icons_label">总是重新加载图标</string>
-    <string name="always_reload_icons_description">避免在图标包中使用缓存图标</string>
+    <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
     <string name="transparent_background_icons">透明的主题图标</string>
     <string name="transparent_background_icons_description">在主题图标上使用透明背景</string>
     <string name="smartspace_mode_selection">资讯一览提供者选择</string>
@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">模糊搜索</string>
     <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>
     <string name="max_search_result_count_title">最大搜索结果数</string>
+    <string name="max_people_result_count_title">最大用户结果数</string>
+    <string name="max_file_result_count_title">最大文件结果数</string>
+    <string name="max_suggestion_result_count_title">最大建议结果数</string>
+    <string name="max_settings_entry_result_count_title">最大设置条目结果数</string>
+    <string name="max_recent_result_count_title">最大历史记录数</string>
+    <string name="clear_history">清除</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">应用抽屉列数</string>
     <string name="row_height_label">行高度</string>
+    <string name="perform_wide_search_title">设备搜索</string>
+    <string name="perform_wide_search_file">文件</string>
+    <string name="pref_suggestion_title">网页建议 (通过 <xliff:g id="startpage">启动页</xliff:g>)</string>
+    <string name="pref_advance_search_category">高级搜索</string>
+    <string name="perform_wide_search_description">在应用抽屉搜索中搜索您的联系人、文件和设置。</string>
+    <string name="pref_recent_suggestion_title">历史记录</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -361,7 +373,7 @@
     <string name="label">标签</string>
     <string name="hide_from_drawer">从应用抽屉隐藏</string>
     <string name="suggestion_pref_screen_title">建议</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">在抽屉顶部显示推荐的应用</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair 错误报告</string>
     <string name="crash_report_notif_title">%1$s 已崩溃</string>
@@ -383,8 +395,18 @@
     <string name="label_search">搜索</string>
     <string name="label_lens">Google 智能镜头</string>
     <string name="label_voice_search">语音搜索</string>
+    <string name="search_pref_result_settings_entry_title">设置项</string>
     <string name="all_apps_search_market_message">搜索更多应用</string>
+    <string name="all_apps_search_startpage_message">在 <xliff:g id="startpage">开始页</xliff:g></string>
     <string name="error_no_market_or_browser_installed">没有安装应用商店或浏览器。</string>
+    <string name="all_apps_search_result_suggestions">来自网络</string>
+    <string name="all_apps_search_result_contacts_from_device">来自您的联系人</string>
+    <string name="all_apps_search_result_files">来自您的文件</string>
+    <string name="all_apps_search_result_settings_entry_from_device">来自您的设置</string>
+    <string name="warn_contact_permission_content">需要联系人权限</string>
+    <string name="warn_files_permission_content">需要存储权限</string>
+    <string name="all_apps_search_result_files_description">媒体、 文档、 文件夹及更多。</string>
+    <string name="all_apps_search_result_contacts_description">联系人及更多信息</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
     <string name="quickstep_incompatible_description">您的设备被配置为由 %1$s提供的系统手势(称为Quickstep) ，但这个版本的 %1$s 与您的 Android 版本不兼容。 要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供者。</string>
     <string name="delete">删除</string>

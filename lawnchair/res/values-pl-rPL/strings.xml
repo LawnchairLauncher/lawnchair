@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Wyszukiwanie rozmyte</string>
     <string name="fuzzy_search_desc">Przybliżone dopasowanie dla wyszukiwań aplikacji.</string>
     <string name="max_search_result_count_title">Maks. liczba wyników wyszukiwania</string>
+    <string name="max_people_result_count_title">Maks. liczba wyników wyszukiwania</string>
+    <string name="max_file_result_count_title">Maks. liczba wyników wyszukiwania</string>
+    <string name="max_suggestion_result_count_title">Maks. liczba wyników wyszukiwania</string>
+    <string name="max_settings_entry_result_count_title">Maksymalna liczba wpisów ustawień</string>
+    <string name="max_recent_result_count_title">Maks. liczba wyników historii</string>
+    <string name="clear_history">Wyczyść</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumny szuflady aplikacji</string>
     <string name="row_height_label">Wysokość wiersza</string>
+    <string name="perform_wide_search_title">Szukaj w urządzeniu</string>
+    <string name="perform_wide_search_file">Pliki</string>
+    <string name="pref_suggestion_title">Propozycje sieciowe (poprzez <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Wyszukiwanie zaawansowane</string>
+    <string name="perform_wide_search_description">Przeszukaj kontakty, pliki i ustawienia w szufladzie aplikacji.</string>
+    <string name="pref_recent_suggestion_title">Historia</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -386,8 +398,18 @@
     <string name="label_search">Szukaj</string>
     <string name="label_lens">Obiektyw Google</string>
     <string name="label_voice_search">Wyszukiwanie głosowe</string>
+    <string name="search_pref_result_settings_entry_title">Wpis ustawień</string>
     <string name="all_apps_search_market_message">Wyszukaj więcej aplikacji</string>
+    <string name="all_apps_search_startpage_message">Szukaj na <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Brak zainstalowanego sklepu z aplikacjami lub przeglądarki.</string>
+    <string name="all_apps_search_result_suggestions">Z sieci</string>
+    <string name="all_apps_search_result_contacts_from_device">Z twoich kontaktów</string>
+    <string name="all_apps_search_result_files">Z twoich plików</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Z twoich ustawień</string>
+    <string name="warn_contact_permission_content">Wymaga dostępu do kontaktów</string>
+    <string name="warn_files_permission_content">Wymaga dostępu do pamięci</string>
+    <string name="all_apps_search_result_files_description">Media, dokumenty, katalogi i inne.</string>
+    <string name="all_apps_search_result_contacts_description">Kontakty i inne</string>
     <string name="quickstep_incompatible">Niezgodna integracja systemu</string>
     <string name="quickstep_incompatible_description">Twoje urządzenie jest skonfigurowane, aby wspierać gesty systemowe (znane jako Quickstep) dostarczane przez %1$s, ale ta wersja %1$s nie jest kompatybilna z twoją wersją Androida. Aby kontynuować korzystanie z urządzenia, odinstaluj %1$s aktualizacje lub wyłącz %1$s jako dostawcę gestów systemowych.</string>
     <string name="delete">Usuń</string>
