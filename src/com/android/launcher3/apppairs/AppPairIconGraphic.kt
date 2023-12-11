@@ -18,6 +18,7 @@ package com.android.launcher3.apppairs
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
@@ -28,9 +29,8 @@ import com.android.launcher3.DeviceProfile
  * A FrameLayout marking the area on an [AppPairIcon] where the visual icon will be drawn. One of
  * two child UI elements on an [AppPairIcon], along with a BubbleTextView holding the text title.
  */
-class AppPairIconGraphic
-@JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    FrameLayout(context, attrs) {
     companion object {
         // Design specs -- the below ratios are in relation to the size of a standard app icon.
         private const val OUTER_PADDING_SCALE = 1 / 30f
@@ -59,6 +59,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context
     // The app pairs icon appears differently in portrait and landscape.
     var isLeftRightSplit = false
 
+    private lateinit var parentIcon: AppPairIcon
     private lateinit var appPairBackground: Drawable
     private lateinit var appIcon1: Drawable
     private lateinit var appIcon2: Drawable
@@ -74,13 +75,25 @@ constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context
         bigRadius = BIG_RADIUS_SCALE * defaultIconSize
         smallRadius = SMALL_RADIUS_SCALE * defaultIconSize
         isLeftRightSplit = grid.isLeftRightSplit
+        parentIcon = icon
 
         appPairBackground = AppPairIconBackground(context, this)
         appPairBackground.setBounds(0, 0, backgroundSize.toInt(), backgroundSize.toInt())
-        appIcon1 = icon.info.contents[0].newIcon(context)
-        appIcon2 = icon.info.contents[1].newIcon(context)
+        appIcon1 = parentIcon.info.contents[0].newIcon(context)
+        appIcon2 = parentIcon.info.contents[1].newIcon(context)
         appIcon1.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
         appIcon2.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
+    }
+
+    /** Gets this icon graphic's bounds, with respect to the parent icon's coordinate system. */
+    fun getIconBounds(outBounds: Rect) {
+        outBounds.set(0, 0, backgroundSize.toInt(), backgroundSize.toInt())
+        outBounds.offset(
+            // x-coordinate in parent's coordinate system
+            ((parentIcon.width - backgroundSize) / 2).toInt(),
+            // y-coordinate in parent's coordinate system
+            parentIcon.paddingTop + outerPadding.toInt()
+        )
     }
 
     override fun dispatchDraw(canvas: Canvas) {
