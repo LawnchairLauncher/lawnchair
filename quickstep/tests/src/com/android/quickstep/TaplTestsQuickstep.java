@@ -355,6 +355,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     public void testPressBack() throws Exception {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity(
                 READ_DEVICE_CONFIG_PERMISSION);
+        // Debug if we need to goHome to prevent wrong previous state b/315525621
+        mLauncher.goHome();
         assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
         mLauncher.getWorkspace().switchToAllApps();
         mLauncher.pressBack();
