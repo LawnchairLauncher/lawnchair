@@ -80,7 +80,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_VIEW_INFLATION;
-import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.COLD;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.COLD_DEVICE_REBOOTING;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.WARM;
@@ -139,7 +138,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
@@ -159,7 +157,6 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -189,6 +186,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StartupLatencyLogger;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelWriter;
@@ -2475,39 +2473,20 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
     }
 
-    @Override
+    /**
+     * Call back when ModelCallbacks finish binding the Launcher data.
+     */
     @TargetApi(Build.VERSION_CODES.S)
-    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
-            int workspaceItemCount, boolean isBindSync) {
-        mModelCallbacks.setSynchronouslyBoundPages(boundPages);
-        mModelCallbacks.setPagesToBindSynchronously(new IntSet());
-
-        mModelCallbacks.clearPendingBinds();
-        ViewOnDrawExecutor executor = new ViewOnDrawExecutor(pendingTasks);
-        mModelCallbacks.setPendingExecutor(executor);
-        if (!isInState(ALL_APPS)) {
-            mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
-            pendingTasks.add(() -> mAppsView.getAppsStore().disableDeferUpdates(
-                    AllAppsStore.DEFER_UPDATES_NEXT_DRAW));
-        }
-
+    public void bindComplete(int workspaceItemCount, boolean isBindSync) {
         if (mOnInitialBindListener != null) {
             getRootView().getViewTreeObserver().removeOnPreDrawListener(mOnInitialBindListener);
             mOnInitialBindListener = null;
         }
-
-        executor.onLoadAnimationCompleted();
-        executor.attachTo(this);
-        if (Utilities.ATLEAST_S) {
-            Trace.endAsyncSection(DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
-                    DISPLAY_WORKSPACE_TRACE_COOKIE);
-        }
         if (!isBindSync) {
             mStartupLatencyLogger
                     .logCardinality(workspaceItemCount)
-                    .logEnd(LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
+                    .logEnd(LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
         }
-
         MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             mStartupLatencyLogger
                     .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
@@ -2518,15 +2497,13 @@ public class Launcher extends StatefulActivity<LauncherState>
                         COLD_STARTUP_TRACE_COOKIE);
             }
         });
-        getRootView().getViewTreeObserver().addOnDrawListener(
-                new ViewTreeObserver.OnDrawListener() {
-                    @Override
-                    public void onDraw() {
-                        MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(
-                                () -> getRootView().getViewTreeObserver()
-                                        .removeOnDrawListener(this));
-                    }
-                });
+    }
+
+    @Override
+    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
+            int workspaceItemCount, boolean isBindSync) {
+        mModelCallbacks.onInitialBindComplete(boundPages, pendingTasks, workspaceItemCount,
+                isBindSync);
     }
 
     /**
