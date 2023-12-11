@@ -15,10 +15,6 @@
  */
 package com.android.launcher3.ui.widget;
 
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +27,6 @@ import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
-import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
@@ -65,11 +60,9 @@ public class TaplWidgetPickerTest extends AbstractLauncherUiTest {
      * Open Widget picker, make sure the widget picker can scroll and then go to home screen.
      */
     @Test
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/303263644
     @ScreenRecord
     @PortraitLandscape
     public void testWidgets() {
-        // Testing if this will fix b/303263644
         mLauncher.goHome();
         // Test opening widgets.
         executeOnLauncher(launcher ->
