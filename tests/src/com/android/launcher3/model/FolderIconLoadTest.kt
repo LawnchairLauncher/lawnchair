@@ -24,9 +24,10 @@ import com.android.launcher3.util.LauncherLayoutBuilder
 import com.android.launcher3.util.LauncherModelHelper
 import com.android.launcher3.util.LauncherModelHelper.*
 import com.android.launcher3.util.TestUtil
+import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import java.util.concurrent.CountDownLatch
 import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -71,7 +72,7 @@ class FolderIconLoadTest {
     @Throws(Exception::class)
     fun folderLoadedWithHighRes_2x2() {
         val items = setupAndLoadFolder(4)
-        Assert.assertEquals(4, items.size.toLong())
+        assertThat(items.size).isEqualTo(4)
         verifyHighRes(items, 0, 1, 2, 3)
     }
 
@@ -79,7 +80,7 @@ class FolderIconLoadTest {
     @Throws(Exception::class)
     fun folderLoadedWithHighRes_3x2() {
         val items = setupAndLoadFolder(6)
-        Assert.assertEquals(6, items.size.toLong())
+        assertThat(items.size).isEqualTo(6)
         verifyHighRes(items, 0, 1, 3, 4)
         verifyLowRes(items, 2, 5)
     }
@@ -88,8 +89,10 @@ class FolderIconLoadTest {
     @Throws(Exception::class)
     fun folderLoadedWithHighRes_max_3x3() {
         val idp = LauncherAppState.getIDP(modelHelper.sandboxContext)
-        idp.numFolderColumns = 3
-        idp.numFolderRows = 3
+        idp.numFolderColumns = intArrayOf(3, 3, 3, 3)
+        idp.numFolderRows = intArrayOf(3, 3, 3, 3)
+        recreateSupportedDeviceProfiles()
+
         val items = setupAndLoadFolder(14)
         verifyHighRes(items, 0, 1, 3, 4)
         verifyLowRes(items, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13)
@@ -99,11 +102,26 @@ class FolderIconLoadTest {
     @Throws(Exception::class)
     fun folderLoadedWithHighRes_max_4x4() {
         val idp = LauncherAppState.getIDP(modelHelper.sandboxContext)
-        idp.numFolderColumns = 4
-        idp.numFolderRows = 4
+        idp.numFolderColumns = intArrayOf(4, 4, 4, 4)
+        idp.numFolderRows = intArrayOf(4, 4, 4, 4)
+        recreateSupportedDeviceProfiles()
+
         val items = setupAndLoadFolder(14)
         verifyHighRes(items, 0, 1, 4, 5)
         verifyLowRes(items, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun folderLoadedWithHighRes_differentFolderConfigurations() {
+        val idp = LauncherAppState.getIDP(modelHelper.sandboxContext)
+        idp.numFolderColumns = intArrayOf(4, 3, 4, 4)
+        idp.numFolderRows = intArrayOf(4, 3, 4, 4)
+        recreateSupportedDeviceProfiles()
+
+        val items = setupAndLoadFolder(14)
+        verifyHighRes(items, 0, 1, 3, 4, 5)
+        verifyLowRes(items, 2, 6, 7, 8, 9, 10, 11, 12, 13)
     }
 
     @Throws(Exception::class)
@@ -113,9 +131,7 @@ class FolderIconLoadTest {
                 .atWorkspace(0, 0, 1)
                 .putFolder("Sample")
                 .apply {
-                    for (i in 0..itemCount - 1) {
-                        this.addApp(TEST_PACKAGE, uniqueActivities[i])
-                    }
+                    for (i in 0..itemCount - 1) this.addApp(TEST_PACKAGE, uniqueActivities[i])
                 }
                 .build()
 
@@ -136,20 +152,33 @@ class FolderIconLoadTest {
         app.model.forceReload()
         modelHelper.loadModelSync()
         val folders = modelHelper.getBgDataModel().folders
-        Assert.assertEquals(1, folders.size())
-        Assert.assertEquals(itemCount, folders.valueAt(0).contents.size)
+
+        assertThat(folders.size()).isEqualTo(1)
+        assertThat(folders.valueAt(0).contents.size).isEqualTo(itemCount)
         return folders.valueAt(0).contents
     }
 
     private fun verifyHighRes(items: ArrayList<WorkspaceItemInfo>, vararg indices: Int) {
         for (index in indices) {
-            Assert.assertFalse("Index $index was not highRes", items[index].bitmap.isNullOrLowRes)
+            assertWithMessage("Index $index was not highRes")
+                .that(items[index].bitmap.isNullOrLowRes)
+                .isFalse()
         }
     }
 
     private fun verifyLowRes(items: ArrayList<WorkspaceItemInfo>, vararg indices: Int) {
         for (index in indices) {
-            Assert.assertTrue("Index $index was not lowRes", items[index].bitmap.isNullOrLowRes)
+            assertWithMessage("Index $index was not lowRes")
+                .that(items[index].bitmap.isNullOrLowRes)
+                .isTrue()
         }
+    }
+
+    /** Recreate DeviceProfiles after changing InvariantDeviceProfile */
+    private fun recreateSupportedDeviceProfiles() {
+        LauncherAppState.getIDP(modelHelper.sandboxContext).supportedProfiles =
+            LauncherAppState.getIDP(modelHelper.sandboxContext).supportedProfiles.map {
+                it.copy(modelHelper.sandboxContext)
+            }
     }
 }

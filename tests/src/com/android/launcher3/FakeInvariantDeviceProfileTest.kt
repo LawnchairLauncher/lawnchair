@@ -121,8 +121,8 @@ abstract class FakeInvariantDeviceProfileTest {
                     listOf(PointF(16f, 16f), PointF(16f, 16f), PointF(16f, 16f), PointF(16f, 16f))
                         .toTypedArray()
 
-                numFolderRows = 3
-                numFolderColumns = 3
+                numFolderRows = intArrayOf(3, 3, 3, 3)
+                numFolderColumns = intArrayOf(3, 3, 3, 3)
                 folderStyle = R.style.FolderStyleDefault
 
                 inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_split
@@ -204,8 +204,8 @@ abstract class FakeInvariantDeviceProfileTest {
                     listOf(PointF(16f, 64f), PointF(64f, 16f), PointF(16f, 64f), PointF(16f, 64f))
                         .toTypedArray()
 
-                numFolderRows = 3
-                numFolderColumns = 3
+                numFolderRows = intArrayOf(3, 3, 3, 3)
+                numFolderColumns = intArrayOf(3, 3, 3, 3)
                 folderStyle = R.style.FolderStyleDefault
 
                 inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_6_5
@@ -288,8 +288,8 @@ abstract class FakeInvariantDeviceProfileTest {
                     listOf(PointF(16f, 16f), PointF(16f, 16f), PointF(16f, 20f), PointF(20f, 20f))
                         .toTypedArray()
 
-                numFolderRows = 3
-                numFolderColumns = 3
+                numFolderRows = intArrayOf(3, 3, 3, 3)
+                numFolderColumns = intArrayOf(3, 3, 3, 3)
                 folderStyle = R.style.FolderStyleDefault
 
                 inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_split
