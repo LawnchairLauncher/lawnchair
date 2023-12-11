@@ -21,6 +21,7 @@ import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
 
@@ -34,7 +35,6 @@ import android.os.UserManager;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BuildConfig;
-import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
@@ -59,11 +59,11 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final String SAFETY_CENTER_INTENT = Intent.ACTION_SAFETY_CENTER;
     private static final String PS_SETTINGS_FRAGMENT_KEY = ":settings:fragment_args_key";
     private static final String PS_SETTINGS_FRAGMENT_VALUE = "AndroidPrivateSpace_personal";
-    private static final int ANIMATION_DURATION = 2000;
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
     private boolean mPrivateSpaceSettingsAvailable;
+    private Runnable mUnlockRunnable;
 
     public PrivateProfileManager(UserManager userManager,
             ActivityAllAppsContainerView<?> allApps,
@@ -115,9 +115,17 @@ public class PrivateProfileManager extends UserProfileManager {
         mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
     }
 
-    /** Disables quiet mode for Private Space User Profile. */
-    public void unlockPrivateProfile() {
+    /**
+     * Disables quiet mode for Private Space User Profile.
+     * The runnable passed will be executed in the {@link #reset()} method,
+     * when Launcher receives update about profile availability.
+     * The runnable passed is only executed once, and reset after execution.
+     * In case the method is called again, before the previously set runnable was executed,
+     * the runnable will be updated.
+     */
+    public void unlockPrivateProfile(Runnable runnable) {
         enableQuietMode(false);
+        mUnlockRunnable = runnable;
     }
 
     /** Enables quiet mode for Private Space User Profile. */
@@ -133,11 +141,15 @@ public class PrivateProfileManager extends UserProfileManager {
 
     /** Resets the current state of Private Profile, w.r.t. to Launcher. */
     public void reset() {
+        int previousState = getCurrentState();
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
         setCurrentState(updatedState);
         resetPrivateSpaceDecorator(updatedState);
+        if (transitioningFromLockedToUnlocked(previousState, updatedState)) {
+            applyUnlockRunnable();
+        }
     }
 
     /** Opens the Private Space Settings Entry Point. */
@@ -182,13 +194,6 @@ public class PrivateProfileManager extends UserProfileManager {
             }
             // Add Private Space Decorator to the Recycler view.
             mainAdapterHolder.mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
-            if (Flags.privateSpaceAnimation() && mAllApps.getActiveRecyclerView()
-                    == mainAdapterHolder.mRecyclerView) {
-                RecyclerViewAnimationController recyclerViewAnimationController =
-                        new RecyclerViewAnimationController(mAllApps);
-                recyclerViewAnimationController.animateToState(true /* expand */,
-                        ANIMATION_DURATION, () -> {});
-            }
         } else {
             // Remove Private Space Decorator from the Recycler view.
             if (mPrivateAppsSectionDecorator != null) {
@@ -200,6 +205,18 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Posts quiet mode enable/disable call for private profile. */
     private void enableQuietMode(boolean enable) {
         setQuietMode(enable);
+    }
+
+    void applyUnlockRunnable() {
+        if (mUnlockRunnable != null) {
+            // reset the runnable to prevent re-execution.
+            MAIN_EXECUTOR.post(mUnlockRunnable);
+            mUnlockRunnable = null;
+        }
+    }
+
+    private boolean transitioningFromLockedToUnlocked(int previousState, int updatedState) {
+        return previousState == STATE_DISABLED && updatedState == STATE_ENABLED;
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_ENABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_TRANSITION;
@@ -28,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.UserProfileManager.UserProfileState;
 
@@ -36,9 +38,13 @@ import com.android.launcher3.allapps.UserProfileManager.UserProfileState;
  * {@link UserProfileState}
  */
 public class PrivateSpaceHeaderViewController {
+    private static final int ANIMATION_DURATION = 2000;
+    private final ActivityAllAppsContainerView mAllApps;
     private final PrivateProfileManager mPrivateProfileManager;
 
-    public PrivateSpaceHeaderViewController(PrivateProfileManager privateProfileManager) {
+    public PrivateSpaceHeaderViewController(ActivityAllAppsContainerView allApps,
+            PrivateProfileManager privateProfileManager) {
+        this.mAllApps = allApps;
         this.mPrivateProfileManager = privateProfileManager;
     }
 
@@ -77,7 +83,8 @@ public class PrivateSpaceHeaderViewController {
                 quietModeButton.setOnClickListener(
                         view -> {
                             mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
-                            mPrivateProfileManager.unlockPrivateProfile();
+                            mPrivateProfileManager.unlockPrivateProfile((this::
+                                    onPrivateProfileUnlocked));
                         });
             }
             default -> quietModeButton.setVisibility(View.GONE);
@@ -103,6 +110,21 @@ public class PrivateSpaceHeaderViewController {
             transitionImage.setVisibility(View.VISIBLE);
         } else {
             transitionImage.setVisibility(View.GONE);
+        }
+    }
+
+    private void onPrivateProfileUnlocked() {
+        // If we are on main adapter view, we apply the PS Container expansion animation and
+        // then scroll down to load the entire container, making animation visible.
+        ActivityAllAppsContainerView<?>.AdapterHolder mainAdapterHolder =
+                (ActivityAllAppsContainerView<?>.AdapterHolder) mAllApps.mAH.get(MAIN);
+        if (Flags.enablePrivateSpace() && Flags.privateSpaceAnimation()
+                && mAllApps.getActiveRecyclerView() == mainAdapterHolder.mRecyclerView) {
+            RecyclerViewAnimationController recyclerViewAnimationController =
+                    new RecyclerViewAnimationController(mAllApps);
+            recyclerViewAnimationController.animateToState(true /* expand */,
+                    ANIMATION_DURATION, () -> {});
+            mAllApps.getActiveRecyclerView().scrollToBottomWithMotion();
         }
     }
 

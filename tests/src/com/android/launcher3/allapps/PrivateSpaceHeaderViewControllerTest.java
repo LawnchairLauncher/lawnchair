@@ -64,13 +64,16 @@ public class PrivateSpaceHeaderViewControllerTest {
     private RelativeLayout mPsHeaderLayout;
     @Mock
     private PrivateProfileManager mPrivateProfileManager;
+    @Mock
+    private ActivityAllAppsContainerView mAllApps;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mContext = new ActivityContextWrapper(getApplicationContext());
         mLayoutInflater = LayoutInflater.from(getApplicationContext());
-        mPsHeaderViewController = new PrivateSpaceHeaderViewController(mPrivateProfileManager);
+        mPsHeaderViewController = new PrivateSpaceHeaderViewController(mAllApps,
+                mPrivateProfileManager);
         mPsHeaderLayout = (RelativeLayout) mLayoutInflater.inflate(R.layout.private_space_header,
                 null);
     }
