@@ -644,11 +644,12 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
             secondarySnapshotHeight = totalThumbnailHeight;
             secondarySnapshotWidth = parentWidth - primarySnapshotWidth - scaledDividerBar;
-            int translationX = primarySnapshotWidth + scaledDividerBar;
             if (isRtl) {
+                int translationX = secondarySnapshotWidth + scaledDividerBar;
                 primarySnapshot.setTranslationX(-translationX);
                 secondarySnapshot.setTranslationX(0);
             } else {
+                int translationX = primarySnapshotWidth + scaledDividerBar;
                 secondarySnapshot.setTranslationX(translationX);
                 primarySnapshot.setTranslationX(0);
             }
