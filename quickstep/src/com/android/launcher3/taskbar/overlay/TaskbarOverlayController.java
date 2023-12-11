@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar.overlay;
 
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_CONSUME_IME_INSETS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
@@ -187,6 +188,7 @@ public final class TaskbarOverlayController {
         layoutParams.setFitInsetsTypes(0); // Handled by container view.
         layoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         layoutParams.setSystemApplicationOverlay(true);
+        layoutParams.privateFlags = PRIVATE_FLAG_CONSUME_IME_INSETS;
         return layoutParams;
     }
 
