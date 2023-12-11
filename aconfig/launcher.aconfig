@@ -43,6 +43,13 @@ flag {
 }
 
 flag {
+    name: "enable_focus_outline"
+    namespace: "launcher"
+    description: "Enables focus states outline for launcher."
+    bug: "310953377"
+}
+
+flag {
     name: "enable_taskbar_no_recreate"
     namespace: "launcher"
     description: "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext."

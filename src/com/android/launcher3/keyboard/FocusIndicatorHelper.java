@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 
 /**
@@ -29,7 +30,8 @@ public abstract class FocusIndicatorHelper extends ItemFocusIndicatorHelper<View
         implements OnFocusChangeListener {
 
     public FocusIndicatorHelper(View container) {
-        super(container, container.getResources().getColor(R.color.focused_background));
+        super(container, container.getResources().getColor(Flags.enableFocusOutline()
+                ? R.color.focus_outline_color : R.color.focused_background));
     }
 
     @Override
@@ -53,7 +55,18 @@ public abstract class FocusIndicatorHelper extends ItemFocusIndicatorHelper<View
 
         @Override
         public void viewToRect(View v, Rect outRect) {
-            outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+            if (Flags.enableFocusOutline()) {
+                // Ensure the left and top would not be negative and drawn outside of canvas
+                outRect.set(Math.max(0, v.getLeft()), Math.max(0, v.getTop()), v.getRight(),
+                        v.getBottom());
+                // Stroke is drawn with half outside and half inside the view. Inset by half
+                // stroke width to move the whole stroke inside the view and avoid other views
+                // occluding it
+                int halfStrokeWidth = (int) mPaint.getStrokeWidth() / 2;
+                outRect.inset(halfStrokeWidth, halfStrokeWidth);
+            } else {
+                outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+            }
         }
     }
 }
