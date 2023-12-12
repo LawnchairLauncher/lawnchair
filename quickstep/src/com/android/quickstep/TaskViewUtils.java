@@ -18,8 +18,6 @@ package com.android.quickstep;
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 import static android.view.RemoteAnimationTarget.MODE_OPENING;
 import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
-import static android.view.WindowManager.TRANSIT_OPEN;
-import static android.view.WindowManager.TRANSIT_TO_FRONT;
 
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.app.animation.Interpolators.TOUCH_RESPONSE;
@@ -421,106 +419,34 @@ public final class TaskViewUtils {
      * Technically this case should be taken care of by
      * {@link #composeRecentsSplitLaunchAnimatorLegacy} below, but the way we launch tasks whether
      * it's a single task or multiple tasks results in different entry-points.
-     *
-     * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
-     * case where launcher handles animating starting split tasks from app icon)
      */
     public static void composeRecentsSplitLaunchAnimator(GroupedTaskView launchingTaskView,
             @NonNull StateManager stateManager, @Nullable DepthController depthController,
-            int initialTaskId, int secondTaskId, @NonNull TransitionInfo transitionInfo,
-            SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
-        if (launchingTaskView != null) {
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    finishCallback.run();
-                }
-            });
-
-            final RemoteAnimationTarget[] appTargets =
-                    RemoteAnimationTargetCompat.wrapApps(transitionInfo, t, null /* leashMap */);
-            final RemoteAnimationTarget[] wallpaperTargets =
-                    RemoteAnimationTargetCompat.wrapNonApps(
-                            transitionInfo, true /* wallpapers */, t, null /* leashMap */);
-            final RemoteAnimationTarget[] nonAppTargets =
-                    RemoteAnimationTargetCompat.wrapNonApps(
-                            transitionInfo, false /* wallpapers */, t, null /* leashMap */);
-            final RecentsView recentsView = launchingTaskView.getRecentsView();
-            composeRecentsLaunchAnimator(animatorSet, launchingTaskView,
-                    appTargets, wallpaperTargets, nonAppTargets,
-                    true, stateManager,
-                    recentsView, depthController);
-
-            t.apply();
-            animatorSet.start();
-            return;
-        }
-
-        TransitionInfo.Change splitRoot1 = null;
-        TransitionInfo.Change splitRoot2 = null;
-        final ArrayList<SurfaceControl> openingTargets = new ArrayList<>();
-        for (int i = 0; i < transitionInfo.getChanges().size(); ++i) {
-            final TransitionInfo.Change change = transitionInfo.getChanges().get(i);
-            if (change.getTaskInfo() == null) {
-                continue;
-            }
-            final int taskId = change.getTaskInfo().taskId;
-            final int mode = change.getMode();
-
-            // Find the target tasks' root tasks since those are the split stages that need to
-            // be animated (the tasks themselves are children and thus inherit animation).
-            if (taskId == initialTaskId || taskId == secondTaskId) {
-                if (!(mode == TRANSIT_OPEN || mode == TRANSIT_TO_FRONT)) {
-                    throw new IllegalStateException(
-                            "Expected task to be showing, but it is " + mode);
-                }
-            }
-            if (taskId == initialTaskId) {
-                splitRoot1 = change.getParent() == null ? change :
-                        transitionInfo.getChange(change.getParent());
-                openingTargets.add(splitRoot1.getLeash());
-            }
-            if (taskId == secondTaskId) {
-                splitRoot2 = change.getParent() == null ? change :
-                        transitionInfo.getChange(change.getParent());
-                openingTargets.add(splitRoot2.getLeash());
-            }
-        }
-
-        SurfaceControl.Transaction animTransaction = new SurfaceControl.Transaction();
-        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
-        animator.setDuration(SPLIT_LAUNCH_DURATION);
-        animator.addUpdateListener(valueAnimator -> {
-            float progress = valueAnimator.getAnimatedFraction();
-            for (SurfaceControl leash: openingTargets) {
-                animTransaction.setAlpha(leash, progress);
-            }
-            animTransaction.apply();
-        });
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                for (SurfaceControl leash: openingTargets) {
-                    animTransaction.show(leash)
-                            .setAlpha(leash, 0.0f);
-                }
-                animTransaction.apply();
-            }
-
+            @NonNull TransitionInfo transitionInfo, SurfaceControl.Transaction t,
+            @NonNull Runnable finishCallback) {
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 finishCallback.run();
             }
         });
 
-        if (splitRoot1 != null && splitRoot1.getParent() != null) {
-            // Set the highest level split root alpha; we could technically use the parent of either
-            // splitRoot1 or splitRoot2
-            t.setAlpha(transitionInfo.getChange(splitRoot1.getParent()).getLeash(), 1f);
-        }
+        final RemoteAnimationTarget[] appTargets =
+                RemoteAnimationTargetCompat.wrapApps(transitionInfo, t, null /* leashMap */);
+        final RemoteAnimationTarget[] wallpaperTargets =
+                RemoteAnimationTargetCompat.wrapNonApps(
+                        transitionInfo, true /* wallpapers */, t, null /* leashMap */);
+        final RemoteAnimationTarget[] nonAppTargets =
+                RemoteAnimationTargetCompat.wrapNonApps(
+                        transitionInfo, false /* wallpapers */, t, null /* leashMap */);
+        final RecentsView recentsView = launchingTaskView.getRecentsView();
+        composeRecentsLaunchAnimator(animatorSet, launchingTaskView, appTargets, wallpaperTargets,
+                nonAppTargets, /* launcherClosing */ true, stateManager, recentsView,
+                depthController);
+
         t.apply();
-        animator.start();
+        animatorSet.start();
     }
 
     /**

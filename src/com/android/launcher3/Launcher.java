@@ -3189,7 +3189,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Handles an app pair launch; overridden in
      * {@link com.android.launcher3.uioverrides.QuickstepLauncher}
      */
-    public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
+    public void launchAppPair(AppPairIcon appPairIcon) {
         // Overridden
     }
 
