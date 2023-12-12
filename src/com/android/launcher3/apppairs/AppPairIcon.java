@@ -118,8 +118,8 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
 
     // Required for DraggableView
     @Override
-    public void getWorkspaceVisualDragBounds(Rect bounds) {
-        mAppPairName.getIconBounds(bounds);
+    public void getWorkspaceVisualDragBounds(Rect outBounds) {
+        mIconGraphic.getIconBounds(outBounds);
     }
 
     /** Sets the visibility of the icon's title text */
