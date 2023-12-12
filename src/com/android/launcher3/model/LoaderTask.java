@@ -481,16 +481,17 @@ public class LoaderTask implements Runnable {
             mItemsDeleted = c.commitDeleted();
 
             // Sort the folder items, update ranks, and make sure all preview items are high res.
-            FolderGridOrganizer verifier =
-                    new FolderGridOrganizer(mApp.getInvariantDeviceProfile());
+            List<FolderGridOrganizer> verifiers =
+                    mApp.getInvariantDeviceProfile().supportedProfiles.stream().map(
+                            FolderGridOrganizer::new).toList();
             for (FolderInfo folder : mBgDataModel.folders) {
                 Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
-                verifier.setFolderInfo(folder);
+                verifiers.forEach(verifier -> verifier.setFolderInfo(folder));
                 int size = folder.contents.size();
 
                 // Update ranks here to ensure there are no gaps caused by removed folder items.
-                // Ranks are the source of truth for folder items, so cellX and cellY can be ignored
-                // for now. Database will be updated once user manually modifies folder.
+                // Ranks are the source of truth for folder items, so cellX and cellY can be
+                // ignored for now. Database will be updated once user manually modifies folder.
                 for (int rank = 0; rank < size; ++rank) {
                     WorkspaceItemInfo info = folder.contents.get(rank);
                     // rank is used differently in app pairs, so don't reset
@@ -498,9 +499,9 @@ public class LoaderTask implements Runnable {
                         info.rank = rank;
                     }
 
-                    if (info.usingLowResIcon()
-                            && info.itemType == Favorites.ITEM_TYPE_APPLICATION
-                            && verifier.isItemInPreview(info.rank)) {
+                    if (info.usingLowResIcon() && info.itemType == Favorites.ITEM_TYPE_APPLICATION
+                            && verifiers.stream().anyMatch(
+                                verifier -> verifier.isItemInPreview(info.rank))) {
                         mIconCache.getTitleAndIcon(info, false);
                     }
                 }

@@ -40,7 +40,6 @@ import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import org.junit.Before;
@@ -120,8 +119,7 @@ public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     private void setResultAndWaitForAnimation(boolean success) {
-        if (mLauncher.isLauncher3()
-                || TestStabilityRule.isPresubmit() /* b/313926097 */) {
+        if (mLauncher.isLauncher3()) {
             setResult(success);
         } else {
             mLauncher.executeAndWaitForWallpaperAnimation(

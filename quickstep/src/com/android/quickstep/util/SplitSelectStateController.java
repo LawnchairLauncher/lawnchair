@@ -71,6 +71,7 @@ import com.android.internal.logging.InstanceId;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.logging.StatsLogManager;
@@ -92,7 +93,6 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SplitSelectionListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
@@ -141,6 +141,8 @@ public class SplitSelectStateController {
     /** If not null, this is the TaskView we want to launch from */
     @Nullable
     private GroupedTaskView mLaunchingTaskView;
+    /** If not null, this is the icon we want to launch from */
+    private AppPairIcon mLaunchingIconView;
 
     /** True when the first selected split app is being launched in fullscreen. */
     private boolean mLaunchingFirstAppFullscreen;
@@ -664,9 +666,17 @@ public class SplitSelectStateController {
                 // Only animate from taskView if it's already visible
                 boolean shouldLaunchFromTaskView = mLaunchingTaskView != null &&
                         mLaunchingTaskView.getRecentsView().isTaskViewVisible(mLaunchingTaskView);
-                TaskViewUtils.composeRecentsSplitLaunchAnimator(shouldLaunchFromTaskView
-                                ? mLaunchingTaskView : null, mStateManager,
-                        mDepthController, mInitialTaskId, mSecondTaskId, info, t, () -> {
+                mSplitAnimationController.playSplitLaunchAnimation(
+                        shouldLaunchFromTaskView ? mLaunchingTaskView : null,
+                        mLaunchingIconView,
+                        mInitialTaskId,
+                        mSecondTaskId,
+                        null /* apps */,
+                        null /* wallpapers */,
+                        null /* nonApps */,
+                        mStateManager,
+                        mDepthController,
+                        info, t, () -> {
                             finishAdapter.run();
                             cleanup(true /*success*/);
                         });
@@ -722,9 +732,10 @@ public class SplitSelectStateController {
                 RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
                 Runnable finishedCallback) {
             postAsyncCallback(mHandler,
-                    () -> TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(
-                            mLaunchingTaskView, mInitialTaskId, mSecondTaskId, apps, wallpapers,
-                            nonApps, mStateManager, mDepthController, () -> {
+                    () -> mSplitAnimationController.playSplitLaunchAnimation(mLaunchingTaskView,
+                            mLaunchingIconView, mInitialTaskId, mSecondTaskId, apps, wallpapers,
+                            nonApps, mStateManager, mDepthController, null /* info */, null /* t */,
+                            () -> {
                                 finishedCallback.run();
                                 if (mSuccessCallback != null) {
                                     mSuccessCallback.accept(true);
@@ -757,6 +768,7 @@ public class SplitSelectStateController {
         dispatchOnSplitSelectionExit();
         mRecentsAnimationRunning = false;
         mLaunchingTaskView = null;
+        mLaunchingIconView = null;
         mAnimateCurrentTaskDismissal = false;
         mDismissingFromSplitPair = false;
         mFirstFloatingTaskView = null;
@@ -815,6 +827,10 @@ public class SplitSelectStateController {
 
     public AppPairsController getAppPairsController() {
         return mAppPairsController;
+    }
+
+    public void setLaunchingIconView(AppPairIcon launchingIconView) {
+        mLaunchingIconView = launchingIconView;
     }
 
     public BackPressHandler getSplitBackHandler() {

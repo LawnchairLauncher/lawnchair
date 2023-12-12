@@ -285,6 +285,11 @@ public class ReorderAlgorithm {
         return foundSolution;
     }
 
+    private void revertDir(int[] direction) {
+        direction[0] *= -1;
+        direction[1] *= -1;
+    }
+
     // This method tries to find a reordering solution which satisfies the push mechanic by trying
     // to push items in each of the cardinal directions, in an order based on the direction vector
     // passed.
@@ -293,91 +298,36 @@ public class ReorderAlgorithm {
         if ((Math.abs(direction[0]) + Math.abs(direction[1])) > 1) {
             // If the direction vector has two non-zero components, we try pushing
             // separately in each of the components.
-            int temp = direction[1];
-            direction[1] = 0;
-
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
+            int temp;
+            for (int j = 0; j < 2; j++) {
+                for (int i = 1; i >= 0; i--) {
+                    temp = direction[i];
+                    direction[i] = 0;
+                    if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                            solution)) {
+                        return true;
+                    }
+                    direction[i] = temp;
+                }
+                revertDir(direction);
             }
-            direction[1] = temp;
-            temp = direction[0];
-            direction[0] = 0;
-
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
-            }
-            // Revert the direction
-            direction[0] = temp;
-
-            // Now we try pushing in each component of the opposite direction
-            direction[0] *= -1;
-            direction[1] *= -1;
-            temp = direction[1];
-            direction[1] = 0;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
-            }
-
-            direction[1] = temp;
-            temp = direction[0];
-            direction[0] = 0;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
-            }
-            // revert the direction
-            direction[0] = temp;
-            direction[0] *= -1;
-            direction[1] *= -1;
-
         } else {
             // If the direction vector has a single non-zero component, we push first in the
             // direction of the vector
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
+            int temp;
+            for (int j = 0; j < 2; j++) {
+                for (int i = 0; i < 2; i++) {
+                    if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
+                            solution)) {
+                        return true;
+                    }
+                    revertDir(direction);
+                }
+                // Swap the components
+                temp = direction[1];
+                direction[1] = direction[0];
+                direction[0] = temp;
             }
-            // Then we try the opposite direction
-            direction[0] *= -1;
-            direction[1] *= -1;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
-            }
-            // Switch the direction back
-            direction[0] *= -1;
-            direction[1] *= -1;
-
-            // If we have failed to find a push solution with the above, then we try
-            // to find a solution by pushing along the perpendicular axis.
-
-            // Swap the components
-            int temp = direction[1];
-            direction[1] = direction[0];
-            direction[0] = temp;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
-            }
-
-            // Then we try the opposite direction
-            direction[0] *= -1;
-            direction[1] *= -1;
-            if (pushViewsToTempLocation(intersectingViews, occupied, direction, ignoreView,
-                    solution)) {
-                return true;
-            }
-            // Switch the direction back
-            direction[0] *= -1;
-            direction[1] *= -1;
-
-            // Swap the components back
-            temp = direction[1];
-            direction[1] = direction[0];
-            direction[0] = temp;
         }
         return false;
     }

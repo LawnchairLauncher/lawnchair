@@ -32,8 +32,8 @@ import com.android.launcher3.R;
  * A Drawable for the background behind the twin app icons (looks like two rectangles).
  */
 class AppPairIconBackground extends Drawable {
-    // The icon that we will draw this background on.
-    private final AppPairIcon icon;
+    // The underlying view that we are drawing this background on.
+    private final AppPairIconGraphic icon;
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     /**
@@ -44,8 +44,8 @@ class AppPairIconBackground extends Drawable {
     private static final RectF EMPTY_RECT = new RectF();
     private static final float[] ARRAY_OF_ZEROES = new float[8];
 
-    AppPairIconBackground(Context context, AppPairIcon appPairIcon) {
-        icon = appPairIcon;
+    AppPairIconBackground(Context context, AppPairIconGraphic iconGraphic) {
+        icon = iconGraphic;
         // Set up background paint color
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         mBackgroundPaint.setStyle(Paint.Style.FILL);
@@ -56,7 +56,7 @@ class AppPairIconBackground extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        if (icon.mIsLandscape) {
+        if (icon.isLeftRightSplit()) {
             drawLeftRightSplit(canvas);
         } else {
             drawTopBottomSplit(canvas);
@@ -73,29 +73,29 @@ class AppPairIconBackground extends Drawable {
 
         // The left half of the background image, excluding center channel
         RectF leftSide = new RectF(
-                icon.mOuterPadding,
-                icon.mOuterPadding,
-                (width / 2f) - (icon.mCenterChannelSize / 2f),
-                height - icon.mOuterPadding
+                0,
+                0,
+                (width / 2f) - (icon.getCenterChannelSize() / 2f),
+                height
         );
         // The right half of the background image, excluding center channel
         RectF rightSide = new RectF(
-                (width / 2f) + (icon.mCenterChannelSize / 2f),
-                icon.mOuterPadding,
-                width - icon.mOuterPadding,
-                height - icon.mOuterPadding
+                (width / 2f) + (icon.getCenterChannelSize() / 2f),
+                0,
+                width,
+                height
         );
 
         drawCustomRoundedRect(canvas, leftSide, new float[]{
-                icon.mBigRadius, icon.mBigRadius,
-                icon.mSmallRadius, icon.mSmallRadius,
-                icon.mSmallRadius, icon.mSmallRadius,
-                icon.mBigRadius, icon.mBigRadius});
+                icon.getBigRadius(), icon.getBigRadius(),
+                icon.getSmallRadius(), icon.getSmallRadius(),
+                icon.getSmallRadius(), icon.getSmallRadius(),
+                icon.getBigRadius(), icon.getBigRadius()});
         drawCustomRoundedRect(canvas, rightSide, new float[]{
-                icon.mSmallRadius, icon.mSmallRadius,
-                icon.mBigRadius, icon.mBigRadius,
-                icon.mBigRadius, icon.mBigRadius,
-                icon.mSmallRadius, icon.mSmallRadius});
+                icon.getSmallRadius(), icon.getSmallRadius(),
+                icon.getBigRadius(), icon.getBigRadius(),
+                icon.getBigRadius(), icon.getBigRadius(),
+                icon.getSmallRadius(), icon.getSmallRadius()});
     }
 
     /**
@@ -108,29 +108,29 @@ class AppPairIconBackground extends Drawable {
 
         // The top half of the background image, excluding center channel
         RectF topSide = new RectF(
-                icon.mOuterPadding,
-                icon.mOuterPadding,
-                width - icon.mOuterPadding,
-                (height / 2f) - (icon.mCenterChannelSize / 2f)
+                0,
+                0,
+                width,
+                (height / 2f) - (icon.getCenterChannelSize() / 2f)
         );
         // The bottom half of the background image, excluding center channel
         RectF bottomSide = new RectF(
-                icon.mOuterPadding,
-                (height / 2f) + (icon.mCenterChannelSize / 2f),
-                width - icon.mOuterPadding,
-                height - icon.mOuterPadding
+                0,
+                (height / 2f) + (icon.getCenterChannelSize() / 2f),
+                width,
+                height
         );
 
         drawCustomRoundedRect(canvas, topSide, new float[]{
-                icon.mBigRadius, icon.mBigRadius,
-                icon.mBigRadius, icon.mBigRadius,
-                icon.mSmallRadius, icon.mSmallRadius,
-                icon.mSmallRadius, icon.mSmallRadius});
+                icon.getBigRadius(), icon.getBigRadius(),
+                icon.getBigRadius(), icon.getBigRadius(),
+                icon.getSmallRadius(), icon.getSmallRadius(),
+                icon.getSmallRadius(), icon.getSmallRadius()});
         drawCustomRoundedRect(canvas, bottomSide, new float[]{
-                icon.mSmallRadius, icon.mSmallRadius,
-                icon.mSmallRadius, icon.mSmallRadius,
-                icon.mBigRadius, icon.mBigRadius,
-                icon.mBigRadius, icon.mBigRadius});
+                icon.getSmallRadius(), icon.getSmallRadius(),
+                icon.getSmallRadius(), icon.getSmallRadius(),
+                icon.getBigRadius(), icon.getBigRadius(),
+                icon.getBigRadius(), icon.getBigRadius()});
     }
 
     /**
@@ -146,7 +146,7 @@ class AppPairIconBackground extends Drawable {
             c.drawDoubleRoundRect(rect, radii, EMPTY_RECT, ARRAY_OF_ZEROES, mBackgroundPaint);
         } else {
             // Fallback rectangle with uniform rounded corners
-            c.drawRoundRect(rect, icon.mBigRadius, icon.mBigRadius, mBackgroundPaint);
+            c.drawRoundRect(rect, icon.getBigRadius(), icon.getBigRadius(), mBackgroundPaint);
         }
     }
 
