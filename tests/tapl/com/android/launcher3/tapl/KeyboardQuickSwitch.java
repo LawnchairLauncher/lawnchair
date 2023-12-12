@@ -58,15 +58,15 @@ public final class KeyboardQuickSwitch {
 
     private final LauncherInstrumentation mLauncher;
     private final LauncherInstrumentation.ContainerType mStartingContainerType;
-    private final boolean mExpectHomeKeyEventsOnDismiss;
+    private final boolean mIsHomeState;
 
     KeyboardQuickSwitch(
             LauncherInstrumentation launcher,
             LauncherInstrumentation.ContainerType startingContainerType,
-            boolean expectHomeKeyEventsOnDismiss) {
+            boolean isHomeState) {
         mLauncher = launcher;
         mStartingContainerType = startingContainerType;
-        mExpectHomeKeyEventsOnDismiss = expectHomeKeyEventsOnDismiss;
+        mIsHomeState = isHomeState;
     }
 
     /**
@@ -164,7 +164,7 @@ public final class KeyboardQuickSwitch {
                 mLauncher.verifyContainerType(mStartingContainerType);
 
                 // Wait until the device has fully settled before unpressing the key code
-                if (mExpectHomeKeyEventsOnDismiss) {
+                if (mIsHomeState) {
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_HOME_ALT_LEFT_UP);
                 }
                 mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0);
@@ -204,7 +204,14 @@ public final class KeyboardQuickSwitch {
                 "want to launch focused task: "
                         + (expectedPackageName == null ? "Overview" : expectedPackageName))) {
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KQS_ALT_LEFT_UP);
-            mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0);
+
+            if (expectedPackageName == null || !mIsHomeState) {
+                mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0);
+            } else {
+                mLauncher.executeAndWaitForLauncherStop(
+                        () -> mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0),
+                        "unpressing left alt");
+            }
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
                     "un-pressed left alt")) {
