@@ -89,9 +89,9 @@ public class RestoreDbTask {
 
     public static final String APPWIDGET_OLD_IDS = "appwidget_old_ids";
     public static final String APPWIDGET_IDS = "appwidget_ids";
-
     private static final String[] DB_COLUMNS_TO_LOG = {"profileId", "title", "itemType", "screen",
-            "container", "cellX", "cellY", "spanX", "spanY", "intent"};
+            "container", "cellX", "cellY", "spanX", "spanY", "intent", "appWidgetProvider",
+            "appWidgetId", "restored"};
 
     /**
      * Tries to restore the backup DB if needed
@@ -141,16 +141,17 @@ public class RestoreDbTask {
      *   4. If restored from a single display backup, remove gaps between screenIds
      *   5. Override shortcuts that need to be replaced.
      *
-     * @return number of items deleted.
+     * @return number of items deleted
      */
     @VisibleForTesting
     protected int sanitizeDB(Context context, ModelDbController controller, SQLiteDatabase db,
             BackupManager backupManager) throws Exception {
-        FileLog.d(TAG, "Old Launcher Database before sanitizing:");
+        logFavoritesTable(db, "Old Launcher Database before sanitizing:", null, null);
         // Primary user ids
         long myProfileId = controller.getSerialNumberForUser(myUserHandle());
         long oldProfileId = getDefaultProfileId(db);
-        FileLog.d(TAG, "sanitizeDB: myProfileId=" + myProfileId + " oldProfileId=" + oldProfileId);
+        FileLog.d(TAG, "sanitizeDB: myProfileId= " + myProfileId
+                + ", oldProfileId= " + oldProfileId);
         LongSparseArray<Long> oldManagedProfileIds = getManagedProfileIds(db, oldProfileId);
         LongSparseArray<Long> profileMapping = new LongSparseArray<>(oldManagedProfileIds.size()
                 + 1);
@@ -182,7 +183,7 @@ public class RestoreDbTask {
         final String[] args = new String[profileIds.length];
         Arrays.fill(args, "?");
         final String where = "profileId NOT IN (" + TextUtils.join(", ", Arrays.asList(args)) + ")";
-        logUnrestoredItems(db, where, profileIds);
+        logFavoritesTable(db, "items to delete from unrestored profiles:", where, profileIds);
         int itemsDeletedCount = db.delete(Favorites.TABLE_NAME, where, profileIds);
         FileLog.d(TAG, itemsDeletedCount + " total items from unrestored user(s) were deleted");
 
@@ -239,47 +240,6 @@ public class RestoreDbTask {
         // Override shortcuts
         maybeOverrideShortcuts(context, controller, db, myProfileId);
         return itemsDeletedCount;
-    }
-
-    /**
-     * Queries and logs the items we will delete from unrestored profiles in the launcher db.
-     * This is to understand why items might be missing during the restore process for Launcher.
-     * @param database the Launcher db to query from.
-     * @param where the SELECT statement to query items that will be deleted.
-     * @param profileIds the profile ID's the user will be migrating to.
-     */
-    private void logUnrestoredItems(SQLiteDatabase database, String where, String[] profileIds) {
-        try (Cursor itemsToDelete = database.query(
-                /* table */ Favorites.TABLE_NAME,
-                /* columns */ DB_COLUMNS_TO_LOG,
-                /* selection */ where,
-                /* selection args */ profileIds,
-                /* groupBy */ null,
-                /* having */ null,
-                /* orderBy */ null
-        )) {
-            if (itemsToDelete.moveToFirst()) {
-                String[] columnNames = itemsToDelete.getColumnNames();
-                StringBuilder stringBuilder = new StringBuilder(
-                        "items to be deleted from the Favorites Table during restore:\n"
-                );
-                do {
-                    for (String columnName : columnNames) {
-                        stringBuilder.append(columnName)
-                            .append("=")
-                            .append(itemsToDelete.getString(
-                                        itemsToDelete.getColumnIndex(columnName)))
-                            .append(" ");
-                    }
-                    stringBuilder.append("\n");
-                } while (itemsToDelete.moveToNext());
-                FileLog.d(TAG, stringBuilder.toString());
-            } else {
-                FileLog.d(TAG, "logDeletedItems: No items found to delete");
-            }
-        } catch (Exception e) {
-            FileLog.e(TAG, "logDeletedItems: Error reading from database", e);
-        }
     }
 
     /**
@@ -396,7 +356,7 @@ public class RestoreDbTask {
                     IntArray.fromConcatString(lp.get(APP_WIDGET_IDS)).toArray(),
                     host);
         } else {
-            FileLog.d(TAG, "No app widget ids to restore.");
+            FileLog.d(TAG, "No app widget ids were received from backup to restore.");
         }
 
         lp.remove(APP_WIDGET_IDS, OLD_APP_WIDGET_IDS);
@@ -409,16 +369,16 @@ public class RestoreDbTask {
     private void restoreAppWidgetIds(Context context, ModelDbController controller,
             int[] oldWidgetIds, int[] newWidgetIds, @NonNull AppWidgetHost host) {
         if (WidgetsModel.GO_DISABLE_WIDGETS) {
-            Log.e(TAG, "Skipping widget ID remap as widgets not supported");
+            FileLog.e(TAG, "Skipping widget ID remap as widgets not supported");
             host.deleteHost();
             return;
         }
         if (!RestoreDbTask.isPending(context)) {
             // Someone has already gone through our DB once, probably LoaderTask. Skip any further
             // modifications of the DB.
-            Log.e(TAG, "Skipping widget ID remap as DB already in use");
+            FileLog.e(TAG, "Skipping widget ID remap as DB already in use");
             for (int widgetId : newWidgetIds) {
-                Log.d(TAG, "Deleting widgetId: " + widgetId);
+                FileLog.d(TAG, "Deleting widgetId: " + widgetId);
                 host.deleteAppWidgetId(widgetId);
             }
             return;
@@ -426,7 +386,7 @@ public class RestoreDbTask {
 
         final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
 
-        Log.d(TAG, "restoreAppWidgetIds: "
+        FileLog.d(TAG, "restoreAppWidgetIds: "
                 + "oldWidgetIds=" + IntArray.wrap(oldWidgetIds).toConcatString()
                 + ", newWidgetIds=" + IntArray.wrap(newWidgetIds).toConcatString());
 
@@ -434,7 +394,7 @@ public class RestoreDbTask {
         logDatabaseWidgetInfo(controller);
 
         for (int i = 0; i < oldWidgetIds.length; i++) {
-            Log.i(TAG, "Widget state restore id " + oldWidgetIds[i] + " => " + newWidgetIds[i]);
+            FileLog.i(TAG, "Widget state restore id " + oldWidgetIds[i] + " => " + newWidgetIds[i]);
 
             final AppWidgetProviderInfo provider = widgets.getAppWidgetInfo(newWidgetIds[i]);
             final int state;
@@ -454,7 +414,7 @@ public class RestoreDbTask {
             final String where = "appWidgetId=? and (restored & 1) = 1 and profileId=?";
             String profileId = Long.toString(mainProfileId);
             final String[] args = new String[] { oldWidgetId, profileId };
-            Log.d(TAG, "restoreAppWidgetIds: querying profile id=" + profileId
+            FileLog.d(TAG, "restoreAppWidgetIds: querying profile id=" + profileId
                     + " with controller profile ID=" + controllerProfileId);
             int result = new ContentWriter(context,
                     new ContentWriter.CommitParams(controller, where, args))
@@ -463,7 +423,7 @@ public class RestoreDbTask {
                     .commit();
             if (result == 0) {
                 // TODO(b/234700507): Remove the logs after the bug is fixed
-                Log.e(TAG, "restoreAppWidgetIds: remapping failed since the widget is not in"
+                FileLog.e(TAG, "restoreAppWidgetIds: remapping failed since the widget is not in"
                         + " the database anymore");
                 try (Cursor cursor = controller.getDb().query(
                         Favorites.TABLE_NAME,
@@ -471,7 +431,7 @@ public class RestoreDbTask {
                         "appWidgetId=?", new String[]{oldWidgetId}, null, null, null)) {
                     if (!cursor.moveToFirst()) {
                         // The widget no long exists.
-                        Log.d(TAG, "Deleting widgetId: " + newWidgetIds[i] + " with old id: "
+                        FileLog.d(TAG, "Deleting widgetId: " + newWidgetIds[i] + " with old id: "
                                 + oldWidgetId);
                         host.deleteAppWidgetId(newWidgetIds[i]);
                     }
@@ -523,7 +483,7 @@ public class RestoreDbTask {
             }
             builder.append("]");
             Log.d(TAG, "restoreAppWidgetIds: all widget ids in database: "
-                    + builder.toString());
+                    + builder);
         } catch (Exception ex) {
             Log.e(TAG, "Getting widget ids from the database failed", ex);
         }
@@ -572,4 +532,45 @@ public class RestoreDbTask {
                 Collectors.joining(" OR "));
     }
 
+    /**
+     * Queries and logs the items from the Favorites table in the launcher db.
+     * This is to understand why items might be missing during the restore process for Launcher.
+     * @param database The Launcher db to query from.
+     * @param logHeader First line in log statement, used to explain what is being logged.
+     * @param where The SELECT statement to query items.
+     * @param profileIds The profile ID's for each user profile.
+     */
+    public static void logFavoritesTable(SQLiteDatabase database, @NonNull String logHeader,
+            String where, String[] profileIds) {
+        try (Cursor itemsToDelete = database.query(
+                /* table */ Favorites.TABLE_NAME,
+                /* columns */ DB_COLUMNS_TO_LOG,
+                /* selection */ where,
+                /* selection args */ profileIds,
+                /* groupBy */ null,
+                /* having */ null,
+                /* orderBy */ null
+        )) {
+            if (itemsToDelete.moveToFirst()) {
+                String[] columnNames = itemsToDelete.getColumnNames();
+                StringBuilder stringBuilder = new StringBuilder(logHeader + "\n");
+                do {
+                    for (String columnName : columnNames) {
+                        stringBuilder.append(columnName)
+                                .append("=")
+                                .append(itemsToDelete.getString(
+                                        itemsToDelete.getColumnIndex(columnName)))
+                                .append(" ");
+                    }
+                    stringBuilder.append("\n");
+                } while (itemsToDelete.moveToNext());
+                FileLog.d(TAG, stringBuilder.toString());
+            } else {
+                FileLog.d(TAG, "logFavoritesTable: No items found from query for"
+                        + "\"" + logHeader + "\"");
+            }
+        } catch (Exception e) {
+            FileLog.e(TAG, "logFavoritesTable: Error reading from database", e);
+        }
+    }
 }

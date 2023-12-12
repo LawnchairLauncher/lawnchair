@@ -62,6 +62,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -262,7 +263,7 @@ public class ModelDbController {
      */
     public void tryMigrateDB() {
         if (!migrateGridIfNeeded()) {
-            Log.d(TAG, "Migration failed: resetting launcher database");
+            FileLog.d(TAG, "Migration failed: resetting launcher database");
             createEmptyDB();
             LauncherPrefs.get(mContext).putSync(
                     getEmptyDbCreatedKey(mOpenHelper.getDatabaseName()).to(true));
@@ -282,15 +283,17 @@ public class ModelDbController {
         createDbIfNotExists();
         if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey())) {
             // If we have already create a new DB, ignore migration
+            Log.d(TAG, "migrateGridIfNeeded: new DB already created, skipping migration");
             return false;
         }
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
         if (!GridSizeMigrationUtil.needsToMigrate(mContext, idp)) {
+            Log.d(TAG, "migrateGridIfNeeded: no grid migration needed");
             return true;
         }
         String targetDbName = new DeviceGridState(idp).getDbFile();
         if (TextUtils.equals(targetDbName, mOpenHelper.getDatabaseName())) {
-            Log.e(TAG, "migrateGridIfNeeded - target db is same as current: " + targetDbName);
+            Log.e(TAG, "migrateGridIfNeeded: target db is same as current: " + targetDbName);
             return false;
         }
         DatabaseHelper oldHelper = mOpenHelper;
@@ -299,6 +302,9 @@ public class ModelDbController {
         try {
             return GridSizeMigrationUtil.migrateGridIfNeeded(mContext, idp, mOpenHelper,
                    oldHelper.getWritableDatabase());
+        } catch (Exception e) {
+            FileLog.e(TAG, "Failed to migrate grid", e);
+            return false;
         } finally {
             if (mOpenHelper != oldHelper) {
                 oldHelper.close();
