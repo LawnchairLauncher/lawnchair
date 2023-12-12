@@ -1121,30 +1121,34 @@ public final class LauncherInstrumentation {
      */
     public void pressBack() {
         try (Closable e = eventsCheck(); Closable c = addContextLayer("want to press back")) {
-            waitForLauncherInitialized();
-            final boolean launcherVisible =
-                    isTablet() ? isLauncherContainerVisible() : isLauncherVisible();
-            boolean isThreeFingerTrackpadGesture =
-                    mTrackpadGestureType == TrackpadGestureType.THREE_FINGER;
-            if (getNavigationModel() == NavigationModel.ZERO_BUTTON
-                    || isThreeFingerTrackpadGesture) {
-                final Point displaySize = getRealDisplaySize();
-                // TODO(b/225505986): change startY and endY back to displaySize.y / 2 once the
-                //  issue is solved.
-                int startX = isThreeFingerTrackpadGesture ? displaySize.x / 4 : 0;
-                int endX = isThreeFingerTrackpadGesture ? displaySize.x * 3 / 4 : displaySize.x / 2;
-                linearGesture(startX, displaySize.y / 4, endX, displaySize.y / 4,
-                        10, false, GestureScope.DONT_EXPECT_PILFER);
+            pressBackImpl();
+        }
+    }
+
+    void pressBackImpl() {
+        waitForLauncherInitialized();
+        final boolean launcherVisible =
+                isTablet() ? isLauncherContainerVisible() : isLauncherVisible();
+        boolean isThreeFingerTrackpadGesture =
+                mTrackpadGestureType == TrackpadGestureType.THREE_FINGER;
+        if (getNavigationModel() == NavigationModel.ZERO_BUTTON
+                || isThreeFingerTrackpadGesture) {
+            final Point displaySize = getRealDisplaySize();
+            // TODO(b/225505986): change startY and endY back to displaySize.y / 2 once the
+            //  issue is solved.
+            int startX = isThreeFingerTrackpadGesture ? displaySize.x / 4 : 0;
+            int endX = isThreeFingerTrackpadGesture ? displaySize.x * 3 / 4 : displaySize.x / 2;
+            linearGesture(startX, displaySize.y / 4, endX, displaySize.y / 4,
+                    10, false, GestureScope.DONT_EXPECT_PILFER);
+        } else {
+            waitForNavigationUiObject("back").click();
+        }
+        if (launcherVisible) {
+            if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
+                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
             } else {
-                waitForNavigationUiObject("back").click();
-            }
-            if (launcherVisible) {
-                if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
-                } else {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
-                }
+                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
+                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
             }
         }
     }
