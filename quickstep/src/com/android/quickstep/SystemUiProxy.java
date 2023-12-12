@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -102,6 +101,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Holds the reference to SystemUI.
@@ -147,6 +147,9 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IDesktopTaskListener mDesktopTaskListener;
     private final LinkedHashMap<RemoteTransition, TransitionFilter> mRemoteTransitions =
             new LinkedHashMap<>();
+
+    private final List<Runnable> mStateChangeCallbacks = new ArrayList<>();
+
     private IBinder mOriginalTransactionToken = null;
     private IOnBackInvokedCallback mBackToLauncherCallback;
     private IRemoteAnimationRunner mBackToLauncherRunner;
@@ -268,6 +271,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         setDesktopTaskListener(mDesktopTaskListener);
         setAssistantOverridesRequested(
                 AssistUtils.newInstance(mContext).getSysUiAssistOverrideInvocationTypes());
+        mStateChangeCallbacks.forEach(Runnable::run);
     }
 
     /**
@@ -276,6 +280,20 @@ public class SystemUiProxy implements ISystemUiProxy {
     @MainThread
     public void clearProxy() {
         setProxy(null, null, null, null, null, null, null, null, null, null, null, null, null);
+    }
+
+    /**
+     * Adds a callback to be notified whenever the active state changes
+     */
+    public void addOnStateChangeListener(Runnable callback) {
+        mStateChangeCallbacks.add(callback);
+    }
+
+    /**
+     * Removes a previously added state change callback
+     */
+    public void removeOnStateChangeListener(Runnable callback) {
+        mStateChangeCallbacks.remove(callback);
     }
 
     // TODO(141886704): Find a way to remove this
@@ -1079,6 +1097,25 @@ public class SystemUiProxy implements ISystemUiProxy {
         } else  {
             Log.w(TAG, "Unable to call setHomeTransitionListener because ShellTransitions is null");
         }
+    }
+
+    /**
+     * Returns a surface which can be used to attach overlays to home task or null if
+     * the task doesn't exist or sysui is not connected
+     */
+    @Nullable
+    public SurfaceControl getHomeTaskOverlayContainer() {
+        // Use a local reference as this method can be called on a worker thread, which can lead
+        // to NullPointer exceptions if mShellTransitions is modified on the main thread.
+        IShellTransitions shellTransitions = mShellTransitions;
+        if (shellTransitions != null) {
+            try {
+                return mShellTransitions.getHomeTaskOverlayContainer();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call getOverlayContainerForTask", e);
+            }
+        }
+        return null;
     }
 
     /**
