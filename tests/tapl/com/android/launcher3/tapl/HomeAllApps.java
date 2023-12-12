@@ -118,4 +118,17 @@ public class HomeAllApps extends AllApps {
     public boolean isHomeState() {
         return true;
     }
+
+    /** Send the "back" gesture to go to workspace. */
+    public Workspace pressBackToWorkspace() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to press back from all apps to workspace")) {
+            mLauncher.runToState(
+                    () -> mLauncher.pressBackImpl(),
+                    NORMAL_STATE_ORDINAL,
+                    "pressing back");
+            return new Workspace(mLauncher);
+        }
+    }
 }

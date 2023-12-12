@@ -208,9 +208,10 @@ public class TaplOpenCloseAllApps extends AbstractLauncherUiTest {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity(
                 READ_DEVICE_CONFIG_PERMISSION);
         assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
-        mLauncher.getWorkspace().switchToAllApps();
-        mLauncher.pressBack();
-        mLauncher.getWorkspace();
+        mLauncher
+                .getWorkspace()
+                .switchToAllApps()
+                .pressBackToWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         mLauncher.pressBack();
