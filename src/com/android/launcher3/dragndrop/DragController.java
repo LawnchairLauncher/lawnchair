@@ -17,7 +17,6 @@
 package com.android.launcher3.dragndrop;
 
 import static com.android.launcher3.Utilities.ATLEAST_Q;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NO_LONG_PRESS_DRAG;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -464,7 +463,7 @@ public abstract class DragController<T extends ActivityContext>
 
     private DropTarget checkTouchMove(final int x, final int y) {
         // If we are in predrag, don't trigger any other event until we get out of it
-        if (ENABLE_NO_LONG_PRESS_DRAG.get() && mIsInPreDrag) {
+        if (mIsInPreDrag) {
             return mLastDropTarget;
         }
         DropTarget dropTarget = findDropTarget(x, y);
