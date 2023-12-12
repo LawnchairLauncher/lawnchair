@@ -73,9 +73,17 @@ public class TaskbarSharedState {
     };
 
     // Allows us to shift translation logic when doing taskbar pinning animation.
-    public Boolean startTaskbarVariantIsTransient = true;
+    public boolean startTaskbarVariantIsTransient = true;
 
     // To track if taskbar was pinned using taskbar pinning feature at the time of recreate,
     // so we can unstash transient taskbar when we un-pinning taskbar.
-    public Boolean taskbarWasPinned = false;
+    private boolean mTaskbarWasPinned = false;
+
+    public boolean getTaskbarWasPinned() {
+        return mTaskbarWasPinned;
+    }
+
+    public void setTaskbarWasPinned(boolean taskbarWasPinned) {
+        mTaskbarWasPinned = taskbarWasPinned;
+    }
 }
