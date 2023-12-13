@@ -25,6 +25,7 @@ import static com.android.quickstep.interaction.GestureSandboxActivity.KEY_USE_T
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Insets;
@@ -85,6 +86,8 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
     private boolean mIsLargeScreen;
     private boolean mIsFoldable;
     private boolean mOnAttachedToWindowPendingCreate;
+
+    @Nullable private Runnable mOnAttachedOnGlobalLayoutCallback = null;
 
     public static TutorialFragment newInstance(
             TutorialType tutorialType, boolean gestureComplete, boolean fromTutorialMenu) {
@@ -349,10 +352,24 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
                     new ViewTreeObserver.OnGlobalLayoutListener() {
                         @Override
                         public void onGlobalLayout() {
-                            changeController(mTutorialType);
+                            runOnAttached(() -> changeController(mTutorialType));
                             mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         }
                     });
+        }
+    }
+
+    private void runOnAttached(Runnable callback) {
+        mOnAttachedOnGlobalLayoutCallback = callback;
+        if (getContext() != null) {
+            onAttached();
+        }
+    }
+
+    private void onAttached() {
+        if (mOnAttachedOnGlobalLayoutCallback != null) {
+            mOnAttachedOnGlobalLayoutCallback.run();
+            mOnAttachedOnGlobalLayoutCallback = null;
         }
     }
 
@@ -375,6 +392,12 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         // Note: Using logical-or to ensure both functions get called.
         return mEdgeBackGestureHandler.onInterceptTouch(motionEvent)
                 | mNavBarGestureHandler.onInterceptTouch(motionEvent);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        onAttached();
     }
 
     @Override
