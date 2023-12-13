@@ -204,6 +204,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState state) {
+        mTaskbarLauncherStateController.onStateTransitionCompletedAfterSwipeToHome(state);
+    }
+
+    @Override
     public void refreshResumedState() {
         onLauncherVisibilityChanged(mLauncher.hasBeenResumed());
     }

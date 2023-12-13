@@ -2905,6 +2905,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Overridden; move this into ActivityContext if necessary for Taskbar
     }
 
+    /**
+     * Callback for when launcher state transition completes after user swipes to home.
+     * @param finalState The final state of the transition.
+     */
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
+        // Overridden
+    }
+
     @Override
     public void returnToHomescreen() {
         super.returnToHomescreen();
