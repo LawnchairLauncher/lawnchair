@@ -19,6 +19,9 @@ package com.android.launcher3.allapps;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_ENABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_TRANSITION;
@@ -61,6 +64,8 @@ public class AlphabeticalAppsListTest {
     private static final int PRIVATE_SPACE_HEADER_ITEM_COUNT = 1;
     private static final int MAIN_USER_APP_COUNT = 2;
     private static final int PRIVATE_USER_APP_COUNT = 1;
+    private static final int NUM_APP_COLS = 4;
+    private static final int NUM_APP_ROWS = 3;
 
     private AlphabeticalAppsList<?> mAlphabeticalAppsList;
     @Mock
@@ -81,6 +86,7 @@ public class AlphabeticalAppsListTest {
                 info != null && info.user.equals(PRIVATE_HANDLE));
         mAlphabeticalAppsList = new AlphabeticalAppsList<>(mContext, mAllAppsStore,
                 null, mPrivateProfileManager);
+        mAlphabeticalAppsList.setNumAppsPerRowAllApps(NUM_APP_COLS);
     }
 
     @Test
@@ -180,6 +186,94 @@ public class AlphabeticalAppsListTest {
         assertEquals(0, mAlphabeticalAppsList.getAdapterItems().stream().filter(item ->
                         item.itemInfo != null && item.itemInfo.user.equals(PRIVATE_HANDLE))
                 .toList().size());
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsMiddleOfLastRow_roundNothing() {
+        int index = 3;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index,
+                NUM_APP_COLS * NUM_APP_ROWS);
+
+        assertEquals(ROUND_NOTHING, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInEndOfLastRow_roundBottomRight() {
+        int index = 11;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index,
+                NUM_APP_COLS * NUM_APP_ROWS);
+
+        assertEquals(ROUND_BOTTOM_RIGHT, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInBeginningOfLastRow_roundBottomLeft() {
+        int index = 8;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index,
+                NUM_APP_COLS * NUM_APP_ROWS);
+
+        assertEquals(ROUND_BOTTOM_LEFT, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInMiddleOfLastRow_roundNothing() {
+        int index = 9;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index,
+                NUM_APP_COLS * NUM_APP_ROWS);
+
+        assertEquals(ROUND_NOTHING, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInMiddleRow_roundNothing() {
+        int index = 5;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index,
+                NUM_APP_COLS * NUM_APP_ROWS);
+
+        assertEquals(ROUND_NOTHING, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInBeginningOfTopRow_roundNothing() {
+        int index = 0;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index,
+                NUM_APP_COLS * NUM_APP_ROWS);
+
+        assertEquals(ROUND_NOTHING, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInLastOfTopRow_roundNothing() {
+        int index = 3;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index,
+                NUM_APP_COLS * NUM_APP_ROWS);
+
+        assertEquals(ROUND_NOTHING, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInMiddleOfLastRowLastItem_roundBottomRight() {
+        int index = 9;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index, index+1);
+
+        assertEquals(ROUND_BOTTOM_RIGHT, roundRegions);
+    }
+
+    @Test
+    public void getRoundRegions_whenIndexIsInBeginningOfLastRowLastItem_roundBottomRight() {
+        int index = 8;
+
+        int roundRegions = mAlphabeticalAppsList.getRoundRegions(index, index+1);
+
+        assertEquals(ROUND_BOTTOM_RIGHT | ROUND_BOTTOM_LEFT, roundRegions);
     }
 
     private int addPrivateSpaceHeader(List<BaseAllAppsAdapter.AdapterItem> adapterItemList) {
