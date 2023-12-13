@@ -257,7 +257,7 @@ public abstract class AbstractLauncherUiTest {
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
-                .around(viewCaptureRule)
+                // .around(viewCaptureRule) // b/315482167
                 .around(new TestIsolationRule(mLauncher, true));
 
         return TestHelpers.isInLauncherProcess()

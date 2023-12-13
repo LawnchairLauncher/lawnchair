@@ -411,7 +411,7 @@ public class LoaderTask implements Runnable {
                     mSessionHelper.getActiveSessions();
             installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
             FileLog.d(TAG, "loadWorkspace: Packages with active install sessions: "
-                    + installingPkgs.values());
+                    + installingPkgs.keySet().stream().map(info -> info.mPackageName).toList());
 
             final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
@@ -440,10 +440,15 @@ public class LoaderTask implements Runnable {
                                 mShortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
                                         shortcut);
                             }
+                            if (pinnedShortcuts.isEmpty()) {
+                                FileLog.d(TAG, "No pinned shortcuts found for user " + user);
+                            }
                         } else {
                             // Shortcut manager can fail due to some race condition when the
                             // lock state changes too frequently. For the purpose of the loading
                             // shortcuts, consider the user is still locked.
+                            FileLog.d(TAG, "Shortcut request failed for user "
+                                    + user + ", user may still be locked.");
                             userUnlocked = false;
                         }
                     }
@@ -590,17 +595,17 @@ public class LoaderTask implements Runnable {
                             // Package is not yet available but might be
                             // installed later.
                             FileLog.d(TAG, "package not yet restored: " + targetPkg);
-
                             tempPackageKey.update(targetPkg, c.user);
                             if (c.hasRestoreFlag(WorkspaceItemInfo.FLAG_RESTORE_STARTED)) {
                                 // Restore has started once.
                             } else if (installingPkgs.containsKey(tempPackageKey)) {
                                 // App restore has started. Update the flag
                                 c.restoreFlag |= WorkspaceItemInfo.FLAG_RESTORE_STARTED;
-                                c.updater().put(Favorites.RESTORED,
-                                        c.restoreFlag).commit();
+                                FileLog.d(TAG, "restore started for installing app: " + targetPkg);
+                                c.updater().put(Favorites.RESTORED, c.restoreFlag).commit();
                             } else {
-                                c.markDeleted("Unrestored app removed: " + targetPkg);
+                                c.markDeleted("removing app that is not restored and not "
+                                        + "installing. package: " + targetPkg);
                                 return;
                             }
                         } else if (pmHelper.isAppOnSdcard(targetPkg, c.user)) {
@@ -611,7 +616,7 @@ public class LoaderTask implements Runnable {
                         } else if (!isSdCardReady) {
                             // SdCard is not ready yet. Package might get available,
                             // once it is ready.
-                            Log.d(TAG, "Missing pkg, will check later: " + targetPkg);
+                            Log.d(TAG, "Missing package, will check later: " + targetPkg);
                             mPendingPackages.add(new PackageUserKey(targetPkg, c.user));
                             // Add the icon on the workspace anyway.
                             allowMissingTarget = true;
@@ -647,7 +652,8 @@ public class LoaderTask implements Runnable {
                             ShortcutInfo pinnedShortcut = mShortcutKeyToPinnedShortcuts.get(key);
                             if (pinnedShortcut == null) {
                                 // The shortcut is no longer valid.
-                                c.markDeleted("Pinned shortcut not found");
+                                c.markDeleted("Pinned shortcut not found for package: "
+                                        + key.getPackageName());
                                 return;
                             }
                             info = new WorkspaceItemInfo(pinnedShortcut, mApp.getContext());
@@ -817,7 +823,7 @@ public class LoaderTask implements Runnable {
                         } else {
                             Log.v(TAG, "Widget restore pending id=" + c.id
                                     + " appWidgetId=" + appWidgetId
-                                    + " status =" + c.restoreFlag);
+                                    + " status=" + c.restoreFlag);
                             appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId, component);
                             appWidgetInfo.restoreStatus = c.restoreFlag;
 

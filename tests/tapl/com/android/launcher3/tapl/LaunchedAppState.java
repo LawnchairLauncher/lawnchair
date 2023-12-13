@@ -340,4 +340,17 @@ public final class LaunchedAppState extends Background {
             }
         }
     }
+
+    /** Send the "back" gesture to go to workspace. */
+    public Workspace pressBackToWorkspace() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to press back from launched app to workspace")) {
+            mLauncher.executeAndWaitForWallpaperAnimation(
+                    () -> mLauncher.pressBackImpl(),
+                    "pressing back"
+            );
+            return new Workspace(mLauncher);
+        }
+    }
 }

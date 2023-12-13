@@ -16,7 +16,9 @@
 package com.android.launcher3.taskbar
 
 import android.animation.AnimatorSet
+import android.annotation.SuppressLint
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.animation.doOnEnd
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
@@ -31,46 +33,68 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
 
     private lateinit var controllers: TaskbarControllers
     private lateinit var taskbarSharedState: TaskbarSharedState
-    private val launcherPrefs = LauncherPrefs.get(context)
+    private lateinit var launcherPrefs: LauncherPrefs
     private val statsLogManager = context.statsLogManager
-    private var isAnimatingTaskbarPinning = false
+    @VisibleForTesting var isAnimatingTaskbarPinning = false
+    @VisibleForTesting lateinit var onCloseCallback: (preferenceChanged: Boolean) -> Unit
 
+    @SuppressLint("VisibleForTests")
     fun init(taskbarControllers: TaskbarControllers, sharedState: TaskbarSharedState) {
         controllers = taskbarControllers
         taskbarSharedState = sharedState
+        launcherPrefs = context.launcherPrefs
+        onCloseCallback =
+            fun(didPreferenceChange: Boolean) {
+                statsLogManager.logger().log(LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE)
+                context.dragLayer.post { context.onPopupVisibilityChanged(false) }
+
+                if (!didPreferenceChange) {
+                    return
+                }
+                val animateToValue =
+                    if (!launcherPrefs.get(TASKBAR_PINNING)) {
+                        PINNING_PERSISTENT
+                    } else {
+                        PINNING_TRANSIENT
+                    }
+                taskbarSharedState.taskbarWasPinned = animateToValue == PINNING_TRANSIENT
+                animateTaskbarPinning(animateToValue)
+            }
     }
 
     fun showPinningView(view: View) {
         context.isTaskbarWindowFullscreen = true
-
         view.post {
-            val popupView = createAndPopulate(view, context)
+            val popupView = getPopupView(view)
             popupView.requestFocus()
-
-            popupView.onCloseCallback =
-                callback@{ didPreferenceChange ->
-                    statsLogManager.logger().log(LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE)
-                    context.dragLayer.post { context.onPopupVisibilityChanged(false) }
-
-                    if (!didPreferenceChange) {
-                        return@callback
-                    }
-                    val animateToValue =
-                        if (!launcherPrefs.get(TASKBAR_PINNING)) {
-                            PINNING_PERSISTENT
-                        } else {
-                            PINNING_TRANSIENT
-                        }
-                    taskbarSharedState.taskbarWasPinned = animateToValue == PINNING_TRANSIENT
-                    animateTaskbarPinning(animateToValue)
-                }
+            popupView.onCloseCallback = onCloseCallback
             context.onPopupVisibilityChanged(true)
             popupView.show()
             statsLogManager.logger().log(LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN)
         }
     }
 
-    private fun animateTaskbarPinning(animateToValue: Float) {
+    @VisibleForTesting
+    fun getPopupView(view: View): TaskbarDividerPopupView<*> {
+        return createAndPopulate(view, context)
+    }
+
+    @VisibleForTesting
+    fun animateTaskbarPinning(animateToValue: Float) {
+        val taskbarViewController = controllers.taskbarViewController
+        val animatorSet =
+            getAnimatorSetForTaskbarPinningAnimation(animateToValue).apply {
+                doOnEnd { recreateTaskbarAndUpdatePinningValue() }
+                duration = PINNING_ANIMATION_DURATION
+            }
+        controllers.taskbarOverlayController.hideWindow()
+        updateIsAnimatingTaskbarPinningAndNotifyTaskbarDragLayer(true)
+        taskbarViewController.animateAwayNotificationDotsDuringTaskbarPinningAnimation()
+        animatorSet.start()
+    }
+
+    @VisibleForTesting
+    fun getAnimatorSetForTaskbarPinningAnimation(animateToValue: Float): AnimatorSet {
         val animatorSet = AnimatorSet()
         val taskbarViewController = controllers.taskbarViewController
         val dragLayerController = controllers.taskbarDragLayerController
@@ -82,13 +106,7 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
             taskbarViewController.taskbarIconTranslationXForPinning.animateToValue(animateToValue)
         )
 
-        controllers.taskbarOverlayController.hideWindow()
-
-        animatorSet.doOnEnd { recreateTaskbarAndUpdatePinningValue() }
-        animatorSet.duration = PINNING_ANIMATION_DURATION
-        updateIsAnimatingTaskbarPinningAndNotifyTaskbarDragLayer(true)
-        taskbarViewController.animateAwayNotificationDotsDuringTaskbarPinningAnimation()
-        animatorSet.start()
+        return animatorSet
     }
 
     private fun updateIsAnimatingTaskbarPinningAndNotifyTaskbarDragLayer(isAnimating: Boolean) {
@@ -96,7 +114,8 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
         context.dragLayer.setAnimatingTaskbarPinning(isAnimating)
     }
 
-    private fun recreateTaskbarAndUpdatePinningValue() {
+    @VisibleForTesting
+    fun recreateTaskbarAndUpdatePinningValue() {
         updateIsAnimatingTaskbarPinningAndNotifyTaskbarDragLayer(false)
         launcherPrefs.put(TASKBAR_PINNING, !launcherPrefs.get(TASKBAR_PINNING))
     }
