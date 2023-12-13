@@ -40,13 +40,28 @@ class HotseatSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>)
         return specsGroup
     }
 
+    private fun getSpecIgnoringDimensionType(
+        availableSize: Int,
+        specsGroup: ResponsiveSpecGroup<HotseatSpec>
+    ): HotseatSpec? {
+        val specWidth = specsGroup.widthSpecs.firstOrNull { availableSize <= it.maxAvailableSize }
+        val specHeight = specsGroup.heightSpecs.firstOrNull { availableSize <= it.maxAvailableSize }
+        return specWidth ?: specHeight
+    }
+
     fun getCalculatedSpec(
         aspectRatio: Float,
         dimensionType: DimensionType,
-        availableSpace: Int
+        availableSpace: Int,
     ): CalculatedHotseatSpec {
         val specsGroup = getSpecsByAspectRatio(aspectRatio)
-        val spec = specsGroup.getSpec(dimensionType, availableSpace)
+
+        // TODO(b/315548992): Ignore the dimension type to prevent crash before launcher
+        //  data migration is finished. The restore process allows the initialization of
+        //  an invalid or disabled grid until the data is restored and migrated.
+        val spec = getSpecIgnoringDimensionType(availableSpace, specsGroup)
+        check(spec != null) { "No available spec found within $availableSpace. $specsGroup" }
+        // val spec = specsGroup.getSpec(dimensionType, availableSpace)
         return CalculatedHotseatSpec(availableSpace, spec)
     }
 
