@@ -131,8 +131,8 @@ public class ActivityManagerWrapper {
             int displayId) {
         // Note: The set of running tasks from the system is ordered by recency
         List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST
-                    /* keepInExtras= */);
+                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST,
+                        filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId);
         return tasks.toArray(new RunningTaskInfo[tasks.size()]);
     }
 
@@ -143,7 +143,8 @@ public class ActivityManagerWrapper {
     public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
         TaskSnapshot snapshot = null;
         try {
-            snapshot = getService().getTaskSnapshot(taskId, isLowResolution, false);
+            snapshot = getService().getTaskSnapshot(taskId, isLowResolution,
+                    true /* takeSnapshotIfNeeded */);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to retrieve task snapshot", e);
         }
@@ -324,7 +325,8 @@ public class ActivityManagerWrapper {
      * Shows a voice session identified by {@code token}
      * @return true if the session was shown, false otherwise
      */
-    public boolean showVoiceSession(IBinder token, Bundle args, int flags) {
+    public boolean showVoiceSession(@NonNull IBinder token, @NonNull Bundle args, int flags,
+            @Nullable String attributionTag) {
         IVoiceInteractionManagerService service = IVoiceInteractionManagerService.Stub.asInterface(
                 ServiceManager.getService(Context.VOICE_INTERACTION_MANAGER_SERVICE));
         if (service == null) {
@@ -333,7 +335,7 @@ public class ActivityManagerWrapper {
         args.putLong(INVOCATION_TIME_MS_KEY, SystemClock.elapsedRealtime());
 
         try {
-            return service.showSessionFromSession(token, args, flags);
+            return service.showSessionFromSession(token, args, flags, attributionTag);
         } catch (RemoteException e) {
             return false;
         }

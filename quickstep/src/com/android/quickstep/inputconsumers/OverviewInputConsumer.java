@@ -51,6 +51,7 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
 
     private final boolean mStartingInActivityBounds;
     private boolean mTargetHandledTouch;
+    private boolean mHasSetTouchModeForFirstDPadEvent;
 
     public OverviewInputConsumer(GestureState gestureState, T activity,
             @Nullable InputMonitorCompat inputMonitor, boolean startingInActivityBounds) {
@@ -95,6 +96,9 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
                 mInputMonitor.pilferPointers();
             }
         }
+        if (mHasSetTouchModeForFirstDPadEvent) {
+            mActivity.getRootView().clearFocus();
+        }
     }
 
     @Override
@@ -111,6 +115,19 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
                 MediaSessionManager mgr = mActivity.getSystemService(MediaSessionManager.class);
                 mgr.dispatchVolumeKeyEventAsSystemService(ev,
                         AudioManager.USE_DEFAULT_STREAM_TYPE);
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (!mHasSetTouchModeForFirstDPadEvent) {
+                    // When Overview is launched via meta+tab or swipe up from an app, the touch
+                    // mode somehow is not changed to false by the Android framework. The subsequent
+                    // key events (e.g. DPAD_LEFT, DPAD_RIGHT) can only be dispatched to focused
+                    // views, while focus can only be requested in
+                    // {@link View#requestFocusNoSearch(int, Rect)} when touch mode is false. To
+                    // note, here we launch overview with live tile.
+                    mHasSetTouchModeForFirstDPadEvent = true;
+                    mActivity.getRootView().getViewRootImpl().touchModeChanged(false);
+                }
                 break;
             default:
                 break;

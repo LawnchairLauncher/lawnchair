@@ -100,7 +100,9 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
             setWindowInsetsAnimationCallback(keyboardInsetAnimationCallback);
         }
 
-        setBackground(DrawableTokens.WorkAppsToggleBackground.resolve(getContext()));
+        if (!Utilities.ATLEAST_U) {
+            setBackground(DrawableTokens.WorkAppsToggleBackground.resolve(getContext()));
+        }
         ColorStateList textColor = ColorStateListTokens.AllAppsTabText.resolve(getContext());
         mTextView.setTextColor(textColor);
         setCompoundDrawableTintList(mTextView,textColor);
@@ -109,7 +111,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         setInsets(mActivityContext.getDeviceProfile().getInsets());
         mTextView.setText(R.string.work_apps_pause_btn_text);
 
-        mIcon.setColorFilter(mTextView.getCurrentTextColor());
         getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
     }
 
@@ -178,7 +179,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         return super.onApplyWindowInsets(insets);
     }
 
-    private void updateTranslationY() {
+    void updateTranslationY() {
         setTranslationY(-mImeInsets.bottom);
     }
 
@@ -192,6 +193,10 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             rect.set(insets.left, insets.top, insets.right, insets.bottom);
         }
+    }
+
+    public Rect getImeInsets() {
+        return mImeInsets;
     }
 
     @Override

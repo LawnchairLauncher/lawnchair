@@ -93,7 +93,10 @@ public class LauncherDelegate {
                         // Move the item from the folder to the workspace, in the position of the
                         // folder
                         CellLayout cellLayout = mLauncher.getCellLayout(info.container,
-                                info.screenId);
+                                mLauncher.getCellPosMapper().mapModelToPresenter(info).screenId);
+                        if (cellLayout == null) {
+                            return;
+                        }
                         finalItem =  info.contents.remove(0);
                         newIcon = mLauncher.createShortcut(cellLayout, finalItem);
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,

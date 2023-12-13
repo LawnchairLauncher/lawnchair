@@ -116,13 +116,6 @@ class FlagManager constructor(
     }
 
     /** Returns the stored value or null if not set.  */
-    // TODO(b/265188950): Remove method this once ids are fully deprecated.
-    fun <T> readFlagValue(id: Int, serializer: FlagSerializer<T>): T? {
-        val data = settings.getStringFromSecure(idToSettingsKey(id))
-        return serializer.fromSettingsData(data)
-    }
-
-    /** Returns the stored value or null if not set.  */
     fun <T> readFlagValue(name: String, serializer: FlagSerializer<T>): T? {
         val data = settings.getString(nameToSettingsKey(name))
         return serializer.fromSettingsData(data)
@@ -156,11 +149,6 @@ class FlagManager constructor(
         intent.putExtra(EXTRA_NAME, name)
 
         return intent
-    }
-
-    // TODO(b/265188950): Remove method this once ids are fully deprecated.
-    fun idToSettingsKey(id: Int): String {
-        return "$SETTINGS_PREFIX/$id"
     }
 
     fun nameToSettingsKey(name: String): String {

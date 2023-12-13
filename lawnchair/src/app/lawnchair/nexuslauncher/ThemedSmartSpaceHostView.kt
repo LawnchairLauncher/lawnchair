@@ -14,9 +14,9 @@ import app.lawnchair.font.FontManager
 import app.lawnchair.util.recursiveChildren
 import com.android.launcher3.R
 import com.android.launcher3.icons.ShadowGenerator
+import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.DoubleShadowBubbleTextView
-import com.android.systemui.shared.testing.ResourceUtils
 
 class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
 

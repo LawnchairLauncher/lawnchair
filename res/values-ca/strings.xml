@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Inici"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Pantalla dividida"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informació de l\'aplicació %1$s"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Desa la parella d\'aplicacions"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Fes doble toc i mantén premut per moure un widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Fes doble toc i mantén premut per moure un widget o per utilitzar accions personalitzades."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Treball"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Converses"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Presa de notes"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informació útil a l\'abast de la mà"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Per obtenir informació sense obrir les aplicacions, pots afegir widgets a la pantalla d\'inici"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Toca per canviar la configuració del widget"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Permet que l\'aplicació llegeixi la configuració i les dreceres de la pantalla d\'inici."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"escriure la configuració i les dreceres de la pantalla d\'inici"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Permet que l\'aplicació canviï la configuració i les dreceres de la pantalla d\'inici."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> no té permís per fer trucades telefòniques"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"No es pot carregar el widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Configuració del widget"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Toca per finalitzar la configuració"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> o més elements"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fons de pantalla"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Estil i fons de pantalla"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"Edita la pantalla d\'inici"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Config. pantalla d\'inici"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Desactivada per l\'administrador"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permet la rotació de la pantalla d\'inici"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les aplicacions de treball tenen una insígnia i el teu administrador de TI les pot veure"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entesos"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Les aplicacions de treball estan en pausa"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"No rebràs cap notificació de les aplicacions de treball"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Les aplicacions de treball estan desactivades: no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"No rebràs trucades, missatges de text ni notificacions de les aplicacions de treball"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les aplicacions de treball tenen una insígnia i el teu administrador de TI les pot veure"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entesos"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Posa en pausa les aplicacions de treball"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activa les aplicacions de treball"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Reactiva"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtra"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Cerca al telèfon"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Cerca a la tauleta"</string>

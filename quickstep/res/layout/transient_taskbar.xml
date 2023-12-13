@@ -38,6 +38,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <com.android.launcher3.taskbar.bubbles.BubbleBarView
+        android:id="@+id/taskbar_bubbles"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/bubblebar_size"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/transient_taskbar_bottom_margin"
+        android:layout_marginBottom="@dimen/transient_taskbar_bottom_margin"
+        android:paddingEnd="@dimen/taskbar_icon_spacing"
+        android:paddingStart="@dimen/taskbar_icon_spacing"
+        android:visibility="gone"
+        android:gravity="center"
+        android:clipChildren="false"
+        />
+
     <FrameLayout
         android:id="@+id/navbuttons_view"
         android:layout_width="match_parent"
@@ -74,8 +88,18 @@
     <com.android.launcher3.taskbar.StashedHandleView
         android:id="@+id/stashed_handle"
         tools:comment1="The actual size and shape will be set as a ViewOutlineProvider at runtime"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/taskbar_stashed_handle_dark_color"
+        android:clipToOutline="true"
+        android:layout_gravity="bottom"/>
+
+    <com.android.launcher3.taskbar.StashedHandleView
+        android:id="@+id/stashed_bubble_handle"
+        tools:comment1="The actual size and shape will be set as a ViewOutlineProvider at runtime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         android:background="@color/taskbar_stashed_handle_dark_color"
         android:clipToOutline="true"
         android:layout_gravity="bottom"/>

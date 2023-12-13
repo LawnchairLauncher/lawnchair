@@ -19,5 +19,5 @@ android {
     }
 }
 
-addFrameworkJar('framework-13.jar')
+addFrameworkJar('framework-14.jar')
 compileOnlyCommonJars()

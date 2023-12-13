@@ -62,7 +62,8 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider<Activity
         if (mHighlightedView instanceof BubbleTextView
                 && mHighlightedView.getTag() instanceof ItemInfo) {
             ItemInfo itemInfo = (ItemInfo) mHighlightedView.getTag();
-            return mLauncher.startActivitySafely(mHighlightedView, itemInfo.getIntent(), itemInfo);
+            return mLauncher.startActivitySafely(
+                    mHighlightedView, itemInfo.getIntent(), itemInfo) != null;
         }
         return false;
     }

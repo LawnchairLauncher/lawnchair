@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -112,7 +113,7 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void onComputeInternalInsets(ViewTreeObserver.InternalInsetsInfo inoutInfo) {
-        if (mActivity.getDragController().isSystemDragInProgress()) {
+        if (mActivity.isAnySystemDragInProgress()) {
             inoutInfo.touchableRegion.setEmpty();
             inoutInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
         }
@@ -120,7 +121,9 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        return updateInsetsDueToStashing(insets);
+        insets = updateInsetsDueToStashing(insets);
+        setInsets(insets.getInsets(WindowInsets.Type.systemBars()).toRect());
+        return insets;
     }
 
     @Override
@@ -183,7 +186,7 @@ public class TaskbarOverlayDragLayer extends
      * 2) Sets tappableInsets bottom inset to 0.
      */
     private WindowInsets updateInsetsDueToStashing(WindowInsets oldInsets) {
-        if (!mActivity.willTaskbarBeVisuallyStashed()) {
+        if (!DisplayController.isTransientTaskbar(mActivity)) {
             return oldInsets;
         }
         WindowInsets.Builder updatedInsetsBuilder = new WindowInsets.Builder(oldInsets);

@@ -77,7 +77,7 @@ public class DepthController extends BaseDepthController implements StateHandler
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View view) {
-                    if(app.lawnchair.LawnchairApp.isAtleastT()){
+                    if (app.lawnchair.LawnchairApp.isAtleastT()) {
                         CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
                                 mCrossWindowBlurListener);
                     }
@@ -90,16 +90,39 @@ public class DepthController extends BaseDepthController implements StateHandler
 
                 @Override
                 public void onViewDetachedFromWindow(View view) {
-                    if(app.lawnchair.LawnchairApp.isAtleastT()){
+                    if (app.lawnchair.LawnchairApp.isAtleastT()) {
                         CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
                     }
                     mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
+                    removeSecondaryListeners();
                 }
             };
             rootView.addOnAttachStateChangeListener(mOnAttachListener);
             if (rootView.isAttachedToWindow()) {
                 mOnAttachListener.onViewAttachedToWindow(rootView);
             }
+        }
+    }
+
+    /**
+     * Cleans up after this controller so it can be garbage collected without
+     * leaving traces.
+     */
+    public void dispose() {
+        removeSecondaryListeners();
+
+        if (mLauncher.getRootView() != null && mOnAttachListener != null) {
+            mLauncher.getRootView().removeOnAttachStateChangeListener(mOnAttachListener);
+            mOnAttachListener = null;
+        }
+    }
+
+    private void removeSecondaryListeners() {
+        if (mCrossWindowBlurListener != null) {
+            CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+        }
+        if (mOpaquenessListener != null) {
+            mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
         }
     }
 
@@ -129,7 +152,7 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
-                                      PendingAnimation animation) {
+            PendingAnimation animation) {
         if (config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)
                 || mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;
@@ -142,10 +165,16 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void applyDepthAndBlur() {
-        if(app.lawnchair.LawnchairApp.isAtleastT()){
+        if (app.lawnchair.LawnchairApp.isAtleastT()) {
             ensureDependencies();
             super.applyDepthAndBlur();
         }
+    }
+
+    @Override
+    protected void onInvalidSurface() {
+        // Lets wait for surface to become valid again
+        mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
     }
 
     @Override
@@ -153,7 +182,7 @@ public class DepthController extends BaseDepthController implements StateHandler
         mIgnoreStateChangesDuringMultiWindowAnimation = true;
 
         ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(stateDepth, MULTI_PROPERTY_VALUE,
-                        mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
+                mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
                 .setDuration(300);
         mwAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -176,5 +205,6 @@ public class DepthController extends BaseDepthController implements StateHandler
         writer.println(prefix + "\tmInEarlyWakeUp=" + mInEarlyWakeUp);
         writer.println(prefix + "\tmIgnoreStateChangesDuringMultiWindowAnimation="
                 + mIgnoreStateChangesDuringMultiWindowAnimation);
+        writer.println(prefix + "\tmPauseBlurs=" + mPauseBlurs);
     }
 }

@@ -48,8 +48,10 @@ import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.util.CompatibilityKt;
 
 /**
- * TouchController for handling touch events that get sent to the StatusBar. Once the
- * Once the event delta mDownY passes the touch slop, the events start getting forwarded.
+ * TouchController for handling touch events that get sent to the StatusBar.
+ * Once the
+ * Once the event delta mDownY passes the touch slop, the events start getting
+ * forwarded.
  * All events are offset by initial Y value of the pointer.
  */
 public class StatusBarTouchController implements TouchController {
@@ -62,7 +64,10 @@ public class StatusBarTouchController implements TouchController {
     private int mLastAction;
     private final SparseArray<PointF> mDownEvents;
 
-    /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
+    /*
+     * If {@code false}, this controller should not handle the input {@link
+     * MotionEvent}.
+     */
     private boolean mCanIntercept;
 
     private boolean mExpanded;
@@ -98,13 +103,14 @@ public class StatusBarTouchController implements TouchController {
         }
     }
 
-    @SuppressLint({"WrongConstant", "PrivateApi"})
+    @SuppressLint({ "WrongConstant", "PrivateApi" })
     private void expand() {
         try {
             Class.forName("android.app.StatusBarManager")
                     .getMethod("expandNotificationsPanel")
                     .invoke(mLauncher.getSystemService("statusbar"));
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException
+                | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -127,10 +133,11 @@ public class StatusBarTouchController implements TouchController {
             }
             mExpanded = false;
             mVibrated = false;
+            mDownEvents.clear();
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
-           // Check!! should only set it only when threshold is not entered.
-           mDownEvents.put(pid, new PointF(ev.getX(idx), ev.getY(idx)));
+            // Check!! should only set it only when threshold is not entered.
+            mDownEvents.put(pid, new PointF(ev.getX(idx), ev.getY(idx)));
         }
         if (!mCanIntercept) {
             return false;

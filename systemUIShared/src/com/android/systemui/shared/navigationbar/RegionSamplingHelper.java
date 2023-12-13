@@ -135,6 +135,7 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
     public SamplingCallback getCallback() {
         return mCallback;
     }
+
     private void onDraw() {
         if (mWaitingOnDraw) {
             mWaitingOnDraw = false;

@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"হোম"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"স্প্লিট স্ক্রিন"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s-এর জন্য অ্যাপ সম্পর্কিত তথ্য"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"অ্যাপ পেয়ার সেভ করুন"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"কোনও উইজেট সরাতে সেটি টাচ করে ধরে রাখুন।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"একটি উইজেট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ব্যক্তিগত"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"অফিস"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"কথোপকথন"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"নোট নেওয়া"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"সহজেই দরকারি তথ্য পান"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"অ্যাপ না খুলেই তথ্য পাওয়ার জন্য, হোম স্ক্রিনে উইজেট যোগ করতে পারবেন"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"উইজেট সেটিংস পরিবর্তন করতে ট্যাপ করুন"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"অ্যাপকে হোম স্ক্রিনে সেটিংস ও শর্টকাট পড়ার অনুমতি দেয়।"</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"হোম স্ক্রিনে সেটিংস ও শর্টকাট লিখুন"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"অ্যাপকে হোম স্ক্রিনে সেটিংস ও শর্টকাট পরিবর্তন করার অনুমতি দেয়।"</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ফোন কলগুলি করার জন্য <xliff:g id="APP_NAME">%1$s</xliff:g> এর অনুমতি নেই"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"উইজেট লোড করা যাচ্ছে না"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"উইজেট সেটিংস"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"সেটআপ সম্পূর্ণ করতে ট্যাপ করুন"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ফোল্ডার: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g>টি বা তার বেশি আইটেম"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ওয়ালপেপারগুলি"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ওয়ালপেপার এবং স্টাইল"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"হোম স্ক্রিন এডিট করুন"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"হোম সেটিংস"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপনার প্রশাসক দ্বারা অক্ষম করা হয়েছে"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"হোম স্ক্রিন রোটেট করার অনুমতি দিন"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"অফিস অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেগুলি দেখতে পাবেন"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুঝেছি"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"অফিস অ্যাপ বন্ধ করা আছে"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"আপনার অফিসের অ্যাপ থেকে আপনি কোনও বিজ্ঞপ্তি পাবেন না"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"অফিসের অ্যাপ আপনাকে নোটিফিকেশন পাঠাতে পারবে না। এছাড়া, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"অফিসের অ্যাপ বন্ধ আছে। আপনার অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"আপনি কোনও ফোন কল, টেক্সট মেসেজ বা অফিসের অ্যাপ থেকে বিজ্ঞপ্তি পাবেন না"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেগুলি দেখতে পাবেন"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"বুঝেছি"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"অফিসের অ্যাপ পজ করুন"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"অফিস অ্যাপ চালু করুন"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"আনপজ করুন"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টার"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"ফোনে সার্চ করে দেখুন"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"আপনার ট্যাবলেটে সার্চ করুন"</string>

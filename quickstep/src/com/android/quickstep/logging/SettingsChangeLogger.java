@@ -50,6 +50,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.NavigationMode;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -62,7 +63,8 @@ import java.util.Optional;
  * Utility class to log launcher settings changes
  */
 public class SettingsChangeLogger implements
-        DisplayController.DisplayInfoChangeListener, OnSharedPreferenceChangeListener {
+        DisplayController.DisplayInfoChangeListener, OnSharedPreferenceChangeListener,
+        SafeCloseable {
 
     /**
      * Singleton instance
@@ -186,6 +188,12 @@ public class SettingsChangeLogger implements
 
         mLoggablePrefs.forEach((key, lp) -> logger.log(() ->
                 prefs.getBoolean(key, lp.defaultValue) ? lp.eventIdOn : lp.eventIdOff));
+    }
+
+    @Override
+    public void close() {
+        getPrefs(mContext).unregisterOnSharedPreferenceChangeListener(this);
+        getDevicePrefs(mContext).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private static class LoggablePref {

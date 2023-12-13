@@ -45,6 +45,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
@@ -54,7 +55,8 @@ import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
- * This object represents a FolderIcon preview background. It stores drawing / measurement
+ * This object represents a FolderIcon preview background. It stores drawing /
+ * measurement
  * information, handles drawing, and animation (accept state <--> rest state).
  */
 public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
@@ -64,8 +66,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
 
-    private final PorterDuffXfermode mShadowPorterDuffXfermode
-            = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+    private final PorterDuffXfermode mShadowPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
     private RadialGradient mShadowShader = null;
 
     private final Matrix mShaderMatrix = new Matrix();
@@ -88,7 +89,8 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
     private CellLayout mDrawingDelegate;
 
-    // When the PreviewBackground is drawn under an icon (for creating a folder) the border
+    // When the PreviewBackground is drawn under an icon (for creating a folder) the
+    // border
     // should not occlude the icon
     public boolean isClipping = true;
 
@@ -104,33 +106,33 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     private ObjectAnimator mStrokeAlphaAnimator;
     private ObjectAnimator mShadowAnimator;
 
-    private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
-            new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
-                @Override
-                public Integer get(PreviewBackground previewBackground) {
-                    return previewBackground.mStrokeAlpha;
-                }
+    private static final Property<PreviewBackground, Integer> STROKE_ALPHA = new Property<PreviewBackground, Integer>(
+            Integer.class, "strokeAlpha") {
+        @Override
+        public Integer get(PreviewBackground previewBackground) {
+            return previewBackground.mStrokeAlpha;
+        }
 
-                @Override
-                public void set(PreviewBackground previewBackground, Integer alpha) {
-                    previewBackground.mStrokeAlpha = alpha;
-                    previewBackground.invalidate();
-                }
-            };
+        @Override
+        public void set(PreviewBackground previewBackground, Integer alpha) {
+            previewBackground.mStrokeAlpha = alpha;
+            previewBackground.invalidate();
+        }
+    };
 
-    private static final Property<PreviewBackground, Integer> SHADOW_ALPHA =
-            new Property<PreviewBackground, Integer>(Integer.class, "shadowAlpha") {
-                @Override
-                public Integer get(PreviewBackground previewBackground) {
-                    return previewBackground.mShadowAlpha;
-                }
+    private static final Property<PreviewBackground, Integer> SHADOW_ALPHA = new Property<PreviewBackground, Integer>(
+            Integer.class, "shadowAlpha") {
+        @Override
+        public Integer get(PreviewBackground previewBackground) {
+            return previewBackground.mShadowAlpha;
+        }
 
-                @Override
-                public void set(PreviewBackground previewBackground, Integer alpha) {
-                    previewBackground.mShadowAlpha = alpha;
-                    previewBackground.invalidate();
-                }
-            };
+        @Override
+        public void set(PreviewBackground previewBackground, Integer alpha) {
+            previewBackground.mShadowAlpha = alpha;
+            previewBackground.invalidate();
+        }
+    };
 
     /**
      * Draws folder background under cell layout
@@ -154,7 +156,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void setup(Context context, ActivityContext activity, View invalidateDelegate,
-                      int availableSpaceX, int topPadding) {
+            int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
 
         PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
@@ -188,8 +190,8 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
             float shadowRadius = radius + mStrokeWidth;
             int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
             mShadowShader = new RadialGradient(0, 0, 1,
-                    new int[]{shadowColor, Color.TRANSPARENT},
-                    new float[]{radius / shadowRadius, 1},
+                    new int[] { shadowColor, Color.TRANSPARENT },
+                    new float[] { radius / shadowRadius, 1 },
                     Shader.TileMode.CLAMP);
         }
 
@@ -447,7 +449,8 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void animateToRest() {
-        // This can be called multiple times -- we need to make sure the drawing delegate
+        // This can be called multiple times -- we need to make sure the drawing
+        // delegate
         // is saved and restored at the beginning of the animation, since cancelling the
         // existing animation can clear the delgate.
         CellLayout cl = mDrawingDelegate;

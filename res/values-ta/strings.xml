@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"முகப்பு"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"திரைப் பிரிப்பு"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$sக்கான ஆப்ஸ் தகவல்கள்"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"ஆப்ஸ் ஜோடியைச் சேமி"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"விட்ஜெட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"விட்ஜெட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"தனிப்பட்டவை"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"பணி"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"உரையாடல்கள்"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"குறிப்பெடுத்தல்"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"விரல்நுனியில் பயனுள்ள தகவல்களைப் பெறுங்கள்"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"முகப்புத் திரையில் விட்ஜெட்டுகளைச் சேர்த்து ஆப்ஸைத் திறக்காமலேயே தகவல்களைப் பெறலாம்"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"விட்ஜெட் அமைப்புகளை மாற்றத் தட்டவும்"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"முகப்புத் திரையிலுள்ள அமைப்புகளையும் ஷார்ட்கட்களையும் படிக்க ஆப்ஸை அனுமதிக்கும்."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"முகப்புத் திரையின் அமைப்புகளையும் ஷார்ட்கட்களையும் எழுதுதல்"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"முகப்புத் திரையிலுள்ள அமைப்புகளையும் ஷார்ட்கட்களையும் மாற்ற ஆப்ஸை அனுமதிக்கும்."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ஃபோன் அழைப்புகள் செய்ய, <xliff:g id="APP_NAME">%1$s</xliff:g> அனுமதிக்கப்படவில்லை"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"விட்ஜெட்டை ஏற்ற முடியவில்லை"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"விட்ஜெட் அமைப்புகள்"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"அமைவை நிறைவுசெய்யத் தட்டவும்"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான ஃபைல்கள்"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"வால்பேப்பர் &amp; ஸ்டைல்"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"முகப்புத் திரையில் மாற்று"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"உங்கள் நிர்வாகி முடக்கியுள்ளார்"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"முகப்புத் திரை சுழற்சியை அனுமதித்தல்"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"பணி ஆப்ஸில் பேட்ஜ் இடப்பட்டிருக்கும், உங்கள் IT நிர்வாகியால் பணி ஆப்ஸைப் பார்க்க முடியும்"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"பணி ஆப்ஸ் இடைநிறுத்தப்பட்டுள்ளன"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"உங்கள் பணி ஆப்ஸிலிருந்து அறிவிப்புகளைப் பெறமாட்டீர்கள்"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"பணி ஆப்ஸால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"பணி ஆப்ஸ் முடக்கப்பட்டுள்ளன. அவற்றால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"உங்கள் பணி ஆப்ஸிலிருந்து மொபைல் அழைப்புகள், மெசேஜ்கள், அறிவிப்புகள் ஆகியவற்றைப் பெறமாட்டீர்கள்"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"பணி ஆப்ஸ் பேட்ஜ் குறியிடப்பட்டுள்ளன. மேலும் உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"சரி"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"பணி ஆப்ஸை இடைநிறுத்து"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"பணி ஆப்ஸை இயக்கு"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"மீண்டும் இயக்கு"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"உங்கள் மொபைலில் தேடுதல்"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"உங்கள் டேப்லெட்டில் தேடுதல்"</string>

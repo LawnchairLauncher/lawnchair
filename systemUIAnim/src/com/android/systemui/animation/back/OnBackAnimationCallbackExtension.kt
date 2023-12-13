@@ -44,6 +44,11 @@ fun onBackAnimationCallbackFrom(
         private var initialY = 0f
         private val lastTransformation = BackTransformation()
 
+        override fun onBackStarted(backEvent: BackEvent) {
+            initialY = backEvent.touchY
+            onBackStarted(backEvent)
+        }
+
         override fun onBackProgressed(backEvent: BackEvent) {
             val progressY = (backEvent.touchY - initialY) / displayMetrics.heightPixels
 

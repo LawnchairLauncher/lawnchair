@@ -15,11 +15,16 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
+
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_ACTIONS;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadFourFingerSwipe;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
@@ -105,6 +110,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             newCancelListener(this::clearState);
 
     private boolean mNoIntercept;
+    private Boolean mIsTrackpadFourFingerSwipe;
     private LauncherState mStartState;
 
     private boolean mIsHomeScreenVisible = true;
@@ -130,7 +136,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+        int action = ev.getActionMasked();
+        if (action == ACTION_DOWN) {
+            mIsTrackpadFourFingerSwipe = null;
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
                 return false;
@@ -139,6 +147,13 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             // Only detect horizontal swipe for intercept, then we will allow swipe up as well.
             mSwipeDetector.setDetectableScrollConditions(DIRECTION_RIGHT,
                     false /* ignoreSlopWhenSettling */);
+        } else if (isTrackpadMultiFingerSwipe(ev) && mIsTrackpadFourFingerSwipe == null
+                && action == ACTION_MOVE) {
+            mIsTrackpadFourFingerSwipe = isTrackpadFourFingerSwipe(ev);
+            mNoIntercept = !mIsTrackpadFourFingerSwipe;
+            if (mNoIntercept) {
+                return false;
+            }
         }
 
         if (mNoIntercept) {

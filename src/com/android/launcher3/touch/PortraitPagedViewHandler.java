@@ -589,17 +589,17 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         float scaledDividerHeight = dividerHeight * scale;
 
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            if (splitInfo.appsStackedVertically) {
-                outRect.bottom = Math.round(outRect.top + scaledTopTaskHeight);
-            } else {
+            if (dp.isLandscape) {
                 outRect.right = outRect.left + Math.round(outRect.width() * topLeftTaskPercent);
+            } else {
+                outRect.bottom = Math.round(outRect.top + scaledTopTaskHeight);
             }
         } else {
-            if (splitInfo.appsStackedVertically) {
-                outRect.top += Math.round(scaledTopTaskHeight + scaledDividerHeight);
-            } else {
+            if (dp.isLandscape) {
                 outRect.left += Math.round(outRect.width()
                         * (topLeftTaskPercent + dividerBarPercent));
+            } else {
+                outRect.top += Math.round(scaledTopTaskHeight + scaledDividerHeight);
             }
         }
     }
@@ -610,9 +610,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             DeviceProfile dp, boolean isRtl) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
-        int dividerBar = Math.round(splitBoundsConfig.appsStackedVertically
-                ? splitBoundsConfig.dividerHeightPercent * dp.availableHeightPx
-                : splitBoundsConfig.dividerWidthPercent * parentWidth);
+        float dividerScale = splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.dividerHeightPercent
+                : splitBoundsConfig.dividerWidthPercent;
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;
@@ -620,12 +620,13 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         float taskPercent = splitBoundsConfig.appsStackedVertically ?
                 splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
         if (dp.isLandscape) {
+            int scaledDividerBar = Math.round(parentWidth * dividerScale);
             primarySnapshotHeight = totalThumbnailHeight;
             primarySnapshotWidth = Math.round(parentWidth * taskPercent);
 
             secondarySnapshotHeight = totalThumbnailHeight;
-            secondarySnapshotWidth = parentWidth - primarySnapshotWidth - dividerBar;
-            int translationX = primarySnapshotWidth + dividerBar;
+            secondarySnapshotWidth = parentWidth - primarySnapshotWidth - scaledDividerBar;
+            int translationX = primarySnapshotWidth + scaledDividerBar;
             if (isRtl) {
                 primarySnapshot.setTranslationX(-translationX);
                 secondarySnapshot.setTranslationX(0);
@@ -640,7 +641,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         } else {
             float scale = (float) totalThumbnailHeight / dp.availableHeightPx;
             float topTaskHeight = dp.availableHeightPx * taskPercent;
-            float finalDividerHeight = dividerBar * scale;
+            float finalDividerHeight = Math.round(totalThumbnailHeight * dividerScale);
             float scaledTopTaskHeight = topTaskHeight * scale;
             primarySnapshotWidth = parentWidth;
             primarySnapshotHeight = Math.round(scaledTopTaskHeight);

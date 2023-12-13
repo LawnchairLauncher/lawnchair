@@ -46,6 +46,7 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -81,19 +82,19 @@ import java.util.stream.Stream;
 import app.lawnchair.icons.LawnchairIconProvider;
 
 /**
- * Cache of application icons.  Icons can be made from any thread.
+ * Cache of application icons. Icons can be made from any thread.
  */
 public class IconCache extends BaseIconCache {
 
-    // Shortcut extra which can point to a packageName and can be used to indicate an alternate
+    // Shortcut extra which can point to a packageName and can be used to indicate
+    // an alternate
     // badge info. Launcher only reads this if the shortcut comes from a system app.
-    public static final String EXTRA_SHORTCUT_BADGE_OVERRIDE_PACKAGE =
-            "extra_shortcut_badge_override_package";
+    public static final String EXTRA_SHORTCUT_BADGE_OVERRIDE_PACKAGE = "extra_shortcut_badge_override_package";
 
     private static final String TAG = "Launcher.IconCache";
 
-    private final Predicate<ItemInfoWithIcon> mIsUsingFallbackOrNonDefaultIconCheck = w ->
-            w.bitmap != null && (w.bitmap.isNullOrLowRes() || !isDefaultIcon(w.bitmap, w.user));
+    private final Predicate<ItemInfoWithIcon> mIsUsingFallbackOrNonDefaultIconCheck = w -> w.bitmap != null
+            && (w.bitmap.isNullOrLowRes() || !isDefaultIcon(w.bitmap, w.user));
 
     private final CachingLogic<ComponentWithLabel> mComponentWithLabelCachingLogic;
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
@@ -103,6 +104,7 @@ public class IconCache extends BaseIconCache {
     private final UserCache mUserManager;
     private final InstantAppResolver mInstantAppResolver;
     private final IconProvider mIconProvider;
+    private final HandlerRunnable mCancelledRunnable;
 
     private final SparseArray<BitmapInfo> mWidgetCategoryBitmapInfos;
 
@@ -124,6 +126,11 @@ public class IconCache extends BaseIconCache {
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconProvider = iconProvider;
         mWidgetCategoryBitmapInfos = new SparseArray<>();
+
+        mCancelledRunnable = new HandlerRunnable(
+                mWorkerHandler, () -> null, MAIN_EXECUTOR, c -> {
+                });
+        mCancelledRunnable.cancel();
     }
 
     @Override
@@ -154,7 +161,7 @@ public class IconCache extends BaseIconCache {
             long userSerial = mUserManager.getSerialNumberForUser(user);
             for (LauncherActivityInfo app : mLauncherApps.getActivityList(packageName, user)) {
                 addIconToDBAndMemCache(app, mLauncherActivityInfoCachingLogic, info, userSerial,
-                        false /*replace existing*/);
+                        false /* replace existing */);
             }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Package not found", e);
@@ -172,30 +179,38 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
-     * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
+     * Fetches high-res icon for the provided ItemInfo and updates the caller when
+     * done.
      *
      * @return a request ID that can be used to cancel the request.
      */
     public HandlerRunnable updateIconInBackground(final ItemInfoUpdateReceiver caller,
             final ItemInfoWithIcon info) {
         Preconditions.assertUIThread();
+        Supplier<ItemInfoWithIcon> task;
+        if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
+            task = () -> {
+                getTitleAndIcon(info, false);
+                return info;
+            };
+        } else if (info instanceof PackageItemInfo pii) {
+            task = () -> {
+                getTitleAndIconForApp(pii, false);
+                return pii;
+            };
+        } else {
+            Log.i(TAG, "Icon update not supported for "
+                    + info == null ? "null" : info.getClass().getName());
+            return mCancelledRunnable;
+        }
+
         if (mPendingIconRequestCount <= 0) {
             MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
         }
         mPendingIconRequestCount++;
 
         HandlerRunnable<ItemInfoWithIcon> request = new HandlerRunnable<>(mWorkerHandler,
-                () -> {
-                    if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
-                        getTitleAndIcon(info, false);
-                    } else if (info instanceof PackageItemInfo) {
-                        getTitleAndIconForApp((PackageItemInfo) info, false);
-                    }
-                    return info;
-                },
-                MAIN_EXECUTOR,
-                caller::reapplyItemInfo,
-                this::onIconRequestEnd);
+                task, MAIN_EXECUTOR, caller::reapplyItemInfo, this::onIconRequestEnd);
         Utilities.postAsyncCallback(mWorkerHandler, request);
         return request;
     }
@@ -236,7 +251,8 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
-     * Fill in {@param info} with the icon and label for {@param si}. If the icon is not
+     * Fill in {@param info} with the icon and label for {@param si}. If the icon is
+     * not
      * available, and fallback check returns true, it keeps the old icon.
      */
     public <T extends ItemInfoWithIcon> void getShortcutIcon(T info, ShortcutInfo si,
@@ -257,30 +273,37 @@ public class IconCache extends BaseIconCache {
      * Returns the badging info for the shortcut
      */
     public BitmapInfo getShortcutInfoBadge(ShortcutInfo shortcutInfo) {
-        ComponentName cn = shortcutInfo.getActivity();
-        if (cn != null) {
-            // Get the app info for the source activity.
-            AppInfo appInfo = new AppInfo();
-            appInfo.user = shortcutInfo.getUserHandle();
-            appInfo.componentName = cn;
-            appInfo.intent = new Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_LAUNCHER)
-                    .setComponent(cn);
-            getTitleAndIcon(appInfo, false);
-            return appInfo.bitmap;
+        return getShortcutInfoBadgeItem(shortcutInfo).bitmap;
+    }
+
+    @VisibleForTesting
+    protected ItemInfoWithIcon getShortcutInfoBadgeItem(ShortcutInfo shortcutInfo) {
+        // Check for badge override first.
+        String pkg = shortcutInfo.getPackage();
+        String override = shortcutInfo.getExtras() == null ? null
+                : shortcutInfo.getExtras().getString(EXTRA_SHORTCUT_BADGE_OVERRIDE_PACKAGE);
+        if (!TextUtils.isEmpty(override)
+                && InstallSessionHelper.INSTANCE.get(mContext)
+                        .isTrustedPackage(pkg, shortcutInfo.getUserHandle())) {
+            pkg = override;
         } else {
-            String pkg = shortcutInfo.getPackage();
-            String override = shortcutInfo.getExtras() == null ? null
-                    : shortcutInfo.getExtras().getString(EXTRA_SHORTCUT_BADGE_OVERRIDE_PACKAGE);
-            if (!TextUtils.isEmpty(override)
-                    && InstallSessionHelper.INSTANCE.get(mContext)
-                            .isTrustedPackage(pkg, shortcutInfo.getUserHandle())) {
-                pkg = override;
+            // Try component based badge before trying the normal package badge
+            ComponentName cn = shortcutInfo.getActivity();
+            if (cn != null) {
+                // Get the app info for the source activity.
+                AppInfo appInfo = new AppInfo();
+                appInfo.user = shortcutInfo.getUserHandle();
+                appInfo.componentName = cn;
+                appInfo.intent = new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_LAUNCHER)
+                        .setComponent(cn);
+                getTitleAndIcon(appInfo, false);
+                return appInfo;
             }
-            PackageItemInfo pkgInfo = new PackageItemInfo(pkg, shortcutInfo.getUserHandle());
-            getTitleAndIconForApp(pkgInfo, false);
-            return pkgInfo.bitmap;
         }
+        PackageItemInfo pkgInfo = new PackageItemInfo(pkg, shortcutInfo.getUserHandle());
+        getTitleAndIconForApp(pkgInfo, false);
+        return pkgInfo;
     }
 
     /**
@@ -288,7 +311,8 @@ public class IconCache extends BaseIconCache {
      * corresponding activity is not found, it reverts to the package icon.
      */
     public synchronized void getTitleAndIcon(ItemInfoWithIcon info, boolean useLowResIcon) {
-        // null info means not installed, but if we have a component from the intent then
+        // null info means not installed, but if we have a component from the intent
+        // then
         // we should still look in the cache for restored app icons.
         if (info.getTargetComponent() == null) {
             info.bitmap = getDefaultIcon(info.user);
@@ -322,11 +346,14 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
-     * Creates an sql cursor for a query of a set of ItemInfoWithIcon icons and titles.
+     * Creates an sql cursor for a query of a set of ItemInfoWithIcon icons and
+     * titles.
      *
-     * @param iconRequestInfos List of IconRequestInfos representing titles and icons to query.
-     * @param user UserHandle all the given iconRequestInfos share
-     * @param useLowResIcons whether we should exclude the icon column from the sql results.
+     * @param iconRequestInfos List of IconRequestInfos representing titles and
+     *                         icons to query.
+     * @param user             UserHandle all the given iconRequestInfos share
+     * @param useLowResIcons   whether we should exclude the icon column from the
+     *                         sql results.
      */
     private <T extends ItemInfoWithIcon> Cursor createBulkQueryCursor(
             List<IconRequestInfo<T>> iconRequestInfos, UserHandle user, boolean useLowResIcons)
@@ -350,43 +377,40 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
-     * Load and fill icons requested in iconRequestInfos using a single bulk sql query.
+     * Load and fill icons requested in iconRequestInfos using a single bulk sql
+     * query.
      */
     public synchronized <T extends ItemInfoWithIcon> void getTitlesAndIconsInBulk(
             List<IconRequestInfo<T>> iconRequestInfos) {
-        Map<Pair<UserHandle, Boolean>, List<IconRequestInfo<T>>> iconLoadSubsectionsMap =
-                iconRequestInfos.stream()
-                        .filter(iconRequest -> {
-                            if (iconRequest.itemInfo.getTargetComponent() == null) {
-                                Log.i(TAG,
-                                        "Skipping Item info with null component name: "
-                                                + iconRequest.itemInfo);
-                                iconRequest.itemInfo.bitmap = getDefaultIcon(
-                                        iconRequest.itemInfo.user);
-                                return false;
-                            }
-                            return true;
-                        })
-                        .collect(groupingBy(iconRequest ->
-                                Pair.create(iconRequest.itemInfo.user, iconRequest.useLowResIcon)));
+        Map<Pair<UserHandle, Boolean>, List<IconRequestInfo<T>>> iconLoadSubsectionsMap = iconRequestInfos.stream()
+                .filter(iconRequest -> {
+                    if (iconRequest.itemInfo.getTargetComponent() == null) {
+                        Log.i(TAG,
+                                "Skipping Item info with null component name: "
+                                        + iconRequest.itemInfo);
+                        iconRequest.itemInfo.bitmap = getDefaultIcon(
+                                iconRequest.itemInfo.user);
+                        return false;
+                    }
+                    return true;
+                })
+                .collect(groupingBy(iconRequest -> Pair.create(iconRequest.itemInfo.user, iconRequest.useLowResIcon)));
 
         Trace.beginSection("loadIconsInBulk");
         iconLoadSubsectionsMap.forEach((sectionKey, filteredList) -> {
-            Map<ComponentName, List<IconRequestInfo<T>>> duplicateIconRequestsMap =
-                    filteredList.stream()
-                            .filter(iconRequest -> {
-                                // Filter out icons that should not share the same bitmap and title
-                                if (iconRequest.itemInfo.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
-                                    Log.e(TAG,
-                                            "Skipping Item info for deep shortcut: "
-                                                    + iconRequest.itemInfo,
-                                            new IllegalStateException());
-                                    return false;
-                                }
-                                return true;
-                            })
-                            .collect(groupingBy(iconRequest ->
-                                    iconRequest.itemInfo.getTargetComponent()));
+            Map<ComponentName, List<IconRequestInfo<T>>> duplicateIconRequestsMap = filteredList.stream()
+                    .filter(iconRequest -> {
+                        // Filter out icons that should not share the same bitmap and title
+                        if (iconRequest.itemInfo.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
+                            Log.e(TAG,
+                                    "Skipping Item info for deep shortcut: "
+                                            + iconRequest.itemInfo,
+                                    new IllegalStateException());
+                            return false;
+                        }
+                        return true;
+                    })
+                    .collect(groupingBy(iconRequest -> iconRequest.itemInfo.getTargetComponent()));
 
             Trace.beginSection("loadIconSubsectionInBulk");
             loadIconSubsection(sectionKey, filteredList, duplicateIconRequestsMap);
@@ -409,8 +433,7 @@ public class IconCache extends BaseIconCache {
             while (c.moveToNext()) {
                 ComponentName cn = ComponentName.unflattenFromString(
                         c.getString(componentNameColumnIndex));
-                List<IconRequestInfo<T>> duplicateIconRequests =
-                        duplicateIconRequestsMap.get(cn);
+                List<IconRequestInfo<T>> duplicateIconRequests = duplicateIconRequestsMap.get(cn);
 
                 if (cn != null) {
                     CacheEntry entry = cacheLocked(
@@ -510,7 +533,7 @@ public class IconCache extends BaseIconCache {
         try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
             final BitmapInfo tempBitmap = li.createBadgedIconBitmap(
                     mContext.getDrawable(widgetSection.mSectionDrawable),
-                    Process.myUserHandle (), false);
+                    Process.myUserHandle(), false);
             mWidgetCategoryBitmapInfos.put(infoInOut.widgetCategory, tempBitmap);
             infoInOut.bitmap = getBadgedIcon(tempBitmap, infoInOut.user);
         } catch (Exception e) {

@@ -68,7 +68,7 @@ public interface TaskStackChangeListener {
         onActivityLaunchOnSecondaryDisplayRerouted();
     }
 
-    default void onTaskProfileLocked(RunningTaskInfo taskInfo) { }
+    default void onTaskProfileLocked(RunningTaskInfo taskInfo, int userId) { }
     default void onTaskCreated(int taskId, ComponentName componentName) { }
     default void onTaskRemoved(int taskId) { }
     default void onTaskMovedToFront(int taskId) { }

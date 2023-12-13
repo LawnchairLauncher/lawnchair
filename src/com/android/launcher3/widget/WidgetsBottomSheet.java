@@ -55,42 +55,41 @@ import app.lawnchair.theme.drawable.DrawableTokens;
 public class WidgetsBottomSheet extends BaseWidgetSheet {
     private static final String TAG = "WidgetsBottomSheet";
 
-    private static final IntProperty<View> PADDING_BOTTOM =
-            new IntProperty<View>("paddingBottom") {
-                @Override
-                public void setValue(View view, int paddingBottom) {
-                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
-                            view.getPaddingRight(), paddingBottom);
-                }
+    private static final IntProperty<View> PADDING_BOTTOM = new IntProperty<View>("paddingBottom") {
+        @Override
+        public void setValue(View view, int paddingBottom) {
+            view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
+                    view.getPaddingRight(), paddingBottom);
+        }
 
-                @Override
-                public Integer get(View view) {
-                    return view.getPaddingBottom();
-                }
-            };
+        @Override
+        public Integer get(View view) {
+            return view.getPaddingBottom();
+        }
+    };
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
     private static final long EDUCATION_TIP_DELAY_MS = 300;
 
     private ItemInfo mOriginalItemInfo;
-    @Px private int mMaxHorizontalSpan;
+    @Px
+    private int mMaxHorizontalSpan;
 
-    private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
-            new OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    if (hasSeenEducationTip()) {
-                        removeOnLayoutChangeListener(this);
-                        return;
-                    }
-                    // Widgets are loaded asynchronously, We are adding a delay because we only want
-                    // to show the tip when the widget preview has finished loading and rendering in
-                    // this view.
-                    removeCallbacks(mShowEducationTipTask);
-                    postDelayed(mShowEducationTipTask, EDUCATION_TIP_DELAY_MS);
-                }
-            };
+    private final OnLayoutChangeListener mLayoutChangeListenerToShowTips = new OnLayoutChangeListener() {
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            if (hasSeenEducationTip()) {
+                removeOnLayoutChangeListener(this);
+                return;
+            }
+            // Widgets are loaded asynchronously, We are adding a delay because we only want
+            // to show the tip when the widget preview has finished loading and rendering in
+            // this view.
+            removeCallbacks(mShowEducationTipTask);
+            postDelayed(mShowEducationTipTask, EDUCATION_TIP_DELAY_MS);
+        }
+    };
 
     private final Runnable mShowEducationTipTask = () -> {
         if (hasSeenEducationTip()) {
@@ -98,7 +97,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
             return;
         }
         View viewForTip = ((ViewGroup) ((TableLayout) findViewById(R.id.widgets_table))
-                                    .getChildAt(0)).getChildAt(0);
+                .getChildAt(0)).getChildAt(0);
         if (showEducationTipOnViewIfPossible(viewForTip) != null) {
             removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
@@ -114,7 +113,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         if (!hasSeenEducationTip()) {
             addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
-        setContentBackground(getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet));
     }
 
     @Override
@@ -134,9 +132,11 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
 
     /** Returns {@code true} if the max spans have been updated. */
     private boolean updateMaxSpansPerRow() {
-        if (getMeasuredWidth() == 0) return false;
+        if (getMeasuredWidth() == 0)
+            return false;
 
-        @Px int maxHorizontalSpan = mContent.getMeasuredWidth() - (2 * mContentHorizontalMargin);
+        @Px
+        int maxHorizontalSpan = mContent.getMeasuredWidth() - (2 * mContentHorizontalMargin);
         if (mMaxHorizontalSpan != maxHorizontalSpan) {
             // Ensure the table layout is showing widgets in the right column after measure.
             mMaxHorizontalSpan = maxHorizontalSpan;
@@ -254,8 +254,11 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         super.setInsets(insets);
         int bottomPadding = Math.max(insets.bottom, mNavBarScrimHeight);
 
-        mContent.setPadding(mContent.getPaddingStart(),
-                mContent.getPaddingTop(), mContent.getPaddingEnd(),
+        View widgetsTable = findViewById(R.id.widgets_table);
+        widgetsTable.setPadding(
+                widgetsTable.getPaddingLeft(),
+                widgetsTable.getPaddingTop(),
+                widgetsTable.getPaddingRight(),
                 bottomPadding);
         if (bottomPadding > 0) {
             setupNavBarColor();
@@ -266,15 +269,15 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
 
     @Override
     protected void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx) {
-        ViewGroup.MarginLayoutParams layoutParams =
-                ((ViewGroup.MarginLayoutParams) findViewById(R.id.widgets_table).getLayoutParams());
+        ViewGroup.MarginLayoutParams layoutParams = ((ViewGroup.MarginLayoutParams) findViewById(R.id.widgets_table)
+                .getLayoutParams());
         layoutParams.setMarginStart(contentHorizontalMarginInPx);
         layoutParams.setMarginEnd(contentHorizontalMarginInPx);
     }
 
     @Override
     protected Pair<View, String> getAccessibilityTarget() {
-        return Pair.create(findViewById(R.id.title),  getContext().getString(
+        return Pair.create(findViewById(R.id.title), getContext().getString(
                 mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
     }
 

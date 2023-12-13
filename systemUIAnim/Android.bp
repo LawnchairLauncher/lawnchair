@@ -29,9 +29,33 @@ android_library {
         "src/**/*.java",
         "src/**/*.kt",
     ],
+    exclude_srcs: [
+        "src/com/android/systemui/surfaceeffects/**/*.java",
+        "src/com/android/systemui/surfaceeffects/**/*.kt",
+    ],
 
     resource_dirs: [
         "res",
+    ],
+
+    static_libs: [
+        "androidx.core_core-animation-nodeps",
+        "androidx.core_core-ktx",
+        "androidx.annotation_annotation",
+        "SystemUIShaderLib",
+        "animationlib",
+    ],
+
+    manifest: "AndroidManifest.xml",
+    kotlincflags: ["-Xjvm-default=all"],
+}
+
+android_library {
+    name: "SystemUIShaderLib",
+
+    srcs: [
+        "src/com/android/systemui/surfaceeffects/**/*.java",
+        "src/com/android/systemui/surfaceeffects/**/*.kt",
     ],
 
     static_libs: [
@@ -42,4 +66,8 @@ android_library {
 
     manifest: "AndroidManifest.xml",
     kotlincflags: ["-Xjvm-default=all"],
+
+    // sdk_version must be specified, otherwise it compiles against private APIs.
+    min_sdk_version: "33",
+    sdk_version: "current",
 }

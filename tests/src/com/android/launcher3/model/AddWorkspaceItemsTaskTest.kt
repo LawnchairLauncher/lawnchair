@@ -23,6 +23,7 @@ import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.IntArray
+import com.android.launcher3.util.IntSet
 import com.android.launcher3.util.any
 import com.android.launcher3.util.eq
 import com.android.launcher3.util.same
@@ -57,6 +58,7 @@ class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
     override fun setup() {
         super.setup()
         MockitoAnnotations.initMocks(this)
+        whenever(mDataModelCallbacks.getPagesToBindSynchronously(any())).thenReturn(IntSet())
         Executors.MAIN_EXECUTOR.submit { mModelHelper.model.addCallbacks(mDataModelCallbacks) }
             .get()
     }

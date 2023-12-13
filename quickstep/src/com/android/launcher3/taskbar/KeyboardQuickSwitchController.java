@@ -129,8 +129,8 @@ public final class KeyboardQuickSwitchController implements
      */
     int launchFocusedTask() {
         // Return -1 so that the RecentsView is not incorrectly opened when the user closes the
-        // quick switch view by tapping the screen.
-        return mQuickSwitchViewController == null
+        // quick switch view by tapping the screen or when there are no recent tasks.
+        return mQuickSwitchViewController == null || mTasks.isEmpty()
                 ? -1 : mQuickSwitchViewController.launchFocusedTask();
     }
 
@@ -181,7 +181,7 @@ public final class KeyboardQuickSwitchController implements
             mModel.getThumbnailCache().updateThumbnailInBackground(task, callback);
         }
 
-        void updateTitleInBackground(Task task, Consumer<Task> callback) {
+        void updateIconInBackground(Task task, Consumer<Task> callback) {
             mModel.getIconCache().updateIconInBackground(task, callback);
         }
 

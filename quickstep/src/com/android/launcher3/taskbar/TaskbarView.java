@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -120,7 +122,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
         Resources resources = getResources();
-        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext);
+        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext)
+                && !TaskbarManager.isPhoneMode(mActivityContext.getDeviceProfile());
         mIsRtl = Utilities.isRtl(resources);
         mTransientTaskbarMinWidth = context.getResources().getDimension(
                 R.dimen.transient_taskbar_min_width);
@@ -133,12 +136,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
+        int visualIconSize = (int) (actualIconSize * ICON_VISIBLE_AREA_FACTOR);
 
         mIconTouchSize = Math.max(actualIconSize,
                 resources.getDimensionPixelSize(R.dimen.taskbar_icon_min_touch_size));
 
         // We layout the icons to be of mIconTouchSize in width and height
-        mItemMarginLeftRight = actualMargin - (mIconTouchSize - actualIconSize) / 2;
+        mItemMarginLeftRight = actualMargin - (mIconTouchSize - visualIconSize) / 2;
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
 
         mFolderLeaveBehindColor = Themes.getAttrColor(mActivityContext,
@@ -217,6 +221,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
+        // set taskbar pane title so that accessibility service know it window and focuses.
+        setAccessibilityPaneTitle(getContext().getString(R.string.taskbar_a11y_title));
         mControllerCallbacks = callbacks;
         mIconClickListener = mControllerCallbacks.getIconOnClickListener();
         mIconLongClickListener = mControllerCallbacks.getIconOnLongClickListener();
@@ -227,7 +233,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
         }
         if (mTaskbarDivider != null) {
-            //TODO(b/265434705): set long press listener
+            mTaskbarDivider.setOnLongClickListener(
+                    mControllerCallbacks.getTaskbarDividerLongClickListener());
         }
     }
 
@@ -520,6 +527,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     @Nullable
     public View getAllAppsButtonView() {
         return mAllAppsButton;
+    }
+
+    /**
+     * Returns the taskbar divider in the taskbar.
+     */
+    @Nullable
+    public View getTaskbarDividerView() {
+        return mTaskbarDivider;
     }
 
     /**

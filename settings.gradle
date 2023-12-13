@@ -46,12 +46,19 @@ project(':iconloaderlib').projectDir = new File(rootDir, 'platform_frameworks_li
 include ':searchuilib'
 project(':searchuilib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/searchuilib')
 
+include ':animationlib'
+project(':animationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/animationlib')
+
+include ':hidden-api'
 include ':systemUIShared'
+include ':systemUIPlugin'
+include ':systemUIPluginCore'
+include ':systemUICommon'
+include ':systemUILog'
 include ':systemUIAnim'
 include ':systemUnFold'
 include ':systemUIViewCapture'
 include ':compatLib'
 include ':compatLibVR'
 include ':compatLibVS'
-include ':hidden-api'
 include ':baseline-profile'

@@ -229,8 +229,10 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                     listener.onAnimationEnd(null);
                 }
                 return;
-            } else if (!mConfig.userControlled && animated && mConfig.targetState == state) {
-                // We are running the same animation as requested
+            } else if ((!mConfig.userControlled && animated && mConfig.targetState == state)
+                    || mState.shouldPreserveDataStateOnReapply()) {
+                // We are running the same animation as requested, and/or target state should not be
+                // reset -- allow the current animation to complete instead of canceling it.
                 if (listener != null) {
                     mConfig.currentAnimation.addListener(listener);
                 }

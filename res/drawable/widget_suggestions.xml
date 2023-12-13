@@ -18,7 +18,7 @@ Copyright (C) 2023 The Android Open Source Project
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="@color/widget_picker_background_selected"
+    android:tint="?attr/widgetPickerSuggestionsIconColor"
     android:gravity="center"
     >
     <path

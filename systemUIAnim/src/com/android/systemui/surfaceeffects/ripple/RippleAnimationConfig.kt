@@ -19,17 +19,11 @@ data class RippleAnimationConfig(
     val maxHeight: Float = 0f,
     val pixelDensity: Float = 1f,
     var color: Int = Color.WHITE,
-    val opacity: Int = RIPPLE_DEFAULT_ALPHA,
-    val sparkleStrength: Float = RIPPLE_SPARKLE_STRENGTH,
+    val opacity: Int = RippleShader.RIPPLE_DEFAULT_ALPHA,
+    val sparkleStrength: Float = RippleShader.RIPPLE_SPARKLE_STRENGTH,
     // Null means it uses default fade parameter values.
     val baseRingFadeParams: RippleShader.FadeParams? = null,
     val sparkleRingFadeParams: RippleShader.FadeParams? = null,
     val centerFillFadeParams: RippleShader.FadeParams? = null,
     val shouldDistort: Boolean = true
-) {
-    companion object {
-        const val RIPPLE_SPARKLE_STRENGTH: Float = 0.3f
-        const val RIPPLE_DEFAULT_COLOR: Int = 0xffffffff.toInt()
-        const val RIPPLE_DEFAULT_ALPHA: Int = 115 // full opacity is 255.
-    }
-}
+)

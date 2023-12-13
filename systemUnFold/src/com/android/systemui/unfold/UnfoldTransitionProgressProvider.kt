@@ -35,14 +35,12 @@ interface UnfoldTransitionProgressProvider : CallbackController<TransitionProgre
 
     interface TransitionProgressListener {
         /** Called when transition is started */
-//        @JvmDefault
         fun onTransitionStarted() {}
 
         /**
          * Called whenever transition progress is updated, [progress] is a value of the animation
          * where 0 is fully folded, 1 is fully unfolded
          */
-//        @JvmDefault
         fun onTransitionProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {}
 
         /**
@@ -51,11 +49,9 @@ interface UnfoldTransitionProgressProvider : CallbackController<TransitionProgre
          * For example, in [PhysicsBasedUnfoldTransitionProgressProvider] this could happen when the
          * animation is not tied to the hinge angle anymore and it is about to run fixed animation.
          */
-//        @JvmDefault
         fun onTransitionFinishing() {}
 
         /** Called when transition is completely finished */
-//        @JvmDefault
         fun onTransitionFinished() {}
     }
 }

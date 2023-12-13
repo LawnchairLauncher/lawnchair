@@ -15,9 +15,12 @@ android {
             aidl.srcDirs = ['src']
         }
     }
+    ksp {
+        arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+    }
 }
 
-addFrameworkJar('framework-13.jar')
+addFrameworkJar('framework-14.jar')
 compileOnlyCommonJars()
 
 // Workaround for https://github.com/google/dagger/issues/4158

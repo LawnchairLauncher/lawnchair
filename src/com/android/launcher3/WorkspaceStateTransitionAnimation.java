@@ -29,14 +29,11 @@ import static com.android.launcher3.LauncherState.FLAG_HOTSEAT_INACCESSIBLE;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.LauncherState.WORKSPACE_PAGE_INDICATOR;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
-import static com.android.launcher3.config.FeatureFlags.HOME_GARDENING_WORKSPACE_BUTTONS;
-import static com.android.launcher3.config.FeatureFlags.SHOW_HOME_GARDENING;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
@@ -62,6 +59,7 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.graphics.Scrim;
 import com.android.launcher3.graphics.SysUiScrim;
+import com.android.launcher3.states.EditModeState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
@@ -160,30 +158,6 @@ public class WorkspaceStateTransitionAnimation {
         float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
         propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha, hotseatFadeInterpolator);
 
-        if (SHOW_HOME_GARDENING.get()) {
-            propertySetter.setViewAlpha(
-                    mWorkspace.getFirstPagePinnedItem(),
-                    state == SPRING_LOADED ? FIRST_PAGE_PINNED_WIDGET_DISABLED_ALPHA : 1,
-                    workspaceFadeInterpolator);
-            propertySetter.addEndListener(success -> {
-                if (success) {
-                    mWorkspace.getFirstPagePinnedItem().setClickable(state != SPRING_LOADED);
-                }
-            });
-        }
-
-        if (HOME_GARDENING_WORKSPACE_BUTTONS.get()) {
-            propertySetter.setViewAlpha(
-                    mLauncher.getHotseat().getQsb(),
-                    state == SPRING_LOADED ? 0 : 1,
-                    workspaceFadeInterpolator);
-            propertySetter.addEndListener(success -> {
-                if (success) {
-                    mLauncher.getHotseat().getQsb().setClickable(state != SPRING_LOADED);
-                }
-            });
-        }
-
         // Update the accessibility flags for hotseat based on launcher state.
         hotseat.setImportantForAccessibility(
                 state.hasFlag(FLAG_HOTSEAT_INACCESSIBLE)
@@ -239,8 +213,8 @@ public class WorkspaceStateTransitionAnimation {
             PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
             StateAnimationConfig config) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
-        float springLoadedProgress = (state instanceof SpringLoadedState) ? 1.0f : 0f;
-
+        float springLoadedProgress =
+                (state instanceof  SpringLoadedState || state instanceof EditModeState) ? 1f : 0f;
         propertySetter.setFloat(cl,
                 CellLayout.SPRING_LOADED_PROGRESS, springLoadedProgress, ZOOM_OUT);
         Interpolator fadeInterpolator = config.getInterpolator(ANIM_WORKSPACE_FADE,

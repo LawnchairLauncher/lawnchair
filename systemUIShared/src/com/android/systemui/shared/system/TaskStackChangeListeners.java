@@ -262,8 +262,8 @@ public class TaskStackChangeListeners {
         }
 
         @Override
-        public void onTaskProfileLocked(RunningTaskInfo taskInfo) {
-            mHandler.obtainMessage(ON_TASK_PROFILE_LOCKED, taskInfo).sendToTarget();
+        public void onTaskProfileLocked(RunningTaskInfo taskInfo, int userId) {
+            mHandler.obtainMessage(ON_TASK_PROFILE_LOCKED, userId, 0, taskInfo).sendToTarget();
         }
 
         @Override
@@ -418,8 +418,9 @@ public class TaskStackChangeListeners {
                     }
                     case ON_TASK_PROFILE_LOCKED: {
                         final RunningTaskInfo info = (RunningTaskInfo) msg.obj;
+                        final int userId = msg.arg1;
                         for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
-                            mTaskStackListeners.get(i).onTaskProfileLocked(info);
+                            mTaskStackListeners.get(i).onTaskProfileLocked(info, userId);
                         }
                         break;
                     }

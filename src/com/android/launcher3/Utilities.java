@@ -80,6 +80,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
@@ -87,7 +88,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
-import com.android.systemui.shared.testing.ResourceUtils;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -135,6 +135,8 @@ public final class Utilities {
     public static final boolean ATLEAST_T = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
 
     public static final boolean ATLEAST_S_V2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2;
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.UPSIDE_DOWN_CAKE, codename = "U")
+    public static final boolean ATLEAST_U = Build.VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE;
 
     /**
      * Set on a motion event dispatched from the nav bar. See
@@ -260,7 +262,7 @@ public final class Utilities {
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
-                                                             float[] coord, boolean includeRootScroll, boolean ignoreTransform) {
+            float[] coord, boolean includeRootScroll, boolean ignoreTransform) {
         float scale = 1.0f;
         View v = descendant;
         while (v != ancestor && v != null) {
@@ -294,7 +296,7 @@ public final class Utilities {
      *                        {@param view} in drag layer coords.
      */
     public static void getBoundsForViewInDragLayer(BaseDragLayer dragLayer, View view,
-                                                   Rect viewBounds, boolean ignoreTransform, float[] recycle, RectF outRect) {
+            Rect viewBounds, boolean ignoreTransform, float[] recycle, RectF outRect) {
         float[] points = recycle == null ? new float[4] : recycle;
         points[0] = viewBounds.left;
         points[1] = viewBounds.top;
@@ -441,7 +443,7 @@ public final class Utilities {
      * @return The mapped value of t.
      */
     public static float mapToRange(float t, float fromMin, float fromMax, float toMin, float toMax,
-                                   Interpolator interpolator) {
+            Interpolator interpolator) {
         if (fromMin == fromMax || toMin == toMax) {
             Log.e(TAG, "mapToRange: range has 0 length");
             return toMin;
@@ -452,7 +454,7 @@ public final class Utilities {
 
     /** Bounds t between a lower and upper bound and maps the result to a range. */
     public static float mapBoundToRange(float t, float lowerBound, float upperBound,
-                                        float toMin, float toMax, Interpolator interpolator) {
+            float toMin, float toMax, Interpolator interpolator) {
         return mapToRange(boundToRange(t, lowerBound, upperBound), lowerBound, upperBound,
                 toMin, toMax, interpolator);
     }
@@ -638,7 +640,7 @@ public final class Utilities {
      */
     @TargetApi(Build.VERSION_CODES.TIRAMISU)
     public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
-                                           boolean shouldThemeIcon, Object[] outObj) {
+            boolean shouldThemeIcon, Object[] outObj) {
         Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
         if (ATLEAST_T && icon instanceof AdaptiveIconDrawable && shouldThemeIcon) {
             AdaptiveIconDrawable aid = (AdaptiveIconDrawable) icon.mutate();
@@ -654,7 +656,7 @@ public final class Utilities {
     }
 
     public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
-                                           Object[] outObj, boolean useTheme) {
+            Object[] outObj, boolean useTheme) {
         Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
         if (useTheme && icon instanceof BitmapInfo.Extender) {
             icon = ((BitmapInfo.Extender) icon).getThemedDrawable(context);
@@ -663,7 +665,7 @@ public final class Utilities {
     }
 
     public static Drawable loadFullDrawableWithoutTheme(Context context, ItemInfo info,
-                                                        int width, int height, Object[] outObj) {
+            int width, int height, Object[] outObj) {
         ActivityContext activity = ActivityContext.lookupContext(context);
         LauncherAppState appState = LauncherAppState.getInstance(context);
         if (info instanceof PendingAddShortcutInfo) {
@@ -677,8 +679,8 @@ public final class Utilities {
             outObj[0] = activityInfo;
             return activityInfo == null ? null
                     : LauncherAppState.getInstance(context)
-                    .getIconProvider().getIcon(
-                            activityInfo, activity.getDeviceProfile().inv.fillResIconDpi);
+                            .getIconProvider().getIcon(
+                                    activityInfo, activity.getDeviceProfile().inv.fillResIconDpi);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             List<ShortcutInfo> si = ShortcutKey.fromItemInfo(info)
                     .buildRequest(context)
@@ -756,7 +758,7 @@ public final class Utilities {
      * the final bounds.
      */
     public static void rotateBounds(Rect inOutBounds, int parentWidth, int parentHeight,
-                                    int delta) {
+            int delta) {
         int rdelta = ((delta % 4) + 4) % 4;
         int origLeft = inOutBounds.left;
         switch (rdelta) {
@@ -833,13 +835,15 @@ public final class Utilities {
     }
 
     public static SharedPreferences getPrefs(Context context) {
-        // Use application context for shared preferences, so that we use a single cached instance
+        // Use application context for shared preferences, so that we use a single
+        // cached instance
         return context.getApplicationContext().getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences getDevicePrefs(Context context) {
-        // Use application context for shared preferences, so that we use a single cached instance
+        // Use application context for shared preferences, so that we use a single
+        // cached instance
         return context.getApplicationContext().getSharedPreferences(
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }

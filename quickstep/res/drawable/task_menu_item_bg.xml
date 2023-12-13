@@ -16,6 +16,6 @@
 -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?attr/colorSurface" />
+    <solid android:color="@color/menu_item_hover_state_color" />
     <corners android:radius="@dimen/task_menu_item_corner_radius" />
 </shape>

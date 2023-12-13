@@ -24,7 +24,6 @@ import android.view.View;
 
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.MulticellReorderAlgorithm;
-import com.android.launcher3.celllayout.ReorderAlgorithm;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 
@@ -44,6 +43,33 @@ public class MultipageCellLayout extends CellLayout {
 
     public MultipageCellLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+    }
+
+    @Override
+    protected int[] findNearestArea(int relativeXPos, int relativeYPos, int minSpanX, int minSpanY,
+            int spanX, int spanY, boolean ignoreOccupied, int[] result, int[] resultSpan) {
+        return createReorderAlgorithm().simulateSeam(
+                () -> super.findNearestArea(relativeXPos, relativeYPos, minSpanX, minSpanY, spanX,
+                        spanY, ignoreOccupied, result, resultSpan));
+    }
+
+    @Override
+    public void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
+            int spanY, View dragView, int[] resultDirection) {
+        createReorderAlgorithm().simulateSeam(
+                () -> {
+                    super.getDirectionVectorForDrop(dragViewCenterX, dragViewCenterY, spanX, spanY,
+                            dragView, resultDirection);
+                    return 0;
+                });
+    }
+
+    @Override
+    public boolean isNearestDropLocationOccupied(int pixelX, int pixelY, int spanX, int spanY,
+            View dragView, int[] result) {
+        return createReorderAlgorithm().simulateSeam(
+                () -> super.isNearestDropLocationOccupied(pixelX, pixelY, spanX, spanY, dragView,
+                        result));
     }
 
     public MultipageCellLayout(Context context, AttributeSet attrs, int defStyle) {
@@ -71,13 +97,23 @@ public class MultipageCellLayout extends CellLayout {
             cellX++;
         }
         int finalCellX = cellX;
-        return ((MulticellReorderAlgorithm) createReorderAlgorithm()).simulateSeam(
+        return createReorderAlgorithm().simulateSeam(
                 () -> super.createAreaForResize(finalCellX, cellY, spanX, spanY, dragView,
                         direction, commit));
     }
 
     @Override
-    public ReorderAlgorithm createReorderAlgorithm() {
+    int[] performReorder(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
+            View dragView, int[] result, int[] resultSpan, int mode) {
+        if (pixelX >= getWidth() / 2) {
+            pixelX += getCellWidth();
+        }
+        return super.performReorder(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, dragView,
+                result, resultSpan, mode);
+    }
+
+    @Override
+    public MulticellReorderAlgorithm createReorderAlgorithm() {
         return new MulticellReorderAlgorithm(this);
     }
 
@@ -92,6 +128,13 @@ public class MultipageCellLayout extends CellLayout {
                     lp.cellVSpan);
             solution.add(child, c);
         }
+    }
+
+    @Override
+    public int getUnusedHorizontalSpace() {
+        return (int) Math.ceil(
+                (getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth)
+                        - ((mCountX - 1) * mBorderSpace.x)) / 2f);
     }
 
     @Override

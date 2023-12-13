@@ -42,6 +42,9 @@
     <string name="recent_task_option_split_screen">Split screen</string>
     <string name="split_app_info_accessibility">App info for %1$s</string>
 
+    <!-- App pairs -->
+    <string name="save_app_pair">Save app pair</string>
+
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to move a widget.</string>
@@ -102,6 +105,9 @@
 
     <!-- A widget category label for grouping widgets related to conversations. [CHAR_LIMIT=30] -->
     <string name="widget_category_conversations">Conversations</string>
+
+    <!-- A widget category label for grouping widgets related to note taking. [CHAR_LIMIT=30] -->
+    <string name="widget_category_note_taking">Note-taking</string>
 
     <!-- Title of a dialog. This dialog lets a user know how they can use widgets on their phone.
          [CHAR_LIMIT=NONE] -->
@@ -189,9 +195,6 @@
     <string name="permdesc_write_settings">Allows the app to change the settings and
         shortcuts in home.</string>
 
-    <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-    <string name="msg_no_phone_permission"><xliff:g id="app_name" example="Launcher3">%1$s</xliff:g> is not allowed to make phone calls</string>
-
     <!-- Widgets: -->
     <skip />
 
@@ -250,6 +253,8 @@
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
+    <!-- Text for edit home screen button [CHAR LIMIT=30]-->
+    <string name="edit_home_screen">Edit Home Screen</string>
     <!-- Text for settings button [CHAR LIMIT=20]-->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
@@ -419,10 +424,12 @@
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
     <string name="work_apps_paused_title">Work apps are paused</string>
-    <!--- body shown when user opens work apps tab while work apps are paused -->
+    <!--- body shown when user opens work apps tab while work apps are paused.-->
+    <string name="work_apps_paused_info_body">You won’t receive notifications from your work apps</string>
+    <!--- body shown when user opens work apps tab while work apps are paused. -->
     <string name="work_apps_paused_body">Your work apps can’t send you notifications, use your battery, or access your location</string>
-    <!-- content description for paused work apps list -->
-    <string name="work_apps_paused_content_description">Work apps are off. Your work apps can’t send you notifications, use your battery, or access your location</string>
+    <!--- body shown when user opens work apps tab while work apps are paused and calls and texts are unavailable-->
+    <string name="work_apps_paused_telephony_unavailable_body">You won’t receive phone calls, text messages, or notifications from your work apps</string>
     <!-- string shown in educational banner about work profile -->
     <string name="work_apps_paused_edu_banner">Work apps are badged and visible to your IT admin</string>
     <!-- button string shown to dismiss work tab education -->
@@ -431,7 +438,7 @@
     <!-- button string shown pause work profile -->
     <string name="work_apps_pause_btn_text">Pause work apps</string>
     <!-- button string shown enable work profile -->
-    <string name="work_apps_enable_btn_text">Turn on work apps</string>
+    <string name="work_apps_enable_btn_text">Unpause</string>
 
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>

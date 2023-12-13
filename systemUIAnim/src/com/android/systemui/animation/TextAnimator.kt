@@ -23,19 +23,60 @@ import android.animation.ValueAnimator
 import android.graphics.Canvas
 import android.graphics.Typeface
 import android.graphics.fonts.Font
+import android.graphics.fonts.FontVariationAxis
 import android.text.Layout
 import android.util.LruCache
+import kotlin.math.roundToInt
 
 private const val DEFAULT_ANIMATION_DURATION: Long = 300
 private const val TYPEFACE_CACHE_MAX_ENTRIES = 5
 
 typealias GlyphCallback = (TextAnimator.PositionedGlyph, Float) -> Unit
+
+interface TypefaceVariantCache {
+    fun getTypefaceForVariant(fvar: String?): Typeface?
+
+    companion object {
+        fun createVariantTypeface(baseTypeface: Typeface, fVar: String?): Typeface {
+            if (fVar.isNullOrEmpty()) {
+                return baseTypeface
+            }
+
+            val axes = FontVariationAxis.fromFontVariationSettings(fVar)
+                ?.toMutableList()
+                ?: mutableListOf()
+            axes.removeIf { !baseTypeface.isSupportedAxes(it.getOpenTypeTagValue()) }
+            if (axes.isEmpty()) {
+                return baseTypeface
+            }
+            return Typeface.createFromTypefaceWithVariation(baseTypeface, axes)
+        }
+    }
+}
+
+class TypefaceVariantCacheImpl(
+    var baseTypeface: Typeface,
+) : TypefaceVariantCache {
+    private val cache = LruCache<String, Typeface>(TYPEFACE_CACHE_MAX_ENTRIES)
+    override fun getTypefaceForVariant(fvar: String?): Typeface? {
+        if (fvar == null) {
+            return baseTypeface
+        }
+        cache.get(fvar)?.let {
+            return it
+        }
+
+        return TypefaceVariantCache.createVariantTypeface(baseTypeface, fvar).also {
+            cache.put(fvar, it)
+        }
+    }
+}
+
 /**
  * This class provides text animation between two styles.
  *
  * Currently this class can provide text style animation for text weight and text size. For example
  * the simple view that draws text with animating text size is like as follows:
- *
  * <pre> <code>
  * ```
  *     class SimpleTextAnimation : View {
@@ -56,25 +97,47 @@ typealias GlyphCallback = (TextAnimator.PositionedGlyph, Float) -> Unit
  * ```
  * </code> </pre>
  */
-class TextAnimator(layout: Layout, private val invalidateCallback: () -> Unit) {
+class TextAnimator(
+    layout: Layout,
+    numberOfAnimationSteps: Int? = null, // Only do this number of discrete animation steps.
+    private val invalidateCallback: () -> Unit,
+) {
+    var typefaceCache: TypefaceVariantCache = TypefaceVariantCacheImpl(layout.paint.typeface)
+        get() = field
+        set(value) {
+            field = value
+            textInterpolator.typefaceCache = value
+        }
+
     // Following two members are for mutable for testing purposes.
-    public var textInterpolator: TextInterpolator = TextInterpolator(layout)
+    public var textInterpolator: TextInterpolator =
+        TextInterpolator(layout, typefaceCache, numberOfAnimationSteps)
     public var animator: ValueAnimator =
         ValueAnimator.ofFloat(1f).apply {
             duration = DEFAULT_ANIMATION_DURATION
             addUpdateListener {
-                textInterpolator.progress = it.animatedValue as Float
+                textInterpolator.progress =
+                    calculateProgress(it.animatedValue as Float, numberOfAnimationSteps)
                 invalidateCallback()
             }
             addListener(
                 object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        textInterpolator.rebase()
-                    }
-                    override fun onAnimationCancel(animation: Animator?) = textInterpolator.rebase()
+                    override fun onAnimationEnd(animation: Animator) = textInterpolator.rebase()
+                    override fun onAnimationCancel(animation: Animator) = textInterpolator.rebase()
                 }
             )
         }
+
+    private fun calculateProgress(animProgress: Float, numberOfAnimationSteps: Int?): Float {
+        if (numberOfAnimationSteps != null) {
+            // This clamps the progress to the nearest value of "numberOfAnimationSteps"
+            // discrete values between 0 and 1f.
+            return (animProgress * numberOfAnimationSteps).roundToInt() /
+                numberOfAnimationSteps.toFloat()
+        }
+
+        return animProgress
+    }
 
     sealed class PositionedGlyph {
 
@@ -115,8 +178,6 @@ class TextAnimator(layout: Layout, private val invalidateCallback: () -> Unit) {
     }
 
     private val fontVariationUtils = FontVariationUtils()
-
-    private val typefaceCache = LruCache<String, Typeface>(TYPEFACE_CACHE_MAX_ENTRIES)
 
     fun updateLayout(layout: Layout) {
         textInterpolator.layout = layout
@@ -220,12 +281,7 @@ class TextAnimator(layout: Layout, private val invalidateCallback: () -> Unit) {
         }
 
         if (!fvar.isNullOrBlank()) {
-            textInterpolator.targetPaint.typeface = typefaceCache.get(fvar) ?: run {
-                textInterpolator.targetPaint.fontVariationSettings = fvar
-                textInterpolator.targetPaint.typeface?.also {
-                    typefaceCache.put(fvar, textInterpolator.targetPaint.typeface)
-                }
-            }
+            textInterpolator.targetPaint.typeface = typefaceCache.getTypefaceForVariant(fvar)
         }
 
         if (color != null) {
@@ -248,11 +304,11 @@ class TextAnimator(layout: Layout, private val invalidateCallback: () -> Unit) {
             if (onAnimationEnd != null) {
                 val listener =
                     object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
+                        override fun onAnimationEnd(animation: Animator) {
                             onAnimationEnd.run()
                             animator.removeListener(this)
                         }
-                        override fun onAnimationCancel(animation: Animator?) {
+                        override fun onAnimationCancel(animation: Animator) {
                             animator.removeListener(this)
                         }
                     }
@@ -304,7 +360,8 @@ class TextAnimator(layout: Layout, private val invalidateCallback: () -> Unit) {
             weight = weight,
             width = width,
             opticalSize = opticalSize,
-            roundness = roundness,)
+            roundness = roundness,
+        )
         setTextStyle(
             fvar = fvar,
             textSize = textSize,
@@ -318,4 +375,3 @@ class TextAnimator(layout: Layout, private val invalidateCallback: () -> Unit) {
         )
     }
 }
-

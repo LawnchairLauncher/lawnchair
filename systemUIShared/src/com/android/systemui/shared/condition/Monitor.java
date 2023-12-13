@@ -22,6 +22,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.systemui.dagger.qualifiers.Main;
+import com.android.systemui.plugins.log.TableLogBufferBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,13 +33,16 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 /**
- * {@link Monitor} takes in a set of conditions, monitors whether all of them have
- * been fulfilled, and informs any registered listeners.
+ * {@link Monitor} allows {@link Subscription}s to a set of conditions and monitors whether all of
+ * them have been fulfilled.
+ * <p>
+ * This class should be used as a singleton, to prevent duplicate monitoring of the same conditions.
  */
 public class Monitor {
     private final String mTag = getClass().getSimpleName();
     private final Executor mExecutor;
     private final Set<Condition> mPreconditions;
+    private final TableLogBufferBase mLogBuffer;
 
     private final HashMap<Condition, ArraySet<Subscription.Token>> mConditions = new HashMap<>();
     private final HashMap<Subscription.Token, SubscriptionState> mSubscriptions = new HashMap<>();
@@ -158,11 +162,23 @@ public class Monitor {
      * Main constructor, allowing specifying preconditions.
      */
     public Monitor(Executor executor, Set<Condition> preconditions) {
+        this(executor, preconditions, null);
+    }
+
+    /**
+     * Main constructor, allowing specifying preconditions and a log buffer for logging.
+     */
+    public Monitor(Executor executor, Set<Condition> preconditions, TableLogBufferBase logBuffer) {
         mExecutor = executor;
         mPreconditions = preconditions;
+        mLogBuffer = logBuffer;
     }
 
     private void updateConditionMetState(Condition condition) {
+        if (mLogBuffer != null) {
+            mLogBuffer.logChange(/* prefix= */ "", condition.getTag(), condition.getState());
+        }
+
         final ArraySet<Subscription.Token> subscriptions = mConditions.get(condition);
 
         // It's possible the condition was removed between the time the callback occurred and
@@ -199,7 +215,7 @@ public class Monitor {
             mSubscriptions.put(token, state);
 
             // Add and associate conditions.
-            normalizedCondition.getConditions().stream().forEach(condition -> {
+            normalizedCondition.getConditions().forEach(condition -> {
                 if (!mConditions.containsKey(condition)) {
                     mConditions.put(condition, new ArraySet<>());
                     condition.addCallback(mConditionCallback);
@@ -305,7 +321,6 @@ public class Monitor {
             private final Callback mCallback;
             private final Subscription mNestedSubscription;
             private final ArraySet<Condition> mConditions;
-            private final ArraySet<Condition> mPreconditions;
 
             /**
              * Default constructor specifying the {@link Callback} for the {@link Subscription}.
@@ -321,8 +336,7 @@ public class Monitor {
             private Builder(Subscription nestedSubscription, Callback callback) {
                 mNestedSubscription = nestedSubscription;
                 mCallback = callback;
-                mConditions = new ArraySet();
-                mPreconditions = new ArraySet();
+                mConditions = new ArraySet<>();
             }
 
             /**
@@ -332,29 +346,6 @@ public class Monitor {
              */
             public Builder addCondition(Condition condition) {
                 mConditions.add(condition);
-                return this;
-            }
-
-            /**
-             * Adds a set of {@link Condition} to be a precondition for {@link Subscription}.
-             *
-             * @return The updated {@link Builder}.
-             */
-            public Builder addPreconditions(Set<Condition> condition) {
-                if (condition == null) {
-                    return this;
-                }
-                mPreconditions.addAll(condition);
-                return this;
-            }
-
-            /**
-             * Adds a {@link Condition} to be a precondition for {@link Subscription}.
-             *
-             * @return The updated {@link Builder}.
-             */
-            public Builder addPrecondition(Condition condition) {
-                mPreconditions.add(condition);
                 return this;
             }
 
@@ -378,11 +369,7 @@ public class Monitor {
              * @return The resulting {@link Subscription}.
              */
             public Subscription build() {
-                final Subscription subscription =
-                        new Subscription(mConditions, mCallback, mNestedSubscription);
-                return !mPreconditions.isEmpty()
-                        ? new Subscription(mPreconditions, null, subscription)
-                        : subscription;
+                return new Subscription(mConditions, mCallback, mNestedSubscription);
             }
         }
     }

@@ -15,6 +15,7 @@
  */
 package com.android.systemui.shared.shadow
 
+import android.content.res.ColorStateList
 import android.graphics.BlendMode
 import android.graphics.Canvas
 import android.graphics.Color
@@ -106,6 +107,14 @@ class DoubleShadowIconDrawable(
         mIconDrawable.draw(canvas)
     }
 
+    override fun getIntrinsicHeight(): Int {
+        return mCanvasSize
+    }
+
+    override fun getIntrinsicWidth(): Int {
+        return mCanvasSize
+    }
+
     override fun getOpacity(): Int {
         return PixelFormat.TRANSPARENT
     }
@@ -120,5 +129,9 @@ class DoubleShadowIconDrawable(
 
     override fun setTint(color: Int) {
         mIconDrawable.setTint(color)
+    }
+
+    override fun setTintList(tint: ColorStateList?) {
+        mIconDrawable.setTintList(tint)
     }
 }

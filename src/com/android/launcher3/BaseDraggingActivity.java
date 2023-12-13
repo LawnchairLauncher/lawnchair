@@ -17,7 +17,10 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -149,6 +152,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @NonNull
     public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         ActivityOptionsWrapper wrapper = super.getActivityLaunchOptions(v, item);
+        addOnResumeCallback(wrapper.onEndCallback::executeAllAndDestroy);
+        return wrapper;
+    }
+
+    @Override
+    public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
+        ActivityOptionsWrapper wrapper = super.makeDefaultActivityOptions(splashScreenStyle);
         addOnResumeCallback(wrapper.onEndCallback::executeAllAndDestroy);
         return wrapper;
     }

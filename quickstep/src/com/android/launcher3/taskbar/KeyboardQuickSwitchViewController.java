@@ -169,7 +169,7 @@ public class KeyboardQuickSwitchViewController {
 
     class ViewCallbacks {
 
-        boolean onKeyUp(int keyCode, KeyEvent event, boolean isRTL) {
+        boolean onKeyUp(int keyCode, KeyEvent event, boolean isRTL, boolean allowTraversal) {
             if (keyCode != KeyEvent.KEYCODE_TAB
                     && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT
                     && keyCode != KeyEvent.KEYCODE_DPAD_LEFT
@@ -181,9 +181,12 @@ public class KeyboardQuickSwitchViewController {
                 closeQuickSwitchView(true);
                 return true;
             }
+            if (!allowTraversal) {
+                return false;
+            }
             boolean traverseBackwards = (keyCode == KeyEvent.KEYCODE_TAB && event.isShiftPressed())
-                    || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !isRTL)
-                    || (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && isRTL);
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && isRTL)
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && !isRTL);
             int taskCount = mControllerCallbacks.getTaskCount();
             int toIndex = mCurrentFocusIndex == -1
                     // Focus the second-most recent app if possible
@@ -195,6 +198,9 @@ public class KeyboardQuickSwitchViewController {
                             // focus a less recent app or loop back to the opposite end
                             : ((mCurrentFocusIndex + 1) % taskCount));
 
+            if (mCurrentFocusIndex == toIndex) {
+                return true;
+            }
             mKeyboardQuickSwitchView.animateFocusMove(mCurrentFocusIndex, toIndex);
 
             return true;
@@ -213,8 +219,8 @@ public class KeyboardQuickSwitchViewController {
             mControllerCallbacks.updateThumbnailInBackground(task, callback);
         }
 
-        void updateTitleInBackground(Task task, Consumer<Task> callback) {
-            mControllerCallbacks.updateTitleInBackground(task, callback);
+        void updateIconInBackground(Task task, Consumer<Task> callback) {
+            mControllerCallbacks.updateIconInBackground(task, callback);
         }
     }
 }

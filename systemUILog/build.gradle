@@ -1,0 +1,27 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace "com.android.systemui.log"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
+        }
+    }
+}
+
+addFrameworkJar('framework-14.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    compileOnly projects.systemUIPluginCore
+    compileOnly projects.systemUICommon
+    implementation 'com.google.errorprone:error_prone_annotations:2.21.1'
+}

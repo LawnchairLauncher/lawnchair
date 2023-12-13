@@ -15,14 +15,13 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.app.viewcapture">
-
+    package="com.android.app.viewcapture.test">
     <application
         android:debuggable="true"
         android:theme="@android:style/Theme.NoTitleBar">
 
         <activity
-            android:name=".TestActivity"
+            android:name="com.android.app.viewcapture.TestActivity"
             android:exported="false" />
 
         <uses-library android:name="android.test.runner" />
@@ -31,7 +30,7 @@
 
     <instrumentation
         android:name="android.testing.TestableInstrumentation"
-        android:label="Tests for ViewCapture Lib"
-        android:targetPackage="com.android.app.viewcapture" />
+        android:label="Tests for MotionTool Lib"
+        android:targetPackage="com.android.app.viewcapture.test"/>
 
 </manifest>

@@ -39,7 +39,10 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import app.lawnchair.LawnchairApp;
 import dev.rikka.tools.refine.Refine;
 
-/** Provides a Quickstep specific animation when launching an activity from an app widget. */
+/**
+ * Provides a Quickstep specific animation when launching an activity from an
+ * app widget.
+ */
 class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
 
     private static final String TAG = "QuickstepInteractionHandler";
@@ -60,6 +63,10 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             return RemoteViews.startPendingIntent(hostView, pendingIntent,
                     remoteResponse.getLaunchOptions(view));
         }
+        if (mLauncher.getSplitToWorkspaceController().handleSecondWidgetSelectionForSplit(view,
+                pendingIntent)) {
+            return true;
+        }
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(view);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
                 .getActivityLaunchOptions(hostView);
@@ -69,8 +76,9 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             launchCookie = mLauncher.getLaunchCookie((ItemInfo) itemInfo);
             activityOptions.options.setLaunchCookie(launchCookie);
         }
-        if (Utilities.ATLEAST_S && !pendingIntent.isActivity() && LawnchairApp.isRecentsEnabled ()) {
-            // In the event this pending intent eventually launches an activity, i.e. a trampoline,
+        if (Utilities.ATLEAST_S && !pendingIntent.isActivity() && LawnchairApp.isRecentsEnabled()) {
+            // In the event this pending intent eventually launches an activity, i.e. a
+            // trampoline,
             // use the Quickstep transition animation.
             try {
                 IActivityTaskManagerHidden atm = Refine.unsafeCast(ActivityTaskManager.getService());
@@ -89,8 +97,9 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             }
             activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
+            activityOptions.options.setPendingIntentBackgroundActivityStartMode(
+                    ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
         }
-
         options = Pair.create(options.first, activityOptions.options);
         if (pendingIntent.isActivity()) {
             logAppLaunch(itemInfo);
@@ -100,6 +109,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
 
     /**
      * Logs that the app was launched from the widget.
+     * 
      * @param itemInfo the widget info.
      */
     private void logAppLaunch(Object itemInfo) {
@@ -112,7 +122,8 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
 
     private LauncherAppWidgetHostView findHostViewAncestor(View v) {
         while (v != null) {
-            if (v instanceof LauncherAppWidgetHostView) return (LauncherAppWidgetHostView) v;
+            if (v instanceof LauncherAppWidgetHostView)
+                return (LauncherAppWidgetHostView) v;
             v = (View) v.getParent();
         }
         return null;

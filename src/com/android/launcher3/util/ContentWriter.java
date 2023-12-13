@@ -19,13 +19,14 @@ package com.android.launcher3.util;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.pm.UserCache;
 
 /**
@@ -105,7 +106,8 @@ public class ContentWriter {
 
     public int commit() {
         if (mCommitParams != null) {
-            return mContext.getContentResolver().update(mCommitParams.mUri, getValues(mContext),
+            return mCommitParams.mDbController.update(
+                    Favorites.TABLE_NAME, getValues(mContext),
                     mCommitParams.mWhere, mCommitParams.mSelectionArgs);
         }
         return 0;
@@ -113,26 +115,14 @@ public class ContentWriter {
 
     public static final class CommitParams {
 
-        final Uri mUri;
+        final ModelDbController mDbController;
         final String mWhere;
         final String[] mSelectionArgs;
 
-        public CommitParams(String where, String[] selectionArgs) {
-            this(LauncherSettings.Favorites.CONTENT_URI, where, selectionArgs);
-        }
-
-        private CommitParams(Uri uri, String where, String[] selectionArgs) {
-            mUri = uri;
+        public CommitParams(ModelDbController controller, String where, String[] selectionArgs) {
+            mDbController = controller;
             mWhere = where;
             mSelectionArgs = selectionArgs;
-        }
-
-        /**
-         * Creates commit params for backup table.
-         */
-        public static CommitParams backupCommitParams(String where, String[] selectionArgs) {
-            return new CommitParams(
-                    LauncherSettings.Favorites.BACKUP_CONTENT_URI, where, selectionArgs);
         }
     }
 }

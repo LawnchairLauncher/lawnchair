@@ -28,7 +28,7 @@ import android.util.MathUtils
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
-import com.android.systemui.animation.Interpolators.LINEAR
+import com.android.app.animation.Interpolators.LINEAR
 import kotlin.math.roundToInt
 
 private const val TAG = "LaunchAnimator"
@@ -283,7 +283,7 @@ class LaunchAnimator(private val timings: Timings, private val interpolators: In
 
         animator.addListener(
             object : AnimatorListenerAdapter() {
-                override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
+                override fun onAnimationStart(animation: Animator, isReverse: Boolean) {
                     if (DEBUG) {
                         Log.d(TAG, "Animation started")
                     }
@@ -295,7 +295,7 @@ class LaunchAnimator(private val timings: Timings, private val interpolators: In
                     launchContainerOverlay.add(windowBackgroundLayer)
                 }
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     if (DEBUG) {
                         Log.d(TAG, "Animation ended")
                     }

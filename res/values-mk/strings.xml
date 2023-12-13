@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Почетен екран"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Поделен екран"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Податоци за апликација за %1$s"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Зачувај го парот апликации"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Допрете и задржете за да преместите виџет."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Допрете двапати и задржете за да преместите виџет или користете приспособени дејства."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Лични"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Работни"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Разговори"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Фаќање белешки"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Корисни информации на дофат на прстите"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"За да добивате информации без да ги отворате апликациите, може да додадете виџети на почетниот екран"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Допрете за да ги промените поставките за виџетот"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Овозможува апликацијата да ги чита поставките и кратенките на почетната страница."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"да пишува поставки и кратенки на почетна страница"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Овозможува апликацијата да ги менува поставките и кратенките на почетната страница."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> нема дозвола за телефонски повици"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Не може да се вчита виџетот"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Поставки за виџетот"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Допрете за да го завршите поставувањето"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Папка: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> или повеќе ставки"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тапети"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Тапет и стил"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"Изменете го почетниот екран"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Поставки за почетен екран"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Оневозможено од администраторот"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Дозволи ротирање на почетниот екран"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Работните апликации имаат значка и се видливи за IT-администраторот"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Сфатив"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Работните апликации се паузирани"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Нема да примате известувања од работните апликации"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Работните апликации не може да ви испраќаат известувања, да ја користат батеријата или да пристапуваат до вашата локација"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Работните апликации се исклучени. Не може да ви испраќаат известувања, да ја користат батеријата или да пристапуваат до вашата локација"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Нема да добивате телефонски повици, текстуални пораки или известувања од работните апликации"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Работните апликации имаат значка и се видливи за IT-администраторот"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Сфатив"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Паузирај ги работните апликации"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Вклучете ги работните апликации"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Прекини ја паузата"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтер"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Пребарување низ телефонот"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Пребарување низ таблетот"</string>

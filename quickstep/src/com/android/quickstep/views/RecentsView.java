@@ -43,7 +43,6 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_0_75;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCH_FROM_STAGED_APP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
@@ -185,6 +184,7 @@ import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitAnimationController.Companion.SplitAnimInitProps;
 import com.android.quickstep.util.SplitAnimationTimings;
@@ -212,6 +212,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.theme.color.ColorTokens;
@@ -228,10 +229,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private static final String TAG = "RecentsView";
     private static final boolean DEBUG = false;
-
-    // TODO(b/184899234): We use this timeout to wait a fixed period after switching to the
-    // screenshot when dismissing the current live task to ensure the app can try and get stopped.
-    private static final int REMOVE_TASK_WAIT_FOR_APP_STOP_MS = 100;
 
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
@@ -809,8 +806,29 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // if multi-instance feature is enabled
         if (FeatureFlags.ENABLE_MULTI_INSTANCE.get()) {
-            // invalidate the current list of tasks if filter changes
-            mFilterState.setOnFilterUpdatedListener(this::invalidateTaskList);
+            // invalidate the current list of tasks if filter changes with a fading in/out animation
+            mFilterState.setOnFilterUpdatedListener(() -> {
+                Animator animatorFade = mActivity.getStateManager().createStateElementAnimation(
+                        RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM, 1f, 0f);
+                Animator animatorAppear = mActivity.getStateManager().createStateElementAnimation(
+                        RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM, 0f, 1f);
+                animatorFade.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(@NonNull Animator animation) {
+                        RecentsView.this.invalidateTaskList();
+                        updateClearAllFunction();
+                        reloadIfNeeded();
+                        if (mPendingAnimation != null) {
+                            mPendingAnimation.addEndListener(success -> {
+                                animatorAppear.start();
+                            });
+                        } else {
+                            animatorAppear.start();
+                        }
+                    }
+                });
+                animatorFade.start();
+            });
         }
         // make sure filter is turned off by default
         mFilterState.setFilterBy(null);
@@ -829,8 +847,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public void setAndApplyFilter(@Nullable String packageName) {
         mFilterState.setFilterBy(packageName);
-        updateClearAllFunction();
-        reloadIfNeeded();
     }
 
     /**
@@ -1185,6 +1201,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         .setMatrix(matrix);
                 surfaceApplier.scheduleApply(transaction);
             });
+            appAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    final SurfaceTransaction showTransaction = new SurfaceTransaction();
+                    for (int i = apps.length - 1; i >= 0; --i) {
+                        showTransaction.getTransaction().show(apps[i].leash);
+                    }
+                    surfaceApplier.scheduleApply(showTransaction);
+                }
+            });
             anim.play(appAnimator);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -1300,6 +1327,29 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a {@link TaskView} that has taskIds matching {@code taskIds} or null if no match.
+     */
+    @Nullable
+    public TaskView getTaskViewByTaskIds(int[] taskIds) {
+        if (!hasAnyValidTaskIds(taskIds)) {
+            return null;
+        }
+
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView taskView = requireTaskViewAt(i);
+            if (Arrays.equals(taskIds, taskView.getTaskIds())) {
+                return taskView;
+            }
+        }
+        return null;
+    }
+
+    /** Returns false if {@code taskIds} is null or contains invalid values, true otherwise */
+    private boolean hasAnyValidTaskIds(int[] taskIds) {
+        return taskIds != null && !Arrays.equals(taskIds, INVALID_TASK_IDS);
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
@@ -1571,10 +1621,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        int currentTaskId = INVALID_TASK_ID;
+        int[] currentTaskId = INVALID_TASK_IDS;
         TaskView currentTaskView = getTaskViewAt(mCurrentPage);
         if (currentTaskView != null && currentTaskView.getTask() != null) {
-            currentTaskId = currentTaskView.getTask().key.id;
+            currentTaskId = currentTaskView.getTaskIds();
         }
 
         // Unload existing visible task data
@@ -1586,8 +1636,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Save running task ID if it exists before rebinding all taskViews, otherwise the task from
         // the runningTaskView currently bound could get assigned to another TaskView
-        int runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId)[0];
-        int focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId)[0];
+        int[] runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId);
+        int[] focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId);
 
         // Removing views sets the currentPage to 0, so we save this and restore it after
         // the new set of views are added
@@ -1681,7 +1731,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         // Keep same previous focused task
-        TaskView newFocusedTaskView = getTaskViewByTaskId(focusedTaskId);
+        TaskView newFocusedTaskView = getTaskViewByTaskIds(focusedTaskId);
         // If the list changed, maybe the focused task doesn't exist anymore
         if (newFocusedTaskView == null && getTaskViewCount() > 0) {
             newFocusedTaskView = getTaskViewAt(0);
@@ -1698,10 +1748,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateChildTaskOrientations();
 
         TaskView newRunningTaskView = null;
-        if (runningTaskId != INVALID_TASK_ID) {
+        if (hasAnyValidTaskIds(runningTaskId)) {
             // Update mRunningTaskViewId to be the new TaskView that was assigned by binding
             // the full list of tasks to taskViews
-            newRunningTaskView = getTaskViewByTaskId(runningTaskId);
+            newRunningTaskView = getTaskViewByTaskIds(runningTaskId);
             if (newRunningTaskView != null) {
                 mRunningTaskViewId = newRunningTaskView.getTaskViewId();
             } else {
@@ -1713,15 +1763,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mNextPage != INVALID_PAGE) {
             // Restore mCurrentPage but don't call setCurrentPage() as that clobbers the scroll.
             mCurrentPage = previousCurrentPage;
-            if (currentTaskId != INVALID_TASK_ID) {
-                currentTaskView = getTaskViewByTaskId(currentTaskId);
+            if (hasAnyValidTaskIds(currentTaskId)) {
+                currentTaskView = getTaskViewByTaskIds(currentTaskId);
                 if (currentTaskView != null) {
                     targetPage = indexOfChild(currentTaskView);
                 }
             }
         } else {
             // Set the current page to the running task, but not if settling on new task.
-            if (runningTaskId != INVALID_TASK_ID) {
+            if (hasAnyValidTaskIds(runningTaskId)) {
                 targetPage = indexOfChild(newRunningTaskView);
             } else if (getTaskViewCount() > 0) {
                 TaskView taskView = requireTaskViewAt(0);
@@ -2192,8 +2242,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Update the task data for the in/visible children
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
-            Task task = taskView.getTask();
-            if (task == null) {
+            TaskIdAttributeContainer[] containers = taskView.getTaskIdAttributeContainers();
+            if (containers[0] == null && containers[1] == null) {
                 continue;
             }
             int index = indexOfChild(taskView);
@@ -2204,34 +2254,43 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 visible = lower <= index && index <= upper;
             }
             if (visible) {
-                boolean skipLoadingTask = false;
+                // Default update all non-null tasks, then remove running ones
+                List<Task> tasksToUpdate = Arrays.stream(containers).filter(Objects::nonNull)
+                        .map(TaskIdAttributeContainer::getTask)
+                        .collect(Collectors.toCollection(ArrayList::new));
                 if (mTmpRunningTasks != null) {
                     for (Task t : mTmpRunningTasks) {
-                        if (task == t) {
-                            // Skip loading if this is the task that we are animating into
-                            skipLoadingTask = true;
-                            break;
-                        }
+                        // Skip loading if this is the task that we are animating into
+                        // TODO(b/280812109) change this equality check to use A.equals(B)
+                        tasksToUpdate.removeIf(task -> task == t);
                     }
                 }
-                if (skipLoadingTask) {
+                if (tasksToUpdate.isEmpty()) {
                     continue;
                 }
-                if (!mHasVisibleTaskData.get(task.key.id)) {
-                    // Ignore thumbnail update if it's current running task during the gesture
-                    // We snapshot at end of gesture, it will update then
-                    int changes = dataChanges;
-                    if (taskView == getRunningTaskView() && mGestureActive) {
-                        changes &= ~TaskView.FLAG_UPDATE_THUMBNAIL;
+                for (Task task : tasksToUpdate) {
+                    if (!mHasVisibleTaskData.get(task.key.id)) {
+                        // Ignore thumbnail update if it's current running task during the gesture
+                        // We snapshot at end of gesture, it will update then
+                        int changes = dataChanges;
+                        if (taskView == getRunningTaskView() && mGestureActive) {
+                            changes &= ~TaskView.FLAG_UPDATE_THUMBNAIL;
+                        }
+                        taskView.onTaskListVisibilityChanged(true /* visible */, changes);
                     }
-                    taskView.onTaskListVisibilityChanged(true /* visible */, changes);
+                    mHasVisibleTaskData.put(task.key.id, visible);
                 }
-                mHasVisibleTaskData.put(task.key.id, visible);
             } else {
-                if (mHasVisibleTaskData.get(task.key.id)) {
-                    taskView.onTaskListVisibilityChanged(false /* visible */, dataChanges);
+                for (TaskIdAttributeContainer container : containers) {
+                    if (container == null) {
+                        continue;
+                    }
+
+                    if (mHasVisibleTaskData.get(container.getTask().key.id)) {
+                        taskView.onTaskListVisibilityChanged(false /* visible */, dataChanges);
+                    }
+                    mHasVisibleTaskData.delete(container.getTask().key.id);
                 }
-                mHasVisibleTaskData.delete(task.key.id);
             }
         }
     }
@@ -2267,7 +2326,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    public abstract void startHome();
+    public void startHome() {
+        startHome(mActivity.isStarted());
+    }
+
+    public abstract void startHome(boolean animated);
 
     public void reset() {
         setCurrentTask(-1);
@@ -2290,7 +2353,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
         });
         resetFromSplitSelectionState();
-        mSplitSelectStateController.resetState();
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
         // visible anyway), so defer by a frame to get off the critical path, e.g. app to home.
@@ -3133,9 +3195,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 splitAnimInitProps.getFadeWithThumbnail(), splitAnimInitProps.isStagedTask());
 
         // Allow user to click staged app to launch into fullscreen
-        if (ENABLE_LAUNCH_FROM_STAGED_APP.get()) {
-            mFirstFloatingTaskView.setOnClickListener(this::animateToFullscreen);
-        }
+        mFirstFloatingTaskView.setOnClickListener(this::animateToFullscreen);
 
         // SplitInstructionsView: animate in
         safeRemoveDragLayerView(mSplitInstructionsView);
@@ -3206,7 +3266,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 true /* isStagedTask */);
 
         pendingAnimation.addEndListener(animationSuccess ->
-                mSplitSelectStateController.launchSplitTasks(launchSuccess ->
+                mSplitSelectStateController.launchInitialAppFullscreen(launchSuccess ->
                         resetFromSplitSelectionState()));
 
         pendingAnimation.buildAnim().start();
@@ -3688,19 +3748,33 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                         taskViewIdArray.removeValue(
                                                 finalNextFocusedTaskView.getTaskViewId());
                                     }
-                                    if (snappedIndex < taskViewIdArray.size()) {
-                                        taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
-                                    } else if (snappedIndex == taskViewIdArray.size()) {
-                                        // If the snapped task is the last item from the
-                                        // dismissed row,
-                                        // snap to the same column in the other grid row
-                                        IntArray inverseRowTaskViewIdArray =
-                                                isSnappedTaskInTopRow ? getBottomRowIdArray()
-                                                        : getTopRowIdArray();
-                                        if (snappedIndex < inverseRowTaskViewIdArray.size()) {
-                                            taskViewIdToSnapTo = inverseRowTaskViewIdArray.get(
-                                                    snappedIndex);
+                                    try {
+                                        if (snappedIndex < taskViewIdArray.size()) {
+                                            taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
+                                        } else if (snappedIndex == taskViewIdArray.size()) {
+                                            // If the snapped task is the last item from the
+                                            // dismissed row,
+                                            // snap to the same column in the other grid row
+                                            IntArray inverseRowTaskViewIdArray =
+                                                    isSnappedTaskInTopRow ? getBottomRowIdArray()
+                                                            : getTopRowIdArray();
+                                            if (snappedIndex < inverseRowTaskViewIdArray.size()) {
+                                                taskViewIdToSnapTo = inverseRowTaskViewIdArray.get(
+                                                        snappedIndex);
+                                            }
                                         }
+                                    } catch (ArrayIndexOutOfBoundsException e) {
+                                        throw new IllegalStateException(
+                                                "b/269956477 invalid snappedIndex"
+                                                        + "\nsnappedTaskViewId: "
+                                                        + snappedTaskViewId
+                                                        + "\nfocusedTaskViewId: "
+                                                        + mFocusedTaskViewId
+                                                        + "\ntopRowIdArray: "
+                                                        + getTopRowIdArray().toConcatString()
+                                                        + "\nbottomRowIdArray: "
+                                                        + getBottomRowIdArray().toConcatString(),
+                                                e);
                                     }
                                 }
                             }
@@ -3902,14 +3976,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int[] taskIds = getTaskIdsForTaskViewId(dismissedTaskViewId);
         int primaryTaskId = taskIds[0];
         int secondaryTaskId = taskIds[1];
-        UI_HELPER_EXECUTOR.getHandler().postDelayed(
+        UI_HELPER_EXECUTOR.getHandler().post(
                 () -> {
                     ActivityManagerWrapper.getInstance().removeTask(primaryTaskId);
                     if (secondaryTaskId != -1) {
                         ActivityManagerWrapper.getInstance().removeTask(secondaryTaskId);
                     }
-                },
-                REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                });
     }
 
     protected void onDismissAnimationEnds() {
@@ -3932,9 +4005,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (isSuccess) {
                 // Remove all the task views now
                 finishRecentsAnimation(true /* toRecents */, false /* shouldPip */, () -> {
-                    UI_HELPER_EXECUTOR.getHandler().postDelayed(
-                            ActivityManagerWrapper.getInstance()::removeAllRecentTasks,
-                            REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                    UI_HELPER_EXECUTOR.getHandler().post(
+                            ActivityManagerWrapper.getInstance()::removeAllRecentTasks);
                     removeTasksViewsAndClearAllButton();
                     startHome();
                 });
@@ -4047,6 +4119,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         alpha = Utilities.boundToRange(alpha, 0, 1);
         mContentAlpha = alpha;
+
         int runningTaskId = getTaskIdsForRunningTaskView()[0];
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView child = requireTaskViewAt(i);
@@ -4687,6 +4760,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setTaskViewsPrimarySplitTranslation(0);
         setTaskViewsSecondarySplitTranslation(0);
 
+        mSplitSelectStateController.resetState();
         if (mSplitHiddenTaskViewIndex == -1) {
             return;
         }
@@ -4933,6 +5007,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 passedOverviewThreshold[0] = passed;
                 performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                // Also update recents animation controller state if it is ongoing.
+                if (mRecentsAnimationController != null) {
+                    mRecentsAnimationController.setWillFinishToHome(!passed);
+                }
             }
         });
 

@@ -92,6 +92,8 @@ public final class DigitalWellBeingToast {
 
     private Task mTask;
     private boolean mHasLimit;
+
+    private long mAppUsageLimitTimeMs;
     private long mAppRemainingTimeMs;
     @Nullable
     private View mBanner;
@@ -113,10 +115,12 @@ public final class DigitalWellBeingToast {
         mHasLimit = false;
         mTaskView.setContentDescription(mTask.titleDescription);
         replaceBanner(null);
-        mAppRemainingTimeMs = 0;
+        mAppUsageLimitTimeMs = -1;
+        mAppRemainingTimeMs = -1;
     }
 
     private void setLimit(long appUsageLimitTimeMs, long appRemainingTimeMs) {
+        mAppUsageLimitTimeMs = appUsageLimitTimeMs;
         mAppRemainingTimeMs = appRemainingTimeMs;
         mHasLimit = true;
         TextView toast = mActivity.getViewCache().getView(R.layout.digital_wellbeing_toast,
@@ -138,11 +142,12 @@ public final class DigitalWellBeingToast {
     }
 
     public void initialize(Task task) {
+        mAppUsageLimitTimeMs = mAppRemainingTimeMs = -1;
         mTask = task;
         THREAD_POOL_EXECUTOR.execute(() -> {
             final AppUsageLimit usageLimit = mLauncherApps.getAppUsageLimit(
-                    task.getTopComponent().getPackageName(),
-                    UserHandle.of(task.key.userId));
+                    mTask.getTopComponent().getPackageName(),
+                    UserHandle.of(mTask.key.userId));
 
             final long appUsageLimitTimeMs =
                     usageLimit != null ? usageLimit.getTotalUsageLimit() : -1;

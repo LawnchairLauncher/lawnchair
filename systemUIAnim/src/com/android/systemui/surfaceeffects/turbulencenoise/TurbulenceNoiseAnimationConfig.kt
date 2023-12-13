@@ -56,7 +56,19 @@ data class TurbulenceNoiseAnimationConfig(
     val easeOutDuration: Float = DEFAULT_EASING_DURATION_IN_MILLIS,
     val pixelDensity: Float = 1f,
     val blendMode: BlendMode = DEFAULT_BLEND_MODE,
-    val onAnimationEnd: Runnable? = null
+    val onAnimationEnd: Runnable? = null,
+    /**
+     * Variants in noise. Higher number means more contrast; lower number means less contrast but
+     * make the noise dimmed. You may want to increase the [lumaMatteBlendFactor] to compensate.
+     * Expected range [0, 1].
+     */
+    val lumaMatteBlendFactor: Float = DEFAULT_LUMA_MATTE_BLEND_FACTOR,
+    /**
+     * Offset for the overall brightness in noise. Higher number makes the noise brighter. You may
+     * want to use this if you have made the noise softer using [lumaMatteBlendFactor]. Expected
+     * range [0, 1].
+     */
+    val lumaMatteOverallBrightness: Float = DEFAULT_LUMA_MATTE_OVERALL_BRIGHTNESS
 ) {
     companion object {
         const val DEFAULT_MAX_DURATION_IN_MILLIS = 30_000f // Max 30 sec
@@ -66,6 +78,8 @@ data class TurbulenceNoiseAnimationConfig(
         const val DEFAULT_NOISE_SPEED_Z = 0.3f
         const val DEFAULT_OPACITY = 150 // full opacity is 255.
         const val DEFAULT_COLOR = Color.WHITE
+        const val DEFAULT_LUMA_MATTE_BLEND_FACTOR = 1f
+        const val DEFAULT_LUMA_MATTE_OVERALL_BRIGHTNESS = 0f
         const val DEFAULT_BACKGROUND_COLOR = Color.BLACK
         val DEFAULT_BLEND_MODE = BlendMode.SRC_OVER
     }

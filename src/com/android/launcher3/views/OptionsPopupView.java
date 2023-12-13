@@ -17,7 +17,9 @@ package com.android.launcher3.views;
 
 import static androidx.core.content.ContextCompat.getColorStateList;
 
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
+import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
@@ -159,12 +161,12 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     }
 
     public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
-                                        List<OptionItem> items, boolean shouldAddArrow) {
+            List<OptionItem> items, boolean shouldAddArrow) {
         return show(launcher, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
     public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
-                                        List<OptionItem> items, boolean shouldAddArrow, int width) {
+            List<OptionItem> items, boolean shouldAddArrow, int width) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
         popup.mTargetRect = targetRect;
@@ -227,12 +229,25 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                     LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                     OptionsPopupView::onWidgetsClicked));
         }
+        if (MULTI_SELECT_EDIT_MODE.get()) {
+            options.add(new OptionItem(launcher,
+                    R.string.edit_home_screen,
+                    R.drawable.enter_home_gardening_icon,
+                    LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
+                    OptionsPopupView::enterHomeGardening));
+        }
         options.add(new OptionItem(launcher,
                 R.string.settings_button_text,
                 R.drawable.ic_home_screen,
                 LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 OptionsPopupView::startSettings));
         return options;
+    }
+
+    private static boolean enterHomeGardening(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
+        launcher.getStateManager().goToState(EDIT_MODE);
+        return true;
     }
 
     private static boolean onWidgetsClicked(View view) {
@@ -288,7 +303,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         } else {
             intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "focus_wallpaper");
         }
-        return launcher.startActivitySafely(v, intent, placeholderInfo(intent));
+        return launcher.startActivitySafely(v, intent, placeholderInfo(intent)) != null;
     }
 
     private static boolean toggleHomeScreenLock(View v) {
@@ -325,7 +340,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         public final OnLongClickListener clickListener;
 
         public OptionItem(Context context, int labelRes, int iconRes, EventEnum eventId,
-                          OnLongClickListener clickListener) {
+                OnLongClickListener clickListener) {
             this.labelRes = labelRes;
             this.label = context.getText(labelRes);
             this.icon = ContextCompat.getDrawable(context, iconRes);
@@ -334,7 +349,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         }
 
         public OptionItem(CharSequence label, Drawable icon, EventEnum eventId,
-                          OnLongClickListener clickListener) {
+                OnLongClickListener clickListener) {
             this.labelRes = 0;
             this.label = label;
             this.icon = icon;

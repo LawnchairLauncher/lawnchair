@@ -18,14 +18,15 @@ package com.android.launcher3.util.window;
 import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
-import static com.android.systemui.shared.testing.ResourceUtils.INVALID_RESOURCE_HANDLE;
-import static com.android.systemui.shared.testing.ResourceUtils.NAVBAR_HEIGHT;
-import static com.android.systemui.shared.testing.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
-import static com.android.systemui.shared.testing.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
-import static com.android.systemui.shared.testing.ResourceUtils.NAV_BAR_INTERACTION_MODE_RES_NAME;
-import static com.android.systemui.shared.testing.ResourceUtils.STATUS_BAR_HEIGHT;
-import static com.android.systemui.shared.testing.ResourceUtils.STATUS_BAR_HEIGHT_LANDSCAPE;
-import static com.android.systemui.shared.testing.ResourceUtils.STATUS_BAR_HEIGHT_PORTRAIT;
+
+import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAV_BAR_INTERACTION_MODE_RES_NAME;
+import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT;
+import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT_LANDSCAPE;
+import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT_PORTRAIT;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 import static com.android.launcher3.util.RotationUtils.deltaRotation;
 import static com.android.launcher3.util.RotationUtils.rotateRect;
@@ -51,11 +52,11 @@ import android.view.WindowMetrics;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.util.WindowBounds;
-import com.android.systemui.shared.testing.ResourceUtils;
 
 /**
  * Utility class for mocking some window manager behaviours

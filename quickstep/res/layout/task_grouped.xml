@@ -28,7 +28,7 @@
     android:clipChildren="false"
     android:defaultFocusHighlightEnabled="false"
     android:focusable="true"
-    launcher:borderColor="?attr/colorAccentPrimary">
+    launcher:borderColor="?attr/materialColorOutline">
 
     <com.android.quickstep.views.TaskThumbnailView
         android:id="@+id/snapshot"
@@ -49,7 +49,6 @@
         android:layout_gravity="start"
         android:alpha="0"
         android:tint="@color/recents_filter_icon"
-        android:contentDescription="@string/recents_filter_icon_desc"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_select_windows" />
 
@@ -62,7 +61,6 @@
         android:layout_gravity="end"
         android:alpha="0"
         android:tint="@color/recents_filter_icon"
-        android:contentDescription="@string/recents_filter_icon_desc"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_select_windows" />
 

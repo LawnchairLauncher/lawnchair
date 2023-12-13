@@ -31,21 +31,20 @@ class SmartspaceState() : Parcelable {
     var visibleOnScreen = false
 
     constructor(parcel: Parcel) : this() {
-        this.boundsOnScreen = parcel.readParcelable(Rect::javaClass.javaClass.classLoader)!!
+        this.boundsOnScreen = parcel.readParcelable(Rect::javaClass.javaClass.classLoader) ?: Rect()
         this.selectedPage = parcel.readInt()
         this.visibleOnScreen = parcel.readBoolean()
     }
 
-     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeParcelable(boundsOnScreen, 0)
-        dest?.writeInt(selectedPage)
-        dest?.writeBoolean(visibleOnScreen)
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeParcelable(boundsOnScreen, 0)
+        dest.writeInt(selectedPage)
+        dest.writeBoolean(visibleOnScreen)
     }
 
     override fun describeContents(): Int {
         return 0
     }
-
 
     override fun toString(): String {
         return "boundsOnScreen: $boundsOnScreen, " +

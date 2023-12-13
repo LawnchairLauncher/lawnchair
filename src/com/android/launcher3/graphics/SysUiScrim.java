@@ -38,15 +38,11 @@ import android.view.View;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.DynamicResource;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.ScreenOnTracker;
 import com.android.launcher3.util.ScreenOnTracker.ScreenOnListener;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.ResourceProvider;
-import com.android.systemui.shared.testing.ResourceUtils;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
-
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.ViewExtensionsKt;
 
@@ -55,32 +51,31 @@ import app.lawnchair.util.ViewExtensionsKt;
  */
 public class SysUiScrim implements View.OnAttachStateChangeListener {
 
-    public static final FloatProperty<SysUiScrim> SYSUI_PROGRESS =
-            new FloatProperty<SysUiScrim>("sysUiProgress") {
-                @Override
-                public Float get(SysUiScrim scrim) {
-                    return scrim.mSysUiProgress;
-                }
+    public static final FloatProperty<SysUiScrim> SYSUI_PROGRESS = new FloatProperty<SysUiScrim>("sysUiProgress") {
+        @Override
+        public Float get(SysUiScrim scrim) {
+            return scrim.mSysUiProgress;
+        }
 
-                @Override
-                public void setValue(SysUiScrim scrim, float value) {
-                    scrim.setSysUiProgress(value);
-                }
-            };
+        @Override
+        public void setValue(SysUiScrim scrim, float value) {
+            scrim.setSysUiProgress(value);
+        }
+    };
 
-    private static final FloatProperty<SysUiScrim> SYSUI_ANIM_MULTIPLIER =
-            new FloatProperty<SysUiScrim>("sysUiAnimMultiplier") {
-                @Override
-                public Float get(SysUiScrim scrim) {
-                    return scrim.mSysUiAnimMultiplier;
-                }
+    private static final FloatProperty<SysUiScrim> SYSUI_ANIM_MULTIPLIER = new FloatProperty<SysUiScrim>(
+            "sysUiAnimMultiplier") {
+        @Override
+        public Float get(SysUiScrim scrim) {
+            return scrim.mSysUiAnimMultiplier;
+        }
 
-                @Override
-                public void setValue(SysUiScrim scrim, float value) {
-                    scrim.mSysUiAnimMultiplier = value;
-                    scrim.reapplySysUiAlpha();
-                }
-            };
+        @Override
+        public void setValue(SysUiScrim scrim, float value) {
+            scrim.mSysUiAnimMultiplier = value;
+            scrim.reapplySysUiAlpha();
+        }
+    };
 
     /**
      * Receiver used to get a signal that the user unlocked their device.
@@ -95,7 +90,8 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
         @Override
         public void onUserPresent() {
-            // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
+            // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case
+            // where
             // the user unlocked and the Launcher is not in the foreground.
             mAnimateScrimOnNextDraw = false;
         }
@@ -106,10 +102,8 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     private static final int ALPHA_MASK_BITMAP_DP = 200;
     private static final int ALPHA_MASK_WIDTH_DP = 2;
 
-    private boolean mDrawTopScrim, mDrawBottomScrim, mDrawWallpaperScrim;
+    private boolean mDrawTopScrim, mDrawBottomScrim;
 
-    private final RectF mWallpaperScrimRect = new RectF();
-    private final Paint mWallpaperScrimPaint = new Paint();
     private final RectF mFinalMaskRect = new RectF();
     private final Paint mBottomMaskPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     private final Bitmap mBottomMask;
@@ -124,7 +118,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     private boolean mAnimateScrimOnNextDraw = false;
     private float mSysUiAnimMultiplier = 1;
-    private int mWallpaperScrimMaxAlpha;
 
     public SysUiScrim(View view) {
         mRoot = view;
@@ -141,26 +134,17 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
             mHideSysUiScrim = true;
         }
 
-        mDrawWallpaperScrim = FeatureFlags.ENABLE_WALLPAPER_SCRIM.get()
-                && !Themes.getAttrBoolean(view.getContext(), R.attr.isMainColorDark)
-                && !Themes.getAttrBoolean(view.getContext(), R.attr.isWorkspaceDarkText);
-        ResourceProvider rp = DynamicResource.provider(view.getContext());
-        int wallpaperScrimColor = rp.getColor(R.color.wallpaper_scrim_color);
-        mWallpaperScrimMaxAlpha = Color.alpha(wallpaperScrimColor);
-        mWallpaperScrimPaint.setColor(wallpaperScrimColor);
-
         view.addOnAttachStateChangeListener(this);
 
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(mRoot.getContext());
         PreferenceExtensionsKt.onEach(
-            preferenceManager2.getShowTopShadow(),
-            ViewExtensionsKt.getViewAttachedScope(mRoot),
-            (showTopShadow) -> {
-                mHideSysUiScrim = !showTopShadow;
-                mRoot.invalidate();
-                return null;
-            }
-        );
+                preferenceManager2.getShowTopShadow(),
+                ViewExtensionsKt.getViewAttachedScope(mRoot),
+                (showTopShadow) -> {
+                    mHideSysUiScrim = !showTopShadow;
+                    mRoot.invalidate();
+                    return null;
+                });
     }
 
     /**
@@ -184,9 +168,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
                 mAnimateScrimOnNextDraw = false;
             }
 
-            if (mDrawWallpaperScrim) {
-                canvas.drawRect(mWallpaperScrimRect, mWallpaperScrimPaint);
-            }
             if (mDrawTopScrim) {
                 mTopScrim.draw(canvas);
             }
@@ -208,8 +189,10 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     /**
      * Determines whether to draw the top and/or bottom scrim based on new insets.
      *
-     * In order for the bottom scrim to be drawn this 3 condition should be meet at the same time:
-     * the device is in 3 button navigation, the taskbar is not present and the Hotseat is
+     * In order for the bottom scrim to be drawn this 3 condition should be meet at
+     * the same time:
+     * the device is in 3 button navigation, the taskbar is not present and the
+     * Hotseat is
      * horizontal
      */
     public void onInsetsChanged(Rect insets) {
@@ -237,6 +220,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     /**
      * Set the width and height of the view being scrimmed
+     * 
      * @param w
      * @param h
      */
@@ -245,7 +229,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
             mTopScrim.setBounds(0, 0, w, h);
             mFinalMaskRect.set(0, h - mMaskHeight, w, h);
         }
-        mWallpaperScrimRect.set(0, 0, w, h);
     }
 
     private void setSysUiProgress(float progress) {
@@ -268,7 +251,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         if (mTopScrim != null) {
             mTopScrim.setAlpha(Math.round(255 * factor));
         }
-        mWallpaperScrimPaint.setAlpha(Math.round(mWallpaperScrimMaxAlpha * factor));
     }
 
     private Bitmap createDitheredAlphaMask() {
@@ -279,11 +261,11 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         Canvas c = new Canvas(dst);
         Paint paint = new Paint(Paint.DITHER_FLAG);
         LinearGradient lg = new LinearGradient(0, 0, 0, gradientHeight,
-                new int[]{
+                new int[] {
                         0x00FFFFFF,
                         setColorAlphaBound(Color.WHITE, (int) (0xFF * 0.95)),
-                        0xFFFFFFFF},
-                new float[]{0f, 0.8f, 1f},
+                        0xFFFFFFFF },
+                new float[] { 0f, 0.8f, 1f },
                 Shader.TileMode.CLAMP);
         paint.setShader(lg);
         c.drawRect(0, 0, width, gradientHeight, paint);

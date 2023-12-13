@@ -16,45 +16,47 @@
 
 package com.android.app.viewcapture;
 
-import static java.util.stream.Collectors.toList;
+import static com.android.app.viewcapture.data.ExportedData.MagicNumber.MAGIC_NUMBER_H;
+import static com.android.app.viewcapture.data.ExportedData.MagicNumber.MAGIC_NUMBER_L;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.media.permission.SafeCloseable;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.os.Trace;
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Base64OutputStream;
-import android.util.Log;
-import android.util.Pair;
 import android.util.SparseArray;
-import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
 import com.android.app.viewcapture.data.ExportedData;
 import com.android.app.viewcapture.data.FrameData;
+import com.android.app.viewcapture.data.MotionWindowData;
 import com.android.app.viewcapture.data.ViewNode;
+import com.android.app.viewcapture.data.WindowData;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.zip.GZIPOutputStream;
+import java.util.function.Predicate;
 
 /**
  * Utility class for capturing view data every frame
@@ -66,6 +68,9 @@ public abstract class ViewCapture {
     // These flags are copies of two private flags in the View class.
     private static final int PFLAG_INVALIDATED = 0x80000000;
     private static final int PFLAG_DIRTY_MASK = 0x00200000;
+
+    private static final long MAGIC_NUMBER_FOR_WINSCOPE =
+            ((long) MAGIC_NUMBER_H.getNumber() << 32) | MAGIC_NUMBER_L.getNumber();
 
     // Number of frames to keep in memory
     private final int mMemorySize;
@@ -79,16 +84,13 @@ public abstract class ViewCapture {
     private final List<WindowListener> mListeners = new ArrayList<>();
 
     protected final Executor mBgExecutor;
-    private final Choreographer mChoreographer;
 
     // Pool used for capturing view tree on the UI thread.
     private ViewRef mPool = new ViewRef();
     private boolean mIsEnabled = true;
 
-    protected ViewCapture(int memorySize, int initPoolSize, Choreographer choreographer,
-            Executor bgExecutor) {
+    protected ViewCapture(int memorySize, int initPoolSize, Executor bgExecutor) {
         mMemorySize = memorySize;
-        mChoreographer = choreographer;
         mBgExecutor = bgExecutor;
         mBgExecutor.execute(() -> initPool(initPoolSize));
     }
@@ -122,6 +124,7 @@ public abstract class ViewCapture {
     /**
      * Attaches the ViewCapture to the provided window and returns a handle to detach the listener
      */
+    @NonNull
     public SafeCloseable startCapture(Window window) {
         String title = window.getAttributes().getTitle().toString();
         String name = TextUtils.isEmpty(title) ? window.toString() : title;
@@ -132,6 +135,7 @@ public abstract class ViewCapture {
      * Attaches the ViewCapture to the provided window and returns a handle to detach the listener.
      * Verifies that ViewCapture is enabled before actually attaching an onDrawListener.
      */
+    @NonNull
     public SafeCloseable startCapture(View view, String name) {
         WindowListener listener = new WindowListener(view, name);
         if (mIsEnabled) MAIN_EXECUTOR.execute(listener::attachToRoot);
@@ -142,6 +146,25 @@ public abstract class ViewCapture {
         };
     }
 
+    /**
+     * Launcher checks for leaks in many spots during its instrumented tests. The WindowListeners
+     * appear to have leaks because they store mRoot views. In reality, attached views close their
+     * respective window listeners when they are destroyed.
+     * <p>
+     * This method deletes detaches and deletes mRoot views from windowListeners. This makes the
+     * WindowListeners unusable for anything except dumping previously captured information. They
+     * are still technically enabled to allow for dumping.
+     */
+    @VisibleForTesting
+    public void stopCapture(@NonNull View rootView) {
+        mListeners.forEach(it -> {
+            if (rootView == it.mRoot) {
+                it.mRoot.getViewTreeObserver().removeOnDrawListener(it);
+                it.mRoot = null;
+            }
+        });
+    }
+
     @UiThread
     protected void enableOrDisableWindowListeners(boolean isEnabled) {
         mIsEnabled = isEnabled;
@@ -149,61 +172,50 @@ public abstract class ViewCapture {
         if (mIsEnabled) mListeners.forEach(WindowListener::attachToRoot);
     }
 
-
-    /**
-     * Dumps all the active view captures
-     */
-    public void dump(PrintWriter writer, FileDescriptor out, Context context) {
-        if (!mIsEnabled) {
-            return;
-        }
-        ViewIdProvider idProvider = new ViewIdProvider(context.getResources());
-
-        // Collect all the tasks first so that all the tasks are posted on the executor
-        List<Pair<String, FutureTask<ExportedData>>> tasks = mListeners.stream()
-                .map(l -> {
-                    FutureTask<ExportedData> task =
-                            new FutureTask<ExportedData>(() -> l.dumpToProto(idProvider));
-                    mBgExecutor.execute(task);
-                    return Pair.create(l.name, task);
-                })
-                .collect(toList());
-        tasks.forEach(pair -> {
-            writer.println();
-            writer.println(" ContinuousViewCapture:");
-            writer.println(" window " + pair.first + ":");
-            writer.println("  pkg:" + context.getPackageName());
-            writer.print("  data:");
-            writer.flush();
-            try (OutputStream os = new FileOutputStream(out)) {
-                ExportedData data = pair.second.get();
-                OutputStream encodedOS = new GZIPOutputStream(new Base64OutputStream(os,
-                        Base64.NO_CLOSE | Base64.NO_PADDING | Base64.NO_WRAP));
-                data.writeTo(encodedOS);
-                encodedOS.close();
-                os.flush();
-            } catch (Exception e) {
-                Log.e(TAG, "Error capturing proto", e);
-            }
-            writer.println();
-            writer.println("--end--");
-        });
+    @AnyThread
+    public void dumpTo(OutputStream os, Context context)
+            throws InterruptedException, ExecutionException, IOException {
+        if (mIsEnabled) getExportedData(context).writeTo(os);
     }
 
-    public Optional<FutureTask<ExportedData>> getDumpTask(View view) {
-        Context context = view.getContext().getApplicationContext();
-        ViewIdProvider idProvider = new ViewIdProvider(context.getResources());
-
-        return mListeners.stream()
-                .filter(l -> l.mRoot.equals(view))
-                .map(l -> {
-                    FutureTask<ExportedData> task =
-                            new FutureTask<ExportedData>(() -> l.dumpToProto(idProvider));
-                    mBgExecutor.execute(task);
-                    return task;
-                })
-                .findFirst();
+    @VisibleForTesting
+    public ExportedData getExportedData(Context context)
+            throws InterruptedException, ExecutionException {
+        ArrayList<Class> classList = new ArrayList<>();
+        return ExportedData.newBuilder()
+                .setMagicNumber(MAGIC_NUMBER_FOR_WINSCOPE)
+                .setPackage(context.getPackageName())
+                .addAllWindowData(getWindowData(context, classList, l -> l.mIsActive).get())
+                .addAllClassname(toStringList(classList))
+                .setRealToElapsedTimeOffsetNanos(TimeUnit.MILLISECONDS
+                        .toNanos(System.currentTimeMillis()) - SystemClock.elapsedRealtimeNanos())
+                .build();
     }
+
+    private static List<String> toStringList(List<Class> classList) {
+        return classList.stream().map(Class::getName).toList();
+    }
+
+    public CompletableFuture<Optional<MotionWindowData>> getDumpTask(View view) {
+        ArrayList<Class> classList = new ArrayList<>();
+        return getWindowData(view.getContext().getApplicationContext(), classList,
+                l -> l.mRoot.equals(view)).thenApply(list -> list.stream().findFirst().map(w ->
+                MotionWindowData.newBuilder()
+                        .addAllFrameData(w.getFrameDataList())
+                        .addAllClassname(toStringList(classList))
+                        .build()));
+    }
+
+    @AnyThread
+    private CompletableFuture<List<WindowData>> getWindowData(Context context,
+            ArrayList<Class> outClassList, Predicate<WindowListener> filter) {
+        ViewIdProvider idProvider = new ViewIdProvider(context.getResources());
+        return CompletableFuture.supplyAsync(() ->
+                mListeners.stream().filter(filter).toList(), MAIN_EXECUTOR).thenApplyAsync(it ->
+                        it.stream().map(l -> l.dumpToProto(idProvider, outClassList)).toList(),
+                mBgExecutor);
+    }
+
 
     /**
      * Once this window listener is attached to a window's root view, it traverses the entire
@@ -245,7 +257,8 @@ public abstract class ViewCapture {
      */
     private class WindowListener implements ViewTreeObserver.OnDrawListener {
 
-        public final View mRoot;
+        @Nullable // Nullable in tests only
+        public View mRoot;
         public final String name;
 
         private final ViewRef mViewRef = new ViewRef();
@@ -276,7 +289,7 @@ public abstract class ViewCapture {
             ViewRef captured = mViewRef.next;
             if (captured != null) {
                 captured.callback = mCaptureCallback;
-                captured.choreographerTimeNanos = mChoreographer.getFrameTimeNanos();
+                captured.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos();
                 mBgExecutor.execute(captured);
             }
             mIsFirstFrame = false;
@@ -289,12 +302,12 @@ public abstract class ViewCapture {
          */
         @WorkerThread
         private void captureViewPropertiesBg(ViewRef viewRefStart) {
-            long choreographerTimeNanos = viewRefStart.choreographerTimeNanos;
+            long elapsedRealtimeNanos = viewRefStart.elapsedRealtimeNanos;
             mFrameIndexBg++;
             if (mFrameIndexBg >= mMemorySize) {
                 mFrameIndexBg = 0;
             }
-            mFrameTimesNanosBg[mFrameIndexBg] = choreographerTimeNanos;
+            mFrameTimesNanosBg[mFrameIndexBg] = elapsedRealtimeNanos;
 
             ViewPropertyRef recycle = mNodesBg[mFrameIndexBg];
 
@@ -391,7 +404,9 @@ public abstract class ViewCapture {
 
         void detachFromRoot() {
             mIsActive = false;
-            mRoot.getViewTreeObserver().removeOnDrawListener(this);
+            if (mRoot != null) {
+                mRoot.getViewTreeObserver().removeOnDrawListener(this);
+            }
         }
 
         private void safelyEnableOnDrawListener() {
@@ -400,11 +415,9 @@ public abstract class ViewCapture {
         }
 
         @WorkerThread
-        private ExportedData dumpToProto(ViewIdProvider idProvider) {
+        private WindowData dumpToProto(ViewIdProvider idProvider, ArrayList<Class> classList) {
+            WindowData.Builder builder = WindowData.newBuilder().setTitle(name);
             int size = (mNodesBg[mMemorySize - 1] == null) ? mFrameIndexBg + 1 : mMemorySize;
-            ExportedData.Builder exportedDataBuilder = ExportedData.newBuilder();
-            ArrayList<Class> classList = new ArrayList<>();
-
             for (int i = size - 1; i >= 0; i--) {
                 int index = (mMemorySize + mFrameIndexBg - i) % mMemorySize;
                 ViewNode.Builder nodeBuilder = ViewNode.newBuilder();
@@ -412,11 +425,9 @@ public abstract class ViewCapture {
                 FrameData.Builder frameDataBuilder = FrameData.newBuilder()
                         .setNode(nodeBuilder)
                         .setTimestamp(mFrameTimesNanosBg[index]);
-                exportedDataBuilder.addFrameData(frameDataBuilder);
+                builder.addFrameData(frameDataBuilder);
             }
-            return exportedDataBuilder
-                    .addAllClassname(classList.stream().map(Class::getName).collect(toList()))
-                    .build();
+            return builder.build();
         }
 
         private ViewRef captureViewTree(View view, ViewRef start) {
@@ -517,6 +528,8 @@ public abstract class ViewCapture {
                     .setHeight(bottom - top)
                     .setTranslationX(translateX)
                     .setTranslationY(translateY)
+                    .setScrollX(scrollX)
+                    .setScrollY(scrollY)
                     .setScaleX(scaleX)
                     .setScaleY(scaleY)
                     .setAlpha(alpha)
@@ -542,7 +555,7 @@ public abstract class ViewCapture {
         public ViewRef next;
 
         public Consumer<ViewRef> callback = null;
-        public long choreographerTimeNanos = 0;
+        public long elapsedRealtimeNanos = 0;
 
         public void transferTo(ViewPropertyRef out) {
             out.childCount = this.childCount;

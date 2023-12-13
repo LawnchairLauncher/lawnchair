@@ -26,5 +26,5 @@ interface RemoteAnimationDelegate<in T : IRemoteAnimationFinishedCallback> {
     )
 
     /** Called on the UI thread when a signal is received to cancel the animation. */
-    @UiThread fun onAnimationCancelled(isKeyguardOccluded: Boolean)
+    @UiThread fun onAnimationCancelled()
 }

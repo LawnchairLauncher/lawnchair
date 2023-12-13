@@ -28,4 +28,22 @@
         <!-- Border color for a keyboard quick switch task views -->
         <attr name="borderColor" format="color" />
     </declare-styleable>
+
+    <!--
+         Gesture nav edu specific attributes. These attributes are used to customize Gesture nav edu
+         view lottie animation colors in XML files.
+     -->
+    <declare-styleable name="RootSandboxLayout">
+        <attr name="tutorialSubtitle" format="color" />
+        <attr name="surfaceContainer" format="color" />
+        <attr name="onSurfaceHome" format="color" />
+        <attr name="surfaceHome" format="color" />
+        <attr name="secondaryHome" format="color" />
+        <attr name="onSurfaceBack" format="color" />
+        <attr name="surfaceBack" format="color" />
+        <attr name="secondaryBack" format="color" />
+        <attr name="onSurfaceOverview" format="color" />
+        <attr name="surfaceOverview" format="color" />
+        <attr name="secondaryOverview" format="color" />
+    </declare-styleable>
 </resources>

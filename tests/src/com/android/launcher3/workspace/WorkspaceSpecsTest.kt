@@ -42,43 +42,62 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     fun parseValidFile() {
         val workspaceSpecs =
             WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
-        assertThat(workspaceSpecs.workspaceHeightSpecList.size).isEqualTo(2)
+        assertThat(workspaceSpecs.workspaceHeightSpecList.size).isEqualTo(3)
         assertThat(workspaceSpecs.workspaceHeightSpecList[0].toString())
             .isEqualTo(
                 "WorkspaceSpec(" +
-                    "maxAvailableSize=1701, " +
+                    "maxAvailableSize=1533, " +
                     "specType=HEIGHT, " +
                     "startPadding=SizeSpec(fixedSize=0.0, " +
-                    "ofAvailableSpace=0.0125, " +
+                    "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0), " +
-                    "endPadding=SizeSpec(fixedSize=0.0, " +
-                    "ofAvailableSpace=0.05, " +
+                    "endPadding=SizeSpec(fixedSize=84.0, " +
+                    "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0), " +
                     "gutter=SizeSpec(fixedSize=42.0, " +
                     "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0), " +
                     "cellSize=SizeSpec(fixedSize=0.0, " +
-                    "ofAvailableSpace=0.0, " +
-                    "ofRemainderSpace=0.2)" +
+                    "ofAvailableSpace=0.15808, " +
+                    "ofRemainderSpace=0.0)" +
                     ")"
             )
         assertThat(workspaceSpecs.workspaceHeightSpecList[1].toString())
             .isEqualTo(
                 "WorkspaceSpec(" +
-                    "maxAvailableSize=26247, " +
+                    "maxAvailableSize=1607, " +
                     "specType=HEIGHT, " +
                     "startPadding=SizeSpec(fixedSize=0.0, " +
-                    "ofAvailableSpace=0.0306, " +
+                    "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0), " +
                     "endPadding=SizeSpec(fixedSize=0.0, " +
-                    "ofAvailableSpace=0.068, " +
-                    "ofRemainderSpace=0.0), " +
+                    "ofAvailableSpace=0.0, " +
+                    "ofRemainderSpace=1.0), " +
                     "gutter=SizeSpec(fixedSize=42.0, " +
                     "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0), " +
-                    "cellSize=SizeSpec(fixedSize=0.0, " +
+                    "cellSize=SizeSpec(fixedSize=273.0, " +
                     "ofAvailableSpace=0.0, " +
-                    "ofRemainderSpace=0.2)" +
+                    "ofRemainderSpace=0.0)" +
+                    ")"
+            )
+        assertThat(workspaceSpecs.workspaceHeightSpecList[2].toString())
+            .isEqualTo(
+                "WorkspaceSpec(" +
+                    "maxAvailableSize=26247, " +
+                    "specType=HEIGHT, " +
+                    "startPadding=SizeSpec(fixedSize=21.0, " +
+                    "ofAvailableSpace=0.0, " +
+                    "ofRemainderSpace=0.0), " +
+                    "endPadding=SizeSpec(fixedSize=0.0, " +
+                    "ofAvailableSpace=0.0, " +
+                    "ofRemainderSpace=1.0), " +
+                    "gutter=SizeSpec(fixedSize=42.0, " +
+                    "ofAvailableSpace=0.0, " +
+                    "ofRemainderSpace=0.0), " +
+                    "cellSize=SizeSpec(fixedSize=273.0, " +
+                    "ofAvailableSpace=0.0, " +
+                    "ofRemainderSpace=0.0)" +
                     ")"
             )
         assertThat(workspaceSpecs.workspaceWidthSpecList.size).isEqualTo(1)
@@ -87,18 +106,18 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                 "WorkspaceSpec(" +
                     "maxAvailableSize=26247, " +
                     "specType=WIDTH, " +
-                    "startPadding=SizeSpec(fixedSize=0.0, " +
+                    "startPadding=SizeSpec(fixedSize=58.0, " +
                     "ofAvailableSpace=0.0, " +
-                    "ofRemainderSpace=0.21436226), " +
-                    "endPadding=SizeSpec(fixedSize=0.0, " +
+                    "ofRemainderSpace=0.0), " +
+                    "endPadding=SizeSpec(fixedSize=58.0, " +
                     "ofAvailableSpace=0.0, " +
-                    "ofRemainderSpace=0.21436226), " +
-                    "gutter=SizeSpec(fixedSize=0.0, " +
+                    "ofRemainderSpace=0.0), " +
+                    "gutter=SizeSpec(fixedSize=42.0, " +
                     "ofAvailableSpace=0.0, " +
-                    "ofRemainderSpace=0.11425509), " +
-                    "cellSize=SizeSpec(fixedSize=315.0, " +
+                    "ofRemainderSpace=0.0), " +
+                    "cellSize=SizeSpec(fixedSize=0.0, " +
                     "ofAvailableSpace=0.0, " +
-                    "ofRemainderSpace=0.0)" +
+                    "ofRemainderSpace=0.25)" +
                     ")"
             )
     }

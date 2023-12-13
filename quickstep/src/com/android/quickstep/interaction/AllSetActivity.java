@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -60,14 +61,17 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.util.Executors;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.LottieAnimationColorUtils;
 import com.android.quickstep.util.TISBindHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
  * A page shows after SUW flow to hint users to swipe up from the bottom of the screen to go home
@@ -82,22 +86,22 @@ public class AllSetActivity extends Activity {
     private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "suwColorAccentLight";
     private static final String EXTRA_DEVICE_NAME = "suwDeviceName";
 
+    private static final String LOTTIE_PRIMARY_COLOR_TOKEN = ".primary";
+    private static final String LOTTIE_TERTIARY_COLOR_TOKEN = ".tertiary";
+
     private static final float HINT_BOTTOM_FACTOR = 1 - .94f;
 
     private static final int MAX_SWIPE_DURATION = 350;
 
     private static final float ANIMATION_PAUSE_ALPHA_THRESHOLD = 0.1f;
 
-    private final Rect mTempSettingsBounds = new Rect();
-    private final Rect mTempInclusionBounds = new Rect();
-    private final Rect mTempExclusionBounds = new Rect();
-
     private TISBindHelper mTISBindHelper;
     private TISBinder mBinder;
+    @Nullable private TaskbarManager mTaskbarManager = null;
 
     private final AnimatedFloat mSwipeProgress = new AnimatedFloat(this::onSwipeProgressUpdate);
     private BgDrawable mBackground;
-    private View mContentView;
+    private View mRootView;
     private float mSwipeUpShift;
 
     @Nullable private Vibrator mVibrator;
@@ -110,11 +114,13 @@ public class AllSetActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allset);
-        findViewById(R.id.root_view).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        mRootView = findViewById(R.id.root_view);
+        mRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
-        int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        Resources resources = getResources();
+        int mode = resources.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
         Intent intent = getIntent();
         int accentColor = intent.getIntExtra(
@@ -124,9 +130,8 @@ public class AllSetActivity extends Activity {
         ((ImageView) findViewById(R.id.icon)).getDrawable().mutate().setTint(accentColor);
 
         mBackground = new BgDrawable(this);
-        findViewById(R.id.root_view).setBackground(mBackground);
-        mContentView = findViewById(R.id.content_view);
-        mSwipeUpShift = getResources().getDimension(R.dimen.allset_swipe_up_shift);
+        mRootView.setBackground(mBackground);
+        mSwipeUpShift = resources.getDimension(R.dimen.allset_swipe_up_shift);
 
         TextView subtitle = findViewById(R.id.subtitle);
         String suwDeviceName = intent.getStringExtra(EXTRA_DEVICE_NAME);
@@ -153,34 +158,6 @@ public class AllSetActivity extends Activity {
         }
         hint.setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
 
-        View textContent = findViewById(R.id.text_content_view);
-        textContent.addOnLayoutChangeListener(
-                (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                    mTempSettingsBounds.set(
-                            settings.getLeft(),
-                            settings.getTop(),
-                            settings.getRight(),
-                            settings.getBottom());
-                    mTempInclusionBounds.set(
-                            0,
-                            // Do not allow overlapping with the subtitle text
-                            subtitle.getBottom(),
-                            textContent.getWidth(),
-                            textContent.getHeight());
-                    mTempExclusionBounds.set(
-                            hint.getLeft(),
-                            hint.getTop(),
-                            hint.getRight(),
-                            hint.getBottom());
-
-                    Utilities.translateOverlappingView(
-                            settings,
-                            mTempSettingsBounds,
-                            mTempInclusionBounds,
-                            mTempExclusionBounds,
-                            Utilities.TRANSLATE_UP);
-                });
-
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
 
         mVibrator = getSystemService(Vibrator.class);
@@ -188,8 +165,15 @@ public class AllSetActivity extends Activity {
         // There's a bug in the currently used external Lottie library (v5.2.0), and it doesn't load
         // the correct animation from the raw resources when configuration changes, so we need to
         // manually load the resource and pass it to Lottie.
-        mAnimatedBackground.setAnimation(getResources().openRawResource(R.raw.all_set_page_bg),
+        mAnimatedBackground.setAnimation(resources.openRawResource(R.raw.all_set_page_bg),
                 null);
+
+        LottieAnimationColorUtils.updateColors(
+                mAnimatedBackground,
+                Map.of(LOTTIE_PRIMARY_COLOR_TOKEN, R.color.all_set_bg_primary,
+                        LOTTIE_TERTIARY_COLOR_TOKEN, R.color.all_set_bg_tertiary),
+                getTheme());
+
         startBackgroundAnimation();
     }
 
@@ -248,22 +232,31 @@ public class AllSetActivity extends Activity {
         mAnimatedBackground.playAnimation();
     }
 
+    private void setSetupUIVisible(boolean visible) {
+        if (mBinder == null || mTaskbarManager == null) return;
+        mTaskbarManager.setSetupUIVisible(visible);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         maybeResumeOrPauseBackgroundAnimation();
         if (mBinder != null) {
-            mBinder.getTaskbarManager().setSetupUIVisible(true);
+            setSetupUIVisible(true);
             mBinder.setSwipeUpProxy(this::createSwipeUpProxy);
         }
     }
 
     private void onTISConnected(TISBinder binder) {
         mBinder = binder;
-        mBinder.getTaskbarManager().setSetupUIVisible(isResumed());
+        mTaskbarManager = mBinder.getTaskbarManager();
+        setSetupUIVisible(isResumed());
         mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
         mBinder.setOverviewTargetChangeListener(mBinder::preloadOverviewForSUWAllSet);
         mBinder.preloadOverviewForSUWAllSet();
+        if (mTaskbarManager != null) {
+            mLauncherStartAnim = mTaskbarManager.createLauncherStartFromSuwAnim(MAX_SWIPE_DURATION);
+        }
     }
 
     @Override
@@ -279,7 +272,7 @@ public class AllSetActivity extends Activity {
 
     private void clearBinderOverride() {
         if (mBinder != null) {
-            mBinder.getTaskbarManager().setSetupUIVisible(false);
+            setSetupUIVisible(false);
             mBinder.setSwipeUpProxy(null);
             mBinder.setOverviewTargetChangeListener(null);
         }
@@ -335,16 +328,12 @@ public class AllSetActivity extends Activity {
     private void onSwipeProgressUpdate() {
         mBackground.setProgress(mSwipeProgress.value);
         float alpha = getContentViewAlphaForSwipeProgress();
-        mContentView.setAlpha(alpha);
-        mContentView.setTranslationY((alpha - 1) * mSwipeUpShift);
+        mRootView.setAlpha(alpha);
+        mRootView.setTranslationY((alpha - 1) * mSwipeUpShift);
 
-        if (mLauncherStartAnim == null) {
-            mLauncherStartAnim = mBinder.getTaskbarManager().createLauncherStartFromSuwAnim(
-                    MAX_SWIPE_DURATION);
-        }
         if (mLauncherStartAnim != null) {
-            mLauncherStartAnim.setPlayFraction(Utilities.mapBoundToRange(
-                    mSwipeProgress.value, 0, 1, 0, 1, FAST_OUT_SLOW_IN));
+            mLauncherStartAnim.setPlayFraction(
+                    FAST_OUT_SLOW_IN.getInterpolation(mSwipeProgress.value));
         }
         maybeResumeOrPauseBackgroundAnimation();
     }

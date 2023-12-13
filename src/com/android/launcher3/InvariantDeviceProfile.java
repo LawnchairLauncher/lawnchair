@@ -17,12 +17,11 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
+import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.systemui.shared.testing.ResourceUtils.INVALID_RESOURCE_HANDLE;
 
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
@@ -50,9 +49,11 @@ import androidx.annotation.VisibleForTesting;
 import androidx.annotation.XmlRes;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.LockedUserState;
@@ -60,8 +61,6 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.WindowManagerProxy;
-import com.android.systemui.shared.testing.ResourceUtils;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -191,7 +190,10 @@ public class InvariantDeviceProfile {
 
         public String dbFile;
         public int defaultLayoutId;
-        int demoModeLayoutId;
+
+        public int workspaceSpecsId;
+
+        public int demoModeLayoutId;
         public boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
         /**
@@ -313,7 +315,7 @@ public class InvariantDeviceProfile {
                 int type = displayInfo.supportedBounds.stream()
                         .mapToInt(bounds -> displayInfo.isTablet(bounds) ? flagTablet : flagPhone)
                         .reduce(0, (a, b) -> a | b);
-                if ((type == (flagPhone | flagTablet)) && ENABLE_TWO_PANEL_HOME.get()) {
+                if ((type == (flagPhone | flagTablet))) {
                         // device has profiles supporting both phone and table modes
                         return TYPE_MULTI_DISPLAY;
                 } else if (type == flagTablet) {
@@ -379,6 +381,7 @@ public class InvariantDeviceProfile {
 
                 isScalable = closestProfile.isScalable;
                 devicePaddingId = closestProfile.devicePaddingId;
+                workspaceSpecsId = closestProfile.mWorkspaceSpecsId;
                 this.deviceType = deviceType;
 
                 inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
@@ -832,6 +835,7 @@ public class InvariantDeviceProfile {
 
                 private final int defaultLayoutId;
                 private final int demoModeLayoutId;
+                private final int mWorkspaceSpecsId;
 
                 private final boolean isScalable;
                 private final int devicePaddingId;
@@ -895,6 +899,13 @@ public class InvariantDeviceProfile {
                                 R.styleable.GridDisplayOption_devicePaddingId, INVALID_RESOURCE_HANDLE);
                         deviceCategory = a.getInt(R.styleable.GridDisplayOption_deviceCategory,
                                 DEVICE_CATEGORY_ALL);
+
+                        if (FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE.get()) {
+                                mWorkspaceSpecsId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_workspaceSpecsId, INVALID_RESOURCE_HANDLE);
+                        } else {
+                                mWorkspaceSpecsId = INVALID_RESOURCE_HANDLE;
+                        }
 
                         int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,
                                 DONT_INLINE_QSB);
