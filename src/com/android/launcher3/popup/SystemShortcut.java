@@ -7,6 +7,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Process;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -237,8 +239,9 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
 
         @Override
         public void onClick(View view) {
-            Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
-                    mItemInfo.getTargetComponent().getPackageName());
+            Intent intent = ApiWrapper.getAppMarketActivityIntent(view.getContext(),
+                    mItemInfo.getTargetComponent().getPackageName(),
+                    Process.myUserHandle());
             mTarget.startActivitySafely(view, intent, mItemInfo);
             AbstractFloatingView.closeAllOpenViews(mTarget);
         }

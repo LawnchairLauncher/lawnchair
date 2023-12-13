@@ -13,3 +13,17 @@ flag {
     description: "This flag enables the animation of the Private Space container"
     bug: "299294792"
 }
+
+flag {
+    name: "private_space_sys_apps_separation"
+    namespace: "launcher_search"
+    description: "This flag enables showing system apps separate in Private Space container."
+    bug: "308054233"
+}
+
+flag {
+    name: "private_space_app_installer_button"
+    namespace: "launcher_search"
+    description: "This flag enables addition of App Installer button in Private Space container."
+    bug: "308064949"
+}
