@@ -15,6 +15,12 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_TOP_LEFT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_TOP_RIGHT;
+import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,6 +111,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         public static AdapterItem asApp(AppInfo appInfo) {
             AdapterItem item = new AdapterItem(VIEW_TYPE_ICON);
             item.itemInfo = appInfo;
+            return item;
+        }
+
+        public static AdapterItem asAppWithDecorationInfo(AppInfo appInfo,
+                SectionDecorationInfo decorationInfo) {
+            AdapterItem item = asApp(appInfo);
+            item.decorationInfo = decorationInfo;
             return item;
         }
 
@@ -259,6 +272,15 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 assert mPrivateSpaceHeaderViewController != null;
                 assert psHeaderLayout != null;
                 mPrivateSpaceHeaderViewController.addPrivateSpaceHeaderViewElements(psHeaderLayout);
+                AdapterItem adapterItem = mApps.getAdapterItems().get(position);
+                int roundRegions = ROUND_TOP_LEFT | ROUND_TOP_RIGHT;
+                if (mPrivateSpaceHeaderViewController.getPrivateProfileManager().getCurrentState()
+                        == STATE_DISABLED) {
+                    roundRegions |= (ROUND_BOTTOM_LEFT | ROUND_BOTTOM_RIGHT);
+                }
+                adapterItem.decorationInfo =
+                        new SectionDecorationInfo(mActivityContext, roundRegions,
+                                false /* decorateTogether */);
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
             case VIEW_TYPE_WORK_DISABLED_CARD:

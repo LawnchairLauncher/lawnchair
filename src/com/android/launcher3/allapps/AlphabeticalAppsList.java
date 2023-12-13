@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
+
 import android.content.Context;
 
 import androidx.annotation.Nullable;
@@ -318,6 +322,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 case PrivateProfileManager.STATE_ENABLED:
                     // Add PS Apps only in Enabled State.
                     addAppsWithSections(mPrivateApps, position);
+                    if (mActivityContext.getAppsView() != null) {
+                        mActivityContext.getAppsView().getActiveRecyclerView()
+                                .scrollToBottomWithMotion();
+                    }
                     break;
             }
         }
@@ -325,8 +333,34 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     private void addAppsWithSections(List<AppInfo> appList, int startPosition) {
         String lastSectionName = null;
+        boolean hasPrivateApps = false;
+        if (mPrivateProviderManager != null) {
+            hasPrivateApps = appList.stream().
+                    allMatch(mPrivateProviderManager.getItemInfoMatcher());
+        }
+        int privateAppCount = 0;
+        int numberOfColumns = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
+        int numberOfAppRows = (int) Math.ceil((double) appList.size() / numberOfColumns);
         for (AppInfo info : appList) {
-            mAdapterItems.add(AdapterItem.asApp(info));
+            // Apply decorator to private apps.
+            if (hasPrivateApps) {
+                int roundRegion = ROUND_NOTHING;
+                if ((privateAppCount / numberOfColumns) == numberOfAppRows - 1) {
+                    if ((privateAppCount % numberOfColumns) == 0) {
+                        // App is the first column
+                        roundRegion = ROUND_BOTTOM_LEFT;
+                    } else if ((privateAppCount % numberOfColumns) == numberOfColumns-1) {
+                        roundRegion = ROUND_BOTTOM_RIGHT;
+                    }
+                }
+                mAdapterItems.add(AdapterItem.asAppWithDecorationInfo(info,
+                        new SectionDecorationInfo(mActivityContext.getApplicationContext(),
+                                roundRegion,
+                                true /* decorateTogether */)));
+                privateAppCount += 1;
+            } else {
+                mAdapterItems.add(AdapterItem.asApp(info));
+            }
 
             String sectionName = info.sectionName;
             // Create a new section if the section names do not match
