@@ -364,6 +364,13 @@ class LauncherPrefs(private val encryptedContext: Context) {
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
+        val PRIVATE_SPACE_APPS =
+                nonRestorableItem(
+                        "pref_private_space_apps",
+                        0,
+                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
+                )
+        @JvmField
         val THEMED_ICONS =
             backedUpItem(Themes.KEY_THEMED_ICONS, false, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
         @JvmField val PROMISE_ICON_IDS = backedUpItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
