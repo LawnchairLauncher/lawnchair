@@ -60,6 +60,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.app.animation.Interpolators;
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatedFloat;
@@ -395,8 +396,7 @@ public final class TaskViewUtils {
             @Override
             public void onAnimationSuccess(Animator animator) {
                 if (isQuickSwitch) {
-                    InteractionJankMonitorWrapper.end(
-                            InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
                 }
             }
 
