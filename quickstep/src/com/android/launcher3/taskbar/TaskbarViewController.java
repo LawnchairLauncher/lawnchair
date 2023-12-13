@@ -192,7 +192,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mControllers = controllers;
         mTaskbarView.init(new TaskbarViewCallbacks());
         mTaskbarView.getLayoutParams().height = isPhoneMode(mActivity.getDeviceProfile())
-                ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_size)
+                ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_phone_size)
                 : mActivity.getDeviceProfile().taskbarHeight;
 
         mTaskbarIconScaleForStash.updateValue(1f);

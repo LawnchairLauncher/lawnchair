@@ -257,7 +257,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mAccessibilityManager = mActivity.getSystemService(AccessibilityManager.class);
 
         if (isPhoneMode()) {
-            mUnstashedHeight = mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_size);
+            mUnstashedHeight = mActivity.getResources().getDimensionPixelSize(
+                    R.dimen.taskbar_phone_size);
             mStashedHeight = mActivity.getResources().getDimensionPixelSize(
                     R.dimen.taskbar_stashed_size);
         } else {
