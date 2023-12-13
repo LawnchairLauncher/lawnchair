@@ -358,14 +358,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Debug if we need to goHome to prevent wrong previous state b/315525621
         mLauncher.goHome();
         assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
-        mLauncher.getWorkspace().switchToAllApps();
-        mLauncher.pressBack();
-        mLauncher.getWorkspace();
+        mLauncher.getWorkspace().switchToAllApps().pressBackToWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
 
         startAppFast(CALCULATOR_APP_PACKAGE);
-        mLauncher.pressBack();
-        mLauncher.getWorkspace();
+        mLauncher.getLaunchedAppState().pressBackToWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
 
