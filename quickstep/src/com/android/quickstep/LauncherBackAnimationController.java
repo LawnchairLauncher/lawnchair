@@ -23,6 +23,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
+import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -52,6 +54,7 @@ import android.window.IOnBackInvokedCallback;
 
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -294,8 +297,12 @@ public class LauncherBackAnimationController {
         mBackTarget = appTarget;
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
-        // TODO(b/218916755): Offset start rectangle in multiwindow mode.
         mStartRect.set(appTarget.windowConfiguration.getMaxBounds());
+        if (mLauncher.getDeviceProfile().isTaskbarPresent && enableTaskbarPinning()
+                && LauncherPrefs.get(mLauncher).get(TASKBAR_PINNING)) {
+            int insetBottom = mStartRect.bottom - appTarget.contentInsets.bottom;
+            mStartRect.set(mStartRect.left, mStartRect.top, mStartRect.right, insetBottom);
+        }
         mCurrentRect.set(mStartRect);
         addScrimLayer();
         mTransaction.apply();

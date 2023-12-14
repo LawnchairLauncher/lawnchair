@@ -62,7 +62,7 @@ public class VibratorWrapper {
     public static final VibrationEffect EFFECT_CLICK =
             createPredefined(VibrationEffect.EFFECT_CLICK);
 
-    private static final float LOW_TICK_SCALE = 0.7f;
+    private static final float LOW_TICK_SCALE = 0.9f;
     private static final float DRAG_TEXTURE_SCALE = 0.03f;
     private static final float DRAG_COMMIT_SCALE = 0.5f;
     private static final float DRAG_BUMP_SCALE = 0.4f;

@@ -163,7 +163,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
     @Px private int mMaxSpanPerRow;
-    private DeviceProfile mDeviceProfile;
+    protected DeviceProfile mDeviceProfile;
 
     protected TextView mNoWidgetsView;
     protected StickyHeaderLayout mSearchScrollView;
@@ -690,12 +690,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 // Enables two pane picker for unfolded foldables if the flag is on.
                 || (activity.getDeviceProfile().isTwoPanels && enableUnfoldedTwoPanePicker());
 
-        if (isTwoPane && activity.getDeviceProfile().isTwoPanels) {
-            return R.layout.widgets_two_pane_sheet_foldable;
-        } else if (isTwoPane) {
-            return R.layout.widgets_two_pane_sheet;
-        }
-        return R.layout.widgets_full_sheet;
+        return isTwoPane ? R.layout.widgets_two_pane_sheet : R.layout.widgets_full_sheet;
     }
 
     @Override

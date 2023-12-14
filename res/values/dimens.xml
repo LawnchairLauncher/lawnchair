@@ -125,6 +125,9 @@
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
     <dimen name="all_apps_height_extra">6dp</dimen>
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_padding">1dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_group_radius">28dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_result_radius">4dp</dimen>
 
     <dimen name="all_apps_icon_drawable_padding">8dp</dimen>
     <dimen name="all_apps_predicted_icon_vertical_padding">8dp</dimen>
@@ -364,6 +367,7 @@
 
     <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
+    <dimen name="taskbar_phone_size">@*android:dimen/navigation_bar_frame_height</dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
     <dimen name="qsb_shadow_height">0dp</dimen>

@@ -407,7 +407,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // If exiting search, revert predictive back scale on all apps
             mAllAppsTransitionController.animateAllAppsToNoScale();
         }
-        mSearchTransitionController.animateToSearchState(goingToSearch, durationMs,
+        mSearchTransitionController.animateToState(goingToSearch, durationMs,
                 /* onEndRunnable = */ () -> {
                     mIsSearching = goingToSearch;
                     updateSearchResultsVisibility();

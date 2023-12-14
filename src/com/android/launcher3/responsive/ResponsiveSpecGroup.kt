@@ -18,6 +18,7 @@ package com.android.launcher3.responsive
 
 import android.content.res.TypedArray
 import com.android.launcher3.R
+import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 
 /**
@@ -54,8 +55,27 @@ class ResponsiveSpecGroup<T : IResponsiveSpec>(
             } else {
                 heightSpecs.firstOrNull { availableSize <= it.maxAvailableSize }
             }
-        check(spec != null) { "No available $type spec found within $availableSize." }
+        check(spec != null) { "No available $type spec found within $availableSize. $this" }
         return spec
+    }
+
+    override fun toString(): String {
+        fun printSpec(spec: IResponsiveSpec) =
+            when (spec.specType) {
+                ResponsiveSpecType.AllApps,
+                ResponsiveSpecType.Folder,
+                ResponsiveSpecType.Workspace -> (spec as ResponsiveSpec).toString()
+                ResponsiveSpecType.Hotseat -> (spec as HotseatSpec).toString()
+                ResponsiveSpecType.Cell -> (spec as CellSpec).toString()
+            }
+
+        val widthSpecsString = widthSpecs.joinToString(", ") { printSpec(it) }
+        val heightSpecsString = heightSpecs.joinToString(", ") { printSpec(it) }
+        return "ResponsiveSpecGroup(" +
+            "aspectRatio=${aspectRatio}, " +
+            "widthSpecs=[${widthSpecsString}], " +
+            "heightSpecs=[${heightSpecsString}]" +
+            ")"
     }
 
     companion object {

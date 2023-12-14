@@ -885,7 +885,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         if (ENABLE_TASKBAR_NAVBAR_UNIFICATION && mDeviceProfile.isPhone) {
             return isThreeButtonNav() ?
-                    resources.getDimensionPixelSize(R.dimen.taskbar_size) :
+                    resources.getDimensionPixelSize(R.dimen.taskbar_phone_size) :
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         }
 

@@ -707,6 +707,13 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
+        if (mTaskbarUIController != null) {
+            mTaskbarUIController.onStateTransitionCompletedAfterSwipeToHome(finalState);
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 

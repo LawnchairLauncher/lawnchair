@@ -16,97 +16,55 @@
 
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
-import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
-
-import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
 import android.view.View;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.R;
-import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.views.ActivityContext;
+import java.util.HashMap;
 
 /**
  * Decorator which changes the background color for Private Space Icon Rows in AllAppsContainer.
  */
 public class PrivateAppsSectionDecorator extends RecyclerView.ItemDecoration {
 
-    private final Path mTmpPath = new Path();
-    private final RectF mTmpRect = new RectF();
-    private final Context mContext;
+    private static final String PRIVATE_APP_SECTION = "private_apps";
     private final AlphabeticalAppsList<?> mAppsList;
-    private final UserCache mUserCache;
-    private final Paint mPaint;
-    private final int mCornerRadius;
 
-    public PrivateAppsSectionDecorator(Context context, AlphabeticalAppsList<?> appsList) {
-        mContext = context;
+    public PrivateAppsSectionDecorator(AlphabeticalAppsList<?> appsList) {
         mAppsList = appsList;
-        mUserCache = UserCache.getInstance(context);
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(ContextCompat.getColor(context,
-                R.color.material_color_surface_container_high));
-        mCornerRadius = context.getResources().getDimensionPixelSize(
-                R.dimen.ps_container_corner_radius);
     }
 
     /** Decorates Private Space Header and Icon Rows to give the shape of a container. */
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        mTmpPath.reset();
-        mTmpRect.setEmpty();
-        int numCol = ActivityContext.lookupContext(mContext).getDeviceProfile()
-                .numShownAllAppsColumns;
+        HashMap<String, SectionDecorationHandler.UnionDecorationHandler> deferredDecorations =
+                new HashMap<>();
         for (int i = 0; i < parent.getChildCount(); i++) {
             View view = parent.getChildAt(i);
             int position = parent.getChildAdapterPosition(view);
             BaseAllAppsAdapter.AdapterItem adapterItem = mAppsList.getAdapterItems().get(position);
-            // Rectangle that covers the bottom half of the PS Header View when Space is unlocked.
-            if (adapterItem.viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER) {
-                // We flatten the bottom corners of the rectangle, so that it merges with
-                // the private space app row decorator.
-                mTmpRect.set(
-                        view.getLeft(),
-                        view.getTop() + (float) (view.getBottom() - view.getTop()) / 2,
-                        view.getRight(),
-                        view.getBottom());
-                mTmpPath.addRect(mTmpRect, Path.Direction.CW);
-                c.drawPath(mTmpPath, mPaint);
-            } else if (adapterItem.viewType == VIEW_TYPE_ICON
-                    && mUserCache.getUserInfo(adapterItem.itemInfo.user).isPrivate()
-                    // No decoration for any private space app icon other than those at first row.
-                    && adapterItem.rowAppIndex == 0) {
-                c.drawPath(getPrivateAppRowPath(parent, view, position, numCol), mPaint);
+            SectionDecorationInfo info = adapterItem.decorationInfo;
+            if (info == null) {
+                continue;
+            }
+            SectionDecorationHandler decorationHandler = info.getDecorationHandler();
+            if (info.shouldDecorateItemsTogether()) {
+                SectionDecorationHandler.UnionDecorationHandler unionHandler =
+                        deferredDecorations.getOrDefault(
+                                PRIVATE_APP_SECTION,
+                                new SectionDecorationHandler.UnionDecorationHandler(
+                                        decorationHandler, parent.getPaddingLeft(),
+                                        parent.getPaddingRight()));
+                unionHandler.addChild(decorationHandler, view, true /* applyBackground */);
+                deferredDecorations.put(PRIVATE_APP_SECTION, unionHandler);
+            } else {
+                decorationHandler.onFocusDraw(c, view);
             }
         }
-    }
-
-    /** Returns the path to be decorated for Private Space App Row */
-    private Path getPrivateAppRowPath(RecyclerView parent, View iconView, int adapterPosition,
-            int numCol) {
-        // We always decorate the entire app row here.
-        // As the iconView just represents the first icon of the row, we get the right margin of
-        // our decorator using the parent view.
-        mTmpRect.set(iconView.getLeft(),
-                iconView.getTop(),
-                parent.getRight() - parent.getPaddingRight(),
-                iconView.getBottom());
-        // Decorates last app row with rounded bottom corners.
-        if (adapterPosition + numCol >= mAppsList.getAdapterItems().size()) {
-            float[] mCornersBot = new float[]{0, 0, 0, 0, mCornerRadius, mCornerRadius,
-                    mCornerRadius, mCornerRadius};
-            mTmpPath.addRoundRect(mTmpRect, mCornersBot, Path.Direction.CW);
-        } else {
-            // Decorate other rows as a plain rectangle
-            mTmpPath.addRect(mTmpRect, Path.Direction.CW);
+        for (SectionDecorationHandler.UnionDecorationHandler decorationHandler
+                : deferredDecorations.values()) {
+            decorationHandler.onGroupDecorate(c);
         }
-        return mTmpPath;
     }
 }

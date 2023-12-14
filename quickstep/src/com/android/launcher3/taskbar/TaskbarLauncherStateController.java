@@ -205,13 +205,6 @@ public class TaskbarLauncherStateController {
                 public void onStateTransitionComplete(LauncherState finalState) {
                     mLauncherState = finalState;
                     updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
-                    // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
-                    // taskbar on top of transparent activity.
-                    if (!FeatureFlags.enableHomeTransitionListener()
-                            && finalState == LauncherState.NORMAL
-                            && mLauncher.hasBeenResumed()) {
-                        updateStateForFlag(FLAG_VISIBLE, true);
-                    }
                     applyState();
                     boolean disallowLongClick =
                             FeatureFlags.enableSplitContextually()
@@ -222,6 +215,21 @@ public class TaskbarLauncherStateController {
                             disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
                 }
             };
+
+    /**
+     * Callback for when launcher state transition completes after user swipes to home.
+     * @param finalState The final state of the transition.
+     */
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
+        // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
+        // taskbar on top of transparent activity.
+        if (!FeatureFlags.enableHomeTransitionListener()
+                && (finalState == LauncherState.NORMAL)
+                && mLauncher.hasBeenResumed()) {
+            updateStateForFlag(FLAG_VISIBLE, true);
+            applyState();
+        }
+    }
 
     /** Initializes the controller instance, and applies the initial state immediately. */
     public void init(TaskbarControllers controllers, QuickstepLauncher launcher,
