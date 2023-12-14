@@ -19,7 +19,6 @@ package com.android.launcher3.widget;
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
@@ -32,7 +31,6 @@ import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.AdapterView;
@@ -78,9 +76,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private final Rect mTempRect = new Rect();
     private final CheckLongPressHelper mLongPressHelper;
     protected final Launcher mLauncher;
-
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mReinflateOnConfigChange;
 
     // Maintain the color manager.
     private final LocalColorExtractor mColorExtractor;
@@ -176,17 +171,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
         // The provider info or the views might have changed.
         checkIfAutoAdvance();
-
-        // It is possible that widgets can receive updates while launcher is not in the foreground.
-        // Consequently, the widgets will be inflated for the orientation of the foreground activity
-        // (framework issue). On resuming, we ensure that any widgets are inflated for the current
-        // orientation.
-        mReinflateOnConfigChange = !isSameOrientation();
-    }
-
-    private boolean isSameOrientation() {
-        return mLauncher.getResources().getConfiguration().orientation ==
-                mLauncher.getOrientation();
     }
 
     private boolean checkScrollableRecursively(ViewGroup viewGroup) {
@@ -448,17 +432,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             target.advance();
         }
         scheduleNextAdvance();
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Only reinflate when the final configuration is same as the required configuration
-        if (mReinflateOnConfigChange && isSameOrientation()) {
-            mReinflateOnConfigChange = false;
-            reInflate();
-        }
     }
 
     public void reInflate() {
