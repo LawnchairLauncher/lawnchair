@@ -1035,9 +1035,6 @@ public class TaskView extends FrameLayout implements Reusable {
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    if (!recentsView.showAsGrid()) {
-                        return;
-                    }
                     recentsView.runActionOnRemoteHandles(
                             (Consumer<RemoteTargetHandle>) remoteTargetHandle ->
                                     remoteTargetHandle
