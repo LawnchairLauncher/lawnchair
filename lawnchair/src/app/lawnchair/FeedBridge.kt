@@ -31,6 +31,7 @@ import app.lawnchair.util.useApplicationContext
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
 
 class FeedBridge(private val context: Context) {
 
@@ -153,6 +154,10 @@ class FeedBridge(private val context: Context) {
         private val whitelist = mapOf<String, Long>(
             "ua.itaysonlab.homefeeder" to 0x887456ed, // HomeFeeder, t.me/homefeeder
             "launcher.libre.dev" to 0x2e9dbab5, // Librechair, t.me/librechair
+            SmartspacerConstants.SMARTSPACER_PACKAGE_NAME to 0x15c6e36f, // Smartspacer
+            "amirz.aidlbridge" to 0xb662cc2f, // AIDL Bridge
+            "com.google.android.googlequicksearchbox" to 0xe3ca78d8, // Google
+            "com.google.android.apps.nexuslauncher" to 0xb662cc2f, // Pixel Bridge (or launcher)
         )
 
         fun getAvailableProviders(context: Context) = context.packageManager

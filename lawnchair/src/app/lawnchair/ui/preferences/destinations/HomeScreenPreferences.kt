@@ -29,6 +29,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorMode
+import app.lawnchair.ui.preferences.components.FeedPreference
 import app.lawnchair.ui.preferences.components.GestureHandlerPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -41,6 +42,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.collectAsStateBlocking
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import kotlinx.collections.immutable.toPersistentList
@@ -61,6 +63,7 @@ fun HomeScreenPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
@@ -83,6 +86,9 @@ fun HomeScreenPreferences() {
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
+            if (feedAvailable && !BuildConfig.DEBUG) {
+                FeedPreference(context = context)
+            }
             HomeScreenTextColorPreference()
         }
         PreferenceGroup(heading = stringResource(id = R.string.wallpaper)) {
