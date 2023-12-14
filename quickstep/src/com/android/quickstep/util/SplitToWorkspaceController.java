@@ -34,6 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.view.View;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -174,8 +175,7 @@ public class SplitToWorkspaceController {
             public void onAnimationEnd(Animator animation) {
                 if (!mIsCancelled) {
                     mController.launchSplitTasks(aBoolean -> cleanUp());
-                    InteractionJankMonitorWrapper.end(
-                            InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_SPLIT_SCREEN_ENTER);
                 }
             }
 

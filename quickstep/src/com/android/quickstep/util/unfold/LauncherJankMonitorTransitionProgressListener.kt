@@ -16,6 +16,7 @@
 package com.android.quickstep.util.unfold
 
 import android.view.View
+import com.android.internal.jank.Cuj
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener
 import java.util.function.Supplier
@@ -28,11 +29,11 @@ class LauncherJankMonitorTransitionProgressListener(
     override fun onTransitionStarted() {
         InteractionJankMonitorWrapper.begin(
             attachedViewProvider.get(),
-            InteractionJankMonitorWrapper.CUJ_LAUNCHER_UNFOLD_ANIM
+            Cuj.CUJ_LAUNCHER_UNFOLD_ANIM
         )
     }
 
     override fun onTransitionFinished() {
-        InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_LAUNCHER_UNFOLD_ANIM)
+        InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_UNFOLD_ANIM)
     }
 }
