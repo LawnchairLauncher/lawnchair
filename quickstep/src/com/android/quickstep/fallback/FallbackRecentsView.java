@@ -217,7 +217,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         } else {
             if (mActivity.isInState(RecentsState.MODAL_TASK)) {
                 mActivity.getStateManager().goToState(DEFAULT, animate);
-                resetModalVisuals();
             }
         }
     }
@@ -237,6 +236,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         setOverviewFullscreenEnabled(toState.isFullScreen());
         if (toState == MODAL_TASK) {
             setOverviewSelectEnabled(true);
+        } else {
+            resetModalVisuals();
         }
 
         // Set border after select mode changes to avoid showing border during state transition
