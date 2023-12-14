@@ -35,6 +35,7 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -197,7 +198,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
         mIdp = idp;
-        mDp = idp.getDeviceProfile(context).toBuilder(context).setViewScaleProvider(
+        mDp = getDeviceProfileForPreview(context).toBuilder(context).setViewScaleProvider(
                 this::getAppWidgetScale).build();
         if (context instanceof PreviewContext) {
             Context tempContext = ((PreviewContext) context).getBaseContext();
@@ -257,6 +258,21 @@ public class LauncherPreviewRenderer extends ContextWrapper
             mWallpaperColorResources = null;
         }
         mAppWidgetHost = new LauncherPreviewAppWidgetHost(context);
+    }
+
+    /**
+     * Returns the device profile based on resource configuration for previewing various display
+     * sizes
+     */
+    private DeviceProfile getDeviceProfileForPreview(Context context) {
+        float density = context.getResources().getDisplayMetrics().density;
+        Configuration config = context.getResources().getConfiguration();
+
+        return mIdp.getBestMatch(
+                config.screenWidthDp * density,
+                config.screenHeightDp * density,
+                WindowManagerProxy.INSTANCE.get(context).getRotation(context)
+        );
     }
 
     /**
