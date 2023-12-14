@@ -127,6 +127,14 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     }
 
     /**
+     * Clears any active state outside of the TaskOverlay lifecycle which might have
+     * built
+     * up over time
+     */
+    public void clearAllActiveState() {
+    }
+
+    /**
      * Note that these will be shown in order from top to bottom, if available for
      * the task.
      */
@@ -164,6 +172,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                         R.id.overview_actions_view);
             }
             return mActionsView;
+        }
+
+        public TaskThumbnailView getThumbnailView() {
+            return mThumbnailView;
         }
 
         /**

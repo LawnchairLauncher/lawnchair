@@ -16,6 +16,7 @@
 <com.android.launcher3.widget.picker.WidgetsListTableView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widgets_table"
+    android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
     android:background="@drawable/bg_widgets_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />

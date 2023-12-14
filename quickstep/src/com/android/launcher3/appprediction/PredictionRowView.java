@@ -42,7 +42,6 @@ import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorH
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.views.ActivityContext;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
@@ -68,7 +67,6 @@ public class PredictionRowView<T extends Context & ActivityContext>
     private FloatingHeaderView mParent;
 
     private boolean mPredictionsEnabled = false;
-    private OnLongClickListener mOnIconLongClickListener = ItemLongClickListener.INSTANCE_ALL_APPS;
 
     private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
 
@@ -191,15 +189,6 @@ public class PredictionRowView<T extends Context & ActivityContext>
         applyPredictionApps();
     }
 
-    /**
-     * Sets the long click listener for predictions for any future predictions.
-     *
-     * Existing predictions in the container are not updated with this new callback.
-     */
-    public void setOnIconLongClickListener(OnLongClickListener onIconLongClickListener) {
-        mOnIconLongClickListener = onIconLongClickListener;
-    }
-
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         mNumPredictedAppsPerRow = dp.numShownAllAppsColumns;
@@ -215,9 +204,9 @@ public class PredictionRowView<T extends Context & ActivityContext>
             LayoutInflater inflater = mActivityContext.getAppsView().getLayoutInflater();
             while (getChildCount() < mNumPredictedAppsPerRow) {
                 BubbleTextView icon = (BubbleTextView) inflater.inflate(
-                        R.layout.all_apps_icon, this, false);
+                        R.layout.all_apps_prediction_row_icon, this, false);
                 icon.setOnClickListener(mActivityContext.getItemOnClickListener());
-                icon.setOnLongClickListener(mOnIconLongClickListener);
+                icon.setOnLongClickListener(mActivityContext.getAllAppsItemLongClickListener());
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mFocusHelper);
 

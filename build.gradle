@@ -118,7 +118,7 @@ final def releaseName = "Alpha 1"
 final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
-final def quickstepMinSdk = "32"
+final def quickstepMinSdk = "34"
 final def quickstepMaxSdk = "34"
 
 android {

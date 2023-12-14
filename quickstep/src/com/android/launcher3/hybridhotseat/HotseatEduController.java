@@ -95,9 +95,7 @@ public class HotseatEduController {
             }
         }
         if (pageId == -1) {
-            pageId = LauncherSettings.Settings.call(mLauncher.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                    .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+            pageId = mLauncher.getModel().getModelDbController().getNewScreenId();
             mNewScreens = IntArray.wrap(pageId);
         }
         boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();

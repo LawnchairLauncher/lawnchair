@@ -56,7 +56,7 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"વિજેટના સેટિંગ બદલવા માટે ટૅપ કરો"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"સમજાઈ ગયું"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"વિજેટના સેટિંગ બદલો"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"શોધ ઍપ્લિકેશનો"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ઍપ શોધો"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="label_application" msgid="8531721983832654978">"ઍપ"</string>
@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ફોલ્ડરનું નામ બદલીને <xliff:g id="NAME">%1$s</xliff:g> કર્યું"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> આઇટમ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> કે વધુ આઇટમ"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"વૉલપેપર અને સ્ટાઇલ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"હોમ સ્ક્રીનમાં ફેરફાર કરો"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ"</string>

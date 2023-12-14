@@ -18,6 +18,7 @@ package com.android.quickstep.util;
 import android.app.WallpaperManager;
 import android.os.IBinder;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.view.AttachedSurfaceControl;
 import android.view.SurfaceControl;
 
@@ -48,6 +49,9 @@ public class BaseDepthController {
     private static final int DEPTH_INDEX_STATE_TRANSITION = 0;
     private static final int DEPTH_INDEX_WIDGET = 1;
     private static final int DEPTH_INDEX_COUNT = 2;
+
+    // b/291401432
+    private static final String TAG = "BaseDepthController";
 
     protected final Launcher mLauncher;
     /** Property to set the depth for state transition. */
@@ -92,7 +96,7 @@ public class BaseDepthController {
      */
     protected boolean mInEarlyWakeUp;
 
-    private boolean mWaitingOnSurfaceValidity;
+    protected boolean mWaitingOnSurfaceValidity;
 
     public BaseDepthController(Launcher activity) {
         mLauncher = activity;
@@ -140,9 +144,11 @@ public class BaseDepthController {
             return;
         }
         if (mSurface == null) {
+            Log.d(TAG, "mSurface is null and mCurrentBlur is: " + mCurrentBlur);
             return;
         }
         if (!mSurface.isValid()) {
+            Log.d(TAG, "mSurface is not valid");
             mWaitingOnSurfaceValidity = true;
             onInvalidSurface();
             return;
@@ -192,8 +198,10 @@ public class BaseDepthController {
      * Sets the specified app target surface to apply the blur to.
      */
     protected void setSurface(SurfaceControl surface) {
-        if (mSurface != surface && app.lawnchair.LawnchairApp.isAtleastT()) {
+        if (mSurface != surface || mWaitingOnSurfaceValidity) {
             mSurface = surface;
+            Log.d(TAG, "setSurface:\n\tmWaitingOnSurfaceValidity: " + mWaitingOnSurfaceValidity
+                    + "\n\tmSurface: " + mSurface);
             applyDepthAndBlur();
         }
     }

@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ফ\'ল্ডাৰৰ নাম সলনি কৰি <xliff:g id="NAME">%1$s</xliff:g> কৰা হৈছে"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ফ’ল্ডাৰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> টা বস্তু"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ফ’ল্ডাৰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> টা অথবা তাতকৈ অধিক বস্তু"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"ৱালপেপাৰসমূহ"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ৱালপেপাৰ আৰু শৈলী"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"গৃহ স্ক্ৰীন সম্পাদনা কৰক"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"গৃহ ছেটিং"</string>

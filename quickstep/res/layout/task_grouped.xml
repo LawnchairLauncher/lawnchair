@@ -28,7 +28,8 @@
     android:clipChildren="false"
     android:defaultFocusHighlightEnabled="false"
     android:focusable="true"
-    launcher:borderColor="?attr/materialColorOutline">
+    launcher:focusBorderColor="?attr/materialColorOutline"
+    launcher:hoverBorderColor="?attr/materialColorPrimary">
 
     <com.android.quickstep.views.TaskThumbnailView
         android:id="@+id/snapshot"

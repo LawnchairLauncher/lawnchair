@@ -74,7 +74,8 @@ public class PackageManagerHelper {
     }
 
     /**
-     * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
+     * Returns true if the app can possibly be on the SDCard. This is just a
+     * workaround and doesn't
      * guarantee that the app is on SD card.
      */
     public boolean isAppOnSdcard(@NonNull final String packageName,
@@ -112,7 +113,8 @@ public class PackageManagerHelper {
         try {
             ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
             return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                    ? null : info;
+                    ? null
+                    : info;
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
@@ -125,8 +127,7 @@ public class PackageManagerHelper {
     @Nullable
     public Intent getAppLaunchIntent(@Nullable final String pkg, @NonNull final UserHandle user) {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
-        return activities.isEmpty() ? null :
-                AppInfo.makeLaunchIntent(activities.get(0));
+        return activities.isEmpty() ? null : AppInfo.makeLaunchIntent(activities.get(0));
     }
 
     /**
@@ -165,16 +166,13 @@ public class PackageManagerHelper {
     }
 
     public static Intent getStyleWallpapersIntent(Context context) {
-        return new Intent(Intent.ACTION_SET_WALLPAPER).setComponent(
-                new ComponentName(context.getString(R.string.wallpaper_picker_package),
-                    context.getString(R.string.custom_activity_picker)
-                ));
+        return getStyleWallpapersAltIntent(context);
     }
 
     public static Intent getStyleWallpapersAltIntent(Context context) {
         return new Intent(Intent.ACTION_SET_WALLPAPER).setComponent(
                 new ComponentName(context.getString(R.string.wallpaper_picker_package_alt),
-                "com.android.customization.picker.CustomizationPickerActivity"));
+                        "com.android.customization.picker.CustomizationPickerActivity"));
     }
 
     /**
@@ -183,7 +181,7 @@ public class PackageManagerHelper {
     public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
         if (info instanceof ItemInfoWithIcon
                 && (((ItemInfoWithIcon) info).runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                        & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
             ItemInfoWithIcon appInfo = (ItemInfoWithIcon) info;
             mContext.startActivity(new PackageManagerHelper(mContext)
                     .getMarketIntent(appInfo.getTargetComponent().getPackageName()));
@@ -245,11 +243,14 @@ public class PackageManagerHelper {
     }
 
     /**
-     * Returns true if the intent is a valid launch intent for a launcher activity of an app.
-     * This is used to identify shortcuts which are different from the ones exposed by the
+     * Returns true if the intent is a valid launch intent for a launcher activity
+     * of an app.
+     * This is used to identify shortcuts which are different from the ones exposed
+     * by the
      * applications' manifest file.
      *
-     * @param launchIntent The intent that will be launched when the shortcut is clicked.
+     * @param launchIntent The intent that will be launched when the shortcut is
+     *                     clicked.
      */
     public static boolean isLauncherAppTarget(Intent launchIntent) {
         if (launchIntent != null
@@ -268,6 +269,7 @@ public class PackageManagerHelper {
 
     /**
      * Returns true if Launcher has the permission to access shortcuts.
+     * 
      * @see LauncherApps#hasShortcutHostPermission()
      */
     public static boolean hasShortcutsPermission(Context context) {

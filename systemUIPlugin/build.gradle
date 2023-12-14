@@ -10,7 +10,7 @@ android {
     }
     sourceSets {
         main {
-            java.srcDirs = ['src', 'bcsmartspace']
+            java.srcDirs = ['src']
             aidl.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest.xml'
             res.srcDirs = ['res']

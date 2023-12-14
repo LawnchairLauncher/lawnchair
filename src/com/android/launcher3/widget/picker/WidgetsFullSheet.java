@@ -23,8 +23,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
@@ -88,6 +86,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
@@ -221,9 +220,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         View collapseHandle = findViewById(R.id.collapse_handle);
         collapseHandle.setBackgroundColor(ColorTokens.TextColorSecondary.resolveColor(getContext()));
 
-        mContent = findViewById(R.id.container);
-        setContentBackgroundWithParent(getContext().getDrawable(R.drawable.bg_widgets_full_sheet),
-                mContent);
         mContent.setOutlineProvider(mViewOutlineProvider);
         mContent.setClipToOutline(true);
         setupSheet();
@@ -235,10 +231,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 : R.layout.widgets_full_sheet_recyclerview;
         layoutInflater.inflate(contentLayoutRes, mContent, true);
 
-        View searchBarContainer = findViewById(R.id.search_bar_container);
-        searchBarContainer.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
-        mFastScroller = findViewById(R.id.fast_scroller);
-        mFastScroller.setPopupView(findViewById(R.id.fast_scroller_popup));
         setupViews();
 
         mRecommendedWidgetsTable = mSearchScrollView.findViewById(R.id.recommended_widget_table);
@@ -278,7 +270,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         mTabBar = mSearchScrollView.findViewById(R.id.tabs);
+        if (mTabBar != null) {
+            mTabBar.setBackground(DrawableTokens.BgWidgetsFullSheet.resolve(getContext()));
+        }
         mSearchBarContainer = mSearchScrollView.findViewById(R.id.search_bar_container);
+        mSearchBarContainer.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
+
         mSearchBar = mSearchScrollView.findViewById(R.id.widgets_search_bar);
 
         mSearchBar.initialize(
@@ -288,9 +285,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private void setDeviceManagementResources() {
         Button personalTab = findViewById(R.id.tab_personal);
         personalTab.setText(R.string.all_apps_personal_tab);
+        personalTab.setAllCaps(false);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(personalTab, R.id.font_button);
 
         Button workTab = findViewById(R.id.tab_work);
         workTab.setText(R.string.all_apps_work_tab);
+        workTab.setAllCaps(false);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(workTab, R.id.font_button);
     }
 
     @Override
@@ -646,20 +647,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mContent.setAlpha(0);
                 setTranslationShift(VERTICAL_START_POSITION);
             }
-            mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator
-                    .setDuration(mActivityContext.getDeviceProfile().bottomSheetOpenDuration)
-                    .setInterpolator(AnimationUtils.loadInterpolator(
-                            getContext(), android.R.interpolator.linear_out_slow_in));
-            mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mOpenCloseAnimator.removeListener(this);
-                }
-            });
+            setUpOpenAnimation(mActivityContext.getDeviceProfile().bottomSheetOpenDuration);
+            Animator animator = mOpenCloseAnimation.getAnimationPlayer();
+            animator.setInterpolator(AnimationUtils.loadInterpolator(
+                    getContext(), android.R.interpolator.linear_out_slow_in));
             post(() -> {
-                mOpenCloseAnimator.start();
+                animator.setDuration(mActivityContext.getDeviceProfile().bottomSheetOpenDuration)
+                        .start();
                 mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
             });
         } else {
@@ -796,7 +790,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onCloseComplete();
         removeCallbacks(mShowEducationTipTask);
         if (mLatestEducationalTip != null) {
-            mLatestEducationalTip.close(false);
+            mLatestEducationalTip.close(true);
         }
         AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
@@ -825,13 +819,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         // Checks the orientation of the screen
-        if (LARGE_SCREEN_WIDGET_PICKER.get()
-                && mOrientation != newConfig.orientation
-                && mDeviceProfile.isTablet
-                && !mDeviceProfile.isTwoPanels) {
+        if (mOrientation != newConfig.orientation) {
             mOrientation = newConfig.orientation;
-            handleClose(false);
-            show(Launcher.getLauncher(getContext()), false);
+            if (LARGE_SCREEN_WIDGET_PICKER.get()
+                    && mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
+                handleClose(false);
+                show(Launcher.getLauncher(getContext()), false);
+            } else {
+                reset();
+            }
         }
     }
 
@@ -916,6 +912,22 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     protected boolean isTwoPane() {
         return false;
+    }
+
+    /** Gets the sheet for widget picker, which is used for testing. */
+    @VisibleForTesting
+    public View getSheet() {
+        return mContent;
+    }
+
+    /**
+     * Opens the first header in widget picker and scrolls to the top of the
+     * RecyclerView.
+     */
+    @VisibleForTesting
+    public void openFirstHeader() {
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.selectFirstHeaderEntry();
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView.scrollToTop();
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */

@@ -111,7 +111,7 @@ public class LauncherBackAnimationController {
     private boolean mBackInProgress = false;
     private IOnBackInvokedCallback mBackCallback;
     private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
-    private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
+    private BackProgressAnimator mProgressAnimator;
     private SurfaceControl mScrimLayer;
     private ValueAnimator mScrimAlphaAnimator;
     private float mScrimAlpha;
@@ -132,12 +132,13 @@ public class LauncherBackAnimationController {
                 R.dimen.swipe_back_window_scale_x_margin);
         mWindowMaxDeltaY = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_max_delta_y);
-        mCancelInterpolator = AnimationUtils.loadInterpolator(mLauncher, R.interpolator.back_cancel);
+        mCancelInterpolator = AnimationUtils.loadInterpolator(mLauncher, R.interpolator.standard_interpolator);
         try {
             mProgressAnimator = new BackProgressAnimator();
         } catch (Throwable throwable) {
-
+            // ignore
         }
+
     }
 
     /**
@@ -147,74 +148,83 @@ public class LauncherBackAnimationController {
      * @param handler Handler to the thread to run the animations on.
      */
     public void registerBackCallbacks(Handler handler) {
-        mBackCallback = new IOnBackInvokedCallback.Stub() {
-            @Override
-            public void onBackStarted(BackMotionEvent backMotionEvent) {
-                startBack (backMotionEvent);
-                handler.post(() -> {
-                    if (mProgressAnimator == null) {
-                        return;
-                    }
-                    mProgressAnimator.onBackStarted(backMotionEvent, event -> {
-                        mBackProgress = event.getProgress();
-                        // TODO: Update once the interpolation curve spec is finalized.
-                        mBackProgress = 1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
-                                - mBackProgress);
-                        updateBackProgress(mBackProgress, event);
+        try {
+            mBackCallback = new IOnBackInvokedCallback.Stub() {
+                @Override
+                public void onBackStarted(BackMotionEvent backMotionEvent) {
+                    startBack(backMotionEvent);
+                    handler.post(() -> {
+                        if (mProgressAnimator == null) {
+                            return;
+                        }
+                        mProgressAnimator.onBackStarted(backMotionEvent, event -> {
+                            mBackProgress = event.getProgress();
+                            // TODO: Update once the interpolation curve spec is finalized.
+                            mBackProgress = 1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
+                                    - mBackProgress);
+                            updateBackProgress(mBackProgress, event);
+                        });
                     });
-                });
-            }
-
-            @Override
-            public void onBackProgressed(BackMotionEvent backMotionEvent) {
-                handler.post(() -> {
-                    if (mProgressAnimator == null) {
-                        return;
-                    }
-                    mProgressAnimator.onBackProgressed(backMotionEvent);
-                });
-            }
-
-            @Override
-            public void onBackCancelled() {
-                handler.post(() -> {
-                    mProgressAnimator.onBackCancelled(
-                            LauncherBackAnimationController.this::resetPositionAnimated);
-                });
-            }
-
-            @Override
-            public void onBackInvoked() {
-                handler.post(() -> {
-                    startTransition();
-                    if (mProgressAnimator == null) {
-                        return;
-                    }
-                    mProgressAnimator.reset();
-                });
-            }
-        };
-
-        final IRemoteAnimationRunner runner = new IRemoteAnimationRunner.Stub() {
-            @Override
-            public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
-                                         RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
-                                         IRemoteAnimationFinishedCallback finishedCallback) {
-                for (final RemoteAnimationTarget target : apps) {
-                    if (MODE_CLOSING == target.mode) {
-                        mBackTarget = target;
-                        break;
-                    }
                 }
-                mAnimationFinishedCallback = finishedCallback;
-            }
 
-            @Override
-            public void onAnimationCancelled() {
-            }
-        };
+                @Override
+                public void onBackProgressed(BackMotionEvent backMotionEvent) {
+                    handler.post(() -> {
+                        if (mProgressAnimator == null) {
+                            return;
+                        }
+                        mProgressAnimator.onBackProgressed(backMotionEvent);
+                    });
+                }
 
-        SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback, runner);
+                @Override
+                public void onBackCancelled() {
+                    handler.post(() -> {
+                        if (mProgressAnimator == null) {
+                            return;
+                        }
+                        mProgressAnimator.onBackCancelled(
+                                LauncherBackAnimationController.this::resetPositionAnimated);
+                    });
+                }
+
+                @Override
+                public void onBackInvoked() {
+                    handler.post(() -> {
+                        startTransition();
+                        if (mProgressAnimator == null) {
+                            return;
+                        }
+                        mProgressAnimator.reset();
+                    });
+                }
+            };
+
+            final IRemoteAnimationRunner runner = new IRemoteAnimationRunner.Stub() {
+                @Override
+                public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
+                                             RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
+                                             IRemoteAnimationFinishedCallback finishedCallback) {
+                    for (final RemoteAnimationTarget target : apps) {
+                        if (MODE_CLOSING == target.mode) {
+                            mBackTarget = target;
+                            break;
+                        }
+                    }
+                    mAnimationFinishedCallback = finishedCallback;
+                }
+
+                @Override
+                public void onAnimationCancelled() {
+                }
+            };
+
+            SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback, runner);
+
+        } catch (Throwable t) {
+            // Ignore
+        }
+
     }
 
     private void resetPositionAnimated() {

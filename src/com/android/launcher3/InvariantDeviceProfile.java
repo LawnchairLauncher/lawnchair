@@ -191,7 +191,24 @@ public class InvariantDeviceProfile {
         public String dbFile;
         public int defaultLayoutId;
 
-        public int workspaceSpecsId;
+        @XmlRes
+        public int workspaceSpecsId = INVALID_RESOURCE_HANDLE;
+
+        @XmlRes
+        public int workspaceSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+
+        @XmlRes
+        public int allAppsSpecsId = INVALID_RESOURCE_HANDLE;
+        @XmlRes
+        public int allAppsSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+        @XmlRes
+        public int folderSpecsId = INVALID_RESOURCE_HANDLE;
+        @XmlRes
+        public int folderSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+        @XmlRes
+        public int hotseatSpecsId = INVALID_RESOURCE_HANDLE;
+        @XmlRes
+        public int hotseatSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
 
         public int demoModeLayoutId;
         public boolean[] inlineQsb = new boolean[COUNT_SIZES];
@@ -382,6 +399,14 @@ public class InvariantDeviceProfile {
                 isScalable = closestProfile.isScalable;
                 devicePaddingId = closestProfile.devicePaddingId;
                 workspaceSpecsId = closestProfile.mWorkspaceSpecsId;
+                workspaceSpecsTwoPanelId = closestProfile.mWorkspaceSpecsTwoPanelId;
+                allAppsSpecsId = closestProfile.mAllAppsSpecsId;
+                allAppsSpecsTwoPanelId = closestProfile.mAllAppsSpecsTwoPanelId;
+                folderSpecsId = closestProfile.mFolderSpecsId;
+                folderSpecsTwoPanelId = closestProfile.mFolderSpecsTwoPanelId;
+                hotseatSpecsId = closestProfile.mHotseatSpecsId;
+                hotseatSpecsTwoPanelId = closestProfile.mHotseatSpecsTwoPanelId;
+
                 this.deviceType = deviceType;
 
                 inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
@@ -837,6 +862,14 @@ public class InvariantDeviceProfile {
                 private final int demoModeLayoutId;
                 private final int mWorkspaceSpecsId;
 
+                private final int mWorkspaceSpecsTwoPanelId;
+                private final int mAllAppsSpecsId;
+                private final int mAllAppsSpecsTwoPanelId;
+                private final int mFolderSpecsId;
+                private final int mFolderSpecsTwoPanelId;
+                private final int mHotseatSpecsId;
+                private final int mHotseatSpecsTwoPanelId;
+
                 private final boolean isScalable;
                 private final int devicePaddingId;
 
@@ -903,8 +936,33 @@ public class InvariantDeviceProfile {
                         if (FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE.get()) {
                                 mWorkspaceSpecsId = a.getResourceId(
                                         R.styleable.GridDisplayOption_workspaceSpecsId, INVALID_RESOURCE_HANDLE);
+                                mWorkspaceSpecsTwoPanelId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_workspaceSpecsTwoPanelId,
+                                        INVALID_RESOURCE_HANDLE);
+                                mAllAppsSpecsId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_allAppsSpecsId, INVALID_RESOURCE_HANDLE);
+                                mAllAppsSpecsTwoPanelId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_allAppsSpecsTwoPanelId,
+                                        INVALID_RESOURCE_HANDLE);
+                                mFolderSpecsId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_folderSpecsId, INVALID_RESOURCE_HANDLE);
+                                mFolderSpecsTwoPanelId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_folderSpecsTwoPanelId,
+                                        INVALID_RESOURCE_HANDLE);
+                                mHotseatSpecsId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_hotseatSpecsId, INVALID_RESOURCE_HANDLE);
+                                mHotseatSpecsTwoPanelId = a.getResourceId(
+                                        R.styleable.GridDisplayOption_hotseatSpecsTwoPanelId,
+                                        INVALID_RESOURCE_HANDLE);
                         } else {
                                 mWorkspaceSpecsId = INVALID_RESOURCE_HANDLE;
+                                mWorkspaceSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+                                mAllAppsSpecsId = INVALID_RESOURCE_HANDLE;
+                                mAllAppsSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+                                mFolderSpecsId = INVALID_RESOURCE_HANDLE;
+                                mFolderSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+                                mHotseatSpecsId = INVALID_RESOURCE_HANDLE;
+                                mHotseatSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
                         }
 
                         int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,

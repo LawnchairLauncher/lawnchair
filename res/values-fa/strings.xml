@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"نام پوشه به <xliff:g id="NAME">%1$s</xliff:g> تغییر کرد"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"پوشه: <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="SIZE">%2$d</xliff:g> مورد"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"پوشه: <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="SIZE">%2$d</xliff:g> مورد یا بیشتر"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"کاغذدیواری‌ها"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"کاغذدیواری و سبک"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ویرایش «صفحه اصلی»"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"تنظیمات صفحه اصلی"</string>

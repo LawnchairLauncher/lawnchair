@@ -27,28 +27,36 @@ public class BubbleControllers {
     public final BubbleBarViewController bubbleBarViewController;
     public final BubbleStashController bubbleStashController;
     public final BubbleStashedHandleViewController bubbleStashedHandleViewController;
+    public final BubbleDragController bubbleDragController;
+    public final BubbleDismissController bubbleDismissController;
 
     private final RunnableList mPostInitRunnables = new RunnableList();
 
     /**
      * Want to add a new controller? Don't forget to:
-     *   * Call init
-     *   * Call onDestroy
+     * * Call init
+     * * Call onDestroy
      */
     public BubbleControllers(
             BubbleBarController bubbleBarController,
             BubbleBarViewController bubbleBarViewController,
             BubbleStashController bubbleStashController,
-            BubbleStashedHandleViewController bubbleStashedHandleViewController) {
+            BubbleStashedHandleViewController bubbleStashedHandleViewController,
+            BubbleDragController bubbleDragController,
+            BubbleDismissController bubbleDismissController) {
         this.bubbleBarController = bubbleBarController;
         this.bubbleBarViewController = bubbleBarViewController;
         this.bubbleStashController = bubbleStashController;
         this.bubbleStashedHandleViewController = bubbleStashedHandleViewController;
+        this.bubbleDragController = bubbleDragController;
+        this.bubbleDismissController = bubbleDismissController;
     }
 
     /**
-     * Initializes all controllers. Note that controllers can now reference each other through this
-     * BubbleControllers instance, but should be careful to only access things that were created
+     * Initializes all controllers. Note that controllers can now reference each
+     * other through this
+     * BubbleControllers instance, but should be careful to only access things that
+     * were created
      * in constructors for now, as some controllers may still be waiting for init().
      */
     public void init(TaskbarControllers taskbarControllers) {
@@ -56,14 +64,19 @@ public class BubbleControllers {
         bubbleBarViewController.init(taskbarControllers, this);
         bubbleStashedHandleViewController.init(taskbarControllers, this);
         bubbleStashController.init(taskbarControllers, this);
+        bubbleDragController.init(/* bubbleControllers = */ this);
+        bubbleDismissController.init(/* bubbleControllers = */ this);
 
         mPostInitRunnables.executeAllAndDestroy();
     }
 
     /**
-     * If all controllers are already initialized, runs the given callback immediately. Otherwise,
-     * queues it to run after calling init() on all controllers. This should likely be used in any
-     * case where one controller is telling another controller to do something inside init().
+     * If all controllers are already initialized, runs the given callback
+     * immediately. Otherwise,
+     * queues it to run after calling init() on all controllers. This should likely
+     * be used in any
+     * case where one controller is telling another controller to do something
+     * inside init().
      */
     public void runAfterInit(Runnable runnable) {
         // If this has been executed in init, it automatically runs adds to it.

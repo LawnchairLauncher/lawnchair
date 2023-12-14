@@ -71,7 +71,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
     @Nullable
-    private final AllAppsStore mAllAppsStore;
+    private final AllAppsStore<T> mAllAppsStore;
 
     // The number of results in current adapter
     private int mAccessibilityResultsCount = 0;
@@ -85,20 +85,25 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private final ArrayList<AdapterItem> mSearchResults = new ArrayList<>();
     private BaseAllAppsAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
-    private final int mNumAppsPerRowAllApps;
+    private int mNumAppsPerRowAllApps;
     private int mNumAppRowsInAdapter;
     public Predicate<ItemInfo> mItemFilter;
 
-    public AlphabeticalAppsList(Context context, @Nullable AllAppsStore appsStore,
+    public AlphabeticalAppsList(Context context, @Nullable AllAppsStore<T> appsStore,
             WorkProfileManager workProfileManager) {
         mAllAppsStore = appsStore;
         mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mWorkProviderManager = workProfileManager;
-        mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().inv.numAllAppsColumns;
+        mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
         if (mAllAppsStore != null) {
             mAllAppsStore.addUpdateListener(this);
         }
+    }
+
+    /** Set the number of apps per row when device profile changes. */
+    public void setNumAppsPerRowAllApps(int numAppsPerRow) {
+        mNumAppsPerRowAllApps = numAppsPerRow;
     }
 
     public void updateItemFilter(Predicate<ItemInfo> itemFilter) {

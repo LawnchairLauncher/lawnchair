@@ -40,12 +40,15 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.systemui.shared.testing.ResourceUtils;
 
-/** Forked from platform/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarEdgePanel.java. */
+/**
+ * Forked from
+ * platform/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarEdgePanel.java.
+ */
 public class EdgeBackGesturePanel extends View {
 
     private static final String LOG_TAG = "EdgeBackGesturePanel";
@@ -54,7 +57,8 @@ public class EdgeBackGesturePanel extends View {
     private static final long DISAPPEAR_ARROW_ANIMATION_DURATION_MS = 100;
 
     /**
-     * The time required since the first vibration effect to automatically trigger a click
+     * The time required since the first vibration effect to automatically trigger a
+     * click
      */
     private static final int GESTURE_DURATION_FOR_CLICK_MS = 400;
 
@@ -96,19 +100,19 @@ public class EdgeBackGesturePanel extends View {
     /**
      * The interpolator used to rubberband
      */
-    private static final Interpolator RUBBER_BAND_INTERPOLATOR =
-            new PathInterpolator(1.0f / 5.0f, 1.0f, 1.0f, 1.0f);
+    private static final Interpolator RUBBER_BAND_INTERPOLATOR = new PathInterpolator(1.0f / 5.0f, 1.0f, 1.0f, 1.0f);
 
     /**
-     * The amount of rubber banding we do for the translation before base translation
+     * The amount of rubber banding we do for the translation before base
+     * translation
      */
     private static final int RUBBER_BAND_AMOUNT_APPEAR = 4;
 
     /**
      * The interpolator used to rubberband the appearing of the arrow.
      */
-    private static final Interpolator RUBBER_BAND_INTERPOLATOR_APPEAR =
-            new PathInterpolator(1.0f / RUBBER_BAND_AMOUNT_APPEAR, 1.0f, 1.0f, 1.0f);
+    private static final Interpolator RUBBER_BAND_INTERPOLATOR_APPEAR = new PathInterpolator(
+            1.0f / RUBBER_BAND_AMOUNT_APPEAR, 1.0f, 1.0f, 1.0f);
 
     private BackCallback mBackCallback;
 
@@ -123,7 +127,8 @@ public class EdgeBackGesturePanel extends View {
     private final float mArrowThickness;
 
     /**
-     * The minimum delta needed in movement for the arrow to change direction / stop triggering back
+     * The minimum delta needed in movement for the arrow to change direction / stop
+     * triggering back
      */
     private final float mMinDeltaForSwitch;
     // The closest to y = 0 that the arrow will be displayed.
@@ -178,57 +183,56 @@ public class EdgeBackGesturePanel extends View {
     private long mVibrationTime;
     private int mScreenSize;
 
-    private final DynamicAnimation.OnAnimationEndListener mSetGoneEndListener =
-            new DynamicAnimation.OnAnimationEndListener() {
-                @Override
-                public void onAnimationEnd(
-                        DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                    animation.removeEndListener(this);
-                    if (!canceled) {
-                        setVisibility(GONE);
-                    }
-                }
-            };
+    private final DynamicAnimation.OnAnimationEndListener mSetGoneEndListener = new DynamicAnimation.OnAnimationEndListener() {
+        @Override
+        public void onAnimationEnd(
+                DynamicAnimation animation, boolean canceled, float value, float velocity) {
+            animation.removeEndListener(this);
+            if (!canceled) {
+                setVisibility(GONE);
+            }
+        }
+    };
 
-    private static final FloatPropertyCompat<EdgeBackGesturePanel> CURRENT_ANGLE =
-            new FloatPropertyCompat<EdgeBackGesturePanel>("currentAngle") {
-                @Override
-                public void setValue(EdgeBackGesturePanel object, float value) {
-                    object.setCurrentAngle(value);
-                }
+    private static final FloatPropertyCompat<EdgeBackGesturePanel> CURRENT_ANGLE = new FloatPropertyCompat<EdgeBackGesturePanel>(
+            "currentAngle") {
+        @Override
+        public void setValue(EdgeBackGesturePanel object, float value) {
+            object.setCurrentAngle(value);
+        }
 
-                @Override
-                public float getValue(EdgeBackGesturePanel object) {
-                    return object.getCurrentAngle();
-                }
-            };
+        @Override
+        public float getValue(EdgeBackGesturePanel object) {
+            return object.getCurrentAngle();
+        }
+    };
 
-    private static final FloatPropertyCompat<EdgeBackGesturePanel> CURRENT_TRANSLATION =
-            new FloatPropertyCompat<EdgeBackGesturePanel>("currentTranslation") {
-                @Override
-                public void setValue(EdgeBackGesturePanel object, float value) {
-                    object.setCurrentTranslation(value);
-                }
+    private static final FloatPropertyCompat<EdgeBackGesturePanel> CURRENT_TRANSLATION = new FloatPropertyCompat<EdgeBackGesturePanel>(
+            "currentTranslation") {
+        @Override
+        public void setValue(EdgeBackGesturePanel object, float value) {
+            object.setCurrentTranslation(value);
+        }
 
-                @Override
-                public float getValue(EdgeBackGesturePanel object) {
-                    return object.getCurrentTranslation();
-                }
-            };
+        @Override
+        public float getValue(EdgeBackGesturePanel object) {
+            return object.getCurrentTranslation();
+        }
+    };
 
-    private static final FloatPropertyCompat<EdgeBackGesturePanel> CURRENT_VERTICAL_TRANSLATION =
-            new FloatPropertyCompat<EdgeBackGesturePanel>("verticalTranslation") {
+    private static final FloatPropertyCompat<EdgeBackGesturePanel> CURRENT_VERTICAL_TRANSLATION = new FloatPropertyCompat<EdgeBackGesturePanel>(
+            "verticalTranslation") {
 
-                @Override
-                public void setValue(EdgeBackGesturePanel object, float value) {
-                    object.setVerticalTranslation(value);
-                }
+        @Override
+        public void setValue(EdgeBackGesturePanel object, float value) {
+            object.setVerticalTranslation(value);
+        }
 
-                @Override
-                public float getValue(EdgeBackGesturePanel object) {
-                    return object.getVerticalTranslation();
-                }
-            };
+        @Override
+        public float getValue(EdgeBackGesturePanel object) {
+            return object.getVerticalTranslation();
+        }
+    };
 
     public EdgeBackGesturePanel(Context context, ViewGroup parent, LayoutParams layoutParams) {
         super(context);
@@ -254,8 +258,7 @@ public class EdgeBackGesturePanel extends View {
             invalidate();
         });
 
-        mAngleAnimation =
-                new SpringAnimation(this, CURRENT_ANGLE);
+        mAngleAnimation = new SpringAnimation(this, CURRENT_ANGLE);
         mAngleAppearForce = new SpringForce()
                 .setStiffness(500)
                 .setDampingRatio(0.5f);
@@ -265,8 +268,7 @@ public class EdgeBackGesturePanel extends View {
                 .setFinalPosition(90);
         mAngleAnimation.setSpring(mAngleAppearForce).setMaxValue(90);
 
-        mTranslationAnimation =
-                new SpringAnimation(this, CURRENT_TRANSLATION);
+        mTranslationAnimation = new SpringAnimation(this, CURRENT_TRANSLATION);
         mRegularTranslationSpring = new SpringForce()
                 .setStiffness(SpringForce.STIFFNESS_MEDIUM)
                 .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
@@ -274,20 +276,18 @@ public class EdgeBackGesturePanel extends View {
                 .setStiffness(450)
                 .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
         mTranslationAnimation.setSpring(mRegularTranslationSpring);
-        mVerticalTranslationAnimation =
-                new SpringAnimation(this, CURRENT_VERTICAL_TRANSLATION);
+        mVerticalTranslationAnimation = new SpringAnimation(this, CURRENT_VERTICAL_TRANSLATION);
         mVerticalTranslationAnimation.setSpring(
                 new SpringForce()
                         .setStiffness(SpringForce.STIFFNESS_MEDIUM)
                         .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY));
-        int currentNightMode =
-                context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        int currentNightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         mPaint.setColor(context.getColor(R.color.gesture_tutorial_back_arrow_color));
         loadDimens();
         updateArrowDirection();
 
         mSwipeThreshold = ResourceUtils.getDimenByName(
-            "navigation_edge_action_drag_threshold", context.getResources(), 16 /* defaultValue */);
+                "navigation_edge_action_drag_threshold", context.getResources(), 16 /* defaultValue */);
         parent.addView(this, layoutParams);
         setVisibility(GONE);
     }
@@ -548,7 +548,8 @@ public class EdgeBackGesturePanel extends View {
             setTriggerBack(true /* triggerBack */, true /* animated */);
         }
 
-        // Let's make sure we only go to the baseextend and apply rubberbanding afterwards
+        // Let's make sure we only go to the baseextend and apply rubberbanding
+        // afterwards
         if (touchTranslation > mBaseTranslation) {
             float diff = touchTranslation - mBaseTranslation;
             float progress = MathUtils.clamp(diff / (mScreenSize - mBaseTranslation), 0, 1);
@@ -565,7 +566,7 @@ public class EdgeBackGesturePanel extends View {
         // By default we just assume the current direction is kept
         boolean triggerBack = mTriggerBack;
 
-        //  First lets see if we had continuous motion in one direction for a while
+        // First lets see if we had continuous motion in one direction for a while
         if (Math.abs(mTotalTouchDelta) > mMinDeltaForSwitch) {
             triggerBack = mTotalTouchDelta > 0;
         }
@@ -591,7 +592,8 @@ public class EdgeBackGesturePanel extends View {
             touchTranslation = 0;
         } else if (mIsLeftPanel && mArrowsPointLeft
                 || (!mIsLeftPanel && !mArrowsPointLeft)) {
-            // If we're on the left we should move less, because the arrow is facing the other
+            // If we're on the left we should move less, because the arrow is facing the
+            // other
             // direction
             touchTranslation -= getStaticArrowWidth();
         }
@@ -599,8 +601,7 @@ public class EdgeBackGesturePanel extends View {
         updateAngle(true /* animated */);
 
         float maxYOffset = getHeight() / 2.0f - mArrowLength;
-        float progress =
-                MathUtils.clamp(Math.abs(yOffset) / (maxYOffset * RUBBER_BAND_AMOUNT), 0, 1);
+        float progress = MathUtils.clamp(Math.abs(yOffset) / (maxYOffset * RUBBER_BAND_AMOUNT), 0, 1);
         float verticalTranslation = RUBBER_BAND_INTERPOLATOR.getInterpolation(progress)
                 * maxYOffset * Math.signum(yOffset);
         setDesiredVerticalTransition(verticalTranslation, true /* animated */);
@@ -656,7 +657,8 @@ public class EdgeBackGesturePanel extends View {
             mTriggerBack = triggerBack;
             mAngleAnimation.cancel();
             updateAngle(animated);
-            // Whenever the trigger back state changes the existing translation animation should be
+            // Whenever the trigger back state changes the existing translation animation
+            // should be
             // cancelled
             mTranslationAnimation.cancel();
         }

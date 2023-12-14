@@ -30,7 +30,7 @@ import android.view.ViewDebug;
 import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.anim.Interpolators;
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -42,10 +42,9 @@ public class DropTargetBar extends FrameLayout
         implements DragListener, Insettable {
 
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
-    protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCEL;
+    protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCELERATE;
 
-    private final Runnable mFadeAnimationEndRunnable =
-            () -> updateVisibility(DropTargetBar.this);
+    private final Runnable mFadeAnimationEndRunnable = () -> updateVisibility(DropTargetBar.this);
 
     private final Launcher mLauncher;
 
@@ -97,7 +96,7 @@ public class DropTargetBar extends FrameLayout
         int horizontalMargin;
         if (grid.isTablet) {
             // XXX: If the icon size changes across orientations, we will have to take
-            //      that into account here too.
+            // that into account here too.
             horizontalMargin = ((grid.widthPx - 2 * grid.edgeMarginPx
                     - (grid.inv.numColumns * grid.cellWidthPx))
                     / (2 * (grid.inv.numColumns + 1)))
@@ -163,7 +162,8 @@ public class DropTargetBar extends FrameLayout
             firstButton.setTextVisible(true);
             firstButton.setIconVisible(true);
             firstButton.setTextMultiLine(false);
-            // Reset first button padding in case it was previously changed to multi-line text.
+            // Reset first button padding in case it was previously changed to multi-line
+            // text.
             firstButton.setPadding(horizontalPadding, verticalPadding, horizontalPadding,
                     verticalPadding);
 
@@ -172,7 +172,8 @@ public class DropTargetBar extends FrameLayout
             secondButton.setTextVisible(true);
             secondButton.setIconVisible(true);
             secondButton.setTextMultiLine(false);
-            // Reset second button padding in case it was previously changed to multi-line text.
+            // Reset second button padding in case it was previously changed to multi-line
+            // text.
             secondButton.setPadding(horizontalPadding, verticalPadding, horizontalPadding,
                     verticalPadding);
 
@@ -189,7 +190,8 @@ public class DropTargetBar extends FrameLayout
             int widthSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST);
             firstButton.measure(widthSpec, heightSpec);
             if (!mIsVertical) {
-                // Remove both icons and put the button's text on two lines if text is truncated.
+                // Remove both icons and put the button's text on two lines if text is
+                // truncated.
                 if (firstButton.isTextTruncated(availableWidth)) {
                     firstButton.setIconVisible(false);
                     secondButton.setIconVisible(false);
@@ -205,7 +207,8 @@ public class DropTargetBar extends FrameLayout
             }
             secondButton.measure(widthSpec, heightSpec);
             if (!mIsVertical) {
-                // Remove both icons and put the button's text on two lines if text is truncated.
+                // Remove both icons and put the button's text on two lines if text is
+                // truncated.
                 if (secondButton.isTextTruncated(availableWidth)) {
                     secondButton.setIconVisible(false);
                     firstButton.setIconVisible(false);
@@ -215,9 +218,9 @@ public class DropTargetBar extends FrameLayout
                 }
             }
 
-            // If text is still truncated, shrink to fit in measured width and resize both targets.
-            float minTextSize =
-                    Math.min(firstButton.resizeTextToFit(), secondButton.resizeTextToFit());
+            // If text is still truncated, shrink to fit in measured width and resize both
+            // targets.
+            float minTextSize = Math.min(firstButton.resizeTextToFit(), secondButton.resizeTextToFit());
             if (firstButton.getTextSize() != minTextSize
                     || secondButton.getTextSize() != minTextSize) {
                 firstButton.setTextSize(minTextSize);
@@ -326,7 +329,8 @@ public class DropTargetBar extends FrameLayout
     }
 
     /**
-     * This is called to defer hiding the delete drop target until the drop animation has completed,
+     * This is called to defer hiding the delete drop target until the drop
+     * animation has completed,
      * instead of hiding immediately when the drag has ended.
      */
     protected void deferOnDragEnd() {

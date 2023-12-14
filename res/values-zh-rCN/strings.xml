@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"已将文件夹重命名为“<xliff:g id="NAME">%1$s</xliff:g>”"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"文件夹：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 个项目"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"文件夹：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 个或更多项目"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"壁纸"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"壁纸与个性化"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"修改主屏幕"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"主屏幕设置"</string>

@@ -17,6 +17,20 @@ package com.android.launcher3.uioverrides.states;
 
 import static android.view.View.VISIBLE;
 
+import static com.android.app.animation.Interpolators.ACCELERATE;
+import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
+import static com.android.app.animation.Interpolators.DECELERATE;
+import static com.android.app.animation.Interpolators.DECELERATE_1_7;
+import static com.android.app.animation.Interpolators.DECELERATE_3;
+import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
+import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.OVERSHOOT_0_75;
+import static com.android.app.animation.Interpolators.OVERSHOOT_1_2;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
@@ -25,20 +39,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getWorkspaceSpringScaleAnimator;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_0_75;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
@@ -55,12 +55,14 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_T
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 
 import android.animation.ValueAnimator;
+import android.util.Log;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
@@ -78,12 +80,14 @@ public class QuickstepAtomicAnimationFactory extends
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
     // Scale workspace takes before animating in
     private static final float WORKSPACE_PREPARE_SCALE = 0.92f;
-    // Constants to specify how to scroll RecentsView to the default page if it's not already there.
+    // Constants to specify how to scroll RecentsView to the default page if it's
+    // not already there.
     private static final int DEFAULT_PAGE = 0;
     private static final int PER_PAGE_SCROLL_DURATION = 150;
     private static final int MAX_PAGE_SCROLL_DURATION = 750;
 
-    // Due to use of physics, duration may differ between devices so we need to calculate and
+    // Due to use of physics, duration may differ between devices so we need to
+    // calculate and
     // cache the value.
     private int mHintToNormalDuration = -1;
 
@@ -94,11 +98,11 @@ public class QuickstepAtomicAnimationFactory extends
     @Override
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
-
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "creating animation fromState: "
+                + fromState + " toState: " + toState);
         RecentsView overview = mActivity.getOverviewPanel();
         if ((fromState == OVERVIEW || fromState == OVERVIEW_SPLIT_SELECT) && toState == NORMAL) {
-            overview.switchToScreenshot(() ->
-                    overview.finishRecentsAnimation(true /* toRecents */, null));
+            overview.switchToScreenshot(() -> overview.finishRecentsAnimation(true /* toRecents */, null));
 
             if (fromState == OVERVIEW_SPLIT_SELECT) {
                 config.setInterpolator(ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
@@ -112,8 +116,8 @@ public class QuickstepAtomicAnimationFactory extends
                     fromState == OVERVIEW_SPLIT_SELECT
                             ? clampToProgress(LINEAR, 0.33f, 1)
                             : LINEAR);
-            config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
-            config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATE);
+            config.setInterpolator(ANIM_WORKSPACE_FADE, ACCELERATE);
 
             if (DisplayController.getNavigationMode(mActivity).hasGestures
                     && overview.getTaskViewCount() > 0) {
@@ -132,20 +136,22 @@ public class QuickstepAtomicAnimationFactory extends
                         numPagesToScroll * PER_PAGE_SCROLL_DURATION);
                 config.duration = Math.max(config.duration, scrollDuration);
 
-                // Sync scroll so that it ends before or at the same time as the taskbar animation.
+                // Sync scroll so that it ends before or at the same time as the taskbar
+                // animation.
                 if (DisplayController.isTransientTaskbar(mActivity)
                         && mActivity.getDeviceProfile().isTaskbarPresent) {
                     config.duration = Math.min(config.duration, TASKBAR_TO_HOME_DURATION);
                 }
                 overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
             } else {
-                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
-                config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
-                config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCELERATE_DECELERATE);
+                config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCELERATE, 0, 0.9f));
+                config.setInterpolator(ANIM_OVERVIEW_FADE, DECELERATE_1_7);
             }
 
             Workspace<?> workspace = mActivity.getWorkspace();
-            // Start from a higher workspace scale, but only if we're invisible so we don't jump.
+            // Start from a higher workspace scale, but only if we're invisible so we don't
+            // jump.
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
             if (isWorkspaceVisible) {
                 CellLayout currentChild = (CellLayout) workspace.getChildAt(
@@ -167,8 +173,8 @@ public class QuickstepAtomicAnimationFactory extends
                 || fromState == HINT_STATE_TWO_BUTTON) && toState == OVERVIEW) {
             if (DisplayController.getNavigationMode(mActivity).hasGestures) {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
-                        fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
-                config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
+                        fromState == NORMAL ? ACCELERATE : OVERSHOOT_1_2);
+                config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCELERATE);
 
                 // Scrolling in tasks, so show straight away
                 if (overview.getTaskViewCount() > 0) {
@@ -196,7 +202,7 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, OVERSHOOT_1_2);
         } else if (fromState == HINT_STATE && toState == NORMAL) {
-            config.setInterpolator(ANIM_DEPTH, DEACCEL_3);
+            config.setInterpolator(ANIM_DEPTH, DECELERATE_3);
             if (mHintToNormalDuration == -1) {
                 ValueAnimator va = getWorkspaceSpringScaleAnimator(mActivity,
                         mActivity.getWorkspace(),

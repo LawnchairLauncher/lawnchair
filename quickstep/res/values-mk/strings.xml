@@ -50,7 +50,7 @@
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Повлечете од десниот или левиот раб кон средината на екранот и пуштете"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научивте како да повлекувате оддесно за враќање назад. Научете и како да се префрлате помеѓу апликациите."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Завршивте со упатството за враќање назад"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не повлекувајте преблиску до долниот раб на екранот"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не повлекувајте преблиску до дното на екранот"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"За да ја промените чувствителноста, одете во „Поставки“"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Повлечете за да се вратите назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се вратите на последниот екран, повлечете од левиот или десниот раб кон средината на екранот."</string>
@@ -60,7 +60,7 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Повлечете нагоре од долниот раб на екранот"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Не правете пауза пред да пуштите"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Повлечете право нагоре"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Го научивте движењето за враќање на почетниот екран. Следно, дознајте како да се вратите назад."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Го научивте движењето за отворање на почетниот екран. Научете го и движењето за враќање назад."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Го научивте движењето за враќање на почетниот екран"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Повлечете за да одите на почетниот екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Повлечете нагоре од долниот раб на екранот. Ова движење секогаш ќе ве одведе на почетниот екран."</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Слика од екранот"</string>
     <string name="action_split" msgid="2098009717623550676">"Раздели"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Допрете друга аплик. за да користите поделен екран"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Излези од изборот на поделен екран"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Изберете друга апликација за да користите поделен екран"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Апликацијата или вашата организација не го дозволува дејствово"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Да се прескокне упатството за навигација?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести долу десно"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Прикажи уште # апликација.}one{Прикажи уште # апликација.}other{Прикажи уште # апликации.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Додавање на апликацијата во „Работна површина“"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Откажи"</string>
 </resources>

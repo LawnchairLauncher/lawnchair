@@ -23,12 +23,18 @@ import com.android.launcher3.R
 import com.android.launcher3.tests.R as TestR
 import kotlin.IntArray
 
-class TestResourceHelper(private val context: Context, private val specsFileId: Int) :
+class TestResourceHelper(private val context: Context, specsFileId: Int) :
     ResourceHelper(context, specsFileId) {
     override fun obtainStyledAttributes(attrs: AttributeSet, styleId: IntArray): TypedArray {
-        var clone = styleId.clone()
-        if (styleId == R.styleable.SpecSize) clone = TestR.styleable.SpecSize
-        else if (styleId == R.styleable.WorkspaceSpec) clone = TestR.styleable.WorkspaceSpec
+        val clone =
+            when {
+                styleId.contentEquals(R.styleable.SizeSpec) -> TestR.styleable.SizeSpec
+                styleId.contentEquals(R.styleable.WorkspaceSpec) -> TestR.styleable.WorkspaceSpec
+                styleId.contentEquals(R.styleable.FolderSpec) -> TestR.styleable.FolderSpec
+                styleId.contentEquals(R.styleable.AllAppsSpec) -> TestR.styleable.AllAppsSpec
+                else -> styleId.clone()
+            }
+
         return context.obtainStyledAttributes(attrs, clone)
     }
 }

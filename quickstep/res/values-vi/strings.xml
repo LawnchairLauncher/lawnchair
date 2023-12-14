@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Chụp ảnh màn hình"</string>
     <string name="action_split" msgid="2098009717623550676">"Chia đôi màn hình"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Nhấn vào ứng dụng khác để chia đôi màn hình"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Thoát khỏi lựa chọn chia đôi màn hình"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Chọn một ứng dụng khác để dùng chế độ chia đôi màn hình"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Ứng dụng hoặc tổ chức của bạn không cho phép thực hiện hành động này"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Bỏ qua phần hướng dẫn thao tác?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Chuyển xuống dưới cùng/sang bên phải"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Hiện thêm # ứng dụng.}other{Hiện thêm # ứng dụng.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> và <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Đang thêm ứng dụng vào máy tính"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Huỷ"</string>
 </resources>

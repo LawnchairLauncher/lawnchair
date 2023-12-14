@@ -41,6 +41,7 @@ import app.lawnchair.theme.color.ColorTokens;
 public class WorkPausedCard extends LinearLayout implements View.OnClickListener {
 
     private final ActivityContext mActivityContext;
+
     public WorkPausedCard(Context context) {
         this(context, null, 0);
     }
@@ -60,7 +61,7 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
         setWorkProfilePausedResources();
     }
 
-    private void setWorkProfilePausedResources() {
+    public void setWorkProfilePausedResources() {
         TextView title = findViewById(R.id.work_apps_paused_title);
         title.setText(R.string.work_apps_paused_title);
         title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
@@ -90,7 +91,8 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int orientation = getResources().getConfiguration().orientation;
         getLayoutParams().height = orientation == Configuration.ORIENTATION_PORTRAIT
-                ? LayoutParams.MATCH_PARENT : LayoutParams.WRAP_CONTENT;
+                ? LayoutParams.MATCH_PARENT
+                : LayoutParams.WRAP_CONTENT;
         super.onLayout(changed, l, t, r, b);
     }
 }

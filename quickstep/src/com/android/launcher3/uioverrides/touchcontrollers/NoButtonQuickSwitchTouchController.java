@@ -18,19 +18,20 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_0_75;
+import static com.android.app.animation.Interpolators.DECELERATE_3;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_ACTIONS;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadFourFingerSwipe;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
-import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEDOWN;
@@ -46,6 +47,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
@@ -74,6 +76,7 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.BothAxesSwipeDetector;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
@@ -84,17 +87,20 @@ import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 /**
- * Handles quick switching to a recent task from the home screen. To give as much flexibility to
- * the user as possible, also handles swipe up and hold to go to overview and swiping back home.
+ * Handles quick switching to a recent task from the home screen. To give as
+ * much flexibility to
+ * the user as possible, also handles swipe up and hold to go to overview and
+ * swiping back home.
  */
 public class NoButtonQuickSwitchTouchController implements TouchController,
         BothAxesSwipeDetector.Listener {
 
     private static final float Y_ANIM_MIN_PROGRESS = 0.25f;
-    private static final Interpolator FADE_OUT_INTERPOLATOR = DEACCEL_3;
-    private static final Interpolator TRANSLATE_OUT_INTERPOLATOR = ACCEL_0_75;
+    private static final Interpolator FADE_OUT_INTERPOLATOR = DECELERATE_3;
+    private static final Interpolator TRANSLATE_OUT_INTERPOLATOR = ACCELERATE_0_75;
     private static final Interpolator SCALE_DOWN_INTERPOLATOR = LINEAR;
     private static final long ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW = 300;
 
@@ -106,8 +112,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
     private final LauncherRecentsView mRecentsView;
-    protected final AnimatorListener mClearStateOnCancelListener =
-            newCancelListener(this::clearState);
+    protected final AnimatorListener mClearStateOnCancelListener = newCancelListener(this::clearState);
 
     private boolean mNoIntercept;
     private Boolean mIsTrackpadFourFingerSwipe;
@@ -115,7 +120,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     private boolean mIsHomeScreenVisible = true;
 
-    // As we drag, we control 3 animations: one to get non-overview components out of the way,
+    // As we drag, we control 3 animations: one to get non-overview components out
+    // of the way,
     // and the other two to set overview properties based on x and y progress.
     private AnimatorPlaybackController mNonOverviewAnim;
     private AnimatorPlaybackController mXOverviewAnim;
@@ -127,7 +133,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mRecentsView = mLauncher.getOverviewPanel();
         mXRange = mLauncher.getDeviceProfile().widthPx / 2f;
         mYRange = LayoutUtils.getShelfTrackingDistance(
-            mLauncher, mLauncher.getDeviceProfile(), mRecentsView.getPagedOrientationHandler());
+                mLauncher, mLauncher.getDeviceProfile(), mRecentsView.getPagedOrientationHandler());
         mMaxYProgress = mLauncher.getDeviceProfile().heightPx / mYRange;
         mMotionPauseDetector = new MotionPauseDetector(mLauncher);
         mMotionPauseMinDisplacement = mLauncher.getResources().getDimension(
@@ -136,19 +142,18 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        int action = ev.getActionMasked();
-        if (action == ACTION_DOWN) {
-            mIsTrackpadFourFingerSwipe = null;
+        if (ev.getActionMasked() == ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
                 return false;
             }
 
-            // Only detect horizontal swipe for intercept, then we will allow swipe up as well.
+            // Only detect horizontal swipe for intercept, then we will allow swipe up as
+            // well.
             mSwipeDetector.setDetectableScrollConditions(DIRECTION_RIGHT,
                     false /* ignoreSlopWhenSettling */);
         } else if (isTrackpadMultiFingerSwipe(ev) && mIsTrackpadFourFingerSwipe == null
-                && action == ACTION_MOVE) {
+                && ev.getActionMasked() == ACTION_MOVE) {
             mIsTrackpadFourFingerSwipe = isTrackpadFourFingerSwipe(ev);
             mNoIntercept = !mIsTrackpadFourFingerSwipe;
             if (mNoIntercept) {
@@ -170,6 +175,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
+        if (!isTrackpadMotionEvent(ev) && DisplayController.getNavigationMode(mLauncher) == THREE_BUTTONS) {
+            return false;
+        }
         if (!mLauncher.isInState(LauncherState.NORMAL)) {
             return false;
         }
@@ -184,6 +192,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             // TODO(b/268075592): add support for quickswitch to/from desktop
             return false;
         }
+        if (isTrackpadMultiFingerSwipe(ev)) {
+            return isTrackpadFourFingerSwipe(ev);
+        }
         return true;
     }
 
@@ -191,6 +202,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     public void onDragStart(boolean start) {
         mMotionPauseDetector.clear();
         if (start) {
+            InteractionJankMonitorWrapper.begin(mRecentsView,
+                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+
             mStartState = mLauncher.getStateManager().getState();
 
             mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
@@ -255,9 +269,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
         float[] scaleAndOffset = toState.getOverviewScaleAndOffset(mLauncher);
         // As we drag right, animate the following properties:
-        //   - RecentsView translationX
-        //   - OverviewScrim
-        //   - RecentsView fade (if it's empty)
+        // - RecentsView translationX
+        // - OverviewScrim
+        // - RecentsView fade (if it's empty)
         PendingAnimation xAnim = new PendingAnimation((long) (mXRange * 2));
         xAnim.setFloat(mRecentsView, ADJACENT_PAGE_HORIZONTAL_OFFSET, scaleAndOffset[1], LINEAR);
         // Use QuickSwitchState instead of OverviewState to determine scrim color,
@@ -271,8 +285,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mXOverviewAnim.dispatchOnStart();
 
         // As we drag up, animate the following properties:
-        //   - RecentsView scale
-        //   - RecentsView fullscreenProgress
+        // - RecentsView scale
+        // - RecentsView fullscreenProgress
         PendingAnimation yAnim = new PendingAnimation((long) (mYRange * 2));
         yAnim.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
                 SCALE_DOWN_INTERPOLATOR);
@@ -302,8 +316,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (wasHomeScreenVisible && mNonOverviewAnim != null) {
             mNonOverviewAnim.setPlayFraction(xProgress);
         }
-        mIsHomeScreenVisible = FADE_OUT_INTERPOLATOR.getInterpolation(xProgress)
-                <= 1 - ALPHA_CUTOFF_THRESHOLD;
+        mIsHomeScreenVisible = FADE_OUT_INTERPOLATOR.getInterpolation(xProgress) <= 1 - ALPHA_CUTOFF_THRESHOLD;
 
         mMotionPauseDetector.setDisallowPause(-displacement.y < mMotionPauseMinDisplacement);
         mMotionPauseDetector.addPosition(ev);
@@ -325,6 +338,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (mMotionPauseDetector.isPaused() && noFling) {
             // Going to Overview.
             cancelAnimations();
+            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
 
             StateAnimationConfig config = new StateAnimationConfig();
             config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
@@ -340,7 +354,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             });
             overviewAnim.start();
 
-            // Create an empty state transition so StateListeners get onStateTransitionStart().
+            // Create an empty state transition so StateListeners get
+            // onStateTransitionStart().
             mLauncher.getStateManager().createAnimationToNewWorkspace(
                     OVERVIEW, config.duration, StateAnimationConfig.SKIP_ALL_ANIMATIONS)
                     .dispatchOnStart();
@@ -360,7 +375,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                     // Flinging up and right could go either home or to quick switch.
                     // Determine the target based on the higher velocity.
                     targetState = Math.abs(velocity.x) > Math.abs(velocity.y)
-                        ? QUICK_SWITCH_FROM_HOME : NORMAL;
+                            ? QUICK_SWITCH_FROM_HOME
+                            : NORMAL;
                 }
             }
         } else if (horizontalFling) {
@@ -372,7 +388,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             boolean passedHorizontalThreshold = mXOverviewAnim.getInterpolatedProgress() > 0.5f;
             boolean passedVerticalThreshold = mYOverviewAnim.value > 1f;
             targetState = passedHorizontalThreshold && !passedVerticalThreshold
-                    ? QUICK_SWITCH_FROM_HOME : NORMAL;
+                    ? QUICK_SWITCH_FROM_HOME
+                    : NORMAL;
         }
 
         // Animate the various components to the target state.
@@ -441,6 +458,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                     RecentsView.SCROLL_VIBRATION_PRIMITIVE,
                     RecentsView.SCROLL_VIBRATION_PRIMITIVE_SCALE,
                     RecentsView.SCROLL_VIBRATION_FALLBACK);
+        } else {
+            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
         }
 
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));
@@ -462,6 +481,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                                 : targetState.ordinal > mStartState.ordinal
                                         ? LAUNCHER_UNKNOWN_SWIPEUP
                                         : LAUNCHER_UNKNOWN_SWIPEDOWN));
+
+        if (targetState == QUICK_SWITCH_FROM_HOME) {
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+        }
+
         mLauncher.getStateManager().goToState(targetState, false, forEndCallback(this::clearState));
     }
 

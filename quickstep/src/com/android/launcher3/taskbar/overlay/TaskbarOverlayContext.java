@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar.overlay;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.dot.DotInfo;
@@ -29,12 +31,14 @@ import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView;
+import com.android.launcher3.taskbar.allapps.TaskbarSearchSessionController;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 
 /**
  * Window context for the taskbar overlays such as All Apps and EDU.
  * <p>
- * Overlays have their own window and need a window context. Some properties are delegated to the
+ * Overlays have their own window and need a window context. Some properties are
+ * delegated to the
  * {@link TaskbarActivityContext} such as {@link PopupDataProvider}.
  */
 public class TaskbarOverlayContext extends BaseTaskbarContext {
@@ -46,6 +50,8 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
 
     private final int mStashedTaskbarHeight;
     private final TaskbarUIController mUiController;
+
+    private @Nullable TaskbarSearchSessionController mSearchSessionController;
 
     public TaskbarOverlayContext(
             Context windowContext,
@@ -62,6 +68,15 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         mUiController = controllers.uiController;
     }
 
+    public @Nullable TaskbarSearchSessionController getSearchSessionController() {
+        return mSearchSessionController;
+    }
+
+    public void setSearchSessionController(
+            @Nullable TaskbarSearchSessionController searchSessionController) {
+        mSearchSessionController = searchSessionController;
+    }
+
     int getStashedTaskbarHeight() {
         return mStashedTaskbarHeight;
     }
@@ -70,7 +85,10 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         return mOverlayController;
     }
 
-    /** Returns {@code true} if overlay or Taskbar windows are handling a system drag. */
+    /**
+     * Returns {@code true} if overlay or Taskbar windows are handling a system
+     * drag.
+     */
     boolean isAnySystemDragInProgress() {
         return mDragController.isSystemDragInProgress()
                 || mTaskbarContext.getDragController().isSystemDragInProgress();
@@ -112,6 +130,11 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     }
 
     @Override
+    public View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return mDragController::startDragOnLongClick;
+    }
+
+    @Override
     public PopupDataProvider getPopupDataProvider() {
         return mTaskbarContext.getPopupDataProvider();
     }
@@ -127,7 +150,8 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     }
 
     @Override
-    public void onDragStart() {}
+    public void onDragStart() {
+    }
 
     @Override
     public void onDragEnd() {
@@ -135,7 +159,8 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     }
 
     @Override
-    public void onPopupVisibilityChanged(boolean isVisible) {}
+    public void onPopupVisibilityChanged(boolean isVisible) {
+    }
 
     @Override
     public void onSplitScreenMenuButtonClicked() {

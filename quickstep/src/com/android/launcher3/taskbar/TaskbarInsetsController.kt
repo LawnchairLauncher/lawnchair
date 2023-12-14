@@ -26,6 +26,7 @@ import android.view.InsetsSource.FLAG_SUPPRESS_SCRIM
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION
+import android.view.WindowInsets
 import android.view.WindowInsets.Type.mandatorySystemGestures
 import android.view.WindowInsets.Type.navigationBars
 import android.view.WindowInsets.Type.systemGestures
@@ -46,12 +47,10 @@ import kotlin.jvm.optionals.getOrNull
 /** Handles the insets that Taskbar provides to underlying apps and the IME. */
 class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTaskbarController {
 
-    private val FLAG_INSETS_ROUNDED_CORNER = 1 shl 1
-    private val ENABLE_HIDE_IME_CAPTION_BAR = true
-
     companion object {
         private const val INDEX_LEFT = 0
         private const val INDEX_RIGHT = 1
+        const val FLAG_INSETS_ROUNDED_CORNER = 1 shl 1
     }
 
     /** The bottom insets taskbar provides to the IME when IME is visible. */
@@ -117,7 +116,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
         if (
             controllers.bubbleControllers.isPresent &&
-            controllers.bubbleControllers.get().bubbleStashController.isBubblesShowingOnHome
+                controllers.bubbleControllers.get().bubbleStashController.isBubblesShowingOnHome
         ) {
             val iconBounds =
                 controllers.bubbleControllers.get().bubbleBarViewController.bubbleBarBounds
@@ -161,19 +160,19 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
      */
     private fun getProvidedInsets(insetsRoundedCornerFlag: Int): Array<InsetsFrameProvider> {
         val navBarsFlag =
-            (if (context.isGestureNav) FLAG_SUPPRESS_SCRIM else 0) or insetsRoundedCornerFlag
+                (if (context.isGestureNav) FLAG_SUPPRESS_SCRIM else 0) or insetsRoundedCornerFlag
         return arrayOf(
-            InsetsFrameProvider(insetsOwner, 0, navigationBars())
-                .setFlags(
-                    navBarsFlag,
-                    FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
-                ),
-            InsetsFrameProvider(insetsOwner, 0, tappableElement()),
-            InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
-            InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
-                .setSource(SOURCE_DISPLAY),
-            InsetsFrameProvider(insetsOwner, INDEX_RIGHT, systemGestures())
-                .setSource(SOURCE_DISPLAY)
+                InsetsFrameProvider(insetsOwner, 0, navigationBars())
+                        .setFlags(
+                                navBarsFlag,
+                                FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
+                        ),
+                InsetsFrameProvider(insetsOwner, 0, tappableElement()),
+                InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
+                InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
+                        .setSource(SOURCE_DISPLAY),
+                InsetsFrameProvider(insetsOwner, INDEX_RIGHT, systemGestures())
+                        .setSource(SOURCE_DISPLAY)
         )
     }
 
@@ -187,42 +186,42 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             provider.insetsSize = getInsetsForGravity(tappableHeight, gravity)
         } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
             val leftIndexInset =
-                if (context.isThreeButtonNav) 0
-                else gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res)
+                    if (context.isThreeButtonNav) 0
+                    else gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res)
             provider.insetsSize = Insets.of(leftIndexInset, 0, 0, 0)
         } else if (provider.type == systemGestures() && provider.index == INDEX_RIGHT) {
             val rightIndexInset =
-                if (context.isThreeButtonNav) 0
-                else gestureNavSettingsObserver.getRightSensitivityForCallingUser(res)
+                    if (context.isThreeButtonNav) 0
+                    else gestureNavSettingsObserver.getRightSensitivityForCallingUser(res)
             provider.insetsSize = Insets.of(0, 0, rightIndexInset, 0)
         }
 
 
         // When in gesture nav, report the stashed height to the IME, to allow hiding the
         // IME navigation bar.
-        val imeInsetsSize = if (ENABLE_HIDE_IME_CAPTION_BAR && context.isGestureNav) {
+        val imeInsetsSize = if (context.isGestureNav) {
             getInsetsForGravity(controllers.taskbarStashController.stashedHeight, gravity);
         } else {
             getInsetsForGravity(taskbarHeightForIme, gravity)
         }
         val imeInsetsSizeOverride =
-            arrayOf(
-                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-            )
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                )
         // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
         val visInsetsSizeForTappableElement =
-            if (context.isGestureNav) getInsetsForGravity(0, gravity)
-            else getInsetsForGravity(tappableHeight, gravity)
+                if (context.isGestureNav) getInsetsForGravity(0, gravity)
+                else getInsetsForGravity(tappableHeight, gravity)
         val insetsSizeOverrideForTappableElement =
-            arrayOf(
-                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-                InsetsFrameProvider.InsetsSizeOverride(
-                    TYPE_VOICE_INTERACTION,
-                    visInsetsSizeForTappableElement
-                ),
-            )
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                        InsetsFrameProvider.InsetsSizeOverride(
+                                TYPE_VOICE_INTERACTION,
+                                visInsetsSizeForTappableElement
+                        ),
+                )
         if ((context.isGestureNav || TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
-            && provider.type == tappableElement()) {
+                && provider.type == tappableElement()) {
             provider.insetsSizeOverrides = insetsSizeOverrideForTappableElement
         } else if (provider.type != systemGestures()) {
             // We only override insets at the bottom of the screen
@@ -261,14 +260,14 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         )
         val bubbleBarVisible =
             controllers.bubbleControllers.isPresent &&
-                    controllers.bubbleControllers.get().bubbleBarViewController.isBubbleBarVisible()
+                controllers.bubbleControllers.get().bubbleBarViewController.isBubbleBarVisible()
         var insetsIsTouchableRegion = true
         if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (
             controllers.navbarButtonsViewController.isImeVisible &&
-            controllers.taskbarStashController.isStashed
+                controllers.taskbarStashController.isStashed
         ) {
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (!controllers.uiController.isTaskbarTouchable) {
@@ -283,19 +282,19 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             insetsIsTouchableRegion = false
         } else if (
             controllers.taskbarViewController.areIconsVisible() ||
-            context.isNavBarKidsModeActive ||
-            bubbleBarVisible
+                context.isNavBarKidsModeActive ||
+                bubbleBarVisible
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
             if (
                 controllers.uiController.isInOverview &&
-                DisplayController.isTransientTaskbar(context)
+                    DisplayController.isTransientTaskbar(context)
             ) {
                 val region =
                     controllers.taskbarActivityContext.dragLayer.lastDrawnTransientRect.toRegion()
                 val bubbleBarBounds =
                     controllers.bubbleControllers.getOrNull()?.let { bubbleControllers ->
-                        if (!bubbleControllers.bubbleStashController.isBubblesShowingOnHome) {
+                        if (!bubbleControllers.bubbleStashController.isBubblesShowingOnOverview) {
                             return@let null
                         }
                         if (!bubbleControllers.bubbleBarViewController.isBubbleBarVisible) {
@@ -323,22 +322,22 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     override fun dumpLogs(prefix: String, pw: PrintWriter) {
         pw.println(prefix + "TaskbarInsetsController:")
         pw.println("$prefix\twindowHeight=${windowLayoutParams.height}")
-//        for (provider in windowLayoutParams.providedInsets) {
-//            pw.print(
-//                "$prefix\tprovidedInsets: (type=" +
-//                    WindowInsets.Type.toString(provider.type) +
-//                    " insetsSize=" +
-//                    provider.insetsSize
-//            )
-//            if (provider.insetsSizeOverrides != null) {
-//                pw.print(" insetsSizeOverrides={")
-//                for ((i, overrideSize) in provider.insetsSizeOverrides.withIndex()) {
-//                    if (i > 0) pw.print(", ")
-//                    pw.print(overrideSize)
-//                }
-//                pw.print("})")
-//            }
-//            pw.println()
-//        }
+        for (provider in windowLayoutParams.providedInsets) {
+            pw.print(
+                "$prefix\tprovidedInsets: (type=" +
+                    WindowInsets.Type.toString(provider.type) +
+                    " insetsSize=" +
+                    provider.insetsSize
+            )
+            if (provider.insetsSizeOverrides != null) {
+                pw.print(" insetsSizeOverrides={")
+                for ((i, overrideSize) in provider.insetsSizeOverrides.withIndex()) {
+                    if (i > 0) pw.print(", ")
+                    pw.print(overrideSize)
+                }
+                pw.print("})")
+            }
+            pw.println()
+        }
     }
 }

@@ -411,6 +411,7 @@
     <dimen name="split_instructions_elevation">1dp</dimen>
     <dimen name="split_instructions_horizontal_padding">24dp</dimen>
     <dimen name="split_instructions_vertical_padding">12dp</dimen>
+    <dimen name="split_instructions_drawable_padding">10dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
     
@@ -438,4 +439,8 @@
     <!--  Folder spaces  -->
     <dimen name="folder_top_padding_default">24dp</dimen>
     <dimen name="folder_footer_horiz_padding">20dp</dimen>
+
+    <!-- Default Ime height. Used only for logging purposes.
+    Assume this is default keyboard height in EN locale in case the keyboard height is not known when queried.-->
+    <dimen name="default_ime_height">300dp</dimen>
 </resources>

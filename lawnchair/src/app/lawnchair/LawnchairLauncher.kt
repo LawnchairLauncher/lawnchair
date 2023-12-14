@@ -16,9 +16,11 @@
 
 package app.lawnchair
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -40,11 +42,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.gestures.GestureController
@@ -64,8 +64,8 @@ import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.GestureNavContract
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherRootView
 import com.android.launcher3.LauncherState
+import com.android.launcher3.QuickstepTransitionManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
@@ -74,9 +74,13 @@ import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
+import com.android.launcher3.util.ActivityOptionsWrapper
+import com.android.launcher3.util.Executors
+import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
 import com.android.launcher3.util.TouchController
+import com.android.launcher3.views.ComposeInitializer
 import com.android.launcher3.views.FloatingSurfaceView
 import com.android.launcher3.widget.LauncherWidgetHolder
 import com.android.launcher3.widget.RoundedCornerEnforcement
@@ -86,11 +90,11 @@ import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
-import java.util.stream.Stream
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.stream.Stream
 
 class LawnchairLauncher :
     QuickstepLauncher(),
@@ -271,10 +275,7 @@ class LawnchairLauncher :
 
     override fun setupViews() {
         super.setupViews()
-        findViewById<LauncherRootView>(R.id.launcher).also {
-            it.setViewTreeLifecycleOwner(this)
-            it.setViewTreeSavedStateRegistryOwner(this)
-        }
+        ComposeInitializer.initCompose(this)
     }
 
     override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
@@ -340,6 +341,19 @@ class LawnchairLauncher :
                 appWidgetId,
             )
         }
+    }
+
+    override fun makeDefaultActivityOptions(splashScreenStyle: Int): ActivityOptionsWrapper {
+        val callbacks = RunnableList()
+        val options = ActivityOptions.makeCustomAnimation(
+            this, 0, 0, Color.TRANSPARENT,
+            Executors.MAIN_EXECUTOR.handler, null
+        ) { elapsedRealTime -> callbacks.executeAllAndDestroy() }
+        if (Utilities.ATLEAST_T) {
+            options.setSplashScreenStyle(splashScreenStyle)
+        }
+        Utilities.allowBGLaunch(options)
+        return ActivityOptionsWrapper(options, callbacks)
     }
 
     override fun onStart() {

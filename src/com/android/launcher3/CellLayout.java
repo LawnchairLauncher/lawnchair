@@ -18,8 +18,8 @@ package com.android.launcher3;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
+import static com.android.app.animation.Interpolators.DECELERATE_1_5;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.dragndrop.DraggableView.DRAGGABLE_ICON;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_BOUNCE_OFFSET;
@@ -60,9 +60,9 @@ import androidx.annotation.IntDef;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.ViewCompat;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.celllayout.ReorderAlgorithm;
@@ -89,6 +89,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorTokens;
@@ -269,6 +270,7 @@ public class CellLayout extends ViewGroup {
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
         setClipToPadding(false);
+        setClipChildren(false);
         mActivity = ActivityContext.lookupContext(context);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
 
@@ -297,7 +299,7 @@ public class CellLayout extends ViewGroup {
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * deviceProfile.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
-        mEaseOutInterpolator = Interpolators.DEACCEL_2_5; // Quint ease out
+        mEaseOutInterpolator = Interpolators.DECELERATE_QUINT; // Quint ease out
         mDragCell[0] = mDragCell[1] = -1;
         mDragCellSpan[0] = mDragCellSpan[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
@@ -409,8 +411,7 @@ public class CellLayout extends ViewGroup {
     private void resetCellSizeInternal(DeviceProfile deviceProfile) {
         switch (mContainerType) {
             case FOLDER:
-                mBorderSpace = new Point(deviceProfile.folderCellLayoutBorderSpacePx,
-                        deviceProfile.folderCellLayoutBorderSpacePx);
+                mBorderSpace = new Point(deviceProfile.folderCellLayoutBorderSpacePx);
                 break;
             case HOTSEAT:
                 mBorderSpace = new Point(deviceProfile.hotseatBorderSpace,
@@ -1677,7 +1678,7 @@ public class CellLayout extends ViewGroup {
             ValueAnimator va = ObjectAnimator.ofFloat(this, ANIMATION_PROGRESS,
                     animationProgress, 0);
             a = va;
-            a.setInterpolator(DEACCEL_1_5);
+            a.setInterpolator(DECELERATE_1_5);
             a.setDuration(REORDER_ANIMATION_DURATION);
             a.start();
         }
@@ -2471,7 +2472,7 @@ public class CellLayout extends ViewGroup {
         Comparator comparator = Comparator
                 .comparing(view -> ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellX())
                 .thenComparing(view -> ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellY());
-        List<View> views = solution.map.keySet().stream().sorted(comparator).toList();
+        List<View> views = (List<View>) solution.map.keySet().stream().sorted(comparator).collect(Collectors.toList());
         for (View child : views) {
             if (child == ignoreView)
                 continue;

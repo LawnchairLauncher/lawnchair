@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ஃபோல்டர் <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ஃபைல்கள்"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான ஃபைல்கள்"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"வால்பேப்பர் &amp; ஸ்டைல்"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"முகப்புத் திரையில் மாற்று"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>

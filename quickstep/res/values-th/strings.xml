@@ -50,16 +50,16 @@
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ตรวจสอบว่าปัดจากขอบด้านขวาหรือซ้ายไปตรงกลางหน้าจอ แล้วยกนิ้วขึ้น"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"คุณรู้วิธีปัดจากด้านขวาเพื่อย้อนกลับแล้ว ต่อไปดูวิธีสลับแอป"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"คุณทำท่าทางสัมผัสเพื่อย้อนกลับเสร็จแล้ว"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ตรวจสอบว่าไม่ได้ปัดใกล้กับด้านล่างของหน้าจอมากเกินไป"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ไม่ปัดใกล้กับด้านล่างของหน้าจอมากเกินไป"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"เปลี่ยนความไวของท่าทางสัมผัสเพื่อย้อนกลับได้ที่การตั้งค่า"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ปัดเพื่อย้อนกลับ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"หากต้องการย้อนกลับไปที่หน้าจอล่าสุด ให้ปัดจากขอบด้านซ้ายหรือขวาไปตรงกลางหน้าจอ"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"หากต้องการย้อนกลับไปที่หน้าจอล่าสุด ให้ใช้ 2 นิ้วปัดจากขอบด้านซ้ายหรือขวาไปตรงกลางหน้าจอ"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ย้อนกลับ"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"ปัดจากขอบด้านซ้ายหรือขวาไปตรงกลางหน้าจอ"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"ตรวจสอบว่าปัดขึ้นจากขอบด้านล่างของหน้าจอ"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"ตรวจสอบว่าไม่มีการหยุดชั่วคราวก่อนยกนิ้วขึ้น"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"ตรวจสอบว่าปัดขึ้นในแนวตรง"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"ปัดขึ้นจากขอบด้านล่างของหน้าจอ"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"ไม่ต้องหยุดชั่วคราวก่อนยกนิ้วขึ้น"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"ปัดขึ้นในแนวตรง"</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"คุณทำท่าทางสัมผัสเพื่อไปที่หน้าแรกเสร็จแล้ว ต่อไปดูวิธีย้อนกลับ"</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"คุณทำท่าทางสัมผัสเพื่อไปที่หน้าแรกเสร็จแล้ว"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ปัดเพื่อไปที่หน้าแรก"</string>
@@ -68,7 +68,7 @@
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ไปที่หน้าจอหลัก"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"ปัดขึ้นจากด้านล่างของหน้าจอ"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"เก่งมาก"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"ตรวจสอบว่าปัดขึ้นจากขอบด้านล่างของหน้าจอ"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"ปัดขึ้นจากขอบด้านล่างของหน้าจอ"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"ลองแตะหน้าต่างค้างไว้นานขึ้นก่อนปล่อยนิ้ว"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"ตรวจสอบว่าปัดขึ้นในแนวตรง แล้วหยุดชั่วคราว"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"คุณรู้วิธีใช้ท่าทางสัมผัสแล้ว หากต้องการปิดท่าทางสัมผัส ให้ไปที่การตั้งค่า"</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ภาพหน้าจอ"</string>
     <string name="action_split" msgid="2098009717623550676">"แยก"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"แตะแอปอื่นเพื่อใช้การแยกหน้าจอ"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ออกจากการเลือกโหมดแยกหน้าจอ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"เลือกแอปอื่นเพื่อใช้การแยกหน้าจอ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"แอปหรือองค์กรของคุณไม่อนุญาตการดำเนินการนี้"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ข้ามบทแนะนำการนำทางไหม"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ย้ายไปที่ด้านล่างหรือด้านขวา"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{แสดงเพิ่มเติมอีก # แอป}other{แสดงเพิ่มเติมอีก # แอป}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> และ <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"การเพิ่มแอปไปยังเดสก์ท็อป"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ยกเลิก"</string>
 </resources>

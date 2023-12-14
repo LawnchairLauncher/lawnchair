@@ -19,6 +19,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadScroll;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
@@ -198,7 +199,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     void onUserUnlocked() {
         // We can't load custom window radius before the user had unlocked,
         // so we just fallback to system values and then reload it here.
-//        onNavigationModeChanged(mSysUiNavMode.getMode());
+        // onNavigationModeChanged(mSysUiNavMode.getMode());
     }
 
     private void setupOrientationSwipeHandler() {
@@ -255,8 +256,8 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      * @return whether the coordinates of the {@param event} is in the swipe up
      *         gesture region.
      */
-    public boolean isInSwipeUpTouchRegion(MotionEvent event, BaseActivityInterface activity) {
-        return isInSwipeUpTouchRegion(event, 0, activity);
+    public boolean isInSwipeUpTouchRegion(MotionEvent event) {
+        return isInSwipeUpTouchRegion(event, 0);
     }
 
     /**
@@ -264,8 +265,10 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      *         {@param pointerIndex}
      *         is in the swipe up gesture region.
      */
-    public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex,
-            BaseActivityInterface activity) {
+    public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex) {
+        if (isTrackpadScroll(event)) {
+            return false;
+        }
         if (isTrackpadMultiFingerSwipe(event)) {
             return true;
         }

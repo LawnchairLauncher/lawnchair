@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ပြောင်းလဲလိုက်သော အကန့်အမည် <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> ဖိုင်များ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> သို့မဟုတ် နောက်ထပ်ဖိုင်များ"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"နောက်ခံများ"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"နောက်ခံနှင့် ပုံစံ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ပင်မစာမျက်နှာ တည်းဖြတ်ရန်"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ပင်မဆက်တင်များ"</string>
@@ -169,7 +168,7 @@
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"အလုပ်သုံးအက်ပ်များကို တံဆိပ်တပ်ထားပြီး သင်၏ IT စီမံခန့်ခွဲသူက မြင်နိုင်ပါသည်"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"နားလည်ပြီ"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"အလုပ်သုံးအက်ပ်များကို ခဏရပ်ရန်"</string>
-    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ပြန်စရန်"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ပြန်ဖွင့်ရန်"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"စစ်ထုတ်ရန်"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"သင့်ဖုန်းတွင် ရှာခြင်း"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"သင့်တက်ဘလက်ကို ရှာခြင်း"</string>

@@ -210,6 +210,9 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
     public AppIcon getAppIcon(String appName) {
         AppIcon appIcon = tryGetAppIcon(appName);
         mLauncher.assertNotNull("Unable to scroll to a clickable icon: " + appName, appIcon);
+        // appIcon.getAppName() checks for content description, so it is possible that it can have
+        // trailing words. So check if the content description contains the appName.
+        mLauncher.assertTrue("Wrong app icon name.", appIcon.getAppName().contains(appName));
         return appIcon;
     }
 
@@ -333,4 +336,11 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         final Bundle testInfo = mLauncher.getTestInfo(TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS);
         return testInfo == null ? 0 : testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
+
+    /**
+     * Return the QSB UI object on the AllApps screen.
+     * @return the QSB UI object.
+     */
+    @NonNull
+    public abstract Qsb getQsb();
 }

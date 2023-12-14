@@ -99,13 +99,12 @@
     <string name="folder_renamed" msgid="1794088362165669656">"資料夾已重新命名為「<xliff:g id="NAME">%1$s</xliff:g>」"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"資料夾：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 個項目"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"資料夾：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 個或以上的項目"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"桌布"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"桌布和樣式"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"編輯主畫面"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"主畫面設定"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由你的管理員停用"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"允許旋轉主畫面"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"隨手機旋轉"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"通知圓點"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"開啟"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"關閉"</string>

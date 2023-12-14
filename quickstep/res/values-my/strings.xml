@@ -24,7 +24,7 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"မကြာမီကဖွင့်ထားသည်များ မရှိပါ"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"အက်ပ်အသုံးပြုမှု ဆက်တင်များ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"အားလုံးရှင်းရန်"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"လတ်တလောသုံး အက်ပ်များ"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"မကြာသေးမီက အက်ပ်များ"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"လုပ်ဆောင်စရာ ပိတ်ထားသည်"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>၊ <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; ၁ မိနစ်"</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ဖန်သားပြင်ဓာတ်ပုံ"</string>
     <string name="action_split" msgid="2098009717623550676">"ခွဲထုတ်ရန်"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"မျက်နှာပြင် ခွဲ၍ပြသရန် အက်ပ်နောက်တစ်ခုကို တို့ပါ"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း ရွေးချယ်မှုမှ ထွက်ရန်"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"မျက်နှာပြင်ခွဲ၍ပြသခြင်းသုံးရန် နောက်အက်ပ်တစ်ခုရွေးပါ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ဤလုပ်ဆောင်ချက်ကို အက်ပ် သို့မဟုတ် သင်၏အဖွဲ့အစည်းက ခွင့်မပြုပါ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"လမ်းညွှန်ခြင်း ရှင်းလင်းပို့ချချက်ကို ကျော်မလား။"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"အောက်ခြေ/ညာဘက်သို့ ရွှေ့ရန်"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{နောက်ထပ်အက်ပ် # ခု ပြပါ။}other{နောက်ထပ်အက်ပ် # ခု ပြပါ။}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> နှင့် <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"‘ဒက်စ်တော့’ တွင် အက်ပ်ကို ထည့်ခြင်း"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"မလုပ်တော့"</string>
 </resources>

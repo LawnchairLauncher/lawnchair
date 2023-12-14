@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ഫോൾഡറിന്റെ പേര് <xliff:g id="NAME">%1$s</xliff:g> എന്നായി മാറ്റി"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ഇനങ്ങൾ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> അല്ലെങ്കിൽ അതിലധികം ഇനങ്ങൾ"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പർ"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"വാൾപേപ്പറും സ്‌റ്റൈലും"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ഹോം സ്‌ക്രീൻ എഡിറ്റ് ചെയ്യുക"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ഹോം ക്രമീകരണം"</string>

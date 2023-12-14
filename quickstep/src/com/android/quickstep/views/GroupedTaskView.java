@@ -40,12 +40,16 @@ import java.util.function.Consumer;
 /**
  * TaskView that contains and shows thumbnails for not one, BUT TWO(!!) tasks
  *
- * That's right. If you call within the next 5 minutes we'll go ahead and double your order and
- * send you !! TWO !! Tasks along with their TaskThumbnailViews complimentary. On. The. House.
- * And not only that, we'll even clean up your thumbnail request if you don't like it.
+ * That's right. If you call within the next 5 minutes we'll go ahead and double
+ * your order and
+ * send you !! TWO !! Tasks along with their TaskThumbnailViews complimentary.
+ * On. The. House.
+ * And not only that, we'll even clean up your thumbnail request if you don't
+ * like it.
  * All the benefits of one TaskView, except DOUBLED!
  *
- * (Icon loading sold separately, fees may apply. Shipping & Handling for Overlays not included).
+ * (Icon loading sold separately, fees may apply. Shipping & Handling for
+ * Overlays not included).
  */
 public class GroupedTaskView extends TaskView {
 
@@ -59,7 +63,8 @@ public class GroupedTaskView extends TaskView {
     private CancellableTask mIconLoadRequest2;
     private final float[] mIcon2CenterCoords = new float[2];
     private TransformingTouchDelegate mIcon2TouchDelegate;
-    @Nullable private SplitBounds mSplitBoundsConfig;
+    @Nullable
+    private SplitBounds mSplitBoundsConfig;
     private final DigitalWellBeingToast mDigitalWellBeingToast2;
 
     public GroupedTaskView(Context context) {
@@ -115,15 +120,16 @@ public class GroupedTaskView extends TaskView {
             return;
         }
         mSnapshotView.getPreviewPositionHelper().setSplitBounds(TaskViewSimulator
-                        .convertSplitBounds(splitBoundsConfig),
+                .convertSplitBounds(splitBoundsConfig),
                 PreviewPositionHelper.STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.getPreviewPositionHelper().setSplitBounds(TaskViewSimulator
-                        .convertSplitBounds(splitBoundsConfig),
+                .convertSplitBounds(splitBoundsConfig),
                 PreviewPositionHelper.STAGE_POSITION_BOTTOM_OR_RIGHT);
     }
 
     /**
-     * Sets up an on-click listener and the visibility for show_windows icon on top of each task.
+     * Sets up an on-click listener and the visibility for show_windows icon on top
+     * of each task.
      */
     @Override
     public void setUpShowAllInstancesListener() {
@@ -149,8 +155,7 @@ public class GroupedTaskView extends TaskView {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
                 mThumbnailLoadRequest2 = thumbnailCache.updateThumbnailInBackground(mSecondaryTask,
                         thumbnailData -> mSnapshotView2.setThumbnail(
-                                mSecondaryTask, thumbnailData
-                        ));
+                                mSecondaryTask, thumbnailData));
             }
 
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
@@ -165,7 +170,8 @@ public class GroupedTaskView extends TaskView {
         } else {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
                 mSnapshotView2.setThumbnail(null, null);
-                // Reset the task thumbnail reference as well (it will be fetched from the cache or
+                // Reset the task thumbnail reference as well (it will be fetched from the cache
+                // or
                 // reloaded next time we need it)
                 mSecondaryTask.thumbnail = null;
             }
@@ -183,7 +189,8 @@ public class GroupedTaskView extends TaskView {
     public float getSplitRatio() {
         if (mSplitBoundsConfig != null) {
             return mSplitBoundsConfig.appsStackedVertically
-                    ? mSplitBoundsConfig.topTaskPercent : mSplitBoundsConfig.leftTaskPercent;
+                    ? mSplitBoundsConfig.topTaskPercent
+                    : mSplitBoundsConfig.leftTaskPercent;
         }
         return DEFAULT_SPLIT_RATIO;
     }
@@ -220,23 +227,41 @@ public class GroupedTaskView extends TaskView {
 
         RunnableList endCallback = new RunnableList();
         RecentsView recentsView = getRecentsView();
-        // Callbacks run from remote animation when recents animation not currently running
+        // Callbacks run from remote animation when recents animation not currently
+        // running
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Enter form GroupedTaskView");
-        launchTask(success -> {
+        launchTaskInternal(success -> {
             endCallback.executeAllAndDestroy();
             InteractionJankMonitorWrapper.end(
                     InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
-        }, false /* freezeTaskList */);
+        }, false /* freezeTaskList */, true /* launchingExistingTaskview */);
 
-        // Callbacks get run from recentsView for case when recents animation already running
+        // Callbacks get run from recentsView for case when recents animation already
+        // running
         recentsView.addSideTaskLaunchCallback(endCallback);
         return endCallback;
     }
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
-        getRecentsView().getSplitSelectController().launchExistingSplitPair(this, mTask.key.id,
+        launchTaskInternal(callback, isQuickswitch, false /* launchingExistingTaskview */);
+    }
+
+    /**
+     * @param launchingExistingTaskView {@link SplitSelectStateController#launchExistingSplitPair}
+     *                                  uses existence of GroupedTaskView as control
+     *                                  flow of how to animate in the incoming task.
+     *                                  If
+     *                                  we're launching from overview (from overview
+     *                                  thumbnails) then pass in {@code true},
+     *                                  otherwise pass in {@code false} for case
+     *                                  like quickswitching from home to task
+     */
+    private void launchTaskInternal(@NonNull Consumer<Boolean> callback, boolean isQuickswitch,
+            boolean launchingExistingTaskView) {
+        getRecentsView().getSplitSelectController().launchExistingSplitPair(
+                launchingExistingTaskView ? this : null, mTask.key.id,
                 mSecondaryTask.key.id, SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
                 callback, isQuickswitch, getSplitRatio());
     }
@@ -263,16 +288,17 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public TaskThumbnailView[] getThumbnails() {
-        return new TaskThumbnailView[]{mSnapshotView, mSnapshotView2};
+        return new TaskThumbnailView[] { mSnapshotView, mSnapshotView2 };
     }
 
     @Override
     protected int getLastSelectedChildTaskIndex() {
-        SplitSelectStateController splitSelectController =
-                getRecentsView().getSplitSelectController();
+        SplitSelectStateController splitSelectController = getRecentsView().getSplitSelectController();
         if (splitSelectController.isDismissingFromSplitPair()) {
-            // return the container index of the task that wasn't initially selected to split with
-            // because that is the only remaining app that can be selected. The coordinate checks
+            // return the container index of the task that wasn't initially selected to
+            // split with
+            // because that is the only remaining app that can be selected. The coordinate
+            // checks
             // below aren't reliable since both of those views may be gone/transformed
             int initSplitTaskId = getThisTaskCurrentlyInSplitSelection();
             if (initSplitTaskId != INVALID_TASK_ID) {
@@ -289,7 +315,7 @@ public class GroupedTaskView extends TaskView {
     }
 
     private boolean isCoordInView(View v, PointF position) {
-        float[] localPos = new float[]{position.x, position.y};
+        float[] localPos = new float[] { position.x, position.y };
         Utilities.mapCoordInSelfToDescendant(v, this, localPos);
         return Utilities.pointInView(v, localPos[0], localPos[1], 0f /* slop */);
     }
@@ -315,19 +341,21 @@ public class GroupedTaskView extends TaskView {
             getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(mSnapshotView,
                     mSnapshotView2, widthSize, heightSize, mSplitBoundsConfig,
                     mActivity.getDeviceProfile(), getLayoutDirection() == LAYOUT_DIRECTION_RTL);
-            // Should we be having a separate translation step apart from the measuring above?
+            // Should we be having a separate translation step apart from the measuring
+            // above?
             // The following only applies to large screen for now, but for future reference
-            // we'd want to abstract this out in PagedViewHandlers to get the primary/secondary
+            // we'd want to abstract this out in PagedViewHandlers to get the
+            // primary/secondary
             // translation directions
             mSnapshotView.applySplitSelectTranslateX(mSnapshotView.getTranslationX());
             mSnapshotView.applySplitSelectTranslateY(mSnapshotView.getTranslationY());
             mSnapshotView2.applySplitSelectTranslateX(mSnapshotView2.getTranslationX());
             mSnapshotView2.applySplitSelectTranslateY(mSnapshotView2.getTranslationY());
         } else {
-            // Currently being split with this taskView, let the non-split selected thumbnail
+            // Currently being split with this taskView, let the non-split selected
+            // thumbnail
             // take up full thumbnail area
-            TaskIdAttributeContainer container =
-                    mTaskIdAttributeContainer[initSplitTaskId == mTask.key.id ? 1 : 0];
+            TaskIdAttributeContainer container = mTaskIdAttributeContainer[initSplitTaskId == mTask.key.id ? 1 : 0];
             container.getThumbnailView().measure(widthMeasureSpec,
                     View.MeasureSpec.makeMeasureSpec(
                             heightSize -

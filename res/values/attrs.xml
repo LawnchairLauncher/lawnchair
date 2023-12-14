@@ -36,7 +36,6 @@
     <attr name="workspaceShadowColor" format="color" />
     <attr name="workspaceAmbientShadowColor" format="color" />
     <attr name="workspaceKeyShadowColor" format="color" />
-    <attr name="workspaceStatusBarScrim" format="reference" />
     <attr name="widgetsTheme" format="reference" />
     <attr name="iconOnlyShortcutColor" format="color" />
     <attr name="eduHalfSheetBGColor" format="color" />
@@ -86,6 +85,8 @@
             <enum name="taskbar" value="5" />
             <enum name="search_result_tall" value="6" />
             <enum name="search_result_small" value="7" />
+            <enum name="prediction_row" value="8" />
+            <enum name="search_result_app_row" value="9" />
         </attr>
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
@@ -202,9 +203,24 @@
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
+
         <!-- File that contains the specs for the workspace.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="workspaceSpecsId" format="reference" />
+        <attr name="workspaceSpecsTwoPanelId" format="reference" />
+        <!-- File that contains the specs for all apps.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="allAppsSpecsId" format="reference" />
+        <attr name="allAppsSpecsTwoPanelId" format="reference" />
+        <!-- File that contains the specs for the workspace.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="folderSpecsId" format="reference" />
+        <attr name="folderSpecsTwoPanelId" format="reference" />
+        <!-- File that contains the specs for hotseat bar.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="hotseatSpecsId" format="reference" />
+        <attr name="hotseatSpecsTwoPanelId" format="reference" />
+
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
             <!-- Enable on phone only -->
@@ -244,7 +260,7 @@
     </declare-styleable>
 
     <!--  Responsive grids attributes  -->
-    <declare-styleable name="WorkspaceSpec">
+    <declare-styleable name="ResponsiveSpec">
         <attr name="specType" format="integer">
             <enum name="height" value="0" />
             <enum name="width" value="1" />
@@ -252,10 +268,32 @@
         <attr name="maxAvailableSize" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="SpecSize">
+    <declare-styleable name="WorkspaceSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
+    <declare-styleable name="FolderSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
+    <declare-styleable name="AllAppsSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
+    <declare-styleable name="HotseatSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
+    <declare-styleable name="SizeSpec">
         <attr name="fixedSize" format="dimension" />
         <attr name="ofAvailableSpace" format="float" />
         <attr name="ofRemainderSpace" format="float" />
+        <attr name="matchWorkspace" format="boolean" />
+        <attr name="maxSize" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="ProfileDisplayOption">
@@ -563,5 +601,10 @@
         <attr name="sectionTitle" format="reference" />
         <!-- The icon drawable of a widget category. -->
         <attr name="sectionDrawable" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ArrowTipView">
+        <attr name="arrowTipBackground" format="color" />
+        <attr name="arrowTipTextColor" format="color" />
     </declare-styleable>
 </resources>

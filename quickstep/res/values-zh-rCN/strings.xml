@@ -58,7 +58,7 @@
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"返回"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"从屏幕左侧或右侧边缘滑动到中间"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"确保从屏幕底部边缘向上滑动"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"松开手指前，确保不要停下来"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"松开手指前，请勿中途停顿"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"确保笔直向上滑动"</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"您完成了“转到主屏幕”手势。接下来了解如何返回。"</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"您完成了“转到主屏幕”手势"</string>
@@ -71,8 +71,8 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"确保从屏幕底部边缘向上滑动"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"尝试按住窗口较长时间，然后再松开手指"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"确保笔直向上滑动，然后停住"</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已了解如何使用手势了。如要关闭手势，请转到“设置”。"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"您完成了“切换应用”手势"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已了解如何使用手势了。如要关闭手势，请前往“设置”。"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"您完成了应用切换手势"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑动即可切换应用"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>
@@ -86,7 +86,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"很好！"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"教程 <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"大功告成！"</string>
-    <string name="allset_hint" msgid="459504134589971527">"向上滑动可转到主屏幕"</string>
+    <string name="allset_hint" msgid="459504134589971527">"向上滑动可前往主屏幕"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"点按主屏幕按钮即可前往主屏幕"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"您可以开始使用<xliff:g id="DEVICE">%1$s</xliff:g>了"</string>
     <string name="default_device_name" msgid="6660656727127422487">"设备"</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"屏幕截图"</string>
     <string name="action_split" msgid="2098009717623550676">"拆分"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"点按另一个应用即可使用分屏"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"退出分屏选择模式"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"另外选择一个应用才可使用分屏模式"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"该应用或您所在的单位不允许执行此操作"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"要跳过导航教程吗？"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"移到底部/右侧"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{显示另外 # 个应用。}other{显示另外 # 个应用。}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g>和<xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"将应用添加到桌面"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"取消"</string>
 </resources>

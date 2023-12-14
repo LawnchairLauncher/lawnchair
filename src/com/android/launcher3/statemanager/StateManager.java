@@ -27,6 +27,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.FloatRange;
 
@@ -35,6 +36,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -74,6 +76,10 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     public STATE_TYPE getState() {
         return mState;
+    }
+
+    public STATE_TYPE getTargetState() {
+        return (STATE_TYPE) mConfig.targetState;
     }
 
     public STATE_TYPE getCurrentStableState() {
@@ -221,6 +227,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private void goToState(
             STATE_TYPE state, boolean animated, long delay, AnimatorListener listener) {
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "go to state " + state);
+
         animated &= areAnimatorsEnabled();
         if (mActivity.isInState(state)) {
             if (mConfig.currentAnimation == null) {
@@ -375,6 +383,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         mState = state;
         mActivity.onStateSetStart(mState);
 
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "Notifying listeners for state transition start"
+                + " to state: " + state.toString());
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionStart(state);
         }
@@ -392,6 +402,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             setRestState(null);
         }
 
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "Notifying " + mListeners.size() + " listeners "
+                + "for end transition for state: " + state.toString());
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionComplete(state);
         }
@@ -429,6 +441,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      * Cancels the current animation.
      */
     public void cancelAnimation() {
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "current animation cancelled");
         mConfig.reset();
         // It could happen that a new animation is set as a result of an endListener on the
         // existing animation.
@@ -452,6 +465,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      * @param toState The state we are animating towards.
      */
     public void setCurrentAnimation(AnimatorSet anim, STATE_TYPE toState) {
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "setting animation to " + toState.toString());
         cancelAnimation();
         setCurrentAnimation(anim);
         anim.addListener(createStateAnimationListener(toState));

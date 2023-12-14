@@ -175,4 +175,9 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
         final float angle = (float) Math.toDegrees(Math.atan2(deltaY, deltaX));
         return angle > ANGLE_MIN && angle < ANGLE_MAX;
     }
+
+    @Override
+    protected String getDelegatorName() {
+        return "OneHandedModeInputConsumer";
+    }
 }

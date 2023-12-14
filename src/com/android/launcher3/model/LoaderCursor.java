@@ -123,9 +123,9 @@ public class LoaderCursor extends CursorWrapper {
         mContext = app.getContext();
         mIconCache = app.getIconCache();
         mIDP = app.getInvariantDeviceProfile();
-        mPM = mContext.getPackageManager();
 
         preferenceManager2 = PreferenceManager2.getInstance(mContext);
+        mPM = mContext.getPackageManager();
 
         // Init column indices
         mIconIndex = getColumnIndexOrThrow(Favorites.ICON);
@@ -205,11 +205,9 @@ public class LoaderCursor extends CursorWrapper {
 
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
-        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                || restoreFlag != 0
-                        ? getIconBlob()
-                        : null;
+        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
+                ? getIconBlob()
+                : null;
 
         return new IconRequestInfo<>(wai, mActivityInfo, iconBlob, useLowResIcon);
     }
@@ -361,7 +359,6 @@ public class LoaderCursor extends CursorWrapper {
         }
 
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
-        info.itemType = Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.intent = newIntent;
 

@@ -91,7 +91,6 @@
             android:orientation="horizontal"
             android:paddingVertical="8dp"
             android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
-            android:background="?attr/widgetPickerPrimarySurfaceColor"
             style="@style/TextHeadline"
             launcher:layout_sticky="true">
 

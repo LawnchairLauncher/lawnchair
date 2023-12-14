@@ -92,32 +92,7 @@ public class StatusBarTouchController implements TouchController {
     private void dispatchTouchEvent(MotionEvent ev) {
         if (mSystemUiProxy.isActive()) {
             mLastAction = ev.getActionMasked();
-            mSystemUiProxy.onStatusBarMotionEvent(ev);
-        } else if (!mExpanded) {
-            mExpanded = true;
-            expand();
-        }
-        if (!mVibrated) {
-            mVibrated = true;
-            vibrate();
-        }
-    }
-
-    @SuppressLint({ "WrongConstant", "PrivateApi" })
-    private void expand() {
-        try {
-            Class.forName("android.app.StatusBarManager")
-                    .getMethod("expandNotificationsPanel")
-                    .invoke(mLauncher.getSystemService("statusbar"));
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException
-                | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void vibrate() {
-        if (!LawnchairAppKt.getLawnchairApp(mLauncher).isVibrateOnIconAnimation()) {
-            VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC);
+            mSystemUiProxy.onStatusBarTouchEvent(ev);
         }
     }
 
@@ -131,8 +106,6 @@ public class StatusBarTouchController implements TouchController {
             if (!mCanIntercept) {
                 return false;
             }
-            mExpanded = false;
-            mVibrated = false;
             mDownEvents.clear();
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {

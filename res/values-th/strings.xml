@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"เปลี่ยนชื่อโฟลเดอร์เป็น <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, อย่างน้อย <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"วอลเปเปอร์และรูปแบบ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"แก้ไขหน้าจอหลัก"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าจอหลัก"</string>

@@ -62,14 +62,11 @@ import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Executors;
-import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -90,8 +87,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final String LATENCY_TAG = "StatsLatencyLog";
     private static final String IMPRESSION_TAG = "StatsImpressionLog";
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
+    private static final boolean DEBUG = !Utilities.isRunningInTestHarness();
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
-    // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
+    // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher
+    // proto migrates
     // from nano to lite, bake constant to prevent robo test failure.
     private static final int DEFAULT_PAGE_INDEX = -2;
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
@@ -107,10 +106,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS = 1 << 2;
     private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_QSB = 1 << 3;
 
-    public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
-            new CopyOnWriteArrayList<>();
-
-    private final Context mContext;
+    public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER = new CopyOnWriteArrayList<>();
 
     public StatsLogCompatManager(Context context) {
         mContext = context;
@@ -144,7 +140,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
                 LAUNCHER_WORKSPACE_SNAPSHOT.getId() /* event_id */,
-                info.getItemCase().getNumber()  /* target_id */,
+                info.getItemCase().getNumber() /* target_id */,
                 instanceId.getId() /* instance_id */,
                 0 /* uid */,
                 getPackageName(info) /* package_name */,
@@ -174,7 +170,8 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Builds {@link StatsEvent} from {@link LauncherAtom.ItemInfo}. Used for pulled atom callback
+     * Builds {@link StatsEvent} from {@link LauncherAtom.ItemInfo}. Used for pulled
+     * atom callback
      * implementation.
      */
     public static StatsEvent buildStatsEvent(LauncherAtom.ItemInfo info,
@@ -183,16 +180,16 @@ public class StatsLogCompatManager extends StatsLogManager {
                 SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT, // atom ID,
                 LAUNCHER_WORKSPACE_SNAPSHOT.getId(), // event_id = 1;
                 info.getItemCase().getNumber(), // item_id = 2;
-                instanceId == null ? 0 : instanceId.getId(), //instance_id = 3;
-                0, //uid = 4 [(is_uid) = true];
+                instanceId == null ? 0 : instanceId.getId(), // instance_id = 3;
+                0, // uid = 4 [(is_uid) = true];
                 getPackageName(info), // package_name = 5;
                 getComponentName(info), // component_name = 6;
-                getGridX(info, false), //grid_x = 7 [default = -1];
-                getGridY(info, false), //grid_y = 8 [default = -1];
+                getGridX(info, false), // grid_x = 7 [default = -1];
+                getGridY(info, false), // grid_y = 8 [default = -1];
                 getPageId(info), // page_id = 9 [default = -2];
-                getGridX(info, true), //grid_x_parent = 10 [default = -1];
-                getGridY(info, true), //grid_y_parent = 11 [default = -1];
-                getParentPageId(info), //page_id_parent = 12 [default = -2];
+                getGridX(info, true), // grid_x_parent = 10 [default = -1];
+                getGridY(info, true), // grid_y_parent = 11 [default = -1];
+                getParentPageId(info), // page_id_parent = 12 [default = -2];
                 getHierarchy(info), // container_id = 13;
                 info.getIsWork(), // is_work_profile = 14;
                 0, // attribute_id = 15;
@@ -331,6 +328,10 @@ public class StatsLogCompatManager extends StatsLogManager {
             if (!Utilities.ATLEAST_R) {
                 return;
             }
+            if (DEBUG) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() : event.getId() + "";
+                Log.d(TAG, name);
+            }
             LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
 
             if (mSlice == null && mSliceItem != null) {
@@ -341,8 +342,8 @@ public class StatsLogCompatManager extends StatsLogManager {
             if (mSlice != null) {
                 Executors.MODEL_EXECUTOR.execute(
                         () -> {
-                            LauncherAtom.ItemInfo.Builder itemInfoBuilder =
-                                    LauncherAtom.ItemInfo.newBuilder().setSlice(mSlice);
+                            LauncherAtom.ItemInfo.Builder itemInfoBuilder = LauncherAtom.ItemInfo.newBuilder()
+                                    .setSlice(mSlice);
                             mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
                             write(event, applyOverwrites(itemInfoBuilder.build()));
                         });
@@ -400,8 +401,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             mRank.ifPresent(itemInfoBuilder::setRank);
             mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
 
-            mActivityContext.ifPresent(activityContext ->
-                    activityContext.applyOverwritesToLogItem(itemInfoBuilder));
+            mActivityContext.ifPresent(activityContext -> activityContext.applyOverwritesToLogItem(itemInfoBuilder));
 
             if (mFromState.isPresent() || mToState.isPresent() || mEditText.isPresent()) {
                 FolderIcon.Builder folderIconBuilder = itemInfoBuilder
@@ -422,8 +422,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             int dstState = mDstState;
             int inputType = mInputType;
             if (IS_VERBOSE) {
-                String name = (event instanceof Enum) ? ((Enum) event).name() :
-                        event.getId() + "";
+                String name = (event instanceof Enum) ? ((Enum) event).name() : event.getId() + "";
                 StringBuilder logStringBuilder = new StringBuilder("\n");
                 if (instanceId != DEFAULT_INSTANCE_ID) {
                     logStringBuilder.append(String.format("InstanceId:%s ", instanceId));
@@ -541,8 +540,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         @Override
         public void log(EventEnum event) {
             if (IS_VERBOSE) {
-                String name = (event instanceof Enum) ? ((Enum) event).name() :
-                        event.getId() + "";
+                String name = (event instanceof Enum) ? ((Enum) event).name() : event.getId() + "";
                 StringBuilder logStringBuilder = new StringBuilder("\n");
                 logStringBuilder.append(String.format("InstanceId:%s ", mInstanceId));
                 logStringBuilder.append(String.format("%s=%sms", name, mLatencyInMillis));
@@ -554,7 +552,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     mInstanceId.getId(), // instance_id
                     mPackageId, // package_id
                     mLatencyInMillis, // latency_in_millis
-                    mType.getId(), //type
+                    mType.getId(), // type
                     mQueryLength, // query_length
                     mSubEventType, // sub_event_type
                     mCardinality // cardinality
@@ -566,13 +564,15 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Helps to construct and log statsd compatible impression events.
      */
     private static class StatsCompatImpressionLogger implements StatsImpressionLogger {
-        private int[] mResultTypeList = new int[]{};
-        private int[] mResultCountList = new int[]{};
-        private final List<Boolean> mAboveKeyboardList = new ArrayList<>();
-        private int[] mUidList = new int[]{};
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private State mLauncherState = State.UNKNOWN;
         private int mQueryLength = -1;
+
+        // Fields used for Impression Logging V2.
+        private int mResultType;
+        private boolean mAboveKeyboard = false;
+        private int mUid;
+        private int mResultSource;
 
         @Override
         public StatsImpressionLogger withInstanceId(InstanceId instanceId) {
@@ -593,69 +593,57 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
-        public StatsImpressionLogger withResultType(IntArray resultType) {
-            mResultTypeList = resultType.toArray();
+        public StatsImpressionLogger withResultType(int resultType) {
+            mResultType = resultType;
             return this;
         }
 
         @Override
-        public StatsImpressionLogger withResultCount(IntArray resultCount) {
-            mResultCountList = resultCount.toArray();
+        public StatsImpressionLogger withAboveKeyboard(boolean aboveKeyboard) {
+            mAboveKeyboard = aboveKeyboard;
             return this;
         }
 
         @Override
-        public StatsImpressionLogger withAboveKeyboard(List<Boolean> aboveKeyboard) {
-            mAboveKeyboardList.clear();
-            this.mAboveKeyboardList.addAll(aboveKeyboard);
+        public StatsImpressionLogger withUid(int uid) {
+            mUid = uid;
             return this;
         }
 
         @Override
-        public StatsImpressionLogger withUids(IntArray uid) {
-            mUidList = uid.toArray();
+        public StatsImpressionLogger withResultSource(int resultSource) {
+            mResultSource = resultSource;
             return this;
         }
 
         @Override
         public void log(EventEnum event) {
-            boolean[] mAboveKeyboard = new boolean[mAboveKeyboardList.size()];
-            for (int i = 0; i < mAboveKeyboardList.size(); i++) {
-                mAboveKeyboard[i] = mAboveKeyboardList.get(i);
-            }
             if (IS_VERBOSE) {
-                String name = (event instanceof Enum) ? ((Enum) event).name() :
-                        event.getId() + "";
+                String name = (event instanceof Enum) ? ((Enum) event).name() : event.getId() + "";
                 StringBuilder logStringBuilder = new StringBuilder("\n");
                 logStringBuilder.append(String.format("InstanceId:%s ", mInstanceId));
                 logStringBuilder.append(String.format("ImpressionEvent:%s ", name));
-                logStringBuilder.append(String.format("LauncherState = %s ", mLauncherState));
-                logStringBuilder.append(String.format("QueryLength = %s ", mQueryLength));
-                for (int i = 0; i < mResultTypeList.length; i++) {
-                    logStringBuilder.append(String.format(
-                            "\n ResultType = %s with ResultCount = %s with is_above_keyboard = %s"
-                                    + " with uid = %s",
-                            mResultTypeList[i], mResultCountList[i],
-                            mAboveKeyboard[i], mUidList[i]));
-                }
+                logStringBuilder.append(String.format("\n\tLauncherState = %s ", mLauncherState));
+                logStringBuilder.append(String.format("\tQueryLength = %s ", mQueryLength));
+                logStringBuilder.append(String.format(
+                        "\n\t ResultType = %s is_above_keyboard = %s"
+                                + " uid = %s result_source = %s",
+                        mResultType,
+                        mAboveKeyboard, mUid, mResultSource));
+
                 Log.d(IMPRESSION_TAG, logStringBuilder.toString());
             }
 
-
-
-            SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_IMPRESSION_EVENT,
+            SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_IMPRESSION_EVENT_V2,
                     event.getId(), // event_id
                     mInstanceId.getId(), // instance_id
                     mLauncherState.getLauncherState(), // state
                     mQueryLength, // query_length
-                    //result type list
-                    mResultTypeList,
-                    // result count list
-                    mResultCountList,
-                    // above keyboard list
-                    mAboveKeyboard,
-                    // uid list
-                    mUidList
+                    mResultType, // result type
+                    mAboveKeyboard, // above keyboard
+                    mUid, // uid
+                    mResultSource // result source
+
             );
         }
     }
@@ -769,8 +757,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static int getParentPageId(LauncherAtom.ItemInfo info) {
         switch (info.getContainerInfo().getContainerCase()) {
             case FOLDER:
-                if (info.getContainerInfo().getFolder().getParentContainerCase()
-                        == ParentContainerCase.HOTSEAT) {
+                if (info.getContainerInfo().getFolder().getParentContainerCase() == ParentContainerCase.HOTSEAT) {
                     return info.getContainerInfo().getFolder().getHotseat().getIndex();
                 }
                 return info.getContainerInfo().getFolder().getWorkspace().getPageIndex();
@@ -831,11 +818,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
         ContainerInfo containerInfo = info.getContainerInfo();
         if (containerInfo.getContainerCase() == EXTENDED_CONTAINERS
-                && containerInfo.getExtendedContainers().getContainerCase()
-                == DEVICE_SEARCH_RESULT_CONTAINER
+                && containerInfo.getExtendedContainers().getContainerCase() == DEVICE_SEARCH_RESULT_CONTAINER
                 && containerInfo.getExtendedContainers()
-                .getDeviceSearchResultContainer().hasSearchAttributes()
-        ) {
+                        .getDeviceSearchResultContainer().hasSearchAttributes()) {
             return searchAttributesToInt(containerInfo.getExtendedContainers()
                     .getDeviceSearchResultContainer().getSearchAttributes());
         }

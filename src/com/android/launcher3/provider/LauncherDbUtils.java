@@ -28,7 +28,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
-import android.os.Binder;
 import android.os.PersistableBundle;
 import android.os.Process;
 import android.os.UserManager;
@@ -50,6 +49,14 @@ import com.android.launcher3.util.IntSet;
  */
 public class LauncherDbUtils {
 
+    /**
+     * Returns a string which can be used as a where clause for DB query to match
+     * the given itemId
+     */
+    public static String itemIdMatch(int itemId) {
+        return "_id=" + itemId;
+    }
+
     public static IntArray queryIntArray(boolean distinct, SQLiteDatabase db, String tableName,
             String columnName, String selection, String groupBy, String orderBy) {
         IntArray out = new IntArray();
@@ -63,8 +70,8 @@ public class LauncherDbUtils {
     }
 
     public static boolean tableExists(SQLiteDatabase db, String tableName) {
-        try (Cursor c = db.query(true, "sqlite_master", new String[] {"tbl_name"},
-                "tbl_name = ?", new String[] {tableName},
+        try (Cursor c = db.query(true, "sqlite_master", new String[] { "tbl_name" },
+                "tbl_name = ?", new String[] { tableName },
                 null, null, null, null, null)) {
             return c.getCount() > 0;
         }
@@ -93,7 +100,8 @@ public class LauncherDbUtils {
 
     /**
      * Migrates the legacy shortcuts to deep shortcuts pinned under Launcher.
-     * Removes any invalid shortcut or any shortcut which requires some permission to launch
+     * Removes any invalid shortcut or any shortcut which requires some permission
+     * to launch
      */
     public static void migrateLegacyShortcuts(Context context, SQLiteDatabase db) {
         Cursor c = db.query(
@@ -114,8 +122,13 @@ public class LauncherDbUtils {
                 deletedShortcuts.add(lc.id);
                 continue;
             }
+            if (TextUtils.isEmpty(lc.getTitle())) {
+                deletedShortcuts.add(lc.id);
+                continue;
+            }
 
-            // Make sure the target intent can be launched without any permissions. Otherwise remove
+            // Make sure the target intent can be launched without any permissions.
+            // Otherwise remove
             // the shortcut
             ResolveInfo ri = context.getPackageManager().resolveActivity(intent, 0);
             if (ri == null || !TextUtils.isEmpty(ri.activityInfo.permission)) {
@@ -149,7 +162,7 @@ public class LauncherDbUtils {
             update.put(Favorites.INTENT,
                     ShortcutKey.makeIntent(info.getId(), context.getPackageName()).toUri(0));
             db.update(Favorites.TABLE_NAME, update, "_id = ?",
-                    new String[] {Integer.toString(lc.id)});
+                    new String[] { Integer.toString(lc.id) });
         }
         lc.close();
         if (!deletedShortcuts.isEmpty()) {
@@ -166,7 +179,7 @@ public class LauncherDbUtils {
     /**
      * Utility class to simplify managing sqlite transactions
      */
-    public static class SQLiteTransaction extends Binder implements AutoCloseable {
+    public static class SQLiteTransaction implements AutoCloseable {
         private final SQLiteDatabase mDb;
 
         public SQLiteTransaction(SQLiteDatabase db) {

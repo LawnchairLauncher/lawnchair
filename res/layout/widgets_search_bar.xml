@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_marginTop="24dp"
-    android:background="@drawable/bg_widgets_searchbox">
+    android:background="@drawable/bg_widgets_searchbox" >
 
     <com.android.launcher3.ExtendedEditText
         android:id="@+id/widgets_search_bar_edit_text"
@@ -25,8 +25,8 @@
         android:imeOptions="actionSearch"
         android:importantForAutofill="no"
         android:textColor="?android:attr/textColorPrimary"
-        customFontType="@id/font_heading"
-        android:textColorHint="?attr/widgetPickerSearchTextColor"/>
+        android:textColorHint="?attr/widgetPickerSearchTextColor"
+        customFontType="@id/font_heading"/>
 
     <ImageButton
         android:id="@+id/widgets_search_cancel_button"

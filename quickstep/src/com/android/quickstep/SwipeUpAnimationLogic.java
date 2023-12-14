@@ -15,8 +15,8 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.ACCELERATE_1_5;
+import static com.android.app.animation.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -218,7 +218,7 @@ public abstract class SwipeUpAnimationLogic implements
             if (progress >= end) {
                 return 0f;
             }
-            return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
+            return Utilities.mapToRange(progress, start, end, 1, 0, ACCELERATE_1_5);
         }
     }
 

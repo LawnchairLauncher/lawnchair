@@ -22,12 +22,12 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.mapRange
 import com.android.launcher3.Utilities.mapToRange
-import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
 import com.android.launcher3.util.DisplayController
 

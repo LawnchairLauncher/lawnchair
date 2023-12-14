@@ -29,21 +29,25 @@ import android.view.animation.Interpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Px;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
-import com.android.launcher3.anim.Interpolators;
 
 /**
  * Utility class for drawing a rounded-rect border around a view.
  * <p>
  * To use this class:
- * 1. Create an instance in the target view. NOTE: The border will animate outwards from the
- *      provided border bounds. See {@link SimpleParams} and {@link ScalingParams} to determine
- *      which would be best for your target view.
- * 2. Override the target view's {@link android.view.View#draw(Canvas)} method and call
- *      {@link BorderAnimator#drawBorder(Canvas)} after {@code super.draw(canvas)}.
- * 3. Call {@link BorderAnimator#buildAnimator(boolean)} and start the animation or call
- *      {@link BorderAnimator#setBorderVisible(boolean)} where appropriate.
+ * 1. Create an instance in the target view. NOTE: The border will animate
+ * outwards from the
+ * provided border bounds. See {@link SimpleParams} and {@link ScalingParams} to
+ * determine
+ * which would be best for your target view.
+ * 2. Override the target view's {@link android.view.View#draw(Canvas)} method
+ * and call
+ * {@link BorderAnimator#drawBorder(Canvas)} after {@code super.draw(canvas)}.
+ * 3. Call {@link BorderAnimator#buildAnimator(boolean)} and start the animation
+ * or call
+ * {@link BorderAnimator#setBorderVisible(boolean)} where appropriate.
  */
 public final class BorderAnimator {
 
@@ -53,16 +57,22 @@ public final class BorderAnimator {
     private static final long DEFAULT_DISAPPEARANCE_ANIMATION_DURATION_MS = 133;
     private static final Interpolator DEFAULT_INTERPOLATOR = Interpolators.EMPHASIZED_DECELERATE;
 
-    @NonNull private final AnimatedFloat mBorderAnimationProgress = new AnimatedFloat(
+    @NonNull
+    private final AnimatedFloat mBorderAnimationProgress = new AnimatedFloat(
             this::updateOutline);
-    @Px private final int mBorderRadiusPx;
-    @NonNull private final BorderAnimationParams mBorderAnimationParams;
+    @Px
+    private final int mBorderRadiusPx;
+    @NonNull
+    private final BorderAnimationParams mBorderAnimationParams;
     private final long mAppearanceDurationMs;
     private final long mDisappearanceDurationMs;
-    @NonNull private final Interpolator mInterpolator;
-    @NonNull private final Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    @NonNull
+    private final Interpolator mInterpolator;
+    @NonNull
+    private final Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    @Nullable private Animator mRunningBorderAnimation;
+    @Nullable
+    private Animator mRunningBorderAnimation;
 
     public BorderAnimator(
             @Px int borderRadiusPx,
@@ -77,12 +87,14 @@ public final class BorderAnimator {
     }
 
     /**
-     * @param borderRadiusPx the radius of the border's corners, in pixels
-     * @param borderColor the border's color
-     * @param borderAnimationParams params for handling different target view layout situation.
-     * @param appearanceDurationMs appearance animation duration, in milliseconds
-     * @param disappearanceDurationMs disappearance animation duration, in milliseconds
-     * @param interpolator animation interpolator
+     * @param borderRadiusPx          the radius of the border's corners, in pixels
+     * @param borderColor             the border's color
+     * @param borderAnimationParams   params for handling different target view
+     *                                layout situation.
+     * @param appearanceDurationMs    appearance animation duration, in milliseconds
+     * @param disappearanceDurationMs disappearance animation duration, in
+     *                                milliseconds
+     * @param interpolator            animation interpolator
      */
     public BorderAnimator(
             @Px int borderRadiusPx,
@@ -115,7 +127,8 @@ public final class BorderAnimator {
     /**
      * Draws the border on the given canvas.
      * <p>
-     * Call this method in the target view's {@link android.view.View#draw(Canvas)} method after
+     * Call this method in the target view's {@link android.view.View#draw(Canvas)}
+     * method after
      * calling super.
      */
     public void drawBorder(Canvas canvas) {
@@ -160,7 +173,8 @@ public final class BorderAnimator {
     /**
      * Immediately shows/hides the border without an animation.
      * <p>
-     * To animate the appearance/disappearance, see {@link BorderAnimator#buildAnimator(boolean)}
+     * To animate the appearance/disappearance, see
+     * {@link BorderAnimator#buildAnimator(boolean)}
      */
     public void setBorderVisible(boolean visible) {
         if (mRunningBorderAnimation != null) {
@@ -191,19 +205,24 @@ public final class BorderAnimator {
      */
     private abstract static class BorderAnimationParams {
 
-        @NonNull private final Rect mBorderBounds = new Rect();
-        @NonNull private final BorderBoundsBuilder mBoundsBuilder;
+        @NonNull
+        private final Rect mBorderBounds = new Rect();
+        @NonNull
+        private final BorderBoundsBuilder mBoundsBuilder;
 
-        @NonNull final View mTargetView;
-        @Px final int mBorderWidthPx;
+        @NonNull
+        final View mTargetView;
+        @Px
+        final int mBorderWidthPx;
 
         private float mAnimationProgress = 0f;
-        @Nullable private View.OnLayoutChangeListener mLayoutChangeListener;
+        @Nullable
+        private View.OnLayoutChangeListener mLayoutChangeListener;
 
         /**
          * @param borderWidthPx the width of the border, in pixels
          * @param boundsBuilder callback to update the border bounds
-         * @param targetView the view that will be drawing the border
+         * @param targetView    the view that will be drawing the border
          */
         private BorderAnimationParams(
                 @Px int borderWidthPx,
@@ -227,14 +246,12 @@ public final class BorderAnimator {
             return (-getBorderWidth() / 2f) + getAlignmentAdjustmentInset();
         }
 
-
         void onShowBorder() {
             if (mLayoutChangeListener == null) {
-                mLayoutChangeListener =
-                        (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                            onShowBorder();
-                            mTargetView.invalidate();
-                        };
+                mLayoutChangeListener = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                    onShowBorder();
+                    mTargetView.invalidate();
+                };
                 mTargetView.addOnLayoutChangeListener(mLayoutChangeListener);
             }
             mBoundsBuilder.updateBorderBounds(mBorderBounds);
@@ -253,7 +270,8 @@ public final class BorderAnimator {
     }
 
     /**
-     * Use an instance of this {@link BorderAnimationParams} if the border can be drawn outside the
+     * Use an instance of this {@link BorderAnimationParams} if the border can be
+     * drawn outside the
      * target view's bounds without any additional logic.
      */
     public static final class SimpleParams extends BorderAnimationParams {
@@ -277,7 +295,8 @@ public final class BorderAnimator {
     }
 
     /**
-     * Use an instance of this {@link BorderAnimationParams} if the border would other be clipped by
+     * Use an instance of this {@link BorderAnimationParams} if the border would
+     * other be clipped by
      * the target view's bound.
      * <p>
      * Note: using these params will set the scales and pivots of the
@@ -285,13 +304,17 @@ public final class BorderAnimator {
      */
     public static final class ScalingParams extends BorderAnimationParams {
 
-        @NonNull private final View mContentView;
+        @NonNull
+        private final View mContentView;
 
         /**
-         * @param targetView the view that will be drawing the border. this view will be scaled up
-         *                   to make room for the border
-         * @param contentView the view around which the border will be drawn. this view will be
-         *                    scaled down reciprocally to keep its original size and location.
+         * @param targetView  the view that will be drawing the border. this view will
+         *                    be scaled up
+         *                    to make room for the border
+         * @param contentView the view around which the border will be drawn. this view
+         *                    will be
+         *                    scaled down reciprocally to keep its original size and
+         *                    location.
          */
         public ScalingParams(
                 @Px int borderWidthPx,
@@ -307,7 +330,8 @@ public final class BorderAnimator {
             super.onShowBorder();
             float width = mTargetView.getWidth();
             float height = mTargetView.getHeight();
-            // Scale up just enough to make room for the border. Fail fast and fix the scaling
+            // Scale up just enough to make room for the border. Fail fast and fix the
+            // scaling
             // onLayout.
             float scaleX = width == 0 ? 1f : 1f + ((2 * mBorderWidthPx) / width);
             float scaleY = height == 0 ? 1f : 1f + ((2 * mBorderWidthPx) / height);

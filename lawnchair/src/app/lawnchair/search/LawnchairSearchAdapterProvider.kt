@@ -38,7 +38,7 @@ class LawnchairSearchAdapterProvider(
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
             field = value
-            appsView.searchUiManager.setFocusedResultTitle(field?.titleText, field?.titleText, false)
+            appsView.searchUiManager.setFocusedResultTitle(field?.titleText, field?.titleText, true)
         }
 
     override fun isViewSupported(viewType: Int): Boolean = layoutIdMap.contains(viewType)

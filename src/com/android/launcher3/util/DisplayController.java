@@ -54,15 +54,16 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 
 /**
- * Utility class to cache properties of default display to avoid a system RPC on every call.
+ * Utility class to cache properties of default display to avoid a system RPC on
+ * every call.
  */
 @SuppressLint("NewApi")
 public class DisplayController implements ComponentCallbacks, SafeCloseable {
@@ -74,8 +75,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     // TODO(b/254119092) remove all logs with this tag
     public static final String TASKBAR_NOT_DESTROYED_TAG = "b/254119092";
 
-    public static final MainThreadInitializedObject<DisplayController> INSTANCE =
-            new MainThreadInitializedObject<>(DisplayController::new);
+    public static final MainThreadInitializedObject<DisplayController> INSTANCE = new MainThreadInitializedObject<>(
+            DisplayController::new);
 
     public static final int CHANGE_ACTIVE_SCREEN = 1 << 0;
     public static final int CHANGE_ROTATION = 1 << 1;
@@ -95,7 +96,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     // Null for SDK < S
     private final Context mWindowContext;
 
-    // The callback in this listener updates DeviceProfile, which other listeners might depend on
+    // The callback in this listener updates DeviceProfile, which other listeners
+    // might depend on
     private DisplayInfoChangeListener mPriorityListener;
     private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
 
@@ -106,7 +108,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     private final LauncherPrefs mPrefs;
 
-    private DisplayController(Context context) {
+    @VisibleForTesting
+    protected DisplayController(Context context) {
         mContext = context;
         mDM = context.getSystemService(DisplayManager.class);
         mPrefs = LauncherPrefs.get(context);
@@ -127,8 +130,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         Context displayInfoContext = getDisplayInfoContext(display);
         mInfo = new Info(displayInfoContext, wmProxy,
                 wmProxy.estimateInternalDisplayBounds(displayInfoContext));
-        mInfo.mPerDisplayBounds.forEach((key, value) -> FileLog.i(TAG,
-                "(CTOR) perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
+        FileLog.i(TAG, "(CTOR) perDisplayBounds: " + mInfo.mPerDisplayBounds);
     }
 
     /**
@@ -149,9 +151,11 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
      * Returns whether taskbar is transient.
      */
     public boolean isTransientTaskbar() {
-        // TODO(b/258604917): When running in test harness, use !sTransientTaskbarStatusForTests
-        //  once tests are updated to expect new persistent behavior such as not allowing long press
-        //  to stash.
+        // TODO(b/258604917): When running in test harness, use
+        // !sTransientTaskbarStatusForTests
+        // once tests are updated to expect new persistent behavior such as not allowing
+        // long press
+        // to stash.
         if (!Utilities.isRunningInTestHarness()
                 && ENABLE_TASKBAR_PINNING.get()
                 && mPrefs.get(TASKBAR_PINNING)) {
@@ -159,8 +163,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         }
         return getInfo().navigationMode == NavigationMode.NO_BUTTON
                 && (Utilities.isRunningInTestHarness()
-                    ? sTransientTaskbarStatusForTests
-                    : ENABLE_TRANSIENT_TASKBAR.get());
+                        ? sTransientTaskbarStatusForTests
+                        : ENABLE_TRANSIENT_TASKBAR.get());
     }
 
     /**
@@ -188,9 +192,10 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
         /**
          * Invoked when display info has changed.
+         * 
          * @param context updated context associated with the display.
-         * @param info updated display information.
-         * @param flags bitmask indicating type of change.
+         * @param info    updated display information.
+         * @param flags   bitmask indicating type of change.
          */
         void onDisplayInfoChanged(Context context, Info info, int flags);
     }
@@ -233,7 +238,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     }
 
     @Override
-    public final void onLowMemory() { }
+    public final void onLowMemory() {
+    }
 
     public void setPriorityListener(DisplayInfoChangeListener listener) {
         mPriorityListener = listener;
@@ -286,9 +292,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)
                 || !newInfo.mPerDisplayBounds.equals(oldInfo.mPerDisplayBounds)) {
             change |= CHANGE_SUPPORTED_BOUNDS;
-            newInfo.mPerDisplayBounds.forEach((key, value) -> FileLog.w(TAG,
-                    "(CHANGE_SUPPORTED_BOUNDS) perDisplayBounds - " + key + ": "
-                            + Arrays.deepToString(value)));
+            FileLog.w(TAG,
+                    "(CHANGE_SUPPORTED_BOUNDS) perDisplayBounds: " + newInfo.mPerDisplayBounds);
         }
         if (DEBUG) {
             Log.d(TAG, "handleInfoChange - change: " + getChangeFlagsString(change));
@@ -329,8 +334,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         // WindowBounds
         public final WindowBounds realBounds;
         public final Set<WindowBounds> supportedBounds = new ArraySet<>();
-        private final ArrayMap<CachedDisplayInfo, WindowBounds[]> mPerDisplayBounds =
-                new ArrayMap<>();
+        private final ArrayMap<CachedDisplayInfo, List<WindowBounds>> mPerDisplayBounds = new ArrayMap<>();
 
         public Info(Context displayInfoContext) {
             /* don't need system overrides for external displays */
@@ -340,7 +344,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         // Used for testing
         public Info(Context displayInfoContext,
                 WindowManagerProxy wmProxy,
-                Map<CachedDisplayInfo, WindowBounds[]> perDisplayBoundsCache) {
+                Map<CachedDisplayInfo, List<WindowBounds>> perDisplayBoundsCache) {
             CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(displayInfoContext);
             normalizedDisplayInfo = displayInfo.normalize();
             rotation = displayInfo.rotation;
@@ -354,16 +358,14 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             navigationMode = wmProxy.getNavigationMode(displayInfoContext);
 
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
-            WindowBounds[] cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
+            List<WindowBounds> cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
 
             realBounds = wmProxy.getRealBounds(displayInfoContext, displayInfo);
             if (cachedValue == null) {
                 // Unexpected normalizedDisplayInfo is found, recreate the cache
                 FileLog.e(TAG, "Unexpected normalizedDisplayInfo found, invalidating cache: "
                         + normalizedDisplayInfo);
-                mPerDisplayBounds.forEach((key, value) -> FileLog.e(TAG,
-                        "(Invalid Cache) perDisplayBounds - " + key + ": " + Arrays.deepToString(
-                                value)));
+                FileLog.e(TAG, "(Invalid Cache) perDisplayBounds : " + mPerDisplayBounds);
                 mPerDisplayBounds.clear();
                 mPerDisplayBounds.putAll(wmProxy.estimateInternalDisplayBounds(displayInfoContext));
                 cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
@@ -376,22 +378,19 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
             if (cachedValue != null) {
                 // Verify that the real bounds are a match
-                WindowBounds expectedBounds = cachedValue[displayInfo.rotation];
+                WindowBounds expectedBounds = cachedValue.get(displayInfo.rotation);
                 if (!realBounds.equals(expectedBounds)) {
-                    WindowBounds[] clone = new WindowBounds[4];
-                    System.arraycopy(cachedValue, 0, clone, 0, 4);
-                    clone[displayInfo.rotation] = realBounds;
+                    List<WindowBounds> clone = new ArrayList<>(cachedValue);
+                    clone.set(displayInfo.rotation, realBounds);
                     mPerDisplayBounds.put(normalizedDisplayInfo, clone);
                 }
             }
-            mPerDisplayBounds.values().forEach(
-                    windowBounds -> Collections.addAll(supportedBounds, windowBounds));
+            mPerDisplayBounds.values().forEach(supportedBounds::addAll);
             if (DEBUG) {
                 Log.d(TAG, "displayInfo: " + displayInfo);
                 Log.d(TAG, "realBounds: " + realBounds);
                 Log.d(TAG, "normalizedDisplayInfo: " + normalizedDisplayInfo);
-                mPerDisplayBounds.forEach((key, value) -> Log.d(TAG,
-                        "perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
+                Log.d(TAG, "perDisplayBounds: " + mPerDisplayBounds);
             }
         }
 
@@ -423,6 +422,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     /**
      * Returns the given binary flags as a human-readable string.
+     * 
      * @see #CHANGE_ALL
      */
     public String getChangeFlagsString(int change) {
@@ -448,7 +448,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         pw.println("  navigationMode=" + info.navigationMode.name());
         pw.println("  currentSize=" + info.currentSize);
         info.mPerDisplayBounds.forEach((key, value) -> pw.println(
-                "  perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
+                "  perDisplayBounds - " + key + ": " + value));
     }
 
     /**
@@ -464,8 +464,10 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             PortraitSize that = (PortraitSize) o;
             return width == that.width && height == that.height;
         }

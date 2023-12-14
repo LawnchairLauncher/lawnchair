@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Снимак екрана"</string>
     <string name="action_split" msgid="2098009717623550676">"Подели"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Додирните другу апликацију за подељени екран"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Излазак из бирања подељеног екрана"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Одаберите другу апликацију за подељени екран"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Апликација или организација не дозвољавају ову радњу"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Желите да прескочите водич за кретање?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести доле десно"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Прикажи још # апликацију.}one{Прикажи још # апликацију.}few{Прикажи још # апликације.}other{Прикажи још # апликација.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Додаје се апликација на радну поврршину"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Откажи"</string>
 </resources>

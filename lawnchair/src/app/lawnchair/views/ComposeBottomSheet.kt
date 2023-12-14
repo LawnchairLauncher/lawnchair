@@ -1,6 +1,5 @@
 package app.lawnchair.views
 
-import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.util.FloatProperty
 import android.view.Gravity
@@ -37,7 +36,6 @@ import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
 import app.lawnchair.util.minus
 import com.android.launcher3.Launcher
-import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.util.SystemUiController
 import com.android.launcher3.views.AbstractSlideInView
@@ -92,15 +90,11 @@ class ComposeBottomSheet<T>(context: Context) :
     }
 
     private fun animateOpen() {
-        if (mIsOpen || mOpenCloseAnimator.isRunning) {
+        if (mIsOpen || mOpenCloseAnimation.animationPlayer.isRunning) {
             return
         }
         mIsOpen = true
-        mOpenCloseAnimator.setValues(
-            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED),
-        )
-        mOpenCloseAnimator.interpolator = Interpolators.FAST_OUT_SLOW_IN
-        mOpenCloseAnimator.start()
+        setUpDefaultOpenAnimation().start()
     }
 
     override fun handleClose(animate: Boolean) {
@@ -251,6 +245,7 @@ class ComposeBottomSheet<T>(context: Context) :
             contentPaddings: PaddingValues = PaddingValues(all = 0.dp),
             content: @Composable ComposeBottomSheet<T>.() -> Unit,
         ) where T : Context, T : ActivityContext {
+            closeAllOpenViews(context)
             val view = ComposeBottomSheet<T>(context)
             view.setContent(contentPaddings, content)
             view.show()

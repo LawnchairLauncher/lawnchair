@@ -34,7 +34,9 @@ public class StateAnimationConfig {
             SKIP_SCRIM,
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimationFlags {}
+    public @interface AnimationFlags {
+    }
+
     public static final int SKIP_ALL_ANIMATIONS = 1 << 0;
     public static final int SKIP_OVERVIEW = 1 << 1;
     public static final int SKIP_DEPTH_CONTROLLER = 1 << 2;
@@ -43,7 +45,6 @@ public class StateAnimationConfig {
     public long duration;
     public boolean userControlled;
     public @AnimationFlags int animFlags = 0;
-
 
     // Various types of animation state transition
     @IntDef(value = {
@@ -66,10 +67,13 @@ public class StateAnimationConfig {
             ANIM_WORKSPACE_PAGE_TRANSLATE_X,
             ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
             ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE,
-            ANIM_ALL_APPS_BOTTOM_SHEET_FADE
+            ANIM_ALL_APPS_BOTTOM_SHEET_FADE,
+            ANIM_ALL_APPS_KEYBOARD_FADE
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimType {}
+    public @interface AnimType {
+    }
+
     public static final int ANIM_VERTICAL_PROGRESS = 0;
     public static final int ANIM_WORKSPACE_SCALE = 1;
     public static final int ANIM_WORKSPACE_TRANSLATE = 2;
@@ -90,12 +94,14 @@ public class StateAnimationConfig {
     public static final int ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN = 17;
     public static final int ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE = 18;
     public static final int ANIM_ALL_APPS_BOTTOM_SHEET_FADE = 19;
+    public static final int ANIM_ALL_APPS_KEYBOARD_FADE = 20;
 
-    private static final int ANIM_TYPES_COUNT = 20;
+    private static final int ANIM_TYPES_COUNT = 21;
 
     protected final Interpolator[] mInterpolators = new Interpolator[ANIM_TYPES_COUNT];
 
-    public StateAnimationConfig() { }
+    public StateAnimationConfig() {
+    }
 
     /**
      * Copies the config to target

@@ -49,7 +49,8 @@ import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import app.lawnchair.LawnchairAppWidgetHostView;
 
 /**
- * Extension of {@link DragPreviewProvider} with logic specific to pending widgets/shortcuts
+ * Extension of {@link DragPreviewProvider} with logic specific to pending
+ * widgets/shortcuts
  * dragged from the widget tray.
  */
 public class PendingItemDragHelper extends DragPreviewProvider {
@@ -59,9 +60,11 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     private final PendingAddItemInfo mAddInfo;
     private int[] mEstimatedCellSize;
 
-    @Nullable private RemoteViews mRemoteViewsPreview;
+    @Nullable
+    private RemoteViews mRemoteViewsPreview;
     private float mRemoteViewsPreviewScale = 1f;
-    @Nullable private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
+    @Nullable
+    private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
     private final float mEnforcedRoundedCornersForWidget;
 
     public PendingItemDragHelper(View view) {
@@ -72,7 +75,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     }
 
     /**
-     * Sets a {@link RemoteViews} which shows an app widget preview provided by app developers in
+     * Sets a {@link RemoteViews} which shows an app widget preview provided by app
+     * developers in
      * the pin widget flow.
      */
     public void setRemoteViewsPreview(@Nullable RemoteViews remoteViewsPreview,
@@ -81,7 +85,10 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         mRemoteViewsPreviewScale = previewScale;
     }
 
-    /** Sets a {@link NavigableAppWidgetHostView} which shows a preview layout of an app widget. */
+    /**
+     * Sets a {@link NavigableAppWidgetHostView} which shows a preview layout of an
+     * app widget.
+     */
     public void setAppWidgetHostViewPreview(
             @Nullable NavigableAppWidgetHostView appWidgetHostViewPreview) {
         mAppWidgetHostViewPreview = appWidgetHostViewPreview;
@@ -93,11 +100,13 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     /**
      * Starts the drag for the pending item associated with the view.
      *
-     * @param previewBounds The bounds where the image was displayed,
-     *                      {@link WidgetImageView#getBitmapBounds()}
-     * @param previewBitmapWidth The actual width of the bitmap displayed in the view.
-     * @param previewViewWidth The width of {@link WidgetImageView} displaying the preview
-     * @param screenPos Position of {@link WidgetImageView} on the screen
+     * @param previewBounds      The bounds where the image was displayed,
+     *                           {@link WidgetImageView#getBitmapBounds()}
+     * @param previewBitmapWidth The actual width of the bitmap displayed in the
+     *                           view.
+     * @param previewViewWidth   The width of {@link WidgetImageView} displaying the
+     *                           preview
+     * @param screenPos          Position of {@link WidgetImageView} on the screen
      */
     public void startDrag(Rect previewBounds, int previewBitmapWidth, int previewViewWidth,
             Point screenPos, DragSource source, DragOptions options) {

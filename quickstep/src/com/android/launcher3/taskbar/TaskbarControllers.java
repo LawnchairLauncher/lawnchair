@@ -239,6 +239,7 @@ public class TaskbarControllers {
         taskbarPopupController.onDestroy();
         taskbarForceVisibleImmersiveController.onDestroy();
         taskbarOverlayController.onDestroy();
+        taskbarAllAppsController.onDestroy();
         navButtonController.onDestroy();
         taskbarInsetsController.onDestroy();
         voiceInteractionWindowController.onDestroy();

@@ -60,7 +60,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Laai tans programme …"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Kon geen programme kry wat by \"<xliff:g id="QUERY">%1$s</xliff:g>\" pas nie"</string>
     <string name="label_application" msgid="8531721983832654978">"Program"</string>
-    <string name="all_apps_label" msgid="5015784846527570951">"Alle programme"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"Alle apps"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Kennisgewings"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Raak en hou om \'n kortpad te skuif."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dubbeltik en hou om \'n kortpad te skuif of gebruik gepasmaakte handelinge."</string>
@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Vouer hernoem na <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Vouer: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> items"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Vouer: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> of meer items"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Muurpapiere"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Muurpapier en styl"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Wysig tuisskerm"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Tuis-instellings"</string>

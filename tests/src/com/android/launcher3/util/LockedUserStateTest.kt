@@ -32,7 +32,7 @@ import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
-/** Unit tests for {@link LockedUserUtil} */
+/** Unit tests for {@link LockedUserState} */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class LockedUserStateTest {
@@ -49,40 +49,31 @@ class LockedUserStateTest {
     @Test
     fun runOnUserUnlocked_runs_action_immediately_if_already_unlocked() {
         `when`(userManager.isUserUnlocked(Process.myUserHandle())).thenReturn(true)
-        LockedUserState.INSTANCE.initializeForTesting(LockedUserState(context))
         val action: Runnable = mock()
-
-        LockedUserState.get(context).runOnUserUnlocked(action)
+        LockedUserState(context).runOnUserUnlocked(action)
         verify(action).run()
     }
 
     @Test
     fun runOnUserUnlocked_waits_to_run_action_until_user_is_unlocked() {
         `when`(userManager.isUserUnlocked(Process.myUserHandle())).thenReturn(false)
-        LockedUserState.INSTANCE.initializeForTesting(LockedUserState(context))
         val action: Runnable = mock()
-
-        LockedUserState.get(context).runOnUserUnlocked(action)
+        val state = LockedUserState(context)
+        state.runOnUserUnlocked(action)
         verifyZeroInteractions(action)
-
-        LockedUserState.get(context)
-            .mUserUnlockedReceiver
-            .onReceive(context, Intent(Intent.ACTION_USER_UNLOCKED))
-
+        state.mUserUnlockedReceiver.onReceive(context, Intent(Intent.ACTION_USER_UNLOCKED))
         verify(action).run()
     }
 
     @Test
     fun isUserUnlocked_returns_true_when_user_is_unlocked() {
         `when`(userManager.isUserUnlocked(Process.myUserHandle())).thenReturn(true)
-        LockedUserState.INSTANCE.initializeForTesting(LockedUserState(context))
-        assertThat(LockedUserState.get(context).isUserUnlocked).isTrue()
+        assertThat(LockedUserState(context).isUserUnlocked).isTrue()
     }
 
     @Test
     fun isUserUnlocked_returns_false_when_user_is_locked() {
         `when`(userManager.isUserUnlocked(Process.myUserHandle())).thenReturn(false)
-        LockedUserState.INSTANCE.initializeForTesting(LockedUserState(context))
-        assertThat(LockedUserState.get(context).isUserUnlocked).isFalse()
+        assertThat(LockedUserState(context).isUserUnlocked).isFalse()
     }
 }

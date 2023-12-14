@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"ስራ"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"ሥራ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"መተግበሪያ አልተጫነም።"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"መተግበሪያ አይገኝም"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"የወረደው መተግበሪያ ደህንነቱ በተጠበቀ ሁኔታ ውስጥ ተሰናክሏል"</string>
@@ -48,7 +48,7 @@
     <string name="no_widgets_available" msgid="4337693382501046170">"መግብሮች እና አቋራጮች አይገኙም"</string>
     <string name="no_search_results" msgid="3787956167293097509">"ምንም መግብሮች ወይም አቋራጮች አልተገኙም"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"የግል"</string>
-    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ስራ"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ሥራ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ውይይቶች"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"የማስታወሻ አያያዝ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"በጣቶችዎ ጫፎች ላይ ጠቃሚ መረጃ"</string>
@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"አቃፊ <xliff:g id="NAME">%1$s</xliff:g> ተብሎ ዳግም ተሰይሟል"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"አቃፊ፦ <xliff:g id="NAME">%1$s</xliff:g>፣ <xliff:g id="SIZE">%2$d</xliff:g> ንጥሎች"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"አቃፊ፦ <xliff:g id="NAME">%1$s</xliff:g>፣ <xliff:g id="SIZE">%2$d</xliff:g> ወይም ተጨማሪ ንጥሎች"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"የግድግዳ ወረቀቶች"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ልጣፍ እና ቅጥ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"መነሻ ማያ ገጽን አርትዕ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"የመነሻ ቅንብሮች"</string>

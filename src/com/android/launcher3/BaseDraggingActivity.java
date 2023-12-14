@@ -30,6 +30,7 @@ import android.view.ActionMode;
 import android.view.Display;
 import android.view.View;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -42,9 +43,11 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.OnColorHintListener;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.WallpaperColorHints;
 import com.android.launcher3.util.WindowBounds;
 
 import app.lawnchair.wallpaper.WallpaperManagerCompat;
@@ -67,8 +70,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected boolean mIsSafeModeEnabled;
 
     private Runnable mOnStartCallback;
-    private RunnableList mOnResumeCallbacks = new RunnableList();
-
+    private final RunnableList mOnResumeCallbacks = new RunnableList();
     private int mThemeRes = R.style.AppTheme;
 
     @Override
@@ -98,6 +100,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mOnResumeCallbacks.add(callback);
     }
 
+    @MainThread
     @Override
     public void onColorsChanged() {
         updateTheme();

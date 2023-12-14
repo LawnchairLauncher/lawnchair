@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Trace;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +46,10 @@ import app.lawnchair.preferences2.PreferenceManager2;
 public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.FolderIconParent {
     static final String TAG = "ShortcutAndWidgetContainer";
 
-    // These are temporary variables to prevent having to allocate a new object just to
-    // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
+    // These are temporary variables to prevent having to allocate a new object just
+    // to
+    // return an (x, y) value from helper functions. Do NOT use them to maintain
+    // other state.
     private final int[] mTmpCellXY = new int[2];
 
     @ContainerType
@@ -70,13 +73,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         mActivity = ActivityContext.lookupContext(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
+        setClipChildren(false);
         mPreferenceManager2 = PreferenceManager2.getInstance(context);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        boolean mAllowWidgetOverlap = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
+        boolean mAllowWidgetOverlap =
+                PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
         setClipChildren(!mAllowWidgetOverlap);
         setClipToPadding(!mAllowWidgetOverlap);
         setClipToOutline(!mAllowWidgetOverlap);
@@ -146,7 +151,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         }
     }
 
-    // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
+    // Set whether or not to invert the layout horizontally if the layout is in RTL
+    // mode.
     public void setInvertIfRtl(boolean invert) {
         mInvertIfRtl = invert;
     }
@@ -169,15 +175,14 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
                     mBorderSpace);
             // Center the icon/folder
             int cHeight = getCellContentHeight();
-            int cellPaddingY = dp.isScalableGrid && mContainerType == WORKSPACE
+            int cellPaddingY = dp.cellYPaddingPx >= 0 && mContainerType == WORKSPACE
                     ? dp.cellYPaddingPx
                     : (int) Math.max(0, ((lp.height - cHeight) / 2f));
 
             // No need to add padding when cell layout border spacing is present.
-            boolean noPaddingX =
-                    (dp.cellLayoutBorderSpacePx.x > 0 && mContainerType == WORKSPACE)
-                            || (dp.folderCellLayoutBorderSpacePx > 0 && mContainerType == FOLDER)
-                            || (dp.hotseatBorderSpace > 0 && mContainerType == HOTSEAT);
+            boolean noPaddingX = (dp.cellLayoutBorderSpacePx.x > 0 && mContainerType == WORKSPACE)
+                    || (dp.folderCellLayoutBorderSpacePx.x > 0 && mContainerType == FOLDER)
+                    || (dp.hotseatBorderSpace > 0 && mContainerType == HOTSEAT);
             int cellPaddingX = noPaddingX
                     ? 0
                     : mContainerType == WORKSPACE
@@ -196,6 +201,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Trace.beginSection("ShortcutAndWidgetConteiner#onLayout");
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -203,6 +209,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
                 layoutChild(child);
             }
         }
+        Trace.endSection();
     }
 
     /**
@@ -240,7 +247,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
                     cellXY[1] + childTop + lp.height / 2, 0, null);
         }
     }
-
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {

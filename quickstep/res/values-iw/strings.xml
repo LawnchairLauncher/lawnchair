@@ -83,7 +83,7 @@
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"סיום"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"הגדרות"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ניסיון חוזר"</string>
-    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"איזה יופי!"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"יפה!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"מדריך <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"הכול מוכן!"</string>
     <string name="allset_hint" msgid="459504134589971527">"כדי לחזור לדף הבית, מחליקים כלפי מעלה"</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"צילום מסך"</string>
     <string name="action_split" msgid="2098009717623550676">"פיצול"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"צריך להקיש על אפליקציה אחרת כדי להשתמש במסך מפוצל"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"יציאה מתצוגת מסך מפוצל"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"כדי להשתמש במסך מפוצל צריך לבחור אפליקציה אחרת"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"האפליקציה או הארגון שלך אינם מתירים את הפעולה הזאת"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"לדלג על המדריך לניווט?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"העברה לפינה הימנית/התחתונה"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{הצגת אפליקציה אחת (#) נוספת.}one{הצגת # אפליקציות נוספות.}two{הצגת # אפליקציות נוספות.}other{הצגת # אפליקציות נוספות.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ו-<xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"האפליקציה מתווספת לשולחן העבודה"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ביטול"</string>
 </resources>

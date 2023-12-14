@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Capture d\'écran"</string>
     <string name="action_split" msgid="2098009717623550676">"Partager"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Toucher une autre appli pour partager l\'écran"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Quitter la sélection d\'écran divisé"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Choisir une autre application pour utiliser l\'écran partagé"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"L\'application ou votre organisation n\'autorise pas cette action"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Ignorer le tutoriel sur la navigation?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Déplacer vers le coin inférieur droit de l\'écran"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Afficher # autre application.}one{Afficher # autre application.}other{Afficher # autres applications.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> et <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Ajout de l\'application au bureau en cours…"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Annuler"</string>
 </resources>

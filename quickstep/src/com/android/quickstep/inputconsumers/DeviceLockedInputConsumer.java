@@ -39,9 +39,9 @@ import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
 import android.view.VelocityTracker;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
@@ -153,8 +153,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 if (!mThresholdCrossed) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mDeviceState.getRotationTouchHelper().isInSwipeUpTouchRegion(ev, ptrIdx,
-                            mGestureState.getActivityInterface())) {
+                    if (!mDeviceState.getRotationTouchHelper().isInSwipeUpTouchRegion(ev, ptrIdx)) {
                         int action = ev.getAction();
                         ev.setAction(ACTION_CANCEL);
                         finishTouchTracking(ev);
@@ -204,7 +203,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             // Animate back to fullscreen before finishing
             ObjectAnimator animator = mProgress.animateToValue(mProgress.value, 0);
             animator.setDuration(100);
-            animator.setInterpolator(Interpolators.ACCEL);
+            animator.setInterpolator(Interpolators.ACCELERATE);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

@@ -49,7 +49,7 @@ import java.util.function.IntConsumer;
 /**
  * {@link LauncherWidgetHolder} that puts the app widget host in the background
  */
-public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
+public class QuickstepWidgetHolder extends LauncherWidgetHolder {
 
     private static final String TAG = "QuickstepWidgetHolder";
 
@@ -76,7 +76,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     // Map to all pending updated keyed with appWidgetId;
     private final SparseArray<PendingUpdate> mPendingUpdateMap = new SparseArray<>();
 
-    private QuickstepWidgetHolder(@NonNull Context context,
+    public QuickstepWidgetHolder(@NonNull Context context,
             @Nullable IntConsumer appWidgetRemovedCallback,
             @Nullable RemoteViews.InteractionHandler interactionHandler) {
         super(context, appWidgetRemovedCallback);
@@ -243,6 +243,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         } else {
             widgetView = new LauncherAppWidgetHostView(context);
         }
+        widgetView.setIsWidgetCachingDisabled(true);
         widgetView.setInteractionHandler(mInteractionHandler);
         widgetView.setAppWidget(appWidgetId, appWidget);
         mViews.put(appWidgetId, widgetView);

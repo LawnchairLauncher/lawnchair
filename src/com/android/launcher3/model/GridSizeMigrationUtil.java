@@ -135,10 +135,8 @@ public class GridSizeMigrationUtil {
             Log.v(TAG, "Workspace migration completed in "
                     + (System.currentTimeMillis() - migrationStartTime));
 
-            if (!(context instanceof SandboxContext)) {
-                // Save current configuration, so that the migration does not run again.
-                destDeviceState.writeToPrefs(context);
-            }
+            // Save current configuration, so that the migration does not run again.
+            destDeviceState.writeToPrefs(context);
         }
     }
 
@@ -466,7 +464,6 @@ public class GridSizeMigrationUtil {
                 try {
                     // calculate weight
                     switch (entry.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
                             entry.mIntent = c.getString(indexIntent);
@@ -542,7 +539,6 @@ public class GridSizeMigrationUtil {
                 try {
                     // calculate weight
                     switch (entry.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
                             entry.mIntent = c.getString(indexIntent);

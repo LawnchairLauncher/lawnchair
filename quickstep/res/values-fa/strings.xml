@@ -72,7 +72,7 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"قبل‌از رها کردن پنجره، آن را برای مدت طولانی‌تری نگه دارید"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"دقت کنید که مستقیماً تند به بالا بکشید و سپس توقف کنید"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"با نحوه استفاده از اشاره‌ها آشنا شدید. برای خاموش کردن اشاره‌ها، به «تنظیمات» بروید."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"اشاره جابه‌جا شدن بین برنامه‌ها را تکمیل کردید"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"اشاره جابه‌جایی بین برنامه‌ها را تکمیل کردید"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"برای جابه‌جا شدن بین برنامه‌ها، تند به‌بالا بکشید"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"برای جابه‌جا شدن بین برنامه‌ها، از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"برای جابه‌جایی بین برنامه‌ها، با ۲ انگشت از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"نماگرفت"</string>
     <string name="action_split" msgid="2098009717623550676">"دونیمه"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"زدن روی برنامه‌ای دیگر برای استفاده از صفحه دونیمه"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"خروج از انتخاب صفحهٔ دونیمه"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"انتخاب برنامه‌ای دیگر برای استفاده از صفحه دونیمه"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"برنامه یا سازمان شما اجازه نمی‌دهد این کنش انجام شود."</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"آموزش گام‌به‌گام پیمایش رد شود؟"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"انتقال به پایین/ راست"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{نمایش # برنامه دیگر.}one{نمایش # برنامه دیگر.}other{نمایش # برنامه دیگر.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> و <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"درحال افزودن برنامه به رایانه"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"لغو"</string>
 </resources>

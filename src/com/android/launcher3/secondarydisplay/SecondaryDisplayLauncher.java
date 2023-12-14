@@ -72,7 +72,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         implements BgDataModel.Callbacks, DragController.DragListener {
 
     private LauncherModel mModel;
-    private BaseDragLayer mDragLayer;
+    private SecondaryDragLayer mDragLayer;
     private SecondaryDragController mDragController;
     private ActivityAllAppsContainerView<SecondaryDisplayLauncher> mAppsView;
     private View mAppsButton;
@@ -119,7 +119,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         InvariantDeviceProfile currentDisplayIdp = new InvariantDeviceProfile(
                 this, getWindow().getDecorView().getDisplay());
 
-        // Disable transpose layout and use multi-window mode so that the icons are scaled properly
+        // Disable transpose layout and use multi-window mode so that the icons are
+        // scaled properly
         mDeviceProfile = currentDisplayIdp.getDeviceProfile(this)
                 .toBuilder(this)
                 .setMultiWindowMode(true)
@@ -158,7 +159,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             }
         }
 
-        // A new intent will bring the launcher to top. Hide the app drawer to reset the state.
+        // A new intent will bring the launcher to top. Hide the app drawer to reset the
+        // state.
         showAppDrawer(false);
     }
 
@@ -177,7 +179,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             return;
         }
 
-        // Note: There should be at most one log per method call. This is enforced implicitly
+        // Note: There should be at most one log per method call. This is enforced
+        // implicitly
         // by using if-else statements.
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null && topView.canHandleBack()) {
@@ -214,7 +217,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    protected void reapplyUi() { }
+    protected void reapplyUi() {
+    }
 
     @Override
     public BaseDragLayer getDragLayer() {
@@ -245,7 +249,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         float closeR = Themes.getDialogCornerRadius(this);
         float startR = mAppsButton.getWidth() / 2f;
 
-        float[] buttonPos = new float[]{startR, startR};
+        float[] buttonPos = new float[] { startR, startR };
         mDragLayer.getDescendantCoordRelativeToSelf(mAppsButton, buttonPos);
         mDragLayer.mapCoordInSelfToDescendant(mAppsView, buttonPos);
         final Animator animator = ViewAnimationUtils.createCircularReveal(mAppsView,
@@ -302,7 +306,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindAllApplications(AppInfo[] apps, int flags,
             Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
         Preconditions.assertUIThread();
-        AllAppsStore appsStore = mAppsView.getAppsStore();
+        AllAppsStore<SecondaryDisplayLauncher> appsStore = mAppsView.getAppsStore();
         appsStore.setApps(apps, flags, packageUserKeytoUidMap);
         PopupContainerWithArrow.dismissInvalidPopup(this);
     }
@@ -312,10 +316,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (item.containerId == LauncherSettings.Favorites.CONTAINER_PREDICTION) {
             mSecondaryDisplayPredictions.setPredictedApps(item);
         }
-    }
-
-    public SecondaryDisplayPredictions getSecondaryDisplayPredictions() {
-        return mSecondaryDisplayPredictions;
     }
 
     @Override
@@ -337,10 +337,18 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         return this::onIconClicked;
     }
 
+    @Override
+    public View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return v -> mDragLayer.onIconLongClicked(v);
+    }
+
     private void onIconClicked(View v) {
-        // Make sure that rogue clicks don't get through while allapps is launching, or after the
-        // view has detached (it's possible for this to happen if the view is removed mid touch).
-        if (v.getWindowToken() == null) return;
+        // Make sure that rogue clicks don't get through while allapps is launching, or
+        // after the
+        // view has detached (it's possible for this to happen if the view is removed
+        // mid touch).
+        if (v.getWindowToken() == null)
+            return;
 
         Object tag = v.getTag();
         if (tag instanceof ItemClickProxy) {
@@ -350,7 +358,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             Intent intent;
             if (item instanceof ItemInfoWithIcon
                     && (((ItemInfoWithIcon) item).runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                            & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
                 ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
                 intent = appInfo.getMarketIntent(this);
             } else {
@@ -364,7 +372,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     /**
-     * Core functionality for beginning a drag operation for an item that will be dropped within
+     * Core functionality for beginning a drag operation for an item that will be
+     * dropped within
      * the secondary display grid home screen
      */
     public void beginDragShared(View child, DragSource source, DragOptions options) {
@@ -461,8 +470,10 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) { }
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+    }
 
     @Override
-    public void onDragEnd() { }
+    public void onDragEnd() {
+    }
 }

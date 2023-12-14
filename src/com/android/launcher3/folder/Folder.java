@@ -564,7 +564,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     mFolderName.selectAll();
                 }
             }
-            mFolderName.showKeyboard();
+            mFolderName.showKeyboard(true /* shouldFocus */);
             mFolderName.displayCompletions(
                     Stream.of(mInfo.suggestedFolderNames.getLabels())
                             .filter(Objects::nonNull)
@@ -923,7 +923,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         final ItemInfo item = d.dragInfo;
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT));
     }
 

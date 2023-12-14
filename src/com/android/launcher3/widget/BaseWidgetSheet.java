@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICKER;
 
 import android.content.Context;
@@ -66,15 +66,16 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     /** The default number of cells that can fit horizontally in a widget sheet. */
     public static final int DEFAULT_MAX_HORIZONTAL_SPANS = 4;
 
-    protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
-            "launcher.widgets_education_tip_seen";
+    protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN = "launcher.widgets_education_tip_seen";
     protected final Rect mInsets = new Rect();
 
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
 
-    @Px protected int mContentHorizontalMargin;
-    @Px protected int mWidgetCellHorizontalPadding;
+    @Px
+    protected int mContentHorizontalMargin;
+    @Px
+    protected int mWidgetCellHorizontalPadding;
 
     protected int mNavBarScrimHeight;
     private final Paint mNavBarScrimPaint;
@@ -139,7 +140,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     public boolean onLongClick(View v) {
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
-        if (!ItemLongClickListener.canStartDrag(mActivityContext)) return false;
+        if (!ItemLongClickListener.canStartDrag(mActivityContext))
+            return false;
 
         if (v instanceof WidgetCell) {
             return beginDraggingWidget((WidgetCell) v);
@@ -152,7 +154,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        @Px int contentHorizontalMargin = getResources().getDimensionPixelSize(
+        @Px
+        int contentHorizontalMargin = getResources().getDimensionPixelSize(
                 R.dimen.widget_list_horizontal_margin);
         if (contentHorizontalMargin != mContentHorizontalMargin) {
             onContentHorizontalMarginChanged(contentHorizontalMargin);
@@ -188,7 +191,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     protected abstract void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx);
 
     /**
-     * Measures the dimension of this view and its children by taking system insets, navigation bar,
+     * Measures the dimension of this view and its children by taking system insets,
+     * navigation bar,
      * status bar, into account.
      */
     protected void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -221,14 +225,16 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         // Get the widget preview as the drag representation
         WidgetImageView image = v.getWidgetView();
 
-        // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
+        // If the ImageView doesn't have a drawable yet, the widget preview hasn't been
+        // loaded and
         // we abort the drag.
         if (image.getDrawable() == null && v.getAppWidgetHostViewPreview() == null) {
             return false;
         }
 
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(v);
-        // RemoteViews are being rendered in AppWidgetHostView in WidgetCell. And thus, the scale of
+        // RemoteViews are being rendered in AppWidgetHostView in WidgetCell. And thus,
+        // the scale of
         // RemoteViews is equivalent to the AppWidgetHostView scale.
         dragHelper.setRemoteViewsPreview(v.getRemoteViewsPreview(), v.getAppWidgetHostViewScale());
         dragHelper.setAppWidgetHostViewPreview(v.getAppWidgetHostViewPreview());
@@ -255,7 +261,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     @Override
     protected Interpolator getIdleInterpolator() {
         return mActivityContext.getDeviceProfile().isTablet
-                ? EMPHASIZED : super.getIdleInterpolator();
+                ? EMPHASIZED
+                : super.getIdleInterpolator();
     }
 
     //
@@ -263,8 +270,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     //
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) { }
-
+    public void onDropCompleted(View target, DragObject d, boolean success) {
+    }
 
     protected void onCloseComplete() {
         super.onCloseComplete();
@@ -329,11 +336,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         }
         int[] coords = new int[2];
         view.getLocationOnScreen(coords);
-        ArrowTipView arrowTipView =
-                new ArrowTipView(mActivityContext,  /* isPointingUp= */ false).showAtLocation(
-                        getContext().getString(R.string.long_press_widget_to_add),
-                        /* arrowXCoord= */coords[0] + view.getWidth() / 2,
-                        /* yCoord= */coords[1]);
+        ArrowTipView arrowTipView = new ArrowTipView(mActivityContext, /* isPointingUp= */ false).showAtLocation(
+                getContext().getString(R.string.long_press_widget_to_add),
+                /* arrowXCoord= */coords[0] + view.getWidth() / 2,
+                /* yCoord= */coords[1]);
         if (arrowTipView != null) {
             mActivityContext.getSharedPrefs().edit()
                     .putBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, true).apply();
@@ -341,7 +347,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         return arrowTipView;
     }
 
-    /** Returns {@code true} if tip has previously been shown on any of {@link BaseWidgetSheet}. */
+    /**
+     * Returns {@code true} if tip has previously been shown on any of
+     * {@link BaseWidgetSheet}.
+     */
     protected boolean hasSeenEducationTip() {
         return mActivityContext.getSharedPrefs().getBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, false)
                 || Utilities.isRunningInTestHarness();

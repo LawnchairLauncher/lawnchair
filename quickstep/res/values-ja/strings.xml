@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"スクリーンショット"</string>
     <string name="action_split" msgid="2098009717623550676">"分割"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"分割画面を使用するには、他のアプリをタップします"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"分割画面の選択を終了します"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"分割画面にするには、別のアプリを選択してください"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"この操作はアプリまたは組織で許可されていません"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"操作チュートリアルをスキップしますか？"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"下 / 右に移動"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{他 # 件のアプリを表示できます。}other{他 # 件のアプリを表示できます。}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> と <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"アプリをデスクトップに追加する"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"キャンセル"</string>
 </resources>

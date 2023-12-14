@@ -19,6 +19,7 @@ import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.util.LogUtils.splitFailureMessage;
 
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -61,6 +62,7 @@ import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -74,6 +76,7 @@ import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.bubbles.IBubbles;
 import com.android.wm.shell.bubbles.IBubblesListener;
 import com.android.wm.shell.desktopmode.IDesktopMode;
+import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
@@ -82,6 +85,7 @@ import com.android.wm.shell.recents.IRecentTasks;
 import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.splitscreen.ISplitScreen;
 import com.android.wm.shell.splitscreen.ISplitScreenListener;
+import com.android.wm.shell.splitscreen.ISplitSelectListener;
 import com.android.wm.shell.startingsurface.IStartingWindow;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 import com.android.wm.shell.transition.IShellTransitions;
@@ -129,10 +133,12 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IPipAnimationListener mPipAnimationListener;
     private IBubblesListener mBubblesListener;
     private ISplitScreenListener mSplitScreenListener;
+    private ISplitSelectListener mSplitSelectListener;
     private IStartingWindowListener mStartingWindowListener;
     private ILauncherUnlockAnimationController mLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
     private IUnfoldTransitionListener mUnfoldAnimationListener;
+    private IDesktopTaskListener mDesktopTaskListener;
     private final LinkedHashMap<RemoteTransition, TransitionFilter> mRemoteTransitions = new LinkedHashMap<>();
     private IBinder mOriginalTransactionToken = null;
     private IOnBackInvokedCallback mBackToLauncherCallback;
@@ -242,6 +248,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         setPipAnimationListener(mPipAnimationListener);
         setBubblesListener(mBubblesListener);
         registerSplitScreenListener(mSplitScreenListener);
+        registerSplitSelectListener(mSplitSelectListener);
         setStartingWindowListener(mStartingWindowListener);
         setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
         new LinkedHashMap<>(mRemoteTransitions).forEach(this::registerRemoteTransition);
@@ -249,6 +256,9 @@ public class SystemUiProxy implements ISystemUiProxy {
         registerRecentTasksListener(mRecentTasksListener);
         setBackToLauncherCallback(mBackToLauncherCallback, mBackToLauncherRunner);
         setUnfoldAnimationListener(mUnfoldAnimationListener);
+        setDesktopTaskListener(mDesktopTaskListener);
+        setAssistantOverridesRequested(
+                AssistUtils.newInstance(mContext).getSysUiAssistOverrideInvocationTypes());
     }
 
     /**
@@ -307,8 +317,14 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void onStatusBarTouchEvent(MotionEvent event) throws RemoteException {
-
+    public void onStatusBarTouchEvent(MotionEvent event) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.onStatusBarTouchEvent(event);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onStatusBarTouchEvent", e);
+            }
+        }
     }
 
     public void onOverviewShown(boolean fromHome, String tag) {
@@ -319,18 +335,6 @@ public class SystemUiProxy implements ISystemUiProxy {
                 Log.w(tag, "Failed call onOverviewShown from: " + (fromHome ? "home" : "app"), e);
             }
         }
-    }
-
-    @MainThread
-    public void onStatusBarMotionEvent(MotionEvent event) {
-//        Preconditions.assertUIThread();
-//        if (mSystemUiProxy != null) {
-//            try {
-//                mSystemUiProxy.onStatusBarMotionEvent(event);
-//            } catch (RemoteException e) {
-//                Log.w(TAG, "Failed call onStatusBarMotionEvent", e);
-//            }
-//        }
     }
 
     @Override
@@ -367,8 +371,14 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void setAssistantOverridesRequested(int[] invocationTypes) throws RemoteException {
-
+    public void setAssistantOverridesRequested(int[] invocationTypes) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setAssistantOverridesRequested(invocationTypes);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setAssistantOverridesRequested", e);
+            }
+        }
     }
 
     @Override
@@ -415,16 +425,16 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-//    public void setTaskbarEnabled(boolean enabled) {
-//        if (mSystemUiProxy != null) {
-//            try {
-//                mSystemUiProxy.setTaskbarEnabled(enabled);
-//            } catch (RemoteException e) {
-//                Log.w(TAG, "Failed call setTaskbarEnabled with arg: " +
-//                        enabled, e);
-//            }
-//        }
-//    }
+    // public void setTaskbarEnabled(boolean enabled) {
+    // if (mSystemUiProxy != null) {
+    // try {
+    // mSystemUiProxy.setTaskbarEnabled(enabled);
+    // } catch (RemoteException e) {
+    // Log.w(TAG, "Failed call setTaskbarEnabled with arg: " +
+    // enabled, e);
+    // }
+    // }
+    // }
 
     public void notifyTaskbarStatus(boolean visible, boolean stashed) {
         if (mSystemUiProxy != null) {
@@ -467,8 +477,14 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void onStatusBarTrackpadEvent(MotionEvent event) throws RemoteException {
-
+    public void onStatusBarTrackpadEvent(MotionEvent event)  {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.onStatusBarTrackpadEvent(event);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onStatusBarTrackpadEvent");
+            }
+        }
     }
 
     @Override
@@ -668,19 +684,50 @@ public class SystemUiProxy implements ISystemUiProxy {
     /**
      * Tells SysUI to show the bubble with the provided key.
      * 
-     * @param key            the key of the bubble to show.
-     * @param onLauncherHome whether the bubble is showing on launcher home or not
-     *                       (modifies where
-     *                       the expanded bubble view is placed).
+     * @param key              the key of the bubble to show.
+     * @param bubbleBarOffsetX the offset of the bubble bar from the edge of the
+     *                         screen on the X
+     *                         axis.
+     * @param bubbleBarOffsetY the offset of the bubble bar from the edge of the
+     *                         screen on the Y
+     *                         axis.
      */
-    public void showBubble(String key, boolean onLauncherHome) {
-//        if (mBubbles != null) {
-//            try {
-//                mBubbles.showBubble(key, onLauncherHome);
-//            } catch (RemoteException e) {
-//                Log.w(TAG, "Failed call showBubble");
-//            }
-//        }
+    public void showBubble(String key, int bubbleBarOffsetX, int bubbleBarOffsetY) {
+        if (mBubbles != null) {
+            try {
+                mBubbles.showBubble(key, bubbleBarOffsetX, bubbleBarOffsetY);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call showBubble");
+            }
+        }
+    }
+
+    /**
+     * Tells SysUI to remove the bubble with the provided key.
+     * 
+     * @param key the key of the bubble to show.
+     */
+    public void removeBubble(String key) {
+        if (mBubbles == null)
+            return;
+        try {
+            mBubbles.removeBubble(key);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call removeBubble");
+        }
+    }
+
+    /**
+     * Tells SysUI to remove all bubbles.
+     */
+    public void removeAllBubbles() {
+        if (mBubbles == null)
+            return;
+        try {
+            mBubbles.removeAllBubbles();
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call removeAllBubbles");
+        }
     }
 
     /**
@@ -693,6 +740,23 @@ public class SystemUiProxy implements ISystemUiProxy {
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call collapseBubbles");
             }
+        }
+    }
+
+    /**
+     * Tells SysUI when the bubble is being dragged.
+     * Should be called only when the bubble bar is expanded.
+     * 
+     * @param bubbleKey      the key of the bubble to collapse/expand
+     * @param isBeingDragged whether the bubble is being dragged
+     */
+    public void onBubbleDrag(@Nullable String bubbleKey, boolean isBeingDragged) {
+        if (mBubbles == null)
+            return;
+        try {
+            mBubbles.onBubbleDrag(bubbleKey, isBeingDragged);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call onBubbleDrag");
         }
     }
 
@@ -722,6 +786,28 @@ public class SystemUiProxy implements ISystemUiProxy {
         mSplitScreenListener = null;
     }
 
+    public void registerSplitSelectListener(ISplitSelectListener listener) {
+        if (mSplitScreen != null) {
+            try {
+                mSplitScreen.registerSplitSelectListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call registerSplitSelectListener");
+            }
+        }
+        mSplitSelectListener = listener;
+    }
+
+    public void unregisterSplitSelectListener(ISplitSelectListener listener) {
+        if (mSplitScreen != null) {
+            try {
+                mSplitScreen.unregisterSplitSelectListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call unregisterSplitSelectListener");
+            }
+        }
+        mSplitSelectListener = null;
+    }
+
     /** Start multiple tasks in split-screen simultaneously. */
     public void startTasks(int taskId1, Bundle options1, int taskId2, Bundle options2,
             @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
@@ -731,7 +817,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startTasks(taskId1, options1, taskId2, options2, splitPosition,
                         splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTasks");
+                Log.w(TAG, splitFailureMessage("startTasks", "RemoteException"), e);
             }
         }
     }
@@ -744,7 +830,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startIntentAndTask(pendingIntent, userId1, options1, taskId, options2,
                         splitPosition, splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntentAndTask");
+                Log.w(TAG, splitFailureMessage("startIntentAndTask", "RemoteException"), e);
             }
         }
     }
@@ -760,7 +846,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                         pendingIntent2, userId2, shortcutInfo2, options2, splitPosition, splitRatio,
                         remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntents");
+                Log.w(TAG, splitFailureMessage("startIntents", "RemoteException"), e);
             }
         }
     }
@@ -773,7 +859,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startShortcutAndTask(shortcutInfo, options1, taskId, options2,
                         splitPosition, splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startShortcutAndTask");
+                Log.w(TAG, splitFailureMessage("startShortcutAndTask", "RemoteException"), e);
             }
         }
     }
@@ -789,7 +875,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startTasksWithLegacyTransition(taskId1, options1, taskId2, options2,
                         splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTasksWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startTasksWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -803,7 +890,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, userId1,
                         options1, taskId, options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntentAndTaskWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startIntentAndTaskWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -816,7 +904,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, options1,
                         taskId, options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startShortcutAndTaskWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startShortcutAndTaskWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -837,7 +926,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                         shortcutInfo1, options1, pendingIntent2, userId2, shortcutInfo2, options2,
                         sidePosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntentsWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startIntentsWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -849,7 +939,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startShortcut(packageName, shortcutId, position, options,
                         user, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startShortcut");
+                Log.w(TAG, splitFailureMessage("startShortcut", "RemoteException"), e);
             }
         }
     }
@@ -861,7 +951,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startIntent(intent, userId, fillInIntent, position, options,
                         instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntent");
+                Log.w(TAG, splitFailureMessage("startIntent", "RemoteException"), e);
             }
         }
     }
@@ -1210,6 +1300,41 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    /** Call shell to stash desktop apps */
+    public void stashDesktopApps(int displayId) {
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.stashDesktopApps(displayId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call stashDesktopApps", e);
+            }
+        }
+    }
+
+    /** Call shell to hide desktop apps that may be stashed */
+    public void hideStashedDesktopApps(int displayId) {
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.hideStashedDesktopApps(displayId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call hideStashedDesktopApps", e);
+            }
+        }
+    }
+
+    /**
+     * If task with the given id is on the desktop, bring it to front
+     */
+    public void showDesktopApp(int taskId) {
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.showDesktopApp(taskId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call showDesktopApp", e);
+            }
+        }
+    }
+
     /** Call shell to get number of visible freeform tasks */
     public int getVisibleDesktopTaskCount(int displayId) {
         if (mDesktopMode != null) {
@@ -1220,6 +1345,29 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
         return 0;
+    }
+
+    /** Set a listener on shell to get updates about desktop task state */
+    public void setDesktopTaskListener(@Nullable IDesktopTaskListener listener) {
+        mDesktopTaskListener = listener;
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.setTaskListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setDesktopTaskListener", e);
+            }
+        }
+    }
+
+    /** Perform cleanup transactions after animation to split select is complete */
+    public void onDesktopSplitSelectAnimComplete(ActivityManager.RunningTaskInfo taskInfo) {
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.onDesktopSplitSelectAnimComplete(taskInfo);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onDesktopSplitSelectAnimComplete", e);
+            }
+        }
     }
 
     //

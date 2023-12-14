@@ -55,7 +55,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuń palcem, aby przejść wstecz"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do poprzedniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Aby wrócić do poprzedniego ekranu, przesuń 2 palcami od lewej lub prawej krawędzi do środka ekranu."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Przejdź wstecz"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Przejście wstecz"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Przesuń palcem od lewej lub prawej krawędzi do środka ekranu"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Pamiętaj, aby przed podniesieniem palca nie było przerwy"</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Zrzut ekranu"</string>
     <string name="action_split" msgid="2098009717623550676">"Podziel"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Aby podzielić ekran, kliknij drugą aplikację"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Wyjdź z wyboru podzielonego ekranu"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Wybierz drugą aplikację, aby podzielić ekran"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Nie możesz wykonać tego działania, bo nie zezwala na to aplikacja lub Twoja organizacja"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Pominąć samouczek nawigacji?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Przesuń w dolny prawy róg"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Pokaż jeszcze # aplikację.}few{Pokaż jeszcze # aplikacje.}many{Pokaż jeszcze # aplikacji.}other{Pokaż jeszcze # aplikacji.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> i <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Dodaję aplikację do komputera"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Anuluj"</string>
 </resources>

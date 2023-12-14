@@ -4,12 +4,12 @@ import android.os.CancellationSignal
 import android.view.WindowInsets
 import androidx.core.view.WindowInsetsCompat
 import app.lawnchair.preferences2.PreferenceManager2
+import com.android.app.animation.Interpolators
 import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.AnimatedFloat
 import com.android.launcher3.anim.AnimatorListeners.forEndCallback
 import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
-import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.states.StateAnimationConfig
@@ -57,7 +57,7 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
                     handler.progress,
                     AnimatedFloat.VALUE,
                     1f,
-                    Interpolators.DEACCEL_1_7,
+                    Interpolators.DECELERATE_1_7,
                 )
                 animation.addListener(
                     forEndCallback(
@@ -99,6 +99,6 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
 
     private fun showKeyboard() {
         val editText = launcher.appsView.searchUiManager.editText ?: return
-        editText.showKeyboard()
+        editText.showKeyboard(true)
     }
 }

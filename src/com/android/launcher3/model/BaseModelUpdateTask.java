@@ -57,7 +57,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     private static final String TAG = "BaseModelUpdateTask";
 
     // Nullabilities are explicitly omitted here because these are late-init fields,
-    // They will be non-null after init(), which is always the case in enqueueModelUpdateTask().
+    // They will be non-null after init(), which is always the case in
+    // enqueueModelUpdateTask().
     private LauncherAppState mApp;
     private LauncherModel mModel;
     private BgDataModel mDataModel;
@@ -77,7 +78,6 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     @Override
     public final void run() {
         boolean isModelLoaded = Objects.requireNonNull(mModel).isModelLoaded();
-        testLogD(WORK_TAB_MISSING, "modelLoaded: " + isModelLoaded + " forTask: " + this);
         if (!isModelLoaded) {
             if (DEBUG_TASKS) {
                 Log.d(TAG, "Ignoring model task since loader is pending=" + this);
@@ -104,7 +104,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public ModelWriter getModelWriter() {
-        // Updates from model task, do not deal with icon position in hotseat. Also no need to
+        // Updates from model task, do not deal with icon position in hotseat. Also no
+        // need to
         // verify changes as the ModelTasks always push the changes to callbacks
         return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */,
                 CellPosMapper.DEFAULT, null);
@@ -137,14 +138,13 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindDeepShortcuts(@NonNull final BgDataModel dataModel) {
-        final HashMap<ComponentKey, Integer> shortcutMapCopy =
-                new HashMap<>(dataModel.deepShortcutMap);
+        final HashMap<ComponentKey, Integer> shortcutMapCopy = new HashMap<>(dataModel.deepShortcutMap);
         scheduleCallbackTask(callbacks -> callbacks.bindDeepShortcutMap(shortcutMapCopy));
     }
 
     public void bindUpdatedWidgets(@NonNull final BgDataModel dataModel) {
-        final ArrayList<WidgetsListBaseEntry> widgets =
-                dataModel.widgetsModel.getWidgetsListForPicker(mApp.getContext());
+        final ArrayList<WidgetsListBaseEntry> widgets = dataModel.widgetsModel
+                .getWidgetsListForPicker(mApp.getContext());
         scheduleCallbackTask(c -> c.bindAllWidgets(widgets));
     }
 
@@ -168,7 +168,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
             Map<PackageUserKey, Integer> packageUserKeytoUidMap = Arrays.stream(apps).collect(
                     Collectors.toMap(
                             appInfo -> new PackageUserKey(appInfo.componentName.getPackageName(),
-                                    appInfo.user), appInfo -> appInfo.uid, (a, b) -> a));
+                                    appInfo.user),
+                            appInfo -> appInfo.uid, (a, b) -> a));
             scheduleCallbackTask(c -> c.bindAllApplications(apps, flags, packageUserKeytoUidMap));
         }
     }

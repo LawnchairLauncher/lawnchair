@@ -47,10 +47,9 @@ public class TaskbarUnfoldAnimationController implements
             WindowManager windowManager,
             RotationChangeProvider rotationChangeProvider) {
         mScopedUnfoldTransitionProgressProvider = source;
-        mNaturalUnfoldTransitionProgressProvider =
-                new NaturalRotationUnfoldProgressProvider(context,
-                        rotationChangeProvider,
-                        source);
+        mNaturalUnfoldTransitionProgressProvider = new NaturalRotationUnfoldProgressProvider(context,
+                rotationChangeProvider,
+                source);
         mMoveFromCenterAnimator = new UnfoldMoveFromCenterAnimator(windowManager,
                 new LauncherViewsMoveFromCenterTranslationApplier());
     }
@@ -63,8 +62,8 @@ public class TaskbarUnfoldAnimationController implements
     public void init(TaskbarControllers taskbarControllers) {
         mNaturalUnfoldTransitionProgressProvider.init();
         mTaskbarViewController = taskbarControllers.taskbarViewController;
-        mTaskbarViewController.addOneTimePreDrawListener(() ->
-                mScopedUnfoldTransitionProgressProvider.setReadyToHandleTransition(true));
+        mTaskbarViewController.addOneTimePreDrawListener(
+                () -> mScopedUnfoldTransitionProgressProvider.setReadyToHandleTransition(true));
         mNaturalUnfoldTransitionProgressProvider.addCallback(mTransitionListener);
         mTaskbarDragLayerController = taskbarControllers.taskbarDragLayerController;
     }
@@ -91,8 +90,9 @@ public class TaskbarUnfoldAnimationController implements
             mMoveFromCenterAnimator.updateDisplayProperties();
             View[] icons = mTaskbarViewController.getIconViews();
             for (View icon : icons) {
-                // TODO(b/193794563) we should re-register views if they are re-bound/re-inflated
-                //                   during the animation
+                // TODO(b/193794563) we should re-register views if they are
+                // re-bound/re-inflated
+                // during the animation
                 mMoveFromCenterAnimator.registerViewForAnimation(icon);
             }
 
@@ -111,10 +111,6 @@ public class TaskbarUnfoldAnimationController implements
             mMoveFromCenterAnimator.onTransitionProgress(progress);
             float insetPercentage = (1 - progress) * MAX_WIDTH_INSET_FRACTION;
             mTaskbarDragLayerController.setBackgroundHorizontalInsets(insetPercentage);
-        }
-
-        @Override
-        public void onTransitionFinishing() {
         }
     }
 }

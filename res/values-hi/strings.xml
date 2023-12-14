@@ -35,7 +35,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौड़ाई गुणा %2$d ऊंचाई"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"होम स्क्रीन पर इधर-उधर ले जाने के लिए, विजेट को दबाकर रखें"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"विजेट को होम स्क्रीन पर इधर-उधर ले जाने के लिए, उसे दबाकर रखें"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"होम स्क्रीन पर जोड़ें"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट को होम स्क्रीन पर जोड़ा गया"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"सुझाव"</string>
@@ -56,7 +56,7 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट की सेटिंग में बदलाव करने के लिए टैप करें"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ठीक है"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेट की सेटिंग में बदलाव करें"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप सर्च करें"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप्लिकेशन खोजें"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ऐप्लिकेशन लोड हो रहे हैं…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलता-जुलता कोई ऐप्लिकेशन नहीं मिला"</string>
     <string name="label_application" msgid="8531721983832654978">"ऐप्लिकेशन"</string>
@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"फ़ोल्डर का नाम बदलकर <xliff:g id="NAME">%1$s</xliff:g> किया गया"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> आइटम"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> या इससे ज़्यादा आइटम"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वॉलपेपर और स्टाइल"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"होम स्क्रीन में बदलाव करें"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम स्क्रीन की सेटिंग"</string>

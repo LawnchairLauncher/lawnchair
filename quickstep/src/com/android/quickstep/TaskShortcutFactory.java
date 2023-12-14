@@ -41,7 +41,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
@@ -146,6 +145,7 @@ public interface TaskShortcutFactory {
 
         @Override
         public void onClick(View view) {
+            dismissTaskMenuView(mTarget);
             ((RecentsView) mTarget.getOverviewPanel())
                     .getSplitSelectController().getAppPairsController().saveAppPair(mTaskView);
         }
@@ -403,8 +403,9 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            return InstantAppResolver.newInstance(activity).isInstantApp(activity,
-                    taskContainer.getTask().getTopComponent().getPackageName())
+            Task t = taskContainer.getTask();
+            return InstantAppResolver.newInstance(activity).isInstantApp(
+                    t.getTopComponent().getPackageName(), t.getKey().userId)
                             ? Collections.singletonList(new SystemShortcut.Install(activity,
                                     taskContainer.getItemInfo(), taskContainer.getTaskView()))
                             : null;

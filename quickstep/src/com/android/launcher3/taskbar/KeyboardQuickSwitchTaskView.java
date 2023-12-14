@@ -45,15 +45,22 @@ import java.util.function.Consumer;
  */
 public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
 
-    @ColorInt private final int mBorderColor;
+    @ColorInt
+    private final int mBorderColor;
 
-    @Nullable private BorderAnimator mBorderAnimator;
+    @Nullable
+    private BorderAnimator mBorderAnimator;
 
-    @Nullable private ImageView mThumbnailView1;
-    @Nullable private ImageView mThumbnailView2;
-    @Nullable private ImageView mIcon1;
-    @Nullable private ImageView mIcon2;
-    @Nullable private View mContent;
+    @Nullable
+    private ImageView mThumbnailView1;
+    @Nullable
+    private ImageView mThumbnailView2;
+    @Nullable
+    private ImageView mIcon1;
+    @Nullable
+    private ImageView mIcon2;
+    @Nullable
+    private View mContent;
 
     public KeyboardQuickSwitchTaskView(@NonNull Context context) {
         this(context, null);
@@ -80,7 +87,7 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
         setWillNotDraw(false);
 
         mBorderColor = ta.getColor(
-                R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR);
+                R.styleable.TaskView_focusBorderColor, DEFAULT_BORDER_COLOR);
         ta.recycle();
     }
 

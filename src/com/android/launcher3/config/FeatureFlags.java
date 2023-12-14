@@ -26,15 +26,12 @@ import android.content.Context;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-import app.lawnchair.config.DynamicFlag;
-import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
@@ -55,7 +52,7 @@ public final class FeatureFlags {
         public static ToIntFunction<IntFlag> sIntReader = f -> f.mCurrentValue;
         private FeatureFlags() { }
         public static boolean showFlagTogglerUi(Context context) {
-                return BuildConfig.DEBUG && Utilities.isDevelopersOptionsEnabled(context);
+                return Utilities.isDevelopersOptionsEnabled(context);
         }
         /**
          * True when the build has come from Android Studio and is being used for local debugging.
@@ -99,7 +96,7 @@ public final class FeatureFlags {
                 "ENABLE_DISMISS_PREDICTION_UNDO", DISABLED,
                 "Show an 'Undo' snackbar when users dismiss a predicted hotseat item");
         public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(270395171,
-                "CONTINUOUS_VIEW_TREE_CAPTURE", ENABLED, "Capture View tree every frame");
+                "CONTINUOUS_VIEW_TREE_CAPTURE", DISABLED, "Capture View tree every frame");
         public static final BooleanFlag ENABLE_WORKSPACE_LOADING_OPTIMIZATION = getDebugFlag(251502424,
                 "ENABLE_WORKSPACE_LOADING_OPTIMIZATION", DISABLED,
                 "load the current workspace screen visible to the user before the rest rather than "
@@ -141,7 +138,7 @@ public final class FeatureFlags {
                 "Enable the ability to generate monochromatic icons, if it is not provided by the app");
         // TODO(Block 8): Clean up flags
         public static final BooleanFlag ENABLE_MATERIAL_U_POPUP = getDebugFlag(270395516,
-                "ENABLE_MATERIAL_U_POPUP", DISABLED, "Switch popup UX to use material U");
+                "ENABLE_MATERIAL_U_POPUP", ENABLED, "Switch popup UX to use material U");
         // TODO(Block 9): Clean up flags
         public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = getReleaseFlag(270395134,
                 "ENABLE_DOWNLOAD_APP_UX_V2", ENABLED, "Updates the download app UX"

@@ -56,7 +56,6 @@ import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.patrykmichalik.opto.domain.Preference;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
@@ -68,8 +67,10 @@ import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Popup shown on long pressing an empty space in launcher
+ *
+ * @param <T> The context showing this popup.
  */
-public class OptionsPopupView extends ArrowPopup<Launcher>
+public class OptionsPopupView<T extends Context & ActivityContext> extends ArrowPopup<T>
         implements OnClickListener, OnLongClickListener {
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
@@ -154,26 +155,33 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
         if (ENABLE_MATERIAL_U_POPUP.get()) {
             assignMarginsAndBackgrounds(viewGroup,
-                    getColorStateList(getContext(), mColors[0]).getDefaultColor());
+                    mColors[0]);
         } else {
             assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
         }
     }
 
-    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
-            List<OptionItem> items, boolean shouldAddArrow) {
-        return show(launcher, targetRect, items, shouldAddArrow, 0 /* width */);
+    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            ActivityContext activityContext,
+            RectF targetRect,
+            List<OptionItem> items,
+            boolean shouldAddArrow) {
+        return show(activityContext, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
-            List<OptionItem> items, boolean shouldAddArrow, int width) {
-        OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
-                .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
+    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            ActivityContext activityContext,
+            RectF targetRect,
+            List<OptionItem> items,
+            boolean shouldAddArrow,
+            int width) {
+        OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
+                .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;
         popup.setShouldAddArrow(shouldAddArrow);
 
         for (OptionItem item : items) {
-            DeepShortcutView view = (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            DeepShortcutView view = popup.inflateAndAdd(R.layout.system_shortcut, popup);
             if (width > 0) {
                 view.getLayoutParams().width = width;
             }
@@ -214,12 +222,10 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                     IGNORE,
                     OptionsPopupView::startSystemSettings));
         }
-        boolean showStyleWallpapers = Utilities.showStyleWallpapers(launcher);
-        int resString = showStyleWallpapers ? R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
-        int resDrawable = showStyleWallpapers ? R.drawable.ic_palette : R.drawable.ic_wallpaper;
+
         options.add(new OptionItem(launcher,
-                resString,
-                resDrawable,
+                R.string.styles_wallpaper_button_text,
+                R.drawable.ic_palette,
                 IGNORE,
                 OptionsPopupView::startWallpaperPicker));
         if (!lockHomeScreen && !WidgetsModel.GO_DISABLE_WIDGETS) {
@@ -324,7 +330,6 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     static WorkspaceItemInfo placeholderInfo(Intent intent) {
         WorkspaceItemInfo placeholderInfo = new WorkspaceItemInfo();
         placeholderInfo.intent = intent;
-        placeholderInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         placeholderInfo.container = LauncherSettings.Favorites.CONTAINER_SETTINGS;
         return placeholderInfo;
     }
@@ -356,10 +361,5 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
             this.eventId = eventId;
             this.clickListener = clickListener;
         }
-    }
-
-    private static boolean styleWallpapersExists(Context context) {
-        return context.getPackageManager().resolveActivity(
-                PackageManagerHelper.getStyleWallpapersIntent(context), 0) != null;
     }
 }

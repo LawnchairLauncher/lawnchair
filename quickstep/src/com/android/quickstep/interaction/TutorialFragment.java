@@ -100,6 +100,19 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         return fragment;
     }
 
+    @Nullable
+    @Override
+    GestureSandboxFragment recreateFragment() {
+        TutorialType tutorialType = mTutorialController == null
+                ? (mTutorialType == null
+                        ? getDefaultTutorialType() : mTutorialType)
+                : mTutorialController.mTutorialType;
+        return newInstance(tutorialType, isGestureComplete(), mFromTutorialMenu);
+    }
+
+    @NonNull
+    abstract TutorialType getDefaultTutorialType();
+
     TutorialFragment(boolean fromTutorialMenu) {
         mFromTutorialMenu = fromTutorialMenu;
     }

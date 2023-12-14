@@ -21,8 +21,6 @@ import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_T
 
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
 
-import android.app.WallpaperColors;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -32,6 +30,8 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
+
+import androidx.annotation.ColorInt;
 
 import androidx.annotation.ColorInt;
 
@@ -56,6 +56,10 @@ public class Themes {
 
     public static final String KEY_THEMED_ICONS = "themed_icons";
 
+    /**
+     * Gets the WallpaperColorHints and then uses those to get the correct activity
+     * theme res.
+     */
     public static int getActivityThemeRes(Context context) {
         WallpaperColorsCompat colors = WallpaperManagerCompat.INSTANCE.get(context).getWallpaperColors();
         final int colorHints = colors != null ? colors.getColorHints() : 0;

@@ -23,6 +23,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.taskbar.TaskbarManager;
+import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 
@@ -50,6 +54,7 @@ public class TISBindHelper implements ServiceConnection {
     private short mConnectionAttempts;
     private boolean mTisServiceBound;
     private boolean mIsConnected;
+    @Nullable private TISBinder mBinder;
 
     public TISBindHelper(Context context, Consumer<TISBinder> connectionCallback) {
         mContext = context;
@@ -70,7 +75,8 @@ public class TISBindHelper implements ServiceConnection {
 
         Log.d(TAG, "TIS service connected");
         mIsConnected = true;
-        mConnectionCallback.accept((TISBinder) iBinder);
+        mBinder = (TISBinder) iBinder;
+        mConnectionCallback.accept(mBinder);
         // Flush the pending callbacks
         for (Runnable r : mPendingConnectedCallbacks) {
             r.run();
@@ -80,12 +86,31 @@ public class TISBindHelper implements ServiceConnection {
     }
 
     @Override
-    public void onServiceDisconnected(ComponentName componentName) { }
+    public void onServiceDisconnected(ComponentName componentName) {
+        Log.d(TAG, "TIS service disconnected");
+        mBinder = null;
+        mIsConnected = false;
+    }
 
     @Override
     public void onBindingDied(ComponentName name) {
         Log.w(TAG, "TIS binding died");
         internalBindToTIS();
+    }
+
+    @Nullable
+    public TISBinder getBinder() {
+        return mBinder;
+    }
+
+    @Nullable
+    public TaskbarManager getTaskbarManager() {
+        return mBinder == null ? null : mBinder.getTaskbarManager();
+    }
+
+    @Nullable
+    public OverviewCommandHelper getOverviewCommandHelper() {
+        return mBinder == null ? null : mBinder.getOverviewCommandHelper();
     }
 
     /**
@@ -139,6 +164,7 @@ public class TISBindHelper implements ServiceConnection {
     public void onDestroy() {
         internalUnbindToTIS();
         resetServiceBindRetryState();
+        mBinder = null;
         mIsConnected = false;
         mPendingConnectedCallbacks.clear();
     }

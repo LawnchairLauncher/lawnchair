@@ -24,7 +24,7 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"Ez dago azkenaldi honetako ezer"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Aplikazioen erabileraren ezarpenak"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Garbitu guztiak"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Azken aplikazioak"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Azkenaldiko aplikazioak"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Itxi da zeregina"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> (<xliff:g id="REMAINING_TIME">%2$s</xliff:g>)"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 min"</string>
@@ -58,9 +58,9 @@
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Egin atzera"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Pasatu hatza pantailaren eskuineko edo ezkerreko ertzetik erdialdera"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Ziurtatu hatza pantailaren beheko ertzetik gora pasatzen duzula"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Ziurtatu hatza jaso aurretik ez zarela gelditzen"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Ziurtatu ez duzula mugimendua gelditzen askatu arte"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Ziurtatu hatza zuzen pasatzen duzula gora"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ikasi duzu hasierako pantailara joateko keinua. Jarraian, ikasi atzera egiten."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ikasi duzu hasierako pantailara joateko keinua. Orain, ikasi atzera egiten."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ikasi duzu hasierako pantailara joateko keinua"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Pasatu hatza hasierako pantailara joateko"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pasatu hatza pantailaren behealdetik gora. Keinu horrek hasierako pantailara eramango zaitu beti."</string>
@@ -77,7 +77,7 @@
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Aplikazio batetik bestera joateko, pasatu hatza pantailaren behealdetik gora, eduki pantaila sakatuta eta altxatu hatza."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Aplikazio batetik bestera joateko, pasatu bi hatz pantailaren behealdetik gora, eduki pantaila sakatuta eta altxatu hatza."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Aldatu aplikazioa"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Pasatu hatza pantailaren behealdetik gora, eduki sakatuta pantaila eta jaso hatza"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Pasatu hatza pantailaren behealdetik gora, eduki sakatuta une batez, eta jaso hatza"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Oso ongi!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Dena prest"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Eginda"</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Atera pantaila-argazki bat"</string>
     <string name="action_split" msgid="2098009717623550676">"Zatitu"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Sakatu beste aplikazio bat pantaila zatitzeko"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Irten Pantaila zatitzea eginbidearen hautapenetik"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Pantaila zatitua ikusteko, aukeratu beste aplikazio bat"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikazioak edo erakundeak ez du eman ekintza hori gauzatzeko baimena"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Nabigazio-tutoriala saltatu nahi duzu?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Eraman behera, eskuinetara"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Erakutsi beste # aplikazio.}other{Erakutsi beste # aplikazio.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> eta <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Aplikazioa mahaigainean gehitzen"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Utzi"</string>
 </resources>

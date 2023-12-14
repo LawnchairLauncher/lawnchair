@@ -64,7 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Ειδοποιήσεις"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Πατήστε παρατεταμένα για μετακίνηση συντόμευσης."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Πατήστε δύο φορές παρατεταμένα για μετακίνηση συντόμευσης ή χρήση προσαρμοσμένων ενεργειών."</string>
-    <string name="out_of_space" msgid="6455557115204099579">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη"</string>
+    <string name="out_of_space" msgid="6455557115204099579">"Δεν υπάρχει χώρος σε αυτή την αρχική οθόνη"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Λίστα εφαρμογών"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Αποτελέσματα αναζήτησης"</string>
@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Ο φάκελος μετονομάστηκε σε <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> στοιχεία"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ή περισσότερα στοιχεία"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Ταπετσαρίες"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Ταπετσαρία και στιλ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Επεξεργασία αρχικής οθόνης"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ρυθμίσεις Αρχ. Οθ."</string>

@@ -43,13 +43,13 @@ import dev.rikka.tools.refine.Refine;
  * Provides a Quickstep specific animation when launching an activity from an
  * app widget.
  */
-class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
+public class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
 
     private static final String TAG = "QuickstepInteractionHandler";
 
     private final QuickstepLauncher mLauncher;
 
-    QuickstepInteractionHandler(QuickstepLauncher launcher) {
+    public QuickstepInteractionHandler(QuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
@@ -97,8 +97,8 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             }
             activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
-            activityOptions.options.setPendingIntentBackgroundActivityStartMode(
-                    ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+            Utilities.allowBGLaunch(activityOptions.options);
+
         }
         options = Pair.create(options.first, activityOptions.options);
         if (pendingIntent.isActivity()) {

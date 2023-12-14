@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
-
 /**
  * Represents a folder containing shortcuts or apps.
  */
@@ -75,7 +74,8 @@ public class FolderInfo extends ItemInfo {
      * Different states of folder label.
      */
     public enum LabelState {
-        // Folder's label is not yet assigned( i.e., title == null). Eligible for auto-labeling.
+        // Folder's label is not yet assigned( i.e., title == null). Eligible for
+        // auto-labeling.
         UNLABELED(Attribute.UNLABELED),
 
         // Folder's label is empty(i.e., title == ""). Not eligible for auto-labeling.
@@ -114,13 +114,14 @@ public class FolderInfo extends ItemInfo {
     }
 
     /**
-     * Create an app pair, a type of app collection that launches multiple apps into split screen
+     * Create an app pair, a type of app collection that launches multiple apps into
+     * split screen
      */
     public static FolderInfo createAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
         FolderInfo newAppPair = new FolderInfo();
         newAppPair.itemType = LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
-        newAppPair.contents.add(app1);
-        newAppPair.contents.add(app2);
+        newAppPair.add(app1, /* animate */ false);
+        newAppPair.add(app2, /* animate */ false);
         return newAppPair;
     }
 
@@ -188,7 +189,9 @@ public class FolderInfo extends ItemInfo {
 
     public interface FolderListener {
         void onAdd(WorkspaceItemInfo item, int rank);
+
         void onRemove(List<WorkspaceItemInfo> item);
+
         void onItemsChanged(boolean animate);
     }
 
@@ -197,9 +200,9 @@ public class FolderInfo extends ItemInfo {
     }
 
     /**
-     * @param option flag to set or clear
+     * @param option    flag to set or clear
      * @param isEnabled whether to set or clear the flag
-     * @param writer if not null, save changes to the db.
+     * @param writer    if not null, save changes to the db.
      */
     public void setOption(int option, boolean isEnabled, ModelWriter writer) {
         int oldOptions = options;
@@ -237,7 +240,8 @@ public class FolderInfo extends ItemInfo {
     @Override
     public void setTitle(@Nullable CharSequence title, ModelWriter modelWriter) {
         // Updating label from null to empty is considered as false touch.
-        // Retaining null title(ie., UNLABELED state) allows auto-labeling when new items added.
+        // Retaining null title(ie., UNLABELED state) allows auto-labeling when new
+        // items added.
         if (isEmpty(title) && this.title == null) {
             return;
         }
@@ -248,11 +252,10 @@ public class FolderInfo extends ItemInfo {
         }
 
         this.title = title;
-        LabelState newLabelState =
-                title == null ? LabelState.UNLABELED
-                        : title.length() == 0 ? LabelState.EMPTY :
-                                getAcceptedSuggestionIndex().isPresent() ? LabelState.SUGGESTED
-                                        : LabelState.MANUAL;
+        LabelState newLabelState = title == null ? LabelState.UNLABELED
+                : title.length() == 0 ? LabelState.EMPTY
+                        : getAcceptedSuggestionIndex().isPresent() ? LabelState.SUGGESTED
+                                : LabelState.MANUAL;
 
         if (newLabelState.equals(LabelState.MANUAL)) {
             options |= FLAG_MANUAL_FOLDER_NAME;
@@ -269,8 +272,8 @@ public class FolderInfo extends ItemInfo {
      */
     public LabelState getLabelState() {
         return title == null ? LabelState.UNLABELED
-                : title.length() == 0 ? LabelState.EMPTY :
-                        hasOption(FLAG_MANUAL_FOLDER_NAME) ? LabelState.MANUAL
+                : title.length() == 0 ? LabelState.EMPTY
+                        : hasOption(FLAG_MANUAL_FOLDER_NAME) ? LabelState.MANUAL
                                 : LabelState.SUGGESTED;
     }
 
@@ -284,7 +287,8 @@ public class FolderInfo extends ItemInfo {
     }
 
     /**
-     * Returns {@link LauncherAtom.FolderIcon} wrapped as {@link LauncherAtom.ItemInfo} for logging.
+     * Returns {@link LauncherAtom.FolderIcon} wrapped as
+     * {@link LauncherAtom.ItemInfo} for logging.
      */
     @NonNull
     @Override
@@ -305,7 +309,7 @@ public class FolderInfo extends ItemInfo {
         return IntStream.range(0, labels.length)
                 .filter(index -> !isEmpty(labels[index])
                         && newLabel.equalsIgnoreCase(
-                        labels[index].toString()))
+                                labels[index].toString()))
                 .sequential()
                 .findFirst();
     }
@@ -314,7 +318,7 @@ public class FolderInfo extends ItemInfo {
      * Returns {@link FromState} based on current {@link #title}.
      */
     public LauncherAtom.FromState getFromLabelState() {
-        switch (getLabelState()){
+        switch (getLabelState()) {
             case EMPTY:
                 return LauncherAtom.FromState.FROM_EMPTY;
             case MANUAL:

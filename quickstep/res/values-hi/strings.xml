@@ -88,13 +88,14 @@
     <string name="allset_title" msgid="5021126669778966707">"हो गया!"</string>
     <string name="allset_hint" msgid="459504134589971527">"होम पेज पर जाने के लिए, ऊपर की ओर स्वाइप करें"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"होम स्क्रीन पर जाने के लिए, होम बटन पर टैप करें"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"अब <xliff:g id="DEVICE">%1$s</xliff:g> इस्तेमाल के लिए तैयार हैं"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"अब <xliff:g id="DEVICE">%1$s</xliff:g> इस्तेमाल के लिए तैयार है"</string>
     <string name="default_device_name" msgid="6660656727127422487">"डिवाइस"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"सिस्टम नेविगेशन सेटिंग"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"शेयर करें"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट लें"</string>
     <string name="action_split" msgid="2098009717623550676">"स्प्लिट स्क्रीन मोड"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"स्प्लिट स्क्रीन के लिए दूसरे ऐप्लिकेशन पर टैप करें"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"स्प्लिट स्क्रीन मोड से बाहर निकलें"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"स्प्लिट स्क्रीन के लिए, दूसरा ऐप्लिकेशन चुनें"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ऐप्लिकेशन या आपका संगठन इस कार्रवाई की अनुमति नहीं देता"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"क्या आपको अभी नेविगेशन ट्यूटोरियल नहीं देखना है?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"नीचे/दाईं तरफ़ ले जाएं"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# और ऐप्लिकेशन दिखाएं.}one{# और ऐप्लिकेशन दिखाएं.}other{# और ऐप्लिकेशन दिखाएं.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> और <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"डेस्कटॉप पर ऐप्लिकेशन जोड़ा जा रहा है"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"रद्द करें"</string>
 </resources>

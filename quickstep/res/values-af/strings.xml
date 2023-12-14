@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Skermkiekie"</string>
     <string name="action_split" msgid="2098009717623550676">"Verdeel"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Tik op ’n ander app om verdeelde skerm te gebruik"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Verlaat verdeeldeskermkeuse"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Kies nog ’n app as jy verdeelde skerm wil gebruik"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Jou organisasie laat nie hierdie program toe nie"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Slaan navigasietutoriaal oor?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Skuif na regs onder"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Wys nog # app.}other{Wys nog # apps.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> en <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Voeg nou app by werkskerm"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Kanselleer"</string>
 </resources>

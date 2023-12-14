@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Karpetari <xliff:g id="NAME">%1$s</xliff:g> izena eman zaio"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu)"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu edo gehiago)"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Horma-paperak"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Horma-papera eta estiloa"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Editatu hasierako pantaila"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Hasierako pantailaren ezarpenak"</string>

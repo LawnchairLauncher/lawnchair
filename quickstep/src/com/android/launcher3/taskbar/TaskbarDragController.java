@@ -15,16 +15,18 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.NonNull;
+import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
@@ -47,6 +49,7 @@ import android.window.SurfaceSyncGroup;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.internal.logging.InstanceId;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -55,7 +58,6 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragDriver;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -73,6 +75,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.views.BubbleTextHolder;
 import com.android.quickstep.util.LogUtils;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.systemui.shared.recents.model.Task;
@@ -84,7 +87,8 @@ import java.util.Collections;
 import java.util.function.Predicate;
 
 /**
- * Handles long click on Taskbar items to start a system drag and drop operation.
+ * Handles long click on Taskbar items to start a system drag and drop
+ * operation.
  */
 public class TaskbarDragController extends DragController<BaseTaskbarContext> implements
         TaskbarControllers.LoggableTaskbarController {
@@ -129,8 +133,10 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     }
 
     /**
-     * Attempts to start a system drag and drop operation for the given View, using its tag to
+     * Attempts to start a system drag and drop operation for the given View, using
+     * its tag to
      * generate the ClipDescription and Intent.
+     * 
      * @return Whether {@link View#startDragAndDrop} started successfully.
      */
     public boolean startDragOnLongClick(View view) {
@@ -149,6 +155,9 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             View view,
             @Nullable DragPreviewProvider dragPreviewProvider,
             @Nullable Point iconShift) {
+        if (view instanceof BubbleTextHolder) {
+            view = ((BubbleTextHolder) view).getBubbleText();
+        }
         if (!(view instanceof BubbleTextView) || mDisallowLongClick) {
             return false;
         }
@@ -182,7 +191,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         btv.clearPressedBackground();
 
         final DragPreviewProvider previewProvider = dragPreviewProvider == null
-                ? new DragPreviewProvider(btv) : dragPreviewProvider;
+                ? new DragPreviewProvider(btv)
+                : dragPreviewProvider;
         final Drawable drawable = previewProvider.createDrawable();
         final float scale = previewProvider.getScaleAndPosition(drawable, mTempXY);
         int dragLayerX = mTempXY[0];
@@ -193,13 +203,20 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         dragLayerY += dragRect.top;
 
         DragOptions dragOptions = new DragOptions();
-        dragOptions.preDragCondition = null;
-        PopupContainerWithArrow<BaseTaskbarContext> popupContainer =
-                mControllers.taskbarPopupController.showForIcon(btv);
-        if (popupContainer != null) {
-            dragOptions.preDragCondition = popupContainer.createPreDragCondition(false);
-        }
+        // First, see if view is a search result that needs custom pre-drag conditions.
+        dragOptions.preDragCondition = mControllers.taskbarAllAppsController.createPreDragConditionForSearch(btv);
+
         if (dragOptions.preDragCondition == null) {
+            // See if view supports a popup container.
+            PopupContainerWithArrow<BaseTaskbarContext> popupContainer = mControllers.taskbarPopupController
+                    .showForIcon(btv);
+            if (popupContainer != null) {
+                dragOptions.preDragCondition = popupContainer.createPreDragCondition(false);
+            }
+        }
+
+        if (dragOptions.preDragCondition == null) {
+            // Fallback pre-drag condition.
             dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
                 private DragView mDragView;
 
@@ -213,13 +230,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                     mDragView = dragObject.dragView;
 
                     if (!shouldStartDrag(0)) {
-                        mDragView.setOnAnimationEndCallback(() -> {
-                            // Drag might be cancelled during the DragView animation, so check
-                            // mIsPreDrag again.
-                            if (mIsInPreDrag) {
-                                callOnDragStart();
-                            }
-                        });
+                        mDragView.setOnScaleAnimEndCallback(
+                                TaskbarDragController.this::onPreDragAnimationEnd);
                     }
                 }
 
@@ -230,13 +242,15 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             };
         }
 
+        Point dragOffset = dragOptions.preDragCondition.getDragOffset();
         return startDrag(
                 drawable,
                 /* view = */ null,
                 /* originalView = */ btv,
-                dragLayerX,
-                dragLayerY,
-                (View target, DropTarget.DragObject d, boolean success) -> {} /* DragSource */,
+                dragLayerX + dragOffset.x,
+                dragLayerY + dragOffset.y,
+                (View target, DropTarget.DragObject d, boolean success) -> {
+                } /* DragSource */,
                 (ItemInfo) btv.getTag(),
                 dragRect,
                 scale * iconScale,
@@ -281,7 +295,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         mDragObject.xOffset = mMotionDown.x - (dragLayerX + dragRegionLeft);
         mDragObject.yOffset = mMotionDown.y - (dragLayerY + dragRegionTop);
 
-        mDragDriver = DragDriver.create(this, mOptions, /* secondaryEventConsumer = */ ev -> {});
+        mDragDriver = DragDriver.create(this, mOptions, /* secondaryEventConsumer = */ ev -> {
+        });
         if (!mOptions.isAccessibleDrag) {
             mDragObject.stateAnnouncer = DragViewStateAnnouncer.createFor(dragView);
         }
@@ -289,6 +304,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
         mDragObject.originalDragInfo = mDragObject.dragInfo.makeShallowCopy();
+
+        if (mOptions.preDragCondition != null) {
+            dragView.setHasDragOffset(mOptions.preDragCondition.getDragOffset().x != 0
+                    || mOptions.preDragCondition.getDragOffset().y != 0);
+        }
 
         if (dragRegion != null) {
             dragView.setDragRegion(new Rect(dragRegion));
@@ -306,6 +326,15 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         handleMoveEvent(mLastTouch.x, mLastTouch.y);
 
         return dragView;
+    }
+
+    /** Invoked when an animation running as part of pre-drag finishes. */
+    public void onPreDragAnimationEnd() {
+        // Drag might be cancelled during the DragView animation, so check mIsPreDrag
+        // again.
+        if (mIsInPreDrag) {
+            callOnDragStart();
+        }
     }
 
     @Override
@@ -383,6 +412,18 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                                 item.user));
                 intent.putExtra(Intent.EXTRA_PACKAGE_NAME, item.getIntent().getPackage());
                 intent.putExtra(Intent.EXTRA_SHORTCUT_ID, deepShortcutId);
+            } else if (item.itemType == ITEM_TYPE_SEARCH_ACTION) {
+                // TODO(b/289261756): Buggy behavior when split opposite to an existing search
+                // pane.
+                intent.putExtra(
+                        ClipDescription.EXTRA_PENDING_INTENT,
+                        PendingIntent.getActivityAsUser(
+                                mActivity,
+                                /* requestCode= */ 0,
+                                item.getIntent(),
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT,
+                                /* options= */ null,
+                                item.user));
             } else {
                 intent.putExtra(ClipDescription.EXTRA_PENDING_INTENT,
                         launcherApps.getMainActivityLaunchIntent(item.getIntent().getComponent(),
@@ -401,8 +442,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         }
 
         if (clipDescription != null && intent != null) {
-            Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
-                    LogUtils.getShellShareableInstanceId();
+            Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds = LogUtils
+                    .getShellShareableInstanceId();
             // Need to share the same InstanceId between launcher3 and WM Shell (internal).
             InstanceId internalInstanceId = instanceIds.first;
             com.android.launcher3.logging.InstanceId launcherInstanceId = instanceIds.second;
@@ -485,13 +526,18 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     @Override
     protected void endDrag() {
         if (mDisallowGlobalDrag) {
-            // We need to explicitly set deferDragViewCleanupPostAnimation to true here so the
-            // super call doesn't remove it from the drag layer before the animation completes.
+            // We need to explicitly set deferDragViewCleanupPostAnimation to true here so
+            // the
+            // super call doesn't remove it from the drag layer before the animation
+            // completes.
             // This variable gets set in to false in super.dispatchDropComplete() because it
-            // (rightfully so, perhaps) thinks this drag operation has failed, and does its own
+            // (rightfully so, perhaps) thinks this drag operation has failed, and does its
+            // own
             // internal cleanup.
-            // Another way to approach this would be to make all of overview a drop target and
-            // accept the drop as successful and then run the setupReturnDragAnimator to simulate
+            // Another way to approach this would be to make all of overview a drop target
+            // and
+            // accept the drop as successful and then run the setupReturnDragAnimator to
+            // simulate
             // drop failure to the user
             mDragObject.deferDragViewCleanupPostAnimation = true;
 
@@ -576,7 +622,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 syncGroup.add(viewRoot, null /* runnable */);
                 syncGroup.addTransaction(transaction);
                 syncGroup.markSyncReady();
-                // Do this after maybeOnDragEnd(), because we use mReturnAnimator != null to imply
+                // Do this after maybeOnDragEnd(), because we use mReturnAnimator != null to
+                // imply
                 // the drag was canceled rather than successful.
                 mReturnAnimator = null;
             }
@@ -595,7 +642,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                     // We're dragging in taskbarAllApps, we don't have folders or shortcuts
                     return iconView;
                 }
-                // Since all apps closes when the drag starts, target the all apps button instead.
+                // Since all apps closes when the drag starts, target the all apps button
+                // instead.
                 return taskbarViewController.getAllAppsButtonView();
             } else if (item.container >= 0) {
                 // Since folders close when the drag starts, target the folder icon instead.
@@ -642,7 +690,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             final FloatProp mScale = new FloatProp(1f, toScale, 0,
                     ANIM_DURATION_RETURN_ICON_TO_TASKBAR, FAST_OUT_SLOW_IN);
             final FloatProp mAlpha = new FloatProp(1f, toAlpha, 0,
-                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, Interpolators.ACCEL_2);
+                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, Interpolators.ACCELERATE_2);
+
             @Override
             public void onUpdate(float percent, boolean initOnly) {
                 animListener.updateDragShadow(mDx.value, mDy.value, mScale.value, mAlpha.value);
@@ -656,15 +705,19 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
     @Override
     protected float getX(MotionEvent ev) {
-        // We will resize to fill the screen while dragging, so use screen coordinates. This ensures
-        // we start at the correct position even though touch down is on the smaller DragLayer size.
+        // We will resize to fill the screen while dragging, so use screen coordinates.
+        // This ensures
+        // we start at the correct position even though touch down is on the smaller
+        // DragLayer size.
         return ev.getRawX();
     }
 
     @Override
     protected float getY(MotionEvent ev) {
-        // We will resize to fill the screen while dragging, so use screen coordinates. This ensures
-        // we start at the correct position even though touch down is on the smaller DragLayer size.
+        // We will resize to fill the screen while dragging, so use screen coordinates.
+        // This ensures
+        // we start at the correct position even though touch down is on the smaller
+        // DragLayer size.
         return ev.getRawY();
     }
 

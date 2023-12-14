@@ -47,17 +47,17 @@ public class TaskbarAllAppsContainerView extends
     }
 
     @Override
-    protected View inflateSearchBox() {
+    protected View inflateSearchBar() {
         if (isSearchSupported()) {
-            return super.inflateSearchBox();
+            return super.inflateSearchBar();
         }
 
         // Remove top padding of header, since we do not have any search
         mHeader.setPadding(mHeader.getPaddingLeft(), 0,
                 mHeader.getPaddingRight(), mHeader.getPaddingBottom());
 
-        TaskbarAllAppsFallbackSearchContainer searchView =
-                new TaskbarAllAppsFallbackSearchContainer(getContext(), null);
+        TaskbarAllAppsFallbackSearchContainer searchView = new TaskbarAllAppsFallbackSearchContainer(getContext(),
+                null);
         searchView.setId(R.id.search_container_all_apps);
         searchView.setVisibility(GONE);
         return searchView;

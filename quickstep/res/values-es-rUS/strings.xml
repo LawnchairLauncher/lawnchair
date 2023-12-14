@@ -23,7 +23,7 @@
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Formato libre"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"No hay elementos recientes"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Configuración de uso de la app"</string>
-    <string name="recents_clear_all" msgid="5328176793634888831">"Borrar todo"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"Cerrar todo"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Apps recientes"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Se cerró la tarea"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> (<xliff:g id="REMAINING_TIME">%2$s</xliff:g>)"</string>
@@ -65,18 +65,18 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Desliza para ir a la página principal"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Desliza hacia arriba desde la parte inferior de la pantalla. Este gesto te llevará a la pantalla principal."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Desliza hacia arriba desde la parte inferior. Este gesto te llevará siempre a la pantalla principal."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ir a la pantalla principal"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ve a la pantalla principal"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Desliza hacia arriba desde la parte inferior de la pantalla"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"¡Bien hecho!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Asegúrate de deslizar hacia arriba desde el borde inferior de la pantalla"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Intenta mantener presionada la ventana más tiempo antes de soltarla"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Asegúrate de deslizar directamente hacia arriba y, luego, detenerte"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Asegúrate de deslizar directamente hacia arriba y detenerte"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ya sabes cómo usar los gestos. Para desactivarlos, ve a Configuración."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Completaste el gesto para cambiar de app"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza para cambiar de app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Desliza el dedo hacia arriba desde la parte inferior, mantenlo presionado y suéltalo."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para alternar entre apps, desliza el dedo hacia arriba, mantén presionado y, luego, suelta."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Cambiar de app"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Cambia de app"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Desliza hacia arriba desde la parte inferior de la pantalla, mantenla presionada y, luego, suelta"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"¡Bien hecho!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Listo"</string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Captura de pantalla"</string>
     <string name="action_split" msgid="2098009717623550676">"Pantalla dividida"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Presiona otra app para usar la pantalla dividida"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Salir de la selección de pantalla dividida"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Elige otra app para usar la pantalla dividida"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"La app o tu organización no permiten realizar esta acción"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"¿Omitir el instructivo de navegación?"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover a la parte inferior o derecha"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Mostrar # app más.}other{Mostrar # apps más.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> y <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Agregando app al escritorio"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Cancelar"</string>
 </resources>

@@ -60,8 +60,8 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನ ಅಂಚಿನಿಂದ ನೀವು ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"ವಿರಾಮಗೊಳಿಸದೆ ನಿಮ್ಮ ಬೆರಳನ್ನು ಸ್ಕ್ರೀನ್‌ನಿಂದ ಮೇಲೆತ್ತಿ"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"ನೀವು ನೇರವಾಗಿ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"ನೀವು ಗೋ ಹೋಮ್ ಗೆಸ್ಚರ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ. ಮುಂದೆ, ಹಿಂದಕ್ಕೆ ಹೋಗುವುದು ಹೇಗೆ ಎಂದು ತಿಳಿಯಿರಿ."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"ನೀವು ಗೋ ಹೋಮ್ ಗೆಸ್ಚರ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"ನೀವು ಹೋಮ್‌ಗೆ ಹೋಗಿ ಗೆಸ್ಚರ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ. ಮುಂದೆ, ಹಿಂದಕ್ಕೆ ಹೋಗುವುದು ಹೇಗೆ ಎಂದು ತಿಳಿಯಿರಿ."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"ನೀವು ಹೋಮ್‌ಗೆ ಹೋಗಿ ಗೆಸ್ಚರ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಹಿಂತಿರುಗಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನಿಂದ ಮೇಲೆ ಸ್ವೈಪ್ ಮಾಡಿ. ಈ ಗೆಸ್ಚರ್ ಯಾವಾಗಲೂ ನಿಮ್ಮನ್ನು ಹೋಮ್‌ ಸ್ಕ್ರೀನ್‌ಗೆ ಕರೆದೊಯ್ಯುತ್ತದೆ."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 ಬೆರಳುಗಳಿಂದ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ. ಈ ಗೆಸ್ಚರ್ ಯಾವಾಗಲೂ ನಿಮ್ಮನ್ನು ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಕರೆದೊಯ್ಯುತ್ತದೆ."</string>
@@ -87,7 +87,7 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ಟ್ಯುಟೋರಿಯಲ್ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"ಎಲ್ಲವೂ ಸಿದ್ಧವಾಗಿದೆ!"</string>
     <string name="allset_hint" msgid="459504134589971527">"ಮುಖಪುಟಕ್ಕೆ ಹೋಗಲು ಮೇಲೆ ಸ್ವೈಪ್ ಮಾಡಿ"</string>
-    <string name="allset_button_hint" msgid="2395219947744706291">"ನಿಮ್ಮ ಮುಖಪುಟದ ಪರದೆಗೆ ಹೋಗಲು ಮುಖಪುಟ ಬಟನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"ನಿಮ್ಮ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಹೋಗಲು ಹೋಮ್ ಬಟನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"ನಿಮ್ಮ <xliff:g id="DEVICE">%1$s</xliff:g> ಬಳಸುವುದನ್ನು ಪ್ರಾರಂಭಿಸಲು ನೀವು ಸಿದ್ಧರಾಗಿರುವಿರಿ"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ಸಾಧನ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ಸಿಸ್ಟಂ ನ್ಯಾವಿಗೇಶನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</annotation></string>
@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ಸ್ಕ್ರೀನ್‌ಶಾಟ್"</string>
     <string name="action_split" msgid="2098009717623550676">"ವಿಭಜಿಸಿ"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್ ಬಳಸಲು ಬೇರೆ ಆ್ಯಪ್ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್ ಆಯ್ಕೆಯಿಂದ ನಿರ್ಗಮಿಸಿ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"\"ಪರದೆ ಬೇರ್ಪಡಿಸಿ\" ಬಳಸಲು ಬೇರೆ ಆ್ಯಪ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ಆ್ಯಪ್ ಅಥವಾ ನಿಮ್ಮ ಸಂಸ್ಥೆಯು ಈ ಕ್ರಿಯೆಯನ್ನು ಅನುಮತಿಸುವುದಿಲ್ಲ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ನ್ಯಾವಿಗೇಶನ್ ಟ್ಯುಟೋರಿಯಲ್ ಸ್ಕಿಪ್ ಮಾಡಬೇಕೇ?"</string>
@@ -115,7 +116,7 @@
     <string name="taskbar_button_back" msgid="8558862226461164514">"ಹಿಂದೆ"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ಪರಿವರ್ತಕ"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ಇತ್ತೀಚಿನವು"</string>
-    <string name="taskbar_button_notifications" msgid="7471740351507357318">"ಅಧಿಸೂಚನೆಗಳು"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"ನೋಟಿಫಿಕೇಶನ್‌ಗಳು"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ತ್ವರಿತ ಸೆಟ್ಟಿಂಗ್‍ಗಳು"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ಟಾಸ್ಕ್‌ಬಾರ್"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ಟಾಸ್ಕ್‌ಬಾರ್ ತೋರಿಸಲಾಗಿದೆ"</string>
@@ -128,4 +129,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ಕೆಳಗಿನ/ಬಲಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{ಇನ್ನೂ # ಆ್ಯಪ್ ಅನ್ನು ತೋರಿಸಿ.}one{ಇನ್ನೂ # ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}other{ಇನ್ನೂ # ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ಮತ್ತು <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"ಡೆಸ್ಕ್‌ಟಾಪ್‌ಗೆ ಆ್ಯಪ್ ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ರದ್ದುಮಾಡಿ"</string>
 </resources>

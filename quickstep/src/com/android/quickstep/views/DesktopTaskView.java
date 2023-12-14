@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -43,6 +44,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
@@ -51,6 +53,7 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +82,7 @@ public class DesktopTaskView extends TaskView {
 
     private static final String TAG = DesktopTaskView.class.getSimpleName();
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     @NonNull
     private List<Task> mTasks = new ArrayList<>();
@@ -90,6 +93,8 @@ public class DesktopTaskView extends TaskView {
     private final SparseArray<TaskThumbnailView> mSnapshotViewMap = new SparseArray<>();
 
     private final ArrayList<CancellableTask<?>> mPendingThumbnailRequests = new ArrayList<>();
+
+    private final TaskView.FullscreenDrawParams mSnapshotDrawParams;
 
     private View mBackgroundView;
 
@@ -103,6 +108,18 @@ public class DesktopTaskView extends TaskView {
 
     public DesktopTaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        mSnapshotDrawParams = new FullscreenDrawParams(context) {
+            @Override
+            public float computeTaskCornerRadius(Context context) {
+                return QuickStepContract.getWindowCornerRadius(context);
+            }
+
+            @Override
+            public float computeWindowCornerRadius(Context context) {
+                return QuickStepContract.getWindowCornerRadius(context);
+            }
+        };
     }
 
     @Override
@@ -213,7 +230,22 @@ public class DesktopTaskView extends TaskView {
 
     private TaskIdAttributeContainer createAttributeContainer(Task task,
             TaskThumbnailView thumbnailView) {
-        return new TaskIdAttributeContainer(task, thumbnailView, null, STAGE_POSITION_UNDEFINED);
+        return new TaskIdAttributeContainer(task, thumbnailView, createIconView(task),
+                STAGE_POSITION_UNDEFINED);
+    }
+
+    private IconView createIconView(Task task) {
+        IconView iconView = new IconView(mContext);
+        PackageManager pm = mContext.getApplicationContext().getPackageManager();
+        try {
+            IconProvider provider = new IconProvider(mContext);
+            Drawable appIcon = provider.getIcon(pm.getActivityInfo(task.topActivity,
+                    PackageManager.ComponentInfoFlags.of(0)));
+            iconView.setDrawable(appIcon);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Package not found: " + task.topActivity.getPackageName(), e);
+        }
+        return iconView;
     }
 
     @Nullable
@@ -465,14 +497,20 @@ public class DesktopTaskView extends TaskView {
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             TaskThumbnailView thumbnailView = mSnapshotViewMap.valueAt(i);
             thumbnailView.getTaskOverlay().setFullscreenProgress(progress);
-            updateSnapshotRadius();
         }
+        updateSnapshotRadius();
     }
 
     @Override
     protected void updateSnapshotRadius() {
+        super.updateSnapshotRadius();
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
-            mSnapshotViewMap.valueAt(i).setFullscreenParams(mCurrentFullscreenParams);
+            if (i == 0) {
+                // All snapshots share the same params. Only update it with the first snapshot.
+                updateFullscreenParams(mSnapshotDrawParams,
+                        mSnapshotView.getPreviewPositionHelper());
+            }
+            mSnapshotViewMap.valueAt(i).setFullscreenParams(mSnapshotDrawParams);
         }
     }
 

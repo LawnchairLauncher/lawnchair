@@ -15,11 +15,11 @@
  */
 package com.android.quickstep;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_2;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
@@ -75,11 +75,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
+ * Utility class which abstracts out the logical differences between Launcher
+ * and RecentsActivity.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_TYPE>,
-        ACTIVITY_TYPE extends StatefulActivity<STATE_TYPE>> {
+public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_TYPE>, ACTIVITY_TYPE extends StatefulActivity<STATE_TYPE>> {
 
     public final boolean rotationSupportedByActivity;
 
@@ -87,7 +87,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     private STATE_TYPE mTargetState;
 
-    @Nullable private Runnable mOnInitBackgroundStateUICallback = null;
+    @Nullable
+    private Runnable mOnInitBackgroundStateUICallback = null;
 
     protected BaseActivityInterface(boolean rotationSupportedByActivity,
             STATE_TYPE overviewState, STATE_TYPE backgroundState) {
@@ -98,8 +99,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     /**
      * Called when the current gesture transition is cancelled.
-     * @param activityVisible Whether the user can see the changes we make here, so try to animate.
-     * @param endTarget If the gesture ended before we got cancelled, where we were headed.
+     * 
+     * @param activityVisible Whether the user can see the changes we make here, so
+     *                        try to animate.
+     * @param endTarget       If the gesture ended before we got cancelled, where we
+     *                        were headed.
      */
     public void onTransitionCancelled(boolean activityVisible,
             @Nullable GestureState.GestureEndTarget endTarget) {
@@ -134,7 +138,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             PagedOrientationHandler orientationHandler);
 
     /** Called when the animation to home has fully settled. */
-    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {}
+    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {
+    }
 
     public abstract void onAssistantVisibilityChanged(float visibility);
 
@@ -145,9 +150,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             Predicate<Boolean> onInitListener);
 
     /**
-     * Sets a callback to be run when an activity launch happens while launcher is not yet resumed.
+     * Sets a callback to be run when an activity launch happens while launcher is
+     * not yet resumed.
      */
-    public void setOnDeferredActivityLaunchCallback(Runnable r) {}
+    public void setOnDeferredActivityLaunchCallback(Runnable r) {
+    }
 
     @Nullable
     public abstract ACTIVITY_TYPE getCreatedActivity();
@@ -330,7 +337,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /**
-     * Calculates the overview grid non-focused task size for the provided device configuration.
+     * Calculates the overview grid non-focused task size for the provided device
+     * configuration.
      */
     public final void calculateGridTaskSize(Context context, DeviceProfile dp, Rect outRect,
             PagedOrientationHandler orientedState) {
@@ -375,8 +383,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         int minimumHorizontalPadding = 0;
         if (!isGridOnlyOverview) {
             float maxScale = context.getResources().getFloat(R.dimen.overview_modal_max_scale);
-            minimumHorizontalPadding =
-                    Math.round((dp.availableWidthPx - outRect.width() * maxScale) / 2);
+            minimumHorizontalPadding = Math.round((dp.availableWidthPx - outRect.width() * maxScale) / 2);
         }
         calculateTaskSizeInternal(
                 context,
@@ -384,13 +391,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                 dp.overviewTaskMarginPx,
                 claimedSpaceBelow,
                 minimumHorizontalPadding,
-                1f /*maxScale*/,
+                1f /* maxScale */,
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM,
                 outRect);
     }
 
     /**
-     * Called when the gesture ends and the animation starts towards the given target. Used to add
+     * Called when the gesture ends and the animation starts towards the given
+     * target. Used to add
      * an optional additional animation with the same duration.
      */
     public @Nullable Animator getParallelAnimationToLauncher(
@@ -423,9 +431,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract STATE_TYPE stateFromGestureEndTarget(GestureState.GestureEndTarget endTarget);
 
     /**
-     * Called when the animation to the target has finished, but right before updating the state.
-     * @return A View that needs to draw before ending the recents animation to LAST_TASK.
-     * (This is a hack to ensure Taskbar draws its background first to avoid flickering.)
+     * Called when the animation to the target has finished, but right before
+     * updating the state.
+     * 
+     * @return A View that needs to draw before ending the recents animation to
+     *         LAST_TASK.
+     *         (This is a hack to ensure Taskbar draws its background first to avoid
+     *         flickering.)
      */
     public @Nullable View onSettledOnEndTarget(GestureState.GestureEndTarget endTarget) {
         TaskbarUIController taskbarUIController = getTaskbarController();
@@ -456,11 +468,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         void createActivityInterface(long transitionLength);
 
         /**
-         * @param attached Whether to show RecentsView alongside the app window. If false, recents
+         * @param attached Whether to show RecentsView alongside the app window. If
+         *                 false, recents
          *                 will be hidden by some property we can animate, e.g. alpha.
-         * @param animate Whether to animate recents to/from its new attached state.
+         * @param animate  Whether to animate recents to/from its new attached state.
          */
-        default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) { }
+        default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) {
+        }
 
         default boolean isRecentsAttachedToAppWindow() {
             return false;
@@ -471,7 +485,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         }
 
         /** Called when the gesture ends and we know what state it is going towards */
-        default void setEndTarget(GestureState.GestureEndTarget endTarget) { }
+        default void setEndTarget(GestureState.GestureEndTarget endTarget) {
+        }
     }
 
     class DefaultAnimationFactory implements AnimationFactory {
@@ -508,21 +523,24 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             AnimatorPlaybackController controller = pa.createPlaybackController();
             mActivity.getStateManager().setCurrentUserControlledAnimation(controller);
 
-            // Since we are changing the start position of the UI, reapply the state, at the end
+            // Since we are changing the start position of the UI, reapply the state, at the
+            // end
             controller.setEndAction(() -> mActivity.getStateManager().goToState(
                     controller.getInterpolatedProgress() > 0.5 ? mTargetState : mBackgroundState,
                     false));
 
             RecentsView recentsView = mActivity.getOverviewPanel();
-            AnimatorControllerWithResistance controllerWithResistance =
-                    AnimatorControllerWithResistance.createForRecents(controller, mActivity,
+            AnimatorControllerWithResistance controllerWithResistance = AnimatorControllerWithResistance
+                    .createForRecents(controller, mActivity,
                             recentsView.getPagedViewOrientedState(), mActivity.getDeviceProfile(),
                             recentsView, RECENTS_SCALE_PROPERTY, recentsView,
                             TASK_SECONDARY_TRANSLATION);
             mCallback.accept(controllerWithResistance);
 
-            // Creating the activity controller animation sometimes reapplies the launcher state
-            // (because we set the animation as the current state animation), so we reapply the
+            // Creating the activity controller animation sometimes reapplies the launcher
+            // state
+            // (because we set the animation as the current state animation), so we reapply
+            // the
             // attached state here as well to ensure recents is shown/hidden appropriately.
             if (DisplayController.getNavigationMode(mActivity) == NavigationMode.NO_BUTTON) {
                 setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
@@ -548,12 +566,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                     if (attached) {
                         mHasEverAttachedToWindow = true;
                     }
-                }});
+                }
+            });
 
             long animationDuration = animate ? RECENTS_ATTACH_DURATION : 0;
             Animator fadeAnim = mActivity.getStateManager()
                     .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
-            fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
+            fadeAnim.setInterpolator(attached ? INSTANT : ACCELERATE_2);
             fadeAnim.setDuration(animationDuration);
             animatorSet.play(fadeAnim);
 
@@ -584,7 +603,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         }
 
         protected void createBackgroundToOverviewAnim(ACTIVITY_TYPE activity, PendingAnimation pa) {
-            //  Scale down recents from being full screen to being in overview.
+            // Scale down recents from being full screen to being in overview.
             RecentsView recentsView = activity.getOverviewPanel();
             pa.addFloat(recentsView, RECENTS_SCALE_PROPERTY,
                     recentsView.getMaxScaleForFullScreen(), 1, LINEAR);
