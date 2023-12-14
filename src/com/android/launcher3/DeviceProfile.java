@@ -714,7 +714,7 @@ public class DeviceProfile {
         }
 
         // Calculate all of the remaining variables.
-        extraSpace = updateAvailableDimensions(res);
+        extraSpace = updateAvailableDimensions(context);
 
         calculateAndSetWorkspaceVerticalPadding(context, inv, extraSpace);
 
@@ -1006,14 +1006,14 @@ public class DeviceProfile {
     /**
      * Returns the amount of extra (or unused) vertical space.
      */
-    private int updateAvailableDimensions(Resources res) {
+    private int updateAvailableDimensions(Context context) {
         iconCenterVertically = (mIsScalableGrid || mIsResponsiveGrid) && isVerticalBarLayout();
 
         if (mIsResponsiveGrid) {
             iconSizePx = mResponsiveWorkspaceCellSpec.getIconSize();
             iconTextSizePx = mResponsiveWorkspaceCellSpec.getIconTextSize();
             mIconDrawablePaddingOriginalPx = mResponsiveWorkspaceCellSpec.getIconDrawablePadding();
-            updateIconSize(1f, res);
+            updateIconSize(1f, context);
             updateWorkspacePadding();
             return 0;
         }
@@ -1023,7 +1023,7 @@ public class DeviceProfile {
         iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics));
         iconTextSizePx = pxFromSp(invIconTextSizeSp, mMetrics);
 
-        updateIconSize(1f, res);
+        updateIconSize(1f, context);
         updateWorkspacePadding();
 
         // Check to see if the icons fit within the available height.
@@ -1047,7 +1047,7 @@ public class DeviceProfile {
 
         if (shouldScale) {
             float scale = Math.min(scaleX, scaleY);
-            updateIconSize(scale, res);
+            updateIconSize(scale, context);
             extraHeight = Math.max(0, maxHeight - getCellLayoutHeightSpecification());
         }
 
@@ -1093,7 +1093,7 @@ public class DeviceProfile {
      * iconTextSizePx, iconDrawablePaddingPx, cellWidth/Height, allApps* variants,
      * hotseat sizes, workspaceSpringLoadedShrinkFactor, folderIconSizePx, and folderIconOffsetYPx.
      */
-    public void updateIconSize(float scale, Resources res) {
+    public void updateIconSize(float scale, Context context) {
         // Icon scale should never exceed 1, otherwise pixellation may occur.
         iconScale = Math.min(1f, scale);
         cellScaleToFit = scale;
@@ -1213,13 +1213,15 @@ public class DeviceProfile {
         if (mIsResponsiveGrid) {
             updateAllAppsWithResponsiveMeasures();
         } else {
-            updateAllAppsIconSize(scale, res);
+            updateAllAppsIconSize(scale, context.getResources());
         }
         updateAllAppsContainerWidth();
         if (isVerticalLayout && !mIsResponsiveGrid) {
             hideWorkspaceLabelsIfNotEnoughSpace();
         }
-        if (FeatureFlags.enableTwolineAllapps()) {
+        if (FeatureFlags.enableTwolineAllapps()
+                && (!Flags.enableTwolineToggle() || (Flags.enableTwolineToggle()
+                && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(context)))) {
             // Add extra textHeight to the existing allAppsCellHeight.
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }

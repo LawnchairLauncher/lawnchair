@@ -422,8 +422,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return (FeatureFlags.enableTwolineAllapps() && isCurrentLanguageEnglish())
-                && (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW);
+        return FeatureFlags.enableTwolineAllapps() && isCurrentLanguageEnglish()
+                && (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW)
+                && (!Flags.enableTwolineToggle() || (Flags.enableTwolineToggle()
+                && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(getContext())));
     }
 
     protected boolean isCurrentLanguageEnglish() {

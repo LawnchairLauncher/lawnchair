@@ -16,6 +16,13 @@ flag {
 }
 
 flag {
+    name: "enable_twoline_toggle"
+    namespace: "launcher"
+    description: "Enables visibility in home settings to see the toggle to turn on/off two lines in all apps."
+    bug: "316027081"
+}
+
+flag {
     name: "enable_grid_only_overview"
     namespace: "launcher"
     description: "Enable a grid-only overview without a focused task."

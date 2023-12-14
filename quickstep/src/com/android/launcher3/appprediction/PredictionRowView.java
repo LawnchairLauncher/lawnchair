@@ -31,6 +31,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Flags;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
@@ -137,7 +138,9 @@ public class PredictionRowView<T extends Context & ActivityContext>
         int totalHeight = iconHeight + iconPadding + textHeight + mVerticalPadding * 2;
         // Prediction row height will be 4dp bigger than the regular apps in A-Z list when two line
         // is not enabled. Otherwise, the extra height will increase by just the textHeight.
-        int extraHeight = FeatureFlags.enableTwolineAllapps() ? textHeight : mTopRowExtraHeight;
+        int extraHeight = (FeatureFlags.enableTwolineAllapps() && (!Flags.enableTwolineToggle()
+                || (Flags.enableTwolineToggle() && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(
+                        getContext())))) ? textHeight : mTopRowExtraHeight;
         totalHeight += extraHeight;
         return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
