@@ -397,11 +397,6 @@ public final class FeatureFlags {
                     + "waiting for SystemUI and then merging the SystemUI progress whenever we "
                     + "start receiving the events");
 
-    // TODO(Block 24): Clean up flags
-    public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(270393455,
-            "ENABLE_NEW_MIGRATION_LOGIC", ENABLED,
-            "Enable the new grid migration logic, keeping pages when src < dest");
-
     // TODO(Block 25): Clean up flags
     public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(270396257,
             "ENABLE_NEW_GESTURE_NAV_TUTORIAL", ENABLED,
