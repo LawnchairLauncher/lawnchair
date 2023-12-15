@@ -249,7 +249,7 @@ class SplitAnimationControllerTest {
         val spySplitAnimationController = spy(splitAnimationController)
         doNothing()
             .whenever(spySplitAnimationController)
-            .composeIconSplitLaunchAnimator(any(), any(), any(), any(), any(), any())
+            .composeIconSplitLaunchAnimator(any(), any(), any(), any())
 
         spySplitAnimationController.playSplitLaunchAnimation(
             null /* launchingTaskView */,
@@ -267,7 +267,7 @@ class SplitAnimationControllerTest {
         )
 
         verify(spySplitAnimationController)
-            .composeIconSplitLaunchAnimator(any(), any(), any(), any(), any(), any())
+            .composeIconSplitLaunchAnimator(any(), any(), any(), any())
     }
 
     @Test

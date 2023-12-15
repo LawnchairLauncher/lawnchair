@@ -23,6 +23,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.ActivityManager.RunningTaskInfo
+import android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.graphics.RectF
@@ -31,9 +32,11 @@ import android.view.RemoteAnimationTarget
 import android.view.SurfaceControl
 import android.view.SurfaceControl.Transaction
 import android.view.View
-import android.view.WindowManager
+import android.view.WindowManager.TRANSIT_OPEN
+import android.view.WindowManager.TRANSIT_TO_FRONT
 import android.window.TransitionInfo
 import android.window.TransitionInfo.Change
+import android.window.WindowContainerToken
 import androidx.annotation.VisibleForTesting
 import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
@@ -387,14 +390,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 "trying to launch an app pair icon, but encountered an unexpected null"
             }
 
-            composeIconSplitLaunchAnimator(
-                launchingIconView,
-                initialTaskId,
-                secondTaskId,
-                info,
-                t,
-                finishCallback
-            )
+            composeIconSplitLaunchAnimator(launchingIconView, info, t, finishCallback)
         } else {
             // Fallback case: simple fade-in animation
             check(info != null && t != null) {
@@ -461,12 +457,27 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     /**
      * When the user taps an app pair icon to launch split, this will play the tasks' launch
      * animation from the position of the icon.
+     *
+     * To find the root shell leash that we want to fade in, we do the following:
+     * The Changes we receive in transitionInfo are structured like this
+     *
+     *     Root (grandparent)
+     *     |
+     *     |--> Split Root 1 (left/top side parent) (WINDOWING_MODE_MULTI_WINDOW)
+     *     |   |
+     *     |    --> App 1 (left/top side child) (WINDOWING_MODE_MULTI_WINDOW)
+     *     |--> Divider
+     *     |--> Split Root 2 (right/bottom side parent) (WINDOWING_MODE_MULTI_WINDOW)
+     *         |
+     *          --> App 2 (right/bottom side child) (WINDOWING_MODE_MULTI_WINDOW)
+     *
+     * We want to animate the Root (grandparent) so that it affects both apps and the divider.
+     * To do this, we find one of the nodes with WINDOWING_MODE_MULTI_WINDOW (one of the
+     * left-side ones, for simplicity) and traverse the tree until we find the grandparent.
      */
     @VisibleForTesting
     fun composeIconSplitLaunchAnimator(
         launchingIconView: AppPairIcon,
-        initialTaskId: Int,
-        secondTaskId: Int,
         transitionInfo: TransitionInfo,
         t: Transaction,
         finishCallback: Runnable
@@ -481,45 +492,46 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         progressUpdater.setDuration(timings.getDuration().toLong())
         progressUpdater.interpolator = Interpolators.LINEAR
 
-        // Find the root shell leash that we want to fade in (parent of both app windows and
-        // the divider). For simplicity, we search using the initialTaskId.
-        var rootShellLayer: SurfaceControl? = null
-        var dividerPos = 0
+        var rootCandidate: Change? = null
 
         for (change in transitionInfo.changes) {
             val taskInfo: RunningTaskInfo = change.taskInfo ?: continue
-            val taskId = taskInfo.taskId
-            val mode = change.mode
 
-            if (taskId == initialTaskId || taskId == secondTaskId) {
-                check(
-                    mode == WindowManager.TRANSIT_OPEN || mode == WindowManager.TRANSIT_TO_FRONT
-                ) {
-                    "Expected task to be showing, but it is $mode"
+            // TODO (b/316490565): Replace this logic when SplitBounds is available to
+            //  startAnimation() and we can know the precise taskIds of launching tasks.
+            // Find a change that has WINDOWING_MODE_MULTI_WINDOW.
+            if (taskInfo.windowingMode == WINDOWING_MODE_MULTI_WINDOW &&
+                (change.mode == TRANSIT_OPEN || change.mode == TRANSIT_TO_FRONT)) {
+                // Check if it is a left/top app.
+                val isLeftTopApp =
+                    (dp.isLeftRightSplit && change.endAbsBounds.left == 0) ||
+                        (!dp.isLeftRightSplit && change.endAbsBounds.top == 0)
+                if (isLeftTopApp) {
+                    // Found one!
+                    rootCandidate = change
+                    break
                 }
-            }
-
-            if (taskId == initialTaskId) {
-                var splitRoot1 = change
-                val parentToken = change.parent
-                if (parentToken != null) {
-                    splitRoot1 = transitionInfo.getChange(parentToken) ?: change
-                }
-
-                val topLevelToken = splitRoot1.parent
-                if (topLevelToken != null) {
-                    rootShellLayer = transitionInfo.getChange(topLevelToken)?.leash
-                }
-
-                dividerPos =
-                    if (dp.isLeftRightSplit) change.endAbsBounds.right
-                    else change.endAbsBounds.bottom
             }
         }
 
-        check(rootShellLayer != null) {
-            "Could not find a TransitionInfo.Change matching the initialTaskId"
+        // If we could not find a proper root candidate, something went wrong.
+        check(rootCandidate != null) { "Could not find a split root candidate" }
+
+        // Find the place where our left/top app window meets the divider (used for the
+        // launcher side animation)
+        val dividerPos =
+            if (dp.isLeftRightSplit) rootCandidate.endAbsBounds.right
+            else rootCandidate.endAbsBounds.bottom
+
+        // Recurse up the tree until parent is null, then we've found our root.
+        var parentToken: WindowContainerToken? = rootCandidate.parent
+        while (parentToken != null) {
+            rootCandidate = transitionInfo.getChange(parentToken) ?: break
+            parentToken = rootCandidate.parent
         }
+
+        // Make sure nothing weird happened, like getChange() returning null.
+        check(rootCandidate != null) { "Failed to find a root leash" }
 
         // Shell animation: the apps are revealed toward end of the launch animation
         progressUpdater.addUpdateListener { valueAnimator: ValueAnimator ->
@@ -532,7 +544,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 )
 
             // Set the alpha of the shell layer (2 apps + divider)
-            t.setAlpha(rootShellLayer, progress)
+            t.setAlpha(rootCandidate.leash, progress)
             t.apply()
         }
 
@@ -651,9 +663,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             // Find the target tasks' root tasks since those are the split stages that need to
             // be animated (the tasks themselves are children and thus inherit animation).
             if (taskId == initialTaskId || taskId == secondTaskId) {
-                check(
-                    mode == WindowManager.TRANSIT_OPEN || mode == WindowManager.TRANSIT_TO_FRONT
-                ) {
+                check(mode == TRANSIT_OPEN || mode == TRANSIT_TO_FRONT) {
                     "Expected task to be showing, but it is $mode"
                 }
             }
