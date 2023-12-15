@@ -17,11 +17,13 @@ package com.android.launcher3
 
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Point
 import android.graphics.Rect
 import android.util.DisplayMetrics
 import android.view.Surface
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
@@ -30,6 +32,8 @@ import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.rule.TestStabilityRule
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
+import com.android.wm.shell.Flags
+import com.google.common.truth.Truth
 import java.io.BufferedReader
 import java.io.File
 import java.io.PrintWriter
@@ -49,11 +53,18 @@ import org.mockito.kotlin.whenever
  * For an implementation that mocks InvariantDeviceProfile, use [FakeInvariantDeviceProfileTest]
  */
 abstract class AbstractDeviceProfileTest {
+    protected val testContext: Context = InstrumentationRegistry.getInstrumentation().context
     protected lateinit var context: SandboxContext
     protected open val runningContext: Context = ApplicationProvider.getApplicationContext()
     private val displayController: DisplayController = mock()
     private val windowManagerProxy: WindowManagerProxy = mock()
     private val launcherPrefs: LauncherPrefs = mock()
+    private val allowLeftRightSplitInPortrait: Boolean = initAllowLeftRightSplitInPortrait()
+    fun initAllowLeftRightSplitInPortrait() : Boolean {
+        val res = Resources.getSystem();
+        val resId = res.getIdentifier("config_leftRightSplitInPortrait", "bool", "android")
+        return Flags.enableLeftRightSplitInPortrait() && resId > 0 && res.getBoolean(resId)
+    }
 
     @Rule @JvmField val testStabilityRule = TestStabilityRule()
 
@@ -304,6 +315,25 @@ abstract class AbstractDeviceProfileTest {
         val info = spy(DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache))
         whenever(displayController.info).thenReturn(info)
         whenever(info.isTransientTaskbar).thenReturn(isGestureMode)
+    }
+
+    /** Asserts that the given device profile matches a previously dumped device profile state. */
+    protected fun assertDump(dp: DeviceProfile, folderName: String, filename: String) {
+        val dump = dump(context!!, dp, "${folderName}_$filename.txt")
+        var expected = readDumpFromAssets(testContext, "$folderName/$filename.txt")
+
+        // TODO(b/315230497): We don't currently have device-specific device profile dumps, so just
+        //  update the result before we do the comparison
+        if (allowLeftRightSplitInPortrait) {
+            val isLeftRightSplitInPortrait = when {
+                allowLeftRightSplitInPortrait && dp.isTablet -> !dp.isLandscape
+                else -> dp.isLandscape
+            }
+            expected = expected.replace(Regex("isLeftRightSplit:\\w+"),
+                    "isLeftRightSplit:$isLeftRightSplitInPortrait")
+        }
+
+        Truth.assertThat(dump).isEqualTo(expected)
     }
 
     /** Create a new dump of DeviceProfile, saves to a file in the device and returns it */
