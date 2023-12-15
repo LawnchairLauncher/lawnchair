@@ -203,12 +203,7 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
         val newBackgroundHeight =
             mapRange(progress, backgroundHeightWhileAnimating, maxTransientTaskbarHeight)
         val fullWidth = transientBackgroundBounds.width()
-
-        // .9f is here to restrict min width of the background while animating, so transient
-        // background keeps it pill shape until animation end.
-        val animationWidth =
-            if (DisplayController.isTransientTaskbar(context)) fullWidth.toFloat() * .9f
-            else fullWidth.toFloat()
+        val animationWidth = context.currentTaskbarWidth
         val backgroundWidthWhileAnimating =
             if (isAnimatingPinning) animationWidth else stashedHandleWidth.toFloat()
 
