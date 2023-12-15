@@ -62,7 +62,7 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
                 override fun getLayoutManager(): RecyclerView.LayoutManager? = null
             }
 
-        executorRunnable?.cancel(/* interrupt= */ true)
+        executorRunnable?.cancel(/* interrupt= */ false)
         executorRunnable =
             ExecutorRunnable.createAndExecute(
                 VIEW_PREINFLATION_EXECUTOR,

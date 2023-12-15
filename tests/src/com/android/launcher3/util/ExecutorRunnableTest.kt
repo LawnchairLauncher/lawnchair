@@ -66,7 +66,7 @@ class ExecutorRunnableTest {
 
     @Test
     fun run_and_cancel_cancelCallback() {
-        underTest.cancel(true)
+        underTest.cancel(false)
         awaitAllExecutorCompleted()
 
         assertFalse(isCallbackExecuted)
@@ -77,7 +77,7 @@ class ExecutorRunnableTest {
     fun run_and_cancelAfterCompletion_executeAll() {
         awaitAllExecutorCompleted()
 
-        underTest.cancel(true)
+        underTest.cancel(false)
 
         assertTrue(isTaskExecuted)
         assertTrue(isCallbackExecuted)
