@@ -218,8 +218,15 @@ public class FallbackRecentsTest {
     }
 
     private BaseOverview pressHomeAndGoToOverview() {
-        mDevice.pressHome();
+        pressHomeAndWaitForOverviewClose();
         return mLauncher.getLaunchedAppState().switchToOverview();
+    }
+
+    private void pressHomeAndWaitForOverviewClose() {
+        mDevice.pressHome();
+        Wait.atMost("Recents activity didn't stop",
+                () -> getFromRecents(recents -> !recents.isStarted()),
+                DEFAULT_UI_TIMEOUT, mLauncher);
     }
 
     // b/143488140
