@@ -256,7 +256,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         mAccessibilityManager = mActivity.getSystemService(AccessibilityManager.class);
 
-        if (isPhoneMode()) {
+        if (mActivity.isPhoneMode()) {
             mUnstashedHeight = mActivity.getResources().getDimensionPixelSize(
                     R.dimen.taskbar_phone_size);
             mStashedHeight = mActivity.getResources().getDimensionPixelSize(
@@ -316,7 +316,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, isStashedInAppAuto);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
-        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, isPhoneMode()
+        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, mActivity.isPhoneMode()
                 && !mActivity.isThreeButtonNav());
         // For now, assume we're in an app, since LauncherTaskbarUIController won't be able to tell
         // us that we're paused until a bit later. This avoids flickering upon recreating taskbar.
@@ -386,13 +386,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         return (hasAnyFlag(FLAG_IN_STASHED_LAUNCHER_STATE) && supportsVisualStashing());
     }
 
-    /**
-     * @return {@code true} if we're not on a large screen AND using gesture nav
-     */
-    private boolean isPhoneMode() {
-        return TaskbarManager.isPhoneMode(mActivity.getDeviceProfile());
-    }
-
     private boolean hasAnyFlag(int flagMask) {
         return hasAnyFlag(mState, flagMask);
     }
@@ -428,7 +421,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * @see android.view.WindowInsets.Type#systemBars()
      */
     public int getContentHeightToReportToApps() {
-        if ((isPhoneMode() && !mActivity.isThreeButtonNav())
+        if ((mActivity.isPhoneMode() && !mActivity.isThreeButtonNav())
                 || DisplayController.isTransientTaskbar(mActivity)) {
             return getStashedHeight();
         }
@@ -579,7 +572,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mAnimator = new AnimatorSet();
         addJankMonitorListener(mAnimator, /* appearing= */ !mIsStashed);
         boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
-        final float stashTranslation = isPhoneMode() || isTransientTaskbar
+        final float stashTranslation = mActivity.isPhoneMode() || isTransientTaskbar
                 ? 0
                 : (mUnstashedHeight - mStashedHeight);
 
@@ -651,7 +644,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
             firstHalfAnimatorSet.playTogether(
                     mIconAlphaForStash.animateToValue(0),
-                    mIconScaleForStash.animateToValue(isPhoneMode() ?
+                    mIconScaleForStash.animateToValue(mActivity.isPhoneMode() ?
                             0 : STASHED_TASKBAR_SCALE)
             );
             secondHalfAnimatorSet.playTogether(
@@ -948,7 +941,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return false;
         }
         return (mIsImeShowing || mIsImeSwitcherShowing) &&
-                !(isPhoneMode() && mActivity.isThreeButtonNav()
+                !(mActivity.isPhoneMode() && mActivity.isThreeButtonNav()
                         && mActivity.getDeviceProfile().isLandscape);
     }
 

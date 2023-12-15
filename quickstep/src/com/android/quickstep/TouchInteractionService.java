@@ -974,8 +974,8 @@ public class TouchInteractionService extends Service {
             TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
             if (tac != null && !(base instanceof AssistantInputConsumer)) {
                 // Present always on large screen or on small screen w/ flag
-                DeviceProfile dp = tac.getDeviceProfile();
-                boolean useTaskbarConsumer = dp.isTaskbarPresent && !TaskbarManager.isPhoneMode(dp)
+                boolean useTaskbarConsumer = tac.getDeviceProfile().isTaskbarPresent
+                        && !tac.isPhoneMode()
                         && !tac.isInStashedLauncherState();
                 if (canStartSystemGesture && useTaskbarConsumer) {
                     reasonString.append(NEWLINE_PREFIX)

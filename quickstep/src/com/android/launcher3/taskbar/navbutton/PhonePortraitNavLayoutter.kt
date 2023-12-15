@@ -22,9 +22,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
-import com.android.launcher3.taskbar.TaskbarManager
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.util.DimensionUtils
 import com.android.systemui.shared.rotation.RotationButton
 
@@ -47,11 +46,11 @@ class PhonePortraitNavLayoutter(
             a11yButton
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
+    override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         // TODO(b/230395757): Polish pending, this is just to make it usable
         val taskbarDimensions =
-            DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
-                    TaskbarManager.isPhoneMode(dp))
+            DimensionUtils.getTaskbarPhoneDimensions(context.deviceProfile, resources,
+                    context.isPhoneMode)
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
 
         // Ensure order of buttons is correct

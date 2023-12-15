@@ -107,7 +107,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         mControllers = controllers;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         Resources resources = mActivity.getResources();
-        if (isPhoneGestureNavMode(mActivity.getDeviceProfile())) {
+        if (mActivity.isPhoneGestureNavMode()) {
             mTaskbarSize = resources.getDimensionPixelSize(R.dimen.taskbar_phone_size);
             mStashedHandleWidth =
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_small_screen);
@@ -120,7 +120,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         mStashedHandleView.getLayoutParams().height = mTaskbarSize + taskbarBottomMargin;
 
         mTaskbarStashedHandleAlpha.get(ALPHA_INDEX_STASHED).setValue(
-                isPhoneGestureNavMode(deviceProfile) ? 1 : 0);
+                mActivity.isPhoneGestureNavMode() ? 1 : 0);
         mTaskbarStashedHandleHintScale.updateValue(1f);
 
         final int stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
@@ -148,7 +148,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
             view.setPivotY(stashedCenterY);
         });
         initRegionSampler();
-        if (isPhoneGestureNavMode(deviceProfile)) {
+        if (mActivity.isPhoneGestureNavMode()) {
             onIsStashedChanged(true);
         }
     }
@@ -182,10 +182,6 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public void onDestroy() {
         mRegionSamplingHelper.stopAndDestroy();
         mRegionSamplingHelper = null;
-    }
-
-    private boolean isPhoneGestureNavMode(DeviceProfile deviceProfile) {
-        return TaskbarManager.isPhoneMode(deviceProfile) && !mActivity.isThreeButtonNav();
     }
 
     public MultiPropertyFactory<View> getStashedHandleAlpha() {

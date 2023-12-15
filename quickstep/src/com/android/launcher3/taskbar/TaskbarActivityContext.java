@@ -214,7 +214,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         Context c = getApplicationContext();
         mWindowManager = c.getSystemService(WindowManager.class);
 
-        boolean phoneMode = TaskbarManager.isPhoneMode(mDeviceProfile);
+        boolean phoneMode = isPhoneMode();
         mLeftCorner = phoneMode
                 ? null
                 : display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
@@ -388,6 +388,28 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
+     * @return {@code true} if the device profile isn't a large screen profile and we are using a
+     * single window for taskbar and navbar.
+     */
+    public boolean isPhoneMode() {
+        return ENABLE_TASKBAR_NAVBAR_UNIFICATION && mDeviceProfile.isPhone;
+    }
+
+    /**
+     * @return {@code true} if {@link #isPhoneMode()} is true and we're using 3 button-nav
+     */
+    public boolean isPhoneButtonNavMode() {
+        return isPhoneMode() && isThreeButtonNav();
+    }
+
+    /**
+     * @return {@code true} if {@link #isPhoneMode()} is true and we're using gesture nav
+     */
+    public boolean isPhoneGestureNavMode() {
+        return isPhoneMode() && !isThreeButtonNav();
+    }
+
+    /**
      * Show Taskbar upon receiving broadcast
      */
     public void showTaskbarFromBroadcast() {
@@ -464,9 +486,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         windowLayoutParams.privateFlags =
                 WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
         windowLayoutParams.accessibilityTitle = getString(
-                TaskbarManager.isPhoneMode(mDeviceProfile)
-                        ? R.string.taskbar_phone_a11y_title
-                        : R.string.taskbar_a11y_title);
+                isPhoneMode() ? R.string.taskbar_phone_a11y_title : R.string.taskbar_a11y_title);
 
         return windowLayoutParams;
     }
@@ -480,8 +500,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL;
         WindowManager.LayoutParams windowLayoutParams =
                 createDefaultWindowLayoutParams(windowType, TaskbarActivityContext.WINDOW_TITLE);
-        boolean isPhoneNavMode = TaskbarManager.isPhoneButtonNavMode(this);
-        if (!isPhoneNavMode) {
+        if (!isPhoneButtonNavMode()) {
             return windowLayoutParams;
         }
 
