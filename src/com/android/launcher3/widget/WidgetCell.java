@@ -147,6 +147,11 @@ public class WidgetCell extends LinearLayout {
         return mAppWidgetHostViewScale;
     }
 
+    /** Returns the {@link WidgetItem} for this {@link WidgetCell}. */
+    public WidgetItem getWidgetItem() {
+        return mItem;
+    }
+
     /**
      * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
      */
