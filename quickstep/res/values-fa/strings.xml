@@ -109,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"برای استفاده هم‌زمان از ۲ برنامه، یک برنامه را به کناری بکشید"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"برای نمایش «نوار وظیفه»، انگشتتان را آهسته به‌بالا بکشید"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"براساس روال‌هایتان، پیشنهاد برنامه دریافت کنید"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"برای سنجاق کردن «نوار وظیفه»، جداکننده را چند ثانیه فشار دهید"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"جداکننده را چند ثانیه فشار دهید تا «نوار وظیفه» سنجاق شود"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"با «نوار وظیفه» می‌توانید کارهای بیشتر انجام دهید"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"بستن"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"تمام"</string>

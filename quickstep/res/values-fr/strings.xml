@@ -109,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Faites glisser une appli sur le côté pour en utiliser 2 à la fois"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Balayez lentement vers haut pour afficher barre des tâches"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtenez des suggestions d\'applis basées sur vos habitudes"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Appui de manière prolongée sur le séparateur pour épingler la barre des tâches"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Appui prolongé sur le séparateur pour épingler la barre des tâches"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Faites-en plus avec la barre des tâches"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fermer"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"OK"</string>
