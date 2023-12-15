@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.util.FloatProperty;
 import android.view.View;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 
 /**
@@ -97,13 +98,22 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
         mContainer = container;
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mMaxAlpha = Color.alpha(color);
         mPaint.setColor(0xFF000000 | color);
+        if (Flags.enableFocusOutline()) {
+            mPaint.setStyle(Paint.Style.STROKE);
+            mPaint.setStrokeWidth(container.getResources().getDimensionPixelSize(
+                    R.dimen.focus_outline_stroke_width));
+            mRadius = container.getResources().getDimensionPixelSize(
+                    R.dimen.focus_outline_radius);
+        } else {
+            mPaint.setStyle(Paint.Style.FILL);
+            mRadius = container.getResources().getDimensionPixelSize(
+                    R.dimen.grid_visualization_rounding_radius);
+        }
+        mMaxAlpha = Color.alpha(color);
 
         setAlpha(0);
         mShift = 0;
-        mRadius = container.getResources().getDimensionPixelSize(
-                R.dimen.grid_visualization_rounding_radius);
     }
 
     protected void setAlpha(float alpha) {

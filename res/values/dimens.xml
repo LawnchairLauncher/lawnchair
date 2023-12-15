@@ -436,6 +436,9 @@
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
     <dimen name="split_instructions_start_margin_cancel">8dp</dimen>
 
+    <dimen name="focus_outline_radius">16dp</dimen>
+    <dimen name="focus_outline_stroke_width">3dp</dimen>
+
     <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">16dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>

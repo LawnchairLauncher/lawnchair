@@ -25,6 +25,7 @@
     <color name="uninstall_target_hover_tint">#FFF0592B</color>
 
     <color name="focused_background">#80c6c5c5</color>
+    <color name="focus_outline_color">@color/material_color_on_secondary_container</color>
 
     <color name="default_shadow_color_no_alpha">#FF000000</color>
 
