@@ -107,7 +107,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
+            Consumer<Array<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
@@ -148,7 +148,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals(
                     "ComponentName package mismatched",
                     it[0].key.baseIntent.component?.packageName,
@@ -201,7 +201,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
+            Consumer<Array<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
@@ -244,7 +244,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals(
                     "ComponentName package mismatched",
                     it[0].key.baseIntent.component?.packageName,
@@ -298,7 +298,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals(
                     "ComponentName package mismatched",
                     it[0].key.baseIntent.component?.packageName,
@@ -350,7 +350,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals("Expected array length 2", 2, it.size)
                 assertNull("No tasks should have matched", it[0] /*task*/)
                 assertEquals(
@@ -403,7 +403,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals("Expected array length 2", 2, it.size)
                 assertEquals(
                     "ComponentName package mismatched",
@@ -459,7 +459,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals("Expected array length 2", 2, it.size)
                 assertEquals(
                     "ComponentName package mismatched",
@@ -532,8 +532,8 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
-                assertEquals("Expected array length 1", 1, it.size)
+            Consumer<Array<Task>> {
+                assertEquals("Expected array length 2", 2, it.size)
                 assertEquals("Found wrong task", it[0], groupTask2.task1)
             }
 

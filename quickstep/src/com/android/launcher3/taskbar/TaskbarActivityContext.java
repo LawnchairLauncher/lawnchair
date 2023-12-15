@@ -1125,7 +1125,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 componentKeys,
                 findExactPairMatch,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         if (foundTaskView != null
