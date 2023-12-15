@@ -52,6 +52,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, recreate)
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, recreate)
     val feedProvider = StringPref("pref_feedProvider", "", recreate)
+    val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
     val launcherTheme = StringPref("pref_launcherTheme", "system")
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
