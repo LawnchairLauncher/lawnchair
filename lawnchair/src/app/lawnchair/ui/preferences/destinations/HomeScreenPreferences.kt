@@ -86,7 +86,7 @@ fun HomeScreenPreferences() {
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
-            if (feedAvailable && !BuildConfig.DEBUG) {
+            if (feedAvailable && prefs2.enableFeed.getAdapter().state.value && !BuildConfig.DEBUG) {
                 FeedPreference(context = context)
             }
             HomeScreenTextColorPreference()
