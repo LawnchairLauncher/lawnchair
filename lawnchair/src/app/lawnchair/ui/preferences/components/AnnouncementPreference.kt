@@ -49,12 +49,10 @@ fun AnnouncementPreference() {
 @Composable
 private fun AnnouncementPreference(
     announcement: Announcement,
-    modifier: Modifier = Modifier,
 ) {
     AnnouncementPreference(
         text = announcement.text,
         url = announcement.url,
-        modifier = modifier,
     )
 }
 
@@ -62,7 +60,6 @@ private fun AnnouncementPreference(
 private fun AnnouncementPreference(
     text: String,
     url: String,
-    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val hasLink = url.isNotBlank()
@@ -73,7 +70,7 @@ private fun AnnouncementPreference(
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         PreferenceTemplate(
-            modifier = modifier
+            modifier = Modifier
                 .addIf(hasLink) {
                     clickable {
                         val webpage = Uri.parse(url)
