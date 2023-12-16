@@ -52,12 +52,12 @@ jobs:
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
       - name: Build debug APK
-        run: ./gradlew assembleLawnWithQuickstepMarketDebug
+        run: ./gradlew assembleLawnWithQuickstepFossDebug assembleLawnWithQuickstepMarketDebug
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: Debug APK
-          path: build/outputs/apk/lawnWithQuickstepFoss/debug/*.apk
+          path: build/outputs/apk/**/*.apk
 
   check-style:
     runs-on: ubuntu-latest
