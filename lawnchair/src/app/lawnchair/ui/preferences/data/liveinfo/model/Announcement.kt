@@ -7,6 +7,7 @@ data class Announcement(
     val text: String,
     val url: String,
     val active: Boolean,
+    val test: Boolean,
 ) {
 
     companion object {
@@ -20,6 +21,7 @@ data class Announcement(
                             text = it.getString("text"),
                             url = it.getString("url"),
                             active = it.getBoolean("active"),
+                            test = it.getBoolean("test"),
                         )
                     }
             } catch (e: Exception) {
@@ -40,7 +42,8 @@ data class Announcement(
         {
             "text": "$text",
             "url": "$url",
-            "active": $active
+            "active": $active,
+            "test": $test
         }
     """.trimIndent()
 }
