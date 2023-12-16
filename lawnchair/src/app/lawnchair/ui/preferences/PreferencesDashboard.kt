@@ -192,7 +192,7 @@ fun PreferencesDebugWarning() {
     ) {
         WarningPreference(
             // Don't move to strings.xml, no need to translate this warning
-            text = "Warning: You are currently using a development build. Use at your own risk!",
+            text = "You are currently using a development build. Use at your own risk!",
         )
     }
 }
