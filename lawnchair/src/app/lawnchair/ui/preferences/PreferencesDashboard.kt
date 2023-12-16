@@ -60,13 +60,6 @@ fun PreferencesDashboard() {
     ) {
         AnnouncementPreference()
 
-        if (BuildConfig.DEBUG) PreferencesDebugWarning()
-
-        if (!context.isDefaultLauncher()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            PreferencesSetDefaultLauncherWarning()
-        }
-
         PreferenceCategory(
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),
@@ -131,6 +124,16 @@ fun PreferencesDashboard() {
             iconResource = R.drawable.ic_about,
             route = Routes.ABOUT,
         )
+
+        if (BuildConfig.DEBUG) {
+            Spacer(modifier = Modifier.height(16.dp))
+            PreferencesDebugWarning()
+        }
+
+        if (!context.isDefaultLauncher()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            PreferencesSetDefaultLauncherWarning()
+        }
     }
 }
 
