@@ -40,6 +40,8 @@ import app.lawnchair.ui.preferences.components.PreferenceDivider
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.WarningPreference
+import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
+import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
@@ -48,6 +50,9 @@ import com.android.launcher3.R
 @Composable
 fun PreferencesDashboard() {
     val context = LocalContext.current
+    val liveInformationManager = liveInformationManager()
+    SyncLiveInformation(liveInformationManager)
+
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
         verticalArrangement = Arrangement.Top,

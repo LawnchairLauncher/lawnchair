@@ -2,6 +2,8 @@ package app.lawnchair.ui.preferences.data.liveinfo
 
 
 import android.util.Log
+import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
+import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
 import app.lawnchair.util.kotlinxJson
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.Dispatchers
@@ -28,11 +30,11 @@ suspend fun getLiveInformation(): LiveInformation? = withContext(Dispatchers.IO)
             val responseBody = response.body()?.string() ?: return@withContext null
 
             val liveInformationObject = JSONObject(responseBody)
-            val announcements: List<LiveInformation.Announcement> =
-                parseAnnouncements(liveInformationObject)
 
             val liveInformation = LiveInformation(
-                announcements = announcements,
+                announcements = Announcement.fromJsonArray(
+                    liveInformationObject.getJSONArray("announcements"),
+                ),
             )
 
             Log.v("LiveInformation", "getLiveInformation: $liveInformation")
@@ -46,19 +48,3 @@ suspend fun getLiveInformation(): LiveInformation? = withContext(Dispatchers.IO)
         return@withContext null
     }
 }
-
-private fun parseAnnouncements(
-    liveInformationObject: JSONObject,
-): List<LiveInformation.Announcement> =
-    liveInformationObject
-        .getJSONArray("announcements").let { array ->
-            (0 until array.length())
-                .map { array.getJSONObject(it) }
-                .map {
-                    LiveInformation.Announcement(
-                        text = it.getString("text"),
-                        url = it.getString("url"),
-                        isActive = it.getBoolean("active"),
-                    )
-                }
-        }
