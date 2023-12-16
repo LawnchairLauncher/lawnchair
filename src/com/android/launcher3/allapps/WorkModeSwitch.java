@@ -15,12 +15,10 @@
  */
 package com.android.launcher3.allapps;
 
-import static androidx.core.widget.TextViewCompat.setCompoundDrawableTintList;
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Build;
@@ -45,7 +43,7 @@ import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.color.ColorStateListTokens;
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
@@ -69,7 +67,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     private final int mScrollThreshold;
     private ImageView mIcon;
     private TextView mTextView;
-    private final StatsLogManager mStatsLogManager;
 
     public WorkModeSwitch(@NonNull Context context) {
         this(context, null, 0);
@@ -83,7 +80,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         super(context, attrs, defStyleAttr);
         mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
         mActivityContext = ActivityContext.lookupContext(getContext());
-        mStatsLogManager = mActivityContext.getStatsLogManager();
     }
 
     @Override
@@ -100,10 +96,9 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         }
 
         setBackground(DrawableTokens.WorkAppsToggleBackground.resolve(getContext()));
-
-        ColorStateList textColor = ColorStateListTokens.AllAppsTabText.resolve(getContext());
+        var textColor = ColorTokens.ColorPrimary.resolveColor(getContext());
+        mIcon.setColorFilter(textColor);
         mTextView.setTextColor(textColor);
-        setCompoundDrawableTintList(mTextView, textColor);
         DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
         setInsets(grid.getInsets());
         setInsets(mActivityContext.getDeviceProfile().getInsets());

@@ -31,7 +31,6 @@
         android:layout_height="@dimen/work_fab_icon_size"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_corp_off"
-        android:tint="@color/work_fab_icon_color"
         android:scaleType="center"/>
     <TextView
         android:id="@+id/pause_text"
