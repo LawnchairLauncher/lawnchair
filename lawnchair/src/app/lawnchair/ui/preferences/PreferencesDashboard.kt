@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences
 
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
@@ -18,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +34,7 @@ import app.lawnchair.backup.ui.restoreBackupOpener
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
+import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceCategory
 import app.lawnchair.ui.preferences.components.PreferenceDivider
@@ -41,7 +42,6 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.WarningPreference
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
-import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
@@ -50,8 +50,7 @@ import com.android.launcher3.R
 @Composable
 fun PreferencesDashboard() {
     val context = LocalContext.current
-    val liveInformationManager = liveInformationManager()
-    SyncLiveInformation(liveInformationManager)
+    SyncLiveInformation()
 
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
@@ -59,6 +58,8 @@ fun PreferencesDashboard() {
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu() },
     ) {
+        AnnouncementPreference()
+
         if (BuildConfig.DEBUG) PreferencesDebugWarning()
 
         if (!context.isDefaultLauncher()) {
