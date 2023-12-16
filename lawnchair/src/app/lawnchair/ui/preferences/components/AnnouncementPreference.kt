@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences2.asState
 import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
+import app.lawnchair.ui.util.addIf
 import com.android.launcher3.BuildConfig
 
 @Composable
@@ -31,13 +32,13 @@ fun AnnouncementPreference() {
     val liveInformationManager = liveInformationManager()
     val announcements = liveInformationManager.announcements.asState()
 
-    Column {
-        announcements.value.forEach { announcement ->
-            if (
-                announcement.active &&
-                announcement.text.isNotBlank() &&
-                (!announcement.test || BuildConfig.DEBUG)
-            ) {
+    announcements.value.forEach { announcement ->
+        ExpandAndShrink(
+            visible = announcement.active
+                && announcement.text.isNotBlank()
+                && (!announcement.test || BuildConfig.DEBUG),
+        ) {
+            Column {
                 AnnouncementPreference(announcement)
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -72,15 +73,16 @@ private fun AnnouncementPreference(
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         PreferenceTemplate(
-            modifier = modifier.clickable {
-                if (hasLink) {
-                    val webpage = Uri.parse(url)
-                    val intent = Intent(Intent.ACTION_VIEW, webpage)
-                    if (intent.resolveActivity(context.packageManager) != null) {
-                        context.startActivity(intent)
+            modifier = modifier
+                .addIf(hasLink) {
+                    clickable {
+                        val webpage = Uri.parse(url)
+                        val intent = Intent(Intent.ACTION_VIEW, webpage)
+                        if (intent.resolveActivity(context.packageManager) != null) {
+                            context.startActivity(intent)
+                        }
                     }
-                }
-            },
+                },
             title = {},
             description = {
                 Text(
