@@ -40,11 +40,11 @@ suspend fun getLiveInformation(): LiveInformation? = withContext(Dispatchers.IO)
             Log.v("LiveInformation", "getLiveInformation: $liveInformation")
             return@withContext liveInformation
         } else {
-            Log.d("LiveInformation", ": response code ${response.code()}")
+            Log.d("LiveInformation", "getLiveInformation: response code ${response.code()}")
             return@withContext null
         }
     } catch (e: Exception) {
-        Log.e("LiveInformation", "Error during news retrieval: ${e.message}")
+        Log.e("LiveInformation", "getLiveInformation: Error during news retrieval: ${e.message}")
         return@withContext null
     }
 }
