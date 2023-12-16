@@ -125,6 +125,9 @@
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
     <dimen name="all_apps_height_extra">6dp</dimen>
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_padding">1dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_group_radius">28dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_result_radius">4dp</dimen>
 
     <dimen name="all_apps_icon_drawable_padding">8dp</dimen>
     <dimen name="all_apps_predicted_icon_vertical_padding">8dp</dimen>
@@ -176,6 +179,7 @@
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
+    <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
 
     <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
 
@@ -290,7 +294,6 @@
     <dimen name="popup_single_item_radius">100dp</dimen>
     <dimen name="popup_smaller_radius">4dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">16dp</dimen>
-    <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
     <dimen name="popup_padding_end">14dp</dimen>
     <dimen name="popup_vertical_padding">4dp</dimen>
@@ -364,6 +367,7 @@
 
     <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
+    <dimen name="taskbar_phone_size">@*android:dimen/navigation_bar_frame_height</dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
     <dimen name="qsb_shadow_height">0dp</dimen>
@@ -430,9 +434,13 @@
     <dimen name="split_instructions_drawable_padding">10dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
+    <dimen name="split_instructions_start_margin_cancel">8dp</dimen>
+
+    <dimen name="focus_outline_radius">16dp</dimen>
+    <dimen name="focus_outline_stroke_width">3dp</dimen>
 
     <!-- Workspace grid visualization parameters -->
-    <dimen name="grid_visualization_rounding_radius">28dp</dimen>
+    <dimen name="grid_visualization_rounding_radius">16dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
     <dimen name="grid_visualization_vertical_cell_spacing">6dp</dimen>
 

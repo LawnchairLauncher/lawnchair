@@ -23,7 +23,14 @@ import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecT
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 import com.android.launcher3.util.ResourceHelper
 
-class HotseatSpecsProvider(private val groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>) {
+class HotseatSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>) {
+
+    private val groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>
+
+    init {
+        this.groupOfSpecs = groupOfSpecs.sortedBy { it.aspectRatio }
+    }
+
     fun getSpecsByAspectRatio(aspectRatio: Float): ResponsiveSpecGroup<HotseatSpec> {
         check(aspectRatio > 0f) { "Invalid aspect ratio! The value should be bigger than 0." }
 
@@ -33,13 +40,28 @@ class HotseatSpecsProvider(private val groupOfSpecs: List<ResponsiveSpecGroup<Ho
         return specsGroup
     }
 
+    private fun getSpecIgnoringDimensionType(
+        availableSize: Int,
+        specsGroup: ResponsiveSpecGroup<HotseatSpec>
+    ): HotseatSpec? {
+        val specWidth = specsGroup.widthSpecs.firstOrNull { availableSize <= it.maxAvailableSize }
+        val specHeight = specsGroup.heightSpecs.firstOrNull { availableSize <= it.maxAvailableSize }
+        return specWidth ?: specHeight
+    }
+
     fun getCalculatedSpec(
         aspectRatio: Float,
         dimensionType: DimensionType,
-        availableSpace: Int
+        availableSpace: Int,
     ): CalculatedHotseatSpec {
         val specsGroup = getSpecsByAspectRatio(aspectRatio)
-        val spec = specsGroup.getSpec(dimensionType, availableSpace)
+
+        // TODO(b/315548992): Ignore the dimension type to prevent crash before launcher
+        //  data migration is finished. The restore process allows the initialization of
+        //  an invalid or disabled grid until the data is restored and migrated.
+        val spec = getSpecIgnoringDimensionType(availableSpace, specsGroup)
+        check(spec != null) { "No available spec found within $availableSpace. $specsGroup" }
+        // val spec = specsGroup.getSpec(dimensionType, availableSpace)
         return CalculatedHotseatSpec(availableSpace, spec)
     }
 
@@ -84,13 +106,18 @@ data class HotseatSpec(
 
     fun isValid(): Boolean {
         if (maxAvailableSize <= 0) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - maxAvailableSize <= 0")
+            logError("The property maxAvailableSize must be higher than 0.")
             return false
         }
 
         // All specs need to be individually valid
         if (!allSpecsAreValid()) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - !allSpecsAreValid()")
+            logError("One or more specs are invalid!")
+            return false
+        }
+
+        if (!isValidFixedSize()) {
+            logError("The total Fixed Size used must be lower or equal to $maxAvailableSize.")
             return false
         }
 
@@ -102,6 +129,13 @@ data class HotseatSpec(
             hotseatQsbSpace.onlyFixedSize() &&
             edgePadding.isValid() &&
             edgePadding.onlyFixedSize()
+    }
+
+    private fun isValidFixedSize() =
+        hotseatQsbSpace.fixedSize + edgePadding.fixedSize <= maxAvailableSize
+
+    private fun logError(message: String) {
+        Log.e(LOG_TAG, "${this::class.simpleName}#isValid - $message - $this")
     }
 
     companion object {

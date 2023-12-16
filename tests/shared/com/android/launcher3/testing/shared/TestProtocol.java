@@ -29,6 +29,9 @@ public final class TestProtocol {
     public static final String DISMISS_ANIMATION_ENDS_MESSAGE = "TAPL_DISMISS_ANIMATION_ENDS";
     public static final String FOLDER_OPENED_MESSAGE = "TAPL_FOLDER_OPENED";
     public static final String SEARCH_RESULT_COMPLETE = "SEARCH_RESULT_COMPLETE";
+    public static final String LAUNCHER_ACTIVITY_STOPPED_MESSAGE = "TAPL_LAUNCHER_ACTIVITY_STOPPED";
+    public static final String WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE =
+            "TAPL_WALLPAPER_OPEN_ANIMATION_FINISHED";
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
@@ -85,16 +88,17 @@ public final class TestProtocol {
     public static final String REQUEST_ICON_HEIGHT =
             "icon-height";
     public static final String REQUEST_IS_LAUNCHER_INITIALIZED = "is-launcher-initialized";
+    public static final String REQUEST_IS_LAUNCHER_LAUNCHER_ACTIVITY_STARTED =
+            "is-launcher-activity-started";
     public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
-    public static final String REQUEST_ENABLE_MANUAL_TASKBAR_STASHING = "enable-taskbar-stashing";
-    public static final String REQUEST_DISABLE_MANUAL_TASKBAR_STASHING = "disable-taskbar-stashing";
     public static final String REQUEST_ENABLE_BLOCK_TIMEOUT = "enable-block-timeout";
     public static final String REQUEST_DISABLE_BLOCK_TIMEOUT = "disable-block-timeout";
     public static final String REQUEST_ENABLE_TRANSIENT_TASKBAR = "enable-transient-taskbar";
     public static final String REQUEST_DISABLE_TRANSIENT_TASKBAR = "disable-transient-taskbar";
+    public static final String REQUEST_IS_TRANSIENT_TASKBAR = "is-transient-taskbar";
     public static final String REQUEST_UNSTASH_TASKBAR_IF_STASHED = "unstash-taskbar-if-stashed";
-    public static final String REQUEST_STASHED_TASKBAR_HEIGHT = "stashed-taskbar-height";
+    public static final String REQUEST_TASKBAR_FROM_NAV_THRESHOLD = "taskbar-from-nav-threshold";
     public static final String REQUEST_STASHED_TASKBAR_SCALE = "taskbar-stash-handle-scale";
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
@@ -156,9 +160,10 @@ public final class TestProtocol {
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
+    public static final String TWO_NEXUS_LAUNCHER_ACTIVITY_WHILE_UNLOCKING = "b/273347463";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String ICON_MISSING = "b/282963545";
-    public static final String WORKSPACE_LONG_PRESS = "b/311099513";
+    public static final String OVERVIEW_OVER_HOME = "b/279059025";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";

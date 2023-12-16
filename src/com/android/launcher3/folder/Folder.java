@@ -210,7 +210,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     @ViewDebug.IntToString(from = STATE_OPEN, to = "STATE_OPEN"),
             })
     private int mState = STATE_CLOSED;
-    private OnFolderStateChangedListener mOnFolderStateChangedListener;
+    private final List<OnFolderStateChangedListener> mOnFolderStateChangedListeners =
+            new ArrayList<>();
+    private OnFolderStateChangedListener mPriorityOnFolderStateChangedListener;
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mRearrangeOnClose = false;
     boolean mItemsInvalidated = false;
@@ -1082,7 +1084,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private void updateItemLocationsInDatabaseBatch(boolean isBind) {
         FolderGridOrganizer verifier = new FolderGridOrganizer(
-                mActivityContext.getDeviceProfile().inv).setFolderInfo(mInfo);
+                mActivityContext.getDeviceProfile()).setFolderInfo(mInfo);
 
         ArrayList<ItemInfo> items = new ArrayList<>();
         int total = mInfo.contents.size();
@@ -1381,7 +1383,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     public void onAdd(WorkspaceItemInfo item, int rank) {
         FolderGridOrganizer verifier = new FolderGridOrganizer(
-                mActivityContext.getDeviceProfile().inv).setFolderInfo(mInfo);
+                mActivityContext.getDeviceProfile()).setFolderInfo(mInfo);
         verifier.updateRankAndPos(item, rank);
         mLauncherDelegate.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0, item.cellX,
                 item.cellY);
@@ -1665,18 +1667,43 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return windowBottomPx - folderBottomPx;
     }
 
+    /**
+     * Save this listener for the special case of when we update the state and concurrently
+     * add another listener to {@link #mOnFolderStateChangedListeners} to avoid a
+     * ConcurrentModificationException
+     */
+    public void setPriorityOnFolderStateChangedListener(OnFolderStateChangedListener listener) {
+        mPriorityOnFolderStateChangedListener = listener;
+    }
+
     private void setState(@FolderState int newState) {
         mState = newState;
-        if (mOnFolderStateChangedListener != null) {
-            mOnFolderStateChangedListener.onFolderStateChanged(mState);
+        if (mPriorityOnFolderStateChangedListener != null) {
+            mPriorityOnFolderStateChangedListener.onFolderStateChanged(mState);
+        }
+        for (OnFolderStateChangedListener listener : mOnFolderStateChangedListeners) {
+            if (listener != null) {
+                listener.onFolderStateChanged(mState);
+            }
         }
     }
 
-    public void setOnFolderStateChangedListener(@Nullable OnFolderStateChangedListener listener) {
-        mOnFolderStateChangedListener = listener;
+    /**
+     * Adds the provided listener to the running list of Folder listeners
+     * {@link #mOnFolderStateChangedListeners}
+     */
+    public void addOnFolderStateChangedListener(@Nullable OnFolderStateChangedListener listener) {
+        if (listener != null) {
+            mOnFolderStateChangedListeners.add(listener);
+        }
     }
 
-    /** Listener that can be registered via {@link Folder#setOnFolderStateChangedListener} */
+    /** Removes the provided listener from the running list of Folder listeners */
+    public void removeOnFolderStateChangedListener(OnFolderStateChangedListener listener) {
+        mOnFolderStateChangedListeners.remove(listener);
+    }
+
+    /** Listener that can be registered via {@link #addOnFolderStateChangedListener} */
     public interface OnFolderStateChangedListener {
         /** See {@link Folder.FolderState} */
         void onFolderStateChanged(@FolderState int newState);

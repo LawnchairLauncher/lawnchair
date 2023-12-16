@@ -134,6 +134,24 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
     }
 
+    @Test(expected = IllegalStateException::class)
+    fun parseInvalidFile_invalidRemainderSpace_throwsError() {
+        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_4)
+        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun parseInvalidFile_invalidAvailableSpace_throwsError() {
+        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_5)
+        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun parseInvalidFile_invalidFixedSize_throwsError() {
+        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_6)
+        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+    }
+
     private fun validateSpecs(
         specs: ResponsiveSpecGroup<ResponsiveSpec>,
         expectedAspectRatio: Float,

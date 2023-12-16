@@ -38,13 +38,13 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
         // Set the Lottie animation colors specifically for the Home gesture
         if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mAnimatedGestureDemonstration,
                     Map.of(".onSurfaceHome", fragment.mRootView.mColorOnSurfaceHome,
                             ".surfaceHome", fragment.mRootView.mColorSurfaceHome,
                             ".secondaryHome", fragment.mRootView.mColorSecondaryHome));
 
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mCheckmarkAnimation,
                     Map.of(".checkmark",
                             Utilities.isDarkTheme(mContext)

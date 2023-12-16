@@ -407,7 +407,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // If exiting search, revert predictive back scale on all apps
             mAllAppsTransitionController.animateAllAppsToNoScale();
         }
-        mSearchTransitionController.animateToSearchState(goingToSearch, durationMs,
+        mSearchTransitionController.animateToState(goingToSearch, durationMs,
                 /* onEndRunnable = */ () -> {
                     mIsSearching = goingToSearch;
                     updateSearchResultsVisibility();
@@ -515,7 +515,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Switch to the main tab
             switchToTab(ActivityAllAppsContainerView.AdapterHolder.MAIN);
             // Scroll to bottom
-            getActiveRecyclerView().scrollToBottom();
+            getActiveRecyclerView().scrollToBottomWithMotion();
         });
     }
 

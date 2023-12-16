@@ -17,12 +17,9 @@
 package com.android.launcher3.ui;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
-
-import com.android.launcher3.LauncherState;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,34 +33,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public void setUp() throws Exception {
         super.setUp();
         initialize(this);
-    }
-
-    public static void initialize(AbstractLauncherUiTest test) throws Exception {
-        initialize(test, false);
-    }
-
-    public static void initialize(
-            AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
-        test.reinitializeLauncherData(clearWorkspace);
-        test.mDevice.pressHome();
-        test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
-        test.waitForState("Launcher internal state didn't switch to Home",
-                () -> LauncherState.NORMAL);
-        test.waitForResumed("Launcher internal state is still Background");
-        // Check that we switched to home.
-        test.mLauncher.getWorkspace();
-        AbstractLauncherUiTest.checkDetectedLeaks(test.mLauncher, true);
-    }
-
-    // Please don't add negative test cases for methods that fail only after a long wait.
-    public static void expectFail(String message, Runnable action) {
-        boolean failed = false;
-        try {
-            action.run();
-        } catch (AssertionError e) {
-            failed = true;
-        }
-        assertTrue(message, failed);
     }
 
     @Test

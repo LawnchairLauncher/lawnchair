@@ -30,7 +30,6 @@ import org.junit.runner.RunWith
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
-    private val testContext: Context = InstrumentationRegistry.getInstrumentation().context
     private val folderName: String = "DeviceProfileDumpTest"
     @Test
     fun phonePortrait3Button() {
@@ -154,9 +153,6 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
     }
 
     private fun assertDump(dp: DeviceProfile, filename: String) {
-        val dump = dump(context!!, dp, "${folderName}_$filename.txt")
-        val expected = readDumpFromAssets(testContext, "$folderName/$filename.txt")
-
-        assertThat(dump).isEqualTo(expected)
+        assertDump(dp, folderName, filename);
     }
 }

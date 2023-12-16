@@ -59,8 +59,10 @@ public class OverviewTaskMenu {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "before tapping the app info menu item")) {
-            mLauncher.clickLauncherObject(
-                    mLauncher.findObjectInContainer(mMenu, By.text("App info")));
+            mLauncher.executeAndWaitForLauncherStop(
+                    () -> mLauncher.clickLauncherObject(
+                            mLauncher.findObjectInContainer(mMenu, By.text("App info"))),
+                    "tapped app info menu item");
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "tapped app info menu item")) {

@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -262,7 +263,7 @@ public class OverviewCommandHelper {
         if (activity != null) {
             InteractionJankMonitorWrapper.begin(
                     activity.getRootView(),
-                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+                    Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
         }
 
         GestureState gestureState = mService.createGestureState(GestureState.DEFAULT_STATE,

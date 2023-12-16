@@ -23,10 +23,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.config.FeatureFlags
+import com.android.launcher3.util.ExecutorRunnable
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.VIEW_PREINFLATION_EXECUTOR
 import com.android.launcher3.views.ActivityContext
-import java.util.concurrent.Future
 
 const val PREINFLATE_ICONS_ROW_COUNT = 4
 const val EXTRA_ICONS_COUNT = 2
@@ -38,9 +38,8 @@ const val EXTRA_ICONS_COUNT = 2
  */
 class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
 
-    private var future: Future<Void>? = null
-
     var hasWorkProfile = false
+    var executorRunnable: ExecutorRunnable<List<ViewHolder>>? = null
 
     /**
      * Preinflate app icons. If all apps RV cannot be scrolled down, we don't need to preinflate.
@@ -63,21 +62,38 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
                 override fun getLayoutManager(): RecyclerView.LayoutManager? = null
             }
 
-        // Inflate view holders on background thread, and added to view pool on main thread.
-        future?.cancel(true)
-        future =
-            VIEW_PREINFLATION_EXECUTOR.submit<Void> {
-                val viewHolders =
-                    Array(preInflateCount) {
-                        adapter.createViewHolder(activeRv, BaseAllAppsAdapter.VIEW_TYPE_ICON)
+        executorRunnable?.cancel(/* interrupt= */ false)
+        executorRunnable =
+            ExecutorRunnable.createAndExecute(
+                VIEW_PREINFLATION_EXECUTOR,
+                {
+                    val list: ArrayList<ViewHolder> = ArrayList()
+                    for (i in 0 until preInflateCount) {
+                        if (Thread.interrupted()) {
+                            break
+                        }
+                        list.add(
+                            adapter.createViewHolder(activeRv, BaseAllAppsAdapter.VIEW_TYPE_ICON)
+                        )
                     }
-                MAIN_EXECUTOR.execute {
+                    list
+                },
+                MAIN_EXECUTOR,
+                { viewHolders ->
                     for (i in 0 until minOf(viewHolders.size, getPreinflateCount(context))) {
                         putRecycledView(viewHolders[i])
                     }
                 }
-                null
-            }
+            )
+    }
+
+    /**
+     * When clearing [RecycledViewPool], we should also abort pre-inflation tasks. This will make
+     * sure we don't inflate app icons after DeviceProfile has changed.
+     */
+    override fun clear() {
+        super.clear()
+        executorRunnable?.cancel(/* interrupt= */ true)
     }
 
     /**

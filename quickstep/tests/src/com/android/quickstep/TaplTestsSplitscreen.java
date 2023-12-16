@@ -32,15 +32,14 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.tapl.TaskbarAppIcon;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import com.android.wm.shell.Flags;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,7 +57,7 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
 
         if (mLauncher.isTablet()) {
             mLauncher.enableBlockTimeout(true);

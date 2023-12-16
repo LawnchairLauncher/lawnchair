@@ -36,7 +36,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
@@ -57,6 +61,7 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     protected static final String TAG = "AllAppsRecyclerView";
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_LATENCY = Utilities.isPropertyEnabled(SEARCH_LOGGING);
+    private Consumer<View> mChildAttachedConsumer;
 
     protected final int mNumAppsPerRow;
     private final AllAppsFastScrollHelper mFastScrollHelper;
@@ -280,6 +285,22 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         } else {
             synchronizeScrollBarThumbOffsetToViewScroll(scrollY, availableScrollHeight);
         }
+    }
+
+    /**
+     * This will be called just before a new child is attached to the window. Passing in null will
+     * remove the consumer.
+     */
+    protected void setChildAttachedConsumer(@Nullable Consumer<View> childAttachedConsumer) {
+        mChildAttachedConsumer = childAttachedConsumer;
+    }
+
+    @Override
+    public void onChildAttachedToWindow(@NonNull View child) {
+        if (mChildAttachedConsumer != null) {
+            mChildAttachedConsumer.accept(child);
+        }
+        super.onChildAttachedToWindow(child);
     }
 
     @Override

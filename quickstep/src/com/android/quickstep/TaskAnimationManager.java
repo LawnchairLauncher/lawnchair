@@ -34,6 +34,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 import android.view.RemoteAnimationTarget;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -102,7 +103,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * Starts a new recents animation for the activity with the given {@param intent}.
      */
     @UiThread
-    public RecentsAnimationCallbacks startRecentsAnimation(GestureState gestureState,
+    public RecentsAnimationCallbacks startRecentsAnimation(@NonNull GestureState gestureState,
             Intent intent, RecentsAnimationCallbacks.RecentsAnimationListener listener) {
         ActiveGestureLog.INSTANCE.addLog(
                 /* event= */ "startRecentsAnimation",
@@ -163,6 +164,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     // other apps need to keep visible so finish the animating state after the
                     // enter animation of overview is done. Then 3p launcher can be stopped.
                     mLastGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED, () -> {
+                        if (mLastGestureState != gestureState) return;
                         // Only finish if the end target is RECENTS. Otherwise, if the target is
                         // NEW_TASK, startActivityFromRecents will be skipped.
                         if (mLastGestureState.getEndTarget() == RECENTS) {

@@ -195,11 +195,15 @@ public class TaskThumbnailCache {
             return null;
         }
 
-        CancellableTask<ThumbnailData> request = new CancellableTask<ThumbnailData>() {
+        CancellableTask<ThumbnailData> request = new CancellableTask<>() {
             @Override
             public ThumbnailData getResultOnBg() {
-                return ActivityManagerWrapper.getInstance().getTaskThumbnail(
+                ThumbnailData thumbnailData = ActivityManagerWrapper.getInstance().getTaskThumbnail(
                         key.id, lowResolution);
+                if (thumbnailData.thumbnail != null) {
+                    return thumbnailData;
+                }
+                return ActivityManagerWrapper.getInstance().takeTaskThumbnail(key.id);
             }
 
             @Override

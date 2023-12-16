@@ -23,9 +23,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.view.children
-import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
-import com.android.launcher3.taskbar.TaskbarManager
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.util.DimensionUtils
 import com.android.systemui.shared.rotation.RotationButton
 
@@ -48,11 +47,11 @@ open class PhoneLandscapeNavLayoutter(
             a11yButton
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
+    override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         // TODO(b/230395757): Polish pending, this is just to make it usable
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-        val taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
-                TaskbarManager.isPhoneMode(dp))
+        val taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(context.deviceProfile,
+                resources, context.isPhoneMode)
         navButtonContainer.removeAllViews()
         navButtonContainer.orientation = LinearLayout.VERTICAL
 

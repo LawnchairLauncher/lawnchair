@@ -30,6 +30,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -216,6 +217,7 @@ public class TaskbarUIController {
 
         recentsView.getSplitSelectController().findLastActiveTasksAndRunCallback(
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks.get(0);
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
@@ -234,6 +236,7 @@ public class TaskbarUIController {
         RecentsView recents = getRecentsView();
         recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
                 Collections.singletonList(info.getComponentKey()),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks.get(0);
                     if (foundTask != null) {
@@ -297,11 +300,9 @@ public class TaskbarUIController {
     }
 
     /**
-     * Launches the focused task in splitscreen.
-     *
-     * No-op if the view is not yet open.
+     * Launches the given task in split-screen.
      */
-    public void launchSplitTasks(@NonNull View taskview, @NonNull GroupTask groupTask) { }
+    public void launchSplitTasks(@NonNull GroupTask groupTask) { }
 
     /**
      * Returns the matching view (if any) in the taskbar.
@@ -327,6 +328,14 @@ public class TaskbarUIController {
             }
         }
         return null;
+    }
+
+    /**
+     * Callback for when launcher state transition completes after user swipes to home.
+     * @param finalState The final state of the transition.
+     */
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
+        // Overridden
     }
 
     /**

@@ -96,6 +96,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.jank.Cuj;
 import com.android.internal.util.LatencyTracker;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -855,7 +856,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (windowInsets.isVisible(WindowInsets.Type.ime())) {
             return result;
         }
-        buildAnimationController();
+        if (mGestureState.getEndTarget() == null) {
+            buildAnimationController();
+        }
         // Reapply the current shift to ensure it takes new insets into account, e.g. when long
         // pressing to stash taskbar without moving the finger.
         onCurrentShiftUpdated();
@@ -1022,12 +1025,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     }
                     mHandled = true;
 
+                    InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_QUICK_SWITCH,
+                            2000 /* ms timeout */);
                     InteractionJankMonitorWrapper.begin(mRecentsView,
-                            InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
+                            Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
                     InteractionJankMonitorWrapper.begin(mRecentsView,
-                            InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
-                    InteractionJankMonitorWrapper.begin(mRecentsView,
-                            InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
+                            Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
 
                     rv.post(() -> rv.getViewTreeObserver().removeOnDrawListener(this));
                 }
@@ -1143,16 +1146,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         View postResumeLastTask = mActivityInterface.onSettledOnEndTarget(endTarget);
 
         if (endTarget != NEW_TASK) {
-            InteractionJankMonitorWrapper.cancel(
-                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
         }
         if (endTarget != HOME) {
-            InteractionJankMonitorWrapper.cancel(
-                    InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
         }
         if (endTarget != RECENTS) {
-            InteractionJankMonitorWrapper.cancel(
-                    InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
         }
 
         switch (endTarget) {
@@ -1223,12 +1223,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         : null;
         ActiveGestureLog.INSTANCE.addLog(
                 new ActiveGestureLog.CompoundString("calculateEndTarget: velocities=(x=")
-                        .append(Float.toString(dpiFromPx(velocityPxPerMs.x)))
+                        .append(dpiFromPx(velocityPxPerMs.x))
                         .append("dp/ms, y=")
-                        .append(Float.toString(dpiFromPx(velocityPxPerMs.y)))
+                        .append(dpiFromPx(velocityPxPerMs.y))
                         .append("dp/ms), angle=")
-                        .append(Double.toString(Math.toDegrees(Math.atan2(
-                                -velocityPxPerMs.y, velocityPxPerMs.x)))), gestureEvent);
+                        .append(Math.toDegrees(Math.atan2(
+                                -velocityPxPerMs.y, velocityPxPerMs.x))), gestureEvent);
 
         if (mGestureState.isHandlingAtomicEvent()) {
             // Button mode, this is only used to go to recents.

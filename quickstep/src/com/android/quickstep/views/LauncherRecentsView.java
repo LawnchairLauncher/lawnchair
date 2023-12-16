@@ -16,7 +16,6 @@
 package com.android.quickstep.views;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
@@ -31,6 +30,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
@@ -44,6 +44,7 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -144,6 +145,12 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         if (toState == OVERVIEW_MODAL_TASK) {
             setOverviewSelectEnabled(true);
         }
+
+        // Set border after select mode changes to avoid showing border during state transition
+        if (!toState.overviewUi || toState == OVERVIEW_MODAL_TASK) {
+            setTaskBorderEnabled(false);
+        }
+
         setFreezeViewVisibility(true);
         if (mActivity.getDesktopVisibilityController() != null) {
             mActivity.getDesktopVisibilityController().onLauncherStateChanged(toState);
@@ -164,6 +171,10 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             setOverviewSelectEnabled(false);
         }
 
+        if (finalState.overviewUi && finalState != OVERVIEW_MODAL_TASK) {
+            setTaskBorderEnabled(true);
+        }
+
         if (isOverlayEnabled) {
             runActionOnRemoteHandles(remoteTargetHandle ->
                     remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true));
@@ -173,6 +184,8 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     @Override
     public void setOverviewStateEnabled(boolean enabled) {
         super.setOverviewStateEnabled(enabled);
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "overview state enabled state has changed: "
+                + enabled);
         if (enabled) {
             LauncherState state = mActivity.getStateManager().getState();
             boolean hasClearAllButton = (state.getVisibleElements(mActivity)

@@ -53,6 +53,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -312,6 +313,25 @@ public interface ActivityContext {
     default boolean isHardwareKeyboard() {
         return Configuration.KEYBOARD_QWERTY
                 == ((Context) this).getResources().getConfiguration().keyboard;
+    }
+
+    /**
+     * Returns if the software keyboard is hidden. Hardware keyboards do not display on screen by
+     * default.
+     */
+    default boolean isSoftwareKeyboardHidden() {
+        if (isHardwareKeyboard()) {
+            return true;
+        } else {
+            View dragLayer = getDragLayer();
+            WindowInsets insets = dragLayer.getRootWindowInsets();
+            if (insets == null) {
+                return false;
+            }
+            WindowInsetsCompat insetsCompat =
+                    WindowInsetsCompat.toWindowInsetsCompat(insets, dragLayer);
+            return !insetsCompat.isVisible(WindowInsetsCompat.Type.ime());
+        }
     }
 
     /**

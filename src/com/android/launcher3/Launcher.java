@@ -22,12 +22,10 @@ import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
-import static com.android.launcher3.BuildConfig.QSB_ON_FIRST_SCREEN;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WIDGET_TRANSITION;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
@@ -65,11 +63,9 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
-import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -84,7 +80,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_VIEW_INFLATION;
-import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.COLD;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.COLD_DEVICE_REBOOTING;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.WARM;
@@ -96,6 +91,7 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.testing.shared.TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 import static com.android.launcher3.util.SettingsCache.TOUCHPAD_NATURAL_SCROLLING;
@@ -142,7 +138,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
@@ -162,7 +157,6 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -192,6 +186,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StartupLatencyLogger;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelWriter;
@@ -353,14 +348,9 @@ public class Launcher extends StatefulActivity<LauncherState>
     // UI and state for the overview panel
     private View mOverviewPanel;
 
-    @Thunk
-    boolean mWorkspaceLoading = true;
-
     // Used to notify when an activity launch has been deferred because launcher is not yet resumed
     // TODO: See if we can remove this later
     private Runnable mOnDeferredActivityLaunchCallback;
-
-    private ViewOnDrawExecutor mPendingExecutor;
     private OnPreDrawListener mOnInitialBindListener;
 
     private LauncherModel mModel;
@@ -403,12 +393,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     // session on the server side.
     protected InstanceId mAllAppsSessionLogId;
     private LauncherState mPrevLauncherState;
-
-    private StringCache mStringCache;
     private StartupLatencyLogger mStartupLatencyLogger;
     private CellPosMapper mCellPosMapper = CellPosMapper.DEFAULT;
-    private boolean mIsFirstPagePinnedItemEnabled = QSB_ON_FIRST_SCREEN
-            && !ENABLE_SMARTSPACE_REMOVAL.get();
 
     private final CannedAnimationCoordinator mAnimationCoordinator =
             new CannedAnimationCoordinator(this);
@@ -528,6 +514,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHolder = createAppWidgetHolder();
         mAppWidgetHolder.startListening();
+        mAppWidgetHolder.addProviderChangeListener(() -> refreshAndBindWidgetsForPackageUser(null));
 
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
@@ -802,7 +789,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (info.container >= 0) {
             View folderIcon = getWorkspace().getHomescreenIconByItemId(info.container);
             if (folderIcon instanceof FolderIcon && folderIcon.getTag() instanceof FolderInfo) {
-                if (new FolderGridOrganizer(getDeviceProfile().inv)
+                if (new FolderGridOrganizer(getDeviceProfile())
                         .setFolderInfo((FolderInfo) folderIcon.getTag())
                         .isItemInPreview(info.rank)) {
                     folderIcon.invalidate();
@@ -856,6 +843,17 @@ public class Launcher extends StatefulActivity<LauncherState>
             }
         }
         return screenId;
+    }
+
+    /**
+     * Process any pending activity result if it was put on hold for any reason like item binding.
+     */
+    public void processActivityResult() {
+        if (mPendingActivityResult != null) {
+            handleActivityResult(mPendingActivityResult.requestCode,
+                    mPendingActivityResult.resultCode, mPendingActivityResult.data);
+            mPendingActivityResult = null;
+        }
     }
 
     private void handleActivityResult(
@@ -1044,6 +1042,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.setActivityStarted(false);
         NotificationListener.removeNotificationsChangedListener(getPopupDataProvider());
         FloatingIconView.resetIconLoadResult();
+        AccessibilityManagerCompat.sendTestProtocolEventToTest(
+                this, LAUNCHER_ACTIVITY_STOPPED_MESSAGE);
     }
 
     @Override
@@ -1078,7 +1078,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void logStopAndResume(boolean isResume) {
-        if (mPendingExecutor != null) return;
+        if (mModelCallbacks.getPendingExecutor() != null) return;
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
         int statsLogOrdinal = mStateManager.getState().statsLogOrdinal;
 
@@ -1718,9 +1718,13 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.destroy();
 
         TextKeyListener.getInstance().release();
-        clearPendingBinds();
+        mModelCallbacks.clearPendingBinds();
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
-
+        // if Launcher activity is recreated, {@link Window} including {@link ViewTreeObserver}
+        // could be preserved in {@link ActivityThread#scheduleRelaunchActivity(IBinder)} if the
+        // previous activity has not stopped, which could happen when wallpaper detects a color
+        // changes while launcher is still loading.
+        getRootView().getViewTreeObserver().removeOnPreDrawListener(mOnInitialBindListener);
         mOverlayManager.onActivityDestroyed();
     }
 
@@ -2080,78 +2084,19 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mModelCallbacks.getPagesToBindSynchronously(orderedScreenIds);
     }
 
-    /**
-     * Clear any pending bind callbacks. This is called when is loader is planning to
-     * perform a full rebind from scratch.
-     */
-    @Override
-    public void clearPendingBinds() {
-        if (mPendingExecutor != null) {
-            mPendingExecutor.cancel();
-            mPendingExecutor = null;
-
-            // We might have set this flag previously and forgot to clear it.
-            mAppsView.getAppsStore()
-                    .disableDeferUpdatesSilently(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
-        }
-    }
-
-    /**
-     * Refreshes the shortcuts shown on the workspace.
-     * <p>
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
     @Override
     public void startBinding() {
-        TraceHelper.INSTANCE.beginSection("startBinding");
-        // Floating panels (except the full widget sheet) are associated with individual icons. If
-        // we are starting a fresh bind, close all such panels as all the icons are about
-        // to go away.
-        AbstractFloatingView.closeOpenViews(this, true, TYPE_ALL & ~TYPE_REBIND_SAFE);
-
-        setWorkspaceLoading(true);
-
-        // Clear the workspace because it's going to be rebound
-        mDragController.cancelDrag();
-
-        mWorkspace.clearDropTargets();
-        mWorkspace.removeAllWorkspaceScreens();
-        mAppWidgetHolder.clearViews();
-
-        if (mHotseat != null) {
-            mHotseat.resetLayout(getDeviceProfile().isVerticalBarLayout());
-        }
-        TraceHelper.INSTANCE.endSection();
+        mModelCallbacks.startBinding();
     }
 
     @Override
     public void setIsFirstPagePinnedItemEnabled(boolean isFirstPagePinnedItemEnabled) {
-        mIsFirstPagePinnedItemEnabled = isFirstPagePinnedItemEnabled;
-        mWorkspace.bindAndInitFirstWorkspaceScreen();
+        mModelCallbacks.setIsFirstPagePinnedItemEnabled(isFirstPagePinnedItemEnabled);
     }
 
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
-        mWorkspace.mPageIndicator.setAreScreensBinding(true, mDeviceProfile.isTwoPanels);
-        int firstScreenPosition = 0;
-        if ((FeatureFlags.QSB_ON_FIRST_SCREEN
-                && mIsFirstPagePinnedItemEnabled
-                && !shouldShowFirstPageWidget())
-                && orderedScreenIds.indexOf(FIRST_SCREEN_ID) != firstScreenPosition) {
-            orderedScreenIds.removeValue(FIRST_SCREEN_ID);
-            orderedScreenIds.add(firstScreenPosition, FIRST_SCREEN_ID);
-        } else if (((!FeatureFlags.QSB_ON_FIRST_SCREEN && !mIsFirstPagePinnedItemEnabled)
-                || shouldShowFirstPageWidget())
-                && orderedScreenIds.isEmpty()) {
-            // If there are no screens, we need to have an empty screen
-            mWorkspace.addExtraEmptyScreens();
-        }
-        bindAddScreens(orderedScreenIds);
-
-        // After we have added all the screens, if the wallpaper was locked to the default state,
-        // then notify to indicate that it can be released and a proper wallpaper offset can be
-        // computed before the next layout
-        mWorkspace.unlockWallpaperFromDefaultPageOnNextLayout();
+        mModelCallbacks.bindScreens(orderedScreenIds);
     }
 
     /**
@@ -2172,35 +2117,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         return screenIds.getArray();
     }
 
-    private void bindAddScreens(IntArray orderedScreenIds) {
-
-        if (mDeviceProfile.isTwoPanels) {
-            if (FOLDABLE_SINGLE_PAGE.get()) {
-                orderedScreenIds = filterTwoPanelScreenIds(orderedScreenIds);
-            } else {
-                // Some empty pages might have been removed while the phone was in a single panel
-                // mode, so we want to add those empty pages back.
-                IntSet screenIds = IntSet.wrap(orderedScreenIds);
-                orderedScreenIds.forEach(
-                        screenId -> screenIds.add(mWorkspace.getScreenPair(screenId)));
-                orderedScreenIds = screenIds.getArray();
-            }
-        }
-
-        int count = orderedScreenIds.size();
-        for (int i = 0; i < count; i++) {
-            int screenId = orderedScreenIds.get(i);
-            if (FeatureFlags.QSB_ON_FIRST_SCREEN
-                    && mIsFirstPagePinnedItemEnabled
-                    && !shouldShowFirstPageWidget()
-                    && screenId == FIRST_SCREEN_ID) {
-                // No need to bind the first screen, as its always bound.
-                continue;
-            }
-            mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
-        }
-    }
-
     @Override
     public void preAddApps() {
         mModelCallbacks.preAddApps();
@@ -2209,25 +2125,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void bindAppsAdded(IntArray newScreens, ArrayList<ItemInfo> addNotAnimated,
             ArrayList<ItemInfo> addAnimated) {
-        // Add the new screens
-        if (newScreens != null) {
-            // newScreens can contain an empty right panel that is already bound, but not known
-            // by BgDataModel.
-            newScreens.removeAllValues(mWorkspace.mScreenOrder);
-            bindAddScreens(newScreens);
-        }
-
-        // We add the items without animation on non-visible pages, and with
-        // animations on the new page (which we will try and snap to).
-        if (addNotAnimated != null && !addNotAnimated.isEmpty()) {
-            bindItems(addNotAnimated, false);
-        }
-        if (addAnimated != null && !addAnimated.isEmpty()) {
-            bindItems(addAnimated, true);
-        }
-
-        // Remove the extra empty screen
-        mWorkspace.removeExtraEmptyScreen(false);
+        mModelCallbacks.bindAppsAdded(newScreens, addNotAnimated, addAnimated);
     }
 
     /**
@@ -2570,44 +2468,25 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     public void clearPendingExecutor(ViewOnDrawExecutor executor) {
-        if (mPendingExecutor == executor) {
-            mPendingExecutor = null;
+        if (mModelCallbacks.getPendingExecutor() == executor) {
+            mModelCallbacks.setPendingExecutor(null);
         }
     }
 
-    @Override
+    /**
+     * Call back when ModelCallbacks finish binding the Launcher data.
+     */
     @TargetApi(Build.VERSION_CODES.S)
-    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
-            int workspaceItemCount, boolean isBindSync) {
-        mModelCallbacks.setSynchronouslyBoundPages(boundPages);
-        mModelCallbacks.setPagesToBindSynchronously(new IntSet());
-
-        clearPendingBinds();
-        ViewOnDrawExecutor executor = new ViewOnDrawExecutor(pendingTasks);
-        mPendingExecutor = executor;
-        if (!isInState(ALL_APPS)) {
-            mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
-            pendingTasks.add(() -> mAppsView.getAppsStore().disableDeferUpdates(
-                    AllAppsStore.DEFER_UPDATES_NEXT_DRAW));
-        }
-
+    public void bindComplete(int workspaceItemCount, boolean isBindSync) {
         if (mOnInitialBindListener != null) {
             getRootView().getViewTreeObserver().removeOnPreDrawListener(mOnInitialBindListener);
             mOnInitialBindListener = null;
         }
-
-        executor.onLoadAnimationCompleted();
-        executor.attachTo(this);
-        if (Utilities.ATLEAST_S) {
-            Trace.endAsyncSection(DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
-                    DISPLAY_WORKSPACE_TRACE_COOKIE);
-        }
         if (!isBindSync) {
             mStartupLatencyLogger
                     .logCardinality(workspaceItemCount)
-                    .logEnd(LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
+                    .logEnd(LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
         }
-
         MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             mStartupLatencyLogger
                     .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
@@ -2618,15 +2497,13 @@ public class Launcher extends StatefulActivity<LauncherState>
                         COLD_STARTUP_TRACE_COOKIE);
             }
         });
-        getRootView().getViewTreeObserver().addOnDrawListener(
-                new ViewTreeObserver.OnDrawListener() {
-                    @Override
-                    public void onDraw() {
-                        MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(
-                                () -> getRootView().getViewTreeObserver()
-                                        .removeOnDrawListener(this));
-                    }
-                });
+    }
+
+    @Override
+    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
+            int workspaceItemCount, boolean isBindSync) {
+        mModelCallbacks.onInitialBindComplete(boundPages, pendingTasks, workspaceItemCount,
+                isBindSync);
     }
 
     /**
@@ -2635,34 +2512,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(IntSet pagesBoundFirst) {
-        TraceHelper.INSTANCE.beginSection("finishBindingItems");
-        mWorkspace.restoreInstanceStateForRemainingPages();
-
-        setWorkspaceLoading(false);
-
-        if (mPendingActivityResult != null) {
-            handleActivityResult(mPendingActivityResult.requestCode,
-                    mPendingActivityResult.resultCode, mPendingActivityResult.data);
-            mPendingActivityResult = null;
-        }
-
-        int currentPage = pagesBoundFirst != null && !pagesBoundFirst.isEmpty()
-                ? mWorkspace.getPageIndexForScreenId(pagesBoundFirst.getArray().get(0))
-                : PagedView.INVALID_PAGE;
-        // When undoing the removal of the last item on a page, return to that page.
-        // Since we are just resetting the current page without user interaction,
-        // override the previous page so we don't log the page switch.
-        mWorkspace.setCurrentPage(currentPage, currentPage /* overridePrevPage */);
-        mModelCallbacks.setPagesToBindSynchronously(new IntSet());
-
-        // Cache one page worth of icons
-        getViewCache().setCacheSize(R.layout.folder_application,
-                mDeviceProfile.inv.numFolderColumns * mDeviceProfile.inv.numFolderRows);
-        getViewCache().setCacheSize(R.layout.folder_page, 2);
-
-        TraceHelper.INSTANCE.endSection();
-        mWorkspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true);
-        mWorkspace.mPageIndicator.setAreScreensBinding(false, mDeviceProfile.isTwoPanels);
+        mModelCallbacks.finishBindingItems(pagesBoundFirst);
     }
 
     private boolean canAnimatePageChange() {
@@ -2877,8 +2727,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void bindStringCache(StringCache cache) {
-        mStringCache = cache;
-        mAppsView.updateWorkUI();
+        mModelCallbacks.bindStringCache(cache);
     }
 
     /**
@@ -2922,7 +2771,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         writer.println(prefix + "Misc:");
         dumpMisc(prefix + "\t", writer);
-        writer.println(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
+        writer.println(prefix + "\tmWorkspaceLoading=" + mModelCallbacks.getWorkspaceLoading());
         writer.println(prefix + "\tmPendingRequestArgs=" + mPendingRequestArgs
                 + " mPendingActivityResult=" + mPendingActivityResult);
         writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
@@ -3056,6 +2905,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Overridden; move this into ActivityContext if necessary for Taskbar
     }
 
+    /**
+     * Callback for when launcher state transition completes after user swipes to home.
+     * @param finalState The final state of the transition.
+     */
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
+        // Overridden
+    }
+
     @Override
     public void returnToHomescreen() {
         super.returnToHomescreen();
@@ -3150,21 +3007,17 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     // Getters and Setters
 
-    private void setWorkspaceLoading(boolean value) {
-        mWorkspaceLoading = value;
-    }
-
     public boolean isWorkspaceLocked() {
-        return mWorkspaceLoading || mPendingRequestArgs != null;
+        return isWorkspaceLoading() || mPendingRequestArgs != null;
     }
 
     public boolean isWorkspaceLoading() {
-        return mWorkspaceLoading;
+        return mModelCallbacks.getWorkspaceLoading();
     }
 
     @Override
     public boolean isBindingItems() {
-        return mWorkspaceLoading;
+        return isWorkspaceLoading();
     }
 
     /**
@@ -3314,7 +3167,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public StringCache getStringCache() {
-        return mStringCache;
+        return mModelCallbacks.getStringCache();
     }
 
     /**
@@ -3344,12 +3197,12 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Handles an app pair launch; overridden in
      * {@link com.android.launcher3.uioverrides.QuickstepLauncher}
      */
-    public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
+    public void launchAppPair(AppPairIcon appPairIcon) {
         // Overridden
     }
 
     public boolean getIsFirstPagePinnedItemEnabled() {
-        return mIsFirstPagePinnedItemEnabled;
+        return mModelCallbacks.getIsFirstPagePinnedItemEnabled();
     }
 
     /**

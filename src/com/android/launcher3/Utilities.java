@@ -79,7 +79,6 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.TintedDrawableSpan;
-import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
@@ -91,6 +90,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.testing.shared.ResourceUtils;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
@@ -676,12 +676,11 @@ public final class Utilities {
         }
 
         if (badge == null) {
-            try (LauncherIcons li = LauncherIcons.obtain(context)) {
-                badge = BitmapInfo.LOW_RES_INFO.withFlags(
-                                li.getBitmapFlagOp(new BaseIconFactory.IconOptions().setUser(
-                                        UserCache.INSTANCE.get(context).getUserInfo(info.user))))
-                        .getBadgeDrawable(context, useTheme);
-            }
+            badge = BitmapInfo.LOW_RES_INFO.withFlags(
+                            UserCache.INSTANCE.get(context)
+                                    .getUserInfo(info.user)
+                                    .applyBitmapInfoFlags(FlagOp.NO_OP))
+                    .getBadgeDrawable(context, useTheme);
             if (badge == null) {
                 badge = new ColorDrawable(Color.TRANSPARENT);
             }
@@ -758,10 +757,16 @@ public final class Utilities {
      */
     public static List<SplitPositionOption> getSplitPositionOptions(
             DeviceProfile dp) {
+        int splitIconRes = dp.isLeftRightSplit
+                ? R.drawable.ic_split_horizontal
+                : R.drawable.ic_split_vertical;
+        int stagePosition = dp.isLeftRightSplit
+                ? STAGE_POSITION_BOTTOM_OR_RIGHT
+                : STAGE_POSITION_TOP_OR_LEFT;
         return Collections.singletonList(new SplitPositionOption(
-                dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical,
+                splitIconRes,
                 R.string.recent_task_option_split_screen,
-                dp.isLandscape ? STAGE_POSITION_BOTTOM_OR_RIGHT : STAGE_POSITION_TOP_OR_LEFT,
+                stagePosition,
                 STAGE_TYPE_MAIN
         ));
     }

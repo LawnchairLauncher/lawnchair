@@ -15,8 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.expectFail;
-import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.util.TestUtil.expectFail;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -208,13 +208,19 @@ public class TaplOpenCloseAllApps extends AbstractLauncherUiTest {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity(
                 READ_DEVICE_CONFIG_PERMISSION);
         assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
-        mLauncher.getWorkspace().switchToAllApps();
-        mLauncher.pressBack();
-        mLauncher.getWorkspace();
+        mLauncher
+                .getWorkspace()
+                .switchToAllApps()
+                .pressBackToWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
-        mLauncher.pressBack();
-        mLauncher.getWorkspace();
+        mLauncher.getLaunchedAppState().pressBackToWorkspace();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+    }
+
+    @Test
+    public void testDismissAllAppsWithEscKey() {
+        mLauncher.goHome().switchToAllApps().dismissByEscKey();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
 }

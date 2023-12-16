@@ -106,6 +106,7 @@ public class TaskbarManager {
             Settings.Secure.NAV_BAR_KIDS_MODE);
 
     private final Context mContext;
+    private final @Nullable Context mNavigationBarPanelContext;
     private WindowManager mWindowManager;
     private FrameLayout mTaskbarRootLayout;
     private boolean mAddedWindow;
@@ -198,6 +199,9 @@ public class TaskbarManager {
         mContext = service.createWindowContext(display,
                 ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL,
                 null);
+        mNavigationBarPanelContext = ENABLE_TASKBAR_NAVBAR_UNIFICATION
+                ? service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null)
+                : null;
         if (enableTaskbarNoRecreate()) {
             mWindowManager = mContext.getSystemService(WindowManager.class);
             mTaskbarRootLayout = new FrameLayout(mContext) {
@@ -435,8 +439,9 @@ public class TaskbarManager {
             }
 
             if (enableTaskbarNoRecreate() || mTaskbarActivityContext == null) {
-                mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp,
-                        mNavButtonController, mUnfoldProgressProvider);
+                mTaskbarActivityContext = new TaskbarActivityContext(mContext,
+                        mNavigationBarPanelContext, dp, mNavButtonController,
+                        mUnfoldProgressProvider);
             } else {
                 mTaskbarActivityContext.updateDeviceProfile(dp);
             }
@@ -487,23 +492,7 @@ public class TaskbarManager {
         }
     }
 
-    /**
-     * @return {@code true} if provided device profile isn't a large screen profile
-     *                      and we are using a single window for taskbar and navbar.
-     */
-    public static boolean isPhoneMode(DeviceProfile deviceProfile) {
-        return ENABLE_TASKBAR_NAVBAR_UNIFICATION && deviceProfile.isPhone;
-    }
-
-    /**
-     * @return {@code true} if {@link #isPhoneMode(DeviceProfile)} is true and we're using
-     *                      3 button-nav
-     */
-    public static boolean isPhoneButtonNavMode(TaskbarActivityContext context) {
-        return isPhoneMode(context.getDeviceProfile()) && context.isThreeButtonNav();
-    }
-
-    private boolean isTaskbarPresent(DeviceProfile deviceProfile) {
+    private static boolean isTaskbarPresent(DeviceProfile deviceProfile) {
         return ENABLE_TASKBAR_NAVBAR_UNIFICATION || deviceProfile.isTaskbarPresent;
     }
 

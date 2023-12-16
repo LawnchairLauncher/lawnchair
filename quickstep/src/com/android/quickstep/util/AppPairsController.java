@@ -36,6 +36,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.FolderInfo;
@@ -120,11 +121,14 @@ public class AppPairsController {
      * Launches an app pair by searching the RecentsModel for running instances of each app, and
      * staging either those running instances or launching the apps as new Intents.
      */
-    public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
+    public void launchAppPair(AppPairIcon appPairIcon) {
+        WorkspaceItemInfo app1 = appPairIcon.getInfo().contents.get(0);
+        WorkspaceItemInfo app2 = appPairIcon.getInfo().contents.get(1);
         ComponentKey app1Key = new ComponentKey(app1.getTargetComponent(), app1.user);
         ComponentKey app2Key = new ComponentKey(app2.getTargetComponent(), app2.user);
         mSplitSelectStateController.findLastActiveTasksAndRunCallback(
                 Arrays.asList(app1Key, app2Key),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask1 = foundTasks.get(0);
                     Intent task1Intent;
@@ -151,9 +155,12 @@ public class AppPairsController {
                                 app2.intent, app2.user);
                     }
 
+                    mSplitSelectStateController.setLaunchingIconView(appPairIcon);
+
                     mSplitSelectStateController.launchSplitTasks(
                             AppPairsController.convertRankToSnapPosition(app1.rank));
-                });
+                }
+        );
     }
 
     /**

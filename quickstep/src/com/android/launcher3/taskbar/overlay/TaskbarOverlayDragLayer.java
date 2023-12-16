@@ -118,6 +118,15 @@ public class TaskbarOverlayDragLayer extends
                 topView.onBackInvoked();
                 return true;
             }
+        } else if (event.getAction() == KeyEvent.ACTION_DOWN
+                && event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE && event.hasNoModifiers()) {
+            // Ignore escape if pressed in conjunction with any modifier keys. Close each
+            // floating view one at a time for each key press.
+            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+            if (topView != null) {
+                topView.close(/* animate= */ true);
+                return true;
+            }
         }
         return super.dispatchKeyEvent(event);
     }

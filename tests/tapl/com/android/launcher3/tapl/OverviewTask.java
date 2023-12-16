@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
@@ -192,8 +190,8 @@ public final class OverviewTask {
     private List<Integer> getCurrentTasksCenterXList() {
         return mLauncher.isTablet()
                 ? mOverview.getCurrentTasksForTablet().stream()
-                    .map(OverviewTask::getTaskCenterX)
-                    .collect(Collectors.toList())
+                .map(OverviewTask::getTaskCenterX)
+                .collect(Collectors.toList())
                 : List.of(mOverview.getCurrentTask().getTaskCenterX());
     }
 
@@ -203,11 +201,8 @@ public final class OverviewTask {
     public LaunchedAppState open() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             verifyActiveContainer();
-            mLauncher.executeAndWaitForEvent(
+            mLauncher.executeAndWaitForLauncherStop(
                     () -> mLauncher.clickLauncherObject(mTask),
-                    event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                    () -> "Launching task didn't open a new window: "
-                            + mTask.getParent().getContentDescription(),
                     "clicking an overview task");
             if (mOverview.getContainerType()
                     == LauncherInstrumentation.ContainerType.SPLIT_SCREEN_SELECT) {

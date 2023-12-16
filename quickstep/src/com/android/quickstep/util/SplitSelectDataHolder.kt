@@ -93,6 +93,7 @@ class SplitSelectDataHolder(
     private var secondTaskId: Int = INVALID_TASK_ID
     private var initialIntent: Intent? = null
     private var secondIntent: Intent? = null
+    private var widgetSecondIntent: Intent? = null
     private var initialUser: UserHandle? = null
     private var secondUser: UserHandle? = null
     private var initialPendingIntent: PendingIntent? = null
@@ -165,6 +166,16 @@ class SplitSelectDataHolder(
     fun setSecondTask(pendingIntent: PendingIntent) {
         secondPendingIntent = pendingIntent
         secondUser = pendingIntent.creatorUserHandle
+    }
+
+    /**
+     * Similar to [setSecondTask] except this is to be called for widgets which can pass through
+     * an extra intent from their RemoteResponse.
+     * See [android.widget.RemoteViews.RemoteResponse.getLaunchOptions].first
+     */
+    fun setSecondWidget(pendingIntent: PendingIntent, widgetIntent: Intent?) {
+        setSecondTask(pendingIntent)
+        widgetSecondIntent = widgetIntent
     }
 
     private fun getShortcutInfo(intent: Intent?, user: UserHandle?): ShortcutInfo? {
@@ -241,6 +252,7 @@ class SplitSelectDataHolder(
                 secondTaskId,
                 initialPendingIntent,
                 secondPendingIntent,
+                widgetSecondIntent,
                 initialUser?.identifier ?: -1,
                 secondUser?.identifier ?: -1,
                 initialShortcut,
@@ -257,7 +269,8 @@ class SplitSelectDataHolder(
      * Note that both [initialIntent] and [secondIntent] will be nullified on method return
      *
      * One caveat is that if [secondPendingIntent] is set, we will use that and *not* attempt to
-     * convert [secondIntent]
+     * convert [secondIntent].
+     * This also leaves [widgetSecondIntent] untouched.
      */
     private fun convertIntentsToFinalTypes() {
         initialShortcut = getShortcutInfo(initialIntent, initialUser)
@@ -343,6 +356,7 @@ class SplitSelectDataHolder(
             var secondTaskId: Int = INVALID_TASK_ID,
             var initialPendingIntent: PendingIntent? = null,
             var secondPendingIntent: PendingIntent? = null,
+            var widgetSecondIntent: Intent? = null,
             var initialUserId: Int = -1,
             var secondUserId: Int = -1,
             var initialShortcut: ShortcutInfo? = null,

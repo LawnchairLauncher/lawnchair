@@ -303,4 +303,17 @@
         <item name="arrowTipBackground">?androidprv:attr/materialColorSurfaceContainer</item>
         <item name="arrowTipTextColor">?androidprv:attr/materialColorOnSurface</item>
     </style>
+
+    <style name="IconAppChipMenuTextStyle">
+        <item name="android:fontFamily">google-sans-text-medium</item>
+        <item name="android:textSize">@dimen/task_thumbnail_icon_menu_text_size</item>
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+        <item name="android:letterSpacing">0.025</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <style name="WidgetPickerActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

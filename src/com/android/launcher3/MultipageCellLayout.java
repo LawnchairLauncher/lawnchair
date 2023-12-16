@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.ItemConfiguration;
 import com.android.launcher3.celllayout.MulticellReorderAlgorithm;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
@@ -52,17 +53,6 @@ public class MultipageCellLayout extends CellLayout {
         return createReorderAlgorithm().simulateSeam(
                 () -> super.findNearestArea(relativeXPos, relativeYPos, minSpanX, minSpanY, spanX,
                         spanY, ignoreOccupied, result, resultSpan));
-    }
-
-    @Override
-    public void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
-            int spanY, View dragView, int[] resultDirection) {
-        createReorderAlgorithm().simulateSeam(
-                () -> {
-                    super.getDirectionVectorForDrop(dragViewCenterX, dragViewCenterY, spanX, spanY,
-                            dragView, resultDirection);
-                    return 0;
-                });
     }
 
     @Override
@@ -119,7 +109,7 @@ public class MultipageCellLayout extends CellLayout {
     }
 
     @Override
-    public void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
+    public void copyCurrentStateToSolution(ItemConfiguration solution) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);

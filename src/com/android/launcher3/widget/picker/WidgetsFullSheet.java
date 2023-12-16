@@ -17,6 +17,7 @@ package com.android.launcher3.widget.picker;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
@@ -24,7 +25,6 @@ import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORD
 
 import android.animation.Animator;
 import android.content.Context;
-import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -55,14 +55,14 @@ import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.UserCache;
@@ -72,7 +72,6 @@ import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.views.StickyHeaderLayout;
 import com.android.launcher3.views.WidgetsEduView;
 import com.android.launcher3.widget.BaseWidgetSheet;
-import com.android.launcher3.widget.LauncherWidgetHolder.ProviderChangedListener;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
@@ -89,13 +88,13 @@ import java.util.stream.IntStream;
  * Popup for showing the full list of available widgets
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
-        implements ProviderChangedListener, OnActivePageChangedListener,
+        implements OnActivePageChangedListener,
         WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
 
     private static final long FADE_IN_DURATION = 150;
     private static final long EDUCATION_TIP_DELAY_MS = 200;
     private static final long EDUCATION_DIALOG_DELAY_MS = 500;
-    private static final float VERTICAL_START_POSITION = 0.3f;
+
     // The widget recommendation table can easily take over the entire screen on devices with small
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
     // the table can display.
@@ -106,9 +105,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter =
             entry -> mCurrentUser.equals(entry.mPkgItem.user);
-    private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
-            entry -> !mCurrentUser.equals(entry.mPkgItem.user)
-                    && !mUserManagerState.isUserQuiet(entry.mPkgItem.user);
+    private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter;
     protected final boolean mHasWorkProfile;
     protected boolean mHasRecommendedWidgets;
     protected final SparseArray<AdapterHolder> mAdapters = new SparseArray();
@@ -166,9 +163,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
     @Px private int mMaxSpanPerRow;
-    private DeviceProfile mDeviceProfile;
-
-    private int mOrientation;
+    protected DeviceProfile mDeviceProfile;
 
     protected TextView mNoWidgetsView;
     protected StickyHeaderLayout mSearchScrollView;
@@ -181,21 +176,23 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mDeviceProfile = Launcher.getLauncher(context).getDeviceProfile();
-        mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
-        mOrientation = context.getResources().getConfiguration().orientation;
+        mDeviceProfile = mActivityContext.getDeviceProfile();
+        mUserCache = UserCache.INSTANCE.get(context);
+        mHasWorkProfile = mUserCache.getUserProfiles()
+                .stream()
+                .anyMatch(user -> mUserCache.getUserInfo(user).isWork());
+        mWorkWidgetsFilter = entry -> mHasWorkProfile
+                && mUserCache.getUserInfo(entry.mPkgItem.user).isWork();
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
 
         Resources resources = getResources();
+        mUserManagerState.init(UserCache.INSTANCE.get(context),
+                context.getSystemService(UserManager.class));
         mTabsHeight = mHasWorkProfile
                 ? resources.getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
                 : 0;
-
-        mUserCache = UserCache.INSTANCE.get(context);
-        mUserManagerState.init(UserCache.INSTANCE.get(context),
-                context.getSystemService(UserManager.class));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -353,15 +350,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mActivityContext.getAppWidgetHolder().addProviderChangeListener(this);
-        notifyWidgetProvidersChanged();
+        LauncherAppState.getInstance(mActivityContext).getModel()
+                .refreshAndBindWidgetsAndShortcuts(null);
         onRecommendedWidgetsBound();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mActivityContext.getAppWidgetHolder().removeProviderChangeListener(this);
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView
                 .removeOnAttachStateChangeListener(mBindScrollbarInSearchMode);
         if (mHasWorkProfile) {
@@ -479,11 +475,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 contentLeft + contentWidth, height);
 
         setTranslationShift(mTranslationShift);
-    }
-
-    @Override
-    public void notifyWidgetProvidersChanged() {
-        mActivityContext.refreshAndBindWidgetsForPackageUser(null);
     }
 
     @Override
@@ -628,7 +619,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (animate) {
             if (getPopupContainer().getInsets().bottom > 0) {
                 mContent.setAlpha(0);
-                setTranslationShift(VERTICAL_START_POSITION);
             }
             setUpOpenAnimation(mActivityContext.getDeviceProfile().bottomSheetOpenDuration);
             Animator animator = mOpenCloseAnimation.getAnimationPlayer();
@@ -682,29 +672,25 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     /** Shows the {@link WidgetsFullSheet} on the launcher. */
-    public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
-        boolean isTwoPane = launcher.getDeviceProfile().isTablet
-                && launcher.getDeviceProfile().isLandscape
-                && (!launcher.getDeviceProfile().isTwoPanels
-                    || FeatureFlags.UNFOLDED_WIDGET_PICKER.get());
-
-        WidgetsFullSheet sheet;
-        if (isTwoPane) {
-            sheet = (WidgetsTwoPaneSheet) launcher.getLayoutInflater().inflate(
-                    R.layout.widgets_two_pane_sheet,
-                    launcher.getDragLayer(),
-                    false);
-        } else {
-            sheet = (WidgetsFullSheet) launcher.getLayoutInflater().inflate(
-                    R.layout.widgets_full_sheet,
-                    launcher.getDragLayer(),
-                    false);
-        }
-
+    public static WidgetsFullSheet show(BaseActivity activity, boolean animate) {
+        WidgetsFullSheet sheet = (WidgetsFullSheet) activity.getLayoutInflater().inflate(
+                getWidgetSheetId(activity),
+                activity.getDragLayer(),
+                false);
         sheet.attachToContainer();
         sheet.mIsOpen = true;
         sheet.open(animate);
         return sheet;
+    }
+
+    private static int getWidgetSheetId(BaseActivity activity) {
+        boolean isTwoPane = (activity.getDeviceProfile().isTablet
+                && activity.getDeviceProfile().isLandscape
+                && !activity.getDeviceProfile().isTwoPanels)
+                // Enables two pane picker for unfolded foldables if the flag is on.
+                || (activity.getDeviceProfile().isTwoPanels && enableUnfoldedTwoPanePicker());
+
+        return isTwoPane ? R.layout.widgets_two_pane_sheet : R.layout.widgets_full_sheet;
     }
 
     @Override
@@ -754,7 +740,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     /** Gets the {@link WidgetsRecyclerView} which shows all widgets in {@link WidgetsFullSheet}. */
     @VisibleForTesting
-    public static WidgetsRecyclerView getWidgetsView(Launcher launcher) {
+    public static WidgetsRecyclerView getWidgetsView(BaseActivity launcher) {
         return launcher.findViewById(R.id.primary_widgets_list_view);
     }
 
@@ -797,17 +783,25 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) {
             mSearchBar.reset();
         }
+    }
 
-        // Checks the orientation of the screen
-        if (mOrientation != newConfig.orientation) {
-            mOrientation = newConfig.orientation;
-            if (mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
-                handleClose(false);
-                show(Launcher.getLauncher(getContext()), false);
-            } else {
-                reset();
-            }
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        if (mDeviceProfile.isLandscape != dp.isLandscape && dp.isTablet && !dp.isTwoPanels) {
+            handleClose(false);
+            show(BaseActivity.fromContext(getContext()), false);
+        } else {
+            reset();
         }
+
+        // When folding/unfolding the foldables, we need to switch between the regular widget picker
+        // and the two pane picker, so we rebuild the picker with the correct layout.
+        if (mDeviceProfile.isTwoPanels != dp.isTwoPanels && enableUnfoldedTwoPanePicker()) {
+            handleClose(false);
+            show(BaseActivity.fromContext(getContext()), false);
+        }
+
+        mDeviceProfile = dp;
     }
 
     @Override

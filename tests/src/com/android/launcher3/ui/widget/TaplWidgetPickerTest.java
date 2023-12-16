@@ -15,30 +15,31 @@
  */
 package com.android.launcher3.ui.widget;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
-import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * This test run in both Out of process (Oop) and in-process (Ipc).
  * Make sure the basic interactions with the WidgetPicker works.
  */
+@MediumTest
+@RunWith(AndroidJUnit4.class)
 public class TaplWidgetPickerTest extends AbstractLauncherUiTest {
 
     @Before
@@ -59,10 +60,10 @@ public class TaplWidgetPickerTest extends AbstractLauncherUiTest {
      * Open Widget picker, make sure the widget picker can scroll and then go to home screen.
      */
     @Test
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/293191790
     @ScreenRecord
     @PortraitLandscape
     public void testWidgets() {
+        mLauncher.goHome();
         // Test opening widgets.
         executeOnLauncher(launcher ->
                 assertTrue("Widgets is initially opened", getWidgetsView(launcher) == null));

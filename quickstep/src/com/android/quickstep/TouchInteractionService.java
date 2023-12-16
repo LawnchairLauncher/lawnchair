@@ -102,6 +102,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.flags.FlagsFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ScreenOnTracker;
@@ -581,13 +582,16 @@ public class TouchInteractionService extends Service {
     }
 
     private void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
-        AccessibilityManager am = getSystemService(AccessibilityManager.class);
+        Executors.UI_HELPER_EXECUTOR.execute(() -> {
+            AccessibilityManager am = getSystemService(AccessibilityManager.class);
 
-        if (isHomeAndOverviewSame) {
-            am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-        } else {
-            am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-        }
+            if (isHomeAndOverviewSame) {
+                am.registerSystemAction(
+                        createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            } else {
+                am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            }
+        });
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
                 .getCreatedActivity();
@@ -970,8 +974,8 @@ public class TouchInteractionService extends Service {
             TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
             if (tac != null && !(base instanceof AssistantInputConsumer)) {
                 // Present always on large screen or on small screen w/ flag
-                DeviceProfile dp = tac.getDeviceProfile();
-                boolean useTaskbarConsumer = dp.isTaskbarPresent && !TaskbarManager.isPhoneMode(dp)
+                boolean useTaskbarConsumer = tac.getDeviceProfile().isTaskbarPresent
+                        && !tac.isPhoneMode()
                         && !tac.isInStashedLauncherState();
                 if (canStartSystemGesture && useTaskbarConsumer) {
                     reasonString.append(NEWLINE_PREFIX)
@@ -982,12 +986,11 @@ public class TouchInteractionService extends Service {
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
                             mOverviewCommandHelper);
                 }
-            } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()
-                    && !previousGestureState.isRecentsAnimationRunning()) {
+            } else if (canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
-                        .append("Long press nav handle enabled, ")
+                        .append("Not running recents animation, ")
                         .append("using NavHandleLongPressInputConsumer");
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat,
                         mDeviceState);

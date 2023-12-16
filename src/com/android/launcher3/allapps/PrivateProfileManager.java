@@ -30,6 +30,7 @@ import android.os.UserManager;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.Preconditions;
@@ -47,6 +48,7 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final String SAFETY_CENTER_INTENT = Intent.ACTION_SAFETY_CENTER;
     private static final String PS_SETTINGS_FRAGMENT_KEY = ":settings:fragment_args_key";
     private static final String PS_SETTINGS_FRAGMENT_VALUE = "AndroidPrivateSpace_personal";
+    private static final int ANIMATION_DURATION = 2000;
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
@@ -71,13 +73,11 @@ public class PrivateProfileManager extends UserProfileManager {
 
     /** Disables quiet mode for Private Space User Profile. */
     public void unlockPrivateProfile() {
-        // TODO (b/302666597): Log this event to WW.
         enableQuietMode(false);
     }
 
     /** Enables quiet mode for Private Space User Profile. */
     public void lockPrivateProfile() {
-        // TODO (b/302666597): Log this event to WW.
         enableQuietMode(true);
     }
 
@@ -92,16 +92,12 @@ public class PrivateProfileManager extends UserProfileManager {
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
-        if (getCurrentState() == updatedState) {
-            return;
-        }
         setCurrentState(updatedState);
         resetPrivateSpaceDecorator(updatedState);
     }
 
     /** Opens the Private Space Settings Entry Point. */
     public void openPrivateSpaceSettings() {
-        // TODO (b/302666597): Log this event to WW.
         Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
         psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
         mAllApps.getContext().startActivity(psSettingsIntent);
@@ -126,19 +122,33 @@ public class PrivateProfileManager extends UserProfileManager {
 
     @VisibleForTesting
     void resetPrivateSpaceDecorator(int updatedState) {
+        ActivityAllAppsContainerView<?>.AdapterHolder mainAdapterHolder = mAllApps.mAH.get(MAIN);
         if (updatedState == STATE_ENABLED) {
-            // Add Private Space Decorator to the Recycler view.
+            // Create a new decorator instance if not already available.
             if (mPrivateAppsSectionDecorator == null) {
                 mPrivateAppsSectionDecorator = new PrivateAppsSectionDecorator(
-                        mAllApps.mActivityContext,
-                        mAllApps.mAH.get(MAIN).mAppsList);
+                        mainAdapterHolder.mAppsList);
             }
-            mAllApps.mAH.get(MAIN).mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
+            for (int i = 0; i < mainAdapterHolder.mRecyclerView.getItemDecorationCount(); i++) {
+                if (mainAdapterHolder.mRecyclerView.getItemDecorationAt(i)
+                        .equals(mPrivateAppsSectionDecorator)) {
+                    // No need to add another decorator if one is already present in recycler view.
+                    return;
+                }
+            }
+            // Add Private Space Decorator to the Recycler view.
+            mainAdapterHolder.mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
+            if (Flags.privateSpaceAnimation() && mAllApps.getActiveRecyclerView()
+                    == mainAdapterHolder.mRecyclerView) {
+                RecyclerViewAnimationController recyclerViewAnimationController =
+                        new RecyclerViewAnimationController(mAllApps);
+                recyclerViewAnimationController.animateToState(true /* expand */,
+                        ANIMATION_DURATION, () -> {});
+            }
         } else {
             // Remove Private Space Decorator from the Recycler view.
             if (mPrivateAppsSectionDecorator != null) {
-                mAllApps.mAH.get(MAIN).mRecyclerView
-                        .removeItemDecoration(mPrivateAppsSectionDecorator);
+                mainAdapterHolder.mRecyclerView.removeItemDecoration(mPrivateAppsSectionDecorator);
             }
         }
     }

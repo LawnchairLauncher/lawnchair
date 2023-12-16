@@ -119,6 +119,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import kotlin.Unit;
+
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -126,8 +128,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -304,32 +304,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
-    private static final FloatProperty<TaskView> NON_GRID_TRANSLATION_X =
-            new FloatProperty<TaskView>("nonGridTranslationX") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setNonGridTranslationX(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mNonGridTranslationX;
-                }
-            };
-
-    private static final FloatProperty<TaskView> NON_GRID_TRANSLATION_Y =
-            new FloatProperty<TaskView>("nonGridTranslationY") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setNonGridTranslationY(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mNonGridTranslationY;
-                }
-            };
-
     public static final FloatProperty<TaskView> GRID_END_TRANSLATION_X =
             new FloatProperty<TaskView>("gridEndTranslationX") {
                 @Override
@@ -386,7 +360,6 @@ public class TaskView extends FrameLayout implements Reusable {
     // Applied as a complement to gridTranslation, for adjusting the carousel overview and quick
     // switch.
     private float mNonGridTranslationX;
-    private float mNonGridTranslationY;
     private float mNonGridPivotTranslationX;
     // Used when in SplitScreenSelectState
     private float mSplitSelectTranslationY;
@@ -408,6 +381,7 @@ public class TaskView extends FrameLayout implements Reusable {
             new TaskIdAttributeContainer[2];
 
     private boolean mShowScreenshot;
+    private boolean mBorderEnabled;
 
     // The current background requests to load the task thumbnail and icon
     @Nullable
@@ -439,8 +413,15 @@ public class TaskView extends FrameLayout implements Reusable {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public TaskView(
-            Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public TaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
+            int defStyleRes) {
+        this(context, attrs, defStyleAttr, defStyleRes, null, null);
+    }
+
+    @VisibleForTesting
+    public TaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
+            int defStyleRes, BorderAnimator focusBorderAnimator,
+            BorderAnimator hoverBorderAnimator) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mActivity = StatefulActivity.fromContext(context);
         setOnClickListener(this::onClick);
@@ -457,28 +438,35 @@ public class TaskView extends FrameLayout implements Reusable {
         TypedArray styledAttrs = context.obtainStyledAttributes(
                 attrs, R.styleable.TaskView, defStyleAttr, defStyleRes);
 
-        mFocusBorderAnimator = keyboardFocusHighlightEnabled
-                ? BorderAnimator.createSimpleBorderAnimator(
-                        /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
-                        /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
-                                R.dimen.keyboard_quick_switch_border_width),
-                        /* boundsBuilder= */ this::updateBorderBounds,
-                        /* targetView= */ this,
-                        /* borderColor= */ styledAttrs.getColor(
-                                R.styleable.TaskView_focusBorderColor, DEFAULT_BORDER_COLOR))
-                : null;
+        if (focusBorderAnimator != null) {
+            mFocusBorderAnimator = focusBorderAnimator;
+        } else {
+            mFocusBorderAnimator = keyboardFocusHighlightEnabled
+                    ? BorderAnimator.createSimpleBorderAnimator(
+                    /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
+                    /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
+                            R.dimen.keyboard_quick_switch_border_width),
+                    /* boundsBuilder= */ this::updateBorderBounds,
+                    /* targetView= */ this,
+                    /* borderColor= */ styledAttrs.getColor(
+                            R.styleable.TaskView_focusBorderColor, DEFAULT_BORDER_COLOR))
+                    : null;
+        }
 
-        mHoverBorderAnimator = cursorHoverStatesEnabled
-                ? BorderAnimator.createSimpleBorderAnimator(
-                        /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
-                        /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
-                                R.dimen.task_hover_border_width),
-                        /* boundsBuilder= */ this::updateBorderBounds,
-                        /* targetView= */ this,
-                        /* borderColor= */ styledAttrs.getColor(
-                                R.styleable.TaskView_hoverBorderColor, DEFAULT_BORDER_COLOR))
-                : null;
-
+        if (hoverBorderAnimator != null) {
+            mHoverBorderAnimator = hoverBorderAnimator;
+        } else {
+            mHoverBorderAnimator = cursorHoverStatesEnabled
+                    ? BorderAnimator.createSimpleBorderAnimator(
+                    /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
+                    /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
+                            R.dimen.task_hover_border_width),
+                    /* boundsBuilder= */ this::updateBorderBounds,
+                    /* targetView= */ this,
+                    /* borderColor= */ styledAttrs.getColor(
+                            R.styleable.TaskView_hoverBorderColor, DEFAULT_BORDER_COLOR))
+                    : null;
+        }
         styledAttrs.recycle();
     }
 
@@ -538,30 +526,49 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     @Override
-    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-        if (mFocusBorderAnimator != null) {
+        if (mFocusBorderAnimator != null && mBorderEnabled) {
             mFocusBorderAnimator.setBorderVisibility(gainFocus, /* animated= */ true);
         }
     }
 
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        if (mHoverBorderAnimator != null) {
+        if (mHoverBorderAnimator != null && mBorderEnabled) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
-                    mHoverBorderAnimator.setBorderVisibility(
-                            /* visible= */ true, /* animated= */ true);
+                    mHoverBorderAnimator.setBorderVisibility(/* visible= */ true, /* animated= */
+                            true);
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
-                    mHoverBorderAnimator.setBorderVisibility(
-                            /* visible= */ false, /* animated= */ true);
+                    mHoverBorderAnimator.setBorderVisibility(/* visible= */ false, /* animated= */
+                            true);
                     break;
                 default:
                     break;
             }
         }
         return super.onHoverEvent(event);
+    }
+
+    /**
+     * Enable or disable showing border on hover and focus change
+     */
+    public void setBorderEnabled(boolean enabled) {
+        mBorderEnabled = enabled;
+        // Set the animation correctly in case it misses the hover/focus event during state
+        // transition
+        if (mHoverBorderAnimator != null) {
+            mHoverBorderAnimator.setBorderVisibility(/* visible= */
+                    enabled && isHovered(), /* animated= */ true);
+        }
+
+        if (mFocusBorderAnimator != null) {
+            mFocusBorderAnimator.setBorderVisibility(/* visible= */
+                    enabled && isFocused(), /* animated= */true);
+        }
     }
 
     @Override
@@ -630,7 +637,7 @@ public class TaskView extends FrameLayout implements Reusable {
             return;
         }
         mModalness = modalness;
-        mIconView.setAlpha(1 - modalness);
+        mIconView.setContentAlpha(1 - modalness);
         mDigitalWellBeingToast.updateBannerOffset(modalness);
     }
 
@@ -1028,9 +1035,6 @@ public class TaskView extends FrameLayout implements Reusable {
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    if (!recentsView.showAsGrid()) {
-                        return;
-                    }
                     recentsView.runActionOnRemoteHandles(
                             (Consumer<RemoteTargetHandle>) remoteTargetHandle ->
                                     remoteTargetHandle
@@ -1253,7 +1257,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float upperClamp = invert ? 1 : iconScalePercentage;
         float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
                 .getInterpolation(progress);
-        mIconView.setAlpha(scale);
+        mIconView.setContentAlpha(scale);
         mDigitalWellBeingToast.updateBannerOffset(1f - scale);
     }
 
@@ -1289,7 +1293,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected void resetPersistentViewTransforms() {
-        mNonGridTranslationX = mNonGridTranslationY = mGridTranslationX =
+        mNonGridTranslationX = mGridTranslationX =
                 mGridTranslationY = mBoxTranslationY = mNonGridPivotTranslationX = 0f;
         resetViewTransforms();
     }
@@ -1327,6 +1331,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mSnapshotView.setThumbnail(mTask, null);
         setOverlayEnabled(false);
         onTaskListVisibilityChanged(false);
+        mBorderEnabled = false;
     }
 
     public float getTaskCornerRadius() {
@@ -1459,14 +1464,16 @@ public class TaskView extends FrameLayout implements Reusable {
         applyTranslationY();
     }
 
-    private void setNonGridTranslationX(float nonGridTranslationX) {
-        mNonGridTranslationX = nonGridTranslationX;
-        applyTranslationX();
+    public float getNonGridTranslationX() {
+        return mNonGridTranslationX;
     }
 
-    private void setNonGridTranslationY(float nonGridTranslationY) {
-        mNonGridTranslationY = nonGridTranslationY;
-        applyTranslationY();
+    /**
+     * Updates X coordinate of non-grid translation.
+     */
+    public void setNonGridTranslationX(float nonGridTranslationX) {
+        mNonGridTranslationX = nonGridTranslationX;
+        applyTranslationX();
     }
 
     public void setGridTranslationX(float gridTranslationX) {
@@ -1505,7 +1512,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (gridEnabled) {
             scrollAdjustment += mGridTranslationX;
         } else {
-            scrollAdjustment += getPrimaryNonGridTranslationProperty().get(this);
+            scrollAdjustment += getNonGridTranslationX();
         }
         return scrollAdjustment;
     }
@@ -1551,9 +1558,7 @@ public class TaskView extends FrameLayout implements Reusable {
      * change according to a temporary state (e.g. task offset).
      */
     public float getPersistentTranslationY() {
-        return mBoxTranslationY
-                + getNonGridTrans(mNonGridTranslationY)
-                + getGridTrans(mGridTranslationY);
+        return mBoxTranslationY + getGridTrans(mGridTranslationY);
     }
 
     public FloatProperty<TaskView> getPrimarySplitTranslationProperty() {
@@ -1589,16 +1594,6 @@ public class TaskView extends FrameLayout implements Reusable {
     public FloatProperty<TaskView> getTaskResistanceTranslationProperty() {
         return getPagedOrientationHandler().getSecondaryValue(
                 TASK_RESISTANCE_TRANSLATION_X, TASK_RESISTANCE_TRANSLATION_Y);
-    }
-
-    public FloatProperty<TaskView> getPrimaryNonGridTranslationProperty() {
-        return getPagedOrientationHandler().getPrimaryValue(
-                NON_GRID_TRANSLATION_X, NON_GRID_TRANSLATION_Y);
-    }
-
-    public FloatProperty<TaskView> getSecondaryNonGridTranslationProperty() {
-        return getPagedOrientationHandler().getSecondaryValue(
-                NON_GRID_TRANSLATION_X, NON_GRID_TRANSLATION_Y);
     }
 
     @Override

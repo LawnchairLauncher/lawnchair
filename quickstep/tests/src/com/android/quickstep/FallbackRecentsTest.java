@@ -144,7 +144,7 @@ public class FallbackRecentsTest {
                 .around(new TestStabilityRule())
                 .around(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
-                .around(viewCaptureRule)
+                // .around(viewCaptureRule) b/315482167
                 .around(new TestIsolationRule(mLauncher, false))
                 .around(setLauncherCommand);
 
@@ -218,8 +218,15 @@ public class FallbackRecentsTest {
     }
 
     private BaseOverview pressHomeAndGoToOverview() {
-        mDevice.pressHome();
+        pressHomeAndWaitForOverviewClose();
         return mLauncher.getLaunchedAppState().switchToOverview();
+    }
+
+    private void pressHomeAndWaitForOverviewClose() {
+        mDevice.pressHome();
+        Wait.atMost("Recents activity didn't stop",
+                () -> getFromRecents(recents -> !recents.isStarted()),
+                DEFAULT_UI_TIMEOUT, mLauncher);
     }
 
     // b/143488140

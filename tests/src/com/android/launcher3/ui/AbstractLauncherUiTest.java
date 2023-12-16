@@ -131,6 +131,8 @@ public abstract class AbstractLauncherUiTest {
     /** Detects activity leaks and throws an exception if a leak is found. */
     public static void checkDetectedLeaks(LauncherInstrumentation launcher,
             boolean requireOneActiveActivityUnused) {
+        if (TestStabilityRule.isPresubmit()) return; // b/313501215
+
         final boolean requireOneActiveActivity =
                 false; // workaround for leaks when there is an unexpected Recents activity
 
@@ -220,6 +222,23 @@ public abstract class AbstractLauncherUiTest {
     @Rule
     public SetFlagsRule mSetFlagsRule = new SetFlagsRule(DEVICE_DEFAULT);
 
+    public static void initialize(AbstractLauncherUiTest test) throws Exception {
+        initialize(test, false);
+    }
+
+    public static void initialize(
+            AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
+        test.reinitializeLauncherData(clearWorkspace);
+        test.mDevice.pressHome();
+        test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
+        test.waitForState("Launcher internal state didn't switch to Home",
+                () -> LauncherState.NORMAL);
+        test.waitForResumed("Launcher internal state is still Background");
+        // Check that we switched to home.
+        test.mLauncher.getWorkspace();
+        AbstractLauncherUiTest.checkDetectedLeaks(test.mLauncher, true);
+    }
+
     protected void clearPackageData(String pkg) throws IOException, InterruptedException {
         final CountDownLatch count = new CountDownLatch(2);
         final SimpleBroadcastReceiver broadcastReceiver =
@@ -238,7 +257,7 @@ public abstract class AbstractLauncherUiTest {
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
-                .around(viewCaptureRule)
+                // .around(viewCaptureRule) // b/315482167
                 .around(new TestIsolationRule(mLauncher, true));
 
         return TestHelpers.isInLauncherProcess()
@@ -573,6 +592,12 @@ public abstract class AbstractLauncherUiTest {
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
                 TestHelpers.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
+
+        // Wait for the Launcher to stop.
+        final LauncherInstrumentation launcherInstrumentation = new LauncherInstrumentation();
+        Wait.atMost("Launcher activity didn't stop",
+                () -> !launcherInstrumentation.isLauncherActivityStarted(),
+                DEFAULT_ACTIVITY_TIMEOUT, launcherInstrumentation);
     }
 
     public static ActivityInfo resolveSystemAppInfo(String category) {

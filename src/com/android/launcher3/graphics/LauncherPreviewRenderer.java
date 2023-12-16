@@ -35,12 +35,10 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherApps;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -79,7 +77,6 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -87,7 +84,6 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
@@ -193,8 +189,6 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final SparseIntArray mWallpaperColorResources;
     private final SparseArray<Size> mLauncherWidgetSpanInfo;
 
-    private final Map<BubbleTextView, WorkspaceItemInfo> mIcons = new HashMap<>();
-
     public LauncherPreviewRenderer(Context context,
             InvariantDeviceProfile idp,
             WallpaperColors wallpaperColorsOverride,
@@ -204,7 +198,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
         mIdp = idp;
-        mDp = idp.getDeviceProfile(context).toBuilder(context).setViewScaleProvider(
+        mDp = getDeviceProfileForPreview(context).toBuilder(context).setViewScaleProvider(
                 this::getAppWidgetScale).build();
         if (context instanceof PreviewContext) {
             Context tempContext = ((PreviewContext) context).getBaseContext();
@@ -264,6 +258,21 @@ public class LauncherPreviewRenderer extends ContextWrapper
             mWallpaperColorResources = null;
         }
         mAppWidgetHost = new LauncherPreviewAppWidgetHost(context);
+    }
+
+    /**
+     * Returns the device profile based on resource configuration for previewing various display
+     * sizes
+     */
+    private DeviceProfile getDeviceProfileForPreview(Context context) {
+        float density = context.getResources().getDisplayMetrics().density;
+        Configuration config = context.getResources().getConfiguration();
+
+        return mIdp.getBestMatch(
+                config.screenWidthDp * density,
+                config.screenHeightDp * density,
+                WindowManagerProxy.INSTANCE.get(context).getRotation(context)
+        );
     }
 
     /**
@@ -373,43 +382,11 @@ public class LauncherPreviewRenderer extends ContextWrapper
         return CellPosMapper.DEFAULT;
     }
 
-    /**
-     * Refreshes icon to update based on resource changes.
-     */
-    public void refreshIcons() {
-        mUiHandler.post(() -> {
-                    IconProvider iconProvider = null;
-                    int iconDpi = -1;
-                    for (Map.Entry<BubbleTextView, WorkspaceItemInfo> entry : mIcons.entrySet()) {
-                        BubbleTextView icon = entry.getKey();
-                        ItemInfoWithIcon info = entry.getValue();
-                        // get monochrome themed icon if it was not initially cached
-                        if (info.bitmap.getMono() == null) {
-                            if (iconProvider == null || iconDpi == -1) {
-                                LauncherAppState appState = LauncherAppState.getInstance(mContext);
-                                iconProvider = appState.getIconProvider();
-                                iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
-                            }
-                            LauncherActivityInfo activityInfo = mContext.getSystemService(
-                                            LauncherApps.class)
-                                    .resolveActivity(info.getIntent(), info.user);
-                            Drawable iconDrawable = iconProvider.getIcon(activityInfo,  iconDpi);
-                            LauncherIcons iconFactory = LauncherIcons.obtain(mContext);
-                            info.bitmap = iconFactory.createBadgedIconBitmap(iconDrawable);
-                        }
-                        // update icon based on whether themed icon is enabled
-                        icon.reapplyItemInfo(info);
-                    }
-                }
-        );
-    }
-
     private void inflateAndAddIcon(WorkspaceItemInfo info) {
         CellLayout screen = mWorkspaceScreens.get(info.screenId);
         BubbleTextView icon = (BubbleTextView) mHomeElementInflater.inflate(
                 R.layout.app_icon, screen, false);
         icon.applyFromWorkspaceItem(info);
-        mIcons.put(icon, info);
         addInScreenFromBind(icon, info);
     }
 
@@ -516,8 +493,6 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 currentWorkspaceItems, otherWorkspaceItems);
         filterCurrentWorkspaceItems(currentScreenIds, dataModel.appWidgets, currentAppWidgets,
                 otherAppWidgets);
-
-        mIcons.clear();
         for (ItemInfo itemInfo : currentWorkspaceItems) {
             switch (itemInfo.itemType) {
                 case Favorites.ITEM_TYPE_APPLICATION:

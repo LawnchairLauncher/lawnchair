@@ -23,6 +23,7 @@
     android:focusable="false"
     android:importantForAccessibility="no"
     android:autoMirrored="true"
+    android:background="@drawable/icon_menu_elevation_background"
     android:elevation="@dimen/task_thumbnail_icon_menu_elevation" >
 
     <ImageView
@@ -59,9 +60,8 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textAlignment="viewStart"
-        android:textColor="?androidprv:attr/materialColorOnSurface"
-        android:textSize="@dimen/task_thumbnail_icon_menu_text_size"
-        android:importantForAccessibility="no" />
+        android:importantForAccessibility="no"
+        style="@style/IconAppChipMenuTextStyle" />
 
     <TextView
         android:id="@+id/icon_text_expanded"
@@ -71,9 +71,8 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textAlignment="viewStart"
-        android:textColor="?androidprv:attr/materialColorOnSurface"
-        android:textSize="@dimen/task_thumbnail_icon_menu_text_size"
-        android:importantForAccessibility="no" />
+        android:importantForAccessibility="no"
+        style="@style/IconAppChipMenuTextStyle" />
 
     <ImageView
         android:id="@+id/icon_arrow"

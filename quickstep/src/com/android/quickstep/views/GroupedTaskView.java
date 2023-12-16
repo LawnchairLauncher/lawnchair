@@ -17,6 +17,7 @@ import android.view.ViewStub;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -246,12 +247,11 @@ public class GroupedTaskView extends TaskView {
         RunnableList endCallback = new RunnableList();
         RecentsView recentsView = getRecentsView();
         // Callbacks run from remote animation when recents animation not currently running
-        InteractionJankMonitorWrapper.begin(this,
-                InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Enter form GroupedTaskView");
+        InteractionJankMonitorWrapper.begin(this, Cuj.CUJ_SPLIT_SCREEN_ENTER,
+                "Enter form GroupedTaskView");
         launchTaskInternal(success -> {
             endCallback.executeAllAndDestroy();
-            InteractionJankMonitorWrapper.end(
-                    InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_SPLIT_SCREEN_ENTER);
         }, false /* freezeTaskList */, true /*launchingExistingTaskview*/);
 
 
@@ -436,7 +436,7 @@ public class GroupedTaskView extends TaskView {
         super.setIconsAndBannersTransitionProgress(progress, invert);
         // Value set by super call
         float scale = mIconView.getAlpha();
-        mIconView2.setAlpha(scale);
+        mIconView2.setContentAlpha(scale);
         mDigitalWellBeingToast2.updateBannerOffset(1f - scale);
     }
 

@@ -33,17 +33,17 @@ final class AlphaJumpDetector extends AnomalyDetector {
 
     private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree(List.of(
             CONTENT
-                    + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
+                    + "SimpleDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
                     + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
                     + "|ScrollView:id/widget_preview_scroll_view|WidgetCell:id/widget_cell"
                     + "|WidgetCellPreview:id/widget_preview_container|ImageView:id/widget_badge",
             CONTENT
-                    + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
+                    + "SimpleDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
                     + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
                     + "|ScrollView:id/widget_preview_scroll_view|WidgetCell:id/widget_cell"
                     + "|WidgetCellPreview:id/widget_preview_container|WidgetCell$1|FrameLayout"
                     + "|ImageView:id/icon",
-            CONTENT + "AddItemDragLayer:id/add_item_drag_layer|View",
+            CONTENT + "SimpleDragLayer:id/add_item_drag_layer|View",
             DRAG_LAYER
                     + "AppWidgetResizeFrame|FrameLayout|ImageButton:id/widget_reconfigure_button",
             DRAG_LAYER

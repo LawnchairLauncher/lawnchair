@@ -16,6 +16,7 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_ESCAPE;
 import static android.view.KeyEvent.KEYCODE_META_RIGHT;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
@@ -39,6 +40,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +54,12 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
+    private static final String FAST_SCROLLER_RES_ID = "fast_scroller";
+
+    private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
+    private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
 
     private final int mHeight;
     private final int mIconHeight;
@@ -362,9 +370,12 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to tap outside AllApps bottom sheet on the "
                              + (tapRight ? "right" : "left"))) {
-            final UiObject2 allAppsBottomSheet =
+
+            final UiObject2 container = (tapRight)
+                    ? mLauncher.waitForLauncherObject(FAST_SCROLLER_RES_ID) :
                     mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
-            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+
+            mLauncher.touchOutsideContainer(container, tapRight, false);
             try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
                     "tapped outside AllApps bottom sheet")) {
                 verifyVisibleContainerOnDismiss();
@@ -378,6 +389,19 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
             mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "pressed meta key")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    /** Presses the esc key to dismiss AllApps. */
+    public void dismissByEscKey() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
+            mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE);
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed esc key")) {
                 verifyVisibleContainerOnDismiss();
             }
         }

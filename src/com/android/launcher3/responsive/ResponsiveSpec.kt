@@ -90,18 +90,33 @@ data class ResponsiveSpec(
                     gutter.matchWorkspace ||
                     cellSize.matchWorkspace)
         ) {
-            Log.e(LOG_TAG, "WorkspaceSpec#isValid - workspace shouldn't contain matchWorkspace!")
+            logError("Workspace spec provided must not have any match workspace value.")
             return false
         }
 
         if (maxAvailableSize <= 0) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - maxAvailableSize <= 0")
+            logError("The property maxAvailableSize must be higher than 0.")
             return false
         }
 
         // All specs need to be individually valid
         if (!allSpecsAreValid()) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - !allSpecsAreValid()")
+            logError("One or more specs are invalid!")
+            return false
+        }
+
+        if (!isValidRemainderSpace()) {
+            logError("The total Remainder Space used must be lower or equal to 100%.")
+            return false
+        }
+
+        if (!isValidAvailableSpace()) {
+            logError("The total Available Space used must be lower or equal to 100%.")
+            return false
+        }
+
+        if (!isValidFixedSize()) {
+            logError("The total Fixed Size used must be lower or equal to $maxAvailableSize.")
             return false
         }
 
@@ -113,6 +128,32 @@ data class ResponsiveSpec(
             endPadding.isValid() &&
             gutter.isValid() &&
             cellSize.isValid()
+    }
+
+    private fun isValidRemainderSpace(): Boolean {
+        // TODO(b/313621277): This validation must be update do accept only 0 or 1 instead of <= 1f.
+        return startPadding.ofRemainderSpace +
+            endPadding.ofRemainderSpace +
+            gutter.ofRemainderSpace +
+            cellSize.ofRemainderSpace <= 1f
+    }
+
+    private fun isValidAvailableSpace(): Boolean {
+        return startPadding.ofAvailableSpace +
+            endPadding.ofAvailableSpace +
+            gutter.ofAvailableSpace +
+            cellSize.ofAvailableSpace < 1f
+    }
+
+    private fun isValidFixedSize(): Boolean {
+        return startPadding.fixedSize +
+            endPadding.fixedSize +
+            gutter.fixedSize +
+            cellSize.fixedSize <= maxAvailableSize
+    }
+
+    private fun logError(message: String) {
+        Log.e(LOG_TAG, "${this::class.simpleName}#isValid - $message - $this")
     }
 
     enum class DimensionType {
@@ -127,7 +168,8 @@ data class ResponsiveSpec(
             AllApps("allAppsSpec"),
             Folder("folderSpec"),
             Workspace("workspaceSpec"),
-            Hotseat("hotseatSpec")
+            Hotseat("hotseatSpec"),
+            Cell("cellSpec")
         }
     }
 }
@@ -204,9 +246,6 @@ class CalculatedResponsiveSpec {
     }
 
     fun isResponsiveSpecType(type: ResponsiveSpecType) = spec.specType == type
-
-    // TODO(b/287975993): Remove this after icon size is extracted to responsive grid
-    fun isCellSizeMatchWorkspace(): Boolean = spec.cellSize.matchWorkspace
 
     private fun updateRemainderSpaces(availableSpace: Int, cells: Int, spec: ResponsiveSpec) {
         val gutters = cells - 1

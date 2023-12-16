@@ -22,7 +22,6 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.Utilities.mapRange;
-import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
@@ -30,8 +29,6 @@ import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneButtonNavMode;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_ALIGNMENT_ANIM;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_PINNING_ANIM;
@@ -44,6 +41,7 @@ import android.animation.ValueAnimator;
 import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -191,8 +189,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mTaskbarView.init(new TaskbarViewCallbacks());
-        mTaskbarView.getLayoutParams().height = isPhoneMode(mActivity.getDeviceProfile())
-                ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_size)
+        mTaskbarView.getLayoutParams().height = mActivity.isPhoneMode()
+                ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_phone_size)
                 : mActivity.getDeviceProfile().taskbarHeight;
 
         mTaskbarIconScaleForStash.updateValue(1f);
@@ -219,7 +217,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             // This gets modified in NavbarButtonsViewController, but the initial value it reads
             // may be incorrect since it's state gets destroyed on taskbar recreate, so reset here
             mTaskbarIconAlpha.get(ALPHA_INDEX_SMALL_SCREEN)
-                    .animateToValue(isPhoneButtonNavMode(mActivity) ? 0 : 1).start();
+                    .animateToValue(mActivity.isPhoneButtonNavMode() ? 0 : 1).start();
         }
         if (enableTaskbarPinning()) {
             mTaskbarView.addOnLayoutChangeListener(mTaskbarViewLayoutChangeListener);
@@ -598,7 +596,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      *                       1 => fully aligned
      */
     public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
-        if (isPhoneMode(launcherDp)) {
+        if (mActivity.isPhoneMode()) {
             mIconAlignControllerLazy = null;
             return;
         }
@@ -883,54 +881,24 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             };
         }
 
-        public View.OnLongClickListener getIconOnLongClickListener() {
-            return mControllers.taskbarDragController::startDragOnLongClick;
+        public View.OnTouchListener getTaskbarDividerRightClickListener() {
+            return (v, event) -> {
+                if (event.isFromSource(InputDevice.SOURCE_MOUSE)
+                        && event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    mControllers.taskbarPinningController.showPinningView(v);
+                    return true;
+                }
+                return false;
+            };
         }
 
-        public View.OnLongClickListener getBackgroundOnLongClickListener() {
-            return view -> mControllers.taskbarStashController
-                    .updateAndAnimateIsManuallyStashedInApp(true);
+        public View.OnLongClickListener getIconOnLongClickListener() {
+            return mControllers.taskbarDragController::startDragOnLongClick;
         }
 
         /** Gets the hover listener for the provided icon view. */
         public View.OnHoverListener getIconOnHoverListener(View icon) {
             return new TaskbarHoverToolTipController(mActivity, mTaskbarView, icon);
-        }
-
-        /**
-         * Get the first chance to handle TaskbarView#onTouchEvent, and return whether we want to
-         * consume the touch so TaskbarView treats it as an ACTION_CANCEL.
-         * TODO(b/270395798): We can remove this entirely once we remove the Transient Taskbar flag.
-         */
-        public boolean onTouchEvent(MotionEvent motionEvent) {
-            final float x = motionEvent.getRawX();
-            final float y = motionEvent.getRawY();
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mDownX = x;
-                    mDownY = y;
-                    mControllers.taskbarStashController.startStashHint(/* animateForward = */ true);
-                    mCanceledStashHint = false;
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if (!mCanceledStashHint
-                            && squaredHypot(mDownX - x, mDownY - y) > mSquaredTouchSlop) {
-                        mControllers.taskbarStashController.startStashHint(
-                                /* animateForward= */ false);
-                        mCanceledStashHint = true;
-                        return true;
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (!mCanceledStashHint) {
-                        mControllers.taskbarStashController.startStashHint(
-                                /* animateForward= */ false);
-                    }
-                    break;
-            }
-
-            return false;
         }
 
         /**
