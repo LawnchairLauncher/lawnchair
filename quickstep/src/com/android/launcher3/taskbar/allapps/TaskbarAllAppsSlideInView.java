@@ -168,13 +168,14 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mActivityContext.addOnDeviceProfileChangeListener(this);
+        // TODO LAWNCHAIR
         if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
             mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(mViewOutlineProvider);
             mAppsView.getAppsRecyclerViewContainer().setClipToOutline(true);
             OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();
             if (dispatcher != null) {
                 dispatcher.registerOnBackInvokedCallback(
-                        OnBackInvokedDispatcher.PRIORITY_DEFAULT, this);
+                        OnBackInvokedDispatcher.PRIORITY_DEFAULT, null);
             }
         }
     }
@@ -188,7 +189,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
             mAppsView.getAppsRecyclerViewContainer().setClipToOutline(false);
             OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();
             if (dispatcher != null) {
-                dispatcher.unregisterOnBackInvokedCallback(this);
+                dispatcher.unregisterOnBackInvokedCallback(null);
             }
         }
     }

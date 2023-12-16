@@ -131,6 +131,7 @@ import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -636,8 +637,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * previous 3 don't.
      */
     @NonNull
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    protected OnBackAnimationCallback getOnBackAnimationCallback() {
+    protected OnBackPressedHandler getOnBackPressedHandler() {
         // #1 auto cancel action mode handler
         if (isInAutoCancelActionMode()) {
             return this::finishAutoCancelActionMode;
@@ -655,16 +655,17 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         // #4 state handler
-        return new OnBackAnimationCallback() {
+        return new OnBackPressedHandler() {
             @Override
             public void onBackInvoked() {
                 onStateBack();
             }
 
             @Override
-            public void onBackProgressed(@NonNull BackEvent backEvent) {
+            public void onBackProgressed(
+                    @FloatRange(from = 0.0, to = 1.0) float backProgress) {
                 mStateManager.getState().onBackProgressed(
-                        Launcher.this, backEvent.getProgress());
+                        Launcher.this, backProgress);
             }
 
             @Override
@@ -2198,7 +2199,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public void onBackPressed() {
-        getOnBackAnimationCallback().onBackInvoked();
+        getOnBackPressedHandler().onBackInvoked();
     }
 
     protected void onStateBack() {
