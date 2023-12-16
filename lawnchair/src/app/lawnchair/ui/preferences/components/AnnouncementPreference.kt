@@ -32,7 +32,11 @@ fun AnnouncementPreference() {
 
     Column {
         announcements.value.forEach { announcement ->
-            if (announcement.active && (!announcement.test || BuildConfig.DEBUG)) {
+            if (
+                announcement.active &&
+                announcement.text.isNotBlank() &&
+                (!announcement.test || BuildConfig.DEBUG)
+            ) {
                 AnnouncementPreference(announcement)
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -55,10 +59,11 @@ private fun AnnouncementPreference(
 @Composable
 private fun AnnouncementPreference(
     text: String,
-    url: String?,
+    url: String,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val hasLink = url.isNotBlank()
 
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -67,7 +72,7 @@ private fun AnnouncementPreference(
     ) {
         PreferenceTemplate(
             modifier = modifier.clickable {
-                if (url != null) {
+                if (hasLink) {
                     val webpage = Uri.parse(url)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
                     if (intent.resolveActivity(context.packageManager) != null) {
@@ -91,7 +96,7 @@ private fun AnnouncementPreference(
                 )
             },
             endWidget = {
-                url?.let {
+                if (hasLink) {
                     Icon(
                         imageVector = Icons.Rounded.Launch,
                         tint = MaterialTheme.colorScheme.primary,
@@ -108,7 +113,7 @@ private fun AnnouncementPreference(
 private fun InfoPreferenceWithoutLinkPreview() {
     AnnouncementPreference(
         text = "Very important announcement ",
-        url = null,
+        url = "",
     )
 }
 

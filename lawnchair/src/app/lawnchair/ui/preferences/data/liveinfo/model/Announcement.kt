@@ -18,10 +18,10 @@ data class Announcement(
                     .map { value.getJSONObject(it) }
                     .map {
                         Announcement(
-                            text = it.getString("text"),
-                            url = it.getString("url"),
-                            active = it.getBoolean("active"),
-                            test = it.getBoolean("test"),
+                            text = it.optString("text", ""),
+                            url = it.optString("url", ""),
+                            active = it.optBoolean("active", true),
+                            test = it.optBoolean("test", false),
                         )
                     }
             } catch (e: Exception) {
