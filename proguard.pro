@@ -1,5 +1,8 @@
 # The rules from AOSP are located in proguard.flags file, we can just maintain Lawnchair related rules here.
 
+# Disable obfuscation means enabling code shrinking only.
+-dontobfuscate
+
 # Optimization options.
 -allowaccessmodification
 -dontoptimize
