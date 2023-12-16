@@ -27,6 +27,7 @@ import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import app.lawnchair.ui.util.addIf
 import com.android.launcher3.BuildConfig
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun AnnouncementPreference() {
@@ -43,14 +44,13 @@ fun AnnouncementPreference() {
 
 @Composable
 fun AnnouncementPreference(
-    announcements: List<Announcement>,
+    announcements: ImmutableList<Announcement>,
 ) {
-
     announcements.forEach { announcement ->
         ExpandAndShrink(
-            visible = announcement.active
-                && announcement.text.isNotBlank()
-                && (!announcement.test || BuildConfig.DEBUG),
+            visible = announcement.active &&
+                announcement.text.isNotBlank() &&
+                (!announcement.test || BuildConfig.DEBUG),
         ) {
             Column {
                 AnnouncementPreferenceItem(announcement)

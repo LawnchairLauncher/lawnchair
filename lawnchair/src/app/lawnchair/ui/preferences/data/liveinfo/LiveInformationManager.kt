@@ -10,6 +10,7 @@ import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
+import kotlinx.collections.immutable.persistentListOf
 
 class LiveInformationManager private constructor(context: Context) : PreferenceManager {
 
@@ -39,7 +40,7 @@ class LiveInformationManager private constructor(context: Context) : PreferenceM
 
     val announcements = preference(
         key = stringPreferencesKey(name = "announcements"),
-        defaultValue = emptyList(),
+        defaultValue = persistentListOf(),
         parse = { Announcement.fromString(it) },
         save = { it.toString() },
     )

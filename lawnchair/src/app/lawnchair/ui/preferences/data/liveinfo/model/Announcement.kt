@@ -1,6 +1,9 @@
 package app.lawnchair.ui.preferences.data.liveinfo.model
 
 import android.util.Log
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.json.JSONArray
 
 data class Announcement(
@@ -12,7 +15,7 @@ data class Announcement(
 
     companion object {
 
-        fun fromJsonArray(value: JSONArray): List<Announcement> =
+        fun fromJsonArray(value: JSONArray): ImmutableList<Announcement> =
             try {
                 (0 until value.length())
                     .map { value.getJSONObject(it) }
@@ -24,17 +27,18 @@ data class Announcement(
                             test = it.optBoolean("test", false),
                         )
                     }
+                    .toImmutableList()
             } catch (e: Exception) {
                 Log.e("Announcement", "fromJsonArray: Failed to parse: ${e.message}")
-                emptyList()
+                persistentListOf()
             }
 
-        fun fromString(value: String): List<Announcement> =
+        fun fromString(value: String): ImmutableList<Announcement> =
             try {
                 fromJsonArray(JSONArray(value))
             } catch (e: Exception) {
                 Log.e("Announcement", "fromString: Failed to parse: ${e.message}")
-                emptyList()
+                persistentListOf()
             }
     }
 

@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences
 
-import androidx.compose.material3.MaterialTheme as Material3Theme
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
