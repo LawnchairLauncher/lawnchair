@@ -13,9 +13,6 @@ import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherSettings.Favorites.CONTAINER
-import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
-import com.android.launcher3.LauncherSettings.Favorites.SCREEN
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
 import com.android.launcher3.model.BgDataModel
@@ -94,8 +91,10 @@ class LauncherPreviewView(
                 BgDataModel(),
                 ModelDelegate(),
                 LauncherBinder(
-                    LauncherAppState.getInstance(previewContext), BgDataModel(),  /* bgAllAppsList= */
-                    null, arrayOfNulls<BgDataModel.Callbacks>(0)
+                    LauncherAppState.getInstance(previewContext),
+                    BgDataModel(), /* bgAllAppsList= */
+                    null,
+                    arrayOfNulls<BgDataModel.Callbacks>(0),
                 ),
             ) {
                 override fun run() {

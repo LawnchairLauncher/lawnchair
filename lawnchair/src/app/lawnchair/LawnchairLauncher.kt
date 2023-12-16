@@ -65,7 +65,6 @@ import com.android.launcher3.BaseActivity
 import com.android.launcher3.GestureNavContract
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherState
-import com.android.launcher3.QuickstepTransitionManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
@@ -90,11 +89,11 @@ import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
+import java.util.stream.Stream
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.util.stream.Stream
 
 class LawnchairLauncher :
     QuickstepLauncher(),
@@ -345,13 +344,22 @@ class LawnchairLauncher :
 
     override fun makeDefaultActivityOptions(splashScreenStyle: Int): ActivityOptionsWrapper {
         val callbacks = RunnableList()
-        val options = ActivityOptions.makeCustomAnimation(
-            this, 0, 0, Color.TRANSPARENT,
-            Executors.MAIN_EXECUTOR.handler, null
-        ) { elapsedRealTime -> callbacks.executeAllAndDestroy() }
+        val options = if (Utilities.ATLEAST_P || Utilities.ATLEAST_Q) {
+            ActivityOptions.makeBasic()
+        } else {
+            ActivityOptions.makeCustomAnimation(
+                this,
+                0,
+                0,
+                Color.TRANSPARENT,
+                Executors.MAIN_EXECUTOR.handler,
+                null,
+            ) { _ -> callbacks.executeAllAndDestroy() }
+        }
         if (Utilities.ATLEAST_T) {
             options.setSplashScreenStyle(splashScreenStyle)
         }
+
         Utilities.allowBGLaunch(options)
         return ActivityOptionsWrapper(options, callbacks)
     }

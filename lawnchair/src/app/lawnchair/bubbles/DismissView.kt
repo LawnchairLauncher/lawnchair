@@ -64,27 +64,27 @@ class DismissView(context: Context) : FrameLayout(context) {
         /** drawable resource id of the dismiss target background */
         @DrawableRes val backgroundResId: Int,
         /** drawable resource id of the icon for the dismiss target */
-        @DrawableRes val iconResId: Int
+        @DrawableRes val iconResId: Int,
     )
 
     companion object {
         private const val SHOULD_SETUP =
             "The view isn't ready. Should be called after `setup`"
         private val TAG = DismissView::class.simpleName
+        private const val DISMISS_SCRIM_FADE_MS = 200L
     }
 
     var circle = DismissCircleView(context)
-    var isShowing = false
+    private var isShowing = false
     var config: Config? = null
 
     private val animator = PhysicsAnimator.getInstance(circle)
     private val spring = PhysicsAnimator.SpringConfig(STIFFNESS_LOW, DAMPING_RATIO_LOW_BOUNCY)
-    private val DISMISS_SCRIM_FADE_MS = 200L
     private var wm: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var gradientDrawable: GradientDrawable? = null
 
-    private val GRADIENT_ALPHA: IntProperty<GradientDrawable> =
+    private val gradientAlpha: IntProperty<GradientDrawable> =
         object : IntProperty<GradientDrawable>("alpha") {
             override fun setValue(d: GradientDrawable, percent: Int) {
                 d.alpha = percent
@@ -115,7 +115,8 @@ class DismissView(context: Context) : FrameLayout(context) {
         layoutParams = LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             resources.getDimensionPixelSize(config.floatingGradientHeightResId),
-            Gravity.BOTTOM)
+            Gravity.BOTTOM,
+        )
         updatePadding()
 
         // Setup gradient
@@ -125,8 +126,10 @@ class DismissView(context: Context) : FrameLayout(context) {
         // Setup DismissCircleView
         circle.setup(config.backgroundResId, config.iconResId, config.iconSizeResId)
         val targetSize: Int = resources.getDimensionPixelSize(config.targetSizeResId)
-        circle.layoutParams = LayoutParams(targetSize, targetSize,
-            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL)
+        circle.layoutParams = LayoutParams(
+            targetSize, targetSize,
+            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
+        )
         // Initial position with circle offscreen so it's animated up
         circle.translationY = resources.getDimensionPixelSize(config.floatingGradientHeightResId)
             .toFloat()
@@ -140,8 +143,12 @@ class DismissView(context: Context) : FrameLayout(context) {
         val gradientDrawable = checkExists(gradientDrawable) ?: return
         isShowing = true
         setVisibility(View.VISIBLE)
-        val alphaAnim = ObjectAnimator.ofInt(gradientDrawable, GRADIENT_ALPHA,
-            gradientDrawable.alpha, 255)
+        val alphaAnim = ObjectAnimator.ofInt(
+            gradientDrawable,
+            gradientAlpha,
+            gradientDrawable.alpha,
+            255,
+        )
         alphaAnim.setDuration(DISMISS_SCRIM_FADE_MS)
         alphaAnim.start()
 
@@ -159,14 +166,21 @@ class DismissView(context: Context) : FrameLayout(context) {
         if (!isShowing) return
         val gradientDrawable = checkExists(gradientDrawable) ?: return
         isShowing = false
-        val alphaAnim = ObjectAnimator.ofInt(gradientDrawable, GRADIENT_ALPHA,
-            gradientDrawable.alpha, 0)
+        val alphaAnim = ObjectAnimator.ofInt(
+            gradientDrawable,
+            gradientAlpha,
+            gradientDrawable.alpha,
+            0,
+        )
         alphaAnim.setDuration(DISMISS_SCRIM_FADE_MS)
         alphaAnim.start()
         animator
-            .spring(DynamicAnimation.TRANSLATION_Y, height.toFloat(),
-                spring)
-            .withEndActions({ setVisibility(View.INVISIBLE) })
+            .spring(
+                DynamicAnimation.TRANSLATION_Y,
+                height.toFloat(),
+                spring,
+            )
+            .withEndActions({ visibility = View.INVISIBLE })
             .start()
     }
 
@@ -190,13 +204,16 @@ class DismissView(context: Context) : FrameLayout(context) {
     private fun createGradient(@ColorRes color: Int): GradientDrawable {
         val gradientColor = ContextCompat.getColor(context, color)
         val alpha = 0.7f * 255
-        val gradientColorWithAlpha = Color.argb(alpha.toInt(),
+        val gradientColorWithAlpha = Color.argb(
+            alpha.toInt(),
             Color.red(gradientColor),
             Color.green(gradientColor),
-            Color.blue(gradientColor))
+            Color.blue(gradientColor),
+        )
         val gd = GradientDrawable(
             GradientDrawable.Orientation.BOTTOM_TOP,
-            intArrayOf(gradientColorWithAlpha, Color.TRANSPARENT))
+            intArrayOf(gradientColorWithAlpha, Color.TRANSPARENT),
+        )
         gd.setDither(true)
         gd.setAlpha(0)
         return gd
@@ -207,9 +224,15 @@ class DismissView(context: Context) : FrameLayout(context) {
         val config = checkExists(config) ?: return
         val insets: WindowInsets = wm.getCurrentWindowMetrics().getWindowInsets()
         val navInset = insets.getInsetsIgnoringVisibility(
-            WindowInsets.Type.navigationBars())
-        setPadding(0, 0, 0, navInset.bottom +
-                resources.getDimensionPixelSize(config.bottomMarginResId))
+            WindowInsets.Type.navigationBars(),
+        )
+        setPadding(
+            0,
+            0,
+            0,
+            navInset.bottom +
+                resources.getDimensionPixelSize(config.bottomMarginResId),
+        )
     }
 
     /**
@@ -218,7 +241,7 @@ class DismissView(context: Context) : FrameLayout(context) {
      *
      * @return value provided as argument
      */
-    private fun <T>checkExists(value: T?): T? {
+    private fun <T> checkExists(value: T?): T? {
         if (value == null) Log.e(TAG, SHOULD_SETUP)
         return value
     }
