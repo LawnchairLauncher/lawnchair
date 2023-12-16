@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -30,16 +31,29 @@ import com.android.launcher3.BuildConfig
 @Composable
 fun AnnouncementPreference() {
     val liveInformationManager = liveInformationManager()
-    val announcements = liveInformationManager.announcements.asState()
 
-    announcements.value.forEach { announcement ->
+    val enabled by liveInformationManager.enabled.asState()
+    val showAnnouncements by liveInformationManager.showAnnouncements.asState()
+    val announcements by liveInformationManager.announcements.asState()
+
+    if (enabled && showAnnouncements) {
+        AnnouncementPreference(announcements)
+    }
+}
+
+@Composable
+fun AnnouncementPreference(
+    announcements: List<Announcement>,
+) {
+
+    announcements.forEach { announcement ->
         ExpandAndShrink(
             visible = announcement.active
                 && announcement.text.isNotBlank()
                 && (!announcement.test || BuildConfig.DEBUG),
         ) {
             Column {
-                AnnouncementPreference(announcement)
+                AnnouncementPreferenceItem(announcement)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -47,17 +61,17 @@ fun AnnouncementPreference() {
 }
 
 @Composable
-private fun AnnouncementPreference(
+private fun AnnouncementPreferenceItem(
     announcement: Announcement,
 ) {
-    AnnouncementPreference(
+    AnnouncementPreferenceItemContent(
         text = announcement.text,
         url = announcement.url,
     )
 }
 
 @Composable
-private fun AnnouncementPreference(
+private fun AnnouncementPreferenceItemContent(
     text: String,
     url: String,
 ) {
@@ -112,7 +126,7 @@ private fun AnnouncementPreference(
 @Preview
 @Composable
 private fun InfoPreferenceWithoutLinkPreview() {
-    AnnouncementPreference(
+    AnnouncementPreferenceItemContent(
         text = "Very important announcement ",
         url = "",
     )
@@ -121,7 +135,7 @@ private fun InfoPreferenceWithoutLinkPreview() {
 @Preview
 @Composable
 private fun InfoPreferenceWithLinkPreview() {
-    AnnouncementPreference(
+    AnnouncementPreferenceItemContent(
         text = "Very important announcement with a very important link",
         url = "https://lawnchair.app/",
     )
