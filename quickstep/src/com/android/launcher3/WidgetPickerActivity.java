@@ -22,7 +22,10 @@ import static android.view.WindowInsets.Type.statusBars;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.appwidget.AppWidgetProviderInfo;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
@@ -32,6 +35,7 @@ import com.android.launcher3.dragndrop.SimpleDragLayer;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.widget.BaseWidgetSheet;
+import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
@@ -79,6 +83,23 @@ public class WidgetPickerActivity extends BaseActivity {
     @Override
     public SimpleDragLayer<WidgetPickerActivity> getDragLayer() {
         return mDragLayer;
+    }
+
+    @Override
+    public View.OnClickListener getItemOnClickListener() {
+        return v -> {
+            final AppWidgetProviderInfo info =
+                    (v instanceof WidgetCell) ? ((WidgetCell) v).getWidgetItem().widgetInfo : null;
+            if (info == null || info.provider == null) {
+                return;
+            }
+
+            setResult(RESULT_OK, new Intent()
+                    .putExtra(Intent.EXTRA_COMPONENT_NAME, info.provider)
+                    .putExtra(Intent.EXTRA_USER, info.getProfile()));
+
+            finish();
+        };
     }
 
     private void refreshAndBindWidgets() {
