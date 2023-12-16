@@ -224,7 +224,7 @@ android {
 
     // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions += ["app", "recents"]
+    flavorDimensions += ["app", "recents", "channel"]
 
     productFlavors {
         aosp {
@@ -241,8 +241,6 @@ android {
 
         lawn {
             dimension "app"
-            applicationId 'app.lawnchair'
-            testApplicationId 'com.android.launcher3.tests'
             isDefault true
         }
 
@@ -254,6 +252,17 @@ android {
 
         withoutQuickstep {
             dimension "recents"
+        }
+
+        foss {
+            applicationId 'app.lawnchair'
+            dimension "channel"
+            isDefault true
+        }
+
+        market {
+            applicationId "ch.deletescape.lawnchair.plah"
+            dimension "channel"
         }
 
         configureEach {
@@ -324,7 +333,12 @@ android {
             manifest.srcFile "AndroidManifest.xml"
         }
 
-        lawnWithQuickstep {
+        lawnWithQuickstepFoss {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
+        }
+
+        lawnWithQuickstepMarket {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
             assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
