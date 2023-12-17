@@ -50,7 +50,7 @@ jobs:
         continue-on-error: true
         run: mv "${{ steps.sign-release-apk.outputs.signedReleaseFile }}" "${{ github.event.inputs.artifactName }}"
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Release APK
           path: ${{ github.event.inputs.artifactName }}

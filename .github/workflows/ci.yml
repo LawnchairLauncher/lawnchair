@@ -54,7 +54,7 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Debug APK
           path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
