@@ -24,8 +24,8 @@ import app.lawnchair.ui.util.bottomSheetHandler
 fun TextPreference(
     adapter: PreferenceAdapter<String>,
     label: String,
-    description: (String) -> String? = { it },
     enabled: Boolean = true,
+    description: (String) -> String? = { it },
 ) {
     val value = adapter.state.value
     TextPreference(
@@ -42,8 +42,8 @@ fun TextPreference(
     value: String,
     onChange: (String) -> Unit,
     label: String,
-    description: (String) -> String? = { it },
     enabled: Boolean = true,
+    description: (String) -> String? = { it },
 ) {
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(

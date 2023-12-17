@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Cerca aproximada</string>
     <string name="fuzzy_search_desc">Aparellament aproximat per a cerques d\'aplicacions.</string>
     <string name="max_search_result_count_title">Màxim nombre de resultats a la cerca</string>
+    <string name="max_people_result_count_title">Màxim Nombre De Persones</string>
+    <string name="max_file_result_count_title">Màxim Nombre De Persones</string>
+    <string name="max_suggestion_result_count_title">Màxim Nombre De Persones</string>
+    <string name="max_settings_entry_result_count_title">Màxim Nombre d\'Entrades de Configuració</string>
+    <string name="max_recent_result_count_title">Màxim Nombre de Resultats de l\'Historial</string>
+    <string name="clear_history">Netejar</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Columnes del calaix d\'aplicacions</string>
     <string name="row_height_label">Alçada de fila</string>
+    <string name="perform_wide_search_title">Recerca del dispositiu</string>
+    <string name="perform_wide_search_file">Arxius</string>
+    <string name="pref_suggestion_title">Suggerències web (via: <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Cerca avançada</string>
+    <string name="perform_wide_search_description">Buscar els teus contactes, arxius i configuracions en el cercador del calaix d\'aplicacions.</string>
+    <string name="pref_recent_suggestion_title">Historial</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -384,8 +396,18 @@
     <string name="label_search">Busca</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Cerca de veu</string>
+    <string name="search_pref_result_settings_entry_title">Entrades de Configuració</string>
     <string name="all_apps_search_market_message">Cerca més aplicacions</string>
+    <string name="all_apps_search_startpage_message">Buscar en <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No hi ha una botiga d\'aplicacions O navegador web instal·lat.</string>
+    <string name="all_apps_search_result_suggestions">Desde la web</string>
+    <string name="all_apps_search_result_contacts_from_device">Des dels teus contactes</string>
+    <string name="all_apps_search_result_files">Des dels teus arxius</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Des de la teva configuració</string>
+    <string name="warn_contact_permission_content">És necessari el permís de contactes</string>
+    <string name="warn_files_permission_content">És necessari el permís d\'emmagatzematge</string>
+    <string name="all_apps_search_result_files_description">Mitjans de comunicació, documents, carpetes i més.</string>
+    <string name="all_apps_search_result_contacts_description">Contactes i més</string>
     <string name="quickstep_incompatible">Integració del sistema incompatible</string>
     <string name="quickstep_incompatible_description">El teu dispositiu està configurat per tenir gestos del sistema (conegut com a Quickstep) proveït per %1$s, però aquesta versió de %1$s no és compatible amb la teva versió d\'Android. Per continuar utilitzant el teu dispositiu, si us plau desinstal·la %1$s actualitzacions o desactiva %1$s com un proveïdor de gestos del sistema.</string>
     <string name="delete">Elimina</string>

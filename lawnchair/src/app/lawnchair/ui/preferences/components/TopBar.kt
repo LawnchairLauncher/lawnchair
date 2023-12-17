@@ -47,8 +47,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TopBar(
     backArrowVisible: Boolean,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
     label: String,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher

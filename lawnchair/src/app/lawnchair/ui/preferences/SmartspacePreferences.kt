@@ -46,6 +46,7 @@ import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
+import kotlinx.collections.immutable.toPersistentList
 
 fun NavGraphBuilder.smartspaceGraph(route: String) {
     preferenceGraph(route, { SmartspacePreferences(fromWidget = false) })
@@ -56,7 +57,9 @@ fun NavGraphBuilder.smartspaceWidgetGraph(route: String) {
 }
 
 @Composable
-fun SmartspacePreferences(fromWidget: Boolean) {
+fun SmartspacePreferences(
+    fromWidget: Boolean,
+) {
     val preferenceManager2 = preferenceManager2()
     val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
     val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
@@ -134,7 +137,7 @@ fun SmartspaceProviderPreference(
 
     ListPreference(
         adapter = adapter,
-        entries = entries,
+        entries = entries.toPersistentList(),
         label = stringResource(id = R.string.smartspace_mode_label),
         endWidget = endWidget,
     )
@@ -227,7 +230,7 @@ fun SmartspaceTimeFormatPreference() {
 
     ListPreference(
         adapter = adapter,
-        entries = entries,
+        entries = entries.toPersistentList(),
         label = stringResource(id = R.string.smartspace_time_format),
     )
 }
@@ -244,7 +247,7 @@ fun SmartspaceCalendarPreference() {
 
     ListPreference(
         adapter = adapter,
-        entries = entries,
+        entries = entries.toPersistentList(),
         label = stringResource(id = R.string.smartspace_calendar),
     )
 }

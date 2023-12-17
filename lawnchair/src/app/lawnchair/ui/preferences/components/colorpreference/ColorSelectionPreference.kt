@@ -38,6 +38,8 @@ import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGri
 import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
 import com.patrykmichalik.opto.domain.Preference
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.colorSelectionGraph(route: String) {
@@ -56,7 +58,7 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
             ColorSelection(
                 label = stringResource(id = model.labelRes),
                 preference = model.prefObject,
-                dynamicEntries = model.dynamicEntries,
+                dynamicEntries = model.dynamicEntries.toPersistentList(),
             )
         }
     }
@@ -67,8 +69,8 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
 fun ColorSelection(
     label: String,
     preference: Preference<ColorOption, String, *>,
-    dynamicEntries: List<ColorPreferenceEntry<ColorOption>> = dynamicColors,
-    staticEntries: List<ColorPreferenceEntry<ColorOption>> = staticColors,
+    dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = dynamicColors,
+    staticEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
     val adapter = preference.getAdapter()
     val appliedColor = adapter.state.value

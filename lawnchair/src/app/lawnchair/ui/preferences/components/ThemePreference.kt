@@ -6,6 +6,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import kotlinx.collections.immutable.toPersistentList
 
 object ThemeChoice {
     const val LIGHT = "light"
@@ -31,7 +32,7 @@ val themeEntries = listOf(
 fun ThemePreference() {
     ListPreference(
         adapter = preferenceManager().launcherTheme.getAdapter(),
-        entries = themeEntries,
+        entries = themeEntries.toPersistentList(),
         label = stringResource(id = R.string.theme_label),
     )
 }

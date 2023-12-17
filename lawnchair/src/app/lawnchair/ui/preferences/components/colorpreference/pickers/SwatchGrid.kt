@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import com.android.launcher3.R
+import kotlinx.collections.immutable.ImmutableList
 
 object SwatchGridDefaults {
     val GutterSize = 12.dp
@@ -37,11 +38,11 @@ object SwatchGridDefaults {
 
 @Composable
 fun <T> SwatchGrid(
-    modifier: Modifier = Modifier,
-    contentModifier: Modifier = Modifier,
-    entries: List<ColorPreferenceEntry<T>>,
+    entries: ImmutableList<ColorPreferenceEntry<T>>,
     onSwatchClick: (T) -> Unit,
     isSwatchSelected: (T) -> Boolean,
+    modifier: Modifier = Modifier,
+    contentModifier: Modifier = Modifier,
 ) {
     val columnCount = SwatchGridDefaults.COLUMN_COUNT
     val rowCount = (entries.size - 1) / columnCount + 1
@@ -87,9 +88,9 @@ fun <T> SwatchGrid(
 @Composable
 fun <T> ColorSwatch(
     entry: ColorPreferenceEntry<T>,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     selected: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val color = if (MaterialTheme.colors.isLight) {
         entry.lightColor(LocalContext.current)

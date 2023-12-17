@@ -17,10 +17,10 @@ private const val CONTRAST_THRESHOLD = 1.5
  */
 @Composable
 fun ColorContrastWarning(
-    modifier: Modifier = Modifier,
     foregroundColor: ColorOption,
     backgroundColor: ColorOption,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val foregroundColorInt = foregroundColor.colorPreferenceEntry.lightColor(context)
@@ -40,10 +40,10 @@ fun ColorContrastWarning(
  */
 @Composable
 fun ColorContrastWarning(
-    modifier: Modifier = Modifier,
     @ColorInt foregroundColor: Int,
     @ColorInt backgroundColor: Int,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     val enoughContrast = if (foregroundColor != 0 && backgroundColor != 0) {
         ColorUtils.calculateContrast(

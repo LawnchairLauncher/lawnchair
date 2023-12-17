@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
     <string name="max_search_result_count_title">Số lượng kết quả tìm kiếm tối đa</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Số cột của trang ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -383,8 +395,18 @@
     <string name="label_search">Tìm kiếm</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hay trình duyệt được cài đặt.</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
+    <string name="all_apps_search_result_files">From your files</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
     <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
     <string name="delete">Xoá</string>

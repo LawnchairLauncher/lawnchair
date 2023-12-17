@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">การค้นหาแบบคาดเดา</string>
     <string name="fuzzy_search_desc">การจับคูแบบประมาณสำหรับค้นหาแอพ</string>
     <string name="max_search_result_count_title">จำนวนผลการค้นหาสูงสุด</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">จำนวนคอลัมน์</string>
     <string name="row_height_label">ความสูงของแถว</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -383,8 +395,18 @@
     <string name="label_search">ค้นหา</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">ค้นหาด้วยเสียง</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">ค้นหาแอพเพิ่มเติม</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">ยังไม่ได้ติดตั้งแอพสโตร์หรือเบราว์เซอร์</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
+    <string name="all_apps_search_result_files">From your files</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">ระบบไม่สามารถเข้ากันได้</string>
     <string name="quickstep_incompatible_description">อุปกรณ์ของคุณได้รับการกำหนดค่าให้มีรูปแบบลายเส้นของระบบ (เรียกว่า Quickstep) ซึ่งให้บริการโดย %1$s แต่ %1$s เวอร์ชันนี้ไม่สามารถทำงานร่วมกับ Android เวอร์ชันของคุณได้ หากต้องการใช้อุปกรณ์ของคุณต่อไป โปรดถอนการติดตั้งการอัปเดต %1$s หรือปิดใช้งาน %1$s ในการตั้งค่า</string>
     <string name="delete">ลบ</string>

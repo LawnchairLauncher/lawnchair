@@ -253,7 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">بحث التطبيقات</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair لديه اتفاق لتقاسم الإيرادات.\n\nالبحث باستخدام %1$s يساعد على دعم Lawnchair.</string>
     <string name="app_label">التطبيق</string>
     <string name="website_label">الموقع</string>
     <string name="qsb_search_provider_app_required">التطبيق يطلب.</string>
@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">بحث غامض</string>
     <string name="fuzzy_search_desc">قارب التطابقات لعمليات البحث عن التطبيقات.</string>
     <string name="max_search_result_count_title">الحد الأقصى لعدد نتائج البحث</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="clear_history">مسح</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
     <string name="row_height_label">ارتفاع الصف</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -388,8 +400,18 @@
     <string name="label_search">البحث</string>
     <string name="label_lens">عدسة جوجل</string>
     <string name="label_voice_search">البحث الصوتي</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">البحث عن مزيد من التطبيقات</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">لا يوجد متجر تطبيقات أو متصفح مثبت.</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
+    <string name="all_apps_search_result_files">From your files</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">تكامل النظام غير متوافق</string>
     <string name="quickstep_incompatible_description">تم تكوين جهازك بحيث يحتوي على إيماءات النظام (المعروفة باسم Quickstep) المقدمة من قبل %1$s, لكن هذا الإصدار من %1$s غير متوافق مع إصدار الأندرويد الخاص بك. للاستمرار في استخدام جهازك، الرجاء إلغاء تثبيت %1$s تحديثات أو تعطيل %1$s كموفر إيماءات النظام.</string>
     <string name="delete">حذف</string>

@@ -120,7 +120,9 @@ class BottomSheetHandler(
 )
 
 @Composable
-fun StatusBarOffset(content: @Composable () -> Unit) {
+fun StatusBarOffset(
+    content: @Composable () -> Unit,
+) {
     val statusBar = WindowInsets.statusBars.getTop(LocalDensity.current)
     val displayCutout = WindowInsets.displayCutout.getTop(LocalDensity.current)
     val statusBarHeight = max(statusBar, displayCutout)

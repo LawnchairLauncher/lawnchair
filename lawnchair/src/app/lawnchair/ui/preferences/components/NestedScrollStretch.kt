@@ -19,7 +19,9 @@ import androidx.compose.ui.unit.Velocity
 import app.lawnchair.ui.StretchEdgeEffect
 
 @Composable
-fun NestedScrollStretch(content: @Composable () -> Unit) {
+fun NestedScrollStretch(
+    content: @Composable () -> Unit,
+) {
     val invalidateTick = remember { mutableIntStateOf(0) }
     val invalidate = Runnable { invalidateTick.intValue++ }
 

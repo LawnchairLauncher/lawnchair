@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Fuzzy zoeken</string>
     <string name="fuzzy_search_desc">Geschatte overeenkomst voor app zoekopdrachten.</string>
     <string name="max_search_result_count_title">Max aantal zoekresultaten</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max aantal zoekresultaten</string>
+    <string name="clear_history">Verwijderen</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">App lade kolommen</string>
     <string name="row_height_label">Rij hoogte</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Bestanden</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Uitgebreid zoeken</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">Geschiedenis</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -384,8 +396,18 @@
     <string name="label_search">Zoek</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Spraak Zoeken</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">Zoeken naar Meer Apps</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Geen appwinkel of browser geïnstalleerd.</string>
+    <string name="all_apps_search_result_suggestions">Van het internet</string>
+    <string name="all_apps_search_result_contacts_from_device">Uit je contacten</string>
+    <string name="all_apps_search_result_files">Uit je bestanden</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Uit je instellingen</string>
+    <string name="warn_contact_permission_content">Vereist toestemming tot contacten</string>
+    <string name="warn_files_permission_content">Opslag toestemming vereist</string>
+    <string name="all_apps_search_result_files_description">Media, documenten, mappen en meer.</string>
+    <string name="all_apps_search_result_contacts_description">Contacten en meer</string>
     <string name="quickstep_incompatible">Incompatibele systeem integratie</string>
     <string name="quickstep_incompatible_description">Uw toestel is geconfigureerd voor systeemgebaren (bekend als Quickstep) geleverd door %1$s, maar deze versie van %1$s is niet compatibel met uw Android-versie. Om uw toestel te blijven gebruiken, dient u %1$s updates te verwijderen of %1$s uit te schakelen als een systeemgebaren provider.</string>
     <string name="delete">Verwijderen</string>

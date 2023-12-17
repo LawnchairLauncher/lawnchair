@@ -38,6 +38,7 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import com.android.launcher3.R
+import kotlinx.collections.immutable.toPersistentList
 
 object DockRoutes {
     const val SEARCH_PROVIDER = "searchProvider"
@@ -116,7 +117,7 @@ private fun HotseatModePreference(
 
     ListPreference(
         adapter = adapter,
-        entries = entries,
+        entries = entries.toPersistentList(),
         label = stringResource(id = R.string.hotseat_mode_label),
     )
 }

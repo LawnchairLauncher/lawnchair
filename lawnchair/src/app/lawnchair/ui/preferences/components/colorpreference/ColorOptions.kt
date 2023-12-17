@@ -1,8 +1,10 @@
 package app.lawnchair.ui.preferences.components.colorpreference
 
 import app.lawnchair.theme.color.ColorOption
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 
-val staticColors = listOf(
+val staticColors: ImmutableList<ColorPreferenceEntry<ColorOption>> = listOf(
     ColorOption.CustomColor(0xFFF32020),
     ColorOption.CustomColor(0xFFF20D69),
     ColorOption.CustomColor(0xFF7452FF),
@@ -15,10 +17,13 @@ val staticColors = listOf(
     ColorOption.CustomColor(0xFFFF9800),
     ColorOption.CustomColor(0xFF7C5445),
     ColorOption.CustomColor(0xFF67818E),
-).map(ColorOption::colorPreferenceEntry)
+).asSequence().map(ColorOption::colorPreferenceEntry).toPersistentList()
 
-val dynamicColors = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimary)
+val dynamicColors: ImmutableList<ColorPreferenceEntry<ColorOption>> = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimary)
+    .asSequence()
     .filter(ColorOption::isSupported)
     .map(ColorOption::colorPreferenceEntry)
+    .toPersistentList()
 
-val dynamicColorsWithDefault = dynamicColors + listOf(ColorOption.Default.colorPreferenceEntry)
+val dynamicColorsWithDefault: ImmutableList<ColorPreferenceEntry<ColorOption>> =
+    (dynamicColors.asSequence() + ColorOption.Default.colorPreferenceEntry).toPersistentList()

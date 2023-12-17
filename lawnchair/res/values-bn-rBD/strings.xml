@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">ফাজি সার্চ</string>
     <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>
     <string name="max_search_result_count_title">বৃহত্তর সার্চ উত্তরের সংখ্যা</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">অ্যাপ ড্রয়ারের কলাম</string>
     <string name="row_height_label">সারির উচ্চতা</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -384,8 +396,18 @@
     <string name="label_search">অনুসন্ধান করুন</string>
     <string name="label_lens">গুগল লেন্স</string>
     <string name="label_voice_search">কণ্ঠের সন্ধান</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">আরো অ্যাপ খোঁজ করুন</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">কোনো অ্যাপ স্টোর বা ব্রাউজার খুঁজে পাওয়া যায় নি.</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
+    <string name="all_apps_search_result_files">From your files</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">বেমানান সিস্টেম</string>
     <string name="quickstep_incompatible_description">এই ডিভাইসটি প্রস্তুত সিস্টেমের জেসচার ব্যাবহারের জন্য (কুইকস্টেপ বলে জানা) প্রদান করেছেন %1$s কিন্তু এই ভার্সন এর %1$s আপনার এন্ড্রোয়েড ভার্সন এর পক্ষে উপযুক্ত নয়. পুনরায় আপনার ডিভাইসকে সাধারণভাবে ব্যাবহার করতে অনিনস্টল %1$s আপডেট অথবা ডিসেবল %1$s আপনার সিস্টেম জেসচার প্রদানকারী হিসেবে.</string>
     <string name="delete">মুছে ফেলুন</string>

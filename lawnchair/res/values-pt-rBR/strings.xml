@@ -271,9 +271,21 @@
     <string name="fuzzy_search_title">Pesquisa Aproximada</string>
     <string name="fuzzy_search_desc">Correspondência aproximada para pesquisas de apps.</string>
     <string name="max_search_result_count_title">Quantidade Máxima de Resultados na Pesquisa</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colunas na Gaveta de Aplicativos</string>
     <string name="row_height_label">Altura da Linha</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_recent_suggestion_title">History</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -346,14 +358,14 @@
     <string name="pick_icon_from_label">Escolher ícone de</string>
     <string name="icon_picker_load_failed">Não foi possível carregar mais ícones.</string>
     <!-- Misc -->
-    <string name="all_apps_search_bar_hint">Pesquisar Aplicativos</string>
+    <string name="all_apps_search_bar_hint">Pesquisar aplicativos</string>
     <string name="settings_button_text">Configurações do Ínício</string>
     <string name="item_removed">Item removido.</string>
     <string name="all_apps_no_search_results">Nenhum aplicativo correspondente a “<xliff:g example="Android" id="query">%1$s</xliff:g>” foi encontrado.</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">Para usar o Toque Duplo para Bloquear, defina o Lawnchair como um aplicativo administrador do dispositivo. Toque em Abrir Configurações e depois em \"Ativar o aplicativo de administrador do dispositivo\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
+    <string name="dt2s_a11y_hint_title">Ativar serviço de acessibilidade</string>
     <string name="dt2s_a11y_hint">Para usar o Toque Duplo para Bloquear, ative o serviço de acessibilidade do Lawnchair. Toque em Abrir Configurações, depois selecione Lawnchair e ative Usar Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Abrir Configurações</string>
     <string name="loading">Carregando…</string>
@@ -384,8 +396,18 @@
     <string name="label_search">Pesquisar</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Pesquisa por Voz</string>
+    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">Pesquisar por mais Aplicativos</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Nenhuma loja de aplicativos ou navegador instalado.</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
+    <string name="all_apps_search_result_files">From your files</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">Integração de Sistema Incompatível</string>
     <string name="quickstep_incompatible_description">Seu dispositivo está configurado para ter gestos do sistema (conhecido como Quickstep) fornecidos por %1$s, mas esta versão do %1$s não é compatível com sua versão do Android. Para continuar usando o seu dispositivo, desinstale as atualizações do %1$s ou desative %1$s como provedor de gesto do sistema.</string>
     <string name="delete">Apagar</string>

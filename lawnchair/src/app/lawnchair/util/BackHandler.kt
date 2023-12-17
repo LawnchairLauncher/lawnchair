@@ -9,7 +9,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.Lifecycle
 
 @Composable
-fun BackHandler(onBack: () -> Unit) {
+fun BackHandler(
+    onBack: () -> Unit,
+) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val currentOnBack by rememberUpdatedState(onBack)
     val resumed = lifecycleState().isAtLeast(Lifecycle.State.RESUMED)

@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 fun LawnchairLink(
     @DrawableRes iconResId: Int,
     label: String,
-    modifier: Modifier = Modifier,
     url: String,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 

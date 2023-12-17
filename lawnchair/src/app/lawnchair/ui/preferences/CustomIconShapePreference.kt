@@ -219,16 +219,15 @@ private fun IconShapeClipboardPreferenceGroup(
 
 @Composable
 private fun ClipboardButton(
-    modifier: Modifier = Modifier,
     label: String,
+    imageVector: ImageVector,
+    modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
-    imageVector: ImageVector,
     onClick: () -> Unit,
 ) {
     PreferenceTemplate(
         modifier = modifier.clickable(enabled = enabled, onClick = onClick),
-        contentModifier = Modifier,
         title = { Text(text = label) },
         description = { description?.let { Text(text = it) } },
         startWidget = {
@@ -247,12 +246,12 @@ private fun ClipboardButton(
 
 @Composable
 private fun IconShapeCornerPreference(
-    modifier: Modifier = Modifier,
     title: String,
     scale: Float,
-    onScaleChange: (Float) -> Unit,
     cornerShape: IconCornerShape,
+    onScaleChange: (Float) -> Unit,
     onCornerShapeChange: (IconCornerShape) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     CornerSlider(
         modifier = modifier,
@@ -268,12 +267,12 @@ private fun IconShapeCornerPreference(
 
 @Composable
 private fun CornerSlider(
-    modifier: Modifier = Modifier,
     label: String,
     value: Float,
     onValueChange: (Float) -> Unit,
     cornerShape: IconCornerShape,
     onCornerShapeChange: (IconCornerShape) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val bottomSheetHandler = LocalBottomSheetHandler.current
     val options = listOf<IconCornerShape>(

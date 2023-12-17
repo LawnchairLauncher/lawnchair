@@ -85,8 +85,7 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
                     title = R.string.dt2s_a11y_hint_title,
                     description = R.string.dt2s_a11y_hint,
                     settingsIntent = intent,
-                    handleClose = { close(true) },
-                )
+                ) { close(true) }
             }
             return
         }
@@ -114,8 +113,7 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
                     title = R.string.dt2s_admin_hint_title,
                     description = R.string.dt2s_admin_hint,
                     settingsIntent = intent,
-                    handleClose = { close(true) },
-                )
+                ) { close(true) }
             }
             return
         }

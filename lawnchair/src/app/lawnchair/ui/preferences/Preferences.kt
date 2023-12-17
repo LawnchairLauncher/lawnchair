@@ -68,7 +68,9 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
 }
 
 @Composable
-fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
+fun Preferences(
+    interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(),
+) {
     val navController = rememberNavController()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val slideDistance = rememberSlideDistance()

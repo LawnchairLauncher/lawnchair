@@ -76,7 +76,7 @@ class ComposeBottomSheet<T>(context: Context) :
     ) {
         container.setContent {
             Providers {
-                ContentWrapper(contentPaddings) {
+                ContentWrapper(contentPaddings = contentPaddings) {
                     content(this)
                 }
             }
@@ -182,7 +182,9 @@ class ComposeBottomSheet<T>(context: Context) :
     }
 
     @Composable
-    private fun Providers(content: @Composable () -> Unit) {
+    private fun Providers(
+        content: @Composable () -> Unit,
+    ) {
         LawnchairTheme {
             ProvideLifecycleState {
                 CompositionLocalProvider(
