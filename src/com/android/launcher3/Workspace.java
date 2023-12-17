@@ -1337,10 +1337,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public void setLauncherOverlay(LauncherOverlay overlay) {
-        mOverlayEdgeEffect = overlay == null ? null : new OverlayEdgeEffect(getContext(), overlay);
-        EdgeEffectCompat newEffect = overlay == null
-                ? EdgeEffectCompat.create(getContext(), this)
-                : mOverlayEdgeEffect;
+        final EdgeEffectCompat newEffect;
+        if (overlay == null) {
+            newEffect = new EdgeEffectCompat(getContext());
+            mOverlayEdgeEffect = null;
+        } else {
+            newEffect = mOverlayEdgeEffect = new OverlayEdgeEffect(getContext(), overlay);
+            overlay.setOverlayCallbacks(this);
+        }
+
         if (mIsRtl) {
             mEdgeGlowRight = newEffect;
         } else {
