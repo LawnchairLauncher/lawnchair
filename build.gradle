@@ -281,12 +281,10 @@ android {
 
         lawnWithQuickstepFoss {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
 
         lawnWithQuickstepMarket {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
 
         withQuickstep {
