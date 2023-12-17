@@ -70,6 +70,9 @@ fun <T> ListPreference(
     val currentDescription = description ?: entries
         .firstOrNull { it.value == value }
         ?.label?.invoke()
+    val currentIcon = entries
+        .firstOrNull { it.value == value }
+        ?.icon
 
     PreferenceTemplate(
         contentModifier = Modifier
@@ -79,6 +82,7 @@ fun <T> ListPreference(
         title = { Text(text = label) },
         description = { currentDescription?.let { Text(text = it) } },
         enabled = enabled,
+        startWidget = { currentIcon?.let { it() } },
         endWidget = endWidget,
         applyPaddings = false,
         modifier = Modifier.clickable(enabled) {
@@ -110,6 +114,7 @@ fun <T> ListPreference(
                                         enabled = item.enabled,
                                     )
                                 },
+                                endWidget = item.icon
                             )
                         }
                     }
@@ -122,5 +127,6 @@ fun <T> ListPreference(
 class ListPreferenceEntry<T>(
     val value: T,
     val enabled: Boolean = true,
+    val icon: (@Composable () -> Unit)? = null,
     val label: @Composable () -> String,
 )
