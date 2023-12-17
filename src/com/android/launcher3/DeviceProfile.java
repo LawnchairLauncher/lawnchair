@@ -525,7 +525,7 @@ public class DeviceProfile {
 
         numShownAllAppsColumns = isTwoPanels ? inv.numDatabaseAllAppsColumns : inv.numAllAppsColumns;
 
-        int hotseatBarBottomSpace = isQsbEnable ? 0 : pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
+        int hotseatBarBottomSpace = !isQsbEnable ? 0 : pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
 
         if (mIsResponsiveGrid) {
@@ -795,17 +795,20 @@ public class DeviceProfile {
         // radius.
         hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx);
 
+        var space = Math.abs(hotseatCellHeightPx / 2);
+
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
-                    + hotseatBarSidePaddingEndPx;
+                    + hotseatBarSidePaddingEndPx + space;
         } else if (isQsbInline) {
             hotseatBarSizePx = Math.max(hotseatIconSizePx, hotseatQsbVisualHeight)
-                    + hotseatBarBottomSpacePx;
+                    + hotseatBarBottomSpacePx + space;
         } else {
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
                     + hotseatQsbVisualHeight
-                    + hotseatBarBottomSpacePx;
+                    + hotseatBarBottomSpacePx
+                    + space;
         }
     }
 
@@ -1201,12 +1204,10 @@ public class DeviceProfile {
      * width.
      */
     private int calculateHotseatBorderSpace(float hotseatWidthPx, int numExtraBorder) {
-        int numBorders = (numShownHotseatIcons - 1 + numExtraBorder);
-        if (numBorders <= 0)
-            return 0;
 
         float hotseatIconsTotalPx = iconSizePx * numShownHotseatIcons;
-        int hotseatBorderSpacePx = (int) (hotseatWidthPx - hotseatIconsTotalPx) / numBorders;
+        int hotseatBorderSpacePx =  (int) (hotseatWidthPx - hotseatIconsTotalPx)
+                / (numShownHotseatIcons - 1 + numExtraBorder);
         return Math.min(hotseatBorderSpacePx, mMaxHotseatIconSpacePx);
     }
 
