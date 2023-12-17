@@ -2,8 +2,8 @@ package app.lawnchair.ui.preferences.components
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,7 +23,7 @@ data class ProviderInfo(
     val icon: Drawable?
 )
 
-fun getProviders(context: Context): List<ListPreferenceEntry<String>> {
+fun getEntries(context: Context): List<ProviderInfo> {
     val entries = listOf(
         ProviderInfo(
             packageName = "",
@@ -39,12 +39,17 @@ fun getProviders(context: Context): List<ListPreferenceEntry<String>> {
             )
         }
 
+    return entries
+}
+
+fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
+    val entries = getEntries(context)
     return entries.map {
         ListPreferenceEntry(
             value = it.packageName,
             icon = {
                 if (it.icon != null) {
-                    Icon(
+                    Image(
                         painter = DrawablePainter(it.icon),
                         contentDescription = null,
                         modifier = Modifier.requiredSize(48.dp),
@@ -58,9 +63,12 @@ fun getProviders(context: Context): List<ListPreferenceEntry<String>> {
 
 @Composable
 fun FeedPreference(context: Context) {
+    val adapter = preferenceManager().feedProvider.getAdapter()
+    val providers = getProvidersList(context).toImmutableList()
+
     ListPreference(
-        adapter = preferenceManager().feedProvider.getAdapter(),
-        entries = getProviders(context).toImmutableList(),
+        adapter = adapter,
+        entries = providers,
         label = stringResource(R.string.feed_provider),
     )
 }
