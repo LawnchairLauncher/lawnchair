@@ -525,17 +525,8 @@ public class DeviceProfile {
 
         numShownAllAppsColumns = isTwoPanels ? inv.numDatabaseAllAppsColumns : inv.numAllAppsColumns;
 
-        int hotseatBarBottomSpace = isQsbEnable ? 0 : pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
+        int hotseatBarBottomSpace = !isQsbEnable ? 0 : pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
-
-        if (mIsResponsiveGrid) {
-            HotseatSpecs hotseatSpecs = HotseatSpecs.create(new ResourceHelper(context,
-                    isTwoPanels ? inv.hotseatSpecsTwoPanelId : inv.hotseatSpecsId));
-            mResponsiveHotseatSpec = hotseatSpecs.getCalculatedHeightSpec(heightPx);
-            hotseatQsbSpace = mResponsiveHotseatSpec.getHotseatQsbSpace();
-        } else {
-            hotseatQsbSpace = pxFromDp(inv.hotseatQsbSpace[mTypeIndex], mMetrics);
-        }
 
         // Have a little space between the inset and the QSB
         if (isQsbEnable && mInsets.bottom + minQsbMargin > hotseatBarBottomSpace) {
@@ -654,10 +645,6 @@ public class DeviceProfile {
         // Hotseat and QSB width depends on updated cellSize and workspace padding
         recalculateHotseatWidthAndBorderSpace();
 
-        if (mIsResponsiveGrid && isVerticalBarLayout()) {
-            hotseatBorderSpace = cellLayoutBorderSpacePx.y;
-        }
-
         // AllApps height calculation depends on updated cellSize
         if (isTablet) {
             int collapseHandleHeight = res.getDimensionPixelOffset(R.dimen.bottom_sheet_handle_area_height);
@@ -743,7 +730,8 @@ public class DeviceProfile {
                     - hotseatBorderSpace * numShownHotseatIcons;
         } else {
             int columns = inv.hotseatColumnSpan[mTypeIndex];
-            return getIconToIconWidthForColumns(columns);
+            return getIconToIconWidthForColumns(columns)
+                    - hotseatBorderSpace;
         }
     }
 
@@ -795,17 +783,19 @@ public class DeviceProfile {
         // radius.
         hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx);
 
+        var space = Math.abs(hotseatCellHeightPx / 2);
+
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
-                    + hotseatBarSidePaddingEndPx;
+                    + hotseatBarSidePaddingEndPx + space;
         } else if (isQsbInline) {
             hotseatBarSizePx = Math.max(hotseatIconSizePx, hotseatQsbVisualHeight)
-                    + hotseatBarBottomSpacePx;
+                    + hotseatBarBottomSpacePx + space;
         } else {
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
                     + hotseatQsbVisualHeight
-                    + hotseatBarBottomSpacePx;
+                    + hotseatBarBottomSpacePx + space;
         }
     }
 
@@ -1174,12 +1164,14 @@ public class DeviceProfile {
         } else {
             updateAllAppsIconSize(scale, res);
         }
+
+        updateHotseatSizes(iconSizePx);
+
         updateAllAppsContainerWidth();
         if (isVerticalBarLayout()) {
             hideWorkspaceLabelsIfNotEnoughSpace();
         }
 
-        updateHotseatSizes(iconSizePx);
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
@@ -1201,12 +1193,10 @@ public class DeviceProfile {
      * width.
      */
     private int calculateHotseatBorderSpace(float hotseatWidthPx, int numExtraBorder) {
-        int numBorders = (numShownHotseatIcons - 1 + numExtraBorder);
-        if (numBorders <= 0)
-            return 0;
-
         float hotseatIconsTotalPx = iconSizePx * numShownHotseatIcons;
-        int hotseatBorderSpacePx = (int) (hotseatWidthPx - hotseatIconsTotalPx) / numBorders;
+        int hotseatBorderSpacePx =
+                (int) (hotseatWidthPx - hotseatIconsTotalPx)
+                        / (numShownHotseatIcons - 1 + numExtraBorder);
         return Math.min(hotseatBorderSpacePx, mMaxHotseatIconSpacePx);
     }
 

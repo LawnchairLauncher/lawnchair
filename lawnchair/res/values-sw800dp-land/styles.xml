@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AllAppsStyle4x5Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">23dp</item>
+    </style>
+    <style name="AllAppsStyle5x5Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">69dp</item>
+    </style>
+    <style name="CellStyle4x4Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">8dp</item>
+    </style>
+    <style name="CellStyle4x5Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">4dp</item>
+    </style>
+</resources>
