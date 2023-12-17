@@ -41,8 +41,10 @@ public class MotionEventsUtils {
 
     @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public static boolean isTrackpadMultiFingerSwipe(MotionEvent event) {
-        return ENABLE_TRACKPAD_GESTURE.get()
-                && event.getClassification() == CLASSIFICATION_MULTI_FINGER_SWIPE;
+        return (Utilities.ATLEAST_U)
+                ? ENABLE_TRACKPAD_GESTURE.get()
+                && event.getClassification() == CLASSIFICATION_MULTI_FINGER_SWIPE
+                : false;
     }
 
     public static boolean isTrackpadThreeFingerSwipe(MotionEvent event) {
@@ -56,6 +58,8 @@ public class MotionEventsUtils {
     }
 
     public static boolean isTrackpadMotionEvent(MotionEvent event) {
-        return isTrackpadScroll(event) || isTrackpadMultiFingerSwipe(event);
+         return (Utilities.ATLEAST_U)
+                ? isTrackpadScroll(event) || isTrackpadMultiFingerSwipe(event)
+                : false;
     }
 }

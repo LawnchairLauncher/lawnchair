@@ -138,7 +138,7 @@ public class VibratorWrapper {
                     .compose();
         } else {
             // fallback for devices without composition support
-            mAssistEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK);
+            mAssistEffect = Utilities.ATLEAST_Q ? VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK) : null;
         }
     }
 
