@@ -21,7 +21,9 @@ import static android.view.KeyEvent.KEYCODE_BACK;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.media.permission.SafeCloseable;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,9 +32,12 @@ import android.view.ViewTreeObserver;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.MultiPropertyFactory;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.views.BaseDragLayer;
 
 /**
@@ -40,14 +45,36 @@ import com.android.launcher3.views.BaseDragLayer;
  */
 public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
+    private static final int INDEX_ALL_OTHER_STATES = 0;
+    private static final int INDEX_STASH_ANIM = 1;
+    private static final int INDEX_COUNT = 2;
+
+    private static final FloatProperty<TaskbarDragLayer> BG_ALPHA =
+            new FloatProperty<>("taskbarBgAlpha") {
+                @Override
+                public void setValue(TaskbarDragLayer dragLayer, float alpha) {
+                    dragLayer.mBackgroundRenderer.getPaint().setAlpha((int) (alpha * 255));
+                    dragLayer.invalidate();
+                }
+
+                @Override
+                public Float get(TaskbarDragLayer dragLayer) {
+                    return dragLayer.mBackgroundRenderer.getPaint().getAlpha() / 255f;
+                }
+            };
+
+
     private final TaskbarBackgroundRenderer mBackgroundRenderer;
     private final ViewTreeObserver.OnComputeInternalInsetsListener mTaskbarInsetsComputer =
             this::onComputeTaskbarInsets;
 
     // Initialized in init.
     private TaskbarDragLayerController.TaskbarDragLayerCallbacks mControllerCallbacks;
+    private SafeCloseable mViewCaptureCloseable;
 
     private float mTaskbarBackgroundOffset;
+
+    private final MultiPropertyFactory<TaskbarDragLayer> mTaskbarBackgroundAlpha;
 
     public TaskbarDragLayer(@NonNull Context context) {
         this(context, null);
@@ -66,12 +93,16 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
             int defStyleAttr, int defStyleRes) {
         super(context, attrs, 1 /* alphaChannelCount */);
         mBackgroundRenderer = new TaskbarBackgroundRenderer(mActivity);
-        mBackgroundRenderer.getPaint().setAlpha(0);
+
+        mTaskbarBackgroundAlpha = new MultiPropertyFactory<>(this, BG_ALPHA, INDEX_COUNT,
+                (a, b) -> a * b, 1f);
+        mTaskbarBackgroundAlpha.get(INDEX_ALL_OTHER_STATES).setValue(0);
+        mTaskbarBackgroundAlpha.get(INDEX_STASH_ANIM).setValue(1);
     }
 
     public void init(TaskbarDragLayerController.TaskbarDragLayerCallbacks callbacks) {
         mControllerCallbacks = callbacks;
-
+        mBackgroundRenderer.updateStashedHandleWidth(mActivity.getDeviceProfile(), getResources());
         recreateControllers();
     }
 
@@ -100,12 +131,14 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnComputeInternalInsetsListener(mTaskbarInsetsComputer);
+        mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
+                .startCapture(getRootView(), ".Taskbar");
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
+        mViewCaptureCloseable.close();
         onDestroy(true);
     }
 
@@ -133,13 +166,12 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         super.dispatchDraw(canvas);
     }
 
-    /**
-     * Sets the alpha of the background color behind all the Taskbar contents.
-     * @param alpha 0 is fully transparent, 1 is fully opaque.
-     */
-    protected void setTaskbarBackgroundAlpha(float alpha) {
-        mBackgroundRenderer.getPaint().setAlpha((int) (alpha * 255));
-        invalidate();
+    protected MultiProperty getBackgroundRendererAlpha() {
+        return mTaskbarBackgroundAlpha.get(INDEX_ALL_OTHER_STATES);
+    }
+
+    protected MultiProperty getBackgroundRendererAlphaForStash() {
+        return mTaskbarBackgroundAlpha.get(INDEX_STASH_ANIM);
     }
 
     /**
@@ -199,5 +231,14 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    /**
+     * Sets the width percentage to inset the transient taskbar's background from the left and from
+     * the right.
+     */
+    public void setBackgroundHorizontalInsets(float insetPercentage) {
+        mBackgroundRenderer.setBackgroundHorizontalInsets(insetPercentage);
+        invalidate();
     }
 }

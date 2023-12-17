@@ -28,6 +28,8 @@ import android.view.MotionEvent;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
+import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.List;
@@ -64,85 +66,71 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
     }
 
 
-    protected boolean zeroButtonToOverviewGestureStartsInLauncher() {
-        return mLauncher.isTablet();
-    }
-
     protected boolean zeroButtonToOverviewGestureStateTransitionWhileHolding() {
         return false;
     }
 
     protected void goToOverviewUnchecked() {
-        switch (mLauncher.getNavigationModel()) {
-            case ZERO_BUTTON: {
-                final long downTime = SystemClock.uptimeMillis();
-                sendDownPointerToEnterOverviewToLauncher(downTime);
-                String swipeAndHoldToEnterOverviewActionName =
-                        "swiping and holding to enter overview";
-                // If swiping from an app (e.g. Overview is in Background), we pause and hold on
-                // swipe up to make overview appear, or else swiping without holding would take
-                // us to the Home state. If swiping up from Home (e.g. Overview in Home or
-                // Workspace state where the below condition is true), there is no need to pause,
-                // and we will not test for an intermediate carousel as one will not exist.
-                if (zeroButtonToOverviewGestureStateTransitionWhileHolding()) {
-                    mLauncher.runToState(
-                            () -> sendSwipeUpAndHoldToEnterOverviewGestureToLauncher(downTime),
-                            OVERVIEW_STATE_ORDINAL, swipeAndHoldToEnterOverviewActionName);
-                    sendUpPointerToEnterOverviewToLauncher(downTime);
-                } else {
-                    // If swiping up from an app to overview, pause on intermediate carousel
-                    // until snapshots are visible. No intermediate carousel when swiping from
-                    // Home. The task swiped up is not a snapshot but the TaskViewSimulator. If
-                    // only a single task exists, no snapshots will be available during swipe up.
-                    mLauncher.executeAndWaitForLauncherEvent(
-                            () -> sendSwipeUpAndHoldToEnterOverviewGestureToLauncher(downTime),
-                            event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(
-                                    event.getClassName().toString()),
-                            () -> "Pause wasn't detected",
-                            swipeAndHoldToEnterOverviewActionName);
-                    try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                            "paused on swipe up to overview")) {
-                        if (mLauncher.getRecentTasks().size() > 1) {
-                            // When swiping up to grid-overview for tablets, the swiped tab will be
-                            // in the middle of the screen (TaskViewSimulator, not a snapshot), and
-                            // all remaining snapshots will be to the left of that task. In
-                            // non-tablet overview, snapshots can be on either side of the swiped
-                            // task, but we still check that they become visible after swiping and
-                            // pausing.
-                            mLauncher.waitForOverviewObject("snapshot");
-                            if (mLauncher.isTablet()) {
-                                List<UiObject2> tasks = mLauncher.getDevice().findObjects(
-                                        mLauncher.getOverviewObjectSelector("snapshot"));
-                                final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
-                                mLauncher.assertTrue(
-                                        "All tasks not to the left of the swiped task",
-                                        tasks.stream()
-                                                .allMatch(
-                                                        t -> t.getVisibleBounds().right < centerX));
-                            }
-
-                        }
-                        String upPointerToEnterOverviewActionName =
-                                "sending UP pointer to enter overview";
-                        mLauncher.runToState(() -> sendUpPointerToEnterOverviewToLauncher(downTime),
-                                OVERVIEW_STATE_ORDINAL, upPointerToEnterOverviewActionName);
-                    }
-                }
-                break;
-            }
-
-            case THREE_BUTTON:
-                if (mLauncher.isTablet()) {
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_TOUCH_UP);
-                }
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+        if (mLauncher.getNavigationModel() == NavigationModel.ZERO_BUTTON
+                || mLauncher.getTrackpadGestureType() == TrackpadGestureType.THREE_FINGER) {
+            final long downTime = SystemClock.uptimeMillis();
+            sendDownPointerToEnterOverviewToLauncher(downTime);
+            String swipeAndHoldToEnterOverviewActionName =
+                    "swiping and holding to enter overview";
+            // If swiping from an app (e.g. Overview is in Background), we pause and hold on
+            // swipe up to make overview appear, or else swiping without holding would take
+            // us to the Home state. If swiping up from Home (e.g. Overview in Home or
+            // Workspace state where the below condition is true), there is no need to pause,
+            // and we will not test for an intermediate carousel as one will not exist.
+            if (zeroButtonToOverviewGestureStateTransitionWhileHolding()) {
                 mLauncher.runToState(
-                        () -> mLauncher.waitForNavigationUiObject("recent_apps").click(),
-                        OVERVIEW_STATE_ORDINAL, "clicking Recents button");
-                break;
+                        () -> sendSwipeUpAndHoldToEnterOverviewGestureToLauncher(downTime),
+                        OVERVIEW_STATE_ORDINAL, swipeAndHoldToEnterOverviewActionName);
+                sendUpPointerToEnterOverviewToLauncher(downTime);
+            } else {
+                // If swiping up from an app to overview, pause on intermediate carousel
+                // until snapshots are visible. No intermediate carousel when swiping from
+                // Home. The task swiped up is not a snapshot but the TaskViewSimulator. If
+                // only a single task exists, no snapshots will be available during swipe up.
+                mLauncher.executeAndWaitForLauncherEvent(
+                        () -> sendSwipeUpAndHoldToEnterOverviewGestureToLauncher(downTime),
+                        event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(
+                                event.getClassName().toString()),
+                        () -> "Pause wasn't detected",
+                        swipeAndHoldToEnterOverviewActionName);
+                try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                        "paused on swipe up to overview")) {
+                    if (mLauncher.getRecentTasks().size() > 1) {
+                        // When swiping up to grid-overview for tablets, the swiped tab will be
+                        // in the middle of the screen (TaskViewSimulator, not a snapshot), and
+                        // all remaining snapshots will be to the left of that task. In
+                        // non-tablet overview, snapshots can be on either side of the swiped
+                        // task, but we still check that they become visible after swiping and
+                        // pausing.
+                        mLauncher.waitForOverviewObject("snapshot");
+                        if (mLauncher.isTablet()) {
+                            List<UiObject2> tasks = mLauncher.getDevice().findObjects(
+                                    mLauncher.getOverviewObjectSelector("snapshot"));
+                            final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
+                            mLauncher.assertTrue(
+                                    "All tasks not to the left of the swiped task",
+                                    tasks.stream()
+                                            .allMatch(
+                                                    t -> t.getVisibleBounds().right < centerX));
+                        }
+
+                    }
+                    String upPointerToEnterOverviewActionName =
+                            "sending UP pointer to enter overview";
+                    mLauncher.runToState(() -> sendUpPointerToEnterOverviewToLauncher(downTime),
+                            OVERVIEW_STATE_ORDINAL, upPointerToEnterOverviewActionName);
+                }
+            }
+        } else {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+            mLauncher.runToState(
+                    () -> mLauncher.waitForNavigationUiObject("recent_apps").click(),
+                    OVERVIEW_STATE_ORDINAL, "clicking Recents button");
         }
         expectSwitchToOverviewEvents();
     }
@@ -154,12 +142,9 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
         final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
         final int startY = getSwipeStartY();
         final Point start = new Point(centerX, startY);
-        final LauncherInstrumentation.GestureScope gestureScope =
-                zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
 
-        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start,
+                LauncherInstrumentation.GestureScope.EXPECT_PILFER);
 
         if (!mLauncher.isLauncher3()) {
             mLauncher.expectEvent(TestProtocol.SEQUENCE_PILFER,
@@ -175,10 +160,6 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
         final Point start = new Point(centerX, startY);
         final Point end =
                 new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
-        final LauncherInstrumentation.GestureScope gestureScope =
-                zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
 
         mLauncher.movePointer(
                 downTime,
@@ -186,7 +167,7 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                 ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION,
                 start,
                 end,
-                gestureScope);
+                LauncherInstrumentation.GestureScope.EXPECT_PILFER);
     }
 
     private void sendUpPointerToEnterOverviewToLauncher(long downTime) {
@@ -197,13 +178,9 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
         final Point end =
                 new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
 
-        final LauncherInstrumentation.GestureScope gestureScope =
-                zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
-                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER;
-
         mLauncher.sendPointer(downTime, SystemClock.uptimeMillis(),
-                MotionEvent.ACTION_UP, end, gestureScope);
+                MotionEvent.ACTION_UP, end,
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
     }
 
     /**
@@ -235,71 +212,48 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to quick switch to the previous app")) {
             verifyActiveContainer();
-            final boolean launcherWasVisible = mLauncher.isLauncherVisible();
-            switch (mLauncher.getNavigationModel()) {
-                case ZERO_BUTTON: {
-                    final int startX;
-                    final int startY;
-                    final int endX;
-                    final int endY;
-                    final int cornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
-                    if (toRight) {
-                        // Swipe from the bottom left to the bottom right of the screen.
-                        startX = cornerRadius;
-                        startY = getSwipeStartY();
-                        endX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
-                        endY = startY;
-                    } else {
-                        // Swipe from the bottom right to the bottom left of the screen.
-                        startX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
-                        startY = getSwipeStartY();
-                        endX = cornerRadius;
-                        endY = startY;
-                    }
-
-                    final boolean isZeroButton = mLauncher.getNavigationModel()
-                            == LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
-                    LauncherInstrumentation.GestureScope gestureScope =
-                            launcherWasVisible && isZeroButton
-                                    ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                                    : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
-                    mLauncher.executeAndWaitForEvent(
-                            () -> mLauncher.linearGesture(
-                                    startX, startY, endX, endY, 20, false, gestureScope),
-                            event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                            () -> "Quick switch gesture didn't change window state", "swiping");
-                    break;
+            if (mLauncher.getNavigationModel() == NavigationModel.ZERO_BUTTON
+                    || mLauncher.getTrackpadGestureType() == TrackpadGestureType.FOUR_FINGER) {
+                final int startX;
+                final int startY;
+                final int endX;
+                final int endY;
+                final int cornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
+                if (toRight) {
+                    // Swipe from the bottom left to the bottom right of the screen.
+                    startX = cornerRadius;
+                    startY = getSwipeStartY();
+                    endX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
+                    endY = startY;
+                } else {
+                    // Swipe from the bottom right to the bottom left of the screen.
+                    startX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
+                    startY = getSwipeStartY();
+                    endX = cornerRadius;
+                    endY = startY;
                 }
 
-                case THREE_BUTTON:
-                    // Double press the recents button.
-                    UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
-                    if (mLauncher.isTablet()) {
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_UP);
-                    }
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                    mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL,
-                            "clicking Recents button for the first time");
-                    mLauncher.getOverview();
-                    if (mLauncher.isTablet()) {
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_UP);
-                    }
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                    mLauncher.executeAndWaitForEvent(
-                            () -> recentsButton.click(),
-                            event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                            () -> "Pressing recents button didn't change window state",
-                            "clicking Recents button for the second time");
-                    break;
+                mLauncher.executeAndWaitForEvent(
+                        () -> mLauncher.linearGesture(
+                                startX, startY, endX, endY, 20, false,
+                                LauncherInstrumentation.GestureScope.EXPECT_PILFER),
+                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                        () -> "Quick switch gesture didn't change window state", "swiping");
+            } else {
+                // Double press the recents button.
+                UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+                mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL,
+                        "clicking Recents button for the first time");
+                mLauncher.getOverview();
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+                mLauncher.executeAndWaitForEvent(
+                        () -> recentsButton.click(),
+                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                        () -> "Pressing recents button didn't change window state",
+                        "clicking Recents button for the second time");
             }
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
-            return;
         }
     }
 
@@ -312,6 +266,8 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
     }
 
     protected int getSwipeStartY() {
-        return mLauncher.getRealDisplaySize().y - 1;
+        return mLauncher.getTrackpadGestureType() == TrackpadGestureType.THREE_FINGER
+                ? mLauncher.getDevice().getDisplayHeight() * 3 / 4
+                : mLauncher.getRealDisplaySize().y - 1;
     }
 }

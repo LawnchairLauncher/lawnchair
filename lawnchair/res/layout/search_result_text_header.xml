@@ -34,13 +34,15 @@
             android:textSize="@dimen/search_result_hero_subtitle_size" />
     </LinearLayout>
 
-    <Button
-        style="@android:style/Widget.DeviceDefault.Button.Borderless"
+    <ImageButton
+        android:background="@drawable/pill_ripple"
         android:id="@+id/clear_history"
-        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|center|end"
+        android:layout_width="@dimen/search_box_height"
         android:textAllCaps="false"
-        android:layout_height="match_parent"
-        android:text="@string/clear_history"
+        android:clickable="true"
+        android:layout_height="@dimen/search_box_height"
+        android:src="@drawable/ic_remove_no_shadow"
         android:visibility="gone"
         android:textStyle="normal"
         android:contentDescription="@string/recents_clear_all" />

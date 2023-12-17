@@ -18,17 +18,22 @@ package com.android.systemui.shared.condition;
 
 import android.util.Log;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import kotlinx.coroutines.CoroutineScope;
 
 /**
  * Base class for a condition that needs to be fulfilled in order for {@link Monitor} to inform
@@ -39,24 +44,27 @@ public abstract class Condition {
 
     private final ArrayList<WeakReference<Callback>> mCallbacks = new ArrayList<>();
     private final boolean mOverriding;
+    private final CoroutineScope mScope;
     private Boolean mIsConditionMet;
     private boolean mStarted = false;
 
     /**
      * By default, conditions have an initial value of false and are not overriding.
      */
-    public Condition() {
-        this(false, false);
+    public Condition(CoroutineScope scope) {
+        this(scope, false, false);
     }
 
     /**
      * Constructor for specifying initial state and overriding condition attribute.
+     *
      * @param initialConditionMet Initial state of the condition.
-     * @param overriding Whether this condition overrides others.
+     * @param overriding          Whether this condition overrides others.
      */
-    protected Condition(Boolean initialConditionMet, boolean overriding) {
+    protected Condition(CoroutineScope scope, Boolean initialConditionMet, boolean overriding) {
         mIsConditionMet = initialConditionMet;
         mOverriding = overriding;
+        mScope = scope;
     }
 
     /**
@@ -68,6 +76,29 @@ public abstract class Condition {
      * Stops monitoring the condition.
      */
     protected abstract void stop();
+
+    /**
+     * Condition should be started as soon as there is an active subscription.
+     */
+    public static final int START_EAGERLY = 0;
+    /**
+     * Condition should be started lazily only if needed. But once started, it will not be cancelled
+     * unless there are no more active subscriptions.
+     */
+    public static final int START_LAZILY = 1;
+    /**
+     * Condition should be started lazily only if needed, and can be stopped when not needed. This
+     * should be used for conditions which are expensive to keep running.
+     */
+    public static final int START_WHEN_NEEDED = 2;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({START_EAGERLY, START_LAZILY, START_WHEN_NEEDED})
+    @interface StartStrategy {
+    }
+
+    @StartStrategy
+    protected abstract int getStartStrategy();
 
     /**
      * Returns whether the current condition overrides
@@ -183,6 +214,7 @@ public abstract class Condition {
     /**
      * Returns whether the condition is set. This method should be consulted to understand the
      * value of {@link #isConditionMet()}.
+     *
      * @return {@code true} if value is present, {@code false} otherwise.
      */
     public boolean isConditionSet() {
@@ -202,7 +234,24 @@ public abstract class Condition {
     }
 
     protected final String getTag() {
+        if (isOverridingCondition()) {
+            return mTag + "[OVRD]";
+        }
+
         return mTag;
+    }
+
+    /**
+     * Returns the state of the condition.
+     * - "Invalid", condition hasn't been set / not monitored
+     * - "True", condition has been met
+     * - "False", condition has not been met
+     */
+    protected final String getState() {
+        if (!isConditionSet()) {
+            return "Invalid";
+        }
+        return isConditionMet() ? "True" : "False";
     }
 
     /**
@@ -210,17 +259,18 @@ public abstract class Condition {
      * conditions are true.
      */
     public Condition and(@NonNull Collection<Condition> others) {
-        final List<Condition> conditions = new ArrayList<>(others);
+        final List<Condition> conditions = new ArrayList<>();
         conditions.add(this);
-        return new CombinedCondition(conditions, Evaluator.OP_AND);
+        conditions.addAll(others);
+        return new CombinedCondition(mScope, conditions, Evaluator.OP_AND);
     }
 
     /**
      * Creates a new condition which will only be true when both this condition and the provided
      * condition is true.
      */
-    public Condition and(@NonNull Condition other) {
-        return new CombinedCondition(Arrays.asList(this, other), Evaluator.OP_AND);
+    public Condition and(@NonNull Condition... others) {
+        return and(Arrays.asList(others));
     }
 
     /**
@@ -228,17 +278,18 @@ public abstract class Condition {
      * provided conditions are true.
      */
     public Condition or(@NonNull Collection<Condition> others) {
-        final List<Condition> conditions = new ArrayList<>(others);
+        final List<Condition> conditions = new ArrayList<>();
         conditions.add(this);
-        return new CombinedCondition(conditions, Evaluator.OP_OR);
+        conditions.addAll(others);
+        return new CombinedCondition(mScope, conditions, Evaluator.OP_OR);
     }
 
     /**
      * Creates a new condition which will only be true when either this condition or the provided
      * condition is true.
      */
-    public Condition or(@NonNull Condition other) {
-        return new CombinedCondition(Arrays.asList(this, other), Evaluator.OP_OR);
+    public Condition or(@NonNull Condition... others) {
+        return or(Arrays.asList(others));
     }
 
     /**

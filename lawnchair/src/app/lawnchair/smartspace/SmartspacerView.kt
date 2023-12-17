@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.Routes
@@ -43,7 +44,7 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
                     getDismissOption(target, dismissAction),
                 ).ifEmpty { listOf(getCustomizeOptionFallback()) }
                 val popup = OptionsPopupView
-                    .show(launcher, RectF(pos), options, true)
+                    .show<LawnchairLauncher>(launcher, RectF(pos), options, true)
                 return object : Popup {
                     override fun dismiss() {
                         popup.close(true)

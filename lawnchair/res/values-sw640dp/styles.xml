@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AllAppsStyle6x5" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">28dp</item>
+    </style>
+    <style name="CellStyle6x5" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">14dp</item>
+    </style>
+    <style name="Folder6x5Style" parent="@style/FolderStyleDefault">
+        <item name="folderCellHeight">104dp</item>
+        <item name="folderCellWidth">102dp</item>
+        <item name="folderFooterHeight">64dp</item>
+    </style>
+</resources>

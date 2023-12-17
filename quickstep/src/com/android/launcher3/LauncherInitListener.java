@@ -15,22 +15,15 @@
  */
 package com.android.launcher3;
 
-import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.os.CancellationSignal;
-import android.view.RemoteAnimationTarget;
 
-import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.RemoteAnimationProvider;
 
 import java.util.function.BiPredicate;
 
 @TargetApi(Build.VERSION_CODES.P)
 public class LauncherInitListener extends ActivityInitListener<Launcher> {
-
-    private RemoteAnimationProvider mRemoteAnimationProvider;
 
     /**
      * @param onInitListener a callback made when the activity is initialized. The callback should
@@ -43,37 +36,7 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
 
     @Override
     public boolean handleInit(Launcher launcher, boolean alreadyOnHome) {
-        if (mRemoteAnimationProvider != null) {
-            QuickstepTransitionManager appTransitionManager =
-                    ((QuickstepLauncher) launcher).getAppTransitionManager();
-
-            // Set a one-time animation provider. After the first call, this will get cleared.
-            // TODO: Probably also check the intended target id.
-            CancellationSignal cancellationSignal = new CancellationSignal();
-            appTransitionManager.setRemoteAnimationProvider(new RemoteAnimationProvider() {
-                @Override
-                public AnimatorSet createWindowAnimation(RemoteAnimationTarget[] appTargets,
-                        RemoteAnimationTarget[] wallpaperTargets) {
-
-                    // On the first call clear the reference.
-                    cancellationSignal.cancel();
-                    RemoteAnimationProvider provider = mRemoteAnimationProvider;
-                    mRemoteAnimationProvider = null;
-
-                    if (provider != null && launcher.getStateManager().getState().overviewUi) {
-                        return provider.createWindowAnimation(appTargets, wallpaperTargets);
-                    }
-                    return null;
-                }
-            }, cancellationSignal);
-        }
         launcher.deferOverlayCallbacksUntilNextResumeOrStop();
         return super.handleInit(launcher, alreadyOnHome);
-    }
-
-    @Override
-    public void unregister() {
-        mRemoteAnimationProvider = null;
-        super.unregister();
     }
 }

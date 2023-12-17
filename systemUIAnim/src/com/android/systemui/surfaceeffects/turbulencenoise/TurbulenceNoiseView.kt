@@ -49,8 +49,8 @@ class TurbulenceNoiseView(context: Context?, attrs: AttributeSet?) : View(contex
     @VisibleForTesting var noiseConfig: TurbulenceNoiseAnimationConfig? = null
     @VisibleForTesting var currentAnimator: ValueAnimator? = null
 
-    override fun onDraw(canvas: Canvas?) {
-        if (canvas == null || !canvas.isHardwareAccelerated) {
+    override fun onDraw(canvas: Canvas) {
+        if (!canvas.isHardwareAccelerated) {
             // Drawing with the turbulence noise shader requires hardware acceleration, so skip
             // if it's unsupported.
             return
@@ -215,10 +215,12 @@ class TurbulenceNoiseView(context: Context?, attrs: AttributeSet?) : View(contex
         noiseConfig = config
         with(turbulenceNoiseShader) {
             setGridCount(config.gridCount)
-            setColor(ColorUtils.setAlphaComponent(config.color, config.opacity))
+            setColor(config.color)
             setBackgroundColor(config.backgroundColor)
             setSize(config.width, config.height)
             setPixelDensity(config.pixelDensity)
+            setInverseNoiseLuminosity(inverse = false)
+            setLumaMatteFactors(config.lumaMatteBlendFactor, config.lumaMatteOverallBrightness)
         }
         paint.blendMode = config.blendMode
     }

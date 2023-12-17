@@ -62,6 +62,13 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
     // Section name used for indexing.
     public String sectionName = "";
 
+    /**
+     * The uid of the application.
+     * The kernel user-ID that has been assigned to this application. Currently this is not a unique
+     * ID (multiple applications can have the same uid).
+     */
+    public int uid = -1;
+
     public AppInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
     }
@@ -88,6 +95,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         if (quietModeEnabled) {
             runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
         }
+        uid = info.getApplicationInfo().uid;
         updateRuntimeFlagsForActivityTarget(this, info);
     }
 
@@ -96,6 +104,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         componentName = info.componentName;
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
+        uid = info.uid;
     }
 
     @VisibleForTesting

@@ -34,4 +34,6 @@
     <color name="black_900">#000000</color>
 
     <color name="bugNotificationColor">#ff4caf50</color>
+    <!-- Yellow 600, used for highlighting "important" conversations in settings & notifications -->
+    <color name="important_conversation">#f9ab00</color>
 </resources>

@@ -18,6 +18,9 @@ package com.android.launcher3.taskbar;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -59,7 +62,8 @@ import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
- * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
+ * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of
+ * other apps.
  */
 public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconParent, Insettable,
         DeviceProfile.OnDeviceProfileChangeListener {
@@ -89,7 +93,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private @Nullable IconButtonView mAllAppsButton;
 
     // Only non-null when device supports having an All Apps button.
-    private @Nullable View mTaskbarDivider;
+    private @Nullable IconButtonView mTaskbarDivider;
 
     private View mQsb;
 
@@ -108,37 +112,38 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     public TaskbarView(@NonNull Context context, @Nullable AttributeSet attrs,
-                       int defStyleAttr) {
+            int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
     public TaskbarView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
-                       int defStyleRes) {
+            int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
         HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
         Resources resources = getResources();
-        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext);
+        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext)
+                && !TaskbarManager.isPhoneMode(mActivityContext.getDeviceProfile());
         mIsRtl = Utilities.isRtl(resources);
         mTransientTaskbarMinWidth = context.getResources().getDimension(
                 R.dimen.transient_taskbar_min_width);
-        mTransientTaskbarAllAppsButtonTranslationXOffset =
-                resources.getDimension(isTransientTaskbar
-                        ? R.dimen.transient_taskbar_all_apps_button_translation_x_offset
-                        : R.dimen.taskbar_all_apps_button_translation_x_offset);
+        mTransientTaskbarAllAppsButtonTranslationXOffset = resources.getDimension(isTransientTaskbar
+                ? R.dimen.transient_taskbar_all_apps_button_translation_x_offset
+                : R.dimen.taskbar_all_apps_button_translation_x_offset);
 
         onDeviceProfileChanged(mActivityContext.getDeviceProfile());
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
+        int visualIconSize = (int) (actualIconSize * ICON_VISIBLE_AREA_FACTOR);
 
         mIconTouchSize = Math.max(actualIconSize,
                 resources.getDimensionPixelSize(R.dimen.taskbar_icon_min_touch_size));
 
         // We layout the icons to be of mIconTouchSize in width and height
-        mItemMarginLeftRight = actualMargin - (mIconTouchSize - actualIconSize) / 2;
+        mItemMarginLeftRight = actualMargin - (mIconTouchSize - visualIconSize) / 2;
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
 
         mFolderLeaveBehindColor = Themes.getAttrColor(mActivityContext,
@@ -159,13 +164,17 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     mActivityContext.getColor(R.color.all_apps_button_color));
 
             if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
-                mTaskbarDivider = LayoutInflater.from(context).inflate(R.layout.taskbar_divider,
+                mTaskbarDivider = (IconButtonView) LayoutInflater.from(context).inflate(
+                        R.layout.taskbar_divider,
                         this, false);
+                mTaskbarDivider.setIconDrawable(
+                        resources.getDrawable(R.drawable.taskbar_divider_button));
+                mTaskbarDivider.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
             }
         }
 
         // TODO: Disable touch events on QSB otherwise it can crash.
-        if (hotseatMode.isAvailable (context)) {
+        if (hotseatMode.isAvailable(context)) {
             mQsb = LayoutInflater.from(context).inflate(R.layout.search_container_hotseat, this, false);
         } else {
             mQsb = LayoutInflater.from(context).inflate(R.layout.empty_view, this, false);
@@ -203,7 +212,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     protected void announceAccessibilityChanges() {
         this.performAccessibilityAction(
                 isVisibleToUser() ? AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS
-                        : AccessibilityNodeInfo.ACTION_CLEAR_ACCESSIBILITY_FOCUS, null);
+                        : AccessibilityNodeInfo.ACTION_CLEAR_ACCESSIBILITY_FOCUS,
+                null);
 
         ActivityContext.lookupContext(getContext()).getDragLayer()
                 .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
@@ -217,6 +227,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
+        // set taskbar pane title so that accessibility service know it window and
+        // focuses.
+        setAccessibilityPaneTitle(getContext().getString(R.string.taskbar_a11y_title));
         mControllerCallbacks = callbacks;
         mIconClickListener = mControllerCallbacks.getIconOnClickListener();
         mIconLongClickListener = mControllerCallbacks.getIconOnLongClickListener();
@@ -227,7 +240,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
         }
         if (mTaskbarDivider != null) {
-            //TODO(b/265434705): set long press listener
+            mTaskbarDivider.setOnLongClickListener(
+                    mControllerCallbacks.getTaskbarDividerLongClickListener());
         }
     }
 
@@ -242,7 +256,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     /**
-     * Inflates/binds the Hotseat views to show in the Taskbar given their ItemInfos.
+     * Inflates/binds the Hotseat views to show in the Taskbar given their
+     * ItemInfos.
      */
     protected void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
         int nextViewIndex = 0;
@@ -257,14 +272,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         }
         removeView(mQsb);
 
-
         for (int i = 0; i < hotseatItemInfos.length; i++) {
             ItemInfo hotseatItemInfo = hotseatItemInfos[i];
             if (hotseatItemInfo == null) {
                 continue;
             }
 
-            // Replace any Hotseat views with the appropriate type if it's not already that type.
+            // Replace any Hotseat views with the appropriate type if it's not already that
+            // type.
             final int expectedLayoutResId;
             boolean isFolder = false;
             if (hotseatItemInfo.isPredictedItem()) {
@@ -309,7 +324,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 addView(hotseatView, nextViewIndex, lp);
             }
 
-            // Apply the Hotseat ItemInfos, or hide the view if there is none for a given index.
+            // Apply the Hotseat ItemInfos, or hide the view if there is none for a given
+            // index.
             if (hotseatView instanceof BubbleTextView
                     && hotseatItemInfo instanceof WorkspaceItemInfo) {
                 BubbleTextView btv = (BubbleTextView) hotseatView;
@@ -322,6 +338,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 }
             }
             setClickAndLongClickListenersForIcon(hotseatView);
+            if (ENABLE_CURSOR_HOVER_STATES.get()) {
+                setHoverListenerForIcon(hotseatView);
+            }
             nextViewIndex++;
         }
         // Remove remaining views
@@ -331,7 +350,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         if (mAllAppsButton != null) {
             mAllAppsButton.setTranslationXForTaskbarAllAppsIcon(getChildCount() > 0
-                    ? mTransientTaskbarAllAppsButtonTranslationXOffset : 0f);
+                    ? mTransientTaskbarAllAppsButtonTranslationXOffset
+                    : 0f);
             addView(mAllAppsButton, mIsRtl ? getChildCount() : 0);
 
             // if only all apps button present, don't include divider view.
@@ -369,16 +389,18 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         icon.setOnLongClickListener(mIconLongClickListener);
     }
 
+    /**
+     * Sets OnHoverListener for the given view.
+     */
+    private void setHoverListenerForIcon(View icon) {
+        icon.setOnHoverListener(mControllerCallbacks.getIconOnHoverListener(icon));
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int count = getChildCount();
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int spaceNeeded = getIconLayoutWidth();
-        // We are removing the margin from taskbar divider item in taskbar,
-        // so remove it from spacing also.
-        if (FeatureFlags.ENABLE_TASKBAR_PINNING.get() && count > 1) {
-            spaceNeeded -= mIconTouchSize;
-        }
         int navSpaceNeeded = deviceProfile.hotseatBarEndOffset;
         boolean layoutRtl = isLayoutRtl();
         int centerAlignIconEnd = right - (right - left - spaceNeeded) / 2;
@@ -476,7 +498,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     /**
-     * Returns whether the given MotionEvent, *in screen coorindates*, is within any Taskbar item's
+     * Returns whether the given MotionEvent, *in screen coorindates*, is within any
+     * Taskbar item's
      * touch bounds.
      */
     public boolean isEventOverAnyItem(MotionEvent ev) {
@@ -499,7 +522,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (deviceProfile.isQsbInline) {
             countExcludingQsb--;
         }
-        return countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
+        int iconLayoutBoundsWidth = countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
+
+        if (FeatureFlags.ENABLE_TASKBAR_PINNING.get() && countExcludingQsb > 1) {
+            // We are removing 4 * mItemMarginLeftRight as there should be no space between
+            // All Apps icon, divider icon, and first app icon in taskbar
+            iconLayoutBoundsWidth -= mItemMarginLeftRight * 4;
+        }
+        return iconLayoutBoundsWidth;
     }
 
     /**
@@ -520,6 +550,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     @Nullable
     public View getAllAppsButtonView() {
         return mAllAppsButton;
+    }
+
+    /**
+     * Returns the taskbar divider in the taskbar.
+     */
+    @Nullable
+    public View getTaskbarDividerView() {
+        return mTaskbarDivider;
     }
 
     /**
@@ -585,7 +623,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     /**
-     * Finds the first icon to match one of the given matchers, from highest to lowest priority.
+     * Finds the first icon to match one of the given matchers, from highest to
+     * lowest priority.
      *
      * @return The first match, or All Apps button if no match was found.
      */

@@ -16,10 +16,7 @@
 
 package com.android.launcher3;
 
-import android.content.ContentResolver;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.os.Bundle;
 import android.provider.BaseColumns;
 
 import com.android.launcher3.model.data.ItemInfo;
@@ -42,7 +39,8 @@ public class LauncherSettings {
          */
         public static final int VIEW_BACKGROUND = 1;
         /**
-         * The default animation for a given view/item info type, but without the splash icon.
+         * The default animation for a given view/item info type, but without the splash
+         * icon.
          */
         public static final int DEFAULT_NO_ICON = 2;
     }
@@ -53,28 +51,37 @@ public class LauncherSettings {
     public static final class Favorites implements BaseColumns {
         /**
          * The time of the last update to this row.
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String MODIFIED = "modified";
 
         /**
          * Descriptive name of the gesture that can be displayed to the user.
-         * <P>Type: TEXT</P>
+         * <P>
+         * Type: TEXT
+         * </P>
          */
         public static final String TITLE = "title";
 
         /**
          * The Intent URL of the gesture, describing what it points to. This
-         * value is given to {@link android.content.Intent#parseUri(String, int)} to create
+         * value is given to {@link android.content.Intent#parseUri(String, int)} to
+         * create
          * an Intent that can be launched.
-         * <P>Type: TEXT</P>
+         * <P>
+         * Type: TEXT
+         * </P>
          */
         public static final String INTENT = "intent";
 
         /**
          * The type of the gesture
          *
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String ITEM_TYPE = "itemType";
 
@@ -89,7 +96,11 @@ public class LauncherSettings {
 
         /**
          * The gesture is an application created shortcut
+         * 
+         * @deprecated This is no longer supported. Use {@link #ITEM_TYPE_DEEP_SHORTCUT}
+         *             instead
          */
+        @Deprecated
         public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
@@ -112,8 +123,13 @@ public class LauncherSettings {
          */
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
 
+        /**
+         * The favorite is an app pair for launching split screen
+         */
+        public static final int ITEM_TYPE_APP_PAIR = 10;
 
-        // *** Below enum values are used for metrics purpose but not used in Favorites DB ***
+        // *** Below enum values are used for metrics purpose but not used in Favorites
+        // DB ***
 
         /**
          * Type of the item is recents task.
@@ -131,39 +147,20 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_SEARCH_ACTION = 9;
 
         /**
-         * The icon package name in Intent.ShortcutIconResource
-         * <P>Type: TEXT</P>
-         */
-        public static final String ICON_PACKAGE = "iconPackage";
-
-        /**
-         * The icon resource name in Intent.ShortcutIconResource
-         * <P>Type: TEXT</P>
-         */
-        public static final String ICON_RESOURCE = "iconResource";
-
-        /**
          * The custom icon bitmap.
-         * <P>Type: BLOB</P>
+         * <P>
+         * Type: BLOB
+         * </P>
          */
         public static final String ICON = "icon";
 
         public static final String TABLE_NAME = "favorites";
 
         /**
-         * Backup table created when the favorites table is modified during grid migration
-         */
-        public static final String BACKUP_TABLE_NAME = "favorites_bakup";
-
-        /**
-         * Backup table created when user hotseat is moved to workspace for hybrid hotseat
+         * Backup table created when user hotseat is moved to workspace for hybrid
+         * hotseat
          */
         public static final String HYBRID_HOTSEAT_BACKUP_TABLE = "hotseat_restore_backup";
-
-        /**
-         * Temporary table used specifically for grid migrations during wallpaper preview
-         */
-        public static final String PREVIEW_TABLE_NAME = "favorites_preview";
 
         /**
          * Temporary table used specifically for multi-db grid migrations
@@ -171,44 +168,10 @@ public class LauncherSettings {
         public static final String TMP_TABLE = "favorites_tmp";
 
         /**
-         * The content:// style URL for "favorites" table
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The content:// style URL for "favorites_bakup" table
-         */
-        public static final Uri BACKUP_CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + BACKUP_TABLE_NAME);
-
-        /**
-         * The content:// style URL for "favorites_preview" table
-         */
-        public static final Uri PREVIEW_CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + PREVIEW_TABLE_NAME);
-
-        /**
-         * The content:// style URL for "favorites_tmp" table
-         */
-        public static final Uri TMP_CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + TMP_TABLE);
-
-        /**
-         * The content:// style URL for a given row, identified by its id.
-         *
-         * @param id The row id.
-         *
-         * @return The unique content URL for the specified row.
-         */
-        public static Uri getContentUri(int id) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY
-                    + "/" + TABLE_NAME + "/" + id);
-        }
-
-        /**
          * The container holding the favorite
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String CONTAINER = "container";
 
@@ -236,59 +199,85 @@ public class LauncherSettings {
 
         public static final String containerToString(int container) {
             switch (container) {
-                case CONTAINER_DESKTOP: return "desktop";
-                case CONTAINER_HOTSEAT: return "hotseat";
-                case CONTAINER_PREDICTION: return "prediction";
-                case CONTAINER_ALL_APPS: return "all_apps";
-                case CONTAINER_WIDGETS_TRAY: return "widgets_tray";
-                case CONTAINER_SHORTCUTS: return "shortcuts";
-                default: return String.valueOf(container);
+                case CONTAINER_DESKTOP:
+                    return "desktop";
+                case CONTAINER_HOTSEAT:
+                    return "hotseat";
+                case CONTAINER_PREDICTION:
+                    return "prediction";
+                case CONTAINER_ALL_APPS:
+                    return "all_apps";
+                case CONTAINER_WIDGETS_TRAY:
+                    return "widgets_tray";
+                case CONTAINER_SHORTCUTS:
+                    return "shortcuts";
+                default:
+                    return String.valueOf(container);
             }
         }
 
         public static final String itemTypeToString(int type) {
-            switch(type) {
-                case ITEM_TYPE_APPLICATION: return "APP";
-                case ITEM_TYPE_SHORTCUT: return "SHORTCUT";
-                case ITEM_TYPE_FOLDER: return "FOLDER";
-                case ITEM_TYPE_APPWIDGET: return "WIDGET";
-                case ITEM_TYPE_CUSTOM_APPWIDGET: return "CUSTOMWIDGET";
-                case ITEM_TYPE_DEEP_SHORTCUT: return "DEEPSHORTCUT";
-                case ITEM_TYPE_TASK: return "TASK";
-                case ITEM_TYPE_QSB: return "QSB";
-                default: return String.valueOf(type);
+            switch (type) {
+                case ITEM_TYPE_APPLICATION:
+                    return "APP";
+                case ITEM_TYPE_FOLDER:
+                    return "FOLDER";
+                case ITEM_TYPE_APPWIDGET:
+                    return "WIDGET";
+                case ITEM_TYPE_CUSTOM_APPWIDGET:
+                    return "CUSTOMWIDGET";
+                case ITEM_TYPE_DEEP_SHORTCUT:
+                    return "DEEPSHORTCUT";
+                case ITEM_TYPE_TASK:
+                    return "TASK";
+                case ITEM_TYPE_QSB:
+                    return "QSB";
+                case ITEM_TYPE_APP_PAIR:
+                    return "APP_PAIR";
+                default:
+                    return String.valueOf(type);
             }
         }
 
         /**
          * The screen holding the favorite (if container is CONTAINER_DESKTOP)
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String SCREEN = "screen";
 
         /**
          * The X coordinate of the cell holding the favorite
          * (if container is CONTAINER_HOTSEAT or CONTAINER_HOTSEAT)
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String CELLX = "cellX";
 
         /**
          * The Y coordinate of the cell holding the favorite
          * (if container is CONTAINER_DESKTOP)
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String CELLY = "cellY";
 
         /**
          * The X span of the cell holding the favorite
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String SPANX = "spanX";
 
         /**
          * The Y span of the cell holding the favorite
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String SPANY = "spanY";
 
@@ -303,38 +292,51 @@ public class LauncherSettings {
         /**
          * The appWidgetId of the widget
          *
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String APPWIDGET_ID = "appWidgetId";
 
         /**
          * The ComponentName of the widget provider
          *
-         * <P>Type: STRING</P>
+         * <P>
+         * Type: STRING
+         * </P>
          */
         public static final String APPWIDGET_PROVIDER = "appWidgetProvider";
 
         /**
          * Boolean indicating that his item was restored and not yet successfully bound.
-         * <P>Type: INTEGER</P>
+         * <P>
+         * Type: INTEGER
+         * </P>
          */
         public static final String RESTORED = "restored";
 
         /**
-         * Indicates the position of the item inside an auto-arranged view like folder or hotseat.
-         * <p>Type: INTEGER</p>
+         * Indicates the position of the item inside an auto-arranged view like folder
+         * or hotseat.
+         * <p>
+         * Type: INTEGER
+         * </p>
          */
         public static final String RANK = "rank";
 
         /**
          * Stores general flag based options for {@link ItemInfo}s.
-         * <p>Type: INTEGER</p>
+         * <p>
+         * Type: INTEGER
+         * </p>
          */
         public static final String OPTIONS = "options";
 
         /**
          * Stores the source container that the widget was added from.
-         * <p>Type: INTEGER</p>
+         * <p>
+         * Type: INTEGER
+         * </p>
          */
         public static final String APPWIDGET_SOURCE = "appWidgetSource";
 
@@ -357,8 +359,6 @@ public class LauncherSettings {
                     "spanY INTEGER," +
                     "itemType INTEGER," +
                     "appWidgetId INTEGER NOT NULL DEFAULT -1," +
-                    "iconPackage TEXT," +
-                    "iconResource TEXT," +
                     "icon BLOB," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
@@ -375,61 +375,8 @@ public class LauncherSettings {
      * Launcher settings
      */
     public static final class Settings {
-
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/settings");
-
-        public static final String METHOD_CLEAR_EMPTY_DB_FLAG = "clear_empty_db_flag";
-        public static final String METHOD_WAS_EMPTY_DB_CREATED = "get_empty_db_flag";
-
-        public static final String METHOD_DELETE_EMPTY_FOLDERS = "delete_empty_folders";
-
-        public static final String METHOD_NEW_ITEM_ID = "generate_new_item_id";
-        public static final String METHOD_NEW_SCREEN_ID = "generate_new_screen_id";
-
-        public static final String METHOD_CREATE_EMPTY_DB = "create_empty_db";
-
-        public static final String METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG =
-                "set_use_test_workspace_layout_flag";
-        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST = "default_test_workspace";
-        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2 = "default_test2_workspace";
-        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL = "default_tapl_workspace";
-
-        public static final String METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG =
-                "clear_use_test_workspace_layout_flag";
-
-        public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
-
-        public static final String METHOD_REMOVE_GHOST_WIDGETS = "remove_ghost_widgets";
-
-        public static final String METHOD_NEW_TRANSACTION = "new_db_transaction";
-
-        public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
-
-        public static final String METHOD_REFRESH_HOTSEAT_RESTORE_TABLE = "restore_hotseat_table";
-
-        public static final String METHOD_RESTORE_BACKUP_TABLE = "restore_backup_table";
-
-        public static final String METHOD_UPDATE_CURRENT_OPEN_HELPER = "update_current_open_helper";
-
-        public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
-
-        public static final String METHOD_SWITCH_DATABASE = "switch_database";
-
-        public static final String EXTRA_VALUE = "value";
-
-        public static final String EXTRA_DB_NAME = "db_name";
-
-        public static Bundle call(ContentResolver cr, String method) {
-            return call(cr, method, null /* arg */);
-        }
-
-        public static Bundle call(ContentResolver cr, String method, String arg) {
-            return call(cr, method, arg, null /* extras */);
-        }
-
-        public static Bundle call(ContentResolver cr, String method, String arg, Bundle extras) {
-            return cr.call(CONTENT_URI, method, arg, extras);
-        }
+        public static final String LAYOUT_DIGEST_KEY = "launcher3.layout.provider.blob";
+        public static final String LAYOUT_DIGEST_LABEL = "launcher-layout";
+        public static final String LAYOUT_DIGEST_TAG = "ignore";
     }
 }

@@ -95,6 +95,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     private boolean mTrackingWidgetUpdate = false;
 
+    private boolean mIsWidgetCachingDisabled = false;
+
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
@@ -105,7 +107,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }
-        mColorExtractor = LocalColorExtractor.newInstance(getContext());
+        mColorExtractor = new LocalColorExtractor(); // no-op
     }
 
     @Override
@@ -138,6 +140,10 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
     }
 
+    public void setIsWidgetCachingDisabled(boolean isWidgetCachingDisabled) {
+        mIsWidgetCachingDisabled = isWidgetCachingDisabled;
+    }
+
     @Override
     @TargetApi(Build.VERSION_CODES.Q)
     public void updateAppWidget(RemoteViews remoteViews) {
@@ -147,7 +153,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
                     TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
             mTrackingWidgetUpdate = false;
         }
-        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
+        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()
+                && !mIsWidgetCachingDisabled) {
             mLastRemoteViews = remoteViews;
             if (isDeferringUpdates()) {
                 return;

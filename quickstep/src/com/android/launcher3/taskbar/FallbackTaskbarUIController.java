@@ -21,11 +21,14 @@ import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASH
 
 import android.animation.Animator;
 
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.quickstep.RecentsActivity;
+import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.views.RecentsView;
+
+import java.util.stream.Stream;
 
 /**
  * A data source which integrates with the fallback RecentsActivity instance (for 3P launchers).
@@ -81,18 +84,15 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
      * Currently this animation just force stashes the taskbar in Overview.
      */
     public Animator createAnimToRecentsState(RecentsState toState, long duration) {
-        // Force stash the taskbar in overview modal state or when going home. We do not force
-        // stash on home when running in a test as 3p launchers rely on taskbar instead of hotseat.
-        boolean isGoingHome = toState == RecentsState.HOME && !isRunningInTestHarness();
-        boolean useStashedLauncherState = toState.hasOverviewActions() || isGoingHome;
-        boolean stashedLauncherState = useStashedLauncherState && (
-                (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get() && toState == RecentsState.MODAL_TASK)
-                        || isGoingHome);
+        // Force stash taskbar (disallow unstashing) when:
+        // - in a 3P launcher or overview task.
+        // - not running in a test harness (unstash is needed for tests)
+        boolean forceStash = isIn3pHomeOrRecents() && !isRunningInTestHarness();
         TaskbarStashController stashController = mControllers.taskbarStashController;
         // Set both FLAG_IN_STASHED_LAUNCHER_STATE and FLAG_IN_APP to ensure the state is respected.
         // For all other states, just use the current stashed-in-app setting (e.g. if long clicked).
-        stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, stashedLauncherState);
-        stashController.updateStateForFlag(FLAG_IN_APP, !useStashedLauncherState);
+        stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, forceStash);
+        stashController.updateStateForFlag(FLAG_IN_APP, !forceStash);
         return stashController.createApplyStateAnimator(duration);
     }
 
@@ -107,5 +107,21 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
     @Override
     public RecentsView getRecentsView() {
         return mRecentsActivity.getOverviewPanel();
+    }
+
+    @Override
+    Stream<SystemShortcut.Factory<BaseTaskbarContext>> getSplitMenuOptions() {
+        if (isIn3pHomeOrRecents()) {
+            // Split from Taskbar is not supported in fallback launcher, so return empty stream
+            return Stream.empty();
+        } else {
+            return super.getSplitMenuOptions();
+        }
+    }
+
+    private boolean isIn3pHomeOrRecents() {
+        TopTaskTracker.CachedTaskInfo topTask = TopTaskTracker.INSTANCE
+                .get(mControllers.taskbarActivityContext).getCachedTopTask(true);
+        return topTask.isHomeTask() || topTask.isRecentsTask();
     }
 }

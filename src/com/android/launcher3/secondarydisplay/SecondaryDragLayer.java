@@ -79,9 +79,6 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         mAllAppsButton = findViewById(R.id.all_apps_button);
 
         mAppsView = findViewById(R.id.apps_view);
-        mAppsView.setOnIconLongClickListener(this::onIconLongClicked);
-        mActivity.getSecondaryDisplayPredictions()
-                .setLongClickListener(mAppsView, this::onIconLongClicked);
         // Setup workspace
         mWorkspace = findViewById(R.id.workspace_grid);
         mPinnedAppsAdapter = new PinnedAppsAdapter(mActivity, mAppsView.getAppsStore(),
@@ -179,7 +176,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         return mPinnedAppsAdapter;
     }
 
-    private boolean onIconLongClicked(View v) {
+    boolean onIconLongClicked(View v) {
         if (!(v instanceof BubbleTextView)) {
             return false;
         }
@@ -236,16 +233,15 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
                 @Override
                 public boolean shouldStartDrag(double distanceDragged) {
-                    return mDragView != null && mDragView.isAnimationFinished();
+                    return mDragView != null && mDragView.isScaleAnimationFinished();
                 }
 
                 @Override
                 public void onPreDragStart(DropTarget.DragObject dragObject) {
                     mDragView = dragObject.dragView;
                     if (!shouldStartDrag(0)) {
-                        mDragView.setOnAnimationEndCallback(() -> {
-                            mActivity.beginDragShared(v, mActivity.getAppsView(), options);
-                        });
+                        mDragView.setOnScaleAnimEndCallback(() ->
+                                mActivity.beginDragShared(v, mActivity.getAppsView(), options));
                     }
                 }
 

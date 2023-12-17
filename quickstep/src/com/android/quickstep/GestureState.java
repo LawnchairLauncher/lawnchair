@@ -15,11 +15,17 @@
  */
 package com.android.quickstep;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
+import static com.android.launcher3.MotionEventsUtils.isTrackpadFourFingerSwipe;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadThreeFingerSwipe;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_ALL_APPS;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_HOME;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_NEW_TASK;
 
@@ -27,12 +33,11 @@ import android.annotation.Nullable;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.tracing.GestureStateProto;
-import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -40,49 +45,68 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
- * Manages the state for an active system gesture, listens for events from the system and Launcher,
+ * Manages the state for an active system gesture, listens for events from the
+ * system and Launcher,
  * and fires events when the states change.
  */
 @TargetApi(Build.VERSION_CODES.R)
 public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationListener {
 
+    final Predicate<RemoteAnimationTarget> mLastStartedTaskIdPredicate = new Predicate<>() {
+        @Override
+        public boolean test(RemoteAnimationTarget targetCompat) {
+            for (int taskId : mLastStartedTaskId) {
+                if (targetCompat.taskId == taskId) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
+
     /**
      * Defines the end targets of a gesture and the associated state.
      */
     public enum GestureEndTarget {
-        HOME(true, LAUNCHER_STATE_HOME, false, GestureStateProto.GestureEndTarget.HOME),
+        HOME(true, LAUNCHER_STATE_HOME, false),
 
-        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true, GestureStateProto.GestureEndTarget.RECENTS),
+        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true),
 
-        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
-                GestureStateProto.GestureEndTarget.NEW_TASK),
+        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true),
 
-        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
-                GestureStateProto.GestureEndTarget.LAST_TASK);
+        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true),
 
-        GestureEndTarget(boolean isLauncher, int containerType, boolean recentsAttachedToAppWindow,
-                GestureStateProto.GestureEndTarget protoEndTarget) {
+        ALL_APPS(true, LAUNCHER_STATE_ALLAPPS, false);
+
+        GestureEndTarget(boolean isLauncher, int containerType,
+                boolean recentsAttachedToAppWindow) {
             this.isLauncher = isLauncher;
             this.containerType = containerType;
             this.recentsAttachedToAppWindow = recentsAttachedToAppWindow;
-            this.protoEndTarget = protoEndTarget;
         }
 
-        /** Whether the target is in the launcher activity. Implicitly, if the end target is going
-         to Launcher, then we can not interrupt the animation to start another gesture. */
+        /**
+         * Whether the target is in the launcher activity. Implicitly, if the end target
+         * is going
+         * to Launcher, then we can not interrupt the animation to start another
+         * gesture.
+         */
         public final boolean isLauncher;
         /** Used to log where the user ended up after the gesture ends */
         public final int containerType;
-        /** Whether RecentsView should be attached to the window as we animate to this target */
+        /**
+         * Whether RecentsView should be attached to the window as we animate to this
+         * target
+         */
         public final boolean recentsAttachedToAppWindow;
-        /** The GestureStateProto enum value, used for winscope tracing. See launcher_trace.proto */
-        public final GestureStateProto.GestureEndTarget protoEndTarget;
     }
 
     private static final String TAG = "GestureState";
@@ -91,6 +115,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public static final GestureState DEFAULT_STATE = new GestureState();
 
     private static int FLAG_COUNT = 0;
+
     private static int getNextStateFlag(String name) {
         if (DEBUG_STATES) {
             STATE_NAMES.add(name);
@@ -101,37 +126,33 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     // Called when the end target as been set
-    public static final int STATE_END_TARGET_SET =
-            getNextStateFlag("STATE_END_TARGET_SET");
+    public static final int STATE_END_TARGET_SET = getNextStateFlag("STATE_END_TARGET_SET");
 
     // Called when the end target animation has finished
-    public static final int STATE_END_TARGET_ANIMATION_FINISHED =
-            getNextStateFlag("STATE_END_TARGET_ANIMATION_FINISHED");
+    public static final int STATE_END_TARGET_ANIMATION_FINISHED = getNextStateFlag(
+            "STATE_END_TARGET_ANIMATION_FINISHED");
 
     // Called when the recents animation has been requested to start
-    public static final int STATE_RECENTS_ANIMATION_INITIALIZED =
-            getNextStateFlag("STATE_RECENTS_ANIMATION_INITIALIZED");
+    public static final int STATE_RECENTS_ANIMATION_INITIALIZED = getNextStateFlag(
+            "STATE_RECENTS_ANIMATION_INITIALIZED");
 
-    // Called when the recents animation is started and the TaskAnimationManager has been updated
+    // Called when the recents animation is started and the TaskAnimationManager has
+    // been updated
     // with the controller and targets
-    public static final int STATE_RECENTS_ANIMATION_STARTED =
-            getNextStateFlag("STATE_RECENTS_ANIMATION_STARTED");
+    public static final int STATE_RECENTS_ANIMATION_STARTED = getNextStateFlag("STATE_RECENTS_ANIMATION_STARTED");
 
     // Called when the recents animation is canceled
-    public static final int STATE_RECENTS_ANIMATION_CANCELED =
-            getNextStateFlag("STATE_RECENTS_ANIMATION_CANCELED");
+    public static final int STATE_RECENTS_ANIMATION_CANCELED = getNextStateFlag("STATE_RECENTS_ANIMATION_CANCELED");
 
     // Called when the recents animation finishes
-    public static final int STATE_RECENTS_ANIMATION_FINISHED =
-            getNextStateFlag("STATE_RECENTS_ANIMATION_FINISHED");
+    public static final int STATE_RECENTS_ANIMATION_FINISHED = getNextStateFlag("STATE_RECENTS_ANIMATION_FINISHED");
 
-    // Always called when the recents animation ends (regardless of cancel or finish)
-    public static final int STATE_RECENTS_ANIMATION_ENDED =
-            getNextStateFlag("STATE_RECENTS_ANIMATION_ENDED");
+    // Always called when the recents animation ends (regardless of cancel or
+    // finish)
+    public static final int STATE_RECENTS_ANIMATION_ENDED = getNextStateFlag("STATE_RECENTS_ANIMATION_ENDED");
 
     // Called when RecentsView stops scrolling and settles on a TaskView.
-    public static final int STATE_RECENTS_SCROLLING_FINISHED =
-            getNextStateFlag("STATE_RECENTS_SCROLLING_FINISHED");
+    public static final int STATE_RECENTS_SCROLLING_FINISHED = getNextStateFlag("STATE_RECENTS_SCROLLING_FINISHED");
 
     // Needed to interact with the current activity
     private final Intent mHomeIntent;
@@ -140,11 +161,29 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private final MultiStateCallback mStateCallback;
     private final int mGestureId;
 
+    public enum TrackpadGestureType {
+        NONE,
+        THREE_FINGER,
+        FOUR_FINGER;
+
+        public static TrackpadGestureType getTrackpadGestureType(MotionEvent event) {
+            if (isTrackpadThreeFingerSwipe(event)) {
+                return TrackpadGestureType.THREE_FINGER;
+            }
+            if (isTrackpadFourFingerSwipe(event)) {
+                return TrackpadGestureType.FOUR_FINGER;
+            }
+
+            return TrackpadGestureType.NONE;
+        }
+    }
+
+    private TrackpadGestureType mTrackpadGestureType = TrackpadGestureType.NONE;
     private CachedTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
-    private RemoteAnimationTarget mLastAppearedTaskTarget;
+    private RemoteAnimationTarget[] mLastAppearedTaskTargets;
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
-    private int mLastStartedTaskId = -1;
+    private int[] mLastStartedTaskId = new int[] { INVALID_TASK_ID, INVALID_TASK_ID };
     private RecentsAnimationController mRecentsAnimationController;
     private HashMap<Integer, ThumbnailData> mRecentsAnimationCanceledSnapshots;
 
@@ -170,7 +209,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mGestureId = other.mGestureId;
         mRunningTask = other.mRunningTask;
         mEndTarget = other.mEndTarget;
-        mLastAppearedTaskTarget = other.mLastAppearedTaskTarget;
+        mLastAppearedTaskTargets = other.mLastAppearedTaskTargets;
         mPreviouslyAppearedTaskIds = other.mPreviouslyAppearedTaskIds;
         mLastStartedTaskId = other.mLastStartedTaskId;
     }
@@ -198,7 +237,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * @return whether the gesture state has the provided {@param stateMask} flags set.
+     * @return whether the gesture state has the provided {@param stateMask} flags
+     *         set.
      */
     public boolean hasState(int stateMask) {
         return mStateCallback.hasStates(stateMask);
@@ -212,7 +252,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * Adds a callback for when the states matching the given {@param stateMask} is set.
+     * Adds a callback for when the states matching the given {@param stateMask} is
+     * set.
      */
     public void runOnceAtState(int stateMask, Runnable callback) {
         mStateCallback.runOnceAtState(stateMask, callback);
@@ -233,10 +274,10 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * @return the interface to the activity handing the UI updates for this gesture.
+     * @return the interface to the activity handing the UI updates for this
+     *         gesture.
      */
-    public <S extends BaseState<S>,
-            T extends StatefulActivity<S>> BaseActivityInterface<S, T> getActivityInterface() {
+    public <S extends BaseState<S>, T extends StatefulActivity<S>> BaseActivityInterface<S, T> getActivityInterface() {
         return mActivityInterface;
     }
 
@@ -248,6 +289,26 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
+     * Sets if the gesture is is from the trackpad, if so, whether 3-finger, or
+     * 4-finger
+     */
+    public void setTrackpadGestureType(TrackpadGestureType trackpadGestureType) {
+        mTrackpadGestureType = trackpadGestureType;
+    }
+
+    public boolean isTrackpadGesture() {
+        return mTrackpadGestureType != TrackpadGestureType.NONE;
+    }
+
+    public boolean isThreeFingerTrackpadGesture() {
+        return mTrackpadGestureType == TrackpadGestureType.THREE_FINGER;
+    }
+
+    public boolean isFourFingerTrackpadGesture() {
+        return mTrackpadGestureType == TrackpadGestureType.FOUR_FINGER;
+    }
+
+    /**
      * @return the running task for this gesture.
      */
     public CachedTaskInfo getRunningTask() {
@@ -255,14 +316,35 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * @return the running task id for this gesture.
+     * @param getMultipleTasks Whether multiple tasks or not are to be returned (for
+     *                         split)
+     * @return the running task ids for this gesture.
      */
-    public int getRunningTaskId() {
-        return mRunningTask != null ? mRunningTask.getTaskId() : -1;
+    public int[] getRunningTaskIds(boolean getMultipleTasks) {
+        if (mRunningTask == null) {
+            return new int[] { INVALID_TASK_ID, INVALID_TASK_ID };
+        } else {
+            int cachedTasksSize = mRunningTask.mAllCachedTasks.size();
+            int count = Math.min(cachedTasksSize, getMultipleTasks ? 2 : 1);
+            int[] runningTaskIds = new int[count];
+            for (int i = 0; i < count; i++) {
+                runningTaskIds[i] = mRunningTask.mAllCachedTasks.get(i).taskId;
+            }
+            return runningTaskIds;
+        }
     }
 
     /**
-     * Updates the running task for the gesture to be the given {@param runningTask}.
+     * @see #getRunningTaskIds(boolean)
+     * @return the single top-most running taskId for this gesture
+     */
+    public int getTopRunningTaskId() {
+        return getRunningTaskIds(false /* getMultipleTasks */)[0];
+    }
+
+    /**
+     * Updates the running task for the gesture to be the given
+     * {@param runningTask}.
      */
     public void updateRunningTask(CachedTaskInfo runningTask) {
         mRunningTask = runningTask;
@@ -271,18 +353,26 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * Updates the last task that appeared during this gesture.
      */
-    public void updateLastAppearedTaskTarget(RemoteAnimationTarget lastAppearedTaskTarget) {
-        mLastAppearedTaskTarget = lastAppearedTaskTarget;
-        if (lastAppearedTaskTarget != null) {
-            mPreviouslyAppearedTaskIds.add(lastAppearedTaskTarget.taskId);
+    public void updateLastAppearedTaskTargets(RemoteAnimationTarget[] lastAppearedTaskTargets) {
+        mLastAppearedTaskTargets = lastAppearedTaskTargets;
+        for (RemoteAnimationTarget target : lastAppearedTaskTargets) {
+            if (target == null) {
+                continue;
+            }
+            mPreviouslyAppearedTaskIds.add(target.taskId);
         }
     }
 
     /**
      * @return The id of the task that appeared during this gesture.
      */
-    public int getLastAppearedTaskId() {
-        return mLastAppearedTaskTarget != null ? mLastAppearedTaskTarget.taskId : -1;
+    public int[] getLastAppearedTaskIds() {
+        if (mLastAppearedTaskTargets == null) {
+            return new int[] { INVALID_TASK_ID, INVALID_TASK_ID };
+        } else {
+            return Arrays.stream(mLastAppearedTaskTargets)
+                    .mapToInt(target -> target != null ? target.taskId : INVALID_TASK_ID).toArray();
+        }
     }
 
     public void updatePreviouslyAppearedTaskIds(Set<Integer> previouslyAppearedTaskIds) {
@@ -294,17 +384,19 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * Updates the last task that we started via startActivityFromRecents() during this gesture.
+     * Updates the last task that we started via startActivityFromRecents() during
+     * this gesture.
      */
-    public void updateLastStartedTaskId(int lastStartedTaskId) {
+    public void updateLastStartedTaskIds(int[] lastStartedTaskId) {
         mLastStartedTaskId = lastStartedTaskId;
     }
 
     /**
-     * @return The id of the task that was most recently started during this gesture, or -1 if
-     * no task has been started yet (i.e. we haven't settled on a new task).
+     * @return The id of the task that was most recently started during this
+     *         gesture, or -1 if
+     *         no task has been started yet (i.e. we haven't settled on a new task).
      */
-    public int getLastStartedTaskId() {
+    public int[] getLastStartedTaskIds() {
         return mLastStartedTaskId;
     }
 
@@ -316,15 +408,18 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * Sets the end target of this gesture and immediately notifies the state changes.
+     * Sets the end target of this gesture and immediately notifies the state
+     * changes.
      */
     public void setEndTarget(GestureEndTarget target) {
         setEndTarget(target, true /* isAtomic */);
     }
 
     /**
-     * Sets the end target of this gesture, but if {@param isAtomic} is {@code false}, then the
-     * caller must explicitly set {@link #STATE_END_TARGET_ANIMATION_FINISHED} themselves.
+     * Sets the end target of this gesture, but if {@param isAtomic} is
+     * {@code false}, then the
+     * caller must explicitly set {@link #STATE_END_TARGET_ANIMATION_FINISHED}
+     * themselves.
      */
     public void setEndTarget(GestureEndTarget target, boolean isAtomic) {
         mEndTarget = target;
@@ -338,6 +433,9 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
                 break;
             case NEW_TASK:
                 ActiveGestureLog.INSTANCE.trackEvent(SET_END_TARGET_NEW_TASK);
+                break;
+            case ALL_APPS:
+                ActiveGestureLog.INSTANCE.trackEvent(SET_END_TARGET_ALL_APPS);
                 break;
             case LAST_TASK:
             case RECENTS:
@@ -358,7 +456,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * Returns true if the gesture is handling an atomic event like a click and not a
+     * Returns true if the gesture is handling an atomic event like a click and not
+     * a
      * user controlled gesture.
      */
     public boolean isHandlingAtomicEvent() {
@@ -366,7 +465,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * @return whether the current gesture is still running a recents animation to a state in the
+     * @return whether the current gesture is still running a recents animation to a
+     *         state in the
      *         Launcher or Recents activity.
      */
     public boolean isRunningAnimationToLauncher() {
@@ -409,15 +509,17 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * Returns and clears the canceled animation thumbnail data. This call only returns a value
-     * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is responsible for
+     * Returns and clears the canceled animation thumbnail data. This call only
+     * returns a value
+     * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is
+     * responsible for
      * calling {@link RecentsAnimationController#cleanupScreenshot()}.
      */
     @Nullable
     HashMap<Integer, ThumbnailData> consumeRecentsAnimationCanceledSnapshot() {
         if (mRecentsAnimationCanceledSnapshots != null) {
-            HashMap<Integer, ThumbnailData> data =
-                    new HashMap<Integer, ThumbnailData>(mRecentsAnimationCanceledSnapshots);
+            HashMap<Integer, ThumbnailData> data = new HashMap<Integer, ThumbnailData>(
+                    mRecentsAnimationCanceledSnapshots);
             mRecentsAnimationCanceledSnapshots = null;
             return data;
         }
@@ -437,21 +539,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         pw.println("  gestureID=" + mGestureId);
         pw.println("  runningTask=" + mRunningTask);
         pw.println("  endTarget=" + mEndTarget);
-        pw.println("  lastAppearedTaskTargetId=" + getLastAppearedTaskId());
-        pw.println("  lastStartedTaskId=" + mLastStartedTaskId);
+        pw.println("  lastAppearedTaskTargetId=" + Arrays.toString(mLastAppearedTaskTargets));
+        pw.println("  lastStartedTaskId=" + Arrays.toString(mLastStartedTaskId));
         pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
-    }
-
-    /**
-     * Used for winscope tracing, see launcher_trace.proto
-     * @see com.android.systemui.shared.tracing.ProtoTraceable#writeToProto
-     * @param swipeHandlerProto The parent of this proto message.
-     */
-    public void writeToProto(SwipeHandlerProto.Builder swipeHandlerProto) {
-        GestureStateProto.Builder gestureStateProto = GestureStateProto.newBuilder();
-        gestureStateProto.setEndTarget(mEndTarget == null
-                ? GestureStateProto.GestureEndTarget.UNSET
-                : mEndTarget.protoEndTarget);
-        swipeHandlerProto.setGestureState(gestureStateProto);
     }
 }

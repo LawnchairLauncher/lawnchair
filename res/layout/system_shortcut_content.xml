@@ -22,18 +22,15 @@
         android:id="@+id/bubble_text"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="start|center_vertical"
-        android:paddingTop="@dimen/bg_popup_item_vertical_padding"
-        android:paddingBottom="@dimen/bg_popup_item_vertical_padding"
         android:minHeight="@dimen/bg_popup_item_height"
         android:textAlignment="viewStart"
         android:paddingStart="@dimen/deep_shortcuts_text_padding_start"
         android:paddingEnd="@dimen/popup_padding_end"
         android:textSize="14sp"
-        android:minLines="1"
-        android:maxLines="2"
+        android:lines="1"
         android:ellipsize="end"
         android:hyphenationFrequency="full"
-        android:textColor="@color/system_shortcut_text"
+        android:textColor="?attr/popupTextColor"
         launcher:iconDisplay="shortcut_popup"
         launcher:layoutHorizontal="true"
         android:focusable="false" />
@@ -44,5 +41,5 @@
         android:layout_height="@dimen/system_shortcut_icon_size"
         android:layout_marginStart="@dimen/system_shortcut_margin_start"
         android:layout_gravity="start|center_vertical"
-        android:backgroundTint="@color/system_shortcut_text"/>
+        android:backgroundTint="?attr/popupTextColor"/>
 </merge>

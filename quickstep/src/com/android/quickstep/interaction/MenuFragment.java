@@ -32,10 +32,16 @@ import com.android.launcher3.R;
 /** Displays the gesture nav tutorial menu. */
 public final class MenuFragment extends GestureSandboxFragment {
 
+    @NonNull
+    @Override
+    GestureSandboxFragment recreateFragment() {
+        return new MenuFragment();
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(
+        final View root = inflater.inflate(
                 R.layout.gesture_tutorial_step_menu, container, false);
 
         root.findViewById(R.id.gesture_tutorial_menu_home_button).setOnClickListener(

@@ -50,7 +50,7 @@
 -dontwarn com.android.internal.util.**
 
 ################ Do not optimize recents lib #############
--keep class com.android.systemui.** {
+-keep class com.android.systemui.shared.** {
   *;
 }
 

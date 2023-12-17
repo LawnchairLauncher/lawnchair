@@ -18,6 +18,8 @@ package com.android.launcher3.ui;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_ALL_APPS;
+import static com.android.launcher3.BubbleTextView.DISPLAY_PREDICTION_ROW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWOLINE_ALLAPPS;
 
 import static org.junit.Assert.assertEquals;
@@ -79,7 +81,6 @@ public class BubbleTextViewTest {
         mContext = new ActivityContextWrapper(getApplicationContext());
         mBubbleTextView = new BubbleTextView(mContext);
         mBubbleTextView.reset();
-        mBubbleTextView.setDisplayAllApps();
 
         BubbleTextView testView = new BubbleTextView(mContext);
         testView.setTypeface(Typeface.MONOSPACE);
@@ -104,6 +105,7 @@ public class BubbleTextViewTest {
     public void testEmptyString_flagOn() {
         try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
             mItemInfoWithIcon.title = EMPTY_STRING;
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
@@ -118,6 +120,7 @@ public class BubbleTextViewTest {
     public void testEmptyString_flagOff() {
         try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
             mItemInfoWithIcon.title = EMPTY_STRING;
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
@@ -134,6 +137,7 @@ public class BubbleTextViewTest {
             // test string: "Battery Stats"
             mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -149,6 +153,7 @@ public class BubbleTextViewTest {
             // test string: "Battery Stats"
             mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -164,6 +169,7 @@ public class BubbleTextViewTest {
             // test string: "flutterappflorafy"
             mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -179,6 +185,7 @@ public class BubbleTextViewTest {
             // test string: "flutterappflorafy"
             mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -194,6 +201,7 @@ public class BubbleTextViewTest {
             // test string: "System UWB Field Test"
             mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -209,6 +217,7 @@ public class BubbleTextViewTest {
             // test string: "System UWB Field Test"
             mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -224,6 +233,7 @@ public class BubbleTextViewTest {
             // test string: "LEGO®Builder"
             mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -239,6 +249,7 @@ public class BubbleTextViewTest {
             // test string: "LEGO®Builder"
             mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
             mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
@@ -290,5 +301,21 @@ public class BubbleTextViewTest {
                 TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT, mBubbleTextView.getPaint(),
                 breakPoints);
         assertEquals(TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT_RESULT, newString);
+    }
+
+    @Test
+    public void testEnsurePredictionRowIsOneLine() {
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
+            // test string: "Battery Stats"
+            mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.setDisplay(DISPLAY_PREDICTION_ROW);
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

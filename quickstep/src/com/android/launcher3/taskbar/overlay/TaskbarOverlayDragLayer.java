@@ -21,6 +21,7 @@ import static android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_
 
 import android.content.Context;
 import android.graphics.Insets;
+import android.media.permission.SafeCloseable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,9 +30,11 @@ import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 
+import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -43,6 +46,7 @@ public class TaskbarOverlayDragLayer extends
         BaseDragLayer<TaskbarOverlayContext> implements
         ViewTreeObserver.OnComputeInternalInsetsListener {
 
+    private SafeCloseable mViewCaptureCloseable;
     private final List<OnClickListener> mOnClickListeners = new CopyOnWriteArrayList<>();
     private final TouchController mClickListenerTouchController = new TouchController() {
         @Override
@@ -76,12 +80,15 @@ public class TaskbarOverlayDragLayer extends
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnComputeInternalInsetsListener(this);
+        mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
+                .startCapture(getRootView(), ".TaskbarOverlay");
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         getViewTreeObserver().removeOnComputeInternalInsetsListener(this);
+        mViewCaptureCloseable.close();
     }
 
     @Override
@@ -112,7 +119,7 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void onComputeInternalInsets(ViewTreeObserver.InternalInsetsInfo inoutInfo) {
-        if (mActivity.getDragController().isSystemDragInProgress()) {
+        if (mActivity.isAnySystemDragInProgress()) {
             inoutInfo.touchableRegion.setEmpty();
             inoutInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
         }
@@ -120,7 +127,9 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        return updateInsetsDueToStashing(insets);
+        insets = updateInsetsDueToStashing(insets);
+        setInsets(insets.getInsets(WindowInsets.Type.systemBars()).toRect());
+        return insets;
     }
 
     @Override
@@ -183,7 +192,7 @@ public class TaskbarOverlayDragLayer extends
      * 2) Sets tappableInsets bottom inset to 0.
      */
     private WindowInsets updateInsetsDueToStashing(WindowInsets oldInsets) {
-        if (!mActivity.willTaskbarBeVisuallyStashed()) {
+        if (!DisplayController.isTransientTaskbar(mActivity)) {
             return oldInsets;
         }
         WindowInsets.Builder updatedInsetsBuilder = new WindowInsets.Builder(oldInsets);

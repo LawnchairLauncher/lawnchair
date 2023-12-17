@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 
 import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
+import android.app.admin.ManagedSubscriptionsPolicy;
 import android.content.Context;
 import android.os.Build;
 
@@ -25,6 +26,8 @@ import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+
+import java.util.function.Supplier;
 
 /**
  *
@@ -192,7 +195,9 @@ public class StringCache {
         workProfilePausedTitle = getEnterpriseString(
                 context, WORK_PROFILE_PAUSED_TITLE, R.string.work_apps_paused_title);
         workProfilePausedDescription = getEnterpriseString(
-                context, WORK_PROFILE_PAUSED_DESCRIPTION, R.string.work_apps_paused_body);
+                context,
+                WORK_PROFILE_PAUSED_DESCRIPTION,
+                () -> getDefaultWorkProfilePausedDescriptionString(context));
         workProfilePauseButton = getEnterpriseString(
                 context, WORK_PROFILE_PAUSE_BUTTON, R.string.work_apps_pause_btn_text);
         workProfileEnableButton = getEnterpriseString(
@@ -216,20 +221,41 @@ public class StringCache {
                 context, DISABLED_BY_ADMIN_MESSAGE, R.string.msg_disabled_by_admin);
     }
 
+    private String getDefaultWorkProfilePausedDescriptionString(Context context) {
+        if (Utilities.ATLEAST_U) {
+            DevicePolicyManager dpm = context.getSystemService(DevicePolicyManager.class);
+            boolean telephonyIsUnavailable =
+                    dpm.getManagedSubscriptionsPolicy().getPolicyType()
+                            == ManagedSubscriptionsPolicy.TYPE_ALL_MANAGED_SUBSCRIPTIONS;
+            return telephonyIsUnavailable
+                    ? context.getString(R.string.work_apps_paused_telephony_unavailable_body)
+                    : context.getString(R.string.work_apps_paused_info_body);
+        }
+        return context.getString(R.string.work_apps_paused_body);
+    }
+
     @SuppressLint("NewApi")
     private String getEnterpriseString(
             Context context, String updatableStringId, int defaultStringId) {
+        return getEnterpriseString(
+                context,
+                updatableStringId,
+                () -> context.getString(defaultStringId));
+    }
+
+    @SuppressLint("NewApi")
+    private String getEnterpriseString(
+            Context context, String updateableStringId, Supplier<String> defaultStringSupplier) {
         return Utilities.ATLEAST_T
-                ? getUpdatableEnterpriseSting(context, updatableStringId, defaultStringId)
-                : context.getString(defaultStringId);
+                ? getUpdatableEnterpriseString(context, updateableStringId, defaultStringSupplier)
+                : defaultStringSupplier.get();
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private String getUpdatableEnterpriseSting(
-            Context context, String updatableStringId, int defaultStringId) {
+    private String getUpdatableEnterpriseString(
+            Context context, String updatableStringId, Supplier<String> defaultStringSupplier) {
         DevicePolicyManager dpm = context.getSystemService(DevicePolicyManager.class);
-        return dpm.getResources().getString(
-                updatableStringId, () -> context.getString(defaultStringId));
+        return dpm.getResources().getString(updatableStringId, defaultStringSupplier);
     }
 
     @Override

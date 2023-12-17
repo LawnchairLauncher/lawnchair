@@ -44,6 +44,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner.Stub {
+    private static final String TAG = "RemoteAnimRunnerCompat";
 
     public abstract void onAnimationStart(@WindowManager.TransitionOldType int transit,
             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
@@ -61,20 +62,24 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     try {
                         finishedCallback.onAnimationFinished();
                     } catch (RemoteException e) {
-                        Log.e("ActivityOptionsCompat", "Failed to call app controlled animation"
-                                + " finished callback", e);
+                        Log.e(TAG, "Failed to call app controlled animation finished callback", e);
                     }
                 });
     }
 
     public IRemoteTransition toRemoteTransition() {
+        return wrap(this);
+    }
+
+    /** Wraps a remote animation runner in a remote-transition. */
+    public static IRemoteTransition.Stub wrap(IRemoteAnimationRunner runner) {
         return new IRemoteTransition.Stub() {
             final ArrayMap<IBinder, Runnable> mFinishRunnables = new ArrayMap<>();
 
             @Override
             public void startAnimation(IBinder token, TransitionInfo info,
                     SurfaceControl.Transaction t,
-                    IRemoteTransitionFinishedCallback finishCallback) {
+                    IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
                 final ArrayMap<SurfaceControl, SurfaceControl> leashMap = new ArrayMap<>();
                 final RemoteAnimationTarget[] apps =
                         RemoteAnimationTargetCompat.wrapApps(info, t, leashMap);
@@ -118,8 +123,14 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 final CounterRotator counterLauncher = new CounterRotator();
                 final CounterRotator counterWallpaper = new CounterRotator();
                 if (launcherTask != null && rotateDelta != 0 && launcherTask.getParent() != null) {
-                    counterLauncher.setup(t, info.getChange(launcherTask.getParent()).getLeash(),
-                            rotateDelta, displayW, displayH);
+                    final TransitionInfo.Change parent = info.getChange(launcherTask.getParent());
+                    if (parent != null) {
+                        counterLauncher.setup(t, parent.getLeash(), rotateDelta, displayW,
+                                displayH);
+                    } else {
+                        Log.e(TAG, "Malformed: " + launcherTask + " has parent="
+                                + launcherTask.getParent() + " but it's not in info.");
+                    }
                     if (counterLauncher.getSurface() != null) {
                         t.setLayer(counterLauncher.getSurface(), launcherLayer);
                     }
@@ -153,8 +164,14 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                         counterLauncher.addChild(t, leashMap.get(launcherTask.getLeash()));
                     }
                     if (wallpaper != null && rotateDelta != 0 && wallpaper.getParent() != null) {
-                        counterWallpaper.setup(t, info.getChange(wallpaper.getParent()).getLeash(),
-                                rotateDelta, displayW, displayH);
+                        final TransitionInfo.Change parent = info.getChange(wallpaper.getParent());
+                        if (parent != null) {
+                            counterWallpaper.setup(t, parent.getLeash(), rotateDelta, displayW,
+                                    displayH);
+                        } else {
+                            Log.e(TAG, "Malformed: " + wallpaper + " has parent="
+                                    + wallpaper.getParent() + " but it's not in info.");
+                        }
                         if (counterWallpaper.getSurface() != null) {
                             t.setLayer(counterWallpaper.getSurface(), -1);
                             counterWallpaper.addChild(t, leashMap.get(wallpaper.getLeash()));
@@ -184,20 +201,27 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                         finishCallback.onTransitionFinished(null /* wct */, finishTransaction);
                         finishTransaction.close();
                     } catch (RemoteException e) {
-                        Log.e("ActivityOptionsCompat", "Failed to call app controlled animation"
-                                + " finished callback", e);
+                        Log.e(TAG, "Failed to call app controlled animation finished callback", e);
                     }
                 };
                 synchronized (mFinishRunnables) {
                     mFinishRunnables.put(token, animationFinishedCallback);
                 }
                 // TODO(bc-unlcok): Pass correct transit type.
-                onAnimationStart(TRANSIT_OLD_NONE,
-                        apps, wallpapers, nonApps, () -> {
-                            synchronized (mFinishRunnables) {
-                                if (mFinishRunnables.remove(token) == null) return;
+                runner.onAnimationStart(TRANSIT_OLD_NONE,
+                        apps, wallpapers, nonApps, new IRemoteAnimationFinishedCallback() {
+                            @Override
+                            public void onAnimationFinished() {
+                                synchronized (mFinishRunnables) {
+                                    if (mFinishRunnables.remove(token) == null) return;
+                                }
+                                animationFinishedCallback.run();
                             }
-                            animationFinishedCallback.run();
+
+                            @Override
+                            public IBinder asBinder() {
+                                return null;
+                            }
                         });
             }
 
@@ -220,7 +244,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     Log.e ("" , "mergeAnimation: ", e);
                 }
                 if (finishRunnable == null) return;
-                onAnimationCancelled(false /* isKeyguardOccluded */);
+                runner.onAnimationCancelled();
                 finishRunnable.run();
             }
         };

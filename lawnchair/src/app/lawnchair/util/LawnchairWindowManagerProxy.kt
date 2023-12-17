@@ -29,9 +29,9 @@ class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(true) {
         return super.getStatusBarHeight(context, isPortrait, statusBarInset)
     }
 
-    override fun estimateInternalDisplayBounds(displayInfoContext: Context): ArrayMap<CachedDisplayInfo, Array<WindowBounds>> {
+    override fun estimateInternalDisplayBounds(displayInfoContext: Context): ArrayMap<CachedDisplayInfo, List<WindowBounds>> {
         if (LawnchairApp.isAtleastT) {
-            val result = ArrayMap<CachedDisplayInfo, Array<WindowBounds>>()
+            val result = ArrayMap<CachedDisplayInfo, List<WindowBounds>>()
             val windowManager = displayInfoContext.getSystemService(WindowManager::class.java)
             val possibleMaximumWindowMetrics =
                 windowManager.getPossibleMaximumWindowMetrics(DEFAULT_DISPLAY)

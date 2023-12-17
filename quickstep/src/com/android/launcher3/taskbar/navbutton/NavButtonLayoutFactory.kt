@@ -17,13 +17,13 @@
 package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
+import android.view.Surface.ROTATION_90
+import android.view.Surface.Rotation
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_CONTEXTUAL_BUTTONS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_NAV_BUTTONS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_START_CONTEXTUAL_BUTTONS
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.Companion
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
 
@@ -58,7 +58,8 @@ class NavButtonLayoutFactory {
             isKidsMode: Boolean,
             isInSetup: Boolean,
             isThreeButtonNav: Boolean,
-            phoneMode: Boolean
+            phoneMode: Boolean,
+            @Rotation surfaceRotation: Int
         ): NavButtonLayoutter {
             val navButtonContainer =
                 navButtonsView.requireViewById<LinearLayout>(ID_END_NAV_BUTTONS)
@@ -67,6 +68,7 @@ class NavButtonLayoutFactory {
             val startContextualContainer =
                 navButtonsView.requireViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS)
             val isPhoneNavMode = phoneMode && isThreeButtonNav
+            val isPhoneGestureMode = phoneMode && !isThreeButtonNav
             return when {
                 isPhoneNavMode -> {
                     if (!deviceProfile.isLandscape) {
@@ -76,14 +78,29 @@ class NavButtonLayoutFactory {
                             endContextualContainer,
                             startContextualContainer
                         )
-                    } else {
+                    } else if (surfaceRotation == ROTATION_90) {
                         PhoneLandscapeNavLayoutter(
                             resources,
                             navButtonContainer,
                             endContextualContainer,
                             startContextualContainer
                         )
+                    } else {
+                        PhoneSeascapeNavLayoutter(
+                                resources,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer
+                        )
                     }
+                }
+                isPhoneGestureMode ->{
+                    PhoneGestureLayoutter(
+                            resources,
+                            navButtonContainer,
+                            endContextualContainer,
+                            startContextualContainer
+                    )
                 }
                 deviceProfile.isTaskbarPresent -> {
                     return when {

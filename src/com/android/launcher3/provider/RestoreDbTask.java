@@ -16,10 +16,13 @@
 
 package com.android.launcher3.provider;
 
+import static android.os.Process.myUserHandle;
+
 import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
 import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.RESTORE_DEVICE;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
 
@@ -27,39 +30,48 @@ import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetHost;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.SparseLongArray;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.AppWidgetsRestoredReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DeviceGridState;
-import com.android.launcher3.model.GridBackupTable;
+import com.android.launcher3.model.ModelDbController;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
 
 import java.io.InvalidObjectException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Utility class to update DB schema after it has been restored.
  *
- * This task is executed when Launcher starts for the first time and not immediately after restore.
- * This helps keep the model consistent if the launcher updates between restore and first startup.
+ * This task is executed when Launcher starts for the first time and not
+ * immediately after restore.
+ * This helps keep the model consistent if the launcher updates between restore
+ * and first startup.
  */
 public class RestoreDbTask {
 
@@ -72,15 +84,19 @@ public class RestoreDbTask {
     public static final String APPWIDGET_OLD_IDS = "appwidget_old_ids";
     public static final String APPWIDGET_IDS = "appwidget_ids";
 
+    private static final String[] DB_COLUMNS_TO_LOG = { "profileId", "title", "itemType", "screen",
+            "container", "cellX", "cellY", "spanX", "spanY", "intent" };
+
     /**
      * Tries to restore the backup DB if needed
      */
-    public static void restoreIfNeeded(Context context, DatabaseHelper helper) {
+    public static void restoreIfNeeded(Context context, ModelDbController dbController) {
         if (!isPending(context)) {
+            Log.d(TAG, "No restore task pending, exiting RestoreDbTask");
             return;
         }
-        if (!performRestore(context, helper)) {
-            helper.createEmptyDB(helper.getWritableDatabase());
+        if (!performRestore(context, dbController)) {
+            dbController.createEmptyDB();
         }
 
         // Obtain InvariantDeviceProfile first before setting pending to false, so
@@ -94,13 +110,13 @@ public class RestoreDbTask {
         idp.reinitializeAfterRestore(context);
     }
 
-    private static boolean performRestore(Context context, DatabaseHelper helper) {
-        SQLiteDatabase db = helper.getWritableDatabase();
+    private static boolean performRestore(Context context, ModelDbController controller) {
+        SQLiteDatabase db = controller.getDb();
+        FileLog.d(TAG, "performRestore: starting restore from db");
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
-            task.backupWorkspace(context, db);
-            task.sanitizeDB(context, helper, db, new BackupManager(context));
-            task.restoreAppWidgetIdsIfExists(context);
+            task.sanitizeDB(context, controller, db, new BackupManager(context));
+            task.restoreAppWidgetIdsIfExists(context, controller);
             t.commit();
             return true;
         } catch (Exception e) {
@@ -110,64 +126,27 @@ public class RestoreDbTask {
     }
 
     /**
-     * Restore the workspace if backup is available.
-     */
-    public static boolean restoreIfPossible(@NonNull Context context,
-            @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager) {
-        final SQLiteDatabase db = helper.getWritableDatabase();
-        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            RestoreDbTask task = new RestoreDbTask();
-            task.restoreWorkspace(context, db, helper, backupManager);
-            t.commit();
-            return true;
-        } catch (Exception e) {
-            FileLog.e(TAG, "Failed to restore db", e);
-            return false;
-        }
-    }
-
-    /**
-     * Backup the workspace so that if things go south in restore, we can recover these entries.
-     */
-    private void backupWorkspace(Context context, SQLiteDatabase db) throws Exception {
-        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        new GridBackupTable(context, db, idp.numDatabaseHotseatIcons, idp.numColumns, idp.numRows)
-                .doBackup(getDefaultProfileId(db), GridBackupTable.OPTION_REQUIRES_SANITIZATION);
-    }
-
-    private void restoreWorkspace(@NonNull Context context, @NonNull SQLiteDatabase db,
-            @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager)
-            throws Exception {
-        final InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        GridBackupTable backupTable = new GridBackupTable(context, db, idp.numDatabaseHotseatIcons,
-                idp.numColumns, idp.numRows);
-        if (backupTable.restoreFromRawBackupIfAvailable(getDefaultProfileId(db))) {
-            int itemsDeleted = sanitizeDB(context, helper, db, backupManager);
-            LauncherAppState.getInstance(context).getModel().forceReload();
-            restoreAppWidgetIdsIfExists(context);
-            if (itemsDeleted == 0) {
-                // all the items are restored, we no longer need the backup table
-                dropTable(db, Favorites.BACKUP_TABLE_NAME);
-            }
-        }
-    }
-
-    /**
      * Makes the following changes in the provider DB.
-     *   1. Removes all entries belonging to any profiles that were not restored.
-     *   2. Marks all entries as restored. The flags are updated during first load or as
-     *      the restored apps get installed.
-     *   3. If the user serial for any restored profile is different than that of the previous
-     *      device, update the entries to the new profile id.
-     *   4. If restored from a single display backup, remove gaps between screenIds
+     * 1. Removes all entries belonging to any profiles that were not restored.
+     * 2. Marks all entries as restored. The flags are updated during first load or
+     * as
+     * the restored apps get installed.
+     * 3. If the user serial for any restored profile is different than that of the
+     * previous
+     * device, update the entries to the new profile id.
+     * 4. If restored from a single display backup, remove gaps between screenIds
+     * 5. Override shortcuts that need to be replaced.
      *
      * @return number of items deleted.
      */
-    private int sanitizeDB(Context context, DatabaseHelper helper, SQLiteDatabase db,
+    @VisibleForTesting
+    protected int sanitizeDB(Context context, ModelDbController controller, SQLiteDatabase db,
             BackupManager backupManager) throws Exception {
+        FileLog.d(TAG, "Old Launcher Database before sanitizing:");
         // Primary user ids
-        long myProfileId = helper.getDefaultUserSerial();
+        long myProfileId = controller.getSerialNumberForUser(myUserHandle());
         long oldProfileId = getDefaultProfileId(db);
+        FileLog.d(TAG, "sanitizeDB: myProfileId=" + myProfileId + " oldProfileId=" + oldProfileId);
         LongSparseArray<Long> oldManagedProfileIds = getManagedProfileIds(db, oldProfileId);
         LongSparseArray<Long> profileMapping = new LongSparseArray<>(oldManagedProfileIds.size()
                 + 1);
@@ -178,8 +157,13 @@ public class RestoreDbTask {
             long oldManagedProfileId = oldManagedProfileIds.keyAt(i);
             UserHandle user = getUserForAncestralSerialNumber(backupManager, oldManagedProfileId);
             if (user != null) {
-                long newManagedProfileId = helper.getSerialNumberForUser(user);
+                long newManagedProfileId = controller.getSerialNumberForUser(user);
                 profileMapping.put(oldManagedProfileId, newManagedProfileId);
+                FileLog.d(TAG, "sanitizeDB: managed profile id=" + oldManagedProfileId
+                        + " should be mapped to new id=" + newManagedProfileId);
+            } else {
+                FileLog.e(TAG, "sanitizeDB: No User found for old profileId, Ancestral Serial "
+                        + "Number: " + oldManagedProfileId);
             }
         }
 
@@ -190,11 +174,13 @@ public class RestoreDbTask {
         for (int i = numProfiles - 1; i >= 1; --i) {
             profileIds[i] = Long.toString(profileMapping.keyAt(i));
         }
+
         final String[] args = new String[profileIds.length];
         Arrays.fill(args, "?");
         final String where = "profileId NOT IN (" + TextUtils.join(", ", Arrays.asList(args)) + ")";
-        int itemsDeleted = db.delete(Favorites.TABLE_NAME, where, profileIds);
-        FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
+        logUnrestoredItems(db, where, profileIds);
+        int itemsDeletedCount = db.delete(Favorites.TABLE_NAME, where, profileIds);
+        FileLog.d(TAG, itemsDeletedCount + " total items from unrestored user(s) were deleted");
 
         // Mark all items as restored.
         boolean keepAllIcons = Utilities.isPropertyEnabled(LogConfig.KEEP_ALL_ICONS);
@@ -204,15 +190,17 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, null, null);
 
         // Mark widgets with appropriate restore flag.
-        values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
+        values.put(Favorites.RESTORED, LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
                 | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
                 | LauncherAppWidgetInfo.FLAG_UI_NOT_READY
                 | (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
         db.update(Favorites.TABLE_NAME, values, "itemType = ?",
-                new String[]{Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
+                new String[] { Integer.toString(Favorites.ITEM_TYPE_APPWIDGET) });
 
-        // Migrate ids. To avoid any overlap, we initially move conflicting ids to a temp
-        // location. Using Long.MIN_VALUE since profile ids can not be negative, so there will
+        // Migrate ids. To avoid any overlap, we initially move conflicting ids to a
+        // temp
+        // location. Using Long.MIN_VALUE since profile ids can not be negative, so
+        // there will
         // be no overlap.
         final long tempLocationOffset = Long.MIN_VALUE;
         SparseLongArray tempMigratedIds = new SparseLongArray(profileMapping.size());
@@ -246,11 +234,56 @@ public class RestoreDbTask {
             removeScreenIdGaps(db);
         }
 
-        return itemsDeleted;
+        // Override shortcuts
+        maybeOverrideShortcuts(context, controller, db, myProfileId);
+        return itemsDeletedCount;
     }
 
     /**
-     * Remove gaps between screenIds to make sure no empty pages are left in between.
+     * Queries and logs the items we will delete from unrestored profiles in the
+     * launcher db.
+     * This is to understand why items might be missing during the restore process
+     * for Launcher.
+     * 
+     * @param database   the Launcher db to query from.
+     * @param where      the SELECT statement to query items that will be deleted.
+     * @param profileIds the profile ID's the user will be migrating to.
+     */
+    private void logUnrestoredItems(SQLiteDatabase database, String where, String[] profileIds) {
+        try (Cursor itemsToDelete = database.query(
+                /* table */ Favorites.TABLE_NAME,
+                /* columns */ DB_COLUMNS_TO_LOG,
+                /* selection */ where,
+                /* selection args */ profileIds,
+                /* groupBy */ null,
+                /* having */ null,
+                /* orderBy */ null)) {
+            if (itemsToDelete.moveToFirst()) {
+                String[] columnNames = itemsToDelete.getColumnNames();
+                StringBuilder stringBuilder = new StringBuilder(
+                        "items to be deleted from the Favorites Table during restore:\n");
+                do {
+                    for (String columnName : columnNames) {
+                        stringBuilder.append(columnName)
+                                .append("=")
+                                .append(itemsToDelete.getString(
+                                        itemsToDelete.getColumnIndex(columnName)))
+                                .append(" ");
+                    }
+                    stringBuilder.append("\n");
+                } while (itemsToDelete.moveToNext());
+                FileLog.d(TAG, stringBuilder.toString());
+            } else {
+                FileLog.d(TAG, "logDeletedItems: No items found to delete");
+            }
+        } catch (Exception e) {
+            FileLog.e(TAG, "logDeletedItems: Error reading from database", e);
+        }
+    }
+
+    /**
+     * Remove gaps between screenIds to make sure no empty pages are left in
+     * between.
      *
      * e.g. [0, 3, 4, 6, 7] -> [0, 1, 2, 3, 4]
      */
@@ -276,7 +309,8 @@ public class RestoreDbTask {
     }
 
     /**
-     * Updates profile id of all entries from {@param oldProfileId} to {@param newProfileId}.
+     * Updates profile id of all entries from {@param oldProfileId} to
+     * {@param newProfileId}.
      */
     protected void migrateProfileId(SQLiteDatabase db, long oldProfileId, long newProfileId) {
         FileLog.d(TAG, "Changing profile user id from " + oldProfileId + " to " + newProfileId);
@@ -284,9 +318,8 @@ public class RestoreDbTask {
         ContentValues values = new ContentValues();
         values.put(Favorites.PROFILE_ID, newProfileId);
         db.update(Favorites.TABLE_NAME, values, "profileId = ?",
-                new String[]{Long.toString(oldProfileId)});
+                new String[] { Long.toString(oldProfileId) });
     }
-
 
     /**
      * Changes the default value for the column.
@@ -299,12 +332,13 @@ public class RestoreDbTask {
     }
 
     /**
-     * Returns a list of the managed profile id(s) used in the favorites table of the provided db.
+     * Returns a list of the managed profile id(s) used in the favorites table of
+     * the provided db.
      */
     private LongSparseArray<Long> getManagedProfileIds(SQLiteDatabase db, long defaultProfileId) {
         LongSparseArray<Long> ids = new LongSparseArray<>();
         try (Cursor c = db.rawQuery("SELECT profileId from favorites WHERE profileId != ? "
-                + "GROUP BY profileId", new String[] {Long.toString(defaultProfileId)})) {
+                + "GROUP BY profileId", new String[] { Long.toString(defaultProfileId) })) {
             while (c.moveToNext()) {
                 ids.put(c.getLong(c.getColumnIndex(Favorites.PROFILE_ID)), null);
             }
@@ -313,7 +347,8 @@ public class RestoreDbTask {
     }
 
     /**
-     * Returns a UserHandle of a restored managed profile with the given serial number, or null
+     * Returns a UserHandle of a restored managed profile with the given serial
+     * number, or null
      * if none found.
      */
     private UserHandle getUserForAncestralSerialNumber(BackupManager backupManager,
@@ -347,16 +382,16 @@ public class RestoreDbTask {
      * Marks the DB state as pending restoration
      */
     public static void setPending(Context context) {
-        FileLog.d(TAG, "Restore data received through full backup ");
+        FileLog.d(TAG, "Restore data received through full backup");
         LauncherPrefs.get(context)
                 .putSync(RESTORE_DEVICE.to(new DeviceGridState(context).getDeviceType()));
     }
 
-    private void restoreAppWidgetIdsIfExists(Context context) {
+    private void restoreAppWidgetIdsIfExists(Context context, ModelDbController controller) {
         LauncherPrefs lp = LauncherPrefs.get(context);
         if (lp.has(APP_WIDGET_IDS, OLD_APP_WIDGET_IDS)) {
             AppWidgetHost host = new AppWidgetHost(context, APPWIDGET_HOST_ID);
-            AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
+            AppWidgetsRestoredReceiver.restoreAppWidgetIds(context, controller,
                     IntArray.fromConcatString(lp.get(OLD_APP_WIDGET_IDS)).toArray(),
                     IntArray.fromConcatString(lp.get(APP_WIDGET_IDS)).toArray(),
                     host);
@@ -372,6 +407,50 @@ public class RestoreDbTask {
         LauncherPrefs.get(context).putSync(
                 OLD_APP_WIDGET_IDS.to(IntArray.wrap(oldIds).toConcatString()),
                 APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
+    }
+
+    protected static void maybeOverrideShortcuts(Context context, ModelDbController controller,
+            SQLiteDatabase db, long currentUser) {
+        Map<String, LauncherActivityInfo> activityOverrides = ApiWrapper.getActivityOverrides(
+                context);
+
+        if (activityOverrides == null || activityOverrides.isEmpty()) {
+            return;
+        }
+
+        try (Cursor c = db.query(Favorites.TABLE_NAME,
+                new String[] { Favorites._ID, Favorites.INTENT },
+                String.format("%s=? AND %s=? AND ( %s )", Favorites.ITEM_TYPE, Favorites.PROFILE_ID,
+                        getTelephonyIntentSQLLiteSelection(activityOverrides.keySet())),
+                new String[] { String.valueOf(ITEM_TYPE_APPLICATION), String.valueOf(currentUser) },
+                null, null, null);
+                SQLiteTransaction t = new SQLiteTransaction(db)) {
+            final int idIndex = c.getColumnIndexOrThrow(Favorites._ID);
+            final int intentIndex = c.getColumnIndexOrThrow(Favorites.INTENT);
+            while (c.moveToNext()) {
+                LauncherActivityInfo override = activityOverrides.get(Intent.parseUri(
+                        c.getString(intentIndex), 0).getComponent().getPackageName());
+                if (override != null) {
+                    ContentValues values = new ContentValues();
+                    values.put(Favorites.PROFILE_ID,
+                            controller.getSerialNumberForUser(override.getUser()));
+                    values.put(Favorites.INTENT, AppInfo.makeLaunchIntent(override).toUri(0));
+                    db.update(Favorites.TABLE_NAME, values, String.format("%s=?", Favorites._ID),
+                            new String[] { String.valueOf(c.getInt(idIndex)) });
+                }
+            }
+            t.commit();
+        } catch (Exception ex) {
+            Log.e(TAG, "Error while overriding shortcuts", ex);
+        }
+    }
+
+    private static String getTelephonyIntentSQLLiteSelection(Collection<String> packages) {
+        return packages.stream().map(
+                packageToChange -> String.format("intent LIKE '%%' || '%s' || '%%' ",
+                        packageToChange))
+                .collect(
+                        Collectors.joining(" OR "));
     }
 
 }

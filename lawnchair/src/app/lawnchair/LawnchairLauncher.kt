@@ -16,9 +16,11 @@
 
 package app.lawnchair
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -40,11 +42,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.gestures.GestureController
@@ -64,7 +64,6 @@ import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.GestureNavContract
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherRootView
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -74,9 +73,13 @@ import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
+import com.android.launcher3.util.ActivityOptionsWrapper
+import com.android.launcher3.util.Executors
+import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
 import com.android.launcher3.util.TouchController
+import com.android.launcher3.views.ComposeInitializer
 import com.android.launcher3.views.FloatingSurfaceView
 import com.android.launcher3.widget.LauncherWidgetHolder
 import com.android.launcher3.widget.RoundedCornerEnforcement
@@ -271,10 +274,7 @@ class LawnchairLauncher :
 
     override fun setupViews() {
         super.setupViews()
-        findViewById<LauncherRootView>(R.id.launcher).also {
-            it.setViewTreeLifecycleOwner(this)
-            it.setViewTreeSavedStateRegistryOwner(this)
-        }
+        ComposeInitializer.initCompose(this)
     }
 
     override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
@@ -340,6 +340,28 @@ class LawnchairLauncher :
                 appWidgetId,
             )
         }
+    }
+
+    override fun makeDefaultActivityOptions(splashScreenStyle: Int): ActivityOptionsWrapper {
+        val callbacks = RunnableList()
+        val options = if (Utilities.ATLEAST_P || Utilities.ATLEAST_Q) {
+            ActivityOptions.makeBasic()
+        } else {
+            ActivityOptions.makeCustomAnimation(
+                this,
+                0,
+                0,
+                Color.TRANSPARENT,
+                Executors.MAIN_EXECUTOR.handler,
+                null,
+            ) { _ -> callbacks.executeAllAndDestroy() }
+        }
+        if (Utilities.ATLEAST_T) {
+            options.setSplashScreenStyle(splashScreenStyle)
+        }
+
+        Utilities.allowBGLaunch(options)
+        return ActivityOptionsWrapper(options, callbacks)
     }
 
     override fun onStart() {

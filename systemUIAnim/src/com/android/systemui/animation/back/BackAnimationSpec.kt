@@ -19,7 +19,7 @@ package com.android.systemui.animation.back
 import android.util.DisplayMetrics
 import android.view.animation.Interpolator
 import android.window.BackEvent
-import com.android.systemui.animation.Interpolators
+import com.android.app.animation.Interpolators
 import com.android.systemui.util.dpToPx
 
 /** Used to convert [BackEvent] into a [BackTransformation]. */

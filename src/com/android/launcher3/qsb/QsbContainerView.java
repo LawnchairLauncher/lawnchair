@@ -42,6 +42,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -67,6 +68,7 @@ public class QsbContainerView extends FrameLayout {
      * @param context
      * @return String
      */
+    @WorkerThread
     @Nullable
     public static String getSearchWidgetPackageName(@NonNull Context context) {
         String providerPkg = Settings.Global.getString(context.getContentResolver(),
@@ -86,6 +88,7 @@ public class QsbContainerView extends FrameLayout {
      * @param context
      * @return AppWidgetProviderInfo
      */
+    @WorkerThread
     @Nullable
     public static AppWidgetProviderInfo getSearchWidgetProviderInfo(@NonNull Context context) {
         return getSearchWidgetProviderInfo(context, getSearchWidgetPackageName(context));
@@ -115,6 +118,7 @@ public class QsbContainerView extends FrameLayout {
     /**
      * returns componentName for searchWidget if package name is known.
      */
+    @WorkerThread
     @Nullable
     public static ComponentName getSearchComponentName(@NonNull  Context context) {
         AppWidgetProviderInfo providerInfo =
@@ -331,6 +335,7 @@ public class QsbContainerView extends FrameLayout {
          * If widgetCategory is not supported, or no such widget is found, returns the first widget
          * provided by the package.
          */
+        @WorkerThread
         protected AppWidgetProviderInfo getSearchWidgetProvider() {
             return getSearchWidgetProviderInfo(getContext());
         }

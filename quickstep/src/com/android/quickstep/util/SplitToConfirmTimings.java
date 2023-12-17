@@ -16,7 +16,7 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 
 import android.view.animation.Interpolator;
 

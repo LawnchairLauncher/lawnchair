@@ -538,4 +538,6 @@
     <string name="x_and_y">%s &amp; %s</string>
 
     <string name="system_settings">System Settings</string>
+
+    <string name="google_folder_name">Google</string>
 </resources>

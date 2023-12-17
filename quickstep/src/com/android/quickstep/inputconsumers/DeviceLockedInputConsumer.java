@@ -20,7 +20,6 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.AbsSwipeUpHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
@@ -40,9 +39,9 @@ import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
 import android.view.VelocityTracker;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
@@ -115,7 +114,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mDeviceState = deviceState;
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
-        mTouchSlopSquared = squaredTouchSlop(context);
+        mTouchSlopSquared = mDeviceState.getSquaredTouchSlop();
         mTransformParams = new TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
         mMaxTranslationY = context.getResources().getDimensionPixelSize(
@@ -204,7 +203,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             // Animate back to fullscreen before finishing
             ObjectAnimator animator = mProgress.animateToValue(mProgress.value, 0);
             animator.setDuration(100);
-            animator.setInterpolator(Interpolators.ACCEL);
+            animator.setInterpolator(Interpolators.ACCELERATE);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

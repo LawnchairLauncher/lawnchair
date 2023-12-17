@@ -18,9 +18,9 @@ package com.android.systemui.animation
 
 import android.graphics.fonts.Font
 import android.graphics.fonts.FontVariationAxis
+import android.util.Log
 import android.util.LruCache
 import android.util.MathUtils
-import android.util.MathUtils.abs
 import androidx.annotation.VisibleForTesting
 import java.lang.Float.max
 import java.lang.Float.min
@@ -29,8 +29,6 @@ private const val TAG_WGHT = "wght"
 private const val TAG_ITAL = "ital"
 
 private const val FONT_WEIGHT_DEFAULT_VALUE = 400f
-private const val FONT_WEIGHT_ANIMATION_FRAME_COUNT = 100
-
 private const val FONT_ITALIC_MAX = 1f
 private const val FONT_ITALIC_MIN = 0f
 private const val FONT_ITALIC_ANIMATION_STEP = 0.1f
@@ -38,11 +36,12 @@ private const val FONT_ITALIC_DEFAULT_VALUE = 0f
 
 // Benchmarked via Perfetto, difference between 10 and 50 entries is about 0.3ms in
 // frame draw time on a Pixel 6.
-@VisibleForTesting const val FONT_CACHE_MAX_ENTRIES = 10
+@VisibleForTesting const val DEFAULT_FONT_CACHE_MAX_ENTRIES = 10
 
 /** Provide interpolation of two fonts by adjusting font variation settings. */
-class FontInterpolator {
-
+class FontInterpolator(
+    numberOfAnimationSteps: Int? = null,
+) {
     /**
      * Cache key for the interpolated font.
      *
@@ -87,8 +86,9 @@ class FontInterpolator {
     // Font interpolator has two level caches: one for input and one for font with different
     // variation settings. No synchronization is needed since FontInterpolator is not designed to be
     // thread-safe and can be used only on UI thread.
-    private val interpCache = LruCache<InterpKey, Font>(FONT_CACHE_MAX_ENTRIES)
-    private val verFontCache = LruCache<VarFontKey, Font>(FONT_CACHE_MAX_ENTRIES)
+    val cacheMaxEntries = numberOfAnimationSteps?.let { it * 2 } ?: DEFAULT_FONT_CACHE_MAX_ENTRIES
+    private val interpCache = LruCache<InterpKey, Font>(cacheMaxEntries)
+    private val verFontCache = LruCache<VarFontKey, Font>(cacheMaxEntries)
 
     // Mutable keys for recycling.
     private val tmpInterpKey = InterpKey(null, null, 0f)
@@ -114,6 +114,9 @@ class FontInterpolator {
         tmpInterpKey.set(start, end, progress)
         val cachedFont = interpCache[tmpInterpKey]
         if (cachedFont != null) {
+            if (DEBUG) {
+                Log.d(LOG_TAG, "[$progress] Interp. cache hit for $tmpInterpKey")
+            }
             return cachedFont
         }
 
@@ -124,18 +127,12 @@ class FontInterpolator {
         val newAxes =
             lerp(startAxes, endAxes) { tag, startValue, endValue ->
                 when (tag) {
-                    // TODO: Good to parse 'fvar' table for retrieving default value.
-                    TAG_WGHT -> {
-                        adaptiveAdjustWeight(
-                            MathUtils.lerp(
-                                startValue ?: FONT_WEIGHT_DEFAULT_VALUE,
-                                endValue ?: FONT_WEIGHT_DEFAULT_VALUE,
-                                progress
-                            ),
+                    TAG_WGHT ->
+                        MathUtils.lerp(
                             startValue ?: FONT_WEIGHT_DEFAULT_VALUE,
                             endValue ?: FONT_WEIGHT_DEFAULT_VALUE,
+                            progress
                         )
-                    }
                     TAG_ITAL ->
                         adjustItalic(
                             MathUtils.lerp(
@@ -159,6 +156,9 @@ class FontInterpolator {
         val axesCachedFont = verFontCache[tmpVarFontKey]
         if (axesCachedFont != null) {
             interpCache.put(InterpKey(start, end, progress), axesCachedFont)
+            if (DEBUG) {
+                Log.d(LOG_TAG, "[$progress] Axis cache hit for $tmpVarFontKey")
+            }
             return axesCachedFont
         }
 
@@ -168,6 +168,9 @@ class FontInterpolator {
         val newFont = Font.Builder(start).setFontVariationSettings(newAxes.toTypedArray()).build()
         interpCache.put(InterpKey(start, end, progress), newFont)
         verFontCache.put(VarFontKey(start, newAxes), newFont)
+
+        // Cache misses are likely to create memory leaks, so this is logged at error level.
+        Log.e(LOG_TAG, "[$progress] Cache MISS for $tmpInterpKey / $tmpVarFontKey")
         return newFont
     }
 
@@ -215,15 +218,6 @@ class FontInterpolator {
         return result
     }
 
-    // For the performance reasons, we animate weight with adaptive step. This helps
-    // Cache hit ratio in the Skia glyph cache.
-    // The reason we don't use fix step is because the range of weight axis is not normalized,
-    // some are from 50 to 100, others are from 0 to 1000, so we cannot give a constant proper step
-    private fun adaptiveAdjustWeight(value: Float, start: Float, end: Float): Float {
-        val step = max(abs(end - start) / FONT_WEIGHT_ANIMATION_FRAME_COUNT, 1F)
-        return coerceInWithStep(value, min(start, end), max(start, end), step)
-    }
-
     // For the performance reasons, we animate italic with FONT_ITALIC_ANIMATION_STEP. This helps
     // Cache hit ratio in the Skia glyph cache.
     private fun adjustItalic(value: Float) =
@@ -233,6 +227,8 @@ class FontInterpolator {
         (v.coerceIn(min, max) / step).toInt() * step
 
     companion object {
+        private const val LOG_TAG = "FontInterpolator"
+        private val DEBUG = Log.isLoggable(LOG_TAG, Log.DEBUG)
         private val EMPTY_AXES = arrayOf<FontVariationAxis>()
 
         // Returns true if given two font instance can be interpolated.

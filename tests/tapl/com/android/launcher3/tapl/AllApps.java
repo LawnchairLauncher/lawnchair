@@ -147,6 +147,9 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
                                 getAppsListRecyclerBottomPadding());
                         verifyActiveContainer();
                         final int newScroll = getAllAppsScroll();
+                        LauncherInstrumentation.log(
+                                String.format("tryGetAppIcon: scrolled from %d to %d", scroll,
+                                        newScroll));
                         mLauncher.assertTrue(
                                 "Scrolled in a wrong direction in AllApps: from " + scroll + " to "
                                         + newScroll, newScroll >= scroll);
@@ -207,6 +210,9 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
     public AppIcon getAppIcon(String appName) {
         AppIcon appIcon = tryGetAppIcon(appName);
         mLauncher.assertNotNull("Unable to scroll to a clickable icon: " + appName, appIcon);
+        // appIcon.getAppName() checks for content description, so it is possible that it can have
+        // trailing words. So check if the content description contains the appName.
+        mLauncher.assertTrue("Wrong app icon name.", appIcon.getAppName().contains(appName));
         return appIcon;
     }
 
@@ -258,11 +264,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         }
     }
 
-    private int getAllAppsScroll() {
-        return mLauncher.getTestInfo(
-                TestProtocol.REQUEST_APPS_LIST_SCROLL_Y)
-                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
+    protected abstract int getAllAppsScroll();
 
     protected UiObject2 getAppListRecycler(UiObject2 allAppsContainer) {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "apps_list_view");
@@ -334,4 +336,11 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         final Bundle testInfo = mLauncher.getTestInfo(TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS);
         return testInfo == null ? 0 : testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
+
+    /**
+     * Return the QSB UI object on the AllApps screen.
+     * @return the QSB UI object.
+     */
+    @NonNull
+    public abstract Qsb getQsb();
 }

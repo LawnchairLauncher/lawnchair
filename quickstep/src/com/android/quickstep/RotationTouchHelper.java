@@ -18,6 +18,8 @@ package com.android.quickstep;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.Surface.ROTATION_0;
 
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadScroll;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
@@ -197,7 +199,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     void onUserUnlocked() {
         // We can't load custom window radius before the user had unlocked,
         // so we just fallback to system values and then reload it here.
-//        onNavigationModeChanged(mSysUiNavMode.getMode());
+        // onNavigationModeChanged(mSysUiNavMode.getMode());
     }
 
     private void setupOrientationSwipeHandler() {
@@ -255,7 +257,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      *         gesture region.
      */
     public boolean isInSwipeUpTouchRegion(MotionEvent event) {
-        return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY());
+        return isInSwipeUpTouchRegion(event, 0);
     }
 
     /**
@@ -264,6 +266,12 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      *         is in the swipe up gesture region.
      */
     public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex) {
+        if (isTrackpadScroll(event)) {
+            return false;
+        }
+        if (isTrackpadMultiFingerSwipe(event)) {
+            return true;
+        }
         return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(pointerIndex),
                 event.getY(pointerIndex));
     }
@@ -371,7 +379,8 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
                 enableMultipleRegions(true);
             }
             activityInterface.onExitOverview(this, mExitOverviewRunnable);
-        } else if (endTarget == GestureState.GestureEndTarget.HOME) {
+        } else if (endTarget == GestureState.GestureEndTarget.HOME
+                || endTarget == GestureState.GestureEndTarget.ALL_APPS) {
             enableMultipleRegions(false);
         } else if (endTarget == GestureState.GestureEndTarget.NEW_TASK) {
             if (mOrientationTouchTransformer.getQuickStepStartingRotation() == -1) {

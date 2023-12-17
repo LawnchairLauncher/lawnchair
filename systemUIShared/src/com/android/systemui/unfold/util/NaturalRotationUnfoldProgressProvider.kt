@@ -39,7 +39,7 @@ class NaturalRotationUnfoldProgressProvider(
 
     fun init() {
         rotationChangeProvider.addCallback(rotationListener)
-        rotationListener.onRotationChanged(context.display.rotation)
+        context.display?.rotation?.let { rotationListener.onRotationChanged(it) }
     }
 
     private val rotationListener = RotationListener { rotation ->

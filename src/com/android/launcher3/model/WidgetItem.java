@@ -3,6 +3,7 @@ package com.android.launcher3.model;
 import static com.android.launcher3.Utilities.ATLEAST_S;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -25,13 +26,15 @@ public class WidgetItem extends ComponentKey {
     public final ShortcutConfigActivityInfo activityInfo;
 
     public final String label;
+    public final CharSequence description;
     public final int spanX, spanY;
 
     public WidgetItem(LauncherAppWidgetProviderInfo info,
-            InvariantDeviceProfile idp, IconCache iconCache) {
+            InvariantDeviceProfile idp, IconCache iconCache, Context context) {
         super(info.provider, info.getProfile());
 
         label = iconCache.getTitleNoCache(info);
+        description = ATLEAST_S ? info.loadDescription(context) : null;
         widgetInfo = info;
         activityInfo = null;
 
@@ -43,6 +46,7 @@ public class WidgetItem extends ComponentKey {
         super(info.getComponent(), info.getUser());
         label = info.isPersistable() ? iconCache.getTitleNoCache(info) :
                 Utilities.trim(info.getLabel(pm));
+        description = null;
         widgetInfo = null;
         activityInfo = info;
         spanX = spanY = 1;

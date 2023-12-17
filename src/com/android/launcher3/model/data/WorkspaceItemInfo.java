@@ -79,12 +79,6 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public Intent intent;
 
     /**
-     * If isShortcut=true and customIcon=false, this contains a reference to the
-     * shortcut icon as an application's resource.
-     */
-    public Intent.ShortcutIconResource iconResource;
-
-    /**
      * A message to display when the user tries to start a disabled shortcut.
      * This is currently only used for deep shortcuts.
      */
@@ -102,14 +96,13 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
 
     public WorkspaceItemInfo() {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
     }
 
     public WorkspaceItemInfo(WorkspaceItemInfo info) {
         super(info);
         title = info.title;
         intent = new Intent(info.intent);
-        iconResource = info.iconResource;
         status = info.status;
         personKeys = info.personKeys.clone();
     }
@@ -140,10 +133,6 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
         if (!usingLowResIcon()) {
             writer.putIcon(bitmap, user);
-        }
-        if (iconResource != null) {
-            writer.put(Favorites.ICON_PACKAGE, iconResource.packageName)
-                    .put(Favorites.ICON_RESOURCE, iconResource.resourceName);
         }
     }
 
@@ -218,8 +207,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     @Override
     public ComponentName getTargetComponent() {
         ComponentName cn = super.getTargetComponent();
-        if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT || hasStatusFlag(
-                FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON | FLAG_RESTORED_ICON))) {
+        if (cn == null && hasStatusFlag(
+                FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON | FLAG_RESTORED_ICON)) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
             // a packageName. In that case create a empty componentName instead of adding additional
             // check everywhere.

@@ -17,7 +17,10 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -27,6 +30,7 @@ import android.view.ActionMode;
 import android.view.Display;
 import android.view.View;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -39,9 +43,11 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.OnColorHintListener;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.WallpaperColorHints;
 import com.android.launcher3.util.WindowBounds;
 
 import app.lawnchair.wallpaper.WallpaperManagerCompat;
@@ -64,8 +70,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected boolean mIsSafeModeEnabled;
 
     private Runnable mOnStartCallback;
-    private RunnableList mOnResumeCallbacks = new RunnableList();
-
+    private final RunnableList mOnResumeCallbacks = new RunnableList();
     private int mThemeRes = R.style.AppTheme;
 
     @Override
@@ -95,6 +100,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mOnResumeCallbacks.add(callback);
     }
 
+    @MainThread
     @Override
     public void onColorsChanged() {
         updateTheme();
@@ -149,6 +155,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @NonNull
     public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         ActivityOptionsWrapper wrapper = super.getActivityLaunchOptions(v, item);
+        addOnResumeCallback(wrapper.onEndCallback::executeAllAndDestroy);
+        return wrapper;
+    }
+
+    @Override
+    public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
+        ActivityOptionsWrapper wrapper = super.makeDefaultActivityOptions(splashScreenStyle);
         addOnResumeCallback(wrapper.onEndCallback::executeAllAndDestroy);
         return wrapper;
     }

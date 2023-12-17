@@ -15,12 +15,10 @@
  */
 package com.android.launcher3.allapps;
 
-import static androidx.core.widget.TextViewCompat.setCompoundDrawableTintList;
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Build;
@@ -40,13 +38,12 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.color.ColorStateListTokens;
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
@@ -70,7 +67,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     private final int mScrollThreshold;
     private ImageView mIcon;
     private TextView mTextView;
-    private final StatsLogManager mStatsLogManager;
 
     public WorkModeSwitch(@NonNull Context context) {
         this(context, null, 0);
@@ -84,7 +80,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         super(context, attrs, defStyleAttr);
         mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
         mActivityContext = ActivityContext.lookupContext(getContext());
-        mStatsLogManager = mActivityContext.getStatsLogManager();
     }
 
     @Override
@@ -101,15 +96,14 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         }
 
         setBackground(DrawableTokens.WorkAppsToggleBackground.resolve(getContext()));
-        ColorStateList textColor = ColorStateListTokens.AllAppsTabText.resolve(getContext());
+        var textColor = ColorTokens.ColorPrimary.resolveColor(getContext());
+        mIcon.setColorFilter(textColor);
         mTextView.setTextColor(textColor);
-        setCompoundDrawableTintList(mTextView,textColor);
         DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
         setInsets(grid.getInsets());
         setInsets(mActivityContext.getDeviceProfile().getInsets());
         mTextView.setText(R.string.work_apps_pause_btn_text);
 
-        mIcon.setColorFilter(mTextView.getCurrentTextColor());
         getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
     }
 
@@ -121,7 +115,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         if (lp != null) {
             int bottomMargin = getResources().getDimensionPixelSize(R.dimen.work_fab_margin_bottom);
             DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
-            if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            if (mActivityContext.getAppsView().isSearchBarFloating()) {
                 bottomMargin += dp.hotseatQsbHeight;
             }
 
@@ -170,7 +164,9 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
         WindowInsetsCompat windowInsetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, this);
         if (windowInsetsCompat.isVisible(WindowInsetsCompat.Type.ime())) {
-            setInsets(mImeInsets, windowInsetsCompat.getInsets(WindowInsetsCompat.Type.ime()).toPlatformInsets ( ));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                setInsets(mImeInsets, windowInsetsCompat.getInsets(WindowInsetsCompat.Type.ime()).toPlatformInsets());
+            }
         } else {
             mImeInsets.setEmpty();
         }
@@ -178,7 +174,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         return super.onApplyWindowInsets(insets);
     }
 
-    private void updateTranslationY() {
+    void updateTranslationY() {
         setTranslationY(-mImeInsets.bottom);
     }
 
@@ -192,6 +188,10 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             rect.set(insets.left, insets.top, insets.right, insets.bottom);
         }
+    }
+
+    public Rect getImeInsets() {
+        return mImeInsets;
     }
 
     @Override
@@ -222,5 +222,12 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public int getScrollThreshold() {
         return mScrollThreshold;
+    }
+
+    public void updateStringFromCache() {
+        StringCache cache = mActivityContext.getStringCache();
+        if (cache != null) {
+            mTextView.setText(cache.workProfilePauseButton);
+        }
     }
 }

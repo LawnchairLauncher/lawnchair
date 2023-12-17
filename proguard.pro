@@ -21,6 +21,7 @@
 -dontwarn com.skydoves.balloon.**
 -dontwarn dalvik.system.CloseGuard
 -dontwarn lineageos.providers.LineageSettings$System
+-dontwarn androidx.compose.runtime.PrimitiveSnapshotStateKt
 
 
 # Common rules.
@@ -44,3 +45,10 @@
 -keep class com.google.protobuf.Timestamp { *; }
 # TODO: Remove this after the change in https://github.com/ChickenHook/RestrictionBypass/pull/9 has been released.
 -keep class org.chickenhook.restrictionbypass.** { *; }
+-keep class androidx.compose.runtime.** { *; }
+
+# systemUIPluginCore
+-keepattributes RuntimeVisible*Annotation*,AnnotationDefault
+-keep interface com.android.systemui.plugins.annotations.** { *; }
+-keep class com.android.systemui.plugins.BcSmartspaceDataPlugin$** { *; }
+-keep,allowshrinking,allowoptimization,allowobfuscation,allowaccessmodification @com.android.systemui.plugins.annotations.** class *

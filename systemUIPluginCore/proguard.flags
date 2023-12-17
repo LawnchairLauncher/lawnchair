@@ -1,0 +1,11 @@
+# R8's full mode is a bit more aggressive in stripping annotations, but the
+# SystemUI plugin architecture requires these annotations at runtime. The
+# following rules are the minimal set necessary to ensure compatibility.
+# For more details, see:
+# https://r8.googlesource.com/r8/+/refs/heads/master/compatibility-faq.md#r8-full-mode
+-keepattributes RuntimeVisible*Annotation*,AnnotationDefault
+
+-keep interface com.android.systemui.plugins.annotations.** {
+    *;
+}
+-keep,allowshrinking,allowoptimization,allowobfuscation,allowaccessmodification @com.android.systemui.plugins.annotations.** class *

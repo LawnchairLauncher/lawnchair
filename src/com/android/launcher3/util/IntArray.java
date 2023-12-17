@@ -250,6 +250,11 @@ public class IntArray implements Cloneable, Iterable<Integer> {
         return b.toString();
     }
 
+    @Override
+    public String toString() {
+        return "IntArray [" + toConcatString() + "]";
+    }
+
     public static IntArray fromConcatString(String concatString) {
         StringTokenizer tokenizer = new StringTokenizer(concatString, ",");
         int[] array = new int[tokenizer.countTokens()];

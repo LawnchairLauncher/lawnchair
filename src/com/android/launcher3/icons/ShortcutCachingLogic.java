@@ -78,8 +78,9 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
         try (LauncherIcons li = LauncherIcons.obtain(context)) {
             Drawable unbadgedDrawable = ShortcutCachingLogic.getIcon(
                     context, info, LauncherAppState.getIDP(context).fillResIconDpi);
-            if (unbadgedDrawable == null) return BitmapInfo.LOW_RES_INFO;
-            return li.createBadgedIconBitmap(unbadgedDrawable, Process.myUserHandle (), true);
+            if (unbadgedDrawable == null)
+                return BitmapInfo.LOW_RES_INFO;
+            return li.createBadgedIconBitmap(unbadgedDrawable, Process.myUserHandle(), true);
         }
     }
 
@@ -98,7 +99,8 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
     }
 
     /**
-     * Similar to {@link LauncherApps#getShortcutIconDrawable(ShortcutInfo, int)} with additional
+     * Similar to {@link LauncherApps#getShortcutIconDrawable(ShortcutInfo, int)}
+     * with additional
      * Launcher specific checks
      */
     public static Drawable getIcon(Context context, ShortcutInfo shortcutInfo, int density) {
@@ -109,7 +111,7 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
             Drawable icon = context.getSystemService(LauncherApps.class)
                     .getShortcutIconDrawable(shortcutInfo, density);
             return CustomAdaptiveIconDrawable.wrap(icon);
-        } catch (SecurityException | IllegalStateException e) {
+        } catch (SecurityException | IllegalStateException | NullPointerException e) {
             Log.e(TAG, "Failed to get shortcut icon", e);
             return null;
         }

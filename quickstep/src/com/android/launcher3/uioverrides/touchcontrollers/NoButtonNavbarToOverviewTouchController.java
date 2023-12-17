@@ -16,19 +16,22 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ONE_HANDED_ACTIVE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
@@ -43,12 +46,15 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
+
+import java.util.function.Consumer;
 
 /**
  * Touch controller which handles swipe and hold from the nav bar to go to Overview. Swiping above
@@ -64,6 +70,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private static final float TRANSLATION_ANIM_VELOCITY_DP_PER_MS = 0.8f;
 
     private final VibratorWrapper mVibratorWrapper;
+    private final Consumer<AnimatorSet> mCancelSplitRunnable;
     private final RecentsView mRecentsView;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
@@ -79,16 +86,26 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     // Normal to Hint animation has flag SKIP_OVERVIEW, so we update this scrim with this animator.
     private ObjectAnimator mNormalToHintOverviewScrimAnimator;
 
-    public NoButtonNavbarToOverviewTouchController(Launcher l) {
+    /**
+     * @param cancelSplitRunnable Called when split placeholder view needs to be cancelled.
+     *                            Animation should be added to the provided AnimatorSet
+     */
+    public NoButtonNavbarToOverviewTouchController(Launcher l,
+            Consumer<AnimatorSet> cancelSplitRunnable) {
         super(l);
         mRecentsView = l.getOverviewPanel();
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
         mVibratorWrapper = VibratorWrapper.INSTANCE.get(l.getApplicationContext());
+        mCancelSplitRunnable = cancelSplitRunnable;
     }
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        if (!isTrackpadMotionEvent(ev) && DisplayController.getNavigationMode(mLauncher)
+                == THREE_BUTTONS) {
+            return false;
+        }
         mDidTouchStartInNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
         boolean isOneHandedModeActive = (SystemUiProxy.INSTANCE.get(mLauncher)
                 .getLastSystemUiStateFlags() & SYSUI_STATE_ONE_HANDED_ACTIVE) != 0;
@@ -102,9 +119,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         if (fromState == NORMAL && mDidTouchStartInNavBar) {
             return HINT_STATE;
-        } else if (fromState == OVERVIEW && isDragTowardPositive) {
-            // Don't allow swiping up to all apps.
-            return OVERVIEW;
         }
         return super.getTargetState(fromState, isDragTowardPositive);
     }
@@ -190,6 +204,9 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             // state, but since the hint state tracks the entire screen without a clear endpoint, we
             // need to manually set the duration to a reasonable value.
             animator.setDuration(HINT_STATE.getTransitionDuration(mLauncher, true /* isToState */));
+            AnimatorSet animatorSet = new AnimatorSet();
+            mCancelSplitRunnable.accept(animatorSet);
+            animatorSet.start();
         }
         if (FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() &&
                 ((mFromState == NORMAL && mToState == ALL_APPS)
@@ -261,7 +278,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private void goToOverviewOrHomeOnDragEnd(float velocity) {
         boolean goToHomeInsteadOfOverview = !mMotionPauseDetector.isPaused();
         if (goToHomeInsteadOfOverview) {
-            new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(NORMAL))
+            new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(NORMAL), null)
                     .animateWithVelocity(velocity);
         }
         if (mReachedOverview) {
@@ -273,7 +290,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             mRecentsView.animate()
                     .translationX(0)
                     .translationY(0)
-                    .setInterpolator(ACCEL_DEACCEL)
+                    .setInterpolator(ACCELERATE_DECELERATE)
                     .setDuration(duration)
                     .withEndAction(goToHomeInsteadOfOverview
                             ? null

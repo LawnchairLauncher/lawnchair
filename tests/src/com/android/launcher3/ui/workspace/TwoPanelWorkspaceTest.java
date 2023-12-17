@@ -29,7 +29,10 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.util.LauncherLayoutBuilder;
+import com.android.launcher3.util.TestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,12 +52,24 @@ import java.util.stream.Collectors;
 @RunWith(AndroidJUnit4.class)
 public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
+    private AutoCloseable mLauncherLayout;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        mLauncher.useTest2WorkspaceLayoutOnReload();
-        TaplTestsLauncher3.initialize(this);
 
+        // Set layout that includes Maps/Play on workspace, and Messaging/Chrome on hotseat.
+        LauncherLayoutBuilder builder = new LauncherLayoutBuilder()
+                .atHotseat(0).putApp(
+                        "com.google.android.apps.messaging",
+                        "com.google.android.apps.messaging.ui.ConversationListActivity")
+                .atHotseat(1).putApp("com.android.chrome", "com.google.android.apps.chrome.Main")
+                .atWorkspace(0, -1, 0).putApp(
+                        "com.google.android.apps.maps", "com.google.android.maps.MapsActivity")
+                .atWorkspace(3, -1, 0).putApp(
+                        "com.android.vending", "com.android.vending.AssetBrowserActivity");
+        mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, builder);
+        TaplTestsLauncher3.initialize(this);
         assumeTrue(mLauncher.isTwoPanels());
 
         // Pre verifying the screens
@@ -67,9 +82,11 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
         executeOnLauncher(launcher -> launcher.enableHotseatEdu(true));
-        mLauncher.useDefaultWorkspaceLayoutOnReload();
+        if (mLauncherLayout != null) {
+            mLauncherLayout.close();
+        }
     }
 
     @Test
@@ -161,14 +178,15 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     public void testDragIconToPage3() {
         Workspace workspace = mLauncher.getWorkspace();
 
-        workspace.dragIcon(workspace.getHotseatAppIcon("Phone"), 3);
+        // b/299522368 sometimes the phone app is not present in the hotseat.
+        workspace.dragIcon(workspace.getHotseatAppIcon("Chrome"), 3);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
             assertItemsOnPage(launcher, 0, "Play Store", "Maps");
             assertPageEmpty(launcher, 1);
             assertPageEmpty(launcher, 2);
-            assertItemsOnPage(launcher, 3, "Phone");
+            assertItemsOnPage(launcher, 3, "Chrome");
         });
     }
 

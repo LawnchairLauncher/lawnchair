@@ -18,12 +18,9 @@ package com.android.quickstep.util;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.config.FeatureFlags;
-
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -150,20 +147,14 @@ public class ActiveGestureLog {
         lastEventEntries.add(eventEntry);
     }
 
-    public void clear() {
-        Arrays.fill(logs, null);
-    }
-
     public void dump(String prefix, PrintWriter writer) {
-        if (FeatureFlags.ENABLE_GESTURE_ERROR_DETECTION.get()) {
-            writer.println(prefix + "ActiveGestureErrorDetector:");
-            for (int i = 0; i < logs.length; i++) {
-                EventLog eventLog = logs[(nextIndex + i) % logs.length];
-                if (eventLog == null) {
-                    continue;
-                }
-                ActiveGestureErrorDetector.analyseAndDump(prefix + '\t', writer, eventLog);
+        writer.println(prefix + "ActiveGestureErrorDetector:");
+        for (int i = 0; i < logs.length; i++) {
+            EventLog eventLog = logs[(nextIndex + i) % logs.length];
+            if (eventLog == null) {
+                continue;
             }
+            ActiveGestureErrorDetector.analyseAndDump(prefix + '\t', writer, eventLog);
         }
 
         writer.println(prefix + "ActiveGestureLog history:");

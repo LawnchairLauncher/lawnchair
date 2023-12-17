@@ -30,10 +30,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 
@@ -68,8 +68,25 @@ public class Snackbar extends AbstractFloatingView {
         show(activity, labelStringRedId, NO_ID, onDismissed, null);
     }
 
+    /** Show a snackbar with just a label. */
+    public static <T extends Context & ActivityContext> void show(T activity, String labelString,
+            Runnable onDismissed) {
+        show(activity, labelString, NO_ID, onDismissed, null);
+    }
+
     /** Show a snackbar with a label and action. */
     public static <T extends Context & ActivityContext> void show(T activity, int labelStringResId,
+            int actionStringResId, Runnable onDismissed, @Nullable Runnable onActionClicked) {
+        show(
+                activity,
+                activity.getResources().getString(labelStringResId),
+                actionStringResId,
+                onDismissed,
+                onActionClicked);
+    }
+
+    /** Show a snackbar with a label and action. */
+    public static <T extends Context & ActivityContext> void show(T activity, String labelString,
             int actionStringResId, Runnable onDismissed, @Nullable Runnable onActionClicked) {
         closeOpenViews(activity, true, TYPE_SNACKBAR);
         Snackbar snackbar = new Snackbar(activity, null);
@@ -108,8 +125,7 @@ public class Snackbar extends AbstractFloatingView {
                 : insets.bottom));
 
         TextView labelView = snackbar.findViewById(R.id.label);
-        String labelText = res.getString(labelStringResId);
-        labelView.setText(labelText);
+        labelView.setText(labelString);
 
         TextView actionView = snackbar.findViewById(R.id.action);
         labelView.setTextColor(ColorTokens.TextColorPrimary.resolveColor(activity));
@@ -132,7 +148,7 @@ public class Snackbar extends AbstractFloatingView {
             actionView.setVisibility(GONE);
         }
 
-        int totalContentWidth = (int) (labelView.getPaint().measureText(labelText) + actionWidth)
+        int totalContentWidth = (int) (labelView.getPaint().measureText(labelString) + actionWidth)
                 + labelView.getPaddingRight() + labelView.getPaddingLeft()
                 + padding * 2;
         if (totalContentWidth > params.width) {
@@ -164,7 +180,7 @@ public class Snackbar extends AbstractFloatingView {
                 .scaleX(1)
                 .scaleY(1)
                 .setDuration(SHOW_DURATION_MS)
-                .setInterpolator(Interpolators.ACCEL_DEACCEL)
+                .setInterpolator(Interpolators.ACCELERATE_DECELERATE)
                 .start();
         int timeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(activity,
                 TIMEOUT_DURATION_MS, FLAG_CONTENT_TEXT | FLAG_CONTENT_CONTROLS);
@@ -179,7 +195,7 @@ public class Snackbar extends AbstractFloatingView {
                         .withLayer()
                         .setStartDelay(0)
                         .setDuration(HIDE_DURATION_MS)
-                        .setInterpolator(Interpolators.ACCEL)
+                        .setInterpolator(Interpolators.ACCELERATE)
                         .withEndAction(this::onClosed)
                         .start();
             } else {

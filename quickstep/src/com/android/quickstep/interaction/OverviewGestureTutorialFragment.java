@@ -41,6 +41,12 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
         super(fromTutorialMenu);
     }
 
+    @NonNull
+    @Override
+    TutorialType getDefaultTutorialType() {
+        return TutorialType.OVERVIEW_NAVIGATION;
+    }
+
     @Nullable
     @Override
     Integer getEdgeAnimationResId() {
@@ -73,7 +79,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                controller.animateTaskViewToOverview(null);
+                controller.animateTaskViewToOverview(false);
             }
         });
 

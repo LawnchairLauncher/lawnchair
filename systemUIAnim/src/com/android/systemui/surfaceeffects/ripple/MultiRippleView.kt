@@ -20,7 +20,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.annotation.VisibleForTesting
 
@@ -34,24 +33,15 @@ class MultiRippleView(context: Context?, attrs: AttributeSet?) : View(context, a
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     val ripples = ArrayList<RippleAnimation>()
     private val ripplePaint = Paint()
-    private var isWarningLogged = false
 
     companion object {
         private const val TAG = "MultiRippleView"
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        if (canvas == null || !canvas.isHardwareAccelerated) {
-            // Drawing with the ripple shader requires hardware acceleration, so skip
-            // if it's unsupported.
-            if (!isWarningLogged) {
-                // Only log once to not spam.
-                Log.w(
-                    TAG,
-                    "Can't draw ripple shader. $canvas does not support hardware acceleration."
-                )
-                isWarningLogged = true
-            }
+    override fun onDraw(canvas: Canvas) {
+        if (!canvas.isHardwareAccelerated) {
+            // Drawing with the ripple shader requires hardware acceleration, so skip if it's
+            // unsupported.
             return
         }
 

@@ -21,8 +21,8 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.systemui.shared.testing.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
 import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -30,7 +30,6 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
@@ -40,7 +39,8 @@ import com.android.systemui.shared.testing.ResourceUtils;
 
 /**
  * Touch consumer for handling gesture event to launch one handed
- * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and portrait mode
+ * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and
+ * portrait mode
  */
 public class OneHandedModeInputConsumer extends DelegateInputConsumer {
 
@@ -69,7 +69,7 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
         mDeviceState = deviceState;
         mDragDistThreshold = context.getResources().getDimensionPixelSize(
                 R.dimen.gestures_onehanded_drag_threshold);
-        mSquaredSlop = Utilities.squaredTouchSlop(context);
+        mSquaredSlop = mDeviceState.getSquaredTouchSlop();
         mDisplaySize = DisplayController.INSTANCE.get(mContext).getInfo().currentSize;
         mNavBarSize = ResourceUtils.getNavbarSize(NAVBAR_BOTTOM_GESTURE_SIZE,
                 mContext.getResources());
@@ -99,12 +99,11 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
 
                 mLastPos.set(ev.getX(), ev.getY());
                 if (!mPassedSlop) {
-                    if (squaredHypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y)
-                            > mSquaredSlop) {
+                    if (squaredHypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y) > mSquaredSlop) {
                         if ((!mDeviceState.isOneHandedModeActive() && isValidStartAngle(
                                 mDownPos.x - mLastPos.x, mDownPos.y - mLastPos.y))
                                 || (mDeviceState.isOneHandedModeActive() && isValidExitAngle(
-                                mDownPos.x - mLastPos.x, mDownPos.y - mLastPos.y))) {
+                                        mDownPos.x - mLastPos.x, mDownPos.y - mLastPos.y))) {
                             // To avoid mis-trigger when motion not touch system gesture region.
                             mPassedSlop = isInSystemGestureRegion(mLastPos);
                             setActive(ev);
@@ -175,5 +174,10 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
     private boolean isValidExitAngle(float deltaX, float deltaY) {
         final float angle = (float) Math.toDegrees(Math.atan2(deltaY, deltaX));
         return angle > ANGLE_MIN && angle < ANGLE_MAX;
+    }
+
+    @Override
+    protected String getDelegatorName() {
+        return "OneHandedModeInputConsumer";
     }
 }

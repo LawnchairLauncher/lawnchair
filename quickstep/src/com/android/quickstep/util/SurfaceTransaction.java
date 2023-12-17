@@ -106,6 +106,15 @@ public class SurfaceTransaction {
             mTransaction.setShadowRadius(mSurface, radius);
             return this;
         }
+
+        /**
+         * Requests to show the given surface.
+         * @return this Builder
+         */
+        public SurfaceProperties setShow() {
+            mTransaction.show(mSurface);
+            return this;
+        }
     }
 
     /**
@@ -155,6 +164,11 @@ public class SurfaceTransaction {
         @Override
         public SurfaceProperties setShadowRadius(float radius) {
             this.shadowRadius = radius;
+            return this;
+        }
+
+        @Override
+        public SurfaceProperties setShow() {
             return this;
         }
     }

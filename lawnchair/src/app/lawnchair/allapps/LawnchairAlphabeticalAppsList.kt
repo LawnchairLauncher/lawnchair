@@ -15,7 +15,7 @@ import java.util.function.Predicate
 
 class LawnchairAlphabeticalAppsList<T>(
     context: T,
-    appsStore: AllAppsStore?,
+    appsStore: AllAppsStore<T>,
     workProfileManager: WorkProfileManager?,
 ) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager)
     where T : Context, T : ActivityContext {

@@ -56,4 +56,16 @@ public class AllAppsFromTaskbar extends AllApps {
         return mLauncher.getTestInfo(TestProtocol.REQUEST_TASKBAR_ALL_APPS_TOP_PADDING)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
+
+    @Override
+    protected int getAllAppsScroll() {
+        return mLauncher.getTestInfo(TestProtocol.REQUEST_TASKBAR_APPS_LIST_SCROLL_Y)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    @NonNull
+    @Override
+    public TaskbarAllAppsQsb getQsb() {
+        return new TaskbarAllAppsQsb(mLauncher, verifyActiveContainer());
+    }
 }

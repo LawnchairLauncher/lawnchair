@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.model
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
@@ -32,7 +33,6 @@ import com.android.launcher3.model.GridSizeMigrationUtil.DbReader
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils
 import com.android.launcher3.util.LauncherModelHelper
-import com.android.launcher3.util.LauncherModelHelper.*
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
@@ -43,11 +43,13 @@ import org.junit.runner.RunWith
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class GridSizeMigrationUtilTest {
+
     private lateinit var modelHelper: LauncherModelHelper
     private lateinit var context: Context
-    private lateinit var db: SQLiteDatabase
     private lateinit var validPackages: Set<String>
     private lateinit var idp: InvariantDeviceProfile
+    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var db: SQLiteDatabase
     private val testPackage1 = "com.android.launcher3.validpackage1"
     private val testPackage2 = "com.android.launcher3.validpackage2"
     private val testPackage3 = "com.android.launcher3.validpackage3"
@@ -63,11 +65,16 @@ class GridSizeMigrationUtilTest {
     fun setUp() {
         modelHelper = LauncherModelHelper()
         context = modelHelper.sandboxContext
-        db = modelHelper.provider.db
+        dbHelper =
+            DatabaseHelper(
+                context,
+                null,
+                UserCache.INSTANCE.get(context)::getSerialNumberForUser
+            ) {}
+        db = dbHelper.writableDatabase
 
         validPackages =
             setOf(
-                TEST_PACKAGE,
                 testPackage1,
                 testPackage2,
                 testPackage3,
@@ -99,26 +106,26 @@ class GridSizeMigrationUtilTest {
     @Throws(Exception::class)
     fun testMigration() {
         // Src Hotseat icons
-        modelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI)
-        modelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI)
-        modelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 4, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_HOTSEAT, 0, 0, testPackage1, 1, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 4, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
         // Src grid icons
         // _ _ _ _ _
         // _ _ _ _ 5
         // _ _ 6 _ 7
         // _ _ 8 _ 9
         // _ _ _ _ _
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 1, testPackage5, 5, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage6, 6, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 2, testPackage7, 7, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 3, testPackage8, 8, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 3, testPackage9, 9, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 4, 1, testPackage5, 5, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 2, testPackage6, 6, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 4, 2, testPackage7, 7, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 3, testPackage8, 8, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 4, 3, testPackage9, 9, TMP_TABLE)
 
         // Dest hotseat icons
-        modelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2)
         // Dest grid icons
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage10)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 2, testPackage10)
 
         idp.numDatabaseHotseatIcons = 4
         idp.numColumns = 4
@@ -126,8 +133,7 @@ class GridSizeMigrationUtilTest {
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             srcReader,
             destReader,
             idp.numDatabaseHotseatIcons,
@@ -138,12 +144,13 @@ class GridSizeMigrationUtilTest {
 
         // Check hotseat items
         var c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(SCREEN, INTENT),
                 "container=$CONTAINER_HOTSEAT",
                 null,
                 SCREEN,
+                null,
                 null
             )
                 ?: throw IllegalStateException()
@@ -168,10 +175,11 @@ class GridSizeMigrationUtilTest {
 
         // Check workspace items
         c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(CELLX, CELLY, INTENT),
                 "container=$CONTAINER_DESKTOP",
+                null,
                 null,
                 null,
                 null
@@ -181,7 +189,7 @@ class GridSizeMigrationUtilTest {
         intentIndex = c.getColumnIndex(INTENT)
         val cellXIndex = c.getColumnIndex(CELLX)
         val cellYIndex = c.getColumnIndex(CELLY)
-        val locMap = HashMap<String?, Point>()
+        val locMap = HashMap<String, Point>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 Point(c.getInt(cellXIndex), c.getInt(cellYIndex))
@@ -209,30 +217,30 @@ class GridSizeMigrationUtilTest {
     fun testMigrationBackAndForth() {
         // Hotseat items in grid A
         // 1 2 _ 3 4
-        modelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI)
-        modelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI)
-        modelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 4, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_HOTSEAT, 0, 0, testPackage1, 1, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 4, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
         // Workspace items in grid A
         // _ _ _ _ _
         // _ _ _ _ 5
         // _ _ 6 _ 7
         // _ _ 8 _ _
         // _ _ _ _ _
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 1, testPackage5, 5, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage6, 6, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 2, testPackage7, 7, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 3, testPackage8, 8, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 4, 1, testPackage5, 5, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 2, testPackage6, 6, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 4, 2, testPackage7, 7, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 3, testPackage8, 8, TMP_TABLE)
 
         // Hotseat items in grid B
         // 2 _ _ _
-        modelHelper.addItem(SHORTCUT, 0, HOTSEAT, 0, 0, testPackage2)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 0, CONTAINER_HOTSEAT, 0, 0, testPackage2)
         // Workspace items in grid B
         // _ _ _ _
         // _ _ _ 10
         // _ _ _ _
         // _ _ _ _
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 1, 3, testPackage10)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 1, 3, testPackage10)
 
         idp.numDatabaseHotseatIcons = 4
         idp.numColumns = 4
@@ -241,8 +249,7 @@ class GridSizeMigrationUtilTest {
         val readerGridB = DbReader(db, TABLE_NAME, context, validPackages)
         // migrate from A -> B
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             readerGridA,
             readerGridB,
             idp.numDatabaseHotseatIcons,
@@ -253,12 +260,13 @@ class GridSizeMigrationUtilTest {
 
         // Check hotseat items in grid B
         var c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(SCREEN, INTENT),
                 "container=$CONTAINER_HOTSEAT",
                 null,
                 SCREEN,
+                null,
                 null
             )
                 ?: throw IllegalStateException()
@@ -272,16 +280,17 @@ class GridSizeMigrationUtilTest {
 
         // Check workspace items in grid B
         c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(SCREEN, CELLX, CELLY, INTENT),
                 "container=$CONTAINER_DESKTOP",
+                null,
                 null,
                 null,
                 null
             )
                 ?: throw IllegalStateException()
-        var locMap = parseLocMap(context, c)
+        var locMap = parseLocMap(c)
         // Expected items in grid B
         // _ _ _ _
         // 5 6 7 8
@@ -294,12 +303,11 @@ class GridSizeMigrationUtilTest {
         assertThat(locMap[testPackage8]).isEqualTo(Triple(0, 3, 1))
 
         // add item in B
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 0, 2, testPackage9)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 0, 2, testPackage9)
 
         // migrate from B -> A
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             readerGridB,
             readerGridA,
             5,
@@ -309,12 +317,13 @@ class GridSizeMigrationUtilTest {
         )
         // Check hotseat items in grid A
         c =
-            context.contentResolver.query(
-                TMP_CONTENT_URI,
+            db.query(
+                TMP_TABLE,
                 arrayOf(SCREEN, INTENT),
                 "container=$CONTAINER_HOTSEAT",
                 null,
                 SCREEN,
+                null,
                 null
             )
                 ?: throw IllegalStateException()
@@ -328,16 +337,17 @@ class GridSizeMigrationUtilTest {
 
         // Check workspace items in grid A
         c =
-            context.contentResolver.query(
-                TMP_CONTENT_URI,
+            db.query(
+                TMP_TABLE,
                 arrayOf(SCREEN, CELLX, CELLY, INTENT),
                 "container=$CONTAINER_DESKTOP",
+                null,
                 null,
                 null,
                 null
             )
                 ?: throw IllegalStateException()
-        locMap = parseLocMap(context, c)
+        locMap = parseLocMap(c)
         // Expected workspace items in grid A
         // _ _ _ _ _
         // _ _ _ _ 5
@@ -354,12 +364,11 @@ class GridSizeMigrationUtilTest {
         assertThat(locMap[testPackage9]).isEqualTo(Triple(0, 0, 2))
 
         // remove item from B
-        modelHelper.deleteItem(7, TMP_TABLE)
+        db.delete(TMP_TABLE, "$_ID=7", null)
 
         // migrate from A -> B
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             readerGridA,
             readerGridB,
             idp.numDatabaseHotseatIcons,
@@ -370,12 +379,13 @@ class GridSizeMigrationUtilTest {
 
         // Check hotseat items in grid B
         c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(SCREEN, INTENT),
                 "container=$CONTAINER_HOTSEAT",
                 null,
                 SCREEN,
+                null,
                 null
             )
                 ?: throw IllegalStateException()
@@ -389,16 +399,17 @@ class GridSizeMigrationUtilTest {
 
         // Check workspace items in grid B
         c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(SCREEN, CELLX, CELLY, INTENT),
                 "container=$CONTAINER_DESKTOP",
+                null,
                 null,
                 null,
                 null
             )
                 ?: throw IllegalStateException()
-        locMap = parseLocMap(context, c)
+        locMap = parseLocMap(c)
         // Expected workspace items in grid B
         // _ _ _ _
         // 5 6 _ 8
@@ -424,13 +435,13 @@ class GridSizeMigrationUtilTest {
         c.close()
     }
 
-    private fun parseLocMap(context: Context, c: Cursor): Map<String?, Triple<Int, Int, Int>> {
+    private fun parseLocMap(c: Cursor): Map<String, Triple<Int, Int, Int>> {
         // Check workspace items
         val intentIndex = c.getColumnIndex(INTENT)
         val screenIndex = c.getColumnIndex(SCREEN)
         val cellXIndex = c.getColumnIndex(CELLX)
         val cellYIndex = c.getColumnIndex(CELLY)
-        val locMap = mutableMapOf<String?, Triple<Int, Int, Int>>()
+        val locMap = mutableMapOf<String, Triple<Int, Int, Int>>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 Triple(c.getInt(screenIndex), c.getInt(cellXIndex), c.getInt(cellYIndex))
@@ -443,10 +454,46 @@ class GridSizeMigrationUtilTest {
     fun migrateToLargerHotseat() {
         val srcHotseatItems =
             intArrayOf(
-                modelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI),
-                modelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI),
-                modelHelper.addItem(APP_ICON, 2, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI),
-                modelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI)
+                addItem(
+                    ITEM_TYPE_APPLICATION,
+                    0,
+                    CONTAINER_HOTSEAT,
+                    0,
+                    0,
+                    testPackage1,
+                    1,
+                    TMP_TABLE
+                ),
+                addItem(
+                    ITEM_TYPE_DEEP_SHORTCUT,
+                    1,
+                    CONTAINER_HOTSEAT,
+                    0,
+                    0,
+                    testPackage2,
+                    2,
+                    TMP_TABLE
+                ),
+                addItem(
+                    ITEM_TYPE_APPLICATION,
+                    2,
+                    CONTAINER_HOTSEAT,
+                    0,
+                    0,
+                    testPackage3,
+                    3,
+                    TMP_TABLE
+                ),
+                addItem(
+                    ITEM_TYPE_DEEP_SHORTCUT,
+                    3,
+                    CONTAINER_HOTSEAT,
+                    0,
+                    0,
+                    testPackage4,
+                    4,
+                    TMP_TABLE
+                )
             )
         val numSrcDatabaseHotseatIcons = srcHotseatItems.size
         idp.numDatabaseHotseatIcons = 6
@@ -455,8 +502,7 @@ class GridSizeMigrationUtilTest {
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             srcReader,
             destReader,
             idp.numDatabaseHotseatIcons,
@@ -467,12 +513,13 @@ class GridSizeMigrationUtilTest {
 
         // Check hotseat items
         val c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(SCREEN, INTENT),
                 "container=$CONTAINER_HOTSEAT",
                 null,
                 SCREEN,
+                null,
                 null
             )
                 ?: throw IllegalStateException()
@@ -501,11 +548,11 @@ class GridSizeMigrationUtilTest {
 
     @Test
     fun migrateFromLargerHotseat() {
-        modelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI)
-        modelHelper.addItem(SHORTCUT, 2, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 3, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI)
-        modelHelper.addItem(SHORTCUT, 4, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 5, HOTSEAT, 0, 0, testPackage5, 5, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_HOTSEAT, 0, 0, testPackage1, 1, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 2, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 4, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 5, CONTAINER_HOTSEAT, 0, 0, testPackage5, 5, TMP_TABLE)
 
         idp.numDatabaseHotseatIcons = 4
         idp.numColumns = 4
@@ -513,8 +560,7 @@ class GridSizeMigrationUtilTest {
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             srcReader,
             destReader,
             idp.numDatabaseHotseatIcons,
@@ -525,12 +571,13 @@ class GridSizeMigrationUtilTest {
 
         // Check hotseat items
         val c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(SCREEN, INTENT),
                 "container=$CONTAINER_HOTSEAT",
                 null,
                 SCREEN,
+                null,
                 null
             )
                 ?: throw IllegalStateException()
@@ -568,11 +615,11 @@ class GridSizeMigrationUtilTest {
         enableNewMigrationLogic("4,4")
 
         // Setup src grid
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage1, 5, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 3, testPackage2, 6, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 1, DESKTOP, 3, 1, testPackage3, 7, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 1, DESKTOP, 3, 2, testPackage4, 8, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 2, DESKTOP, 3, 3, testPackage5, 9, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 2, testPackage1, 5, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 3, testPackage2, 6, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 3, 1, testPackage3, 7, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 3, 2, testPackage4, 8, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 2, CONTAINER_DESKTOP, 3, 3, testPackage5, 9, TMP_TABLE)
 
         idp.numDatabaseHotseatIcons = 4
         idp.numColumns = 6
@@ -581,8 +628,7 @@ class GridSizeMigrationUtilTest {
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             srcReader,
             destReader,
             idp.numDatabaseHotseatIcons,
@@ -593,10 +639,11 @@ class GridSizeMigrationUtilTest {
 
         // Get workspace items
         val c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(INTENT, SCREEN),
                 "container=$CONTAINER_DESKTOP",
+                null,
                 null,
                 null,
                 null
@@ -606,7 +653,7 @@ class GridSizeMigrationUtilTest {
         val screenIndex = c.getColumnIndex(SCREEN)
 
         // Get in which screen the icon is
-        val locMap = HashMap<String?, Int>()
+        val locMap = HashMap<String, Int>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 c.getInt(screenIndex)
@@ -630,11 +677,11 @@ class GridSizeMigrationUtilTest {
         enableNewMigrationLogic("2,2")
 
         // Setup src grid
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 0, 1, testPackage1, 5, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 1, 1, testPackage2, 6, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 1, DESKTOP, 0, 0, testPackage3, 7, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 1, DESKTOP, 1, 0, testPackage4, 8, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 2, DESKTOP, 0, 0, testPackage5, 9, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 0, 1, testPackage1, 5, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 1, 1, testPackage2, 6, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 0, 0, testPackage3, 7, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 1, 0, testPackage4, 8, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 2, CONTAINER_DESKTOP, 0, 0, testPackage5, 9, TMP_TABLE)
 
         idp.numDatabaseHotseatIcons = 4
         idp.numColumns = 5
@@ -642,8 +689,7 @@ class GridSizeMigrationUtilTest {
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             srcReader,
             destReader,
             idp.numDatabaseHotseatIcons,
@@ -654,10 +700,11 @@ class GridSizeMigrationUtilTest {
 
         // Get workspace items
         val c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(INTENT, SCREEN),
                 "container=$CONTAINER_DESKTOP",
+                null,
                 null,
                 null,
                 null
@@ -668,7 +715,7 @@ class GridSizeMigrationUtilTest {
         val screenIndex = c.getColumnIndex(SCREEN)
 
         // Get in which screen the icon is
-        val locMap = HashMap<String?, Int>()
+        val locMap = HashMap<String, Int>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 c.getInt(screenIndex)
@@ -691,11 +738,11 @@ class GridSizeMigrationUtilTest {
         enableNewMigrationLogic("5,5")
 
         // Setup src grid
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 0, 1, testPackage1, 5, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 1, 1, testPackage2, 6, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 1, DESKTOP, 0, 0, testPackage3, 7, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 1, DESKTOP, 1, 0, testPackage4, 8, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 2, DESKTOP, 0, 0, testPackage5, 9, TMP_CONTENT_URI)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 0, 1, testPackage1, 5, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 1, 1, testPackage2, 6, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 0, 0, testPackage3, 7, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 1, 0, testPackage4, 8, TMP_TABLE)
+        addItem(ITEM_TYPE_APPLICATION, 2, CONTAINER_DESKTOP, 0, 0, testPackage5, 9, TMP_TABLE)
 
         idp.numDatabaseHotseatIcons = 4
         idp.numColumns = 4
@@ -703,8 +750,7 @@ class GridSizeMigrationUtilTest {
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
         GridSizeMigrationUtil.migrate(
-            context,
-            db,
+            dbHelper,
             srcReader,
             destReader,
             idp.numDatabaseHotseatIcons,
@@ -715,10 +761,11 @@ class GridSizeMigrationUtilTest {
 
         // Get workspace items
         val c =
-            context.contentResolver.query(
-                CONTENT_URI,
+            db.query(
+                TABLE_NAME,
                 arrayOf(INTENT, SCREEN),
                 "container=$CONTAINER_DESKTOP",
+                null,
                 null,
                 null,
                 null
@@ -728,7 +775,7 @@ class GridSizeMigrationUtilTest {
         val screenIndex = c.getColumnIndex(SCREEN)
 
         // Get in which screen the icon is
-        val locMap = HashMap<String?, Int>()
+        val locMap = HashMap<String, Int>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 c.getInt(screenIndex)
@@ -746,5 +793,49 @@ class GridSizeMigrationUtilTest {
 
     private fun enableNewMigrationLogic(srcGridSize: String) {
         LauncherPrefs.get(context).putSync(WORKSPACE_SIZE.to(srcGridSize))
+    }
+
+    private fun addItem(
+        type: Int,
+        screen: Int,
+        container: Int,
+        x: Int,
+        y: Int,
+        packageName: String?
+    ): Int {
+        return addItem(
+            type,
+            screen,
+            container,
+            x,
+            y,
+            packageName,
+            dbHelper.generateNewItemId(),
+            TABLE_NAME
+        )
+    }
+
+    private fun addItem(
+        type: Int,
+        screen: Int,
+        container: Int,
+        x: Int,
+        y: Int,
+        packageName: String?,
+        id: Int,
+        tableName: String
+    ): Int {
+        val values = ContentValues()
+        values.put(_ID, id)
+        values.put(CONTAINER, container)
+        values.put(SCREEN, screen)
+        values.put(CELLX, x)
+        values.put(CELLY, y)
+        values.put(SPANX, 1)
+        values.put(SPANY, 1)
+        values.put(ITEM_TYPE, type)
+        values.put(INTENT, Intent(Intent.ACTION_MAIN).setPackage(packageName).toUri(0))
+        db.insert(tableName, null, values)
+        return id
     }
 }

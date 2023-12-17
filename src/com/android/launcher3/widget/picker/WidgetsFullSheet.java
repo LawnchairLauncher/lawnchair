@@ -23,14 +23,12 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Outline;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -47,14 +45,13 @@ import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.window.BackEvent;
 
-import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -69,10 +66,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.recyclerview.ViewHolderBinder;
-import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
@@ -81,8 +75,6 @@ import com.android.launcher3.views.WidgetsEduView;
 import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.LauncherWidgetHolder.ProviderChangedListener;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
-import com.android.launcher3.widget.model.WidgetsListContentEntry;
-import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
@@ -90,11 +82,11 @@ import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
@@ -109,28 +101,24 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private static final long EDUCATION_TIP_DELAY_MS = 200;
     private static final long EDUCATION_DIALOG_DELAY_MS = 500;
     private static final float VERTICAL_START_POSITION = 0.3f;
-    private static final int PERSONAL_TAB = 0;
-    private static final int WORK_TAB = 1;
-    private static final String SUGGESTIONS_PACKAGE_NAME = "widgets_list_suggestions_entry";
     // The widget recommendation table can easily take over the entire screen on
     // devices with small
     // resolution or landscape on phone. This ratio defines the max percentage of
     // content area that
     // the table can display.
     private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.75f;
-
     private static final String KEY_WIDGETS_EDUCATION_DIALOG_SEEN = "launcher.widgets_education_dialog_seen";
 
     private final UserManagerState mUserManagerState = new UserManagerState();
-
-    private final boolean mHasWorkProfile;
-    private final SparseArray<AdapterHolder> mAdapters = new SparseArray();
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter = entry -> mCurrentUser
             .equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter = entry -> !mCurrentUser
             .equals(entry.mPkgItem.user)
             && !mUserManagerState.isUserQuiet(entry.mPkgItem.user);
+    protected final boolean mHasWorkProfile;
+    protected boolean mHasRecommendedWidgets;
+    protected final SparseArray<AdapterHolder> mAdapters = new SparseArray();
     @Nullable
     private ArrowTipView mLatestEducationalTip;
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips = new OnLayoutChangeListener() {
@@ -175,55 +163,37 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     };
 
-    private final ViewOutlineProvider mViewOutlineProvider = new ViewOutlineProvider() {
-        @Override
-        public void getOutline(View view, Outline outline) {
-            outline.setRect(
-                    0,
-                    0,
-                    view.getMeasuredWidth(),
-                    view.getMeasuredHeight() + getBottomOffsetPx());
-        }
-    };
-
     @Px
     private final int mTabsHeight;
 
     @Nullable
     private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
     @Nullable
-    private PersonalWorkPagedView mViewPager;
+    private WidgetsRecyclerView mCurrentTouchEventRecyclerView;
+    @Nullable
+    PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
     @Px
     private int mMaxSpanPerRow;
-    private TextView mNoWidgetsView;
-
-    private StickyHeaderLayout mSearchScrollView;
-    private WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
-    private LinearLayout mSuggestedWidgetsContainer;
-    private WidgetsListHeader mSuggestedWidgetsHeader;
-    private View mTabBar;
-    private View mSearchBarContainer;
-    private WidgetsSearchBar mSearchBar;
-    private TextView mHeaderTitle;
-    private FrameLayout mRightPane;
-    private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
     private DeviceProfile mDeviceProfile;
-    private final boolean mIsTwoPane;
 
     private int mOrientation;
-    private @Nullable WidgetsRecyclerView mCurrentTouchEventRecyclerView;
 
-    private RecyclerViewFastScroller mFastScroller;
+    protected TextView mNoWidgetsView;
+    protected StickyHeaderLayout mSearchScrollView;
+    protected WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
+    protected View mTabBar;
+    protected View mSearchBarContainer;
+    protected WidgetsSearchBar mSearchBar;
+    protected TextView mHeaderTitle;
+    protected RecyclerViewFastScroller mFastScroller;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDeviceProfile = Launcher.getLauncher(context).getDeviceProfile();
-        mIsTwoPane = mDeviceProfile.isTablet
-                && mDeviceProfile.isLandscape
-                && LARGE_SCREEN_WIDGET_PICKER.get();
         mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
+        mOrientation = context.getResources().getConfiguration().orientation;
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
@@ -235,7 +205,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         mUserManagerState.init(UserCache.INSTANCE.get(context),
                 context.getSystemService(UserManager.class));
-        setContentBackground(getContext().getDrawable(R.drawable.bg_widgets_full_sheet));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -253,24 +222,33 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         mContent.setOutlineProvider(mViewOutlineProvider);
         mContent.setClipToOutline(true);
+        setupSheet();
+    }
 
+    protected void setupSheet() {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
                 : R.layout.widgets_full_sheet_recyclerview;
-        if (mIsTwoPane) {
-            contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view_large_screen
-                    : R.layout.widgets_full_sheet_recyclerview_large_screen;
-        }
         layoutInflater.inflate(contentLayoutRes, mContent, true);
 
-        View searchBarContainer = findViewById(R.id.search_bar_container);
-        searchBarContainer.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
-        mFastScroller = findViewById(R.id.fast_scroller);
-        if (mIsTwoPane) {
-            mFastScroller.setVisibility(GONE);
-        }
-        mFastScroller.setPopupView(findViewById(R.id.fast_scroller_popup));
+        setupViews();
 
+        mRecommendedWidgetsTable = mSearchScrollView.findViewById(R.id.recommended_widget_table);
+        mRecommendedWidgetsTable.setWidgetCellLongClickListener(this);
+        mRecommendedWidgetsTable.setWidgetCellOnClickListener(this);
+        mHeaderTitle = mSearchScrollView.findViewById(R.id.title);
+
+        onRecommendedWidgetsBound();
+        onWidgetsBound();
+        setUpEducationViewsIfNeeded();
+    }
+
+    protected void setupViews() {
+        mSearchScrollView = findViewById(R.id.search_and_recommendations_container);
+        mSearchScrollView.setCurrentRecyclerView(findViewById(R.id.primary_widgets_list_view));
+        mNoWidgetsView = findViewById(R.id.no_widgets_text);
+        mFastScroller = findViewById(R.id.fast_scroller);
+        mFastScroller.setPopupView(findViewById(R.id.fast_scroller_popup));
         mAdapters.get(AdapterHolder.PRIMARY).setup(findViewById(R.id.primary_widgets_list_view));
         mAdapters.get(AdapterHolder.SEARCH).setup(findViewById(R.id.search_widgets_list_view));
         if (mHasWorkProfile) {
@@ -291,91 +269,33 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mViewPager = null;
         }
 
-        mNoWidgetsView = findViewById(R.id.no_widgets_text);
-
-        mSearchScrollView = findViewById(R.id.search_and_recommendations_container);
-        mSearchScrollView.setCurrentRecyclerView(findViewById(R.id.primary_widgets_list_view));
-
-        mRecommendedWidgetsTable = mIsTwoPane
-                ? mContent.findViewById(R.id.recommended_widget_table)
-                : mSearchScrollView.findViewById(R.id.recommended_widget_table);
-
-        mRecommendedWidgetsTable.setWidgetCellLongClickListener(this);
-        mRecommendedWidgetsTable.setWidgetCellOnClickListener(this);
-
-        // Add suggested widgets.
-        if (mIsTwoPane) {
-            mSuggestedWidgetsContainer = mSearchScrollView.findViewById(R.id.suggestions_header);
-
-            // Inflate the suggestions header.
-            mSuggestedWidgetsHeader = (WidgetsListHeader) layoutInflater.inflate(
-                    R.layout.widgets_list_row_header_two_pane,
-                    mSuggestedWidgetsContainer,
-                    false);
-            mSuggestedWidgetsHeader.setExpanded(true);
-
-            PackageItemInfo packageItemInfo = new PackageItemInfo(
-                    /* packageName= */ SUGGESTIONS_PACKAGE_NAME,
-                    Process.myUserHandle()) {
-                @Override
-                public boolean usingLowResIcon() {
-                    return false;
-                }
-            };
-            packageItemInfo.title = getContext().getString(R.string.suggested_widgets_header_title);
-            WidgetsListHeaderEntry widgetsListHeaderEntry = WidgetsListHeaderEntry.create(
-                    packageItemInfo,
-                    getContext().getString(R.string.suggested_widgets_header_title),
-                    mActivityContext.getPopupDataProvider().getRecommendedWidgets())
-                    .withWidgetListShown();
-
-            mSuggestedWidgetsHeader.applyFromItemInfoWithIcon(widgetsListHeaderEntry);
-            mSuggestedWidgetsHeader.setIcon(
-                    getContext().getDrawable(R.drawable.widget_suggestions_icon));
-            mSuggestedWidgetsHeader.setOnClickListener(view -> {
-                mSuggestedWidgetsHeader.setExpanded(true);
-                resetExpandedHeaders();
-                mRightPane.removeAllViews();
-                mRightPane.addView(mRecommendedWidgetsTable);
-            });
-            mSuggestedWidgetsContainer.addView(mSuggestedWidgetsHeader);
-        }
-
         mTabBar = mSearchScrollView.findViewById(R.id.tabs);
+        if (mTabBar != null) {
+            mTabBar.setBackground(DrawableTokens.BgWidgetsFullSheet.resolve(getContext()));
+        }
         mSearchBarContainer = mSearchScrollView.findViewById(R.id.search_bar_container);
+        mSearchBarContainer.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
+
         mSearchBar = mSearchScrollView.findViewById(R.id.widgets_search_bar);
-        mHeaderTitle = mIsTwoPane
-                ? mContent.findViewById(R.id.title)
-                : mSearchScrollView.findViewById(R.id.title);
-        mRightPane = mIsTwoPane ? mContent.findViewById(R.id.right_pane) : null;
-        mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(mActivityContext, layoutInflater, this,
-                this);
-        onRecommendedWidgetsBound();
-        onWidgetsBound();
 
         mSearchBar.initialize(
                 mActivityContext.getPopupDataProvider(), /* searchModeListener= */ this);
-
-        setUpEducationViewsIfNeeded();
     }
 
     private void setDeviceManagementResources() {
         Button personalTab = findViewById(R.id.tab_personal);
         personalTab.setText(R.string.all_apps_personal_tab);
+        personalTab.setAllCaps(false);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(personalTab, R.id.font_button);
 
         Button workTab = findViewById(R.id.tab_work);
         workTab.setText(R.string.all_apps_work_tab);
+        workTab.setAllCaps(false);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(workTab, R.id.font_button);
     }
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
-
-        // if the current active page changes to personal or work we set suggestions
-        // to be the selected widget
-        if (mIsTwoPane && (currentActivePage == PERSONAL_TAB || currentActivePage == WORK_TAB)) {
-            mSuggestedWidgetsHeader.callOnClick();
-        }
-
         AdapterHolder currentAdapterHolder = mAdapters.get(currentActivePage);
         WidgetsRecyclerView currentRecyclerView = mAdapters.get(currentActivePage).mWidgetsRecyclerView;
 
@@ -384,9 +304,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    public void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float progress) {
-        super.onBackProgressed(progress);
-        mFastScroller.setVisibility(progress > 0 ? View.INVISIBLE : View.VISIBLE);
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onBackProgressed(float backProgress) {
+        super.onBackProgressed(backProgress);
+        mFastScroller.setVisibility(backProgress > 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
@@ -402,14 +323,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     }
 
-    private void updateRecyclerViewVisibility(AdapterHolder adapterHolder) {
+    protected void updateRecyclerViewVisibility(AdapterHolder adapterHolder) {
         // The first item is always an empty space entry. Look for any more items.
         boolean isWidgetAvailable = adapterHolder.mWidgetsListAdapter.hasVisibleEntries();
-
-        if (mIsTwoPane) {
-            mRightPane.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
-        }
-
         adapterHolder.mWidgetsRecyclerView.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
 
         if (adapterHolder.mAdapterType == AdapterHolder.SEARCH) {
@@ -543,15 +459,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (getMeasuredWidth() == 0)
             return false;
 
-        View content = mHasWorkProfile
-                ? mViewPager
-                : mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView;
-        if (mIsTwoPane && mRightPane != null) {
-            content = mRightPane;
-        }
-
         @Px
-        int maxHorizontalSpan = content.getMeasuredWidth() - (2 * mContentHorizontalMargin);
+        int maxHorizontalSpan = getContentView().getMeasuredWidth()
+                - (2 * mContentHorizontalMargin);
         if (mMaxSpanPerRow != maxHorizontalSpan) {
             mMaxSpanPerRow = maxHorizontalSpan;
             mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPxPerRow(
@@ -566,6 +476,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             return true;
         }
         return false;
+    }
+
+    protected View getContentView() {
+        return mHasWorkProfile
+                ? mViewPager
+                : mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView;
     }
 
     @Override
@@ -642,19 +558,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void onSearchResults(List<WidgetsListBaseEntry> entries) {
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setWidgetsOnSearch(entries);
         updateRecyclerViewVisibility(mAdapters.get(AdapterHolder.SEARCH));
-        if (mIsTwoPane) {
-            mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.selectFirstHeaderEntry();
-        }
-        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
     }
 
-    private void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
+    protected void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
         mIsInSearchMode = isInSearchMode;
         if (isInSearchMode) {
             mRecommendedWidgetsTable.setVisibility(GONE);
-            if (mIsTwoPane) {
-                mSuggestedWidgetsContainer.setVisibility(GONE);
-            }
             if (mHasWorkProfile) {
                 mViewPager.setVisibility(GONE);
                 mTabBar.setVisibility(GONE);
@@ -666,10 +575,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mNoWidgetsView.setVisibility(GONE);
         } else {
             mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.setVisibility(GONE);
-            if (mIsTwoPane) {
-                mSuggestedWidgetsContainer.setVisibility(VISIBLE);
-                mSuggestedWidgetsHeader.callOnClick();
-            }
             // Visibility of recommended widgets, recycler views and headers are handled in
             // methods
             // below.
@@ -678,7 +583,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     }
 
-    private void resetExpandedHeaders() {
+    protected void resetExpandedHeaders() {
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.resetExpandedHeader();
         mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.resetExpandedHeader();
     }
@@ -689,7 +594,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             return;
         }
         List<WidgetItem> recommendedWidgets = mActivityContext.getPopupDataProvider().getRecommendedWidgets();
-        if (recommendedWidgets.size() > 0) {
+        mHasRecommendedWidgets = recommendedWidgets.size() > 0;
+        if (mHasRecommendedWidgets) {
             float noWidgetsViewHeight = 0;
             if (mIsNoWidgetsViewNeeded) {
                 // Make sure recommended section leaves enough space for noWidgetsView.
@@ -699,15 +605,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                                 mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
                 noWidgetsViewHeight = noWidgetsViewTextBounds.height();
             }
-            doMeasure(
-                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
-                            MeasureSpec.EXACTLY),
-                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
-                            MeasureSpec.EXACTLY));
-            float maxTableHeight = mIsTwoPane ? Float.MAX_VALUE
-                    : (mContent.getMeasuredHeight()
-                            - mTabsHeight - getHeaderViewHeight()
-                            - noWidgetsViewHeight) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+            if (!isTwoPane()) {
+                doMeasure(
+                        makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
+                                MeasureSpec.EXACTLY),
+                        makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
+                                MeasureSpec.EXACTLY));
+            }
+            float maxTableHeight = getMaxTableHeight(noWidgetsViewHeight);
 
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable = WidgetsTableUtils
                     .groupWidgetItemsUsingRowPxWithoutReordering(
@@ -723,26 +628,32 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     }
 
+    /** b/209579563: "Widgets" header should be focused first. */
+    @Override
+    protected View getAccessibilityInitialFocusView() {
+        return mHeaderTitle;
+    }
+
+    protected float getMaxTableHeight(float noWidgetsViewHeight) {
+        return (mContent.getMeasuredHeight()
+                - mTabsHeight - getHeaderViewHeight()
+                - noWidgetsViewHeight)
+                * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+    }
+
     private void open(boolean animate) {
         if (animate) {
             if (getPopupContainer().getInsets().bottom > 0) {
                 mContent.setAlpha(0);
                 setTranslationShift(VERTICAL_START_POSITION);
             }
-            mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator
-                    .setDuration(mActivityContext.getDeviceProfile().bottomSheetOpenDuration)
-                    .setInterpolator(AnimationUtils.loadInterpolator(
-                            getContext(), android.R.interpolator.linear_out_slow_in));
-            mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mOpenCloseAnimator.removeListener(this);
-                }
-            });
+            setUpOpenAnimation(mActivityContext.getDeviceProfile().bottomSheetOpenDuration);
+            Animator animator = mOpenCloseAnimation.getAnimationPlayer();
+            animator.setInterpolator(AnimationUtils.loadInterpolator(
+                    getContext(), android.R.interpolator.linear_out_slow_in));
             post(() -> {
-                mOpenCloseAnimator.start();
+                animator.setDuration(mActivityContext.getDeviceProfile().bottomSheetOpenDuration)
+                        .start();
                 mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
             });
         } else {
@@ -763,38 +674,50 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        // Disable swipe down when recycler view is scrolling or scroll view is
-        // scrolling
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mNoIntercept = false;
-            WidgetsRecyclerView recyclerView = getRecyclerView();
-            RecyclerViewFastScroller scroller = recyclerView.getScrollbar();
-            if (scroller.getThumbOffsetY() >= 0
-                    && getPopupContainer().isEventOverView(scroller, ev)) {
-                mNoIntercept = true;
-            } else if (getPopupContainer().isEventOverView(recyclerView, ev)) {
-                mNoIntercept = !recyclerView.shouldContainerScroll(ev, getPopupContainer());
-            } else if (mIsTwoPane && getPopupContainer().isEventOverView(mRightPane, ev)) {
-                mNoIntercept = mRightPane.getScrollY() > 0;
-            }
-
+            mNoIntercept = shouldScroll(ev);
             if (mSearchBar.isSearchBarFocused()
                     && !getPopupContainer().isEventOverView(mSearchBarContainer, ev)) {
                 mSearchBar.clearSearchBarFocus();
             }
         }
+
         return super.onControllerInterceptTouchEvent(ev);
+    }
+
+    protected boolean shouldScroll(MotionEvent ev) {
+        boolean intercept = false;
+        WidgetsRecyclerView recyclerView = getRecyclerView();
+        RecyclerViewFastScroller scroller = recyclerView.getScrollbar();
+        // Disable swipe down when recycler view is scrolling
+        if (scroller.getThumbOffsetY() >= 0 && getPopupContainer().isEventOverView(scroller, ev)) {
+            intercept = true;
+        } else if (getPopupContainer().isEventOverView(recyclerView, ev)) {
+            intercept = !recyclerView.shouldContainerScroll(ev, getPopupContainer());
+        }
+        return intercept;
     }
 
     /** Shows the {@link WidgetsFullSheet} on the launcher. */
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
-        WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
-                .inflate(LARGE_SCREEN_WIDGET_PICKER.get()
-                        && launcher.getDeviceProfile().isTablet
-                        && launcher.getDeviceProfile().isLandscape
-                                ? R.layout.widgets_full_sheet_large_screen
-                                : R.layout.widgets_full_sheet,
-                        launcher.getDragLayer(), false);
+        boolean isTwoPane = LARGE_SCREEN_WIDGET_PICKER.get()
+                && launcher.getDeviceProfile().isTablet
+                && launcher.getDeviceProfile().isLandscape
+                && !launcher.getDeviceProfile().isTwoPanels;
+
+        WidgetsFullSheet sheet;
+        if (isTwoPane) {
+            sheet = (WidgetsTwoPaneSheet) launcher.getLayoutInflater().inflate(
+                    R.layout.widgets_two_pane_sheet,
+                    launcher.getDragLayer(),
+                    false);
+        } else {
+            sheet = (WidgetsFullSheet) launcher.getLayoutInflater().inflate(
+                    R.layout.widgets_full_sheet,
+                    launcher.getDragLayer(),
+                    false);
+        }
+
         sheet.attachToContainer();
         sheet.mIsOpen = true;
         sheet.open(animate);
@@ -867,7 +790,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onCloseComplete();
         removeCallbacks(mShowEducationTipTask);
         if (mLatestEducationalTip != null) {
-            mLatestEducationalTip.close(false);
+            mLatestEducationalTip.close(true);
         }
         AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
@@ -896,12 +819,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         // Checks the orientation of the screen
-        if (LARGE_SCREEN_WIDGET_PICKER.get()
-                && mOrientation != newConfig.orientation
-                && mDeviceProfile.isTablet) {
+        if (mOrientation != newConfig.orientation) {
             mOrientation = newConfig.orientation;
-            handleClose(false);
-            show(Launcher.getLauncher(getContext()), false);
+            if (LARGE_SCREEN_WIDGET_PICKER.get()
+                    && mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
+                handleClose(false);
+                show(Launcher.getLauncher(getContext()), false);
+            } else {
+                reset();
+            }
         }
     }
 
@@ -966,7 +892,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 || Utilities.isRunningInTestHarness();
     }
 
-    private void setUpEducationViewsIfNeeded() {
+    protected void setUpEducationViewsIfNeeded() {
         if (!hasSeenEducationDialog()) {
             postDelayed(() -> {
                 WidgetsEduView eduDialog = showEducationDialog();
@@ -984,57 +910,49 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     }
 
+    protected boolean isTwoPane() {
+        return false;
+    }
+
+    /** Gets the sheet for widget picker, which is used for testing. */
+    @VisibleForTesting
+    public View getSheet() {
+        return mContent;
+    }
+
+    /**
+     * Opens the first header in widget picker and scrolls to the top of the
+     * RecyclerView.
+     */
+    @VisibleForTesting
+    public void openFirstHeader() {
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.selectFirstHeaderEntry();
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView.scrollToTop();
+    }
+
     /** A holder class for holding adapters & their corresponding recycler view. */
-    private final class AdapterHolder {
+    final class AdapterHolder {
         static final int PRIMARY = 0;
         static final int WORK = 1;
         static final int SEARCH = 2;
 
         private final int mAdapterType;
-        private final WidgetsListAdapter mWidgetsListAdapter;
+        final WidgetsListAdapter mWidgetsListAdapter;
         private final DefaultItemAnimator mWidgetsListItemAnimator;
 
-        private WidgetsRecyclerView mWidgetsRecyclerView;
+        WidgetsRecyclerView mWidgetsRecyclerView;
 
         AdapterHolder(int adapterType) {
             mAdapterType = adapterType;
             Context context = getContext();
-            HeaderChangeListener headerChangeListener = new HeaderChangeListener() {
-                @Override
-                public void onHeaderChanged(@NonNull PackageUserKey selectedHeader) {
-                    WidgetsListContentEntry contentEntry = mActivityContext.getPopupDataProvider()
-                            .getSelectedAppWidgets(selectedHeader);
 
-                    if (contentEntry == null || mRightPane == null) {
-                        return;
-                    }
-
-                    if (mSuggestedWidgetsHeader != null) {
-                        mSuggestedWidgetsHeader.setExpanded(false);
-                    }
-                    WidgetsRowViewHolder widgetsRowViewHolder = mWidgetsListTableViewHolderBinder
-                            .newViewHolder(mRightPane);
-                    mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                            contentEntry,
-                            ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
-                            Collections.EMPTY_LIST);
-                    widgetsRowViewHolder.mDataCallback = data -> {
-                        mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                                contentEntry,
-                                ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
-                                Collections.singletonList(data));
-                    };
-                    mRightPane.removeAllViews();
-                    mRightPane.addView(widgetsRowViewHolder.itemView);
-                }
-            };
             mWidgetsListAdapter = new WidgetsListAdapter(
                     context,
                     LayoutInflater.from(context),
                     this::getEmptySpaceHeight,
                     /* iconClickListener= */ WidgetsFullSheet.this,
                     /* iconLongClickListener= */ WidgetsFullSheet.this,
-                    mIsTwoPane ? headerChangeListener : null);
+                    isTwoPane());
             mWidgetsListAdapter.setHasStableIds(true);
             switch (mAdapterType) {
                 case PRIMARY:
@@ -1066,7 +984,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsRecyclerView.bindFastScrollbar(mFastScroller);
             mWidgetsRecyclerView.setItemAnimator(mWidgetsListItemAnimator);
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
-            if (!mIsTwoPane) {
+            if (!isTwoPane()) {
                 mWidgetsRecyclerView.setEdgeEffectFactory(
                         ((SpringRelativeLayout) mContent).createEdgeEffectFactory());
             }
@@ -1079,18 +997,5 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             }
             mWidgetsListAdapter.setMaxHorizontalSpansPxPerRow(mMaxSpanPerRow);
         }
-    }
-
-    /**
-     * This is a listener for when the selected header gets changed in the left
-     * pane.
-     */
-    public interface HeaderChangeListener {
-        /**
-         * Sets the right pane to have the widgets for the currently selected header
-         * from
-         * the left pane.
-         */
-        void onHeaderChanged(@NonNull PackageUserKey selectedHeader);
     }
 }

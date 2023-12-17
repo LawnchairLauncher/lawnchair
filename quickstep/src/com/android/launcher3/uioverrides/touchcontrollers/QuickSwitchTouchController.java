@@ -15,12 +15,12 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_2;
+import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
@@ -128,14 +128,14 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     }
 
     private void setupInterpolators(StateAnimationConfig stateAnimationConfig) {
-        stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_2);
-        stateAnimationConfig.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_2);
+        stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_FADE, DECELERATE_2);
+        stateAnimationConfig.setInterpolator(ANIM_ALL_APPS_FADE, DECELERATE_2);
         if (DisplayController.getNavigationMode(mLauncher) == NavigationMode.NO_BUTTON) {
             // Overview lives to the left of workspace, so translate down later than over
-            stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL_2);
-            stateAnimationConfig.setInterpolator(ANIM_VERTICAL_PROGRESS, ACCEL_2);
-            stateAnimationConfig.setInterpolator(ANIM_OVERVIEW_SCALE, ACCEL_2);
-            stateAnimationConfig.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, ACCEL_2);
+            stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCELERATE_2);
+            stateAnimationConfig.setInterpolator(ANIM_VERTICAL_PROGRESS, ACCELERATE_2);
+            stateAnimationConfig.setInterpolator(ANIM_OVERVIEW_SCALE, ACCELERATE_2);
+            stateAnimationConfig.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, ACCELERATE_2);
             stateAnimationConfig.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
         } else {
             stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_TRANSLATE, LINEAR);

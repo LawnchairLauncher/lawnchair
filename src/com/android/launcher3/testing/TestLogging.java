@@ -27,26 +27,29 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import java.util.function.BiConsumer;
 
 public final class TestLogging {
+    private static final String TAPL_EVENTS_TAG = "TaplEvents";
+    private static final String LAUNCHER_EVENTS_TAG = "LauncherEvents";
     private static BiConsumer<String, String> sEventConsumer;
     public static boolean sHadEventsNotFromTest;
 
-    private static void recordEventSlow(String sequence, String event) {
-        Log.d(TestProtocol.TAPL_EVENTS_TAG, sequence + " / " + event);
+    private static void recordEventSlow(String sequence, String event, boolean reportToTapl) {
+        Log.d(reportToTapl ? TAPL_EVENTS_TAG : LAUNCHER_EVENTS_TAG,
+                sequence + " / " + event);
         final BiConsumer<String, String> eventConsumer = sEventConsumer;
-        if (eventConsumer != null) {
+        if (reportToTapl && eventConsumer != null) {
             eventConsumer.accept(sequence, event);
         }
     }
 
     public static void recordEvent(String sequence, String event) {
         if (Utilities.isRunningInTestHarness()) {
-            recordEventSlow(sequence, event);
+            recordEventSlow(sequence, event, true);
         }
     }
 
     public static void recordEvent(String sequence, String message, Object parameter) {
         if (Utilities.isRunningInTestHarness()) {
-            recordEventSlow(sequence, message + ": " + parameter);
+            recordEventSlow(sequence, message + ": " + parameter, true);
         }
     }
 
@@ -59,14 +62,20 @@ public final class TestLogging {
 
     public static void recordKeyEvent(String sequence, String message, KeyEvent event) {
         if (Utilities.isRunningInTestHarness()) {
-            recordEventSlow(sequence, message + ": " + event);
+            recordEventSlow(sequence, message + ": " + event, true);
             registerEventNotFromTest(event);
         }
     }
 
     public static void recordMotionEvent(String sequence, String message, MotionEvent event) {
-        if (Utilities.isRunningInTestHarness() && event.getAction() != MotionEvent.ACTION_MOVE) {
-            recordEventSlow(sequence, message + ": " + event);
+        final int action = event.getAction();
+        if (Utilities.isRunningInTestHarness() && action != MotionEvent.ACTION_MOVE) {
+            // "Expecting" in TAPL motion events was thought to be producing considerable noise in
+            // tests due to failed checks for expected events. So we are not sending them to TAPL.
+            // Other events, such as EVENT_PILFER_POINTERS produce less noise and are thought to
+            // be more useful.
+            // That's why we pass false as the value for the 'reportToTapl' parameter.
+            recordEventSlow(sequence, message + ": " + event, false);
             registerEventNotFromTest(event);
         }
     }

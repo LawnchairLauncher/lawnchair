@@ -28,7 +28,7 @@
         android:padding="16dp"
         android:background="@drawable/arrow_toast_rounded_background"
         android:elevation="@dimen/arrow_toast_elevation"
-        android:textColor="@color/arrow_tip_view_content"
+        android:textColor="?attr/arrowTipTextColor"
         android:textSize="14sp"/>
 
     <View

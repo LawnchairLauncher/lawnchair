@@ -15,12 +15,13 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.app.animation.Interpolators.ACCELERATE_2;
+import static com.android.app.animation.Interpolators.DECELERATE_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.EDIT_MODE_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_TWO_BUTTON_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -32,12 +33,14 @@ import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_ST
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.states.EditModeState;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -66,6 +69,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int CLEAR_ALL_BUTTON = 1 << 4;
     public static final int WORKSPACE_PAGE_INDICATOR = 1 << 5;
     public static final int SPLIT_PLACHOLDER_VIEW = 1 << 6;
+    public static final int FLOATING_SEARCH_BAR = 1 << 7;
 
     // Flag indicating workspace has multiple pages visible.
     public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
@@ -90,7 +94,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final float NO_SCALE = 1;
 
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
-            new PageAlphaProvider(ACCEL_2) {
+            new PageAlphaProvider(ACCELERATE_2) {
                 @Override
                 public float getPageAlpha(int pageIndex) {
                     return 1;
@@ -98,14 +102,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             };
 
     protected static final PageTranslationProvider DEFAULT_PAGE_TRANSLATION_PROVIDER =
-            new PageTranslationProvider(DEACCEL_2) {
+            new PageTranslationProvider(DECELERATE_2) {
                 @Override
                 public float getPageTranslation(int pageIndex) {
                     return 0;
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[10];
+    private static final LauncherState[] sAllStates = new LauncherState[11];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -133,6 +137,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(
             SPRING_LOADED_STATE_ORDINAL);
+    public static final LauncherState EDIT_MODE = new EditModeState(EDIT_MODE_STATE_ORDINAL);
     public static final LauncherState ALL_APPS = new AllAppsState(ALL_APPS_STATE_ORDINAL);
     public static final LauncherState HINT_STATE = new HintState(HINT_STATE_ORDINAL);
     public static final LauncherState HINT_STATE_TWO_BUTTON = new HintState(
@@ -209,8 +214,61 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return 0;
     }
 
+    /**
+     * How far from the bottom of the screen the <em>floating</em> search bar should rest in this
+     * state when the IME is not present.
+     * <p>
+     * To hide offscreen, use a negative value.
+     * <p>
+     * Note: if the provided value is non-negative but less than the current bottom insets, the
+     * insets will be applied. As such, you can use 0 to default to this.
+     */
+    public int getFloatingSearchBarRestingMarginBottom(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        return areElementsVisible(launcher, FLOATING_SEARCH_BAR) ? dp.getQsbOffsetY()
+                : -dp.hotseatQsbHeight;
+    }
+
+    /**
+     * How far from the start of the screen the <em>floating</em> search bar should rest.
+     * <p>
+     * To use original margin, return a negative value.
+     */
+    public int getFloatingSearchBarRestingMarginStart(Launcher launcher) {
+        boolean isRtl = Utilities.isRtl(launcher.getResources());
+        View qsb = launcher.getHotseat().getQsb();
+        return isRtl ? launcher.getHotseat().getRight() - qsb.getRight() : qsb.getLeft();
+    }
+
+    /**
+     * How far from the end of the screen the <em>floating</em> search bar should rest.
+     * <p>
+     * To use original margin, return a negative value.
+     */
+    public int getFloatingSearchBarRestingMarginEnd(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        if (dp.isQsbInline) {
+            int marginStart = getFloatingSearchBarRestingMarginStart(launcher);
+            return dp.widthPx - marginStart - dp.hotseatQsbWidth;
+        }
+
+        boolean isRtl = Utilities.isRtl(launcher.getResources());
+        View qsb = launcher.getHotseat().getQsb();
+        return isRtl ? qsb.getLeft() : launcher.getHotseat().getRight() - qsb.getRight();
+    }
+
+    /** Whether the <em>floating</em> search bar should use the pill UI when not focused. */
+    public boolean shouldFloatingSearchBarUsePillWhenUnfocused(Launcher launcher) {
+        return false;
+    }
+
     public int getVisibleElements(Launcher launcher) {
-        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR;
+        int elements = HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR;
+        // Floating search bar is visible in normal state except in landscape on phones.
+        if (!(launcher.getDeviceProfile().isPhone && launcher.getDeviceProfile().isLandscape)) {
+            elements |= FLOATING_SEARCH_BAR;
+        }
+        return elements;
     }
 
     /**
@@ -326,7 +384,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             return DEFAULT_ALPHA_PROVIDER;
         }
         final int centerPage = launcher.getWorkspace().getNextPage();
-        return new PageAlphaProvider(ACCEL_2) {
+        return new PageAlphaProvider(ACCELERATE_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
                 return pageIndex != centerPage ? 0 : 1f;
@@ -338,11 +396,12 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * Gets the translation provider for workspace pages.
      */
     public PageTranslationProvider getWorkspacePageTranslationProvider(Launcher launcher) {
-        if (this != SPRING_LOADED || !launcher.getDeviceProfile().isTwoPanels) {
+        if (!(this == SPRING_LOADED || this == EDIT_MODE)
+                || !launcher.getDeviceProfile().isTwoPanels) {
             return DEFAULT_PAGE_TRANSLATION_PROVIDER;
         }
         final float quarterPageSpacing = launcher.getWorkspace().getPageSpacing() / 4f;
-        return new PageTranslationProvider(DEACCEL_2) {
+        return new PageTranslationProvider(DECELERATE_2) {
             @Override
             public float getPageTranslation(int pageIndex) {
                 boolean isRtl = launcher.getWorkspace().mIsRtl;
@@ -351,6 +410,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
                         : quarterPageSpacing;
             }
         };
+    }
+
+    /**
+     * Called when leaving this LauncherState
+     * @param launcher - Launcher instance
+     * @param toState - New LauncherState that is being entered
+     */
+    public void onLeavingState(Launcher launcher, LauncherState toState) {
+        // no-op
+        // override to handle when leaving current LauncherState
     }
 
     @Override

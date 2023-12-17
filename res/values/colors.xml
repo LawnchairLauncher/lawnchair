@@ -39,10 +39,12 @@
     <color name="popup_color_primary_light">#FFF</color>
     <color name="popup_color_secondary_light">#F1F3F4</color>
     <color name="popup_color_tertiary_light">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="popup_text_color_light">#1F1F1F</color>
     <color name="popup_color_neutral_dark">#3C4043</color> <!-- Gray 800 -->
     <color name="popup_color_primary_dark">#3C4043</color> <!-- Gray 800 -->
     <color name="popup_color_secondary_dark">#202124</color>
     <color name="popup_color_tertiary_dark">#757575</color> <!-- Gray 600 -->
+    <color name="popup_text_color_dark">#E3E3E3</color>
 
     <color name="popup_shade_first_light">#F9F9F9</color>
     <color name="popup_shade_second_light">#F1F1F1</color>
@@ -54,33 +56,39 @@
     <color name="popup_notification_dot_light">#FFF</color>
     <color name="popup_notification_dot_dark">#757575</color>
 
+    <color name="notification_dot_color_light">#6DD58C</color>
+    <color name="notification_dot_color_dark">#C4EED0</color>
+
     <color name="workspace_text_color_light">#FFF</color>
     <color name="workspace_text_color_dark">#FF000000</color>
 
-    <color name="folder_hint_text_color_light">#FFF</color>
-    <color name="folder_hint_text_color_dark">#FF000000</color>
+    <color name="folder_text_color_light">#1F1F1F</color>
+    <color name="folder_text_color_dark">#E3E3E3</color>
+    <color name="folder_hint_text_color_light">#444746</color>
+    <color name="folder_hint_text_color_dark">#C4C7C5</color>
 
-    <color name="folder_background_light">#F9F9F9</color>
-    <color name="folder_background_dark">#464746</color>
+    <color name="folder_background_light">#EFEDED</color>
+    <color name="folder_background_dark">#1F2020</color>
 
-    <color name="folder_preview_light">#F9F9F9</color>
-    <color name="folder_preview_dark">#464746</color>
+    <color name="folder_preview_light">#7FCFFF</color>
+    <color name="folder_preview_dark">#2A2A2A</color>
 
-    <color name="folder_dot_color">?attr/colorPrimary</color>
-    <color name="folder_pagination_color_light">#ff006c5f</color>
-    <color name="folder_pagination_color_dark">#ffbfebe3</color>
+    <color name="folder_pagination_color_light">#0B57D0</color>
+    <color name="folder_pagination_color_dark">#A8C7FA</color>
 
     <color name="text_color_primary_dark">#FFFFFFFF</color>
     <color name="text_color_secondary_dark">#FFFFFFFF</color>
     <color name="text_color_tertiary_dark">#CCFFFFFF</color>
 
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
-    <color name="wallpaper_scrim_color">#0D878787</color>
 
-    <color name="workspace_accent_color_light">#ff8df5e3</color>
-    <color name="workspace_accent_color_dark">#ff3d665f</color>
-
-    <color name="all_apps_button_color">#40484B</color>
+    <color name="workspace_accent_color_light">#D3E3FD</color>
+    <color name="workspace_accent_color_dark">#041E49</color>
+    <color name="workspace_surface_color">#D3E3FD</color>
+    <color name="drop_target_hover_text_color_light">#041E49</color>
+    <color name="drop_target_hover_text_color_dark">#D3E3FD</color>
+    <color name="drop_target_hover_button_color_light">#D3E3FD</color>
+    <color name="drop_target_hover_button_color_dark">#0842A0</color>
 
     <color name="preload_icon_accent_color_light">#00668B</color>
     <color name="preload_icon_background_color_light">#B5CAD7</color>
@@ -88,4 +96,81 @@
     <color name="preload_icon_background_color_dark">#40484D</color>
 
     <color name="work_turn_on_stroke">?android:attr/colorAccent</color>
+    <color name="work_fab_bg_color">#A8C7FA</color>
+    <color name="work_fab_icon_color">#041E49</color>
+
+    <color name="widget_picker_primary_surface_color_light">#EFEDED</color>
+    <color name="widget_picker_secondary_surface_color_light">#FAF9F8</color>
+    <color name="widget_picker_title_color_light">#1F1F1F</color>
+    <color name="widget_picker_header_app_title_color_light">#1F1F1F</color>
+    <color name="widget_picker_header_app_subtitle_color_light">#444746</color>
+    <color name="widget_picker_header_background_color_light">#C2E7FF</color>
+    <color name="widget_picker_suggestions_icon_background_color_light">#FFFFFF</color>
+    <color name="widget_picker_suggestions_icon_color_light">#0B57D0</color>
+    <color name="widget_picker_search_text_color_light">#444746</color>
+    <color name="widget_picker_tab_background_selected_light">#0B57D0</color>
+    <color name="widget_picker_tab_background_unselected_light">#E3E3E3</color>
+    <color name="widget_picker_selected_tab_text_color_light">#FFFFFF</color>
+    <color name="widget_picker_unselected_tab_text_color_light">#444746</color>
+    <color name="widget_picker_collapse_handle_color_light">#C4C7C5</color>
+
+    <color name="widget_picker_primary_surface_color_dark">#1F2020</color>
+    <color name="widget_picker_secondary_surface_color_dark">#393939</color>
+    <color name="widget_picker_title_color_dark">#E3E3E3</color>
+    <color name="widget_picker_header_app_title_color_dark">#E3E3E3</color>
+    <color name="widget_picker_header_app_subtitle_color_dark">#C4C7C5</color>
+    <color name="widget_picker_header_background_color_dark">#004A77</color>
+    <color name="widget_picker_suggestions_icon_background_color_dark">#FFFFFFFF</color>
+    <color name="widget_picker_suggestions_icon_color_dark">#062E6F</color>
+    <color name="widget_picker_search_text_color_dark">#C4C7C5</color>
+    <color name="widget_picker_tab_background_selected_dark">#A8C7FA</color>
+    <color name="widget_picker_tab_background_unselected_dark">#343535</color>
+    <color name="widget_picker_selected_tab_text_color_dark">#2D312F</color>
+    <color name="widget_picker_unselected_tab_text_color_dark">#C4C7C5</color>
+    <color name="widget_picker_collapse_handle_color_dark">#444746</color>
+
+    <color name="material_color_on_secondary_fixed_variant">#3F4759</color>
+    <color name="material_color_on_tertiary_fixed_variant">#583E5B</color>
+    <color name="material_color_surface_container_lowest">#FFFFFF</color>
+    <color name="material_color_on_primary_fixed_variant">#2B4678</color>
+    <color name="material_color_on_secondary_container">#141B2C</color>
+    <color name="material_color_on_tertiary_container">#29132D</color>
+    <color name="material_color_surface_container_low">#F5F3F7</color>
+    <color name="material_color_on_primary_container">#001A41</color>
+    <color name="material_color_secondary_fixed_dim">#BFC6DC</color>
+    <color name="material_color_on_error_container">#410000</color>
+    <color name="material_color_on_secondary_fixed">#141B2C</color>
+    <color name="material_color_on_surface_inverse">#E3E2E6</color>
+    <color name="material_color_tertiary_fixed_dim">#DEBCDF</color>
+    <color name="material_color_on_tertiary_fixed">#29132D</color>
+    <color name="material_color_primary_fixed_dim">#ADC6FF</color>
+    <color name="material_color_secondary_container">#DBE2F9</color>
+    <color name="material_color_error_container">#FFDAD5</color>
+    <color name="material_color_on_primary_fixed">#001A41</color>
+    <color name="material_color_primary_inverse">#ADC6FF</color>
+    <color name="material_color_secondary_fixed">#DBE2F9</color>
+    <color name="material_color_surface_inverse">#121316</color>
+    <color name="material_color_surface_variant">#E1E2EC</color>
+    <color name="material_color_tertiary_container">#FBD7FC</color>
+    <color name="material_color_tertiary_fixed">#FBD7FC</color>
+    <color name="material_color_primary_container">#D8E2FF</color>
+    <color name="material_color_on_background">#1B1B1F</color>
+    <color name="material_color_primary_fixed">#D8E2FF</color>
+    <color name="material_color_on_secondary">#FFFFFF</color>
+    <color name="material_color_on_tertiary">#FFFFFF</color>
+    <color name="material_color_surface_dim">#DBD9DD</color>
+    <color name="material_color_surface_bright">#FAF9FD</color>
+    <color name="material_color_on_error">#FFFFFF</color>
+    <color name="material_color_surface">#FAF9FD</color>
+    <color name="material_color_surface_container_high">#E9E7EC</color>
+    <color name="material_color_surface_container_highest">#E3E2E6</color>
+    <color name="material_color_on_surface_variant">#44474F</color>
+    <color name="material_color_outline">#72747D</color>
+    <color name="material_color_outline_variant">#C4C7C5</color>
+    <color name="material_color_on_primary">#FFFFFF</color>
+    <color name="material_color_on_surface">#1B1B1F</color>
+    <color name="material_color_surface_container">#EFEDF1</color>
+    <color name="material_color_primary">#445E91</color>
+    <color name="material_color_secondary">#575E71</color>
+    <color name="material_color_tertiary">#715573</color>
 </resources>

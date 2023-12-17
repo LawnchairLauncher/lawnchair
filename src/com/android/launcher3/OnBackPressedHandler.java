@@ -29,7 +29,7 @@ import androidx.annotation.FloatRange;
  *  <li> either one of {@link #onBackInvoked()} or {@link #onBackCancelled()} will be called to end
  *  the gesture
  */
-public interface OnBackPressedHandler {
+public interface OnBackPressedHandler{
 
     /** Called when back has started. */
     default void onBackStarted() {}

@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -30,12 +33,16 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
@@ -50,7 +57,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     private static final String TAG = "BaseModelUpdateTask";
 
     // Nullabilities are explicitly omitted here because these are late-init fields,
-    // They will be non-null after init(), which is always the case in enqueueModelUpdateTask().
+    // They will be non-null after init(), which is always the case in
+    // enqueueModelUpdateTask().
     private LauncherAppState mApp;
     private LauncherModel mModel;
     private BgDataModel mDataModel;
@@ -69,7 +77,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
 
     @Override
     public final void run() {
-        if (!Objects.requireNonNull(mModel).isModelLoaded()) {
+        boolean isModelLoaded = Objects.requireNonNull(mModel).isModelLoaded();
+        if (!isModelLoaded) {
             if (DEBUG_TASKS) {
                 Log.d(TAG, "Ignoring model task since loader is pending=" + this);
             }
@@ -95,7 +104,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public ModelWriter getModelWriter() {
-        // Updates from model task, do not deal with icon position in hotseat. Also no need to
+        // Updates from model task, do not deal with icon position in hotseat. Also no
+        // need to
         // verify changes as the ModelTasks always push the changes to callbacks
         return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */,
                 CellPosMapper.DEFAULT, null);
@@ -106,6 +116,10 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         List<WorkspaceItemInfo> workspaceUpdates = allUpdates.stream()
                 .filter(info -> info.id != ItemInfo.NO_ID)
                 .collect(Collectors.toList());
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "allUpdates: " + allUpdates.size() + ", workspaceUpdates "
+                    + workspaceUpdates.size());
+        }
         if (!workspaceUpdates.isEmpty()) {
             scheduleCallbackTask(c -> c.bindWorkspaceItemsChanged(workspaceUpdates));
         }
@@ -124,14 +138,13 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindDeepShortcuts(@NonNull final BgDataModel dataModel) {
-        final HashMap<ComponentKey, Integer> shortcutMapCopy =
-                new HashMap<>(dataModel.deepShortcutMap);
+        final HashMap<ComponentKey, Integer> shortcutMapCopy = new HashMap<>(dataModel.deepShortcutMap);
         scheduleCallbackTask(callbacks -> callbacks.bindDeepShortcutMap(shortcutMapCopy));
     }
 
     public void bindUpdatedWidgets(@NonNull final BgDataModel dataModel) {
-        final ArrayList<WidgetsListBaseEntry> widgets =
-                dataModel.widgetsModel.getWidgetsListForPicker(mApp.getContext());
+        final ArrayList<WidgetsListBaseEntry> widgets = dataModel.widgetsModel
+                .getWidgetsListForPicker(mApp.getContext());
         scheduleCallbackTask(c -> c.bindAllWidgets(widgets));
     }
 
@@ -144,10 +157,20 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindApplicationsIfNeeded() {
-        if (mAllAppsList.getAndResetChangeFlag()) {
+        boolean changeFlag = mAllAppsList.getAndResetChangeFlag();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "bindApplicationsIfNeeded changeFlag? " +
+                    changeFlag);
+        }
+        if (changeFlag) {
             AppInfo[] apps = mAllAppsList.copyData();
             int flags = mAllAppsList.getFlags();
-            scheduleCallbackTask(c -> c.bindAllApplications(apps, flags));
+            Map<PackageUserKey, Integer> packageUserKeytoUidMap = Arrays.stream(apps).collect(
+                    Collectors.toMap(
+                            appInfo -> new PackageUserKey(appInfo.componentName.getPackageName(),
+                                    appInfo.user),
+                            appInfo -> appInfo.uid, (a, b) -> a));
+            scheduleCallbackTask(c -> c.bindAllApplications(apps, flags, packageUserKeytoUidMap));
         }
     }
 }

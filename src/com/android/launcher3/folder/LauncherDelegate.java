@@ -93,8 +93,8 @@ public class LauncherDelegate {
                         // Move the item from the folder to the workspace, in the position of the
                         // folder
                         CellLayout cellLayout = mLauncher.getCellLayout(info.container,
-                                info.screenId);
-                        finalItem =  info.contents.remove(0);
+                                mLauncher.getCellPosMapper().mapModelToPresenter(info).screenId);
+                        finalItem = info.contents.remove(0);
                         newIcon = mLauncher.createShortcut(cellLayout, finalItem);
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
                                 info.container, info.screenId, info.cellX, info.cellY);
@@ -109,7 +109,7 @@ public class LauncherDelegate {
 
                     if (newIcon != null) {
                         // We add the child after removing the folder to prevent both from existing
-                        // at the same time in the CellLayout.  We need to add the new item with
+                        // at the same time in the CellLayout. We need to add the new item with
                         // addInScreenFromBind() to ensure that hotseat items are placed correctly.
                         mLauncher.getWorkspace().addInScreenFromBind(newIcon, info);
 
@@ -135,7 +135,6 @@ public class LauncherDelegate {
         }
         return true;
     }
-
 
     boolean interceptOutsideTouch(MotionEvent ev, BaseDragLayer dl, Folder folder) {
         if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
@@ -172,7 +171,8 @@ public class LauncherDelegate {
         }
 
         @Override
-        void beginDragShared(View child, DragSource source, DragOptions options) { }
+        void beginDragShared(View child, DragSource source, DragOptions options) {
+        }
 
         @Override
         ModelWriter getModelWriter() {
@@ -184,7 +184,8 @@ public class LauncherDelegate {
         }
 
         @Override
-        void forEachVisibleWorkspacePage(Consumer<View> callback) { }
+        void forEachVisibleWorkspacePage(Consumer<View> callback) {
+        }
 
         @Override
         Launcher getLauncher() {

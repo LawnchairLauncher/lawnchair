@@ -22,14 +22,12 @@ import com.android.systemui.unfold.progress.RemoteUnfoldTransitionReceiver
 import com.android.systemui.unfold.util.ATraceLoggerTransitionProgressListener
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.migration.DisableInstallInCheck
 import java.util.Optional
 import javax.inject.Provider
 import javax.inject.Singleton
 
 /** Binds classes needed to provide unfold transition progresses to another process. */
 @Module
-@DisableInstallInCheck
 class UnfoldRemoteModule {
     @Provides
     @Singleton

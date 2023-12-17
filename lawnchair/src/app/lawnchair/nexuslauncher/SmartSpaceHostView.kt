@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.util.unsafeLazy
 import com.android.launcher3.CheckLongPressHelper
 import com.android.launcher3.Launcher
@@ -49,7 +50,7 @@ sealed class SmartSpaceHostView(context: Context) : QsbWidgetHostView(context), 
             R.drawable.ic_smartspace_preferences,
             NexusLauncherEnum.SMARTSPACE_TAP_OR_LONGPRESS,
         ) { v: View -> openSettings(v) }
-        OptionsPopupView.show(mLauncher, centerPos, listOf(item), true)
+        OptionsPopupView.show<LawnchairLauncher>(mLauncher, centerPos, listOf(item), true)
         return true
     }
 

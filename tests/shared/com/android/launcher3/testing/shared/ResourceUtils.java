@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3.testing.shared;
-
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-
 public class ResourceUtils {
     private static final float EPSILON = 0.0001f;
     public static final int DEFAULT_NAVBAR_VALUE = 48;
@@ -28,20 +25,15 @@ public class ResourceUtils {
     public static final String NAVBAR_BOTTOM_GESTURE_SIZE = "navigation_bar_gesture_height";
     public static final String NAVBAR_BOTTOM_GESTURE_LARGER_SIZE =
             "navigation_bar_gesture_larger_height";
-
     public static final String NAVBAR_HEIGHT = "navigation_bar_height";
     public static final String NAVBAR_HEIGHT_LANDSCAPE = "navigation_bar_height_landscape";
-
     public static final String STATUS_BAR_HEIGHT = "status_bar_height";
     public static final String STATUS_BAR_HEIGHT_LANDSCAPE = "status_bar_height_landscape";
     public static final String STATUS_BAR_HEIGHT_PORTRAIT = "status_bar_height_portrait";
-
     public static final String NAV_BAR_INTERACTION_MODE_RES_NAME = "config_navBarInteractionMode";
-
     public static int getNavbarSize(String resName, Resources res) {
         return getDimenByName(resName, res, DEFAULT_NAVBAR_VALUE);
     }
-
     public static int getDimenByName(String resName, Resources res, int defaultValue) {
         final int frameSize;
         final int frameSizeResID = res.getIdentifier(resName, "dimen", "android");
@@ -52,7 +44,6 @@ public class ResourceUtils {
         }
         return frameSize;
     }
-
     public static boolean getBoolByName(String resName, Resources res, boolean defaultValue) {
         final boolean val;
         final int resId = res.getIdentifier(resName, "bool", "android");
@@ -63,21 +54,17 @@ public class ResourceUtils {
         }
         return val;
     }
-
     public static int getIntegerByName(String resName, Resources res, int defaultValue) {
         int resId = res.getIdentifier(resName, "integer", "android");
         return resId != 0 ? res.getInteger(resId) : defaultValue;
     }
-
     public static int pxFromDp(float size, DisplayMetrics metrics) {
         return pxFromDp(size, metrics, 1f);
     }
-
     public static int pxFromDp(float size, DisplayMetrics metrics, float scale) {
         float value = scale * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics);
         return size < 0 ? INVALID_RESOURCE_HANDLE : roundPxValueFromFloat(value);
     }
-
     /**
      * Rounds a pixel value, taking into account floating point errors.
      *
