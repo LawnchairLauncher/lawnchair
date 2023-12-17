@@ -93,25 +93,31 @@
         <ImageView
             android:id="@+id/icon1"
             style="@style/BaseIcon"
+            android:background="@drawable/pill_ripple"
             android:layout_width="@dimen/search_row_medium_icon_size"
             android:layout_height="@dimen/search_row_medium_icon_size"
             android:drawableTint="?android:textColorPrimary"
             android:ellipsize="end"
+            android:clickable="true"
             launcher:iconDisplay="search_result_small"
             launcher:layoutHorizontal="true"
-            launcher:matchTextInsetWithQuery="true" />
+            launcher:matchTextInsetWithQuery="true"
+            android:contentDescription="@string/custom"/>
 
         <ImageView
             android:id="@+id/icon2"
             style="@style/BaseIcon"
+            android:background="@drawable/pill_ripple"
             android:layout_marginLeft="@dimen/search_result_padding_medium"
             android:layout_width="@dimen/search_row_medium_icon_size"
             android:layout_height="@dimen/search_row_medium_icon_size"
             android:drawableTint="?android:textColorPrimary"
             android:ellipsize="end"
+            android:clickable="true"
             launcher:iconDisplay="search_result_small"
             launcher:layoutHorizontal="true"
-            launcher:matchTextInsetWithQuery="true" />
+            launcher:matchTextInsetWithQuery="true"
+            android:contentDescription="@string/custom" />
 
     </LinearLayout>
 </app.lawnchair.allapps.SearchResultRightLeftIcon>
