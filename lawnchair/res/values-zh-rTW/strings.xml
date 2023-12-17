@@ -271,21 +271,21 @@
     <string name="fuzzy_search_title">模糊搜尋</string>
     <string name="fuzzy_search_desc">找尋名稱相似的應用程式</string>
     <string name="max_search_result_count_title">搜尋結果數量上限</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">聯絡人搜尋結果數量上限</string>
+    <string name="max_file_result_count_title">檔案搜尋結果數量上限</string>
+    <string name="max_suggestion_result_count_title">建議搜尋結果數量上限</string>
+    <string name="max_settings_entry_result_count_title">設定搜尋結果數量上限</string>
+    <string name="max_recent_result_count_title">瀏覽紀錄搜尋結果數量上限</string>
+    <string name="clear_history">清除</string>
     <!-- <string name="grid" /> -->
-    <string name="app_drawer_columns">所有應用程式列數</string>
+    <string name="app_drawer_columns">「所有應用程式」列數</string>
     <string name="row_height_label">行高</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="perform_wide_search_title">裝置搜尋</string>
+    <string name="perform_wide_search_file">檔案</string>
+    <string name="pref_suggestion_title">網頁建議（由 <xliff:g id="startpage">Startpage</xliff:g> 提供）</string>
+    <string name="pref_advance_search_category">進階搜尋</string>
+    <string name="perform_wide_search_description">在所有應用程式畫面搜尋聯絡人、檔案和設定。</string>
+    <string name="pref_recent_suggestion_title">瀏覽紀錄</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -371,9 +371,9 @@
     <string name="system">系統</string>
     <string name="customize_button_text">自訂</string>
     <string name="label">標籤</string>
-    <string name="hide_from_drawer">從應用程式列表隱藏</string>
+    <string name="hide_from_drawer">從「所有應用程式」隱藏</string>
     <string name="suggestion_pref_screen_title">建議</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">在「所有應用程式」頂端顯示建議的應用程式</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
     <string name="crash_report_notif_title">%1$s 已停止運作</string>
@@ -395,18 +395,18 @@
     <string name="label_search">搜尋</string>
     <string name="label_lens">Google 智慧鏡頭</string>
     <string name="label_voice_search">語音搜尋</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">設定選項</string>
     <string name="all_apps_search_market_message">搜尋更多應用程式</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">使用 <xliff:g id="startpage">Startpage</xliff:g> 搜尋</string>
     <string name="error_no_market_or_browser_installed">尚未安裝應用程式商店或瀏覽器</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">網路上的搜尋結果</string>
+    <string name="all_apps_search_result_contacts_from_device">聯絡人搜尋結果</string>
+    <string name="all_apps_search_result_files">檔案搜尋結果</string>
+    <string name="all_apps_search_result_settings_entry_from_device">設定搜尋結果</string>
+    <string name="warn_contact_permission_content">需授予聯絡人權限</string>
+    <string name="warn_files_permission_content">需授予儲存空間權限</string>
+    <string name="all_apps_search_result_files_description">媒體、檔案、資料夾與其他項目。</string>
+    <string name="all_apps_search_result_contacts_description">聯絡人與其他項目</string>
     <string name="quickstep_incompatible">不支援系統整合</string>
     <string name="quickstep_incompatible_description">您的裝置目前由 %1$s 提供系統手勢 (Quickstep)，但目前安裝的 %1$s 版本與您的 Android 版本不相容。要繼續執行，請解除安裝或停用 %1$s。</string>
     <string name="delete">刪除</string>

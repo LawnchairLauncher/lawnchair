@@ -135,10 +135,10 @@
     <string name="font_variant_italic">Miring</string>
     <string name="font_weight_thin">Tipis</string>
     <string name="font_weight_extra_light">Ekstra Tipis</string>
-    <string name="font_weight_light">Terang</string>
+    <string name="font_weight_light">Tipis</string>
     <string name="font_weight_regular">Reguler</string>
     <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semi tebal</string>
+    <string name="font_weight_semi_bold">Semi Tebal</string>
     <string name="font_weight_bold">Tebal</string>
     <string name="font_weight_extra_bold">Ekstra Tebal</string>
     <string name="font_weight_extra_black">Hitam</string>
@@ -253,7 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Pencarian Aplikasi</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair memiliki perjanjian bagi hasil.\n\nMencari dengan %1$s membantu mendukung Lawnchair.</string>
     <string name="app_label">Aplikasi</string>
     <string name="website_label">Website</string>
     <string name="qsb_search_provider_app_required">Aplikasi diperlukan.</string>
@@ -271,21 +271,21 @@
     <string name="fuzzy_search_title">Pencarian Samar</string>
     <string name="fuzzy_search_desc">Memperkirakan kecocokan untuk pencarian aplikasi.</string>
     <string name="max_search_result_count_title">Jumlah Hasil Pencarian Maksimal</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">Jumlah Hasil Orang Maksimal</string>
+    <string name="max_file_result_count_title">Jumlah Hasil File Maksimal</string>
+    <string name="max_suggestion_result_count_title">Jumlah Hasil Saran Maksimal</string>
+    <string name="max_settings_entry_result_count_title">Jumlah Hasil Entri Pengaturan Maksimal</string>
+    <string name="max_recent_result_count_title">Jumlah Hasil Histori Maksimal</string>
+    <string name="clear_history">Bersihkan</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
     <string name="row_height_label">Tinggi Baris</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="perform_wide_search_title">Penelusuran Perangkat</string>
+    <string name="perform_wide_search_file">File</string>
+    <string name="pref_suggestion_title">Saran web (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Penelusuran Lanjutan</string>
+    <string name="perform_wide_search_description">Telusuri kontak, file, dan pengaturan Anda di pencarian laci aplikasi.</string>
+    <string name="pref_recent_suggestion_title">Histori</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -348,7 +348,7 @@
       <string name="support" />
       <string name="support_and_pr" />
       -->
-    <string name="acknowledgements">Perangkat lunak pihak ketiga</string>
+    <string name="acknowledgements">Ucapan Terima Kasih</string>
     <string name="translate">Terjemahkan</string>
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">Ikon</string>
@@ -395,18 +395,18 @@
     <string name="label_search">Pencarian</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Penelusuran Suara</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Entri Pengaturan</string>
     <string name="all_apps_search_market_message">Cari Lebih Banyak Aplikasi</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Cari di <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Tidak ada toko aplikasi atau browser yang terinstal.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">Dari web</string>
+    <string name="all_apps_search_result_contacts_from_device">Dari kontak Anda</string>
+    <string name="all_apps_search_result_files">Dari file Anda</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Dari pengaturan Anda</string>
+    <string name="warn_contact_permission_content">Memerlukan izin kontak</string>
+    <string name="warn_files_permission_content">Memerlukan izin penyimpanan</string>
+    <string name="all_apps_search_result_files_description">Media, dokumen, folder, dan lainnya.</string>
+    <string name="all_apps_search_result_contacts_description">Kontak dan lainnya</string>
     <string name="quickstep_incompatible">Integrasi Sistem yang Tidak Kompatibel</string>
     <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasikan untuk menggunakan sistem gestur (dikenal sebagai Quickstep) yang disediakan oleh %1$s, tetapi versi %1$s ini tidak kompatibel dengan versi Android Anda. Untuk terus menggunakan perangkat Anda, mohon uninstal pembaruan %1$s atau menonaktifkan %1$s sebagai penyedia sistem gestur.</string>
     <string name="delete">Hapus</string>
