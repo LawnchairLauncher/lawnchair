@@ -240,15 +240,15 @@ android {
             minSdk 26
         }
 
-        foss {
+        github {
             applicationId 'app.lawnchair'
             dimension "channel"
-            isDefault true
         }
 
         market {
             applicationId "ch.deletescape.lawnchair.plah"
             dimension "channel"
+            isDefault true
         }
 
         configureEach {
@@ -279,7 +279,7 @@ android {
             }
         }
 
-        lawnWithQuickstepFoss {
+        lawnWithQuickstepGithub {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
