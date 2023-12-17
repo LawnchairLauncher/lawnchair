@@ -51,6 +51,7 @@ public class Hotseat extends CellLayout implements Insettable {
     private boolean mSendTouchToWorkspace;
 
     private final View mQsb;
+    private final int mQsbHeight;
 
     PreferenceManager2 preferenceManager2;
 
@@ -76,6 +77,7 @@ public class Hotseat extends CellLayout implements Insettable {
         int layoutId = hotseatMode.getLayoutResourceId();
 
         mQsb = LayoutInflater.from(context).inflate(layoutId, this, false);
+        mQsbHeight = mQsb.getLayoutParams().height;
         addView(mQsb);
     }
 
@@ -112,7 +114,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
         if (grid.isVerticalBarLayout()) {
             mQsb.setVisibility(View.GONE);
-            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.height = LayoutParams.MATCH_PARENT;
             if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
                 lp.width = grid.hotseatBarSizePx + insets.left;
@@ -123,13 +125,29 @@ public class Hotseat extends CellLayout implements Insettable {
         } else {
             mQsb.setVisibility(View.VISIBLE);
             lp.gravity = Gravity.BOTTOM;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.width = LayoutParams.MATCH_PARENT;
             lp.height = grid.hotseatBarSizePx;
+            lp.topMargin = grid.hotseatBarBottomSpacePx;
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
-        setLayoutParams(lp);
+        if(!PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableTaskbarOnPhone())){
+            FrameLayout.LayoutParams qsbLp = (FrameLayout.LayoutParams) getLayoutParams();
+            qsbLp.topMargin = grid.hotseatBarBottomSpacePx;
+            qsbLp.height = (grid.hotseatBarSizePx * 2) - (padding.bottom + grid.hotseatBarBottomSpacePx);
+            mQsb.setLayoutParams (qsbLp);
+            setLayoutParams(lp);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if(mQsb.getSourceLayoutResId () == R.layout.empty_view){
+                mQsb.setVisibility (View.GONE);
+                mQsb.setLayoutParams ((FrameLayout.LayoutParams) getLayoutParams());
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
+                layoutParams.height = grid.hotseatBarSizePx;
+                setLayoutParams(layoutParams);
+            }
+        }
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
@@ -172,11 +190,9 @@ public class Hotseat extends CellLayout implements Insettable {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        DeviceProfile dp = mActivity.getDeviceProfile();
-
         int width = getShortcutsAndWidgets().getMeasuredWidth();
         mQsb.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(dp.hotseatQsbHeight, MeasureSpec.EXACTLY));
+                MeasureSpec.makeMeasureSpec(mQsbHeight, MeasureSpec.EXACTLY));
     }
 
     @Override
