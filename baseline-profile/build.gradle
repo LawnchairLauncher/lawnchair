@@ -19,7 +19,7 @@ android {
     productFlavors {
         lawn { dimension = "app" }
         withQuickstep { dimension = "recents" }
-        foss { dimension = "channel" }
+        github { dimension = "channel" }
         market { dimension = "channel" }
     }
 
