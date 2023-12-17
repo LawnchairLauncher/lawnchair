@@ -67,6 +67,13 @@ class LawnchairSearchAdapterProvider(
         viewType: Int,
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
+
+        val layoutParams = ViewGroup.MarginLayoutParams(view.layoutParams)
+        val horizontalMargin = 48
+        layoutParams.leftMargin = horizontalMargin
+        layoutParams.rightMargin = horizontalMargin
+        view.layoutParams = layoutParams
+
         return BaseAllAppsAdapter.ViewHolder(view)
     }
 

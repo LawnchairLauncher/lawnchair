@@ -3,7 +3,7 @@ package app.lawnchair.allapps
 import android.content.Context
 import android.provider.SearchRecentSuggestions
 import android.util.AttributeSet
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
@@ -23,7 +23,7 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
 
     private val launcher = context.launcher
     private lateinit var title: TextView
-    private lateinit var clearHistory: Button
+    private lateinit var clearHistory: ImageButton
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -31,10 +31,9 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
         title = ViewCompat.requireViewById(this, R.id.title)
         title.setTextColor(ColorTokens.ColorAccent.resolveColor(context))
         clearHistory = ViewCompat.requireViewById(this, R.id.clear_history)
-        clearHistory.setTextColor(ColorTokens.ColorAccent.resolveColor(context))
+        clearHistory.setColorFilter(ColorTokens.ColorAccent.resolveColor(context))
         clearHistory.visibility = GONE
         FontManager.INSTANCE.get(context).setCustomFont(title, R.id.font_heading)
-        FontManager.INSTANCE.get(context).setCustomFont(clearHistory, R.id.font_heading)
     }
 
     override val isQuickLaunch: Boolean get() = false
