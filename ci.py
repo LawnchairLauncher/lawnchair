@@ -36,8 +36,11 @@ def send_document_to_telegram_chat(chat_id, document):
     )
 
 def send_artifact_to_telegram_chat(chat_id):
-    with open(f"{artifact_directory}/{os.listdir(artifact_directory)[0]}", "rb") as artifact:
-        send_document_to_telegram_chat(chat_id=chat_id, document=artifact)
+    subdirectories = os.listdir(artifact_directory)
+    for each_directory in subdirectories:
+        full_path = f"{artifact_directory}/{each_directory}"
+        with open(f"{full_path}/{os.listdir(full_path)[0]}", "rb") as artifact:
+            send_document_to_telegram_chat(chat_id=chat_id, document=artifact)
 
 def send_internal_notifications():
     repository = git.Repo(".")
