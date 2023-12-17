@@ -25,7 +25,7 @@ allprojects {
         android {
             compileSdk 34
             defaultConfig {
-                minSdk 26
+                minSdk 27
                 targetSdk 34
                 vectorDrawables.useSupportLibrary = true
             }
