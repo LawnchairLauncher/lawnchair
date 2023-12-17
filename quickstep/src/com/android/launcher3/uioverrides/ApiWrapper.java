@@ -51,7 +51,7 @@ public class ApiWrapper {
     }
 
     public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
-        return LawnchairUtilsKt.isDefaultLauncher(context) ?
+        return LawnchairUtilsKt.isDefaultLauncher(context) && Utilities.ATLEAST_Q ?
                 context.getSystemService(LauncherApps.class).getActivityOverrides()
                 : Collections.emptyMap();
     }
