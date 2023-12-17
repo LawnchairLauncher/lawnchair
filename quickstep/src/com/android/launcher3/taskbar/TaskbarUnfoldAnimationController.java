@@ -33,21 +33,23 @@ import java.io.PrintWriter;
 public class TaskbarUnfoldAnimationController implements
         TaskbarControllers.LoggableTaskbarController {
 
+    private static final float MAX_WIDTH_INSET_FRACTION = 0.035f;
+
     private final ScopedUnfoldTransitionProgressProvider mScopedUnfoldTransitionProgressProvider;
     private final NaturalRotationUnfoldProgressProvider mNaturalUnfoldTransitionProgressProvider;
     private final UnfoldMoveFromCenterAnimator mMoveFromCenterAnimator;
     private final TransitionListener mTransitionListener = new TransitionListener();
     private TaskbarViewController mTaskbarViewController;
+    private TaskbarDragLayerController mTaskbarDragLayerController;
 
     public TaskbarUnfoldAnimationController(BaseTaskbarContext context,
             ScopedUnfoldTransitionProgressProvider source,
             WindowManager windowManager,
             RotationChangeProvider rotationChangeProvider) {
         mScopedUnfoldTransitionProgressProvider = source;
-        mNaturalUnfoldTransitionProgressProvider =
-                new NaturalRotationUnfoldProgressProvider(context,
-                        rotationChangeProvider,
-                        source);
+        mNaturalUnfoldTransitionProgressProvider = new NaturalRotationUnfoldProgressProvider(context,
+                rotationChangeProvider,
+                source);
         mMoveFromCenterAnimator = new UnfoldMoveFromCenterAnimator(windowManager,
                 new LauncherViewsMoveFromCenterTranslationApplier());
     }
@@ -60,9 +62,10 @@ public class TaskbarUnfoldAnimationController implements
     public void init(TaskbarControllers taskbarControllers) {
         mNaturalUnfoldTransitionProgressProvider.init();
         mTaskbarViewController = taskbarControllers.taskbarViewController;
-        mTaskbarViewController.addOneTimePreDrawListener(() ->
-                mScopedUnfoldTransitionProgressProvider.setReadyToHandleTransition(true));
+        mTaskbarViewController.addOneTimePreDrawListener(
+                () -> mScopedUnfoldTransitionProgressProvider.setReadyToHandleTransition(true));
         mNaturalUnfoldTransitionProgressProvider.addCallback(mTransitionListener);
+        mTaskbarDragLayerController = taskbarControllers.taskbarDragLayerController;
     }
 
     /**
@@ -87,8 +90,9 @@ public class TaskbarUnfoldAnimationController implements
             mMoveFromCenterAnimator.updateDisplayProperties();
             View[] icons = mTaskbarViewController.getIconViews();
             for (View icon : icons) {
-                // TODO(b/193794563) we should re-register views if they are re-bound/re-inflated
-                //                   during the animation
+                // TODO(b/193794563) we should re-register views if they are
+                // re-bound/re-inflated
+                // during the animation
                 mMoveFromCenterAnimator.registerViewForAnimation(icon);
             }
 
@@ -99,15 +103,14 @@ public class TaskbarUnfoldAnimationController implements
         public void onTransitionFinished() {
             mMoveFromCenterAnimator.onTransitionFinished();
             mMoveFromCenterAnimator.clearRegisteredViews();
+            mTaskbarDragLayerController.setBackgroundHorizontalInsets(0f);
         }
 
         @Override
         public void onTransitionProgress(float progress) {
             mMoveFromCenterAnimator.onTransitionProgress(progress);
-        }
-
-        @Override
-        public void onTransitionFinishing() {
+            float insetPercentage = (1 - progress) * MAX_WIDTH_INSET_FRACTION;
+            mTaskbarDragLayerController.setBackgroundHorizontalInsets(insetPercentage);
         }
     }
 }

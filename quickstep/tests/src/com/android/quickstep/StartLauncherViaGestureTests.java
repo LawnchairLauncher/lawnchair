@@ -16,15 +16,17 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
+
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.RaceConditionReproducer;
+import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,21 +47,9 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         startTestActivity(2);
     }
 
-    private void runTest(String... eventSequence) {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer(eventSequence);
-
-        // Destroy Launcher activity.
-        closeLauncherActivity();
-
-        // The test action.
-        eventProcessor.startIteration();
-        mLauncher.goHome();
-        eventProcessor.finishIteration();
-    }
-
-    @Ignore
     @Test
     @NavigationModeSwitch
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/187761685
     public void testStressPressHome() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
@@ -70,9 +60,9 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         }
     }
 
-    @Ignore
     @Test
     @NavigationModeSwitch
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/187761685
     public void testStressSwipeToOverview() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.

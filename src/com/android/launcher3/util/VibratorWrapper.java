@@ -16,6 +16,7 @@
 package com.android.launcher3.util;
 
 import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -66,6 +67,9 @@ public class VibratorWrapper {
     private final VibrationEffect mCommitEffect;
     @Nullable
     private final VibrationEffect mBumpEffect;
+
+    @Nullable
+    private final VibrationEffect mAssistEffect;
 
     private long mLastDragTime;
     private final int mThresholdUntilNextDragCallMillis;
@@ -123,6 +127,19 @@ public class VibratorWrapper {
             mBumpEffect = null;
             mThresholdUntilNextDragCallMillis = 0;
         }
+
+        if (Utilities.ATLEAST_R && mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_QUICK_RISE,
+                VibrationEffect.Composition.PRIMITIVE_TICK)) {
+            // quiet ramp, short pause, then sharp tick
+            mAssistEffect = VibrationEffect.startComposition()
+                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_RISE, 0.25f)
+                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 1f, 50)
+                    .compose();
+        } else {
+            // fallback for devices without composition support
+            mAssistEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK);
+        }
     }
 
     /**
@@ -166,6 +183,15 @@ public class VibratorWrapper {
     public void vibrateForDragBump() {
         if (mBumpEffect != null) {
             vibrate(mBumpEffect);
+        }
+    }
+
+    /**
+     * The assist haptic is used to be called when an assistant is invoked
+     */
+    public void vibrateForAssist() {
+        if (mAssistEffect != null) {
+            vibrate(mAssistEffect);
         }
     }
 

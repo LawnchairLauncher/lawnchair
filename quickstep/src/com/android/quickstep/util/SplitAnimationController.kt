@@ -17,14 +17,26 @@
 
 package com.android.quickstep.util
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Bitmap
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.view.View
+import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.Utilities
 import com.android.launcher3.anim.PendingAnimation
+import com.android.launcher3.statemanager.StatefulActivity
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
+import com.android.launcher3.views.BaseDragLayer
+import com.android.quickstep.views.FloatingTaskView
 import com.android.quickstep.views.IconView
+import com.android.quickstep.views.RecentsView
+import com.android.quickstep.views.SplitInstructionsView
 import com.android.quickstep.views.TaskThumbnailView
 import com.android.quickstep.views.TaskView
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
@@ -174,6 +186,93 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             thumbnail.scaleX = 1f
             builder.add(ObjectAnimator.ofFloat(thumbnail,
                     TaskThumbnailView.SPLIT_SELECT_TRANSLATE_X, 0f))
+        }
+    }
+
+    /** Does not play any animation if user is not currently in split selection state. */
+    fun playPlaceholderDismissAnim(launcher: StatefulActivity<*>) {
+        if (!splitSelectStateController.isSplitSelectActive) {
+            return
+        }
+
+        val anim = createPlaceholderDismissAnim(launcher)
+        anim.start()
+    }
+
+    /** Returns [AnimatorSet] which slides initial split placeholder view offscreen. */
+    fun createPlaceholderDismissAnim(launcher: StatefulActivity<*>) : AnimatorSet {
+        val animatorSet = AnimatorSet()
+        val recentsView : RecentsView<*, *> = launcher.getOverviewPanel()
+        val floatingTask: FloatingTaskView = splitSelectStateController.firstFloatingTaskView
+                ?: return animatorSet
+
+        // We are in split selection state currently, transitioning to another state
+        val dragLayer: BaseDragLayer<*> = launcher.dragLayer
+        val onScreenRectF = RectF()
+        Utilities.getBoundsForViewInDragLayer(dragLayer, floatingTask,
+                Rect(0, 0, floatingTask.width, floatingTask.height),
+                false, null, onScreenRectF)
+        // Get the part of the floatingTask that intersects with the DragLayer (i.e. the
+        // on-screen portion)
+        onScreenRectF.intersect(
+                dragLayer.left.toFloat(),
+                dragLayer.top.toFloat(),
+                dragLayer.right.toFloat(),
+                dragLayer.bottom
+                        .toFloat()
+        )
+        animatorSet.play(ObjectAnimator.ofFloat(floatingTask,
+                FloatingTaskView.PRIMARY_TRANSLATE_OFFSCREEN,
+                recentsView.pagedOrientationHandler
+                        .getFloatingTaskOffscreenTranslationTarget(
+                                floatingTask,
+                                onScreenRectF,
+                                floatingTask.stagePosition,
+                                launcher.deviceProfile
+                        )))
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                splitSelectStateController.resetState()
+                safeRemoveViewFromDragLayer(launcher,
+                        splitSelectStateController.splitInstructionsView)
+            }
+        })
+        return animatorSet
+    }
+
+    /**
+     * Returns a [PendingAnimation] to animate in the chip to instruct a user to select a second
+     * app for splitscreen
+     */
+    fun getShowSplitInstructionsAnim(launcher: StatefulActivity<*>) : PendingAnimation {
+        safeRemoveViewFromDragLayer(launcher, splitSelectStateController.splitInstructionsView)
+        val splitInstructionsView = SplitInstructionsView.getSplitInstructionsView(launcher)
+        splitSelectStateController.splitInstructionsView = splitInstructionsView
+        val timings = AnimUtils.getDeviceOverviewToSplitTimings(launcher.deviceProfile.isTablet)
+        val anim = PendingAnimation(100 /*duration */)
+        anim.setViewAlpha(splitInstructionsView, 1f,
+                Interpolators.clampToProgress(Interpolators.LINEAR,
+                        timings.instructionsContainerFadeInStartOffset,
+                        timings.instructionsContainerFadeInEndOffset))
+        anim.setViewAlpha(splitInstructionsView!!.textView, 1f,
+                Interpolators.clampToProgress(Interpolators.LINEAR,
+                        timings.instructionsTextFadeInStartOffset,
+                        timings.instructionsTextFadeInEndOffset))
+        anim.addFloat(splitInstructionsView, SplitInstructionsView.UNFOLD, 0.1f, 1f,
+                Interpolators.clampToProgress(Interpolators.EMPHASIZED_DECELERATE,
+                        timings.instructionsUnfoldStartOffset,
+                        timings.instructionsUnfoldEndOffset))
+        return anim
+    }
+
+    /** Removes the split instructions view from [launcher] drag layer. */
+    fun removeSplitInstructionsView(launcher: StatefulActivity<*>) {
+        safeRemoveViewFromDragLayer(launcher, splitSelectStateController.splitInstructionsView)
+    }
+
+    private fun safeRemoveViewFromDragLayer(launcher: StatefulActivity<*>, view: View?) {
+        if (view != null) {
+            launcher.dragLayer.removeView(view)
         }
     }
 }

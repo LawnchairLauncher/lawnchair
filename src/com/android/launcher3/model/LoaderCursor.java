@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,7 +27,6 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.net.Uri;
 import android.os.UserHandle;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
@@ -69,9 +70,8 @@ public class LoaderCursor extends CursorWrapper {
 
     private final LongSparseArray<UserHandle> allUsers;
 
-    private final Uri mContentUri;
+    private final LauncherAppState mApp;
     private final Context mContext;
-    private final PackageManager mPM;
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
 
@@ -79,8 +79,6 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
 
-    private final int mIconPackageIndex;
-    private final int mIconResourceIndex;
     private final int mIconIndex;
     public final int mTitleIndex;
 
@@ -102,6 +100,8 @@ public class LoaderCursor extends CursorWrapper {
     private final int mOptionsIndex;
     private final int mAppWidgetSourceIndex;
 
+    private final PackageManager mPM;
+
     @Nullable
     private LauncherActivityInfo mActivityInfo;
 
@@ -115,22 +115,20 @@ public class LoaderCursor extends CursorWrapper {
 
     private final PreferenceManager2 preferenceManager2;
 
-    public LoaderCursor(Cursor cursor, Uri contentUri, LauncherAppState app,
-            UserManagerState userManagerState) {
+    public LoaderCursor(Cursor cursor, LauncherAppState app, UserManagerState userManagerState) {
         super(cursor);
+
+        mApp = app;
         allUsers = userManagerState.allUsers;
-        mContentUri = contentUri;
         mContext = app.getContext();
         mIconCache = app.getIconCache();
         mIDP = app.getInvariantDeviceProfile();
-        mPM = mContext.getPackageManager();
 
         preferenceManager2 = PreferenceManager2.getInstance(mContext);
+        mPM = mContext.getPackageManager();
 
         // Init column indices
         mIconIndex = getColumnIndexOrThrow(Favorites.ICON);
-        mIconPackageIndex = getColumnIndexOrThrow(Favorites.ICON_PACKAGE);
-        mIconResourceIndex = getColumnIndexOrThrow(Favorites.ICON_RESOURCE);
         mTitleIndex = getColumnIndexOrThrow(Favorites.TITLE);
 
         mIdIndex = getColumnIndexOrThrow(Favorites._ID);
@@ -207,26 +205,24 @@ public class LoaderCursor extends CursorWrapper {
 
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
-        String packageName = itemType == Favorites.ITEM_TYPE_SHORTCUT
-                ? getString(mIconPackageIndex)
+        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
+                ? getIconBlob()
                 : null;
-        String resourceName = itemType == Favorites.ITEM_TYPE_SHORTCUT
-                ? getString(mIconResourceIndex)
-                : null;
-        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                || restoreFlag != 0
-                        ? getBlob(mIconIndex)
-                        : null;
 
-        return new IconRequestInfo<>(
-                wai, mActivityInfo, packageName, resourceName, iconBlob, useLowResIcon);
+        return new IconRequestInfo<>(wai, mActivityInfo, iconBlob, useLowResIcon);
+    }
+
+    /**
+     * Returns the icon data for at the current position
+     */
+    public byte[] getIconBlob() {
+        return getBlob(mIconIndex);
     }
 
     /**
      * Returns the title or empty string
      */
-    private String getTitle() {
+    public String getTitle() {
         return Utilities.trim(getString(mTitleIndex));
     }
 
@@ -363,7 +359,6 @@ public class LoaderCursor extends CursorWrapper {
         }
 
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
-        info.itemType = Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.intent = newIntent;
 
@@ -401,6 +396,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public ContentWriter updater() {
         return new ContentWriter(mContext, new ContentWriter.CommitParams(
+                mApp.getModel().getModelDbController(),
                 BaseColumns._ID + "= ?", new String[] { Integer.toString(id) }));
     }
 
@@ -420,8 +416,8 @@ public class LoaderCursor extends CursorWrapper {
     public boolean commitDeleted() {
         if (mItemsToRemove.size() > 0) {
             // Remove dead items
-            mContext.getContentResolver().delete(mContentUri, Utilities.createDbSelectionQuery(
-                    Favorites._ID, mItemsToRemove), null);
+            mApp.getModel().getModelDbController().delete(TABLE_NAME,
+                    Utilities.createDbSelectionQuery(Favorites._ID, mItemsToRemove), null);
             return true;
         }
         return false;
@@ -446,10 +442,8 @@ public class LoaderCursor extends CursorWrapper {
             // Update restored items that no longer require special handling
             ContentValues values = new ContentValues();
             values.put(Favorites.RESTORED, 0);
-            mContext.getContentResolver().update(mContentUri, values,
-                    Utilities.createDbSelectionQuery(
-                            Favorites._ID, mRestoredRows),
-                    null);
+            mApp.getModel().getModelDbController().update(TABLE_NAME, values,
+                    Utilities.createDbSelectionQuery(Favorites._ID, mRestoredRows), null);
         }
     }
 
@@ -550,7 +544,7 @@ public class LoaderCursor extends CursorWrapper {
 
         if (!mOccupied.containsKey(item.screenId)) {
             GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
-            if (item.screenId == Workspace.FIRST_SCREEN_ID && FeatureFlags.topQsbOnFirstScreenEnabled (mContext)) {
+            if (item.screenId == Workspace.FIRST_SCREEN_ID && FeatureFlags.topQsbOnFirstScreenEnabled(mContext)) {
                 // Mark the first X columns (X is width of the search container) in the first
                 // row as
                 // occupied (if the feature is enabled) in order to account for the search

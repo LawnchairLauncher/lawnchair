@@ -32,13 +32,11 @@ import com.android.systemui.unfold.util.UnfoldKeyguardVisibilityManagerImpl
 import com.android.systemui.unfold.util.UnfoldKeyguardVisibilityProvider
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.migration.DisableInstallInCheck
 import java.util.Optional
 import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module(includes = [UnfoldSharedInternalModule::class])
-@DisableInstallInCheck
 class UnfoldSharedModule {
     @Provides
     @Singleton
@@ -65,7 +63,6 @@ class UnfoldSharedModule {
  * fixes the issue.
  */
 @Module
-@DisableInstallInCheck
 internal class UnfoldSharedInternalModule {
     @Provides
     @Singleton

@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayDragLayer;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -52,6 +53,8 @@ public class KeyboardQuickSwitchViewController {
 
     private int mCurrentFocusIndex = -1;
 
+    private boolean mOnDesktop;
+
     protected KeyboardQuickSwitchViewController(
             @NonNull TaskbarControllers controllers,
             @NonNull TaskbarOverlayContext overlayContext,
@@ -71,10 +74,12 @@ public class KeyboardQuickSwitchViewController {
             @NonNull List<GroupTask> tasks,
             int numHiddenTasks,
             boolean updateTasks,
-            int currentFocusIndexOverride) {
+            int currentFocusIndexOverride,
+            boolean onDesktop) {
         TaskbarOverlayDragLayer dragLayer = mOverlayContext.getDragLayer();
         dragLayer.addView(mKeyboardQuickSwitchView);
         dragLayer.runOnClickOnce(v -> closeQuickSwitchView(true));
+        mOnDesktop = onDesktop;
 
         mKeyboardQuickSwitchView.applyLoadPlan(
                 mOverlayContext,
@@ -136,6 +141,10 @@ public class KeyboardQuickSwitchViewController {
         GroupTask task = mControllerCallbacks.getTaskAt(index);
         if (task == null) {
             return Math.max(0, index);
+        } else if (mOnDesktop) {
+            UI_HELPER_EXECUTOR.execute(() ->
+                    SystemUiProxy.INSTANCE.get(mKeyboardQuickSwitchView.getContext())
+                            .showDesktopApp(task.task1.key.id));
         } else if (task.task2 == null) {
             UI_HELPER_EXECUTOR.execute(() ->
                     ActivityManagerWrapper.getInstance().startActivityFromRecents(
@@ -169,7 +178,7 @@ public class KeyboardQuickSwitchViewController {
 
     class ViewCallbacks {
 
-        boolean onKeyUp(int keyCode, KeyEvent event, boolean isRTL) {
+        boolean onKeyUp(int keyCode, KeyEvent event, boolean isRTL, boolean allowTraversal) {
             if (keyCode != KeyEvent.KEYCODE_TAB
                     && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT
                     && keyCode != KeyEvent.KEYCODE_DPAD_LEFT
@@ -181,9 +190,12 @@ public class KeyboardQuickSwitchViewController {
                 closeQuickSwitchView(true);
                 return true;
             }
+            if (!allowTraversal) {
+                return false;
+            }
             boolean traverseBackwards = (keyCode == KeyEvent.KEYCODE_TAB && event.isShiftPressed())
-                    || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !isRTL)
-                    || (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && isRTL);
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && isRTL)
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && !isRTL);
             int taskCount = mControllerCallbacks.getTaskCount();
             int toIndex = mCurrentFocusIndex == -1
                     // Focus the second-most recent app if possible
@@ -195,6 +207,9 @@ public class KeyboardQuickSwitchViewController {
                             // focus a less recent app or loop back to the opposite end
                             : ((mCurrentFocusIndex + 1) % taskCount));
 
+            if (mCurrentFocusIndex == toIndex) {
+                return true;
+            }
             mKeyboardQuickSwitchView.animateFocusMove(mCurrentFocusIndex, toIndex);
 
             return true;
@@ -213,8 +228,8 @@ public class KeyboardQuickSwitchViewController {
             mControllerCallbacks.updateThumbnailInBackground(task, callback);
         }
 
-        void updateTitleInBackground(Task task, Consumer<Task> callback) {
-            mControllerCallbacks.updateTitleInBackground(task, callback);
+        void updateIconInBackground(Task task, Consumer<Task> callback) {
+            mControllerCallbacks.updateIconInBackground(task, callback);
         }
     }
 }

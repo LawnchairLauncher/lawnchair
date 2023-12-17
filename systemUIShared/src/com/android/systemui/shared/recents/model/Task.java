@@ -336,6 +336,14 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Task)) {
+            return false;
+        }
+
         // Check that the id matches
         Task t = (Task) o;
         return key.equals(t.key);

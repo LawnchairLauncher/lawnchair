@@ -25,5 +25,65 @@
     <color name="home_settings_track_on_color">@android:color/system_accent2_700</color>
     <color name="home_settings_track_off_color">@android:color/system_neutral1_700</color>
 
-    <color name="all_apps_button_color">@android:color/system_neutral2_200</color>
+    <color name="widget_picker_title_color_dark">@android:color/system_neutral1_100</color>
+    <color name="widget_picker_header_app_title_color_dark">
+        @android:color/system_neutral1_100</color>
+    <color name="widget_picker_header_app_subtitle_color_dark">
+        @android:color/system_neutral2_200</color>
+    <color name="widget_picker_header_background_color_dark">
+        @android:color/system_accent2_700</color>
+    <color name="widget_picker_suggestions_icon_background_color_dark">
+        @android:color/system_accent1_800</color>
+    <color name="widget_picker_suggestions_icon_color_dark">
+        @android:color/system_accent1_200</color>
+    <color name="widget_picker_search_text_color_dark">
+        @android:color/system_neutral2_200</color>
+    <color name="widget_picker_tab_background_selected_dark">
+        @android:color/system_accent1_200</color>
+    <color name="widget_picker_selected_tab_text_color_dark">
+        @android:color/system_accent1_800</color>
+    <color name="widget_picker_unselected_tab_text_color_dark">
+        @android:color/system_neutral2_200</color>
+    <color name="widget_picker_collapse_handle_color_dark">
+        @android:color/system_neutral2_700</color>
+
+    <color name="work_fab_bg_color">
+        @android:color/system_accent1_200</color>
+    <color name="work_fab_icon_color">
+        @android:color/system_accent1_900</color>
+
+    <color name="material_color_on_secondary_fixed_variant">@android:color/system_accent2_700</color>
+    <color name="material_color_on_tertiary_fixed_variant">@android:color/system_accent3_700</color>
+    <color name="material_color_on_primary_fixed_variant">@android:color/system_accent1_700</color>
+    <color name="material_color_on_secondary_container">@android:color/system_accent2_100</color>
+    <color name="material_color_on_tertiary_container">@android:color/system_accent3_100</color>
+    <color name="material_color_on_primary_container">@android:color/system_accent1_100</color>
+    <color name="material_color_secondary_fixed_dim">@android:color/system_accent2_200</color>
+    <color name="material_color_on_error_container">#FFDAD5</color>
+    <color name="material_color_on_secondary_fixed">@android:color/system_accent2_900</color>
+    <color name="material_color_on_surface_inverse">@android:color/system_neutral1_900</color>
+    <color name="material_color_tertiary_fixed_dim">@android:color/system_accent3_200</color>
+    <color name="material_color_on_tertiary_fixed">@android:color/system_accent3_900</color>
+    <color name="material_color_primary_fixed_dim">@android:color/system_accent1_200</color>
+    <color name="material_color_secondary_container">@android:color/system_accent2_700</color>
+    <color name="material_color_error_container">#930001</color>
+    <color name="material_color_on_primary_fixed">@android:color/system_accent1_900</color>
+    <color name="material_color_primary_inverse">@android:color/system_accent1_600</color>
+    <color name="material_color_secondary_fixed">@android:color/system_accent2_100</color>
+    <color name="material_color_tertiary_container">@android:color/system_accent3_700</color>
+    <color name="material_color_tertiary_fixed">@android:color/system_accent3_100</color>
+    <color name="material_color_primary_container">@android:color/system_accent1_700</color>
+    <color name="material_color_on_background">@android:color/system_neutral1_800</color>
+    <color name="material_color_primary_fixed">@android:color/system_accent1_100</color>
+    <color name="material_color_on_secondary">@android:color/system_accent2_800</color>
+    <color name="material_color_on_tertiary">@android:color/system_accent3_800</color>
+    <color name="material_color_on_error">#690001</color>
+    <color name="material_color_on_surface_variant">@android:color/system_neutral2_200</color>
+    <color name="material_color_outline">@android:color/system_neutral2_400</color>
+    <color name="material_color_outline_variant">@android:color/system_neutral2_700</color>
+    <color name="material_color_on_primary">@android:color/system_accent1_800</color>
+    <color name="material_color_on_surface">@android:color/system_neutral1_100</color>
+    <color name="material_color_primary">@android:color/system_accent1_200</color>
+    <color name="material_color_secondary">@android:color/system_accent2_200</color>
+    <color name="material_color_tertiary">@android:color/system_accent3_200</color>
 </resources>

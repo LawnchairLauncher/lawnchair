@@ -20,7 +20,6 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -39,7 +38,6 @@ import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -93,24 +91,15 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             List<ItemInfo> filteredItems = new ArrayList<>();
             for (Pair<ItemInfo, Object> entry : mItemList) {
                 ItemInfo item = entry.first;
-                if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                        item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.MISSING_PROMISE_ICON,
-                                    LOG + " Item already on workspace.");
-                        }
                         continue;
                     }
 
                     // b/139663018 Short-circuit this logic if the icon is a system app
                     if (PackageManagerHelper.isSystemApp(app.getContext(),
                             Objects.requireNonNull(item.getIntent()))) {
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.MISSING_PROMISE_ICON,
-                                    LOG + " Item is a system app.");
-                        }
                         continue;
                     }
                 }
@@ -150,9 +139,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             ? item.getTargetComponent().getPackageName()
                             : null;
                     if (packageName == null) {
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " Null packageName.");
-                        }
                         continue;
                     }
                     SessionInfo sessionInfo = packageInstaller.getActiveSessionInfo(item.user,
@@ -161,9 +147,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     if (!packageInstaller.verifySessionInfo(sessionInfo)) {
                         FileLog.d(LOG, "Item info failed session info verification. "
                                 + "Skipping : " + workspaceInfo);
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + "Failed verification.");
-                        }
                         continue;
                     }
 
@@ -174,9 +157,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     if (sessionInfo == null) {
                         if (!hasActivity) {
                             // Session was cancelled, do not add.
-                            if (TestProtocol.sDebugTracing) {
-                                Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + "Session cancelled");
-                            }
                             continue;
                         }
                     } else {
@@ -196,9 +176,6 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             // workspace items as promise icons. At this point we now have the
                             // correct intent to compare against existing workspace icons.
                             // Icon already exists on the workspace and should not be auto-added.
-                            if (TestProtocol.sDebugTracing) {
-                                Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + "shortcutExists");
-                            }
                             continue;
                         }
 

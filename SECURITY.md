@@ -6,7 +6,8 @@ Important note: Lawnchair v2 (Play Store version) is **unsupported**. Use the ne
 The latest version of Lawnchair is the only supported version.
 | Version | Supported          |
 | ------- | ------------------ |
-| 13      | :white_check_mark: |
+| 14      | :white_check_mark: |
+| 13      | :x:                |
 | 12.1    | :x:                |
 | 12      | :x:                |
 | 11      | :x:                |

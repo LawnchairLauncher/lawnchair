@@ -232,7 +232,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         } else {
             mSplitButtonHiddenFlags &= ~flag;
         }
-        if (mSplitButton == null) return;
+        if (mSplitButton == null)
+            return;
         boolean shouldBeVisible = mSplitButtonHiddenFlags == 0;
         mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
         mSplitSpace.setVisibility(shouldBeVisible ? VISIBLE : GONE);
@@ -273,6 +274,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public MultiProperty getIndexScrollAlpha() {
         return mMultiValueAlpha.get(INDEX_SCROLL_ALPHA);
+    }
+
+    /**
+     * Returns the visibility of the overview actions buttons.
+     */
+    public @Visibility int getActionsButtonVisibility() {
+        return findViewById(R.id.action_buttons).getVisibility();
     }
 
     /**

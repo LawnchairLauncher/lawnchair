@@ -40,7 +40,6 @@ class TaskbarNavLayoutter(
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
         // Add spacing after the end of the last nav button
-        val navButtonParams = navButtonContainer.layoutParams as FrameLayout.LayoutParams
         var navMarginEnd = resources.getDimension(dp.inv.inlineNavButtonsEndSpacing).toInt()
         val contextualWidth = endContextualContainer.width
         // If contextual buttons are showing, we check if the end margin is enough for the
@@ -50,10 +49,10 @@ class TaskbarNavLayoutter(
             navMarginEnd += resources.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing) / 2
         }
 
+        val navButtonParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
         navButtonParams.apply {
-            gravity = Gravity.END
-            width = FrameLayout.LayoutParams.WRAP_CONTENT
-            height = ViewGroup.LayoutParams.MATCH_PARENT
+            gravity = Gravity.END or Gravity.CENTER_VERTICAL
             marginEnd = navMarginEnd
         }
         navButtonContainer.orientation = LinearLayout.HORIZONTAL

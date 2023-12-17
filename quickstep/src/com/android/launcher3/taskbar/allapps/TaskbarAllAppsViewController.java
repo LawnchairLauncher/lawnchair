@@ -16,12 +16,12 @@
 package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_TASKBAR_ALL_APPS;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.allapps.AllAppsTransitionListener;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.appprediction.AppsDividerView;
-import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.taskbar.NavbarButtonsViewController;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarStashController;
@@ -45,7 +45,8 @@ final class TaskbarAllAppsViewController {
     TaskbarAllAppsViewController(
             TaskbarOverlayContext context,
             TaskbarAllAppsSlideInView slideInView,
-            TaskbarControllers taskbarControllers) {
+            TaskbarControllers taskbarControllers,
+            TaskbarSearchSessionController searchSessionController) {
 
         mContext = context;
         mSlideInView = slideInView;
@@ -54,8 +55,7 @@ final class TaskbarAllAppsViewController {
         mNavbarButtonsViewController = taskbarControllers.navbarButtonsViewController;
         mOverlayController = taskbarControllers.taskbarOverlayController;
 
-        mSlideInView.init(new TaskbarAllAppsCallbacks());
-        setUpIconLongClick();
+        mSlideInView.init(new TaskbarAllAppsCallbacks(searchSessionController));
         setUpAppDivider();
         setUpTaskbarStashing();
     }
@@ -70,15 +70,6 @@ final class TaskbarAllAppsViewController {
         mSlideInView.close(animate);
     }
 
-    private void setUpIconLongClick() {
-        mAppsView.setOnIconLongClickListener(
-                mContext.getDragController()::startDragOnLongClick);
-        mAppsView.getFloatingHeaderView()
-                .findFixedRowByType(PredictionRowView.class)
-                .setOnIconLongClickListener(
-                        mContext.getDragController()::startDragOnLongClick);
-    }
-
     private void setUpAppDivider() {
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(AppsDividerView.class)
@@ -88,8 +79,10 @@ final class TaskbarAllAppsViewController {
     }
 
     private void setUpTaskbarStashing() {
-        mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
-        mTaskbarStashController.applyState(mOverlayController.getOpenDuration());
+        if (DisplayController.isTransientTaskbar(mContext)) {
+            mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
+            mTaskbarStashController.applyState(mOverlayController.getOpenDuration());
+        }
 
         mNavbarButtonsViewController.setSlideInViewVisible(true);
         mSlideInView.setOnCloseBeginListener(() -> {
@@ -100,22 +93,42 @@ final class TaskbarAllAppsViewController {
             if (DisplayController.isTransientTaskbar(mContext)) {
                 mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
                 mTaskbarStashController.applyState(mOverlayController.getCloseDuration());
-            } else {
-                // Post in case view is closing due to gesture navigation. If a gesture is in
-                // progress, wait to unstash until after the gesture is finished.
-                MAIN_EXECUTOR.post(() -> mTaskbarStashController.resetFlagIfNoGestureInProgress(
-                        FLAG_STASHED_IN_TASKBAR_ALL_APPS));
             }
         });
     }
 
-    class TaskbarAllAppsCallbacks {
+    class TaskbarAllAppsCallbacks implements AllAppsTransitionListener {
+        private final TaskbarSearchSessionController mSearchSessionController;
+
+        private TaskbarAllAppsCallbacks(TaskbarSearchSessionController searchSessionController) {
+            mSearchSessionController = searchSessionController;
+        }
+
         int getOpenDuration() {
             return mOverlayController.getOpenDuration();
         }
 
         int getCloseDuration() {
             return mOverlayController.getCloseDuration();
+        }
+
+        @Override
+        public void onAllAppsTransitionStart(boolean toAllApps) {
+            mSearchSessionController.onAllAppsTransitionStart(toAllApps);
+        }
+
+        @Override
+        public void onAllAppsTransitionEnd(boolean toAllApps) {
+            mSearchSessionController.onAllAppsTransitionEnd(toAllApps);
+        }
+
+        /** Invoked on back press, returning {@code true} if the search session handled it. */
+        boolean handleSearchBackInvoked() {
+            return mSearchSessionController.handleBackInvoked();
+        }
+
+        void onAllAppsAnimationPending(PendingAnimation animation, boolean toAllApps) {
+            mSearchSessionController.onAllAppsAnimationPending(animation, toAllApps);
         }
     }
 }

@@ -26,6 +26,7 @@ import static org.mockito.Mockito.doAnswer;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
+import android.content.Context;
 import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -249,12 +250,13 @@ public final class WidgetsListContentEntryTest {
         String label = mWidgetsToLabels.get(componentName);
         AppWidgetProviderInfo widgetInfo = createAppWidgetProviderInfo(componentName);
 
+        Context context = getApplicationContext();
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                LauncherAppWidgetProviderInfo.fromProviderInfo(getApplicationContext(), widgetInfo);
+                LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo);
         launcherAppWidgetProviderInfo.spanX = spanX;
         launcherAppWidgetProviderInfo.spanY = spanY;
         launcherAppWidgetProviderInfo.label = label;
 
-        return new WidgetItem(launcherAppWidgetProviderInfo, mTestProfile, mIconCache);
+        return new WidgetItem(launcherAppWidgetProviderInfo, mTestProfile, mIconCache, context);
     }
 }

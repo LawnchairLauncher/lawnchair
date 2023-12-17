@@ -29,6 +29,7 @@
 
     <attr name="colorAccentPrimary" format="color" />
     <attr name="textColorOnAccent" format="color" />
+    <attr name="borderColor" format="color" />
 
     <attr name="customFontType" format="reference" />
 

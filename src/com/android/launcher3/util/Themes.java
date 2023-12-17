@@ -21,8 +21,6 @@ import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_T
 
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
 
-import android.app.WallpaperColors;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -33,18 +31,22 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 
+import androidx.annotation.ColorInt;
+
+import androidx.annotation.ColorInt;
+
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
-
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorMode;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.wallpaper.WallpaperColorsCompat;
 import app.lawnchair.wallpaper.WallpaperManagerCompat;
 import app.lawnchair.ui.theme.ColorKt;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Various utility methods associated with theming.
@@ -54,6 +56,10 @@ public class Themes {
 
     public static final String KEY_THEMED_ICONS = "themed_icons";
 
+    /**
+     * Gets the WallpaperColorHints and then uses those to get the correct activity
+     * theme res.
+     */
     public static int getActivityThemeRes(Context context) {
         WallpaperColorsCompat colors = WallpaperManagerCompat.INSTANCE.get(context).getWallpaperColors();
         final int colorHints = colors != null ? colors.getColorHints() : 0;
@@ -225,5 +231,16 @@ public class Themes {
         }
 
         return result;
+    }
+
+    /**
+     * Returns the desired navigation bar scrim color depending on the
+     * {@code DeviceProfile}.
+     */
+    @ColorInt
+    public static <T extends Context & ActivityContext> int getNavBarScrimColor(T context) {
+        return context.getDeviceProfile().isTaskbarPresent
+                ? context.getColor(R.color.taskbar_background)
+                : Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor);
     }
 }

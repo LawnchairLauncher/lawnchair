@@ -115,8 +115,8 @@ public class RecentsAnimationController {
      * {@link RecentsAnimationCallbacks#onTasksAppeared}}.
      */
     @UiThread
-    public void removeTaskTarget(@NonNull RemoteAnimationTarget target) {
-        UI_HELPER_EXECUTOR.execute(() -> mController.removeTask(target.taskId));
+    public void removeTaskTarget(int targetTaskId) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.removeTask(targetTaskId));
     }
 
     @UiThread
@@ -150,30 +150,40 @@ public class RecentsAnimationController {
 
     @UiThread
     public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
-        if (mFinishRequested) {
-            // If finishing, add to pending finish callbacks, otherwise, if finished, adding to the
-            // destroyed RunnableList will just trigger the callback to be called immediately
-            mPendingFinishCallbacks.add(callback);
+        finishController(toRecents, callback, sendUserLeaveHint, false /* forceFinish */);
+    }
+
+    @UiThread
+    public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint,
+            boolean forceFinish) {
+        mPendingFinishCallbacks.add(callback);
+        if (!forceFinish && mFinishRequested) {
+            // If finish has already been requested, then add the callback to the pending list.
+            // If already finished, then adding it to the destroyed RunnableList will just 
+            // trigger the callback to be called immediately
             return;
         }
         ActiveGestureLog.INSTANCE.addLog(
                 /* event= */ "finishRecentsAnimation",
                 /* extras= */ toRecents,
                 /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
-
         // Finish not yet requested
         mFinishRequested = true;
         mFinishTargetIsLauncher = toRecents;
         mOnFinishedListener.accept(this);
-        mPendingFinishCallbacks.add(callback);
-        UI_HELPER_EXECUTOR.execute(() -> {
+        Runnable finishCb = () -> {
             mController.finish(toRecents, sendUserLeaveHint);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
             InteractionJankMonitorWrapper.end(
                     InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
             MAIN_EXECUTOR.execute(mPendingFinishCallbacks::executeAllAndDestroy);
-        });
+        };
+        if (forceFinish) {
+            finishCb.run();
+        } else {
+            UI_HELPER_EXECUTOR.execute(finishCb);
+        }
     }
 
     /**

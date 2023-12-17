@@ -63,5 +63,6 @@ message GestureStateProto {
         RECENTS = 2;
         NEW_TASK = 3;
         LAST_TASK = 4;
+        ALL_APPS = 5;
     }
 }

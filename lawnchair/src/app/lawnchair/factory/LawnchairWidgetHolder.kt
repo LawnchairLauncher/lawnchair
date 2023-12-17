@@ -13,13 +13,17 @@ class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : Launc
     @Keep
     class LawnchairHolderFactory
     @Suppress("unused")
-    constructor(context: Context?) :
+    constructor(context: Context) :
         HolderFactory() {
         override fun newInstance(
             context: Context,
             appWidgetRemovedCallback: IntConsumer?,
         ): LauncherWidgetHolder {
-            return newInstance(context, appWidgetRemovedCallback, null)
+            return try {
+                newInstance(context, appWidgetRemovedCallback, null)
+            } catch (t: Throwable) {
+                super.newInstance(context, appWidgetRemovedCallback)
+            }
         }
 
         /**

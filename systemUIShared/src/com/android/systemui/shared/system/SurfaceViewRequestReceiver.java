@@ -75,7 +75,7 @@ public class SurfaceViewRequestReceiver {
             DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
             mSurfaceControlViewHost = new SurfaceControlViewHost(context,
                     dm.getDisplay(SurfaceViewRequestUtils.getDisplayId(bundle)),
-                    windowlessWindowManager);
+                    windowlessWindowManager, "SurfaceViewRequestReceiver");
             WindowManager.LayoutParams layoutParams =
                     new WindowManager.LayoutParams(
                             viewSize.getWidth(),

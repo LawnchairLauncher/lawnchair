@@ -65,8 +65,8 @@ class UnfoldConstantTranslateAnimator(
             } else {
                 1
             }
-        viewsToTranslate.forEach { (view, direction) ->
-            view.get()?.translationX = xTrans * direction.multiplier * rtlMultiplier
+        viewsToTranslate.forEach { (view, direction, func) ->
+            view.get()?.let { func(it, xTrans * direction.multiplier * rtlMultiplier) }
         }
     }
 
@@ -77,7 +77,7 @@ class UnfoldConstantTranslateAnimator(
                 .filter { it.shouldBeAnimated() }
                 .mapNotNull {
                     parent.findViewById<View>(it.viewId)?.let { view ->
-                        ViewToTranslate(WeakReference(view), it.direction)
+                        ViewToTranslate(WeakReference(view), it.direction, it.translateFunc)
                     }
                 }
                 .toList()
@@ -91,14 +91,19 @@ class UnfoldConstantTranslateAnimator(
     data class ViewIdToTranslate(
         val viewId: Int,
         val direction: Direction,
-        val shouldBeAnimated: () -> Boolean = { true }
+        val shouldBeAnimated: () -> Boolean = { true },
+        val translateFunc: (View, Float) -> Unit = { view, value -> view.translationX = value },
     )
 
     /**
      * Represents a view whose animation process is in-progress. It should be immutable because the
      * started animation should be completed.
      */
-    private data class ViewToTranslate(val view: WeakReference<View>, val direction: Direction)
+    private data class ViewToTranslate(
+        val view: WeakReference<View>,
+        val direction: Direction,
+        val translateFunc: (View, Float) -> Unit,
+    )
 
     /** Direction of the animation. */
     enum class Direction(val multiplier: Float) {

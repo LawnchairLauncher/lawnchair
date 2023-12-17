@@ -54,7 +54,7 @@ class RippleAnimation(private val config: RippleAnimationConfig) {
         }
         animator.addListener(
             object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     onAnimationEnd?.run()
                 }
             }

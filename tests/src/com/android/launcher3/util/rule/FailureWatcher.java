@@ -2,13 +2,15 @@ package com.android.launcher3.util.rule;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
-import android.content.Context;
 import android.os.FileUtils;
 import android.os.ParcelFileDescriptor.AutoCloseInputStream;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiDevice;
 
+import com.android.app.viewcapture.data.ExportedData;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 
@@ -21,17 +23,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
-    final private UiDevice mDevice;
+    private static boolean sSavedBugreport = false;
     private final LauncherInstrumentation mLauncher;
+    @NonNull
+    private final Supplier<ExportedData> mViewCaptureDataSupplier;
 
-    public FailureWatcher(UiDevice device, LauncherInstrumentation launcher) {
-        mDevice = device;
+    public FailureWatcher(LauncherInstrumentation launcher,
+            @NonNull Supplier<ExportedData> viewCaptureDataSupplier) {
         mLauncher = launcher;
+        mViewCaptureDataSupplier = viewCaptureDataSupplier;
     }
 
     @Override
@@ -45,27 +51,9 @@ public class FailureWatcher extends TestWatcher {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                boolean success = false;
                 try {
-                    mDevice.executeShellCommand("cmd statusbar tracing start");
                     FailureWatcher.super.apply(base, description).evaluate();
-                    success = true;
                 } finally {
-                    // Save artifact for Launcher Winscope trace.
-                    mDevice.executeShellCommand("cmd statusbar tracing stop");
-                    final Context nexusLauncherContext =
-                            getInstrumentation().getTargetContext()
-                                    .createPackageContext("com.google.android.apps.nexuslauncher",
-                                            0);
-                    final File launcherTrace =
-                            new File(nexusLauncherContext.getFilesDir(), "launcher_trace.pb");
-                    if (success) {
-                        mDevice.executeShellCommand("rm " + launcherTrace);
-                    } else {
-                        mDevice.executeShellCommand("mv " + launcherTrace + " "
-                                + diagFile(description, "LauncherWinscope", "pb"));
-                    }
-
                     // Detect touch events coming from physical screen.
                     if (mLauncher.hadNontestEvents()) {
                         throw new AssertionError(
@@ -81,7 +69,7 @@ public class FailureWatcher extends TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        onError(mLauncher, description, e);
+        onError(mLauncher, description, e, mViewCaptureDataSupplier);
     }
 
     static File diagFile(Description description, String prefix, String ext) {
@@ -92,8 +80,12 @@ public class FailureWatcher extends TestWatcher {
 
     public static void onError(LauncherInstrumentation launcher, Description description,
             Throwable e) {
-        final UiDevice device = launcher.getDevice();
-        if (device == null) return;
+        onError(launcher, description, e, null);
+    }
+
+    private static void onError(LauncherInstrumentation launcher, Description description,
+            Throwable e, @Nullable Supplier<ExportedData> viewCaptureDataSupplier) {
+
         final File sceenshot = diagFile(description, "TestScreenshot", "png");
         final File hierarchy = diagFile(description, "Hierarchy", "zip");
 
@@ -108,13 +100,21 @@ public class FailureWatcher extends TestWatcher {
             out.putNextEntry(new ZipEntry("visible_windows.zip"));
             dumpCommand("cmd window dump-visible-window-views", out);
             out.closeEntry();
-        } catch (IOException ex) {
+
+            if (viewCaptureDataSupplier != null) {
+                out.putNextEntry(new ZipEntry("FS/data/misc/wmtrace/failed_test.vc"));
+                final ExportedData exportedData = viewCaptureDataSupplier.get();
+                if (exportedData != null) exportedData.writeTo(out);
+                out.closeEntry();
+            }
+        } catch (Exception ignored) {
         }
 
         Log.e(TAG, "Failed test " + description.getMethodName()
                 + ",\nscreenshot will be saved to " + sceenshot
                 + ",\nUI dump at: " + hierarchy
                 + " (use go/web-hv to open the dump file)", e);
+        final UiDevice device = launcher.getDevice();
         device.takeScreenshot(sceenshot);
 
         // Dump accessibility hierarchy
@@ -127,10 +127,10 @@ public class FailureWatcher extends TestWatcher {
         dumpCommand("logcat -d -s TestRunner", diagFile(description, "FilteredLogcat", "txt"));
 
         // Dump bugreport
-        final String systemAnomalyMessage = launcher.getSystemAnomalyMessage(false, false);
-        if (systemAnomalyMessage != null) {
-            Log.d(TAG, "Saving bugreport, system anomaly message: " + systemAnomalyMessage, e);
+        if (!sSavedBugreport) {
             dumpCommand("bugreportz -s", diagFile(description, "Bugreport", "zip"));
+            // Not saving bugreport for each failure for time and space economy.
+            sSavedBugreport = true;
         }
     }
 

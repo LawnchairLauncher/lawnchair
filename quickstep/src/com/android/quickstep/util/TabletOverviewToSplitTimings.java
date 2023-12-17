@@ -16,7 +16,7 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.app.animation.Interpolators.DECELERATE_2;
 
 import android.view.animation.Interpolator;
 
@@ -36,8 +36,8 @@ public class TabletOverviewToSplitTimings
     public int getGridSlideDuration() { return 500; }
 
     public int getDuration() { return TABLET_ENTER_DURATION; }
-    public Interpolator getStagedRectXInterpolator() { return DEACCEL_2; }
-    public Interpolator getStagedRectYInterpolator() { return DEACCEL_2; }
-    public Interpolator getStagedRectScaleXInterpolator() { return DEACCEL_2; }
-    public Interpolator getStagedRectScaleYInterpolator() { return DEACCEL_2; }
+    public Interpolator getStagedRectXInterpolator() { return DECELERATE_2; }
+    public Interpolator getStagedRectYInterpolator() { return DECELERATE_2; }
+    public Interpolator getStagedRectScaleXInterpolator() { return DECELERATE_2; }
+    public Interpolator getStagedRectScaleYInterpolator() { return DECELERATE_2; }
 }

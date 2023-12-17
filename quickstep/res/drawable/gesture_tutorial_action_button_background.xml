@@ -13,7 +13,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <item>
         <shape
             android:id="@android:id/mask"
@@ -25,7 +26,7 @@
         <shape
             android:shape="rectangle">
             <corners android:radius="50dp"/>
-            <solid android:color="?android:attr/colorAccent"/>
+            <solid android:color="@android:color/white"/>
         </shape>
     </item>
 </layer-list>

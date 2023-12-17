@@ -42,10 +42,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.util.GroupTask;
 
 import java.util.HashMap;
@@ -53,7 +53,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * View that allows quick switching between recent tasks through keyboard alt-tab and alt-shift-tab
+ * View that allows quick switching between recent tasks through keyboard
+ * alt-tab and alt-shift-tab
  * commands.
  */
 public class KeyboardQuickSwitchView extends ConstraintLayout {
@@ -61,10 +62,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     private static final long OUTLINE_ANIMATION_DURATION_MS = 333;
     private static final float OUTLINE_START_HEIGHT_FACTOR = 0.45f;
     private static final float OUTLINE_START_RADIUS_FACTOR = 0.25f;
-    private static final Interpolator OPEN_OUTLINE_INTERPOLATOR =
-            Interpolators.EMPHASIZED_DECELERATE;
-    private static final Interpolator CLOSE_OUTLINE_INTERPOLATOR =
-            Interpolators.EMPHASIZED_ACCELERATE;
+    private static final Interpolator OPEN_OUTLINE_INTERPOLATOR = Interpolators.EMPHASIZED_DECELERATE;
+    private static final Interpolator CLOSE_OUTLINE_INTERPOLATOR = Interpolators.EMPHASIZED_ACCELERATE;
 
     private static final long ALPHA_ANIMATION_DURATION_MS = 83;
     private static final long ALPHA_ANIMATION_START_DELAY_MS = 67;
@@ -74,10 +73,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     private static final float CONTENT_START_TRANSLATION_X_DP = 32;
     private static final float CONTENT_START_TRANSLATION_Y_DP = 40;
     private static final Interpolator OPEN_TRANSLATION_X_INTERPOLATOR = Interpolators.EMPHASIZED;
-    private static final Interpolator OPEN_TRANSLATION_Y_INTERPOLATOR =
-            Interpolators.EMPHASIZED_DECELERATE;
-    private static final Interpolator CLOSE_TRANSLATION_Y_INTERPOLATOR =
-            Interpolators.EMPHASIZED_ACCELERATE;
+    private static final Interpolator OPEN_TRANSLATION_Y_INTERPOLATOR = Interpolators.EMPHASIZED_DECELERATE;
+    private static final Interpolator CLOSE_TRANSLATION_Y_INTERPOLATOR = Interpolators.EMPHASIZED_ACCELERATE;
 
     private static final long CONTENT_ALPHA_ANIMATION_DURATION_MS = 83;
     private static final long CONTENT_ALPHA_ANIMATION_START_DELAY_MS = 83;
@@ -85,6 +82,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     private final AnimatedFloat mOutlineAnimationProgress = new AnimatedFloat(
             this::invalidateOutline);
 
+    private boolean mDisplayingRecentTasks;
+    private View mNoRecentItemsPane;
     private HorizontalScrollView mScrollView;
     private ConstraintLayout mContent;
 
@@ -93,9 +92,11 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     private int mOutlineRadius;
     private boolean mIsRtl;
 
-    @Nullable private AnimatorSet mOpenAnimation;
+    @Nullable
+    private AnimatorSet mOpenAnimation;
 
-    @Nullable private KeyboardQuickSwitchViewController.ViewCallbacks mViewCallbacks;
+    @Nullable
+    private KeyboardQuickSwitchViewController.ViewCallbacks mViewCallbacks;
 
     public KeyboardQuickSwitchView(@NonNull Context context) {
         this(context, null);
@@ -119,6 +120,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mNoRecentItemsPane = findViewById(R.id.no_recent_items_pane);
         mScrollView = findViewById(R.id.scroll_view);
         mContent = findViewById(R.id.content);
 
@@ -145,20 +147,21 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         taskView.setOnClickListener(v -> mViewCallbacks.launchTappedTask(index));
 
         LayoutParams lp = new LayoutParams(width, mTaskViewHeight);
-        // Create a right-to-left ordering of views (or left-to-right in RTL locales)
+        // Create a left-to-right ordering of views (or right-to-left in RTL locales)
         if (previousView != null) {
-            lp.endToStart = previousView.getId();
+            lp.startToEnd = previousView.getId();
         } else {
-            lp.endToEnd = PARENT_ID;
+            lp.startToStart = PARENT_ID;
         }
         lp.topToTop = PARENT_ID;
         lp.bottomToBottom = PARENT_ID;
         // Add spacing between views
-        lp.setMarginEnd(mSpacing);
+        lp.setMarginStart(mSpacing);
         if (isFinalView) {
-            // Add spacing to the start of the final view so that scrolling ends with some padding.
-            lp.startToStart = PARENT_ID;
-            lp.setMarginStart(mSpacing);
+            // Add spacing to the end of the final view so that scrolling ends with some
+            // padding.
+            lp.endToEnd = PARENT_ID;
+            lp.setMarginEnd(mSpacing);
             lp.horizontalBias = 1f;
         }
 
@@ -167,7 +170,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                 groupTask.task1,
                 groupTask.task2,
                 updateTasks ? mViewCallbacks::updateThumbnailInBackground : null,
-                updateTasks ? mViewCallbacks::updateTitleInBackground : null);
+                updateTasks ? mViewCallbacks::updateIconInBackground : null);
 
         mContent.addView(taskView, lp);
         return taskView;
@@ -178,17 +181,20 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
             @NonNull LayoutInflater layoutInflater,
             @Nullable View previousView,
             @NonNull String overflowString) {
-        KeyboardQuickSwitchTaskView overviewButton =
-                (KeyboardQuickSwitchTaskView) layoutInflater.inflate(
-                        R.layout.keyboard_quick_switch_overview, this, false);
+        KeyboardQuickSwitchTaskView overviewButton = (KeyboardQuickSwitchTaskView) layoutInflater.inflate(
+                R.layout.keyboard_quick_switch_overview, this, false);
         overviewButton.setOnClickListener(v -> mViewCallbacks.launchTappedTask(MAX_TASKS));
 
         overviewButton.<TextView>findViewById(R.id.text).setText(overflowString);
 
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                 width, mTaskViewHeight);
-        lp.startToStart = PARENT_ID;
-        lp.endToStart = previousView.getId();
+        if (previousView == null) {
+            lp.startToStart = PARENT_ID;
+        } else {
+            lp.endToEnd = PARENT_ID;
+            lp.startToEnd = previousView.getId();
+        }
         lp.topToTop = PARENT_ID;
         lp.bottomToBottom = PARENT_ID;
         lp.setMarginEnd(mSpacing);
@@ -204,10 +210,6 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
             boolean updateTasks,
             int currentFocusIndexOverride,
             @NonNull KeyboardQuickSwitchViewController.ViewCallbacks viewCallbacks) {
-        if (groupTasks.isEmpty()) {
-            // Do not show the quick switch view.
-            return;
-        }
         mViewCallbacks = viewCallbacks;
         Resources resources = context.getResources();
         int width = resources.getDimensionPixelSize(R.dimen.keyboard_quick_switch_taskview_width);
@@ -237,6 +239,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                             resources.getString(R.string.quick_switch_overflow),
                             Locale.getDefault()).format(args));
         }
+        mDisplayingRecentTasks = !groupTasks.isEmpty();
 
         getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -262,13 +265,16 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         alphaAnimation.setDuration(ALPHA_ANIMATION_DURATION_MS);
         closeAnimation.play(alphaAnimation);
 
+        View displayedContent = mDisplayingRecentTasks ? mScrollView : mNoRecentItemsPane;
         Animator translationYAnimation = ObjectAnimator.ofFloat(
-                mScrollView, TRANSLATION_Y, 0, -Utilities.dpToPx(CONTENT_START_TRANSLATION_Y_DP));
+                displayedContent,
+                TRANSLATION_Y,
+                0, -Utilities.dpToPx(CONTENT_START_TRANSLATION_Y_DP));
         translationYAnimation.setDuration(CONTENT_TRANSLATION_Y_ANIMATION_DURATION_MS);
         translationYAnimation.setInterpolator(CLOSE_TRANSLATION_Y_INTERPOLATOR);
         closeAnimation.play(translationYAnimation);
 
-        Animator contentAlphaAnimation = ObjectAnimator.ofFloat(mScrollView, ALPHA, 1f, 0f);
+        Animator contentAlphaAnimation = ObjectAnimator.ofFloat(displayedContent, ALPHA, 1f, 0f);
         contentAlphaAnimation.setDuration(CONTENT_ALPHA_ANIMATION_DURATION_MS);
         closeAnimation.play(contentAlphaAnimation);
 
@@ -287,7 +293,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
     private void animateOpen(int currentFocusIndexOverride) {
         if (mOpenAnimation != null) {
-            // Restart animation since currentFocusIndexOverride can change the initial scroll.
+            // Restart animation since currentFocusIndexOverride can change the initial
+            // scroll.
             mOpenAnimation.cancel();
         }
         mOpenAnimation = new AnimatorSet();
@@ -300,19 +307,24 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         alphaAnimation.setDuration(ALPHA_ANIMATION_DURATION_MS);
         mOpenAnimation.play(alphaAnimation);
 
+        View displayedContent = mDisplayingRecentTasks ? mScrollView : mNoRecentItemsPane;
         Animator translationXAnimation = ObjectAnimator.ofFloat(
-                mScrollView, TRANSLATION_X, -Utilities.dpToPx(CONTENT_START_TRANSLATION_X_DP), 0);
+                displayedContent,
+                TRANSLATION_X,
+                -Utilities.dpToPx(CONTENT_START_TRANSLATION_X_DP), 0);
         translationXAnimation.setDuration(CONTENT_TRANSLATION_X_ANIMATION_DURATION_MS);
         translationXAnimation.setInterpolator(OPEN_TRANSLATION_X_INTERPOLATOR);
         mOpenAnimation.play(translationXAnimation);
 
         Animator translationYAnimation = ObjectAnimator.ofFloat(
-                mScrollView, TRANSLATION_Y, -Utilities.dpToPx(CONTENT_START_TRANSLATION_Y_DP), 0);
+                displayedContent,
+                TRANSLATION_Y,
+                -Utilities.dpToPx(CONTENT_START_TRANSLATION_Y_DP), 0);
         translationYAnimation.setDuration(CONTENT_TRANSLATION_Y_ANIMATION_DURATION_MS);
         translationYAnimation.setInterpolator(OPEN_TRANSLATION_Y_INTERPOLATOR);
         mOpenAnimation.play(translationYAnimation);
 
-        Animator contentAlphaAnimation = ObjectAnimator.ofFloat(mScrollView, ALPHA, 0f, 1f);
+        Animator contentAlphaAnimation = ObjectAnimator.ofFloat(displayedContent, ALPHA, 0f, 1f);
         contentAlphaAnimation.setStartDelay(CONTENT_ALPHA_ANIMATION_START_DELAY_MS);
         contentAlphaAnimation.setDuration(CONTENT_ALPHA_ANIMATION_DURATION_MS);
         mOpenAnimation.play(contentAlphaAnimation);
@@ -353,7 +365,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                 } else {
                     animateFocusMove(-1, currentFocusIndexOverride);
                 }
-                mScrollView.setVisibility(VISIBLE);
+                displayedContent.setVisibility(VISIBLE);
                 setVisibility(VISIBLE);
                 requestFocus();
             }
@@ -372,6 +384,9 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     }
 
     protected void animateFocusMove(int fromIndex, int toIndex) {
+        if (!mDisplayingRecentTasks) {
+            return;
+        }
         KeyboardQuickSwitchTaskView focusedTask = getTaskAt(toIndex);
         if (focusedTask == null) {
             return;
@@ -393,7 +408,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                     int firstVisibleTaskIndex = toIndex == 0
                             ? toIndex
                             : getTaskAt(toIndex - 1) == null
-                                    ? toIndex : toIndex - 1;
+                                    ? toIndex
+                                    : toIndex - 1;
                     // Scroll so that the previous task view is truncated as a visual hint that
                     // there are more tasks
                     initializeScroll(
@@ -402,16 +418,16 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                 } else if (toIndex > fromIndex || toIndex == 0) {
                     // Scrolling to next task view
                     if (mIsRtl) {
-                        scrollRightTo(focusedTask);
-                    } else {
                         scrollLeftTo(focusedTask);
+                    } else {
+                        scrollRightTo(focusedTask);
                     }
                 } else {
                     // Scrolling to previous task view
                     if (mIsRtl) {
-                        scrollLeftTo(focusedTask);
-                    } else {
                         scrollRightTo(focusedTask);
+                    } else {
+                        scrollLeftTo(focusedTask);
                     }
                 }
                 if (mViewCallbacks != null) {
@@ -425,11 +441,15 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return (mViewCallbacks != null && mViewCallbacks.onKeyUp(keyCode, event, mIsRtl))
+        return (mViewCallbacks != null
+                && mViewCallbacks.onKeyUp(keyCode, event, mIsRtl, mDisplayingRecentTasks))
                 || super.onKeyUp(keyCode, event);
     }
 
     private void initializeScroll(int index, boolean shouldTruncateTarget) {
+        if (!mDisplayingRecentTasks) {
+            return;
+        }
         View task = getTaskAt(index);
         if (task == null) {
             return;
@@ -449,6 +469,9 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
     private void scrollRightTo(
             @NonNull View targetTask, boolean shouldTruncateTarget, boolean smoothScroll) {
+        if (!mDisplayingRecentTasks) {
+            return;
+        }
         if (smoothScroll && !shouldScroll(targetTask, shouldTruncateTarget)) {
             return;
         }
@@ -468,6 +491,9 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
     private void scrollLeftTo(
             @NonNull View targetTask, boolean shouldTruncateTarget, boolean smoothScroll) {
+        if (!mDisplayingRecentTasks) {
+            return;
+        }
         if (smoothScroll && !shouldScroll(targetTask, shouldTruncateTarget)) {
             return;
         }
@@ -482,16 +508,16 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     }
 
     private boolean shouldScroll(@NonNull View targetTask, boolean shouldTruncateTarget) {
-        boolean isTargetTruncated =
-                targetTask.getRight() + mSpacing > mScrollView.getScrollX() + mScrollView.getWidth()
-                        || Math.max(0, targetTask.getLeft() - mSpacing) < mScrollView.getScrollX();
+        boolean isTargetTruncated = targetTask.getRight() + mSpacing > mScrollView.getScrollX() + mScrollView.getWidth()
+                || Math.max(0, targetTask.getLeft() - mSpacing) < mScrollView.getScrollX();
 
         return isTargetTruncated && !shouldTruncateTarget;
     }
 
     @Nullable
     protected KeyboardQuickSwitchTaskView getTaskAt(int index) {
-        return index < 0 || index >= mContent.getChildCount()
-                ? null : (KeyboardQuickSwitchTaskView) mContent.getChildAt(index);
+        return !mDisplayingRecentTasks || index < 0 || index >= mContent.getChildCount()
+                ? null
+                : (KeyboardQuickSwitchTaskView) mContent.getChildAt(index);
     }
 }

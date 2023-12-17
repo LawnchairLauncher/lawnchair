@@ -72,9 +72,9 @@ open class RippleView(context: Context?, attrs: AttributeSet?) : View(context, a
         this.rippleShape = rippleShape
         rippleShader = RippleShader(rippleShape)
 
-        rippleShader.color = RippleAnimationConfig.RIPPLE_DEFAULT_COLOR
+        rippleShader.color = RippleShader.RIPPLE_DEFAULT_COLOR
         rippleShader.rawProgress = 0f
-        rippleShader.sparkleStrength = RippleAnimationConfig.RIPPLE_SPARKLE_STRENGTH
+        rippleShader.sparkleStrength = RippleShader.RIPPLE_SPARKLE_STRENGTH
         rippleShader.pixelDensity = resources.displayMetrics.density
 
         ripplePaint.shader = rippleShader
@@ -196,7 +196,7 @@ open class RippleView(context: Context?, attrs: AttributeSet?) : View(context, a
         }
         animator.addListener(
             object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     onAnimationEnd?.run()
                 }
             }
@@ -209,7 +209,7 @@ open class RippleView(context: Context?, attrs: AttributeSet?) : View(context, a
      *
      * The alpha value of the color will be applied to the ripple. The alpha range is [0-255].
      */
-    fun setColor(color: Int, alpha: Int = RippleAnimationConfig.RIPPLE_DEFAULT_ALPHA) {
+    fun setColor(color: Int, alpha: Int = RippleShader.RIPPLE_DEFAULT_ALPHA) {
         rippleShader.color = ColorUtils.setAlphaComponent(color, alpha)
     }
 
@@ -221,10 +221,10 @@ open class RippleView(context: Context?, attrs: AttributeSet?) : View(context, a
     /** Indicates whether the ripple animation is playing. */
     fun rippleInProgress(): Boolean = animator.isRunning
 
-    override fun onDraw(canvas: Canvas?) {
-        if (canvas == null || !canvas.isHardwareAccelerated) {
-            // Drawing with the ripple shader requires hardware acceleration, so skip
-            // if it's unsupported.
+    override fun onDraw(canvas: Canvas) {
+        if (!canvas.isHardwareAccelerated) {
+            // Drawing with the ripple shader requires hardware acceleration, so skip if it's
+            // unsupported.
             return
         }
         // To reduce overdraw, we mask the effect to a circle or a rectangle that's bigger than the

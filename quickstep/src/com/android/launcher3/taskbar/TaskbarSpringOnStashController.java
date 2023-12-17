@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 
 import androidx.annotation.Nullable;
@@ -85,6 +86,15 @@ public class TaskbarSpringOnStashController implements LoggableTaskbarController
                 .build(mTranslationForStash, VALUE);
     }
 
+    /**
+     * Returns an animation to reset the stash translation back to 0 when unstashing.
+     */
+    public @Nullable ObjectAnimator createResetAnimForUnstash() {
+        if (!mIsTransientTaskbar) {
+            return null;
+        }
+        return mTranslationForStash.animateToValue(0);
+    }
 
     @Override
     public void dumpLogs(String prefix, PrintWriter pw) {

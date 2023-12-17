@@ -16,10 +16,25 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.app.ActivityOptions;
 import android.app.Person;
+import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
+import android.window.RemoteTransition;
 
 import com.android.launcher3.Utilities;
+import com.android.quickstep.util.FadeOutRemoteTransition;
+
+import java.util.Collections;
+import java.util.Map;
+
+import java.util.Map;
+
+import app.lawnchair.LawnchairApp;
+import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
  * A wrapper for the hidden API calls
@@ -33,5 +48,25 @@ public class ApiWrapper {
             return Utilities.EMPTY_PERSON_ARRAY;
         Person[] persons = si.getPersons();
         return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
+    }
+
+    public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
+        return LawnchairUtilsKt.isDefaultLauncher(context) ?
+                context.getSystemService(LauncherApps.class).getActivityOverrides()
+                : Collections.emptyMap();
+    }
+
+    /**
+     * Creates an ActivityOptions to play fade-out animation on closing targets
+     */
+    public static ActivityOptions createFadeOutAnimOptions(Context context) {
+        try {
+            ActivityOptions options = ActivityOptions.makeBasic();
+            options.setRemoteTransition(new RemoteTransition(new FadeOutRemoteTransition()));
+            return options;
+        } catch (Exception e) {
+            // TODO Create our own custom closing animation
+            return ActivityOptions.makeCustomAnimation(context, 0, android.R.anim.fade_out);
+        }
     }
 }

@@ -1,9 +1,9 @@
 package app.lawnchair
 
+import com.android.app.animation.Interpolators
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
 import com.android.launcher3.anim.AnimatorListeners.forEndCallback
-import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.states.StateAnimationConfig
 import com.android.launcher3.touch.AllAppsSwipeController
 import kotlin.coroutines.resume
@@ -21,7 +21,7 @@ suspend fun Launcher.animateToAllApps() {
         val anim = animation.animationPlayer
         anim.setFloatValues(0f, 1f)
         anim.duration = duration
-        anim.interpolator = Interpolators.DEACCEL
+        anim.interpolator = Interpolators.DECELERATE
         anim.addListener(forEndCallback(Runnable { cont.resume(Unit) }))
         animation.dispatchOnStart()
         anim.start()

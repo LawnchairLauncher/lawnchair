@@ -100,6 +100,19 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         return fragment;
     }
 
+    @Nullable
+    @Override
+    GestureSandboxFragment recreateFragment() {
+        TutorialType tutorialType = mTutorialController == null
+                ? (mTutorialType == null
+                        ? getDefaultTutorialType() : mTutorialType)
+                : mTutorialController.mTutorialType;
+        return newInstance(tutorialType, isGestureComplete(), mFromTutorialMenu);
+    }
+
+    @NonNull
+    abstract TutorialType getDefaultTutorialType();
+
     TutorialFragment(boolean fromTutorialMenu) {
         mFromTutorialMenu = fromTutorialMenu;
     }
@@ -117,11 +130,6 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
             case OVERVIEW_NAVIGATION:
             case OVERVIEW_NAVIGATION_COMPLETE:
                 return new OverviewGestureTutorialFragment(fromTutorialMenu);
-            case ASSISTANT:
-            case ASSISTANT_COMPLETE:
-                return new AssistantGestureTutorialFragment(fromTutorialMenu);
-            case SANDBOX_MODE:
-                return new SandboxModeTutorialFragment(fromTutorialMenu);
             default:
                 Log.e(LOG_TAG, "Failed to find an appropriate fragment for " + tutorialType.name());
         }
@@ -148,6 +156,7 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         return null;
     }
 
+    @NonNull
     abstract TutorialController createController(TutorialType type);
 
     abstract Class<? extends TutorialController> getControllerClass();
@@ -379,9 +388,15 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
     void changeController(TutorialType tutorialType) {
         if (getControllerClass().isInstance(mTutorialController)) {
             mTutorialController.setTutorialType(tutorialType);
+            if (isGestureComplete()) {
+                mTutorialController.setGestureCompleted();
+            }
             mTutorialController.fadeTaskViewAndRun(mTutorialController::transitToController);
         } else {
             mTutorialController = createController(tutorialType);
+            if (isGestureComplete()) {
+                mTutorialController.setGestureCompleted();
+            }
             mTutorialController.transitToController();
         }
         mEdgeBackGestureHandler.registerBackGestureAttemptCallback(mTutorialController);
@@ -494,6 +509,11 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         GestureSandboxActivity activity = getGestureSandboxActivity();
 
         return activity != null ? activity.getStatsLogManager() : null;
+    }
+
+    protected boolean isRotationPromptShowing() {
+        GestureSandboxActivity activity = getGestureSandboxActivity();
+        return activity != null && activity.isRotationPromptShowing();
     }
 
     @Nullable

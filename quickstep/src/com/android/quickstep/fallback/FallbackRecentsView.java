@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -79,27 +80,36 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void startHome() {
+    protected void handleStartHome(boolean animated) {
         mActivity.startHome();
         AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
     }
 
+    @Override
+    protected boolean canStartHomeSafely() {
+        return mActivity.canStartHomeSafely();
+    }
+
     /**
-     * When starting gesture interaction from home, we add a temporary invisible tile corresponding
-     * to the home task. This allows us to handle quick-switch similarly to a quick-switching
+     * When starting gesture interaction from home, we add a temporary invisible
+     * tile corresponding
+     * to the home task. This allows us to handle quick-switch similarly to a
+     * quick-switching
      * from a foreground task.
      */
     public void onGestureAnimationStartOnHome(Task[] homeTask,
             RotationTouchHelper rotationTouchHelper) {
         // TODO(b/195607777) General fallback love, but this might be correct
-        //  Home task should be defined as the front-most task info I think?
+        // Home task should be defined as the front-most task info I think?
         mHomeTask = homeTask.length > 0 ? homeTask[0] : null;
         onGestureAnimationStart(homeTask, rotationTouchHelper);
     }
 
     /**
-     * When the gesture ends and we're going to recents view, we also remove the temporary
-     * invisible tile added for the home task. This also pushes the remaining tiles back
+     * When the gesture ends and we're going to recents view, we also remove the
+     * temporary
+     * invisible tile added for the home task. This also pushes the remaining tiles
+     * back
      * to the center.
      */
     @Override
@@ -112,7 +122,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             if (tv != null) {
                 PendingAnimation pa = new PendingAnimation(TASK_DISMISS_DURATION);
                 createTaskDismissAnimation(pa, tv, true, false,
-                        TASK_DISMISS_DURATION, false /* dismissingForSplitSelection*/);
+                        TASK_DISMISS_DURATION, false /* dismissingForSplitSelection */);
                 pa.addEndListener(e -> setCurrentTask(-1));
                 AnimatorPlaybackController controller = pa.createPlaybackController();
                 controller.dispatchOnStart();
@@ -157,8 +167,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (mHomeTask != null && runningTask != null
                 && mHomeTask.key.id == runningTask.key.id
                 && getTaskViewCount() == 0 && mLoadPlanEverApplied) {
-            // Do not add a stub task if we are running over home with empty recents, so that we
-            // show the empty recents message instead of showing a stub task and later removing it.
+            // Do not add a stub task if we are running over home with empty recents, so
+            // that we
+            // show the empty recents message instead of showing a stub task and later
+            // removing it.
             // Ignore empty task signal if applyLoadPlan has never run.
             return false;
         }
@@ -167,10 +179,14 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     protected void applyLoadPlan(ArrayList<GroupTask> taskGroups) {
-        // When quick-switching on 3p-launcher, we add a "stub" tile corresponding to Launcher
-        // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
-        // track the index of the next task appropriately, as if we are switching on any other app.
-        // TODO(b/195607777) Confirm home task info is front-most task and not mixed in with others
+        // When quick-switching on 3p-launcher, we add a "stub" tile corresponding to
+        // Launcher
+        // as well. This tile is never shown as we have setCurrentTaskHidden, but allows
+        // use to
+        // track the index of the next task appropriately, as if we are switching on any
+        // other app.
+        // TODO(b/195607777) Confirm home task info is front-most task and not mixed in
+        // with others
         int runningTaskId = getTaskIdsForRunningTaskView()[0];
         if (mHomeTask != null && mHomeTask.key.id == runningTaskId
                 && !taskGroups.isEmpty()) {
@@ -246,12 +262,16 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             setOverviewSelectEnabled(false);
         }
         if (finalState != OVERVIEW_SPLIT_SELECT) {
-            resetFromSplitSelectionState();
+            if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                mSplitSelectStateController.resetState();
+            } else {
+                resetFromSplitSelectionState();
+            }
         }
 
         if (isOverlayEnabled) {
-            runActionOnRemoteHandles(remoteTargetHandle ->
-                    remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true));
+            runActionOnRemoteHandles(
+                    remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true));
         }
     }
 

@@ -16,13 +16,13 @@
 
 package com.android.systemui.shared.condition
 
-import androidx.annotation.IntDef
+import android.annotation.IntDef
 
 /**
  * Helper for evaluating a collection of [Condition] objects with a given
  * [Evaluator.ConditionOperand]
  */
-internal object Evaluator {
+object Evaluator {
     /** Operands for combining multiple conditions together */
     @Retention(AnnotationRetention.SOURCE)
     @IntDef(value = [OP_AND, OP_OR])
@@ -70,15 +70,31 @@ internal object Evaluator {
     fun evaluate(conditions: Collection<Condition>, @ConditionOperand operand: Int): Boolean? {
         if (conditions.isEmpty()) return null
         // If there are overriding conditions with values set, they take precedence.
-        val targetConditions =
+        val values: Collection<Boolean?> =
             conditions
                 .filter { it.isConditionSet && it.isOverridingCondition }
                 .ifEmpty { conditions }
+                .map { condition ->
+                    if (condition.isConditionSet) {
+                        condition.isConditionMet
+                    } else {
+                        null
+                    }
+                }
+        return evaluate(values = values, operand = operand)
+    }
+
+    /**
+     * Evaluates a set of booleans with a given operand
+     *
+     * @param operand The operand to use when evaluating.
+     * @return Either true or false if the value is known, or null if value is unknown
+     */
+    internal fun evaluate(values: Collection<Boolean?>, @ConditionOperand operand: Int): Boolean? {
+        if (values.isEmpty()) return null
         return when (operand) {
-            OP_AND ->
-                threeValuedAndOrOr(conditions = targetConditions, returnValueIfAnyMatches = false)
-            OP_OR ->
-                threeValuedAndOrOr(conditions = targetConditions, returnValueIfAnyMatches = true)
+            OP_AND -> threeValuedAndOrOr(values = values, returnValueIfAnyMatches = false)
+            OP_OR -> threeValuedAndOrOr(values = values, returnValueIfAnyMatches = true)
             else -> null
         }
     }
@@ -90,16 +106,16 @@ internal object Evaluator {
      *   any value is true.
      */
     private fun threeValuedAndOrOr(
-        conditions: Collection<Condition>,
+        values: Collection<Boolean?>,
         returnValueIfAnyMatches: Boolean
     ): Boolean? {
         var hasUnknown = false
-        for (condition in conditions) {
-            if (!condition.isConditionSet) {
+        for (value in values) {
+            if (value == null) {
                 hasUnknown = true
                 continue
             }
-            if (condition.isConditionMet == returnValueIfAnyMatches) {
+            if (value == returnValueIfAnyMatches) {
                 return returnValueIfAnyMatches
             }
         }

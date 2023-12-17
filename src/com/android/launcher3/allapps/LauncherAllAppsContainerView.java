@@ -22,6 +22,7 @@ import android.view.WindowInsets;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.statemanager.StateManager;
 
 /**
  * AllAppsContainerView with launcher specific callbacks
@@ -52,5 +53,88 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
     @Override
     public boolean isInAllApps() {
         return mActivityContext.getStateManager().isInStableState(LauncherState.ALL_APPS);
+    }
+
+    @Override
+    public boolean shouldFloatingSearchBarBePillWhenUnfocused() {
+        if (!isSearchBarFloating()) {
+            return false;
+        }
+        Launcher launcher = mActivityContext;
+        StateManager<LauncherState> manager = launcher.getStateManager();
+        if (manager.isInTransition() && manager.getTargetState() != null) {
+            return manager.getTargetState().shouldFloatingSearchBarUsePillWhenUnfocused(launcher);
+        }
+        return manager.getCurrentStableState()
+                .shouldFloatingSearchBarUsePillWhenUnfocused(launcher);
+    }
+
+    @Override
+    public int getFloatingSearchBarRestingMarginBottom() {
+        if (!isSearchBarFloating()) {
+            return super.getFloatingSearchBarRestingMarginBottom();
+        }
+        Launcher launcher = mActivityContext;
+        StateManager<LauncherState> stateManager = launcher.getStateManager();
+
+        // We want to rest at the current state's resting position, unless we are in transition and
+        // the target state's resting position is higher (that way if we are closing the keyboard,
+        // we can stop translating at that point).
+        int currentStateMarginBottom = stateManager.getCurrentStableState()
+                .getFloatingSearchBarRestingMarginBottom(launcher);
+        int targetStateMarginBottom = -1;
+        if (stateManager.isInTransition() && stateManager.getTargetState() != null) {
+            targetStateMarginBottom = stateManager.getTargetState()
+                    .getFloatingSearchBarRestingMarginBottom(launcher);
+            if (targetStateMarginBottom < 0) {
+                // Go ahead and move offscreen.
+                return targetStateMarginBottom;
+            }
+        }
+        return Math.max(targetStateMarginBottom, currentStateMarginBottom);
+    }
+
+    @Override
+    public int getFloatingSearchBarRestingMarginStart() {
+        if (!isSearchBarFloating()) {
+            return super.getFloatingSearchBarRestingMarginStart();
+        }
+
+        StateManager<LauncherState> stateManager = mActivityContext.getStateManager();
+
+        // Special case to not expand the search bar when exiting All Apps on phones.
+        if (stateManager.getCurrentStableState() == LauncherState.ALL_APPS
+                && mActivityContext.getDeviceProfile().isPhone) {
+            return LauncherState.ALL_APPS.getFloatingSearchBarRestingMarginStart(mActivityContext);
+        }
+
+        if (stateManager.isInTransition() && stateManager.getTargetState() != null) {
+            return stateManager.getTargetState()
+                    .getFloatingSearchBarRestingMarginStart(mActivityContext);
+        }
+        return stateManager.getCurrentStableState()
+                .getFloatingSearchBarRestingMarginStart(mActivityContext);
+    }
+
+    @Override
+    public int getFloatingSearchBarRestingMarginEnd() {
+        if (!isSearchBarFloating()) {
+            return super.getFloatingSearchBarRestingMarginEnd();
+        }
+
+        StateManager<LauncherState> stateManager = mActivityContext.getStateManager();
+
+        // Special case to not expand the search bar when exiting All Apps on phones.
+        if (stateManager.getCurrentStableState() == LauncherState.ALL_APPS
+                && mActivityContext.getDeviceProfile().isPhone) {
+            return LauncherState.ALL_APPS.getFloatingSearchBarRestingMarginEnd(mActivityContext);
+        }
+
+        if (stateManager.isInTransition() && stateManager.getTargetState() != null) {
+            return stateManager.getTargetState()
+                    .getFloatingSearchBarRestingMarginEnd(mActivityContext);
+        }
+        return stateManager.getCurrentStableState()
+                .getFloatingSearchBarRestingMarginEnd(mActivityContext);
     }
 }

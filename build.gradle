@@ -1,3 +1,4 @@
+import app.cash.licensee.LicenseeTask
 import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -9,7 +10,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version "1.9.21"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.21"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.21"
-    id "com.google.devtools.ksp" version "1.9.21-1.0.15"
+    id "com.google.devtools.ksp" version "1.9.21-1.0.16"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -25,7 +26,7 @@ allprojects {
             compileSdk 34
             defaultConfig {
                 minSdk 26
-                targetSdk 33
+                targetSdk 34
                 vectorDrawables.useSupportLibrary = true
             }
             lint {
@@ -95,11 +96,10 @@ allprojects {
 
         compileOnlyCommonJars = {
             dependencies {
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
             }
         }
     }
@@ -114,13 +114,13 @@ final def ciRef = System.getenv("GITHUB_REF") ?: ""
 final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("alpha")
 final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "Dev (${buildCommit})"
-final def version = "13"
-final def releaseName = "Alpha 1"
+final def version = "14"
+final def releaseName = "Beta 1"
 final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
-final def quickstepMinSdk = "32"
-final def quickstepMaxSdk = "33"
+final def quickstepMinSdk = "34"
+final def quickstepMaxSdk = "34"
 
 android {
     namespace "com.android.launcher3"
@@ -138,17 +138,22 @@ android {
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
 
-    applicationVariants.configureEach { variant ->
-        def capitalizedName = variant.name.capitalize()
-        def copyArtifactList = tasks.register("copy${capitalizedName}ArtifactList", Copy) {
-            dependsOn tasks.named("licenseeAndroid${capitalizedName}")
-            from reporting.file("licensee/android${capitalizedName}/artifacts.json")
-            into layout.buildDirectory.dir("generated/dependencyAssets/")
+    androidComponents {
+        onVariants(selector().all()) { variant ->
+            def capName = variant.name.capitalize()
+            def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
+            def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
+                dependsOn(licenseeTask)
+                from(licenseeTask.map { it.outputDir.file("artifacts.json") })
+                into(layout.buildDirectory.dir("generated/dependencyAssets"))
+            }
+            variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
+                objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
+            }
         }
-        tasks.named("merge${variant.name.capitalize()}Assets").configure {
-            dependsOn copyArtifactList
-        }
+    }
 
+    applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
@@ -262,9 +267,9 @@ android {
         }
 
         lawn {
-            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src']
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
             aidl.srcDirs = ['lawnchair/aidl']
-            res.srcDirs = ['lawnchair/res']
+            res.srcDirs = ['lawnchair/res', 'platform_frameworks_libs_systemui/animationlib/res']
             manifest.srcFile "lawnchair/AndroidManifest.xml"
             assets {
                 srcDirs 'lawnchair/assets'
@@ -292,11 +297,12 @@ android {
     }
 }
 
-addFrameworkJar('framework-13.jar')
+addFrameworkJar('framework-14.jar')
 
 dependencies {
     implementation projects.iconloaderlib
     implementation projects.searchuilib
+    implementation projects.animationlib
 
     // Recents lib dependency
     withQuickstepCompileOnly projects.hiddenApi
@@ -304,6 +310,12 @@ dependencies {
     withQuickstepImplementation projects.systemUIAnim
     withQuickstepImplementation projects.systemUnFold
     withQuickstepImplementation projects.systemUIViewCapture
+    withQuickstepImplementation projects.systemUILog
+    withQuickstepImplementation projects.systemUIPlugin
+    withQuickstepImplementation projects.systemUIPluginCore
+    withQuickstepImplementation projects.systemUICommon
+
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-14.jar')
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
@@ -324,7 +336,7 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2'
-    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.6"
+    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7"
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
@@ -339,9 +351,9 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.activity:activity-compose:1.8.1"
+    implementation "androidx.activity:activity-compose:1.8.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
-    implementation "androidx.navigation:navigation-compose:2.7.5"
+    implementation "androidx.navigation:navigation-compose:2.7.6"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     def accompanistVersion = '0.32.0'
@@ -349,7 +361,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
-    implementation "com.google.android.material:material:1.10.0"
+    implementation "com.google.android.material:material:1.11.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.0.7"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.5.0'
@@ -390,7 +402,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.3.5",
+            "io.nlopez.compose.rules:ktlint:0.3.8",
         ]).editorConfigOverride([
             "ktlint_compose_modifier-missing-check": "disabled",
             "ktlint_compose_compositionlocal-allowlist": "disabled",

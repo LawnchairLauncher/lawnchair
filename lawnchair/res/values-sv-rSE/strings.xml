@@ -183,7 +183,7 @@
     <string name="home_screen_locked">Startskärmen är låst.</string>
     <string name="popup_menu">Snabbmeny</string>
     <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
-    <string name="show_system_settings_entry">Visa post för systeminställningar</string>
+    <string name="show_system_settings_entry">Visa systeminställningar</string>
     <string name="status_bar_label">Statusfält</string>
     <string name="show_status_bar">Visa statusfält</string>
     <string name="dark_status_bar_label">Mörkt statusfält</string>
@@ -271,21 +271,21 @@
     <string name="fuzzy_search_title">Oskarp sökning</string>
     <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar.</string>
     <string name="max_search_result_count_title">Max antal sökresultat</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">Max antal personresultat</string>
+    <string name="max_file_result_count_title">Max antal filresultat</string>
+    <string name="max_suggestion_result_count_title">Max antal förslagsresultat</string>
+    <string name="max_settings_entry_result_count_title">Max antal inställningsresultat</string>
+    <string name="max_recent_result_count_title">Max antal historikresultat</string>
+    <string name="clear_history">Rensa</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumner i applådan</string>
     <string name="row_height_label">Radhöjd</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="perform_wide_search_title">Enhetssökning</string>
+    <string name="perform_wide_search_file">Filer</string>
+    <string name="pref_suggestion_title">Webbförslag (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Avancerad sökning</string>
+    <string name="perform_wide_search_description">Sök bland dina kontakter, filer och inställningar vid applådesökning.</string>
+    <string name="pref_recent_suggestion_title">Historik</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -374,7 +374,7 @@
     <string name="label">Etikett</string>
     <string name="hide_from_drawer">Dölj från applådan</string>
     <string name="suggestion_pref_screen_title">Förslag</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Visa föreslagna appar överst i applådan</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Buggrapport för Lawnchair</string>
     <string name="crash_report_notif_title">%1$s kraschade</string>
@@ -396,18 +396,18 @@
     <string name="label_search">Sök</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Röstsökning</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Inställningar</string>
     <string name="all_apps_search_market_message">Sök efter fler appar</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Sök på <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Ingen appbutik eller webbläsare installerad.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">Från webben</string>
+    <string name="all_apps_search_result_contacts_from_device">Från dina kontakter</string>
+    <string name="all_apps_search_result_files">Från dina filer</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Från dina inställningar</string>
+    <string name="warn_contact_permission_content">Kräver kontaktbehörighet</string>
+    <string name="warn_files_permission_content">Kräver lagringsbehörighet</string>
+    <string name="all_apps_search_result_files_description">Media, dokument, mappar med mera.</string>
+    <string name="all_apps_search_result_contacts_description">Kontakter med mera</string>
     <string name="quickstep_incompatible">Inkompatibel systemintegration</string>
     <string name="quickstep_incompatible_description">Din enhet är konfigurerad för att ha systemgester (kända som Quickstep) tillhandahållna av %1$s, men denna version av %1$s är inte kompatibel med din Android-version. För att fortsätta att använda din enhet, vänligen avinstallera uppdateringar till %1$s eller inaktivera %1$s som systemgestsleverantör.</string>
     <string name="delete">Radera</string>

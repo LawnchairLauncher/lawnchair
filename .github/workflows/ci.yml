@@ -54,7 +54,7 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepFossDebug assembleLawnWithQuickstepMarketDebug
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Debug APK
           path: build/outputs/apk/**/*.apk
@@ -91,7 +91,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install gitpython requests
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Debug APK
           path: artifacts/debug-apk

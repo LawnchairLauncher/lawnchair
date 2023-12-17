@@ -1,0 +1,99 @@
+// Copyright (C) 2017 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_packages_SystemUI_license"],
+}
+
+genrule {
+    name: "statslog-SystemUI-java-gen",
+    tools: ["stats-log-api-gen"],
+    cmd: "$(location stats-log-api-gen) --java $(out) --module sysui --javaPackage com.android.systemui.shared.system --javaClass SysUiStatsLog",
+    out: ["com/android/systemui/shared/system/SysUiStatsLog.java"],
+}
+
+java_library {
+    name: "SystemUI-statsd",
+
+    srcs: [
+        ":statslog-SystemUI-java-gen",
+    ],
+}
+
+android_library {
+    name: "SystemUISharedLib",
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+        "src/**/*.aidl",
+        ":wm_shell-aidls",
+        ":wm_shell_util-sources",
+    ],
+    static_libs: [
+        "PluginCoreLib",
+        "SystemUIAnimationLib",
+        "SystemUIPluginLib",
+        "SystemUIUnfoldLib",
+        "androidx.dynamicanimation_dynamicanimation",
+        "androidx.concurrent_concurrent-futures",
+        "androidx.lifecycle_lifecycle-runtime-ktx",
+        "androidx.lifecycle_lifecycle-viewmodel-ktx",
+        "androidx.recyclerview_recyclerview",
+        "kotlinx_coroutines_android",
+        "kotlinx_coroutines",
+        "dagger2",
+        "jsr330",
+    ],
+    resource_dirs: [
+        "res",
+    ],
+    min_sdk_version: "current",
+    plugins: ["dagger2-compiler"],
+    kotlincflags: ["-Xjvm-default=all"],
+}
+
+java_library {
+    name: "SystemUI-flag-types",
+    srcs: [
+        "src/com/android/systemui/flags/Flag.kt",
+    ],
+    include_srcs: true,
+    static_kotlin_stdlib: false,
+    java_version: "1.8",
+    min_sdk_version: "current",
+}
+
+java_library {
+    name: "SystemUIFlagsLib",
+    srcs: [
+        "src/com/android/systemui/flags/**/*.kt",
+    ],
+    static_kotlin_stdlib: false,
+    libs: [
+        "androidx.concurrent_concurrent-futures",
+    ],
+    static_libs: [
+        "SystemUI-flag-types",
+    ],
+    optimize: {
+        proguard_flags_files: ["proguard_flags.flags"],
+    },
+    java_version: "1.8",
+    min_sdk_version: "current",
+}

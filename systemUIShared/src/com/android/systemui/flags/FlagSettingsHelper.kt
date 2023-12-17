@@ -22,7 +22,6 @@ import android.provider.Settings
 
 class FlagSettingsHelper(private val contentResolver: ContentResolver) {
 
-    // TODO(b/265188950): Remove method this once ids are fully deprecated.
     fun getStringFromSecure(key: String): String? = Settings.Secure.getString(contentResolver, key)
 
     fun getString(key: String): String? = Settings.Global.getString(contentResolver, key)

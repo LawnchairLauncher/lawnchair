@@ -13,14 +13,11 @@ import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherSettings.Favorites.CONTAINER
-import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
-import com.android.launcher3.LauncherSettings.Favorites.PREVIEW_CONTENT_URI
-import com.android.launcher3.LauncherSettings.Favorites.SCREEN
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.GridSizeMigrationUtil
+import com.android.launcher3.model.LauncherBinder
 import com.android.launcher3.model.LoaderTask
 import com.android.launcher3.model.ModelDelegate
 import com.android.launcher3.util.ComponentKey
@@ -93,13 +90,18 @@ class LauncherPreviewView(
                 null,
                 BgDataModel(),
                 ModelDelegate(),
-                null,
+                LauncherBinder(
+                    LauncherAppState.getInstance(previewContext),
+                    BgDataModel(), /* bgAllAppsList= */
+                    null,
+                    arrayOfNulls<BgDataModel.Callbacks>(0),
+                ),
             ) {
                 override fun run() {
                     loadWorkspace(
                         emptyList(),
-                        PREVIEW_CONTENT_URI,
-                        "$SCREEN = 0 or $CONTAINER = $CONTAINER_HOTSEAT",
+                        "",
+                        null,
                     )
                     MAIN_EXECUTOR.execute {
                         renderView(previewContext, mBgDataModel, mWidgetProvidersMap)
@@ -127,7 +129,7 @@ class LauncherPreviewView(
         if (!needsToMigrate) {
             return false
         }
-        return GridSizeMigrationUtil.migrateGridIfNeeded(context, idp)
+        return GridSizeMigrationUtil.needsToMigrate(context, idp)
     }
 
     @UiThread

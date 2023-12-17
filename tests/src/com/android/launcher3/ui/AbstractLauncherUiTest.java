@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -49,11 +50,8 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
@@ -64,14 +62,14 @@ import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.util.rule.FailureWatcher;
-import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.SamplerRule;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.launcher3.util.rule.ViewCaptureRule;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -81,10 +79,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 import java.io.IOException;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -101,11 +95,13 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
-    public static final long DEFAULT_UI_TIMEOUT = 10000;
+    public static final long DEFAULT_UI_TIMEOUT = TestUtil.DEFAULT_UI_TIMEOUT;
     private static final String TAG = "AbstractLauncherUiTest";
 
     private static boolean sDumpWasGenerated = false;
     private static boolean sActivityLeakReported = false;
+    private static boolean sSeenKeyguard = false;
+
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
@@ -185,8 +181,6 @@ public abstract class AbstractLauncherUiTest {
         mLauncher.setOnLauncherCrashed(() -> mLauncherPid = 0);
     }
 
-    protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
-
     @Rule
     public ShellCommandRule mDisableHeadsUpNotification =
             ShellCommandRule.disableHeadsUpNotification();
@@ -206,28 +200,23 @@ public abstract class AbstractLauncherUiTest {
         mTargetContext.unregisterReceiver(broadcastReceiver);
     }
 
-    // Annotation for tests that need to be run in portrait and landscape modes.
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    protected @interface PortraitLandscape {
-    }
-
     protected TestRule getRulesInsideActivityMonitor() {
+        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule(
+                Launcher.ACTIVITY_TRACKER::getCreatedActivity);
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
-                .around(new FailureWatcher(mDevice, mLauncher));
+                .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
+                .around(viewCaptureRule);
 
         return TestHelpers.isInLauncherProcess()
-                ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher())
-                .around(inner) :
-                inner;
+                ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher()).around(inner)
+                : inner;
     }
 
     @Rule
     public TestRule mOrderSensitiveRules = RuleChain
             .outerRule(new SamplerRule())
             .around(new TestStabilityRule())
-            .around(mActivityMonitor)
             .around(getRulesInsideActivityMonitor());
 
     public UiDevice getDevice() {
@@ -237,9 +226,8 @@ public abstract class AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         mLauncher.onTestStart();
-        Assert.assertTrue("Keyguard is visible, which is likely caused by a crash in SysUI",
-                TestHelpers.wait(
-                        Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
+
+        verifyKeyguardInvisible();
 
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
@@ -272,6 +260,20 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
+    private static void verifyKeyguardInvisible() {
+        final boolean keyguardAlreadyVisible = sSeenKeyguard;
+
+        sSeenKeyguard = sSeenKeyguard
+                || !TestHelpers.wait(
+                Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000);
+
+        Assert.assertFalse(
+                "Keyguard is visible, which is likely caused by a crash in SysUI, seeing keyguard"
+                        + " for the first time = "
+                        + !keyguardAlreadyVisible,
+                sSeenKeyguard);
+    }
+
     @After
     public void verifyLauncherState() {
         try {
@@ -286,42 +288,16 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void clearLauncherData() {
-        mLauncher.clearLauncherData();
-        mLauncher.waitForLauncherInitialized();
+    protected void reinitializeLauncherData() {
+        reinitializeLauncherData(false);
     }
 
-    /**
-     * Removes all icons from homescreen and hotseat.
-     */
-    public void clearHomescreen() {
-        LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-        resetLoaderState();
-    }
-
-    protected void resetLoaderState() {
-        try {
-            mMainThreadExecutor.execute(
-                    () -> LauncherAppState.getInstance(
-                            mTargetContext).getModel().forceReload());
-        } catch (Throwable t) {
-            throw new IllegalArgumentException(t);
+    protected void reinitializeLauncherData(boolean clearWorkspace) {
+        if (clearWorkspace) {
+            mLauncher.clearLauncherData();
+        } else {
+            mLauncher.reinitializeLauncherData();
         }
-        mLauncher.waitForLauncherInitialized();
-    }
-
-    /**
-     * Adds {@param item} on the homescreen on the 0th screen
-     */
-    public void addItemToScreen(ItemInfo item) {
-        WidgetUtils.addItemToScreen(item, mTargetContext);
-        resetLoaderState();
-
-        // Launch the home activity
-        mDevice.pressHome();
         mLauncher.waitForLauncherInitialized();
     }
 
@@ -343,7 +319,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected <T> T getFromLauncher(Function<Launcher, T> f) {
         if (!TestHelpers.isInLauncherProcess()) return null;
-        return getOnUiThread(() -> f.apply(mActivityMonitor.getActivity()));
+        return getOnUiThread(() -> f.apply(Launcher.ACTIVITY_TRACKER.getCreatedActivity()));
     }
 
     protected void executeOnLauncher(Consumer<Launcher> f) {
@@ -389,6 +365,7 @@ public abstract class AbstractLauncherUiTest {
     // flakiness.
     protected void waitForLauncherCondition(
             String message, Function<Launcher, Boolean> condition, long timeout) {
+        verifyKeyguardInvisible();
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout, mLauncher);
     }
@@ -434,7 +411,8 @@ public abstract class AbstractLauncherUiTest {
         private Intent mIntent;
 
         public BlockingBroadcastReceiver(String action) {
-            mTargetContext.registerReceiver(this, new IntentFilter(action));
+            mTargetContext.registerReceiver(this, new IntentFilter(action),
+                    Context.RECEIVER_EXPORTED/*UNAUDITED*/);
         }
 
         @Override
@@ -629,6 +607,8 @@ public abstract class AbstractLauncherUiTest {
 
     protected HomeAppIcon createShortcutIfNotExist(String name, int cellX, int cellY) {
         HomeAppIcon homeAppIcon = mLauncher.getWorkspace().tryGetWorkspaceAppIcon(name);
+        Log.d(ICON_MISSING, "homeAppIcon: " + homeAppIcon + " name: " + name +
+                " cell: " + cellX + ", " + cellY);
         if (homeAppIcon == null) {
             HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
             allApps.freeze();

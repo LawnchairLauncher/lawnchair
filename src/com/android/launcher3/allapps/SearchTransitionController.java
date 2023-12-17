@@ -20,14 +20,15 @@ import static android.view.View.VISIBLE;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+import static com.android.app.animation.Interpolators.DECELERATE_1_7;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.Log;
@@ -47,7 +48,7 @@ public class SearchTransitionController {
     private static final String LOG_TAG = "SearchTransitionCtrl";
 
     // Interpolator when the user taps the QSB while already in All Apps.
-    private static final Interpolator INTERPOLATOR_WITHIN_ALL_APPS = DEACCEL_1_7;
+    private static final Interpolator INTERPOLATOR_WITHIN_ALL_APPS = DECELERATE_1_7;
     // Interpolator when the user taps the QSB from home screen, so transition to all apps is
     // happening simultaneously.
     private static final Interpolator INTERPOLATOR_TRANSITIONING_TO_ALL_APPS = INSTANT;
@@ -79,6 +80,7 @@ public class SearchTransitionController {
 
     private ObjectAnimator mSearchToAzAnimator = null;
     private float mSearchToAzProgress = 1f;
+    private boolean mSkipNextAnimationWithinAllApps;
 
     public SearchTransitionController(ActivityAllAppsContainerView<?> allAppsContainerView) {
         mAllAppsContainerView = allAppsContainerView;
@@ -108,11 +110,16 @@ public class SearchTransitionController {
 
         mSearchToAzAnimator = ObjectAnimator.ofFloat(this, SEARCH_TO_AZ_PROGRESS, targetProgress);
         boolean inAllApps = mAllAppsContainerView.isInAllApps();
-        if (!inAllApps) {
+        TimeInterpolator timeInterpolator =
+                inAllApps ? INTERPOLATOR_WITHIN_ALL_APPS : INTERPOLATOR_TRANSITIONING_TO_ALL_APPS;
+        if (mSkipNextAnimationWithinAllApps) {
+            timeInterpolator = INSTANT;
+            mSkipNextAnimationWithinAllApps = false;
+        }
+        if (timeInterpolator == INSTANT) {
             duration = 0;  // Don't want to animate when coming from QSB.
         }
-        mSearchToAzAnimator.setDuration(duration).setInterpolator(
-                inAllApps ? INTERPOLATOR_WITHIN_ALL_APPS : INTERPOLATOR_TRANSITIONING_TO_ALL_APPS);
+        mSearchToAzAnimator.setDuration(duration).setInterpolator(timeInterpolator);
         mSearchToAzAnimator.addListener(forEndCallback(() -> mSearchToAzAnimator = null));
         if (!goingToSearch) {
             mSearchToAzAnimator.addListener(forSuccessCallback(() -> {
@@ -125,6 +132,7 @@ public class SearchTransitionController {
 
         mAllAppsContainerView.getFloatingHeaderView().setFloatingRowsCollapsed(true);
         mAllAppsContainerView.getFloatingHeaderView().setVisibility(VISIBLE);
+        mAllAppsContainerView.getFloatingHeaderView().maybeSetTabVisibility(VISIBLE);
         mAllAppsContainerView.getAppsRecyclerViewContainer().setVisibility(VISIBLE);
         getSearchRecyclerView().setVisibility(VISIBLE);
         getSearchRecyclerView().setChildAttachedConsumer(this::onSearchChildAttached);
@@ -336,5 +344,13 @@ public class SearchTransitionController {
 
     private float getSearchToAzProgress() {
         return mSearchToAzProgress;
+    }
+
+    /**
+     * This should only be called from {@code LauncherSearchSessionManager} when app restarts due to
+     * theme changes.
+     */
+    public void setSkipAnimationWithinAllApps(boolean skip) {
+        mSkipNextAnimationWithinAllApps = skip;
     }
 }

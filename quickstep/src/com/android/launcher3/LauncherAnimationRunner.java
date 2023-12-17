@@ -120,7 +120,7 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
      */
     @BinderThread
     @Override
-    public void onAnimationCancelled(boolean isKeyguardOccluded) {
+    public void onAnimationCancelled() {
         postAsyncCallback(mHandler, () -> {
             finishExistingAnimation();
             getFactory().onAnimationCancelled();
@@ -196,14 +196,13 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                         finish();
                     }
                 });
-                mAnimator.start();
-
                 if (skipFirstFrame) {
                     // Because t=0 has the app icon in its original spot, we can skip the
                     // first frame and have the same movement one frame earlier.
                     mAnimator.setCurrentPlayTime(
                             Math.min(getSingleFrameMs(context), mAnimator.getTotalDuration()));
                 }
+                mAnimator.start();
             }
         }
 
@@ -235,16 +234,12 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                 RemoteAnimationTarget[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result);
 
-        @Override
-        @UiThread
-        default void onAnimationCancelled(boolean isKeyguardOccluded) {
-            onAnimationCancelled();
-        }
-
         /**
          * Called when the animation is cancelled. This can happen with or without
          * the create being called.
          */
-        default void onAnimationCancelled() { }
+        @Override
+        @UiThread
+        default void onAnimationCancelled() {}
     }
 }

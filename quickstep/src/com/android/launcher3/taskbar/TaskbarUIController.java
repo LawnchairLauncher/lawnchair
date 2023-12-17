@@ -30,17 +30,22 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
+import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 /**
  * Base class for providing different taskbar UI
@@ -67,26 +72,32 @@ public class TaskbarUIController {
     }
 
     /**
-     * This should only be called by TaskbarStashController so that a TaskbarUIController can
+     * This should only be called by TaskbarStashController so that a
+     * TaskbarUIController can
      * disable stashing. All other controllers should use
-     * {@link TaskbarStashController#supportsVisualStashing()} as the source of truth.
+     * {@link TaskbarStashController#supportsVisualStashing()} as the source of
+     * truth.
      */
     public boolean supportsVisualStashing() {
         return true;
     }
 
-    protected void onStashedInAppChanged() { }
+    protected void onStashedInAppChanged() {
+    }
 
     /**
      * Called when taskbar icon layout bounds change.
      */
-    protected void onIconLayoutBoundsChanged() { }
+    protected void onIconLayoutBoundsChanged() {
+    }
 
     /** Called when an icon is launched. */
     @CallSuper
     public void onTaskbarIconLaunched(ItemInfo item) {
-        // When launching from Taskbar, e.g. from Overview, set FLAG_IN_APP immediately instead of
-        // waiting for onPause, to reduce potential visual noise during the app open transition.
+        // When launching from Taskbar, e.g. from Overview, set FLAG_IN_APP immediately
+        // instead of
+        // waiting for onPause, to reduce potential visual noise during the app open
+        // transition.
         mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, true);
         mControllers.taskbarStashController.applyState();
     }
@@ -97,7 +108,9 @@ public class TaskbarUIController {
 
     /**
      * Called when swiping from the bottom nav region in fully gestural mode.
-     * @param inProgress True if the animation started, false if we just settled on an end target.
+     * 
+     * @param inProgress True if the animation started, false if we just settled on
+     *                   an end target.
      */
     public void setSystemGestureInProgress(boolean inProgress) {
         mControllers.taskbarStashController.setSystemGestureInProgress(inProgress);
@@ -114,7 +127,8 @@ public class TaskbarUIController {
     }
 
     /**
-     * User expands PiP to full-screen (or split-screen) mode, try to hide the Taskbar.
+     * User expands PiP to full-screen (or split-screen) mode, try to hide the
+     * Taskbar.
      */
     public void onExpandPip() {
         if (mControllers != null) {
@@ -127,7 +141,7 @@ public class TaskbarUIController {
     /**
      * SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values.
      */
-    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim){
+    public void updateStateForSysuiFlags(int sysuiFlags) {
     }
 
     /**
@@ -153,7 +167,9 @@ public class TaskbarUIController {
 
     /*
      * @param ev MotionEvent in screen coordinates.
-     * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
+     * 
+     * @return Whether any Taskbar item could handle the given MotionEvent if given
+     * the chance.
      */
     public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
         return mControllers.taskbarViewController.isEventOverAnyItem(ev)
@@ -168,7 +184,8 @@ public class TaskbarUIController {
     }
 
     /**
-     * Returns true if hotseat icons are on top of view hierarchy when aligned in the current state.
+     * Returns true if hotseat icons are on top of view hierarchy when aligned in
+     * the current state.
      */
     public boolean isHotseatIconOnTopWhenAligned() {
         return true;
@@ -189,8 +206,10 @@ public class TaskbarUIController {
 
     /**
      * Returns RecentsView. Overwritten in LauncherTaskbarUIController and
-     * FallbackTaskbarUIController with Launcher-specific implementations. Returns null for other
-     * UI controllers (like DesktopTaskbarUIController) that don't have a RecentsView.
+     * FallbackTaskbarUIController with Launcher-specific implementations. Returns
+     * null for other
+     * UI controllers (like DesktopTaskbarUIController) that don't have a
+     * RecentsView.
      */
     public @Nullable RecentsView getRecentsView() {
         return null;
@@ -202,19 +221,17 @@ public class TaskbarUIController {
             return;
         }
 
-        ComponentKey componentToBeStaged = new ComponentKey(
-                splitSelectSource.itemInfo.getTargetComponent(),
-                splitSelectSource.itemInfo.user);
-        recentsView.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                componentToBeStaged,
-                foundTask -> {
+        recentsView.getSplitSelectController().findLastActiveTasksAndRunCallback(
+                Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
+                foundTasks -> {
+                    @Nullable
+                    Task foundTask = foundTasks.get(0);
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
                             : foundTask.key.id;
                     splitSelectSource.animateCurrentTaskDismissal = foundTask != null;
                     recentsView.initiateSplitSelect(splitSelectSource);
-                }
-        );
+                });
     }
 
     /**
@@ -222,10 +239,11 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
-        ComponentKey secondAppComponent = new ComponentKey(info.getTargetComponent(), info.user);
-        recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                secondAppComponent,
-                foundTask -> {
+        recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
+                Collections.singletonList(info.getComponentKey()),
+                foundTasks -> {
+                    @Nullable
+                    Task foundTask = foundTasks.get(0);
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         // TODO (b/266482558): This additional null check is needed because there
@@ -236,8 +254,8 @@ public class TaskbarUIController {
                         if (foundTaskView != null) {
                             // There is already a running app of this type, use that as second app.
                             // Get index of task (0 or 1), in case it's a GroupedTaskView
-                            TaskIdAttributeContainer taskAttributes =
-                                    foundTaskView.getTaskAttributesById(foundTask.key.id);
+                            TaskIdAttributeContainer taskAttributes = foundTaskView
+                                    .getTaskAttributesById(foundTask.key.id);
                             recents.confirmSplitSelect(
                                     foundTaskView,
                                     foundTask,
@@ -259,14 +277,14 @@ public class TaskbarUIController {
                             null /* thumbnail */,
                             intent,
                             info.user);
-                }
-        );
+                });
     }
 
     /**
      * Opens the Keyboard Quick Switch View.
      *
-     * This will set the focus to the first task from the right (from the left in RTL)
+     * This will set the focus to the first task from the right (from the left in
+     * RTL)
      */
     public void openQuickSwitchView() {
         mControllers.keyboardQuickSwitchController.openQuickSwitchView();
@@ -275,10 +293,13 @@ public class TaskbarUIController {
     /**
      * Launches the focused task and closes the Keyboard Quick Switch View.
      *
-     * If the overlay or view are closed, or the overview task is focused, then Overview is
-     * launched. If the overview task is launched, then the first hidden task is focused.
+     * If the overlay or view are closed, or the overview task is focused, then
+     * Overview is
+     * launched. If the overview task is launched, then the first hidden task is
+     * focused.
      *
-     * @return the index of what task should be focused in ; -1 iff Overview shouldn't be launched
+     * @return the index of what task should be focused in ; -1 iff Overview
+     *         shouldn't be launched
      */
     public int launchFocusedTask() {
         int focusedTaskIndex = mControllers.keyboardQuickSwitchController.launchFocusedTask();
@@ -291,10 +312,12 @@ public class TaskbarUIController {
      *
      * No-op if the view is not yet open.
      */
-    public void launchSplitTasks(@NonNull View taskview, @NonNull GroupTask groupTask) { }
+    public void launchSplitTasks(@NonNull View taskview, @NonNull GroupTask groupTask) {
+    }
 
     /**
      * Returns the matching view (if any) in the taskbar.
+     * 
      * @param view The view to match.
      */
     public @Nullable View findMatchingView(View view) {
@@ -306,7 +329,8 @@ public class TaskbarUIController {
             return null;
         }
 
-        // Taskbar has the same items as the hotseat and we can use screenId to find the match.
+        // Taskbar has the same items as the hotseat and we can use screenId to find the
+        // match.
         int screenId = info.screenId;
         View[] views = mControllers.taskbarViewController.getIconViews();
         for (int i = views.length - 1; i >= 0; --i) {
@@ -317,5 +341,21 @@ public class TaskbarUIController {
             }
         }
         return null;
+    }
+
+    /**
+     * Refreshes the resumed state of this ui controller.
+     */
+    public void refreshResumedState() {
+    }
+
+    /**
+     * Returns a stream of split screen menu options appropriate to the device.
+     */
+    Stream<SystemShortcut.Factory<BaseTaskbarContext>> getSplitMenuOptions() {
+        return Utilities
+                .getSplitPositionOptions(mControllers.taskbarActivityContext.getDeviceProfile())
+                .stream()
+                .map(mControllers.taskbarPopupController::createSplitShortcutFactory);
     }
 }

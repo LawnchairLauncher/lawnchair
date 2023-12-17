@@ -16,40 +16,34 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.app.animation.Interpolators.AGGRESSIVE_EASE_IN_OUT;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
-import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
-import static com.android.quickstep.views.FloatingTaskView.PRIMARY_TRANSLATE_OFFSCREEN;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_THUMBNAIL_SPLASH_ALPHA;
 
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.FloatProperty;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -113,48 +107,19 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
 
-        if (mRecentsView.isSplitSelectionActive()) {
-            // TODO (b/238651489): Refactor state management to avoid need for double check
-            FloatingTaskView floatingTask = mRecentsView.getFirstFloatingTaskView();
-            if (floatingTask != null) {
-                // We are in split selection state currently, transitioning to another state
-                DragLayer dragLayer = mLauncher.getDragLayer();
-                RectF onScreenRectF = new RectF();
-                Utilities.getBoundsForViewInDragLayer(mLauncher.getDragLayer(), floatingTask,
-                        new Rect(0, 0, floatingTask.getWidth(), floatingTask.getHeight()),
-                        false, null, onScreenRectF);
-                // Get the part of the floatingTask that intersects with the DragLayer (i.e. the
-                // on-screen portion)
-                onScreenRectF.intersect(
-                        dragLayer.getLeft(),
-                        dragLayer.getTop(),
-                        dragLayer.getRight(),
-                        dragLayer.getBottom()
-                );
-
-                setter.setFloat(
-                        mRecentsView.getFirstFloatingTaskView(),
-                        PRIMARY_TRANSLATE_OFFSCREEN,
-                        mRecentsView.getPagedOrientationHandler()
-                                .getFloatingTaskOffscreenTranslationTarget(
-                                        floatingTask,
-                                        onScreenRectF,
-                                        floatingTask.getStagePosition(),
-                                        mLauncher.getDeviceProfile()
-                                ),
-                        config.getInterpolator(
-                                ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
-                                LINEAR
-                        ));
-                setter.setViewAlpha(
-                        mRecentsView.getSplitInstructionsView(),
-                        0,
-                        config.getInterpolator(
-                                ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE,
-                                LINEAR
-                        )
-                );
-            }
+        boolean exitingOverview = !FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+                && !toState.overviewUi;
+        if (mRecentsView.isSplitSelectionActive() && exitingOverview) {
+            setter.add(mRecentsView.getSplitSelectController().getSplitAnimationController()
+                    .createPlaceholderDismissAnim(mLauncher));
+            setter.setViewAlpha(
+                    mRecentsView.getSplitInstructionsView(),
+                    0,
+                    config.getInterpolator(
+                            ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE,
+                            LINEAR
+                    )
+            );
         }
 
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,

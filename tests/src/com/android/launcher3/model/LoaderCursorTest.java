@@ -27,12 +27,10 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.ICON;
-import static com.android.launcher3.LauncherSettings.Favorites.ICON_PACKAGE;
-import static com.android.launcher3.LauncherSettings.Favorites.ICON_RESOURCE;
 import static com.android.launcher3.LauncherSettings.Favorites.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.OPTIONS;
 import static com.android.launcher3.LauncherSettings.Favorites.PROFILE_ID;
 import static com.android.launcher3.LauncherSettings.Favorites.RANK;
@@ -61,7 +59,6 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
@@ -97,15 +94,14 @@ public class LoaderCursorTest {
         mApp = LauncherAppState.getInstance(mContext);
 
         mCursor = new MatrixCursor(new String[] {
-                ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
-                _ID, CONTAINER, ITEM_TYPE, PROFILE_ID,
-                SCREEN, CELLX, CELLY, RESTORED, INTENT,
-                APPWIDGET_ID, APPWIDGET_PROVIDER, SPANX,
-                SPANY, RANK, OPTIONS, APPWIDGET_SOURCE
+                ICON, TITLE, _ID, CONTAINER, ITEM_TYPE,
+                PROFILE_ID, SCREEN, CELLX, CELLY, RESTORED,
+                INTENT, APPWIDGET_ID, APPWIDGET_PROVIDER,
+                SPANX, SPANY, RANK, OPTIONS, APPWIDGET_SOURCE
         });
 
         UserManagerState ums = new UserManagerState();
-        mLoaderCursor = new LoaderCursor(mCursor, Favorites.CONTENT_URI, mApp, ums);
+        mLoaderCursor = new LoaderCursor(mCursor, mApp, ums);
         ums.allUsers.put(0, Process.myUserHandle());
     }
 
@@ -162,13 +158,13 @@ public class LoaderCursorTest {
 
     @Test
     public void loadSimpleShortcut() {
-        initCursor(ITEM_TYPE_SHORTCUT, "my-shortcut");
+        initCursor(ITEM_TYPE_DEEP_SHORTCUT, "my-shortcut");
         assertTrue(mLoaderCursor.moveToNext());
 
         WorkspaceItemInfo info = mLoaderCursor.loadSimpleWorkspaceItem();
         assertTrue(mApp.getIconCache().isDefaultIcon(info.bitmap, info.user));
         assertEquals("my-shortcut", info.title);
-        assertEquals(ITEM_TYPE_SHORTCUT, info.itemType);
+        assertEquals(ITEM_TYPE_DEEP_SHORTCUT, info.itemType);
     }
 
     @Test

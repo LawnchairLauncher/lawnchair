@@ -19,6 +19,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Looper;
+import android.os.Trace;
 import android.os.UserManager;
 import android.util.Log;
 import android.view.ThreadedRenderer;
@@ -43,16 +45,18 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
 
         @Override
         protected void init(Context context) {
-                // Workaround for b/120550382, an external app can cause the launcher process to start for
-                // a work profile user which we do not support. Disable the application immediately when we
+                // Workaround for b/120550382, an external app can cause the launcher process to
+                // start for
+                // a work profile user which we do not support. Disable the application
+                // immediately when we
                 // detect this to be the case.
                 UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
                 if (um.isManagedProfile()) {
                         PackageManager pm = context.getPackageManager();
                         pm.setApplicationEnabledSetting(context.getPackageName(),
-                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0 /* flags */);
+                                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0 /* flags */);
                         Log.w(TAG, "Disabling " + BuildConfig.APPLICATION_ID
-                                + ", unable to run in a managed profile");
+                                        + ", unable to run in a managed profile");
                         return;
                 }
 
@@ -60,10 +64,10 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
 
                 // Elevate GPU priority for Quickstep and Remote animations.
                 try {
-                ThreadedRenderer.setContextPriority(
-                        ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
-                } catch (Exception e){
-                        Log.e(TAG , "init: " + e);
+                        ThreadedRenderer.setContextPriority(
+                                        ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+                } catch (Exception e) {
+                        Log.e(TAG, "init: " + e);
                 }
         }
 }

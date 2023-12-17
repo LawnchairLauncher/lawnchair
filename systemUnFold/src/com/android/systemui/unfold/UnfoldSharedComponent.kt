@@ -33,7 +33,6 @@ import com.android.systemui.unfold.util.CurrentActivityTypeProvider
 import com.android.systemui.unfold.util.UnfoldTransitionATracePrefix
 import dagger.BindsInstance
 import dagger.Component
-import dagger.hilt.migration.DisableInstallInCheck
 import java.util.Optional
 import java.util.concurrent.Executor
 import javax.inject.Singleton
@@ -48,7 +47,6 @@ import javax.inject.Singleton
  */
 @Singleton
 @Component(modules = [UnfoldSharedModule::class])
-@DisableInstallInCheck
 interface UnfoldSharedComponent {
 
     @Component.Factory

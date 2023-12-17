@@ -15,8 +15,13 @@
  */
 package com.android.launcher3.views;
 
+import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
+
+import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
+import static com.android.launcher3.Utilities.allowBGLaunch;
 import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_PENDING_INTENT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -34,7 +39,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Process;
-import android.os.StrictMode;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.Display;
@@ -45,7 +49,6 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-import android.window.SplashScreen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +56,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.DropTargetHandler;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -80,7 +84,8 @@ import com.android.launcher3.util.ViewCache;
 import java.util.List;
 
 /**
- * An interface to be used along with a context for various activities in Launcher. This allows a
+ * An interface to be used along with a context for various activities in
+ * Launcher. This allows a
  * generic class to depend on Context subclass instead of an Activity.
  */
 public interface ActivityContext {
@@ -96,11 +101,14 @@ public interface ActivityContext {
     }
 
     /**
-     * For items with tree hierarchy, notifies the activity to invalidate the parent when a root
+     * For items with tree hierarchy, notifies the activity to invalidate the parent
+     * when a root
      * is invalidated
+     * 
      * @param info info associated with a root node.
      */
-    default void invalidateParent(ItemInfo info) { }
+    default void invalidateParent(ItemInfo info) {
+    }
 
     default AccessibilityDelegate getAccessibilityDelegate() {
         return null;
@@ -111,21 +119,29 @@ public interface ActivityContext {
     }
 
     /**
-     * After calling {@link #getFolderBoundingBox()}, we calculate a (left, top) position for a
-     * Folder of size width x height to be within those bounds. However, the chosen position may
-     * not be visually ideal (e.g. uncanny valley of centeredness), so here's a chance to update it.
-     * @param inOutPosition A 2-size array where the first element is the left position of the open
-     *     folder and the second element is the top position. Should be updated in place if desired.
-     * @param bounds The bounds that the open folder should fit inside.
-     * @param width The width of the open folder.
-     * @param height The height of the open folder.
+     * After calling {@link #getFolderBoundingBox()}, we calculate a (left, top)
+     * position for a
+     * Folder of size width x height to be within those bounds. However, the chosen
+     * position may
+     * not be visually ideal (e.g. uncanny valley of centeredness), so here's a
+     * chance to update it.
+     * 
+     * @param inOutPosition A 2-size array where the first element is the left
+     *                      position of the open
+     *                      folder and the second element is the top position.
+     *                      Should be updated in place if desired.
+     * @param bounds        The bounds that the open folder should fit inside.
+     * @param width         The width of the open folder.
+     * @param height        The height of the open folder.
      */
     default void updateOpenFolderPosition(int[] inOutPosition, Rect bounds, int width, int height) {
     }
 
     /**
-     * Returns a LayoutInflater that is cloned in this Context, so that Views inflated by it will
-     * have the same Context. (i.e. {@link #lookupContext(Context)} will find this ActivityContext.)
+     * Returns a LayoutInflater that is cloned in this Context, so that Views
+     * inflated by it will
+     * have the same Context. (i.e. {@link #lookupContext(Context)} will find this
+     * ActivityContext.)
      */
     default LayoutInflater getLayoutInflater() {
         if (this instanceof Context) {
@@ -189,6 +205,13 @@ public interface ActivityContext {
     }
 
     /**
+     * Handler for actions taken on drop targets that require launcher
+     */
+    default DropTargetHandler getDropTargetHandler() {
+        return null;
+    }
+
+    /**
      * Returns the FolderIcon with the given item id, if it exists.
      */
     default @Nullable FolderIcon findFolderIcon(final int folderIconId) {
@@ -200,7 +223,8 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns {@code true} if popups can use a range of color shades instead of a singular color.
+     * Returns {@code true} if popups can use a range of color shades instead of a
+     * singular color.
      */
     default boolean canUseMultipleShadesForPopup() {
         return true;
@@ -209,7 +233,8 @@ public interface ActivityContext {
     /**
      * Called just before logging the given item.
      */
-    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
+    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) {
+    }
 
     /** Onboarding preferences for any onboarding data within this context. */
     @Nullable
@@ -217,7 +242,9 @@ public interface ActivityContext {
         return null;
     }
 
-    /** Returns {@code true} if items are currently being bound within this context. */
+    /**
+     * Returns {@code true} if items are currently being bound within this context.
+     */
     default boolean isBindingItems() {
         return false;
     }
@@ -226,6 +253,11 @@ public interface ActivityContext {
         return v -> {
             // No op.
         };
+    }
+
+    /** Long-click callback used for All Apps items. */
+    default View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return v -> false;
     }
 
     @Nullable
@@ -248,17 +280,18 @@ public interface ActivityContext {
         }
         if (Utilities.ATLEAST_R) {
             Preconditions.assertUIThread();
-            //  Hide keyboard with WindowInsetsController if could. In case
-            //  hideSoftInputFromWindow may get ignored by input connection being finished
-            //  when the screen is off.
+            // Hide keyboard with WindowInsetsController if could. In case
+            // hideSoftInputFromWindow may get ignored by input connection being finished
+            // when the screen is off.
             //
-            // In addition, inside IMF, the keyboards are closed asynchronously that launcher no
+            // In addition, inside IMF, the keyboards are closed asynchronously that
+            // launcher no
             // longer need to post to the message queue.
             final WindowInsetsController wic = root.getWindowInsetsController();
             WindowInsets insets = root.getRootWindowInsets();
             boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
             if (wic != null && isImeShown) {
-                StatsLogManager slm  = getStatsLogManager();
+                StatsLogManager slm = getStatsLogManager();
                 slm.keyboardStateManager().setKeyboardState(HIDE);
 
                 // this method cannot be called cross threads
@@ -274,77 +307,83 @@ public interface ActivityContext {
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (imm.hideSoftInputFromWindow(token, 0)) {
                     // log keyboard close event only when keyboard is actually closed
-                    MAIN_EXECUTOR.execute(() ->
-                            getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED));
+                    MAIN_EXECUTOR.execute(() -> getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED));
                 }
             });
         }
     }
 
-
     /**
      * Sends a pending intent animating from a view.
      *
-     * @param v View to animate.
+     * @param v      View to animate.
      * @param intent The pending intent being launched.
-     * @param item Item associated with the view.
-     * @return {@code true} if the intent is sent successfully.
+     * @param item   Item associated with the view.
+     * @return RunnableList for listening for animation finish if the activity was
+     *         properly
+     *         or started, {@code null} if the launch finished
      */
-    default boolean sendPendingIntentWithAnimation(
+    default RunnableList sendPendingIntentWithAnimation(
             @NonNull View v, PendingIntent intent, @Nullable ItemInfo item) {
-        Bundle optsBundle = getActivityLaunchOptions(v, item).toBundle();
+        ActivityOptionsWrapper options = getActivityLaunchOptions(v, item);
         try {
-            intent.send(null, 0, null, null, null, null, optsBundle);
-            return true;
+            intent.send(null, 0, null, null, null, null, options.toBundle());
+            if (item != null) {
+                InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+                getStatsLogManager().logger().withItemInfo(item).withInstanceId(instanceId)
+                        .log(LAUNCHER_APP_LAUNCH_PENDING_INTENT);
+            }
+            return options.onEndCallback;
         } catch (PendingIntent.CanceledException e) {
             Toast.makeText(v.getContext(),
                     v.getContext().getResources().getText(R.string.shortcut_not_available),
                     Toast.LENGTH_SHORT).show();
         }
-        return false;
+        return null;
     }
 
     /**
      * Safely starts an activity.
      *
-     * @param v View starting the activity.
+     * @param v      View starting the activity.
      * @param intent Base intent being launched.
-     * @param item Item associated with the view.
-     * @return {@code true} if the activity starts successfully.
+     * @param item   Item associated with the view.
+     * @return RunnableList for listening for animation finish if the activity was
+     *         properly
+     *         or started, {@code null} if the launch finished
      */
-    default boolean startActivitySafely(
+    default RunnableList startActivitySafely(
             View v, Intent intent, @Nullable ItemInfo item) {
         Preconditions.assertUIThread();
         Context context = (Context) this;
         if (isAppBlockedForSafeMode() && !PackageManagerHelper.isSystemApp(context, intent)) {
             Toast.makeText(context, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
 
-        Bundle optsBundle = null;
-        if (v != null) {
-            optsBundle = getActivityLaunchOptions(v, item).toBundle();
-        } else if (android.os.Build.VERSION.SDK_INT >= 33
-                && item != null
-                && item.animationType == LauncherSettings.Animation.DEFAULT_NO_ICON) {
-            optsBundle = ActivityOptions.makeBasic()
-                    .setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR).toBundle();
+        boolean isShortcut = (item instanceof WorkspaceItemInfo)
+                && item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                && !((WorkspaceItemInfo) item).isPromise();
+        if (isShortcut && GO_DISABLE_WIDGETS) {
+            return null;
         }
+        ActivityOptionsWrapper options = v != null ? getActivityLaunchOptions(v, item)
+                : makeDefaultActivityOptions(item != null && item.animationType == DEFAULT_NO_ICON
+                        ? SPLASH_SCREEN_STYLE_SOLID_COLOR
+                        : -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */);
         UserHandle user = item == null ? null : item.user;
-
+        Bundle optsBundle = options.toBundle();
         // Prepare intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (v != null) {
             intent.setSourceBounds(Utilities.getViewBounds(v));
         }
         try {
-            boolean isShortcut = (item instanceof WorkspaceItemInfo)
-                    && (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                    || item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((WorkspaceItemInfo) item).isPromise();
             if (isShortcut) {
-                // Shortcuts need some special checks due to legacy reasons.
-                startShortcutIntentSafely(intent, optsBundle, item);
+                String id = ((WorkspaceItemInfo) item).getDeepShortcutId();
+                String packageName = intent.getPackage();
+                ((Context) this).getSystemService(LauncherApps.class).startShortcut(
+                        packageName, id, intent.getSourceBounds(), optsBundle, user);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
                 context.startActivity(intent, optsBundle);
@@ -356,12 +395,12 @@ public interface ActivityContext {
                 InstanceId instanceId = new InstanceIdSequence().newInstanceId();
                 logAppLaunch(getStatsLogManager(), item, instanceId);
             }
-            return true;
+            return options.onEndCallback;
         } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
             Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
-        return false;
+        return null;
     }
 
     /** Returns {@code true} if an app launch is blocked due to safe mode. */
@@ -381,7 +420,7 @@ public interface ActivityContext {
     /**
      * Returns launch options for an Activity.
      *
-     * @param v View initiating a launch.
+     * @param v    View initiating a launch.
      * @param item Item associated with the view.
      */
     default ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
@@ -398,9 +437,7 @@ public interface ActivityContext {
                 height = bounds.height();
             }
         }
-        ActivityOptions options =
-                ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-
+        ActivityOptions options = allowBGLaunch(ActivityOptions.makeClipRevealAnimation(v, left, top, width, height));
         options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
@@ -409,64 +446,15 @@ public interface ActivityContext {
     }
 
     /**
-     * Safely launches an intent for a shortcut.
-     *
-     * @param intent Intent to start.
-     * @param optsBundle Optional launch arguments.
-     * @param info Shortcut information.
+     * Creates a default activity option and we do not want association with any
+     * launcher element.
      */
-    default void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
-        try {
-            StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
-            try {
-                // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
-                // containing file Uri's would cause a crash as penaltyDeathOnFileUriExposure
-                // is enabled by default on NYC.
-                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-                        .penaltyLog().build());
-
-                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
-                    String packageName = intent.getPackage();
-                    startShortcut(packageName, id, intent.getSourceBounds(), optsBundle, info.user);
-                } else {
-                    // Could be launching some bookkeeping activity
-                    ((Context) this).startActivity(intent, optsBundle);
-                }
-            } finally {
-                StrictMode.setVmPolicy(oldPolicy);
-            }
-        } catch (SecurityException e) {
-            if (!onErrorStartingShortcut(intent, info)) {
-                throw e;
-            }
+    default ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
+        ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
+        if (Utilities.ATLEAST_T) {
+            options.setSplashScreenStyle(splashScreenStyle);
         }
-    }
-
-    /**
-     * A wrapper around the platform method with Launcher specific checks.
-     */
-    default void startShortcut(String packageName, String id, Rect sourceBounds,
-            Bundle startActivityOptions, UserHandle user) {
-        if (GO_DISABLE_WIDGETS) {
-            return;
-        }
-        try {
-            ((Context) this).getSystemService(LauncherApps.class).startShortcut(packageName, id,
-                    sourceBounds, startActivityOptions, user);
-        } catch (SecurityException | IllegalStateException e) {
-            Log.e(TAG, "Failed to start shortcut", e);
-        }
-    }
-
-    /**
-     * Invoked when a shortcut fails to launch.
-     * @param intent Shortcut intent that failed to start.
-     * @param info Shortcut information.
-     * @return {@code true} if the error is handled by this callback.
-     */
-    default boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
-        return false;
+        return new ActivityOptionsWrapper(options, new RunnableList());
     }
 
     default CellPosMapper getCellPosMapper() {
@@ -474,7 +462,8 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns the ActivityContext associated with the given Context, or throws an exception if
+     * Returns the ActivityContext associated with the given Context, or throws an
+     * exception if
      * the Context is not associated with any ActivityContext.
      */
     static <T extends Context & ActivityContext> T lookupContext(Context context) {

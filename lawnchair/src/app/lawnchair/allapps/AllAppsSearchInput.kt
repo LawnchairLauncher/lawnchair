@@ -143,7 +143,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    override fun setFocusedResultTitle(title: CharSequence?, sub: CharSequence?) {
+    override fun setFocusedResultTitle(title: CharSequence?, sub: CharSequence?, showArrow: Boolean) {
         focusedResultTitle = title?.toString().orEmpty()
         updateHint()
     }

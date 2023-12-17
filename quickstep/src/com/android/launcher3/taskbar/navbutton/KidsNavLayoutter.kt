@@ -25,14 +25,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_BACK_BUTTON_LEFT_MARGIN_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_HOME_BUTTON_LEFT_MARGIN_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_ICON_SIZE_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_NAV_BUTTONS_CORNER_RADIUS_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_NAV_BUTTONS_HEIGHT_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_NAV_BUTTONS_WIDTH_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DRAWABLE_SYSBAR_BACK_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DRAWABLE_SYSBAR_HOME_KIDS
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
 
 class KidsNavLayoutter(
     resources: Resources,
@@ -58,10 +51,10 @@ class KidsNavLayoutter(
         val paddingTop = (buttonHeight - iconSize) / 2
 
         // Update icons
-        backButton.setImageDrawable(backButton.context.getDrawable(DRAWABLE_SYSBAR_BACK_KIDS))
+        backButton!!.setImageDrawable(backButton.context.getDrawable(DRAWABLE_SYSBAR_BACK_KIDS))
         backButton.scaleType = ImageView.ScaleType.FIT_CENTER
         backButton.setPadding(paddingLeft, paddingTop, paddingLeft, paddingTop)
-        homeButton.setImageDrawable(homeButton.getContext().getDrawable(DRAWABLE_SYSBAR_HOME_KIDS))
+        homeButton!!.setImageDrawable(homeButton.context.getDrawable(DRAWABLE_SYSBAR_HOME_KIDS))
         homeButton.scaleType = ImageView.ScaleType.FIT_CENTER
         homeButton.setPadding(paddingLeft, paddingTop, paddingLeft, paddingTop)
 

@@ -44,7 +44,7 @@ class GenerateSearchTarget(private val context: Context) {
         val action = SearchActionCompat.Builder(id, suggestion)
             .setIcon(
                 Icon.createWithResource(context, R.drawable.ic_allapps_search)
-                    .setTint(ColorTokens.Accent1_600.resolveColor(context)),
+                    .setTint(ColorTokens.TextColorSecondary.resolveColor(context)),
             )
             .setIntent(browserIntent)
             .build()

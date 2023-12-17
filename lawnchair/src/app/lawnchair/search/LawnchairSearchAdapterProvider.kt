@@ -38,7 +38,7 @@ class LawnchairSearchAdapterProvider(
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
             field = value
-            appsView.searchUiManager.setFocusedResultTitle(field?.titleText, field?.titleText)
+            appsView.searchUiManager.setFocusedResultTitle(field?.titleText, field?.titleText, true)
         }
 
     override fun isViewSupported(viewType: Int): Boolean = layoutIdMap.contains(viewType)
@@ -67,6 +67,13 @@ class LawnchairSearchAdapterProvider(
         viewType: Int,
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
+
+        val layoutParams = ViewGroup.MarginLayoutParams(view.layoutParams)
+        val horizontalMargin = 48
+        layoutParams.leftMargin = horizontalMargin
+        layoutParams.rightMargin = horizontalMargin
+        view.layoutParams = layoutParams
+
         return BaseAllAppsAdapter.ViewHolder(view)
     }
 

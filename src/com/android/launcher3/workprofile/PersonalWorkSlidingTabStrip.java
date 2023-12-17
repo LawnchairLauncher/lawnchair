@@ -54,15 +54,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        FontManager fontManager = FontManager.INSTANCE.get(getContext());
-        for (int i = 0; i < getChildCount(); i++) {
-            Button tab = (Button) getChildAt(i);
-            tab.setAllCaps(false);
-            tab.setBackground(DrawableTokens.AllAppsTabsBackground.resolve(getContext()));
-            tab.setTextColor(ColorStateListTokens.AllAppsTabText.resolve(getContext()));
-            fontManager.setCustomFont(tab, R.id.font_body_medium);
-        }
     }
 
     /**

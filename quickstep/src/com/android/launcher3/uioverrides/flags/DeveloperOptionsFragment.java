@@ -23,6 +23,7 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
@@ -39,6 +40,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.ArrayMap;
 import android.util.Pair;
@@ -58,6 +60,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
+import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
 
 import com.android.launcher3.LauncherPrefs;
@@ -105,6 +108,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         loadPluginPrefs();
         maybeAddSandboxCategory();
         addOnboardingPrefsCatergory();
+        if (FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()) {
+            addAllAppsFromOverviewCatergory();
+        }
 
         if (getActivity() != null) {
             getActivity().setTitle("Developer Options");
@@ -182,9 +188,16 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     }
 
     private PreferenceCategory newCategory(String title) {
+        return newCategory(title, null);
+    }
+
+    private PreferenceCategory newCategory(String title, @Nullable String summary) {
         PreferenceCategory category = new PreferenceCategory(getContext());
         category.setOrder(Preference.DEFAULT_ORDER);
         category.setTitle(title);
+        if (!TextUtils.isEmpty(summary)) {
+            category.setSummary(summary);
+        }
         mPreferenceScreen.addPreference(category);
         return category;
     }
@@ -195,7 +208,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         }
 
         mFlagTogglerPrefUi = new FlagTogglerPrefUi(this);
-        mFlagTogglerPrefUi.applyTo(newCategory("Feature flags"));
+        mFlagTogglerPrefUi.applyTo(newCategory("Feature flags", "Long press to reset"));
     }
 
     @Override
@@ -351,29 +364,6 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchOverviewTutorialPreference);
-        Preference launchAssistantTutorialPreference = new Preference(context);
-        launchAssistantTutorialPreference.setKey("launchAssistantTutorial");
-        launchAssistantTutorialPreference.setTitle("Launch Assistant Tutorial");
-        launchAssistantTutorialPreference.setSummary("Learn how to use the Assistant gesture");
-        launchAssistantTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent
-                    .putExtra("use_tutorial_menu", false)
-                    .putExtra("tutorial_steps", new String[] {"ASSISTANT"}));
-            return true;
-        });
-        sandboxCategory.addPreference(launchAssistantTutorialPreference);
-        Preference launchSandboxModeTutorialPreference = new Preference(context);
-        launchSandboxModeTutorialPreference.setKey("launchSandboxMode");
-        launchSandboxModeTutorialPreference.setTitle("Launch Sandbox Mode");
-        launchSandboxModeTutorialPreference.setSummary("Practice navigation gestures");
-        launchSandboxModeTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent
-                    .putExtra("use_tutorial_menu", false)
-                    .putExtra("tutorial_steps", new String[] {"SANDBOX_MODE"}));
-            return true;
-        });
-        sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
-
         Preference launchSecondaryDisplayPreference = new Preference(context);
         launchSecondaryDisplayPreference.setKey("launchSecondaryDisplay");
         launchSecondaryDisplayPreference.setTitle("Launch Secondary Display");
@@ -406,6 +396,33 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             });
             onboardingCategory.addPreference(onboardingPref);
         }
+    }
+
+    private void addAllAppsFromOverviewCatergory() {
+        PreferenceCategory category = newCategory("All Apps from Overview Config");
+
+        SeekBarPreference thresholdPref = new SeekBarPreference(getContext());
+        thresholdPref.setTitle("Threshold to open All Apps from Overview");
+        thresholdPref.setSingleLineTitle(false);
+
+        // These values are 100x swipe up shift value (100 = where overview sits).
+        thresholdPref.setMax(500);
+        thresholdPref.setMin(105);
+        thresholdPref.setUpdatesContinuously(true);
+        thresholdPref.setIconSpaceReserved(false);
+        // Don't directly save to shared prefs, use LauncherPrefs instead.
+        thresholdPref.setPersistent(false);
+        thresholdPref.setOnPreferenceChangeListener((preference, newValue) -> {
+            LauncherPrefs.get(getContext()).put(ALL_APPS_OVERVIEW_THRESHOLD, newValue);
+            preference.setSummary(String.valueOf((int) newValue / 100f));
+            return true;
+        });
+        int value = LauncherPrefs.get(getContext()).get(ALL_APPS_OVERVIEW_THRESHOLD);
+        thresholdPref.setValue(value);
+        // For some reason the initial value is not triggering the summary update, so call manually.
+        thresholdPref.getOnPreferenceChangeListener().onPreferenceChange(thresholdPref, value);
+
+        category.addPreference(thresholdPref);
     }
 
     private String toName(String action) {

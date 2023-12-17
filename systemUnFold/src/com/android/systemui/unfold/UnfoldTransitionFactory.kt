@@ -77,7 +77,7 @@ fun createRemoteUnfoldSharedComponent(
         singleThreadBgExecutor: Executor,
         tracingTagPrefix: String,
         displayManager: DisplayManager,
-): RemoteUnfoldSharedComponent =
+        ): RemoteUnfoldSharedComponent =
         DaggerRemoteUnfoldSharedComponent.factory()
                 .create(
                         context,

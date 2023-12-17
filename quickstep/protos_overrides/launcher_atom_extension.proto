@@ -61,6 +61,9 @@ message DeviceSearchResultContainer{
 
       // User entered by tapping on QSB bar on homescreen.
       QSB = 2;
+
+      // User entered by swiping up from overview (using Rocket Gesture).
+      OVERVIEW = 3;
     }
   }
 }

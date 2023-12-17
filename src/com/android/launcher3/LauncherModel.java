@@ -22,6 +22,7 @@ import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURC
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
+import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -52,6 +53,7 @@ import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageIncrementalDownloadUpdatedTask;
@@ -67,7 +69,6 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -84,8 +85,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * Maintains in-memory state of the Launcher. It is expected that there should be only one
- * LauncherModel object held in a static. Also provide APIs for updating the database state
+ * Maintains in-memory state of the Launcher. It is expected that there should
+ * be only one
+ * LauncherModel object held in a static. Also provide APIs for updating the
+ * database state
  * for the Launcher.
  */
 public class LauncherModel extends LauncherApps.Callback implements InstallSessionTracker.Callback {
@@ -93,13 +96,29 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     static final String TAG = "Launcher.Model";
 
+    // Broadcast intent to track when the profile gets locked:
+    // ACTION_MANAGED_PROFILE_UNAVAILABLE can be used until Android U where profile
+    // no longer gets
+    // locked when paused.
+    // ACTION_PROFILE_INACCESSIBLE always means that the profile is getting locked
+    // but it only
+    // appeared in Android S.
+    private static final String ACTION_PROFILE_LOCKED = Utilities.ATLEAST_U
+            ? Intent.ACTION_PROFILE_INACCESSIBLE
+            : Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE;
+
     @NonNull
     private final LauncherAppState mApp;
+    @NonNull
+    private final ModelDbController mModelDbController;
     @NonNull
     private final Object mLock = new Object();
     @Nullable
     private LoaderTask mLoaderTask;
     private boolean mIsLoaderTaskRunning;
+
+    // only allow this once per reboot to reload work apps
+    private boolean mShouldReloadWorkProfile = true;
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -107,6 +126,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     // need to do a requery. This is only ever touched from the loader thread.
     private boolean mModelLoaded;
     private boolean mModelDestroyed = false;
+
     public boolean isModelLoaded() {
         synchronized (mLock) {
             return mModelLoaded && mLoaderTask == null && !mModelDestroyed;
@@ -121,7 +141,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private final AllAppsList mBgAllAppsList;
 
     /**
-     * All the static data should be accessed on the background thread, A lock should be acquired
+     * All the static data should be accessed on the background thread, A lock
+     * should be acquired
      * on this object when accessing any data from this model.
      */
     @NonNull
@@ -129,6 +150,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     @NonNull
     private final ModelDelegate mModelDelegate;
+
+    private int mLastLoadId = -1;
 
     // Runnable to check if the shortcuts permission has changed.
     @NonNull
@@ -145,6 +168,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             @NonNull final IconCache iconCache, @NonNull final AppFilter appFilter,
             final boolean isPrimaryInstance) {
         mApp = app;
+        mModelDbController = new ModelDbController(context);
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel,
                 isPrimaryInstance);
@@ -153,6 +177,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     @NonNull
     public ModelDelegate getModelDelegate() {
         return mModelDelegate;
+    }
+
+    public ModelDbController getModelDbController() {
+        return mModelDbController;
     }
 
     /**
@@ -278,34 +306,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public void onBroadcastIntent(@NonNull final Intent intent) {
-        if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
+        if (DEBUG_RECEIVER || sDebugTracing)
+            Log.d(TAG, "onReceive intent=" + intent);
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
-            // If we have changed locale we need to clear out the labels in all apps/workspace.
+            // If we have changed locale we need to clear out the labels in all
+            // apps/workspace.
             forceReload();
-        } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
-                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
-                Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
-            UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORK_TAB_MISSING, "onBroadcastIntent intentAction: " + action +
-                        " user: " + user);
-            }
-            if (user != null) {
-                if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
-                        Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
-                    enqueueModelUpdateTask(new PackageUpdatedTask(
-                            PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
-                }
-
-                // ACTION_MANAGED_PROFILE_UNAVAILABLE sends the profile back to locked mode, so
-                // we need to run the state change task again.
-                if (Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
-                        Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
-                    enqueueModelUpdateTask(new UserLockStateChangedTask(
-                            user, Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)));
-                }
-            }
         } else if (ACTION_DEVICE_POLICY_RESOURCE_UPDATED.equals(action)) {
             enqueueModelUpdateTask(new ReloadStringCacheTask(mModelDelegate));
         } else if (IS_STUDIO_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
@@ -318,7 +325,33 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     /**
-     * Reloads the workspace items from the DB and re-binds the workspace. This should generally
+     * Called then there use a user event
+     * 
+     * @see UserCache#addUserEventListener
+     */
+    public void onUserEvent(UserHandle user, String action) {
+        if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
+                && mShouldReloadWorkProfile) {
+            mShouldReloadWorkProfile = false;
+            forceReload();
+        } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
+                || Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
+            mShouldReloadWorkProfile = false;
+            enqueueModelUpdateTask(new PackageUpdatedTask(
+                    PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
+        } else if (UserCache.ACTION_PROFILE_LOCKED.equals(action)
+                || UserCache.ACTION_PROFILE_UNLOCKED.equals(action)) {
+            enqueueModelUpdateTask(new UserLockStateChangedTask(
+                    user, UserCache.ACTION_PROFILE_UNLOCKED.equals(action)));
+        } else if (UserCache.ACTION_PROFILE_ADDED.equals(action)
+                || UserCache.ACTION_PROFILE_REMOVED.equals(action)) {
+            forceReload();
+        }
+    }
+
+    /**
+     * Reloads the workspace items from the DB and re-binds the workspace. This
+     * should generally
      * not be called as DB updates are automatically followed by UI update
      */
     public void forceReload() {
@@ -328,7 +361,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             mModelLoaded = false;
         }
 
-        // Start the loader if launcher is already running, otherwise the loader will run,
+        // Start the loader if launcher is already running, otherwise the loader will
+        // run,
         // the next time launcher starts
         if (hasCallbacks()) {
             startLoader();
@@ -361,6 +395,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     /**
      * Adds a callbacks to receive model updates
+     * 
      * @return true if workspace load was performed synchronously
      */
     public boolean addCallbacksAndLoad(@NonNull final Callbacks callbacks) {
@@ -377,18 +412,14 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void addCallbacks(@NonNull final Callbacks callbacks) {
         Preconditions.assertUIThread();
         synchronized (mCallbacksList) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NULL_INT_SET, "addCallbacks pointer: "
-                        + callbacks
-                        + ", name: "
-                        + callbacks.getClass().getName(), new Exception());
-            }
             mCallbacksList.add(callbacks);
         }
     }
 
     /**
-     * Starts the loader. Tries to bind {@params synchronousBindPage} synchronously if possible.
+     * Starts the loader. Tries to bind {@params synchronousBindPage} synchronously
+     * if possible.
+     * 
      * @return true if the page could be bound synchronously.
      */
     public boolean startLoader() {
@@ -396,7 +427,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     private boolean startLoader(@NonNull final Callbacks[] newCallbacks) {
-        // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
+        // Enable queue before starting loader. It will get disabled in
+        // Launcher#finishBindingItems
         ItemInstallQueue.INSTANCE.get(mApp.getContext())
                 .pauseModelPush(ItemInstallQueue.FLAG_LOADER_RUNNING);
         synchronized (mLock) {
@@ -417,12 +449,15 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 if (bindDirectly) {
                     // Divide the set of loaded items into those that we are binding synchronously,
                     // and everything else that is to be bound normally (asynchronously).
-                    launcherBinder.bindWorkspace(bindAllCallbacks);
+                    launcherBinder.bindWorkspace(bindAllCallbacks, /* isBindSync= */ true);
                     // For now, continue posting the binding of AllApps as there are other
                     // issues that arise from that.
                     launcherBinder.bindAllApps();
                     launcherBinder.bindDeepShortcuts();
                     launcherBinder.bindWidgets();
+                    if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
+                        mModelDelegate.bindAllModelExtras(callbacksList);
+                    }
                     return true;
                 } else {
                     stopLoader();
@@ -440,6 +475,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     /**
      * If there is already a loader task running, tell it to stop.
+     * 
      * @return true if an existing loader was stopped.
      */
     private boolean stopLoader() {
@@ -456,7 +492,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     /**
      * Loads the model if not loaded
-     * @param callback called with the data model upon successful load or null on model thread.
+     * 
+     * @param callback called with the data model upon successful load or null on
+     *                 model thread.
      */
     public void loadAsync(@NonNull final Consumer<BgDataModel> callback) {
         synchronized (mLock) {
@@ -516,7 +554,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     /**
-     * Updates the icons and label of all pending icons for the provided package name.
+     * Updates the icons and label of all pending icons for the provided package
+     * name.
      */
     @Override
     public void onUpdateSessionDisplay(@NonNull final PackageUserKey key,
@@ -539,6 +578,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 if (mLoaderTask != task) {
                     throw new CancellationException("Loader already stopped");
                 }
+                mLastLoadId++;
                 mTask = task;
                 mIsLoaderTaskRunning = true;
                 mModelLoaded = false;
@@ -571,7 +611,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     /**
      * Refreshes the cached shortcuts if the shortcut permission has changed.
-     * Current implementation simply reloads the workspace, but it can be optimized to
+     * Current implementation simply reloads the workspace, but it can be optimized
+     * to
      * use partial updates similar to {@link UserCache}
      */
     public void validateModelDataOnResume() {
@@ -623,7 +664,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     /**
-     * A runnable which changes/updates the data model of the launcher based on certain events.
+     * A runnable which changes/updates the data model of the launcher based on
+     * certain events.
      */
     public interface ModelUpdateTask extends Runnable {
 
@@ -706,5 +748,14 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         synchronized (mCallbacksList) {
             return mCallbacksList.toArray(new Callbacks[mCallbacksList.size()]);
         }
+    }
+
+    /**
+     * Returns the ID for the last model load. If the load ID doesn't match for a
+     * transaction, the
+     * transaction should be ignored.
+     */
+    public int getLastLoadId() {
+        return mLastLoadId;
     }
 }
