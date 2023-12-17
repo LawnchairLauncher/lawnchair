@@ -1,3 +1,4 @@
+import app.cash.licensee.LicenseeTask
 import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -138,17 +139,22 @@ android {
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
 
-    applicationVariants.configureEach { variant ->
-        def capitalizedName = variant.name.capitalize()
-        def copyArtifactList = tasks.register("copy${capitalizedName}ArtifactList", Copy) {
-            dependsOn tasks.named("licenseeAndroid${capitalizedName}")
-            from reporting.file("licensee/android${capitalizedName}/artifacts.json")
-            into layout.buildDirectory.dir("generated/dependencyAssets/")
+    androidComponents {
+        onVariants(selector().all()) { variant ->
+            def capName = variant.name.capitalize()
+            def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
+            def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
+                dependsOn(licenseeTask)
+                from(licenseeTask.map { it.outputDir.file("artifacts.json") })
+                into(layout.buildDirectory.dir("generated/dependencyAssets"))
+            }
+            variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
+                objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
+            }
         }
-        tasks.named("merge${variant.name.capitalize()}Assets").configure {
-            dependsOn copyArtifactList
-        }
+    }
 
+    applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
