@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 
 @Composable
 fun FontPreference(

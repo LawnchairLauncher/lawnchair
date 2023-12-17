@@ -2,7 +2,7 @@ package app.lawnchair.theme.color
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.res.stringResource
-import app.lawnchair.ui.preferences.components.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import com.android.launcher3.R
 
 enum class ColorMode(
