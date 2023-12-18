@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -244,12 +242,11 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                     endY = startY;
                 }
 
-                mLauncher.executeAndWaitForEvent(
+                mLauncher.executeAndWaitForLauncherStop(
                         () -> mLauncher.linearGesture(
                                 startX, startY, endX, endY, 20, false,
                                 LauncherInstrumentation.GestureScope.EXPECT_PILFER),
-                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                        () -> "Quick switch gesture didn't change window state", "swiping");
+                        "swiping");
             } else {
                 // Double press the recents button.
                 UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
@@ -258,10 +255,8 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                         "clicking Recents button for the first time");
                 mLauncher.getOverview();
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                mLauncher.executeAndWaitForEvent(
+                mLauncher.executeAndWaitForLauncherStop(
                         () -> recentsButton.click(),
-                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                        () -> "Pressing recents button didn't change window state",
                         "clicking Recents button for the second time");
             }
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
