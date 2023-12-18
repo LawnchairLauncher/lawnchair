@@ -66,6 +66,11 @@ fun AppDrawerPreferences() {
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            SwitchPreference(
+                label = stringResource(id = R.string.pref_all_apps_bulk_icon_loading_title),
+                description = stringResource(id = R.string.pref_all_apps_bulk_icon_loading_description),
+                adapter = prefs.allAppBulkIconLoading.getAdapter(),
+            )
             SuggestionsPreference()
         }
 
