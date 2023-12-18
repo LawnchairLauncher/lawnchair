@@ -23,6 +23,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.ui.preferences.about.acknowledgements.OssLibrary
+import app.lawnchair.ui.preferences.destinations.IconPackInfo
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.getPackageVersionCode
 import app.lawnchair.util.kotlinxJson

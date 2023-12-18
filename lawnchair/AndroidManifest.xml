@@ -107,7 +107,7 @@
 
         <provider
             android:name="app.lawnchair.search.LawnchairRecentSuggestionProvider"
-            android:authorities="app.lawnchair.search.LawnchairRecentSuggestionProvider"
+            android:authorities="${applicationId}.search.LawnchairRecentSuggestionProvider"
             android:syncable="true"
             android:exported="false" />
 

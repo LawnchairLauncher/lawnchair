@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R

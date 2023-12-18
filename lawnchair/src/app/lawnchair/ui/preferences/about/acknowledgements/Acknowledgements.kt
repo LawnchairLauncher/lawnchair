@@ -42,11 +42,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
-import app.lawnchair.ui.preferences.components.LoadingScreen
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
-import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.preferenceGroupItems
+import app.lawnchair.ui.preferences.components.layout.LoadingScreen
+import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R

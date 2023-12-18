@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
-import app.lawnchair.ui.preferences.components.SystemUi
+import app.lawnchair.ui.preferences.components.layout.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.unsafeLazy
 import kotlin.coroutines.resume
