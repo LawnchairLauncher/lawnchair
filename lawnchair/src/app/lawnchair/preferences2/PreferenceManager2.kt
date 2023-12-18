@@ -149,8 +149,8 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = {
             reloadHelper.recreate()
             reloadHelper.reloadGrid()
-            },
-        )
+        },
+    )
 
     val hotseatQsbProvider = preference(
         key = stringPreferencesKey(name = "dock_search_bar_provider"),
