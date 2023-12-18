@@ -327,6 +327,9 @@
     <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
     <string name="hide_hidden_apps_search">Hide in Search Results</string>
 
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+
     <string name="pref_category_search">Search</string>
       <string name="show_app_search_bar">Show Search Bar</string>
       <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>

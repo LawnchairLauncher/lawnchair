@@ -108,6 +108,7 @@ import java.util.Set;
 import java.util.concurrent.CancellationException;
 
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * Runnable for the thread that loads the contents of the launcher:
@@ -939,6 +940,9 @@ public class LoaderTask implements Runnable {
         // Clear the list of apps
         mBgAllAppsList.clear();
 
+        var pref = PreferenceManager.getInstance(mApp.getContext());
+        var enableBulkLoading = pref.getAllAppBulkIconLoading().get();
+
         List<IconRequestInfo<AppInfo>> iconRequestInfos = new ArrayList<>();
         for (UserHandle user : profiles) {
             // Query for the set of apps
@@ -957,7 +961,7 @@ public class LoaderTask implements Runnable {
                 iconRequestInfos.add(new IconRequestInfo<>(
                         appInfo, app, /* useLowResIcon= */ false));
                 mBgAllAppsList.add(
-                        appInfo, app, false);
+                        appInfo, app, !enableBulkLoading);
             }
             allActivityList.addAll(apps);
         }
@@ -968,7 +972,7 @@ public class LoaderTask implements Runnable {
                 AppInfo promiseAppInfo = mBgAllAppsList.addPromiseApp(
                         mApp.getContext(),
                         PackageInstallInfo.fromInstallingState(info),
-                        false);
+                        !enableBulkLoading);
 
                 if (promiseAppInfo != null) {
                     iconRequestInfos.add(new IconRequestInfo<>(
@@ -979,12 +983,14 @@ public class LoaderTask implements Runnable {
             }
         }
 
-        Trace.beginSection("LoadAllAppsIconsInBulk");
-        try {
-            mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
-            iconRequestInfos.forEach(iconRequestInfo -> mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
-        } finally {
-            Trace.endSection();
+        if (enableBulkLoading) {
+            Trace.beginSection("LoadAllAppsIconsInBulk");
+            try {
+                mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
+                iconRequestInfos.forEach(iconRequestInfo -> mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
+            } finally {
+                Trace.endSection();
+            }
         }
 
         mBgAllAppsList.setFlags(FLAG_QUIET_MODE_ENABLED,
