@@ -30,6 +30,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.content.ComponentCallbacks;
+import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -103,8 +105,8 @@ public class LauncherBackAnimationController {
     private final int mWindowScaleMarginX;
     /** Max window translation in the Y axis. */
     private final int mWindowMaxDeltaY;
-    private final float mWindowScaleEndCornerRadius;
-    private final float mWindowScaleStartCornerRadius;
+    private float mWindowScaleEndCornerRadius;
+    private float mWindowScaleStartCornerRadius;
     private final Interpolator mCancelInterpolator;
     private final Interpolator mProgressInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
@@ -124,17 +126,22 @@ public class LauncherBackAnimationController {
     private float mScrimAlpha;
     private boolean mOverridingStatusBarFlags;
 
+    private final ComponentCallbacks mComponentCallbacks = new ComponentCallbacks() {
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+            loadCornerRadius();
+        }
+
+        @Override
+        public void onLowMemory() {}
+    };
+
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
             QuickstepTransitionManager quickstepTransitionManager) {
         mLauncher = launcher;
         mQuickstepTransitionManager = quickstepTransitionManager;
-        mWindowScaleEndCornerRadius = QuickStepContract.supportsRoundedCornersOnWindows(
-                mLauncher.getResources())
-                ? mLauncher.getResources().getDimensionPixelSize(
-                        R.dimen.swipe_back_window_corner_radius)
-                : 0;
-        mWindowScaleStartCornerRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
+        loadCornerRadius();
         mWindowScaleMarginX = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_scale_x_margin);
         mWindowMaxDeltaY = mLauncher.getResources().getDimensionPixelSize(
@@ -550,6 +557,30 @@ public class LauncherBackAnimationController {
         mScrimAlphaAnimator.setDuration(SCRIM_FADE_DURATION).start();
         anim.start();
     }
+
+    private void loadCornerRadius() {
+        mWindowScaleEndCornerRadius = QuickStepContract.supportsRoundedCornersOnWindows(
+                mLauncher.getResources())
+                ? mLauncher.getResources().getDimensionPixelSize(
+                R.dimen.swipe_back_window_corner_radius)
+                : 0;
+        mWindowScaleStartCornerRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
+    }
+
+    /**
+     * Called when launcher is destroyed. Unregisters component callbacks to avoid memory leaks.
+     */
+    public void unregisterComponentCallbacks() {
+        mLauncher.unregisterComponentCallbacks(mComponentCallbacks);
+    }
+
+    /**
+     * Registers component callbacks with the launcher to receive configuration change events.
+     */
+    public void registerComponentCallbacks() {
+        mLauncher.registerComponentCallbacks(mComponentCallbacks);
+    }
+
 
     private void resetScrim() {
         removeScrimLayer();

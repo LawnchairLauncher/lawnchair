@@ -1161,6 +1161,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         SystemUiProxy.INSTANCE.get(mLauncher)
                 .registerRemoteTransition(mLauncherOpenTransition, homeCheck);
         if (mBackAnimationController != null) {
+            mBackAnimationController.registerComponentCallbacks();
             mBackAnimationController.registerBackCallbacks(mHandler);
         }
     }
@@ -1168,6 +1169,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public void onActivityDestroyed() {
         unregisterRemoteAnimations();
         unregisterRemoteTransitions();
+        mLauncher.removeOnDeviceProfileChangeListener(this);
         SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
         ORDERED_BG_EXECUTOR.execute(() -> mLauncher.getContentResolver()
                 .unregisterContentObserver(mAnimationRemovalObserver));
@@ -1200,6 +1202,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mWallpaperOpenTransitionRunner = null;
         if (mBackAnimationController != null) {
             mBackAnimationController.unregisterBackCallbacks();
+            mBackAnimationController.unregisterComponentCallbacks();
             mBackAnimationController = null;
         }
     }
