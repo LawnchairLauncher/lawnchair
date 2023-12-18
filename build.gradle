@@ -145,7 +145,7 @@ android {
             def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
                 dependsOn(licenseeTask)
                 from(licenseeTask.map { it.outputDir.file("artifacts.json") })
-                into(layout.buildDirectory.dir("generated/dependencyAssets"))
+                into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
             }
             variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
                 objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
@@ -155,7 +155,8 @@ android {
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
-            outputFileName = "Lawnchair ${variant.versionName}.apk"
+            def channel = variant.productFlavors.last().name
+            outputFileName = "Lawnchair ${variant.versionName} $channel ${variant.buildType.name}.apk"
         }
     }
 
@@ -227,38 +228,28 @@ android {
         includeInBundle = false
     }
 
-    // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions += ["app", "recents"]
+    flavorDimensions += ["app", "recents", "channel"]
 
     productFlavors {
-        aosp {
-            dimension "app"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
-        }
-
-        l3go {
-            dimension "app"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
-        }
-
         lawn {
             dimension "app"
-            applicationId 'app.lawnchair'
-            testApplicationId 'com.android.launcher3.tests'
-            isDefault true
         }
 
         withQuickstep {
             dimension "recents"
             minSdk 26
-            isDefault true
         }
 
-        withoutQuickstep {
-            dimension "recents"
+        github {
+            applicationId 'app.lawnchair'
+            dimension "channel"
+        }
+
+        market {
+            applicationId "ch.deletescape.lawnchair.plah"
+            dimension "channel"
+            isDefault true
         }
 
         configureEach {
@@ -276,42 +267,6 @@ android {
             }
         }
 
-        androidTest {
-            res.srcDirs = ['tests/res']
-            java.srcDirs = ['tests/src', 'tests/tapl']
-            manifest.srcFile "tests/AndroidManifest-common.xml"
-        }
-
-        androidTestDebug {
-            manifest.srcFile "tests/AndroidManifest.xml"
-        }
-
-        aosp {
-            java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
-        }
-
-        aospWithoutQuickstep {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        aospWithQuickstep {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-        }
-
-        l3go {
-            res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src']
-            manifest.srcFile "go/AndroidManifest.xml"
-        }
-
-        l3goWithoutQuickstepDebug {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        l3goWithQuickstepDebug {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-        }
-
         lawn {
             java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
             aidl.srcDirs = ['lawnchair/aidl']
@@ -325,17 +280,12 @@ android {
             }
         }
 
-        lawnWithoutQuickstep {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        lawnWithQuickstep {
+        lawnWithQuickstepGithub {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
 
-        withoutQuickstep {
-            java.srcDirs = ['src_ui_overrides']
+        lawnWithQuickstepMarket {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
         withQuickstep {
@@ -368,9 +318,6 @@ dependencies {
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
-
-    // Required for AOSP to compile. This is already included in the sysui_shared.jar
-    withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 

@@ -35,7 +35,7 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - name: Build release APK
-        run: ./gradlew assembleLawnWithQuickstepRelease
+        run: ./gradlew assembleLawnWithQuickstepMarketRelease
       - name: Write sign info
         if: github.repository_owner == 'LawnchairLauncher'
         run: |
