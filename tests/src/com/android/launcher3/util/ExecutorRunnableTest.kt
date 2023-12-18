@@ -18,6 +18,7 @@ package com.android.launcher3.util
 
 import android.testing.AndroidTestingRunner
 import androidx.test.filters.SmallTest
+import com.android.launcher3.util.rule.TestStabilityRule
 import java.util.concurrent.ExecutorService
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
@@ -65,6 +66,9 @@ class ExecutorRunnableTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(
+        flavors = TestStabilityRule.LOCAL or TestStabilityRule.PLATFORM_POSTSUBMIT
+    ) // b/316588649
     fun run_and_cancel_cancelCallback() {
         underTest.cancel(false)
         awaitAllExecutorCompleted()
