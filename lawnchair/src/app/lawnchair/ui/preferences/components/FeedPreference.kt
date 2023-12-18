@@ -5,8 +5,10 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.FeedBridge
@@ -21,7 +23,7 @@ import kotlinx.collections.immutable.toImmutableList
 data class ProviderInfo(
     val name: String,
     val packageName: String,
-    val icon: Drawable?
+    val icon: Drawable?,
 )
 
 fun getEntries(context: Context): List<ProviderInfo> {
@@ -36,7 +38,7 @@ fun getEntries(context: Context): List<ProviderInfo> {
             ProviderInfo(
                 name = it.loadLabel(context.packageManager).toString(),
                 packageName = it.packageName,
-                icon = it.loadIcon(context.packageManager)
+                icon = it.loadIcon(context.packageManager),
             )
         }
 
@@ -53,7 +55,7 @@ fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
                     Image(
                         painter = DrawablePainter(it.icon),
                         contentDescription = null,
-                        modifier = Modifier.requiredSize(48.dp),
+                        modifier = Modifier.requiredSize(48.dp).clip(CircleShape),
                     )
                 }
             },
@@ -76,7 +78,12 @@ fun FeedPreference(context: Context) {
         label = stringResource(R.string.feed_provider),
     ) {
         if (providerInfo.icon != null) {
-            Image(painter = DrawablePainter(providerInfo.icon), contentDescription = null)
+            Image(
+                painter = DrawablePainter(providerInfo.icon),
+                contentDescription = null,
+                modifier = Modifier.requiredSize(48.dp)
+                    .clip(CircleShape),
+            )
         }
     }
 }

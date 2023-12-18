@@ -54,7 +54,7 @@ class FeedBridge(private val context: Context) {
         }
     }
 
-     private fun customBridgeOrNull(): CustomBridgeInfo? {
+    private fun customBridgeOrNull(): CustomBridgeInfo? {
         val feedProvider = prefs.feedProvider.get()
         return if (feedProvider.isNotBlank()) {
             val bridge = CustomBridgeInfo(feedProvider)
