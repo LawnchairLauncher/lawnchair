@@ -47,7 +47,6 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
-    @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
     @ScreenRecordRule.ScreenRecord // b/289161193
