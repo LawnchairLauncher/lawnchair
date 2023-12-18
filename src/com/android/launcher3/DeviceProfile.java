@@ -314,7 +314,7 @@ public class DeviceProfile {
 
     private final DeviceProfileOverrides.TextFactors mTextFactors;
 
-    PreferenceManager2 preferenceManager2;
+    private final PreferenceManager2 preferenceManager2;
 
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info, WindowBounds windowBounds,
