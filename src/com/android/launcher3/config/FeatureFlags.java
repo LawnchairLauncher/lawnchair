@@ -169,10 +169,6 @@ public final class FeatureFlags {
     // TODO(Block 8): Clean up flags
 
     // TODO(Block 9): Clean up flags
-    public static final BooleanFlag UNFOLDED_WIDGET_PICKER = getDebugFlag(301918659,
-            "UNFOLDED_WIDGET_PICKER", DISABLED, "Enable new widget picker that takes "
-                    + "advantage of the unfolded foldable format");
-
     public static final BooleanFlag MULTI_SELECT_EDIT_MODE = getDebugFlag(270709220,
             "MULTI_SELECT_EDIT_MODE", DISABLED, "Enable new multi-select edit mode "
                     + "for home screen");
