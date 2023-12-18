@@ -93,6 +93,30 @@ public class StatusBarTouchController implements TouchController {
         if (mSystemUiProxy.isActive()) {
             mLastAction = ev.getActionMasked();
             mSystemUiProxy.onStatusBarTouchEvent(ev);
+        } else if (!mExpanded) {
+            mExpanded = true;
+            expand();
+        }
+        if (!mVibrated) {
+            mVibrated = true;
+            vibrate();
+        }
+    }
+
+    @SuppressLint({"WrongConstant", "PrivateApi"})
+    private void expand() {
+        try {
+            Class.forName("android.app.StatusBarManager")
+                .getMethod("expandNotificationsPanel")
+                .invoke(mLauncher.getSystemService("statusbar"));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void vibrate() {
+        if (!LawnchairAppKt.getLawnchairApp(mLauncher).isVibrateOnIconAnimation()) {
+            VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC);
         }
     }
 
@@ -107,6 +131,8 @@ public class StatusBarTouchController implements TouchController {
                 return false;
             }
             mDownEvents.clear();
+            mExpanded = false;
+            mVibrated = false;
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
             // Check!! should only set it only when threshold is not entered.
