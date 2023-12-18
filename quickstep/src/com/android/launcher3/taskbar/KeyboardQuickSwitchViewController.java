@@ -117,9 +117,12 @@ public class KeyboardQuickSwitchViewController {
      * index will be focused.
      */
     protected int launchFocusedTask() {
-        // Launch the second-most recent task if the user quick switches too quickly, if possible.
-        return launchTaskAt(mCurrentFocusIndex == -1
-                ? (mControllerCallbacks.getTaskCount() > 1 ? 1 : 0) : mCurrentFocusIndex);
+        if (mCurrentFocusIndex != -1) {
+            return launchTaskAt(mCurrentFocusIndex);
+        }
+        // If the user quick switches too quickly, updateCurrentFocusIndex might not have run.
+        return launchTaskAt(mControllerCallbacks.isFirstTaskRunning()
+                && mControllerCallbacks.getTaskCount() > 1 ? 1 : 0);
     }
 
     private int launchTaskAt(int index) {
@@ -134,10 +137,7 @@ public class KeyboardQuickSwitchViewController {
         if (task == null) {
             return Math.max(0, index);
         }
-        Task task2 = task.task2;
-        int runningTaskId = ActivityManagerWrapper.getInstance().getRunningTask().taskId;
-        if (runningTaskId == task.task1.key.id
-                || (task2 != null && runningTaskId == task2.key.id)) {
+        if (mControllerCallbacks.isTaskRunning(task)) {
             // Ignore attempts to run the selected task if it is already running.
             return -1;
         }
@@ -146,7 +146,7 @@ public class KeyboardQuickSwitchViewController {
             UI_HELPER_EXECUTOR.execute(() ->
                     SystemUiProxy.INSTANCE.get(mKeyboardQuickSwitchView.getContext())
                             .showDesktopApp(task.task1.key.id));
-        } else if (task2 == null) {
+        } else if (task.task2 == null) {
             UI_HELPER_EXECUTOR.execute(() ->
                     ActivityManagerWrapper.getInstance().startActivityFromRecents(
                             task.task1.key,
