@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -30,11 +31,13 @@ fun SuggestionsPreference() {
     } else {
         // On some devices, the Suggestions activity could not be found or PACKAGE_USAGE_STATS is not granted.
 
-        val prefs2 = preferenceManager2()
-        val showRecentAppsInDrawer = prefs2.showSuggestedAppsInDrawer.getAdapter()
-        SwitchPreference(
-            label = stringResource(id = R.string.show_suggested_apps_at_drawer_top),
-            adapter = showRecentAppsInDrawer,
-        )
+        if (LawnchairApp.isRecentsEnabled) {
+            val prefs2 = preferenceManager2()
+            val showRecentAppsInDrawer = prefs2.showSuggestedAppsInDrawer.getAdapter()
+            SwitchPreference(
+                label = stringResource(id = R.string.show_suggested_apps_at_drawer_top),
+                adapter = showRecentAppsInDrawer,
+            )
+        }
     }
 }
