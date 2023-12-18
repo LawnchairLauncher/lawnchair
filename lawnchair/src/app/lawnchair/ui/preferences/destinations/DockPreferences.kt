@@ -65,7 +65,7 @@ fun DockPreferences() {
                 label = stringResource(id = R.string.show_hotseat_title),
             )
         }
-        if (isHotseatEnabled.state.value) {
+        ExpandAndShrink(visible = isHotseatEnabled.state.value) {
             PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
                 DividerColumn {
                     HotseatModePreference(
