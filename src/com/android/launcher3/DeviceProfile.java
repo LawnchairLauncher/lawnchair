@@ -314,6 +314,8 @@ public class DeviceProfile {
 
     private final DeviceProfileOverrides.TextFactors mTextFactors;
 
+    PreferenceManager2 preferenceManager2;
+
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info, WindowBounds windowBounds,
             SparseArray<DotRenderer> dotRendererCache, boolean isMultiWindowMode,
@@ -323,7 +325,7 @@ public class DeviceProfile {
 
         mTextFactors = DeviceProfileOverrides.INSTANCE.get(context).getTextFactors();
 
-        PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
+        preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getDrawerCellHeightFactor());
 
@@ -795,7 +797,7 @@ public class DeviceProfile {
         // radius.
         hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx);
 
-        var space = Math.abs(hotseatCellHeightPx / 2);
+        var space = Math.abs(hotseatCellHeightPx / 2) - 10;
 
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
@@ -809,6 +811,10 @@ public class DeviceProfile {
                     + hotseatQsbVisualHeight
                     + hotseatBarBottomSpacePx
                     + space;
+        }
+       var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
+        if (!isHotseatEnabled) {
+            hotseatBarSizePx = 0;
         }
     }
 
