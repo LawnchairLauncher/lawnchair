@@ -24,6 +24,7 @@ import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -37,6 +38,8 @@ class ExecutorRunnableTest {
     private var result: Int = -1
     private var isTaskExecuted = false
     private var isCallbackExecuted = false
+
+    @get:Rule(order = 0) val testStabilityRule = TestStabilityRule()
 
     @Before
     fun setup() {
