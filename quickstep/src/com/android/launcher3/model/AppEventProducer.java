@@ -25,6 +25,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 import static com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers.ContainerCase.DEVICE_SEARCH_RESULT_CONTAINER;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_DRAGDROP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DISMISS_PREDICTION_UNDO;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
@@ -132,7 +133,8 @@ public class AppEventProducer implements StatsLogConsumer {
                 || event == LAUNCHER_TASK_LAUNCH_SWIPE_DOWN
                 || event == LAUNCHER_TASK_LAUNCH_TAP
                 || event == LAUNCHER_QUICKSWITCH_RIGHT
-                || event == LAUNCHER_QUICKSWITCH_LEFT) {
+                || event == LAUNCHER_QUICKSWITCH_LEFT
+                || event == LAUNCHER_APP_LAUNCH_DRAGDROP) {
             sendEvent(atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
         } else if (event == LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST) {
             sendEvent(atomInfo, ACTION_DISMISS, CONTAINER_PREDICTION);
@@ -286,6 +288,9 @@ public class AppEventProducer implements StatsLogConsumer {
             }
             case SHORTCUTS_CONTAINER: {
                 return "deep-shortcuts";
+            }
+            case TASK_BAR_CONTAINER: {
+                return "taskbar";
             }
             case FOLDER: {
                 FolderContainer fc = ci.getFolder();

@@ -117,6 +117,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "Task launched from overview using SWIPE DOWN")
         LAUNCHER_TASK_LAUNCH_SWIPE_DOWN(340),
 
+        @UiEvent(doc = "App launched by dragging and dropping, probably from taskbar")
+        LAUNCHER_APP_LAUNCH_DRAGDROP(1552),
+
         @UiEvent(doc = "TASK dismissed from overview using SWIPE UP")
         LAUNCHER_TASK_DISMISS_SWIPE_UP(341),
 
