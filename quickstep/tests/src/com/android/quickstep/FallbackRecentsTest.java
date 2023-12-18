@@ -131,8 +131,7 @@ public class FallbackRecentsTest {
                     UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                             getLauncherCommand(getLauncherInMyProcess()));
                     // b/143488140
-                    mDevice.pressHome();
-                    mDevice.waitForIdle();
+                    pressHomeAndWaitForOverviewClose();
                 }
             }
         };
