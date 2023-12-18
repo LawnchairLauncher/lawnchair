@@ -32,7 +32,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -90,27 +89,14 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_SCROLL_ALPHA = 5;
     private static final int NUM_ALPHAS = 6;
 
-    public @interface ScreenshotButtonHiddenFlags { }
-    public static final int FLAG_MULTIPLE_TASKS_HIDE_SCREENSHOT = 1 << 0;
-
     public @interface SplitButtonHiddenFlags { }
-    public static final int FLAG_IS_NOT_TABLET_HIDE_SPLIT = 1 << 0;
-    public static final int FLAG_MULTIPLE_TASKS_HIDE_SPLIT = 1 << 1;
+    public static final int FLAG_IS_NOT_TABLET = 1 << 0;
 
     public @interface SplitButtonDisabledFlags { }
-    public static final int FLAG_SINGLE_TASK_DISABLE_SPLIT = 1 << 0;
-
-    public @interface AppPairButtonHiddenFlags { }
-    public static final int FLAG_SINGLE_TASK_HIDE_APP_PAIR = 1 << 0;
+    public static final int FLAG_SINGLE_TASK = 1 << 0;
 
     private MultiValueAlpha mMultiValueAlpha;
-
-    // The screenshot button is implemented as a Button in launcher3 and NexusLauncher, but is an
-    // ImageButton in go launcher (does not share a common class with Button). Take care when
-    // casting this.
-    private View mScreenshotButton;
     private Button mSplitButton;
-    private Button mSaveAppPairButton;
 
     @ActionsHiddenFlags
     private int mHiddenFlags;
@@ -118,14 +104,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @ActionsDisabledFlags
     protected int mDisabledFlags;
 
-    @ScreenshotButtonHiddenFlags
-    private int mScreenshotButtonHiddenFlags;
-
     @SplitButtonHiddenFlags
     private int mSplitButtonHiddenFlags;
 
-    @AppPairButtonHiddenFlags
-    private int mAppPairButtonHiddenFlags;
+    @SplitButtonDisabledFlags
+    private int mSplitButtonDisabledFlags;
 
     @Nullable
     protected T mCallbacks;
@@ -152,12 +135,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), NUM_ALPHAS);
         mMultiValueAlpha.setUpdateVisibility(true);
 
-        mScreenshotButton = findViewById(R.id.action_screenshot);
-        mScreenshotButton.setOnClickListener(this);
+        findViewById(R.id.action_screenshot).setOnClickListener(this);
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
-        mSaveAppPairButton = findViewById(R.id.action_save_app_pair);
-        mSaveAppPairButton.setOnClickListener(this);
     }
 
     /**
@@ -179,8 +159,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mCallbacks.onScreenshot();
         } else if (id == R.id.action_split) {
             mCallbacks.onSplit();
-        } else if (id == R.id.action_save_app_pair) {
-            mCallbacks.onSaveAppPair();
         }
     }
 
@@ -223,38 +201,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
         boolean isEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
         LayoutUtils.setViewEnabled(this, isEnabled);
-    }
-
-    /**
-     * Updates a batch of flags to hide and show actions buttons when a grouped task (split screen)
-     * is focused.
-     * @param isGroupedTask True if the focused task is a grouped task.
-     */
-    public void updateForGroupedTask(boolean isGroupedTask) {
-        // Update flags to see if split button should be hidden.
-        updateSplitButtonHiddenFlags(FLAG_MULTIPLE_TASKS_HIDE_SPLIT, isGroupedTask);
-        // Update flags to see if screenshot button should be hidden.
-        updateScreenshotButtonHiddenFlags(FLAG_MULTIPLE_TASKS_HIDE_SCREENSHOT, isGroupedTask);
-        // Update flags to see if save app pair button should be hidden.
-        updateAppPairButtonHiddenFlags(FLAG_SINGLE_TASK_HIDE_APP_PAIR, !isGroupedTask);
-    }
-
-    /**
-     * Updates the proper flags to indicate whether the "Screenshot" button should be hidden.
-     *
-     * @param flag   The flag to update.
-     * @param enable Whether to enable the hidden flag: True will cause view to be hidden.
-     */
-    private void updateScreenshotButtonHiddenFlags(@ScreenshotButtonHiddenFlags int flag,
-            boolean enable) {
-        if (enable) {
-            mScreenshotButtonHiddenFlags |= flag;
-        } else {
-            mScreenshotButtonHiddenFlags &= ~flag;
-        }
-        if (mScreenshotButton == null) return;
-        boolean shouldBeVisible = mScreenshotButtonHiddenFlags == 0;
-        mScreenshotButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
+        updateSplitButtonEnabledState();
     }
 
     /**
@@ -263,8 +210,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * @param flag   The flag to update.
      * @param enable Whether to enable the hidden flag: True will cause view to be hidden.
      */
-    void updateSplitButtonHiddenFlags(@SplitButtonHiddenFlags int flag,
-            boolean enable) {
+    public void updateSplitButtonHiddenFlags(@SplitButtonHiddenFlags int flag, boolean enable) {
         if (enable) {
             mSplitButtonHiddenFlags |= flag;
         } else {
@@ -277,24 +223,18 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     /**
-     * Updates the proper flags to indicate whether the "Save app pair" button should be disabled.
+     * Updates the proper flags to indicate whether the "Split screen" button should be disabled.
      *
      * @param flag   The flag to update.
-     * @param enable Whether to enable the hidden flag: True will cause view to be hidden.
+     * @param enable Whether to enable the disable flag: True will cause view to be disabled.
      */
-    private void updateAppPairButtonHiddenFlags(@AppPairButtonHiddenFlags int flag, boolean enable) {
-        if (!FeatureFlags.enableAppPairs()) {
-            return;
-        }
-
+    public void updateSplitButtonDisabledFlags(@SplitButtonDisabledFlags int flag, boolean enable) {
         if (enable) {
-            mAppPairButtonHiddenFlags |= flag;
+            mSplitButtonDisabledFlags |= flag;
         } else {
-            mAppPairButtonHiddenFlags &= ~flag;
+            mSplitButtonDisabledFlags &= ~flag;
         }
-        if (mSaveAppPairButton == null) return;
-        boolean shouldBeVisible = mAppPairButtonHiddenFlags == 0;
-        mSaveAppPairButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
+        updateSplitButtonEnabledState();
     }
 
     public MultiProperty getContentAlpha() {
@@ -372,7 +312,19 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 ? R.drawable.ic_split_horizontal
                 : R.drawable.ic_split_vertical;
         mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(splitIconRes, 0, 0, 0);
-        mSaveAppPairButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_save_app_pair, 0, 0, 0);
     }
+
+    /**
+     * Enables/disables the "Split" button based on the status of mSplitButtonDisabledFlags and
+     * mDisabledFlags.
+     */
+    private void updateSplitButtonEnabledState() {
+        if (mSplitButton == null) {
+            return;
+        }
+        boolean isParentEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
+        boolean shouldBeEnabled = mSplitButtonDisabledFlags == 0 && isParentEnabled;
+        mSplitButton.setEnabled(shouldBeEnabled);
+    }
+
 }
