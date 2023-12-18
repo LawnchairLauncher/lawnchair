@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
@@ -28,14 +29,14 @@ fun getEntries(context: Context): List<ProviderInfo> {
         ProviderInfo(
             packageName = "",
             name = context.getString(R.string.feed_default),
-            icon = null,
+            icon = AppCompatResources.getDrawable(context, R.drawable.ic_launcher_home_comp),
         ),
     ) +
         FeedBridge.getAvailableProviders(context).map {
             ProviderInfo(
                 name = it.loadLabel(context.packageManager).toString(),
                 packageName = it.packageName,
-                it.loadIcon(context.packageManager)
+                icon = it.loadIcon(context.packageManager)
             )
         }
 
@@ -47,7 +48,7 @@ fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
     return entries.map {
         ListPreferenceEntry(
             value = it.packageName,
-            icon = {
+            endWidget = {
                 if (it.icon != null) {
                     Image(
                         painter = DrawablePainter(it.icon),
@@ -65,10 +66,17 @@ fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
 fun FeedPreference(context: Context) {
     val adapter = preferenceManager().feedProvider.getAdapter()
     val providers = getProvidersList(context).toImmutableList()
+    val providerInfo = getEntries(context).filter {
+        it.packageName == adapter.state.value
+    }[0]
 
     ListPreference(
         adapter = adapter,
         entries = providers,
         label = stringResource(R.string.feed_provider),
-    )
+    ) {
+        if (providerInfo.icon != null) {
+            Image(painter = DrawablePainter(providerInfo.icon), contentDescription = null)
+        }
+    }
 }

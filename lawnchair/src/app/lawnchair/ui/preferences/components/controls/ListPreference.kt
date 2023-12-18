@@ -72,7 +72,7 @@ fun <T> ListPreference(
         ?.label?.invoke()
     val currentIcon = entries
         .firstOrNull { it.value == value }
-        ?.icon
+        ?.endWidget
 
     PreferenceTemplate(
         contentModifier = Modifier
@@ -114,7 +114,7 @@ fun <T> ListPreference(
                                         enabled = item.enabled,
                                     )
                                 },
-                                endWidget = item.icon
+                                endWidget = item.endWidget
                             )
                         }
                     }
@@ -127,6 +127,6 @@ fun <T> ListPreference(
 class ListPreferenceEntry<T>(
     val value: T,
     val enabled: Boolean = true,
-    val icon: (@Composable () -> Unit)? = null,
+    val endWidget: (@Composable () -> Unit)? = null,
     val label: @Composable () -> String,
 )
