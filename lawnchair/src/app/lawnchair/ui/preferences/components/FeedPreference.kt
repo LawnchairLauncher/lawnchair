@@ -26,8 +26,8 @@ data class ProviderInfo(
     val icon: Drawable?,
 )
 
-fun getEntries(context: Context): List<ProviderInfo> {
-    val entries = listOf(
+fun getProviders(context: Context): List<ProviderInfo> {
+    val providers = listOf(
         ProviderInfo(
             packageName = "",
             name = context.getString(R.string.feed_default),
@@ -42,12 +42,12 @@ fun getEntries(context: Context): List<ProviderInfo> {
             )
         }
 
-    return entries
+    return providers
 }
 
-fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
-    val entries = getEntries(context)
-    return entries.map {
+fun getEntries(context: Context): List<ListPreferenceEntry<String>> {
+    val providers = getProviders(context)
+    return providers.map {
         ListPreferenceEntry(
             value = it.packageName,
             endWidget = {
@@ -67,14 +67,14 @@ fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
 @Composable
 fun FeedPreference(context: Context) {
     val adapter = preferenceManager().feedProvider.getAdapter()
-    val providers = remember { getProvidersList(context).toImmutableList() }
-    val selectedProvider = getEntries(context).firstOrNull {
+    val entries = remember { getEntries(context).toImmutableList() }
+    val selectedProvider = getProviders(context).firstOrNull {
         it.packageName == adapter.state.value
     }
 
     ListPreference(
         adapter = adapter,
-        entries = providers,
+        entries = entries,
         label = stringResource(R.string.feed_provider),
     ) {
         if (selectedProvider?.icon != null) {
