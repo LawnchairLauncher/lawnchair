@@ -112,7 +112,6 @@ fun QuickSwitchIgnoredWarning() {
         color = androidx.compose.material3.MaterialTheme.colorScheme.errorContainer,
     ) {
         WarningPreference(
-
             text = stringResource(id = R.string.quickswitch_ignored_warning),
         )
     }
