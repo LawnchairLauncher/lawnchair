@@ -36,12 +36,7 @@ public class LauncherClient {
     public final BroadcastReceiver googleInstallListener = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mBaseService.disconnect();
-            mLauncherService.disconnect();
-            LauncherClient.loadApiVersion(context);
-            if ((mActivityState & 2) != 0) {
-                reconnect();
-            }
+            reconnect();
         }
     };
 
@@ -133,11 +128,19 @@ public class LauncherClient {
             loadApiVersion(activity);
         }
 
-        reconnect();
+        connect();
         if (mActivity.getWindow() != null &&
                 mActivity.getWindow().peekDecorView() != null &&
                 mActivity.getWindow().peekDecorView().isAttachedToWindow()) {
             onAttachedToWindow();
+        }
+    }
+
+    public void setEnableFeed(boolean enable) {
+        if (enable) {
+            mFlags |= 1;
+        } else {
+            mFlags &= ~1;
         }
     }
 
@@ -190,7 +193,7 @@ public class LauncherClient {
         if (!mDestroyed) {
             Log.i("FEED", "2");
             mLauncherService.setStopped(false);
-            reconnect();
+            connect();
             mActivityState |= 1;
             if (mOverlay != null && mLayoutParams != null) {
                 try {
@@ -219,9 +222,18 @@ public class LauncherClient {
         mActivity.unregisterReceiver(googleInstallListener);
     }
 
-    private void reconnect() {
+    private void connect() {
         if (!mDestroyed && (!mLauncherService.connect() || !mBaseService.connect())) {
             mActivity.runOnUiThread(() -> setServiceState(0));
+        }
+    }
+
+    public void reconnect() {
+        mBaseService.disconnect();
+        mLauncherService.disconnect();
+        LauncherClient.loadApiVersion(mActivity);
+        if ((mActivityState & 2) != 0) {
+            connect();
         }
     }
 

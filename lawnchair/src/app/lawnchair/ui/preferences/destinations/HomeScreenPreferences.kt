@@ -29,6 +29,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorMode
+import app.lawnchair.ui.preferences.components.FeedPreference
 import app.lawnchair.ui.preferences.components.GestureHandlerPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -77,12 +78,16 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.gesture_double_tap),
             )
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
+            val enableFeedAdapter = prefs2.enableFeed.getAdapter()
             SwitchPreference(
-                adapter = prefs2.enableFeed.getAdapter(),
+                adapter = enableFeedAdapter,
                 label = stringResource(id = R.string.minus_one_enable),
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
+            ExpandAndShrink(visible = feedAvailable && enableFeedAdapter.state.value) {
+                FeedPreference()
+            }
             HomeScreenTextColorPreference()
         }
         PreferenceGroup(heading = stringResource(id = R.string.wallpaper)) {

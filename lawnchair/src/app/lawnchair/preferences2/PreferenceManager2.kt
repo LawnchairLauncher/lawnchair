@@ -368,7 +368,6 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val enableFeed = preference(
         key = booleanPreferencesKey(name = "enable_feed"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_feed),
-        onSet = { reloadHelper.recreate() },
     )
 
     val showComponentNames = preference(

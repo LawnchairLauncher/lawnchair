@@ -31,6 +31,7 @@ import app.lawnchair.util.useApplicationContext
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
 
 class FeedBridge(private val context: Context) {
 
@@ -43,19 +44,20 @@ class FeedBridge(private val context: Context) {
         )
     }
 
-    fun resolveBridge(): BridgeInfo? {
-        val customBridge = customBridgeOrNull()
+    @JvmOverloads
+    fun resolveBridge(customPackage: String = prefs.feedProvider.get()): BridgeInfo? {
+        val customBridge = customBridgeOrNull(customPackage)
+        val feedProvider = customPackage.toBoolean()
         return when {
             customBridge != null -> customBridge
-            !shouldUseFeed -> null
+            !shouldUseFeed && !feedProvider -> null
             else -> bridgePackages.firstOrNull { it.isAvailable() }
         }
     }
 
-    private fun customBridgeOrNull(): CustomBridgeInfo? {
-        val feedProvider = prefs.feedProvider.get()
-        return if (feedProvider.isNotBlank()) {
-            val bridge = CustomBridgeInfo(feedProvider)
+    private fun customBridgeOrNull(customPackage: String = prefs.feedProvider.get()): CustomBridgeInfo? {
+        return if (customPackage.isNotBlank()) {
+            val bridge = CustomBridgeInfo(customPackage)
             if (bridge.isAvailable()) bridge else null
         } else {
             null
@@ -122,6 +124,7 @@ class FeedBridge(private val context: Context) {
 
     private inner class CustomBridgeInfo(packageName: String) : BridgeInfo(packageName, 0) {
         override val signatureHash = whitelist[packageName]?.toInt() ?: -1
+        val ignoreWhitelist = prefs.ignoreFeedWhitelist.get()
         override fun isSigned(): Boolean {
             if (signatureHash == -1 && Utilities.ATLEAST_P) {
                 val info = context.packageManager
@@ -133,7 +136,7 @@ class FeedBridge(private val context: Context) {
                     Log.d(TAG, "Feed provider $packageName(0x$hash) isn't whitelisted")
                 }
             }
-            return signatureHash != -1 && super.isSigned()
+            return ignoreWhitelist || signatureHash != -1 && super.isSigned()
         }
     }
 
@@ -153,6 +156,10 @@ class FeedBridge(private val context: Context) {
         private val whitelist = mapOf<String, Long>(
             "ua.itaysonlab.homefeeder" to 0x887456ed, // HomeFeeder, t.me/homefeeder
             "launcher.libre.dev" to 0x2e9dbab5, // Librechair, t.me/librechair
+            SmartspacerConstants.SMARTSPACER_PACKAGE_NAME to 0x15c6e36f, // Smartspacer
+            "amirz.aidlbridge" to 0xb662cc2f, // AIDL Bridge
+            "com.google.android.googlequicksearchbox" to 0xe3ca78d8, // Google
+            "com.google.android.apps.nexuslauncher" to 0xb662cc2f, // Pixel Bridge (or launcher)
         )
 
         fun getAvailableProviders(context: Context) = context.packageManager

@@ -33,6 +33,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.util.addIf
 import app.lawnchair.ui.util.bottomSheetHandler
 import kotlinx.collections.immutable.ImmutableList
 
@@ -110,17 +111,19 @@ fun <T> ListPreference(
                                         enabled = item.enabled,
                                     )
                                 },
+                                endWidget = item.endWidget,
                             )
                         }
                     }
                 }
             }
-        },
+        }.addIf(endWidget != null) { padding(end = 16.dp) },
     )
 }
 
 class ListPreferenceEntry<T>(
     val value: T,
     val enabled: Boolean = true,
+    val endWidget: (@Composable () -> Unit)? = null,
     val label: @Composable () -> String,
 )

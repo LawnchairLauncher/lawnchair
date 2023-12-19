@@ -190,6 +190,8 @@
       <!-- <string name="gesture_double_tap" /> -->
       <string name="minus_one_enable">Feed</string>
       <string name="minus_one_unavailable">No feed installed.</string>
+      <string name="feed_provider">Feed Provider</string>
+      <string name="feed_default">Default</string>
 
     <string name="wallpaper">Wallpaper</string>
       <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>

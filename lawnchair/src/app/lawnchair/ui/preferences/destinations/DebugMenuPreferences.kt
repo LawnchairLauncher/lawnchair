@@ -95,6 +95,7 @@ private val PreferenceManager.debugFlags
         searchResultPeople,
         searchResultPixelTips,
         searchResultSettings,
+        ignoreFeedWhitelist,
     )
 
 private val PreferenceManager.fontFlags
