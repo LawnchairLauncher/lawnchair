@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SH
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.EXTENDED_CONTAINERS;
 import static com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers.ContainerCase.DEVICE_SEARCH_RESULT_CONTAINER;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_DRAGDROP;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -517,6 +518,9 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 // Note, this must be done last to ensure no AutohideSuspendFlags are active, as
                 // that will prevent us from stashing until the timeout.
                 mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+
+                mActivity.getStatsLogManager().logger().withItemInfo(mDragObject.dragInfo)
+                        .log(LAUNCHER_APP_LAUNCH_DRAGDROP);
             }
         }
     }
