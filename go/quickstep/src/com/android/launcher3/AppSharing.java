@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -64,14 +65,17 @@ public final class AppSharing {
 
     private static final String TAG = "AppSharing";
     private static final String FILE_PROVIDER_SUFFIX = ".overview.fileprovider";
-    private static final String APP_EXSTENSION = ".apk";
+    private static final String APP_EXTENSION = ".apk";
     private static final String APP_MIME_TYPE = "application/application";
 
     private final String mSharingComponent;
     private AppShareabilityManager mShareabilityMgr;
 
     private AppSharing(Launcher launcher) {
-        mSharingComponent = launcher.getText(R.string.app_sharing_component).toString();
+        String sharingComponent = Settings.Secure.getString(launcher.getContentResolver(),
+                Settings.Secure.NEARBY_SHARING_COMPONENT);
+        mSharingComponent = TextUtils.isEmpty(sharingComponent) ? launcher.getText(
+                R.string.app_sharing_component).toString() : sharingComponent;
     }
 
     private Uri getShareableUri(Context context, String path, String displayName) {
@@ -147,7 +151,7 @@ public final class AppSharing {
                 PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
                 sourceDir = packageInfo.applicationInfo.sourceDir;
                 appLabel = packageManager.getApplicationLabel(packageInfo.applicationInfo)
-                        .toString() + APP_EXSTENSION;
+                        + APP_EXTENSION;
             } catch (Exception e) {
                 Log.e(TAG, "Could not find info for package \"" + packageName + "\"");
                 return;
@@ -175,9 +179,7 @@ public final class AppSharing {
                 return;
             }
             checkShareability(/* requestUpdateIfUnknown */ false);
-            mTarget.runOnUiThread(() -> {
-                mPopupDataProvider.redrawSystemShortcuts();
-            });
+            mTarget.runOnUiThread(mPopupDataProvider::redrawSystemShortcuts);
         }
 
         private void checkShareability(boolean requestUpdateIfUnknown) {
