@@ -331,15 +331,17 @@ public final class Utilities {
     public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
         sMatrix.reset();
         View v = descendant;
-        while (v != root) {
+        if (v != null) {
+            while (v != root) {
+                sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
+                sMatrix.postConcat(v.getMatrix());
+                sMatrix.postTranslate(v.getLeft(), v.getTop());
+                v = (View) v.getParent();
+            }
             sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
-            sMatrix.postConcat(v.getMatrix());
-            sMatrix.postTranslate(v.getLeft(), v.getTop());
-            v = (View) v.getParent();
+            sMatrix.invert(sInverseMatrix);
+            sInverseMatrix.mapPoints(coord);
         }
-        sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
-        sMatrix.invert(sInverseMatrix);
-        sInverseMatrix.mapPoints(coord);
     }
 
     /**

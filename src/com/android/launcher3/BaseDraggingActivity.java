@@ -228,8 +228,4 @@ public abstract class BaseDraggingActivity extends BaseActivity
     public boolean isAppBlockedForSafeMode() {
         return mIsSafeModeEnabled;
     }
-
-    public SearchAdapterProvider<?> createMainAdapterProvider(ActivityAllAppsContainerView<?> allAppsContainerView) {
-        return new DefaultSearchAdapterProvider(this);
-    }
 }

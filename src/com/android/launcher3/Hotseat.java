@@ -20,7 +20,6 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,9 +31,9 @@ import android.widget.FrameLayout;
 
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.hotseat.LawnchairHotseat;
-import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
@@ -67,6 +66,12 @@ public class Hotseat extends CellLayout implements Insettable {
 
         preferenceManager2 = PreferenceManager2.getInstance(context);
         HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
+        var hotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
+
+        if (!hotseatEnabled) {
+            hotseatMode = DisabledHotseat.INSTANCE;
+        }
+
         if (!hotseatMode.isAvailable(context)) {
             // The current hotseat mode is not available,
             // setting the hotseat mode to one that is always available
