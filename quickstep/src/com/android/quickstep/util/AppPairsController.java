@@ -130,7 +130,7 @@ public class AppPairsController {
                 Arrays.asList(app1Key, app2Key),
                 false /* findExactPairMatch */,
                 foundTasks -> {
-                    @Nullable Task foundTask1 = foundTasks.get(0);
+                    @Nullable Task foundTask1 = foundTasks[0];
                     Intent task1Intent;
                     int task1Id;
                     if (foundTask1 != null) {
@@ -147,7 +147,7 @@ public class AppPairsController {
                             LAUNCHER_APP_PAIR_LAUNCH,
                             task1Id);
 
-                    @Nullable Task foundTask2 = foundTasks.get(1);
+                    @Nullable Task foundTask2 = foundTasks[1];
                     if (foundTask2 != null) {
                         mSplitSelectStateController.setSecondTask(foundTask2);
                     } else {

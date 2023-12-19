@@ -219,7 +219,7 @@ public class TaskbarUIController {
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
                             : foundTask.key.id;
@@ -238,7 +238,7 @@ public class TaskbarUIController {
                 Collections.singletonList(info.getComponentKey()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         // TODO (b/266482558): This additional null check is needed because there
