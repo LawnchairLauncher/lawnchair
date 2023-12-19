@@ -812,7 +812,7 @@ public class DeviceProfile {
                     + hotseatBarBottomSpacePx
                     + space;
         }
-       var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
+        var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
         if (!isHotseatEnabled) {
             hotseatBarSizePx = 0;
         }

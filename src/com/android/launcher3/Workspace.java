@@ -1392,7 +1392,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mPageIndicator.setScroll(getScrollX(), computeMaxScroll());
             var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.isHotseatEnabled());
             mPageIndicator.setVisibility(isHotseatEnabled ? VISIBLE : INVISIBLE);
-            mPageIndicator.setAlpha(isHotseatEnabled ? 1 : 0);
         }
     }
 
