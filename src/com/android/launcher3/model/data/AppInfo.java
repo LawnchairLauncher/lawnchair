@@ -55,7 +55,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      */
     public Intent intent;
 
-    @NonNull
+    // componentName for the Private Space Install App button can be null
+    @Nullable
     public ComponentName componentName;
 
     // Section name used for indexing.
