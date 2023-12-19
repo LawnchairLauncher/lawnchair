@@ -43,6 +43,15 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
         )
     }
 
+    fun reconnect() {
+        mClient.reconnect()
+    }
+
+    fun setEnableFeed(enable: Boolean) {
+        mClient.setEnableFeed(enable)
+        reconnect()
+    }
+
     override fun onDeviceProvideChanged() {
         mClient.redraw()
     }
