@@ -225,6 +225,10 @@ public class FallbackRecentsTest {
 
     private void pressHomeAndWaitForOverviewClose() {
         mDevice.pressHome();
+        waitForRecentsActivityStop();
+    }
+
+    private void waitForRecentsActivityStop() {
         Wait.atMost("Recents activity didn't stop",
                 () -> getFromRecents(recents -> !recents.isStarted()),
                 DEFAULT_UI_TIMEOUT, mLauncher);
@@ -278,6 +282,7 @@ public class FallbackRecentsTest {
 
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
+        waitForRecentsActivityStop(); // dismissAllTasks() will close Recents
         assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
     }
