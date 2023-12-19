@@ -78,6 +78,6 @@ fun FeedPreference() {
         adapter = adapter,
         entries = entries,
         label = stringResource(R.string.feed_provider),
-        endWidget = selected?.endWidget
+        endWidget = selected?.endWidget,
     )
 }
