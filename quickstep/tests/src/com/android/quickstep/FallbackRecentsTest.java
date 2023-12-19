@@ -28,7 +28,7 @@ import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT
 import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startAppFast;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startTestActivity;
-import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.launcher3.ui.TaplTestsLauncher3Test.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;

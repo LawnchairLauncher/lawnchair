@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class TaplUtilityTests {
+public class TaplUtilityTest {
 
     @Test
     public void testNewStringWithRegex() {

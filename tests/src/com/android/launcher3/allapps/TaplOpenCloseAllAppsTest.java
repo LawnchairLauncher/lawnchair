@@ -43,7 +43,7 @@ import org.junit.Test;
  * Test that we can open and close the all apps in multiple situations.
  * The test runs in Out of process (Oop) and in process.
  */
-public class TaplOpenCloseAllApps extends AbstractLauncherUiTest {
+public class TaplOpenCloseAllAppsTest extends AbstractLauncherUiTest {
 
     public static final String READ_DEVICE_CONFIG_PERMISSION =
             "android.permission.READ_DEVICE_CONFIG";

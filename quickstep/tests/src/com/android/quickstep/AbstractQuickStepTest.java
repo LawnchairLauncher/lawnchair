@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
-
 import static org.junit.Assert.assertTrue;
 
 import android.os.SystemProperties;
