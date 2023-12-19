@@ -401,7 +401,9 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-      <string name="translucent_background">Translucent Background</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+
+    <string name="translucent_background">Translucent Background</string>
 
     <string name="recents_actions_label">Quick Actions</string>
       <!-- <string name="screenshot" /> (unknown source) -->
