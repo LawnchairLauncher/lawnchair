@@ -49,6 +49,7 @@ import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.statemanager.StatefulActivity
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.TaskViewUtils
@@ -388,6 +389,14 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             // Tapping an app pair icon
             check(info != null && t != null) {
                 "trying to launch an app pair icon, but encountered an unexpected null"
+            }
+
+            // If launching an app pair from Taskbar inside of an app context, use fade-in animation
+            // TODO (b/316485863): Replace with desired app pair launch animation
+            if (launchingIconView.context is TaskbarActivityContext) {
+                composeFadeInSplitLaunchAnimator(
+                    initialTaskId, secondTaskId, info, t, finishCallback)
+                return
             }
 
             composeIconSplitLaunchAnimator(launchingIconView, info, t, finishCallback)
