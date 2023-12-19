@@ -33,7 +33,7 @@ import org.junit.Test;
  * The test runs in Out of process (Oop) and in process.
  * Makes sure the basic behaviors of Icons on AllApps are working.
  */
-public class TaplTestsAllAppsIconsWorking extends AbstractLauncherUiTest {
+public class TaplAllAppsIconsWorkingTest extends AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
