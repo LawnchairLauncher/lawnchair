@@ -1,10 +1,15 @@
 package app.lawnchair.ui.preferences.destinations
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
@@ -12,11 +17,13 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.isOnePlusStock
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -32,6 +39,8 @@ fun QuickstepPreferences() {
     val lensAvailable = remember {
         context.packageManager.getLaunchIntentForPackage("com.google.ar.lens") != null
     }
+
+    if (BuildConfig.DEBUG) SettingsIsIgnoreWarning()
 
     PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
@@ -92,5 +101,18 @@ fun QuickstepPreferences() {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun SettingsIsIgnoreWarning() {
+    Surface(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        color = androidx.compose.material3.MaterialTheme.colorScheme.errorContainer,
+    ) {
+        WarningPreference(
+            text = "You are currently using a development build, this settings will be ignored by Lawnchair"
+        )
     }
 }
