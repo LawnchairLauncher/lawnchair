@@ -130,6 +130,8 @@ public class BubbleBarView extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         TaskbarActivityContext activityContext = ActivityContext.lookupContext(context);
 
+        setAlpha(0);
+        setVisibility(INVISIBLE);
         mIconOverlapAmount = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_overlap);
         mIconSpacing = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_spacing);
         mIconSize = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_size);

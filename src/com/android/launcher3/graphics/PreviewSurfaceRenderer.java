@@ -259,7 +259,7 @@ public class PreviewSurfaceRenderer {
                         query += " or " + LauncherSettings.Favorites.SCREEN + " = "
                                 + Workspace.SECOND_SCREEN_ID;
                     }
-                    loadWorkspace(new ArrayList<>(), query, null);
+                    loadWorkspace(new ArrayList<>(), query, null, null);
 
                     final SparseArray<Size> spanInfo =
                             getLoadedLauncherWidgetInfo(previewContext.getBaseContext());

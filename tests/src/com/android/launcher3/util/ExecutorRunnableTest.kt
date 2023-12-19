@@ -18,11 +18,13 @@ package com.android.launcher3.util
 
 import android.testing.AndroidTestingRunner
 import androidx.test.filters.SmallTest
+import com.android.launcher3.util.rule.TestStabilityRule
 import java.util.concurrent.ExecutorService
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -36,6 +38,8 @@ class ExecutorRunnableTest {
     private var result: Int = -1
     private var isTaskExecuted = false
     private var isCallbackExecuted = false
+
+    @get:Rule(order = 0) val testStabilityRule = TestStabilityRule()
 
     @Before
     fun setup() {
@@ -65,6 +69,9 @@ class ExecutorRunnableTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(
+        flavors = TestStabilityRule.LOCAL or TestStabilityRule.PLATFORM_POSTSUBMIT
+    ) // b/316588649
     fun run_and_cancel_cancelCallback() {
         underTest.cancel(false)
         awaitAllExecutorCompleted()

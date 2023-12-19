@@ -20,6 +20,7 @@ import static android.os.Process.myUserHandle;
 
 import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
 import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
+import static com.android.launcher3.LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE;
 import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.RESTORE_DEVICE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
@@ -83,6 +84,7 @@ public class RestoreDbTask {
 
     private static final String TAG = "RestoreDbTask";
     public static final String RESTORED_DEVICE_TYPE = "restored_task_pending";
+    public static final String FIRST_LOAD_AFTER_RESTORE_KEY = "first_load_after_restore";
 
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
@@ -340,9 +342,10 @@ public class RestoreDbTask {
      * Marks the DB state as pending restoration
      */
     public static void setPending(Context context) {
-        FileLog.d(TAG, "Restore data received through full backup");
-        LauncherPrefs.get(context)
-                .putSync(RESTORE_DEVICE.to(new DeviceGridState(context).getDeviceType()));
+        DeviceGridState deviceGridState = new DeviceGridState(context);
+        FileLog.d(TAG, "restore initiated from backup: DeviceGridState=" + deviceGridState);
+        LauncherPrefs.get(context).putSync(RESTORE_DEVICE.to(deviceGridState.getDeviceType()));
+        LauncherPrefs.get(context).putSync(IS_FIRST_LOAD_AFTER_RESTORE.to(true));
     }
 
     @WorkerThread
