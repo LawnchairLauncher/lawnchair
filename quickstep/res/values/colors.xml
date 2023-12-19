@@ -95,5 +95,5 @@
     <!-- Turn on work apps button -->
     <color name="work_turn_on_stroke">?attr/colorAccentPrimary</color>
     <color name="work_fab_bg_color">?attr/materialColorPrimaryFixedDim</color>
-    <color name="work_fab_icon_color">?attr/materialColorOnPrimaryFixed</color>
+    <color name="work_fab_icon_color">@color/material_color_on_primary_fixed</color>
 </resources>
