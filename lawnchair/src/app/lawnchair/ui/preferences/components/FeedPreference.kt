@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -70,7 +71,7 @@ fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
 @Composable
 fun FeedPreference(context: Context) {
     val adapter = preferenceManager().feedProvider.getAdapter()
-    val providers = getProvidersList(context).toImmutableList()
+    val providers = remember { getProvidersList(context).toImmutableList() }
     val providerInfo = getEntries(context).filter {
         it.packageName == adapter.state.value
     }[0]
