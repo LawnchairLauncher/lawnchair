@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
@@ -23,7 +24,6 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.isOnePlusStock
-import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -40,7 +40,7 @@ fun QuickstepPreferences() {
         context.packageManager.getLaunchIntentForPackage("com.google.ar.lens") != null
     }
 
-    if (BuildConfig.DEBUG) SettingsIsIgnoreWarning()
+    if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
 
     PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
@@ -105,14 +105,15 @@ fun QuickstepPreferences() {
 }
 
 @Composable
-fun SettingsIsIgnoreWarning() {
+fun QuickSwitchIgnoredWarning() {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = androidx.compose.material3.MaterialTheme.colorScheme.errorContainer,
     ) {
         WarningPreference(
-            text = "You are currently using a development build, this settings will be ignored by Lawnchair"
+
+            text = stringResource(id = R.string.quickswitch_ignored_warning),
         )
     }
 }

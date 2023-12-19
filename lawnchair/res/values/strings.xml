@@ -400,7 +400,9 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-      <string name="translucent_background">Translucent Background</string>
+    <string name="quickswitch_ignored_warning">Lawnchair isn\'t set as Recent provider, this settings will be ignored by Lawnchair</string>
+
+    <string name="translucent_background">Translucent Background</string>
 
     <string name="recents_actions_label">Quick Actions</string>
       <!-- <string name="screenshot" /> (unknown source) -->
