@@ -68,21 +68,14 @@ fun getEntries(context: Context): List<ListPreferenceEntry<String>> {
 fun FeedPreference(context: Context) {
     val adapter = preferenceManager().feedProvider.getAdapter()
     val entries = remember { getEntries(context).toImmutableList() }
-    val selectedProvider = getProviders(context).firstOrNull {
-        it.packageName == adapter.state.value
+    val selected = entries.firstOrNull {
+        it.value == adapter.state.value
     }
 
     ListPreference(
         adapter = adapter,
         entries = entries,
         label = stringResource(R.string.feed_provider),
-    ) {
-        if (selectedProvider?.icon != null) {
-            Image(
-                painter = rememberDrawablePainter(drawable = selectedProvider.icon),
-                contentDescription = null,
-                modifier = Modifier.requiredSize(48.dp),
-            )
-        }
-    }
+        endWidget = selected?.endWidget
+    )
 }
