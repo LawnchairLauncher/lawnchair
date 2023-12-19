@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.WallpaperManager
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.backup.LawnchairBackup
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.WallpaperPreview
@@ -47,6 +49,8 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.BackHandler
+import app.lawnchair.util.checkAndRequestFilesPermission
+import app.lawnchair.util.filesAndStorageGranted
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.removeFlag
 import com.android.launcher3.R
@@ -73,8 +77,14 @@ fun CreateBackupScreen(
 
     val context = LocalContext.current
     val hasLiveWallpaper = remember { WallpaperManager.getInstance(context).wallpaperInfo != null }
-    val permissionState = rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE)
-    val hasStoragePermission = permissionState.status.isGranted
+    val permissionState = rememberPermissionState(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        },
+    )
+    val hasStoragePermission = permissionState.status.isGranted || filesAndStorageGranted(context)
 
     val scope = rememberCoroutineScope()
     var creatingBackup by remember { mutableStateOf(false) }
@@ -155,7 +165,7 @@ fun CreateBackupScreen(
                 flags = contents,
                 setFlags = {
                     if (it.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && !hasStoragePermission) {
-                        permissionState.launchPermissionRequest()
+                        checkAndRequestFilesPermission(context, PreferenceManager.getInstance(context))
                     } else {
                         viewModel.setBackupContents(it)
                     }
