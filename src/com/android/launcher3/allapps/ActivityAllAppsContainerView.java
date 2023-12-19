@@ -190,8 +190,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private boolean mForceBottomSheetVisible;
     private int mTabsProtectionAlpha;
 
-    private Launcher mLauncher;
-
     @Nullable
     private AllAppsTransitionController mAllAppsTransitionController;
 
@@ -206,7 +204,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     public ActivityAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivityContext = ActivityContext.lookupContext(context);
-        mLauncher = ActivityContext.lookupContext(context);
         mAllAppsStore = new AllAppsStore<>(mActivityContext);
 
         mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
@@ -258,8 +255,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * onFinishInflate -> onPostCreate
      */
     protected void initContent() {
-        mMainAdapterProvider = mLauncher.createMainAdapterProvider(this);
-        // mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
+        mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
 
         mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN,
                 new LawnchairAlphabeticalAppsList<>(mActivityContext, mAllAppsStore, null)));

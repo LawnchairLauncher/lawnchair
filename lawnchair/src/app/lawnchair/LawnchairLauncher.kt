@@ -285,9 +285,6 @@ class LawnchairLauncher :
     override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> =
         Stream.concat(super.getSupportedShortcuts(), Stream.of(LawnchairShortcut.CUSTOMIZE))
 
-    override fun createMainAdapterProvider(allapps: ActivityAllAppsContainerView<*>): SearchAdapterProvider<*> =
-        LawnchairSearchAdapterProvider(this, allapps)
-
     override fun updateTheme() {
         if (themeProvider.colorScheme != colorScheme) {
             recreate()

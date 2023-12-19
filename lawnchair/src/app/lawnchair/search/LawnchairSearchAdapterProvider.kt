@@ -16,9 +16,10 @@ import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.AllAppsGridAdapter
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider
+import com.android.launcher3.views.ActivityContext
 
 class LawnchairSearchAdapterProvider(
-    launcher: LawnchairLauncher,
+    launcher: ActivityContext,
     private val appsView: ActivityAllAppsContainerView<*>,
 ) : DefaultSearchAdapterProvider(launcher) {
 
