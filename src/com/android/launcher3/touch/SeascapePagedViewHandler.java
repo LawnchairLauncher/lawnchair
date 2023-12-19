@@ -343,13 +343,15 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
         secondarySnapshot.setTranslationY(0);
         primarySnapshot.setTranslationY(secondarySnapshotHeight + spaceAboveSnapshot + dividerBar);
+
         primarySnapshot.measure(
                 View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY));
+                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY)
+        );
         secondarySnapshot.measure(
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
-                        View.MeasureSpec.EXACTLY));
+                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight, View.MeasureSpec.EXACTLY)
+        );
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
