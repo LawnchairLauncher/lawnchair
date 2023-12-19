@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.contains
-import app.lawnchair.LawnchairLauncher
 import app.lawnchair.allapps.SearchItemDecorator
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
