@@ -27,28 +27,24 @@ data class ProviderInfo(
     val icon: Drawable?,
 )
 
-fun getProviders(context: Context): List<ProviderInfo> {
-    val providers = listOf(
+fun getProviders(context: Context): Sequence<ProviderInfo> {
+    val providers = FeedBridge.getAvailableProviders(context).map {
         ProviderInfo(
-            packageName = "",
-            name = context.getString(R.string.feed_default),
-            icon = CustomAdaptiveIconDrawable.wrapNonNull(AppCompatResources.getDrawable(context, R.drawable.ic_launcher_home)!!),
-        ),
-    ) +
-        FeedBridge.getAvailableProviders(context).map {
-            ProviderInfo(
-                name = it.loadLabel(context.packageManager).toString(),
-                packageName = it.packageName,
-                icon = CustomAdaptiveIconDrawable.wrapNonNull(it.loadIcon(context.packageManager)),
-            )
-        }
+            name = it.loadLabel(context.packageManager).toString(),
+            packageName = it.packageName,
+            icon = CustomAdaptiveIconDrawable.wrapNonNull(it.loadIcon(context.packageManager)),
+        )
+    } + ProviderInfo(
+        packageName = "",
+        name = context.getString(R.string.feed_default),
+        icon = CustomAdaptiveIconDrawable.wrapNonNull(AppCompatResources.getDrawable(context, R.drawable.ic_launcher_home)!!),
+    )
 
     return providers
 }
 
-fun getEntries(context: Context): List<ListPreferenceEntry<String>> {
-    val providers = getProviders(context)
-    return providers.map {
+fun getEntries(context: Context): Sequence<ListPreferenceEntry<String>> {
+    return getProviders(context).map {
         ListPreferenceEntry(
             value = it.packageName,
             endWidget = {
