@@ -44,9 +44,10 @@ class FeedBridge(private val context: Context) {
         )
     }
 
-    fun resolveBridge(): BridgeInfo? {
-        val customBridge = customBridgeOrNull()
-        val feedProvider = prefs.feedProvider.get().toBoolean()
+    @JvmOverloads
+    fun resolveBridge(customPackage: String = prefs.feedProvider.get()): BridgeInfo? {
+        val customBridge = customBridgeOrNull(customPackage)
+        val feedProvider = customPackage.toBoolean()
         return when {
             customBridge != null -> customBridge
             !shouldUseFeed && !feedProvider -> null
@@ -54,10 +55,9 @@ class FeedBridge(private val context: Context) {
         }
     }
 
-    private fun customBridgeOrNull(): CustomBridgeInfo? {
-        val feedProvider = prefs.feedProvider.get()
-        return if (feedProvider.isNotBlank()) {
-            val bridge = CustomBridgeInfo(feedProvider)
+    private fun customBridgeOrNull(customPackage: String = prefs.feedProvider.get()): CustomBridgeInfo? {
+        return if (customPackage.isNotBlank()) {
+            val bridge = CustomBridgeInfo(customPackage)
             if (bridge.isAvailable()) bridge else null
         } else {
             null
