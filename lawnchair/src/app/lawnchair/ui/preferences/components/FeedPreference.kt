@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.FeedBridge
@@ -65,7 +66,8 @@ fun getEntries(context: Context): List<ListPreferenceEntry<String>> {
 }
 
 @Composable
-fun FeedPreference(context: Context) {
+fun FeedPreference() {
+    val context = LocalContext.current
     val adapter = preferenceManager().feedProvider.getAdapter()
     val entries = remember { getEntries(context).toImmutableList() }
     val selected = entries.firstOrNull {

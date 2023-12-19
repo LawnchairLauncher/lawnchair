@@ -62,7 +62,6 @@ fun HomeScreenPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
@@ -86,7 +85,7 @@ fun HomeScreenPreferences() {
                 enabled = feedAvailable,
             )
             if (feedAvailable && prefs2.enableFeed.getAdapter().state.value) {
-                FeedPreference(context = context)
+                FeedPreference()
             }
             HomeScreenTextColorPreference()
         }
