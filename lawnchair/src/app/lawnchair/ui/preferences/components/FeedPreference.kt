@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.requiredSize
@@ -12,12 +13,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.FeedBridge
+import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.DrawablePainter
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.collections.immutable.toImmutableList
 
 data class ProviderInfo(
@@ -31,14 +34,14 @@ fun getEntries(context: Context): List<ProviderInfo> {
         ProviderInfo(
             packageName = "",
             name = context.getString(R.string.feed_default),
-            icon = AppCompatResources.getDrawable(context, R.drawable.ic_launcher_home_comp),
+            icon = CustomAdaptiveIconDrawable.wrapNonNull(AppCompatResources.getDrawable(context, R.drawable.ic_launcher_home)!!),
         ),
     ) +
         FeedBridge.getAvailableProviders(context).map {
             ProviderInfo(
                 name = it.loadLabel(context.packageManager).toString(),
                 packageName = it.packageName,
-                icon = it.loadIcon(context.packageManager),
+                icon = CustomAdaptiveIconDrawable.wrapNonNull(it.loadIcon(context.packageManager)),
             )
         }
 
@@ -53,9 +56,9 @@ fun getProvidersList(context: Context): List<ListPreferenceEntry<String>> {
             endWidget = {
                 if (it.icon != null) {
                     Image(
-                        painter = DrawablePainter(it.icon),
+                        painter = rememberDrawablePainter(drawable = it.icon),
                         contentDescription = null,
-                        modifier = Modifier.requiredSize(48.dp).clip(CircleShape),
+                        modifier = Modifier.requiredSize(48.dp),
                     )
                 }
             },
@@ -79,10 +82,9 @@ fun FeedPreference(context: Context) {
     ) {
         if (providerInfo.icon != null) {
             Image(
-                painter = DrawablePainter(providerInfo.icon),
+                painter = rememberDrawablePainter(drawable = providerInfo.icon),
                 contentDescription = null,
-                modifier = Modifier.requiredSize(48.dp)
-                    .clip(CircleShape),
+                modifier = Modifier.requiredSize(48.dp),
             )
         }
     }
