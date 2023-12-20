@@ -695,10 +695,9 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            final UiObject2 workspace = verifyActiveContainer();
-            mLauncher.scroll(workspace, Direction.RIGHT,
-                    new Rect(0, 0, mLauncher.getEdgeSensitivityWidth() + 1, 0),
-                    FLING_STEPS, false);
+            Rect workspaceBounds = mLauncher.getVisibleBounds(verifyActiveContainer());
+            mLauncher.pointerScroll(
+                    workspaceBounds.centerX(), workspaceBounds.centerY(), Direction.RIGHT);
             verifyActiveContainer();
         }
     }
@@ -709,10 +708,9 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            final UiObject2 workspace = verifyActiveContainer();
-            mLauncher.scroll(workspace, Direction.LEFT,
-                    new Rect(mLauncher.getEdgeSensitivityWidth() + 1, 0, 0, 0),
-                    FLING_STEPS, false);
+            Rect workspaceBounds = mLauncher.getVisibleBounds(verifyActiveContainer());
+            mLauncher.pointerScroll(
+                    workspaceBounds.centerX(), workspaceBounds.centerY(), Direction.LEFT);
             verifyActiveContainer();
         }
     }
