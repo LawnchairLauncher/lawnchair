@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Icon
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -102,6 +103,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                     title = ttl,
                     subtitle = sub.text,
                     pendingIntent = pendingIntent,
+                    intent = weather.baseAction?.intent
                 ),
                 score = SmartspaceScores.SCORE_CALENDAR,
                 featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR,
@@ -126,6 +128,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                 title = "",
                 subtitle = weatherData.getTitle(),
                 pendingIntent = weatherData.pendingIntent,
+                intent = Intent(Intent.ACTION_VIEW, Uri.parse(weatherData.forecastUrl))
             ),
             score = SmartspaceScores.SCORE_WEATHER,
             featureType = SmartspaceTarget.FeatureType.FEATURE_WEATHER,
