@@ -262,7 +262,8 @@ public class GridSizeMigrationUtil {
             String srcTableName, String destTableName) {
         int id = copyEntryAndUpdate(helper, entry, srcTableName, destTableName);
 
-        if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+        if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER
+                || entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR) {
             for (Set<Integer> itemIds : entry.mFolderItems.values()) {
                 for (int itemId : itemIds) {
                     copyEntryAndUpdate(helper, itemId, id, srcTableName, destTableName);
