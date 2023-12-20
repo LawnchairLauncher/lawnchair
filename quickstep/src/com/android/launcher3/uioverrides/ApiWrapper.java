@@ -69,7 +69,7 @@ public class ApiWrapper {
             ActivityOptions options = ActivityOptions.makeBasic();
             options.setRemoteTransition(new RemoteTransition(new FadeOutRemoteTransition()));
             return options;
-        } catch (Exception e) {
+        } catch (Throwable t) {
             // TODO Create our own custom closing animation
             return ActivityOptions.makeCustomAnimation(context, 0, android.R.anim.fade_out);
         }
