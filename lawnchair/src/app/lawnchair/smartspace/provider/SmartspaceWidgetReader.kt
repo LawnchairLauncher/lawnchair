@@ -103,7 +103,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                     title = ttl,
                     subtitle = sub.text,
                     pendingIntent = pendingIntent,
-                    intent = weather.baseAction?.intent
+                    intent = weather.baseAction?.intent,
                 ),
                 score = SmartspaceScores.SCORE_CALENDAR,
                 featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR,
@@ -128,7 +128,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                 title = "",
                 subtitle = weatherData.getTitle(),
                 pendingIntent = weatherData.pendingIntent,
-                intent = Intent(Intent.ACTION_VIEW, Uri.parse(weatherData.forecastUrl))
+                intent = Intent(Intent.ACTION_VIEW, Uri.parse(weatherData.forecastUrl)),
             ),
             score = SmartspaceScores.SCORE_WEATHER,
             featureType = SmartspaceTarget.FeatureType.FEATURE_WEATHER,
