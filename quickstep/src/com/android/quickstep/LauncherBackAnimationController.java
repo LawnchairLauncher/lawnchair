@@ -449,6 +449,7 @@ public class LauncherBackAnimationController {
                     mBackInProgress /* fromPredictiveBack */);
         startTransitionAnimations(pair.first, pair.second);
         mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
+        customizeStatusBarAppearance(true);
     }
 
     private void finishAnimation() {
