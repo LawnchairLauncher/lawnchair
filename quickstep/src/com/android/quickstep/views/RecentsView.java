@@ -3246,8 +3246,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         anim.add(ObjectAnimator.ofFloat(taskView, secondaryViewTranslate,
                 verticalFactor * secondaryTaskDimension * 2).setDuration(duration), LINEAR, sp);
 
-        if (mEnableDrawingLiveTile && taskView.isRunningTask()) {
+        if (taskView.isRunningTask()) {
             anim.addOnFrameCallback(() -> {
+                if (!mEnableDrawingLiveTile) return;
                 runActionOnRemoteHandles(
                         remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                                 .taskSecondaryTranslation.value = mOrientationHandler
