@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static android.content.ClipDescription.MIMETYPE_TEXT_INTENT;
 import static android.view.WindowInsets.Type.navigationBars;
 import static android.view.WindowInsets.Type.statusBars;
 
@@ -23,6 +24,8 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -43,6 +46,14 @@ import java.util.ArrayList;
 
 /** An Activity that can host Launcher's widget picker. */
 public class WidgetPickerActivity extends BaseActivity {
+    /**
+     * Name of the extra that indicates that a widget being dragged.
+     *
+     * <p>When set to "true" in the result of startActivityForResult, the client that launched the
+     * picker knows that activity was closed due to pending drag.
+     */
+    private static final String EXTRA_IS_PENDING_WIDGET_DRAG = "is_pending_widget_drag";
+
     private SimpleDragLayer<WidgetPickerActivity> mDragLayer;
     private WidgetsModel mModel;
     private final PopupDataProvider mPopupDataProvider = new PopupDataProvider(i -> {});
@@ -99,6 +110,46 @@ public class WidgetPickerActivity extends BaseActivity {
                     .putExtra(Intent.EXTRA_USER, info.getProfile()));
 
             finish();
+        };
+    }
+
+    @Override
+    public View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return view -> {
+            if (!(view instanceof WidgetCell widgetCell)) return false;
+
+            if (widgetCell.getWidgetView().getDrawable() == null
+                    && widgetCell.getAppWidgetHostViewPreview() == null) {
+                // The widget preview hasn't been loaded; so, we abort the drag.
+                return false;
+            }
+
+            final AppWidgetProviderInfo info = widgetCell.getWidgetItem().widgetInfo;
+            if (info == null || info.provider == null) {
+                return false;
+            }
+
+            ClipData clipData = new ClipData(
+                    new ClipDescription(
+                            /* label= */ "", // not displayed anywhere; so, set to empty.
+                            new String[]{MIMETYPE_TEXT_INTENT}
+                    ),
+                    new ClipData.Item(new Intent()
+                            .putExtra(Intent.EXTRA_USER, info.getProfile())
+                            .putExtra(Intent.EXTRA_COMPONENT_NAME, info.provider))
+            );
+
+            // Set result indicating activity was closed due a widget being dragged.
+            setResult(RESULT_OK, new Intent()
+                    .putExtra(EXTRA_IS_PENDING_WIDGET_DRAG, true));
+
+            // DRAG_FLAG_GLOBAL permits dragging data beyond app window.
+            return view.startDragAndDrop(
+                    clipData,
+                    new View.DragShadowBuilder(view),
+                    /* myLocalState= */ null,
+                    View.DRAG_FLAG_GLOBAL
+            );
         };
     }
 
