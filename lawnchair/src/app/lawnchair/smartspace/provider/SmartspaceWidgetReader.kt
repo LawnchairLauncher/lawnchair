@@ -3,12 +3,12 @@ package app.lawnchair.smartspace.provider
 import android.app.Activity
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Icon
-import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -120,6 +120,9 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
         val weatherData = parseWeatherData(
             weatherIcon, temperature, pendingIntent,
         ) ?: return null
+        val intent = Intent().apply {
+            component = WEATHER_COMPONENT
+        }
         return SmartspaceTarget(
             id = "smartspaceWidgetWeather",
             headerAction = SmartspaceAction(
@@ -128,7 +131,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                 title = "",
                 subtitle = weatherData.getTitle(),
                 pendingIntent = weatherData.pendingIntent,
-                intent = Intent(Intent.ACTION_VIEW, Uri.parse(weatherData.forecastUrl)),
+                intent = intent,
             ),
             score = SmartspaceScores.SCORE_WEATHER,
             featureType = SmartspaceTarget.FeatureType.FEATURE_WEATHER,
@@ -155,6 +158,8 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
     companion object {
         private const val GSA_PACKAGE = "com.google.android.googlequicksearchbox"
         private const val WIDGET_CLASS_NAME = "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
+        private const val GSA_WEATHER = "com.google.android.apps.search.weather.WeatherExportedActivity"
+        private val WEATHER_COMPONENT = ComponentName(GSA_PACKAGE, GSA_WEATHER)
 
         private val dummyTarget = SmartspaceTarget(
             id = "dummyTarget",
