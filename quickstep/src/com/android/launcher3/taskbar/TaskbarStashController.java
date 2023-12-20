@@ -21,7 +21,9 @@ import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.FINAL_FRAME;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
+import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_SHOW;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
@@ -57,6 +59,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
@@ -930,19 +933,27 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /**
-     * We stash when IME or IME switcher is showing AND NOT
-     *  * in small screen AND
-     *  * 3 button nav AND
-     *  * landscape (or seascape)
-     * We do not stash if taskbar is transient or hardware keyboard is active.
+     * We stash when IME or IME switcher is showing.
+     *
+     * <p>Do not stash if in small screen, with 3 button nav, and in landscape (or seascape).
+     * <p>Do not stash if taskbar is transient.
+     * <p>Do not stash if hardware keyboard is attached and taskbar is pinned.
      */
     private boolean shouldStashForIme() {
-        if (DisplayController.isTransientTaskbar(mActivity) || mActivity.isHardwareKeyboard()) {
+        if (DisplayController.isTransientTaskbar(mActivity)) {
             return false;
         }
-        return (mIsImeShowing || mIsImeSwitcherShowing) &&
-                !(mActivity.isPhoneMode() && mActivity.isThreeButtonNav()
-                        && mActivity.getDeviceProfile().isLandscape);
+        // Do not stash if in small screen, with 3 button nav, and in landscape.
+        if (mActivity.isPhoneMode() && mActivity.isThreeButtonNav()
+                && mActivity.getDeviceProfile().isLandscape) {
+            return false;
+        }
+        // Do not stash if pinned taskbar and hardware keyboard is attached.
+        if (mActivity.isHardwareKeyboard() && enableTaskbarPinning()
+                && LauncherPrefs.get(mActivity).get(TASKBAR_PINNING)) {
+            return false;
+        }
+        return mIsImeShowing || mIsImeSwitcherShowing;
     }
 
     /**
