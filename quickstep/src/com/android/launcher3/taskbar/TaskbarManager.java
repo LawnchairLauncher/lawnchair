@@ -71,7 +71,6 @@ import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
-import com.android.wm.shell.Flags;
 
 import java.io.PrintWriter;
 import java.util.StringJoiner;
@@ -329,7 +328,10 @@ public class TaskbarManager {
             return;
         }
 
-        if (mActivity != null && mActivity.isResumed() && !mActivity.isInState(OVERVIEW)) {
+        if (mActivity != null
+                && mActivity.isResumed()
+                && !mActivity.isInState(OVERVIEW)
+                && !(mActivity instanceof QuickstepLauncher l && l.areFreeformTasksVisible())) {
             mContext.startActivity(homeAllAppsIntent);
             return;
         }
