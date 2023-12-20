@@ -94,6 +94,19 @@ public abstract class UserProfileManager {
         return mCurrentState;
     }
 
+    /** Returns if user profile is enabled. */
+    public boolean isEnabled() {
+        return mCurrentState == STATE_ENABLED;
+    }
+
+    /** Returns the UserHandle corresponding to the profile type, null in case no matches found. */
+    public UserHandle getProfileUser() {
+        return mUserCache.getUserProfiles().stream()
+                .filter(getUserMatcher())
+                .findAny()
+                .orElse(null);
+    }
+
     /** Logs Event to StatsLogManager. */
     protected void logEvents(StatsLogManager.EventEnum event) {
         mStatsLogManager.logger().log(event);
