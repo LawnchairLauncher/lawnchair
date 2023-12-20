@@ -41,6 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CheckLongPressHelper;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -103,6 +104,9 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         mLongPressHelper = new CheckLongPressHelper(this, this);
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
+        if (Flags.enableFocusOutline()) {
+            setDefaultFocusHighlightEnabled(false);
+        }
 
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);

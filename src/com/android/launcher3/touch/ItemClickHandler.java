@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -58,8 +59,8 @@ import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.Snackbar;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -207,7 +208,8 @@ public class ItemClickHandler {
                 }
             }
             // Fallback to using custom market intent.
-            Intent intent = new PackageManagerHelper(launcher).getMarketIntent(packageName);
+            Intent intent = ApiWrapper.getAppMarketActivityIntent(launcher,
+                    packageName, Process.myUserHandle());
             launcher.startActivitySafely(v, intent, item);
         };
 
@@ -344,8 +346,8 @@ public class ItemClickHandler {
                 && (((ItemInfoWithIcon) item).runtimeStatusFlags
                 & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
             ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
-            intent = new PackageManagerHelper(launcher)
-                    .getMarketIntent(appInfo.getTargetComponent().getPackageName());
+            intent = ApiWrapper.getAppMarketActivityIntent(launcher,
+                    appInfo.getTargetComponent().getPackageName(), Process.myUserHandle());
         } else {
             intent = item.getIntent();
         }

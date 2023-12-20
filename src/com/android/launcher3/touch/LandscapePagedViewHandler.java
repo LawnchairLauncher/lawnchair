@@ -543,15 +543,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
         secondarySnapshotWidth = parentWidth;
         secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
-        secondarySnapshot.setTranslationY(0);
-        primarySnapshot.setTranslationY(secondarySnapshotHeight + spaceAboveSnapshot + dividerBar);
+
+        int translationY = primarySnapshotHeight + spaceAboveSnapshot + dividerBar;
+        primarySnapshot.setTranslationY(spaceAboveSnapshot);
+        secondarySnapshot.setTranslationY(translationY - spaceAboveSnapshot);
+
         primarySnapshot.measure(
                 View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY));
+                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY)
+        );
         secondarySnapshot.measure(
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
-                        View.MeasureSpec.EXACTLY));
+                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight, View.MeasureSpec.EXACTLY)
+        );
     }
 
     @Override

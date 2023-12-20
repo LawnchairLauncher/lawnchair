@@ -644,7 +644,7 @@ public class QuickstepLauncher extends Launcher {
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     boolean taskWasFound = foundTask != null;
                     splitSelectSource.alreadyRunningTaskId = taskWasFound
                             ? foundTask.key.id

@@ -105,7 +105,7 @@ import com.android.wm.shell.splitscreen.ISplitSelectListener;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -225,14 +225,14 @@ public class SplitSelectStateController {
      *                           tasks (i.e. searching for a running pair of tasks.)
      */
     public void findLastActiveTasksAndRunCallback(@Nullable List<ComponentKey> componentKeys,
-            boolean findExactPairMatch, Consumer<List<Task>> callback) {
+            boolean findExactPairMatch, Consumer<Task[]> callback) {
         mRecentTasksModel.getTasks(taskGroups -> {
             if (componentKeys == null || componentKeys.isEmpty()) {
-                callback.accept(Collections.emptyList());
+                callback.accept(new Task[]{});
                 return;
             }
 
-            List<Task> lastActiveTasks = new ArrayList<>();
+            Task[] lastActiveTasks = new Task[componentKeys.size()];
 
             if (findExactPairMatch) {
                 // Loop through tasks in reverse, since they are ordered with most-recent tasks last
@@ -240,32 +240,35 @@ public class SplitSelectStateController {
                     GroupTask groupTask = taskGroups.get(i);
                     if (isInstanceOfAppPair(
                             groupTask, componentKeys.get(0), componentKeys.get(1))) {
-                        lastActiveTasks.add(groupTask.task1);
+                        lastActiveTasks[0] = groupTask.task1;
                         break;
                     }
                 }
             } else {
                 // For each key we are looking for, add to lastActiveTasks with the corresponding
                 // Task (or do nothing if not found).
-                for (ComponentKey key : componentKeys) {
+                for (int i = 0; i < componentKeys.size(); i++) {
+                    ComponentKey key = componentKeys.get(i);
                     Task lastActiveTask = null;
                     // Loop through tasks in reverse, since they are ordered with recent tasks last
-                    for (int i = taskGroups.size() - 1; i >= 0; i--) {
-                        GroupTask groupTask = taskGroups.get(i);
+                    for (int j = taskGroups.size() - 1; j >= 0; j--) {
+                        GroupTask groupTask = taskGroups.get(j);
                         Task task1 = groupTask.task1;
                         // Don't add duplicate Tasks
-                        if (isInstanceOfComponent(task1, key) && !lastActiveTasks.contains(task1)) {
+                        if (isInstanceOfComponent(task1, key)
+                                && !Arrays.asList(lastActiveTasks).contains(task1)) {
                             lastActiveTask = task1;
                             break;
                         }
                         Task task2 = groupTask.task2;
-                        if (isInstanceOfComponent(task2, key) && !lastActiveTasks.contains(task2)) {
+                        if (isInstanceOfComponent(task2, key)
+                                && !Arrays.asList(lastActiveTasks).contains(task2)) {
                             lastActiveTask = task2;
                             break;
                         }
                     }
 
-                    lastActiveTasks.add(lastActiveTask);
+                    lastActiveTasks[i] = lastActiveTask;
                 }
             }
 

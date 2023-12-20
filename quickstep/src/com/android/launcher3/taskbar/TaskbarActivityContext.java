@@ -107,6 +107,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
@@ -1056,9 +1057,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         } else if (info.isPromise()) {
                             TestLogging.recordEvent(
                                     TestProtocol.SEQUENCE_MAIN, "start: taskbarPromiseIcon");
-                            intent = new PackageManagerHelper(this)
-                                    .getMarketIntent(info.getTargetPackage())
-                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent = ApiWrapper.getAppMarketActivityIntent(this,
+                                    info.getTargetPackage(), Process.myUserHandle());
                             startActivity(intent);
 
                         } else if (info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
@@ -1144,7 +1144,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 componentKeys,
                 findExactPairMatch,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         if (foundTaskView != null
