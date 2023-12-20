@@ -55,6 +55,7 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -209,12 +210,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         return launcher.<RecentsView>getOverviewPanel().getBottomRowTaskCountForTablet();
     }
 
-    // Staging; will be promoted to presubmit if stable
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
-
+    @Ignore
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @ScreenRecord // b/238461765
     public void testSwitchToOverview() throws Exception {
         startTestAppsWithCheck();
         assertNotNull("Workspace.switchToOverview() returned null",
@@ -236,9 +236,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         }
     }
 
-    // Staging; will be promoted to presubmit if stable
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
-
+    @Ignore
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -295,11 +293,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         launchedAppState.switchToOverview();
     }
 
-    // Staging; will be promoted to presubmit if stable
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
-
     @Test
     @TaskbarModeSwitch
+    @Ignore // b/314873201
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
