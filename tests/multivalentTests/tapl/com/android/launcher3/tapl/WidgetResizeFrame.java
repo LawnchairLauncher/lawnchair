@@ -57,7 +57,8 @@ public class WidgetResizeFrame {
             Rect originalWidgetSize = widget.getVisibleBounds();
             Point targetStart = bottomResizeHandle.getVisibleCenter();
             Point targetDest = bottomResizeHandle.getVisibleCenter();
-            targetDest.offset(0, originalWidgetSize.height());
+            targetDest.offset(0,
+                    originalWidgetSize.height() + mLauncher.getCellLayoutBoarderHeight());
 
             final long downTime = SystemClock.uptimeMillis();
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetStart,
