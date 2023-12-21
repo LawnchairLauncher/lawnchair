@@ -33,7 +33,16 @@ import org.junit.runner.RunWith;
 public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
 
     private enum TestSurface {
-        HOME, LAUNCHED_APP, HOME_ALL_APPS, WIDGETS,
+        HOME(true),
+        LAUNCHED_APP(false),
+        HOME_ALL_APPS(true),
+        WIDGETS(true);
+
+        private final boolean mInitialFocusAtZero;
+
+        TestSurface(boolean initialFocusAtZero) {
+            mInitialFocusAtZero = initialFocusAtZero;
+        }
     }
 
     private enum TestCase {
@@ -172,13 +181,22 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
                 kqs.dismiss();
                 break;
             case LAUNCH_LAST_APP:
-                kqs.launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
+                kqs.launchFocusedAppTask(testSurface.mInitialFocusAtZero
+                        ? getAppPackageName() : CALCULATOR_APP_PACKAGE);
                 break;
             case LAUNCH_SELECTED_APP:
-                kqs.moveFocusForward().launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
+                kqs.moveFocusForward();
+                if (testSurface.mInitialFocusAtZero) {
+                    kqs.moveFocusForward();
+                }
+                kqs.launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
                 break;
             case LAUNCH_OVERVIEW:
-                kqs.moveFocusBackward().moveFocusBackward().launchFocusedOverviewTask();
+                kqs.moveFocusBackward();
+                if (!testSurface.mInitialFocusAtZero) {
+                    kqs.moveFocusBackward();
+                }
+                kqs.launchFocusedOverviewTask();
                 break;
             default:
                 throw new IllegalStateException("Cannot run test case: " + testCase);

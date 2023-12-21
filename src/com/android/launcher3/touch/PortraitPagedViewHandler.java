@@ -745,7 +745,8 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             secondaryIconParams.setMarginStart(primaryIconParams.getMarginStart());
             if (deviceProfile.isLeftRightSplit) {
                 if (isRtl) {
-                    primaryIconView.setTranslationX(-primarySnapshotWidth);
+                    int secondarySnapshotWidth = groupedTaskViewWidth - primarySnapshotWidth;
+                    primaryIconView.setTranslationX(-secondarySnapshotWidth);
                 } else {
                     secondaryIconView.setTranslationX(primarySnapshotWidth);
                 }

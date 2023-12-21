@@ -789,14 +789,16 @@ public class DeviceProfile {
      * width of the hotseat.
      */
     private int calculateQsbWidth(int hotseatBorderSpace) {
+        int iconExtraSpacePx = iconSizePx - getIconVisibleSizePx(iconSizePx);
         if (isQsbInline) {
             int columns = getPanelCount() * inv.numColumns;
             return getIconToIconWidthForColumns(columns)
                     - iconSizePx * numShownHotseatIcons
-                    - hotseatBorderSpace * numShownHotseatIcons;
+                    - hotseatBorderSpace * numShownHotseatIcons
+                    - iconExtraSpacePx;
         } else {
             int columns = inv.hotseatColumnSpan[mTypeIndex];
-            return getIconToIconWidthForColumns(columns);
+            return getIconToIconWidthForColumns(columns) - iconExtraSpacePx;
         }
     }
 
@@ -1074,11 +1076,8 @@ public class DeviceProfile {
     }
 
     private int getNormalizedIconDrawablePadding(int iconSizePx, int iconDrawablePadding) {
-        // TODO(b/235886078): workaround needed because of this bug
-        // Icons are 10% larger on XML than their visual size,
-        // so remove that extra space to get labels closer to the correct padding
-        int iconVisibleSizePx = Math.round(ICON_VISIBLE_AREA_FACTOR * iconSizePx);
-        return Math.max(0, iconDrawablePadding - ((iconSizePx - iconVisibleSizePx) / 2));
+        return Math.max(0, iconDrawablePadding
+                - ((iconSizePx - getIconVisibleSizePx(iconSizePx)) / 2));
     }
 
     private int getNormalizedIconDrawablePadding() {
@@ -1091,8 +1090,7 @@ public class DeviceProfile {
         // so remove that extra space to get labels closer to the correct padding
         int drawablePadding = (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3;
 
-        int iconVisibleSizePx = Math.round(ICON_VISIBLE_AREA_FACTOR * folderChildIconSizePx);
-        int iconSizeDiff = folderChildIconSizePx - iconVisibleSizePx;
+        int iconSizeDiff = folderChildIconSizePx - getIconVisibleSizePx(folderChildIconSizePx);
         return Math.max(0, drawablePadding - iconSizeDiff / 2);
     }
 
@@ -1788,7 +1786,8 @@ public class DeviceProfile {
             }
 
         } else if (mIsScalableGrid) {
-            int sideSpacing = (availableWidthPx - hotseatQsbWidth) / 2;
+            int iconExtraSpacePx = iconSizePx - getIconVisibleSizePx(iconSizePx);
+            int sideSpacing = (availableWidthPx - (hotseatQsbWidth + iconExtraSpacePx)) / 2;
             hotseatBarPadding.set(sideSpacing,
                     0,
                     sideSpacing,
@@ -1827,11 +1826,22 @@ public class DeviceProfile {
                 availableWidthPx - allAppsSpacing,
                 0 /* borderSpace */,
                 numShownAllAppsColumns);
-        int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * allAppsIconSizePx);
-        int iconAlignmentMargin = (cellWidth - iconVisibleSize) / 2;
+        int iconAlignmentMargin = (cellWidth - getIconVisibleSizePx(allAppsIconSizePx)) / 2;
 
         return (Utilities.isRtl(context.getResources()) ? allAppsPadding.right
                 : allAppsPadding.left) + iconAlignmentMargin;
+    }
+
+    /**
+     * TODO(b/235886078): workaround needed because of this bug
+     * Icons are 10% larger on XML than their visual size, so remove that extra space to get
+     * some dimensions correct.
+     *
+     * When this bug is resolved this method will no longer be needed and we would be able to
+     * replace all instances where this method is called with iconSizePx.
+     */
+    private int getIconVisibleSizePx(int iconSizePx) {
+        return Math.round(ICON_VISIBLE_AREA_FACTOR * iconSizePx);
     }
 
     private int getAdditionalQsbSpace() {

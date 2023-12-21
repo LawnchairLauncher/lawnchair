@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
+public class TaplTestsLauncher3Test extends AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {

@@ -51,7 +51,7 @@ import java.util.Map;
  * Test runs in Out of process (Oop) and In process (Ipc)
  * Test the behaviour of uninstalling and removing apps both from AllApps, Workspace and Hotseat.
  */
-public class TaplUninstallRemove extends AbstractLauncherUiTest {
+public class TaplUninstallRemoveTest extends AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {

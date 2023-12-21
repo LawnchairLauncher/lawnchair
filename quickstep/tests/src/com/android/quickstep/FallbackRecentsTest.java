@@ -28,7 +28,7 @@ import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT
 import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startAppFast;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startTestActivity;
-import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.launcher3.ui.TaplTestsLauncher3Test.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
@@ -223,6 +223,10 @@ public class FallbackRecentsTest {
 
     private void pressHomeAndWaitForOverviewClose() {
         mDevice.pressHome();
+        waitForRecentsActivityStop();
+    }
+
+    private void waitForRecentsActivityStop() {
         Wait.atMost("Recents activity didn't stop",
                 () -> getFromRecents(recents -> !recents.isStarted()),
                 DEFAULT_UI_TIMEOUT, mLauncher);
@@ -276,6 +280,7 @@ public class FallbackRecentsTest {
 
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
+        waitForRecentsActivityStop(); // dismissAllTasks() will close Recents
         assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
     }
