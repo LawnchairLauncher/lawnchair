@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_TOP_LEFT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_TOP_RIGHT;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
@@ -61,7 +62,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     public static final int VIEW_TYPE_WORK_EDU_CARD = 1 << 4;
     public static final int VIEW_TYPE_WORK_DISABLED_CARD = 1 << 5;
     public static final int VIEW_TYPE_PRIVATE_SPACE_HEADER = 1 << 6;
-    public static final int NEXT_ID = 7;
+    public static final int VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER = 1 << 7;
+    public static final int NEXT_ID = 8;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -69,6 +71,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
     public static final int VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER =
             VIEW_TYPE_PRIVATE_SPACE_HEADER;
+    public static final int VIEW_TYPE_MASK_PRIVATE_SPACE_SYS_APPS_DIVIDER =
+            VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
 
     protected final SearchAdapterProvider<?> mAdapterProvider;
 
@@ -199,6 +203,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         return isViewType(viewType, VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER);
     }
 
+    /** Checks if the passed viewType represents private space system apps divider. */
+    public static boolean isPrivateSpaceSysAppsDividerView(int viewType) {
+        return isViewType(viewType, VIEW_TYPE_MASK_PRIVATE_SPACE_SYS_APPS_DIVIDER);
+    }
+
     public void setIconFocusListener(OnFocusChangeListener focusListener) {
         mIconFocusListener = focusListener;
     }
@@ -227,9 +236,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
-            case VIEW_TYPE_ALL_APPS_DIVIDER:
+            case VIEW_TYPE_ALL_APPS_DIVIDER, VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
+                        R.layout.private_space_divider, parent, false));
             case VIEW_TYPE_WORK_EDU_CARD:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.work_apps_edu, parent, false));
@@ -281,6 +290,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 adapterItem.decorationInfo =
                         new SectionDecorationInfo(mActivityContext, roundRegions,
                                 false /* decorateTogether */);
+                break;
+            case VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER:
+                adapterItem = mApps.getAdapterItems().get(position);
+                adapterItem.decorationInfo = new SectionDecorationInfo(mActivityContext,
+                        ROUND_NOTHING, true /* decorateTogether */);
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
             case VIEW_TYPE_WORK_DISABLED_CARD:
