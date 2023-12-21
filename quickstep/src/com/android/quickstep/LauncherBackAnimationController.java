@@ -287,7 +287,7 @@ public class LauncherBackAnimationController {
         mBackInProgress = true;
         RemoteAnimationTarget appTarget = backEvent.getDepartingAnimationTarget();
 
-        if (appTarget == null) {
+        if (appTarget == null || appTarget.leash == null || !appTarget.leash.isValid()) {
             return;
         }
 
