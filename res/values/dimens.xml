@@ -155,6 +155,7 @@
     <dimen name="work_edu_card_margin">16dp</dimen>
     <dimen name="work_edu_card_radius">16dp</dimen>
     <dimen name="work_edu_card_bottom_margin">26dp</dimen>
+    <dimen name="work_edu_card_text_end_margin">32dp</dimen>
     <dimen name="work_apps_paused_button_stroke">1dp</dimen>
 
     <dimen name="work_card_margin">24dp</dimen>
