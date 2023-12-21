@@ -105,6 +105,13 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    protected boolean isInOverview() {
+        TopTaskTracker.CachedTaskInfo topTask = TopTaskTracker.INSTANCE
+                .get(mControllers.taskbarActivityContext).getCachedTopTask(true);
+        return topTask.isRecentsTask();
+    }
+
+    @Override
     public RecentsView getRecentsView() {
         return mRecentsActivity.getOverviewPanel();
     }
