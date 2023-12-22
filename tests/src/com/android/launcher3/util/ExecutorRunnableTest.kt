@@ -16,7 +16,7 @@
 
 package com.android.launcher3.util
 
-import android.testing.AndroidTestingRunner
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.util.rule.TestStabilityRule
 import java.util.concurrent.ExecutorService
@@ -30,7 +30,7 @@ import org.junit.runner.RunWith
 
 /** Unit test for [ExecutorRunnable] */
 @SmallTest
-@RunWith(AndroidTestingRunner::class)
+@RunWith(AndroidJUnit4::class)
 class ExecutorRunnableTest {
 
     private lateinit var underTest: ExecutorRunnable<Int>
