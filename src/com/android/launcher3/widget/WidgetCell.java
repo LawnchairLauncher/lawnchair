@@ -256,7 +256,7 @@ public class WidgetCell extends LinearLayout {
             // LauncherAppWidgetHostView,
             // which supports applying local color extraction during drag & drop.
             mAppWidgetHostViewPreview = isLauncherContext(context)
-                    ? new LauncherAppWidgetHostView(context)
+                    ? new LawnchairAppWidgetHostView(context)
                     : createAppWidgetHostView(context);
             LauncherAppWidgetProviderInfo providerInfo = fromProviderInfo(context, item.widgetInfo.clone());
             // A hack to force the initial layout to be the preview layout since there is no
