@@ -76,6 +76,9 @@ import org.xmlpull.v1.XmlPullParser;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import app.lawnchair.LawnchairApp;
+import app.lawnchair.LawnchairAppKt;
+
 /**
  * Utility class which maintains an instance of Launcher database and provides
  * utility methods
@@ -105,6 +108,12 @@ public class ModelDbController {
     protected DatabaseHelper createDatabaseHelper(boolean forMigration) {
         boolean isSandbox = mContext instanceof SandboxContext;
         String dbName = isSandbox ? null : InvariantDeviceProfile.INSTANCE.get(mContext).dbFile;
+
+        if (!forMigration) {
+            LawnchairApp app = LawnchairAppKt.getLawnchairApp(mContext);
+            app.renameRestoredDb(dbName);
+            app.migrateDbName(dbName);
+        }
 
         // Set the flag for empty DB
         Runnable onEmptyDbCreateCallback = forMigration ? () -> {
