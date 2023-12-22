@@ -301,6 +301,10 @@ public class TouchInteractionService extends Service {
         @Override
         public void onNavigationBarSurface(SurfaceControl surface) {
             // TODO: implement
+            if (surface != null) {
+                surface.release();
+                surface = null;
+            }
         }
 
         @BinderThread
