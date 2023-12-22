@@ -49,6 +49,8 @@ import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.function.IntConsumer;
 
+import app.lawnchair.LawnchairAppWidgetHostView;
+
 /**
  * A wrapper for LauncherAppWidgetHost. This class is created so the AppWidgetHost could run in
  * background.
@@ -361,7 +363,7 @@ public class LauncherWidgetHolder {
     public AppWidgetHostView createView(@NonNull Context context, int appWidgetId,
             @NonNull LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget()) {
-            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
+            LauncherAppWidgetHostView lahv = new LawnchairAppWidgetHostView(context);
             lahv.setAppWidget(0, appWidget);
             CustomWidgetManager.INSTANCE.get(context).onViewCreated(lahv);
             return lahv;
@@ -441,7 +443,7 @@ public class LauncherWidgetHolder {
             // already added the former to the workspace.
             view = mDeferredViews.get(appWidgetId);
         } else {
-            view = new LauncherAppWidgetHostView(context);
+            view = new LawnchairAppWidgetHostView (context);
         }
         mViews.put(appWidgetId, view);
         return view;
