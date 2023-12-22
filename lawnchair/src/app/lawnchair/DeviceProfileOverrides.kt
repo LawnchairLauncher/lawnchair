@@ -115,12 +115,15 @@ class DeviceProfileOverrides(context: Context) {
     data class TextFactors(
         val iconTextSizeFactor: Float,
         val allAppsIconTextSizeFactor: Float,
+        val iconFolderTextSizeFactor: Float,
     ) {
         constructor(
             prefs2: PreferenceManager2,
         ) : this(
             enableIconText = prefs2.showIconLabelsOnHomeScreen.firstBlocking(),
             iconTextSizeFactor = prefs2.homeIconLabelSizeFactor.firstBlocking(),
+            enableIconTextFolder = prefs2.showIconLabelsOnHomeScreenFolder.firstBlocking(),
+            iconFolderTextSizeFactor = prefs2.homeIconLabelFolderSizeFactor.firstBlocking(),
             enableAllAppsIconText = prefs2.showIconLabelsInDrawer.firstBlocking(),
             allAppsIconTextSizeFactor = prefs2.drawerIconLabelSizeFactor.firstBlocking(),
         )
@@ -128,11 +131,14 @@ class DeviceProfileOverrides(context: Context) {
         constructor(
             enableIconText: Boolean,
             iconTextSizeFactor: Float,
+            enableIconTextFolder: Boolean,
+            iconFolderTextSizeFactor: Float,
             enableAllAppsIconText: Boolean,
             allAppsIconTextSizeFactor: Float,
         ) : this(
             iconTextSizeFactor = if (enableIconText) iconTextSizeFactor else 0f,
             allAppsIconTextSizeFactor = if (enableAllAppsIconText) allAppsIconTextSizeFactor else 0f,
+            iconFolderTextSizeFactor = if (enableIconTextFolder) iconFolderTextSizeFactor else 0f,
         )
     }
 

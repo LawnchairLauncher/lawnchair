@@ -24,6 +24,8 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
+import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
@@ -61,6 +63,23 @@ fun FolderPreferences() {
                 step = 1,
                 valueRange = 2..5,
             )
+        }
+
+        PreferenceGroup(heading = stringResource(id = R.string.icons)) {
+            val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreenFolder.getAdapter()
+            SwitchPreference(
+                adapter = homeScreenLabelsAdapter,
+                label = stringResource(id = R.string.show_home_labels),
+            )
+            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
+                SliderPreference(
+                    label = stringResource(id = R.string.label_size),
+                    adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
+                    step = 0.1f,
+                    valueRange = 0.5F..1.5F,
+                    showAsPercentage = true,
+                )
+            }
         }
     }
 }

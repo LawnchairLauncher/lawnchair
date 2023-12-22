@@ -1432,6 +1432,9 @@ public class DeviceProfile {
 
             folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
         }
+
+        folderLabelTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
+        folderChildTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
     }
 
     public void updateInsets(Rect insets) {
