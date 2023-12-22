@@ -206,8 +206,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     }
                 }
 
-                RemoteAnimationTarget[] nonAppTargets = SystemUiProxy.INSTANCE.get(mCtx)
-                        .onStartingSplitLegacy(appearedTaskTargets);
+                RemoteAnimationTarget[] nonAppTargets = ENABLE_SHELL_TRANSITIONS
+                        ? null : SystemUiProxy.INSTANCE.get(mCtx).onStartingSplitLegacy(
+                                appearedTaskTargets);
                 if (nonAppTargets == null) {
                     nonAppTargets = new RemoteAnimationTarget[0];
                 }
