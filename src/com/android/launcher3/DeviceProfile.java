@@ -540,7 +540,7 @@ public class DeviceProfile {
         }
 
         // Have a little space between the inset and the QSB
-        if (isQsbEnable && mInsets.bottom + minQsbMargin > hotseatBarBottomSpace) {
+        if (!isQsbEnable && mInsets.bottom + minQsbMargin > hotseatBarBottomSpace) {
             int availableSpace = hotseatQsbSpace - (mInsets.bottom - hotseatBarBottomSpace);
 
             // Only change the spaces if there is space
