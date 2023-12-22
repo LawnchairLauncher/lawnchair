@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class SystemIconPack(context: Context) : IconPack(context, "") {
+class SystemIconPack(context: Context, pkg: String) : IconPack(context, pkg) {
 
     override val label = context.getString(R.string.system_icons)
     private val appMap = run {
