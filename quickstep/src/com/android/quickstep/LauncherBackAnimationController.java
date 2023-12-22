@@ -103,8 +103,6 @@ public class LauncherBackAnimationController {
     private final RectF mCurrentRect = new RectF();
     private final QuickstepLauncher mLauncher;
     private final int mWindowScaleMarginX;
-    /** Max window translation in the Y axis. */
-    private final int mWindowMaxDeltaY;
     private float mWindowScaleEndCornerRadius;
     private float mWindowScaleStartCornerRadius;
     private final Interpolator mCancelInterpolator;
@@ -113,14 +111,14 @@ public class LauncherBackAnimationController {
 
     private RemoteAnimationTarget mBackTarget;
     private View mLauncherTargetView;
-    private SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
+    private final SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
     private boolean mSpringAnimationInProgress = false;
     private boolean mAnimatorSetInProgress = false;
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
     private OnBackInvokedCallbackStub mBackCallback;
     private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
-    private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
+    private final BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
     private SurfaceControl mScrimLayer;
     private ValueAnimator mScrimAlphaAnimator;
     private float mScrimAlpha;
@@ -144,8 +142,6 @@ public class LauncherBackAnimationController {
         loadCornerRadius();
         mWindowScaleMarginX = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_scale_x_margin);
-        mWindowMaxDeltaY = mLauncher.getResources().getDimensionPixelSize(
-                R.dimen.swipe_back_window_max_delta_y);
         mCancelInterpolator =
                 AnimationUtils.loadInterpolator(mLauncher, R.interpolator.standard_interpolator);
     }
