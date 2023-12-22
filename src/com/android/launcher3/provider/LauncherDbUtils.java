@@ -178,8 +178,8 @@ public class LauncherDbUtils {
         removeColumn(db, Favorites.TABLE_NAME, "iconResource");
 
         // Drop the unused columns
-        db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconPackage;");
-        db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconResource;");
+//        db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconPackage;");
+//        db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconResource;");
     }
 
     /**
