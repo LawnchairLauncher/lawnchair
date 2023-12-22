@@ -109,10 +109,14 @@ public class ModelDbController {
         boolean isSandbox = mContext instanceof SandboxContext;
         String dbName = isSandbox ? null : InvariantDeviceProfile.INSTANCE.get(mContext).dbFile;
 
-        if (!forMigration) {
-            LawnchairApp app = LawnchairAppKt.getLawnchairApp(mContext);
-            app.renameRestoredDb(dbName);
-            app.migrateDbName(dbName);
+        try {
+            if (!forMigration && dbName != null) {
+                LawnchairApp app = LawnchairAppKt.getLawnchairApp(mContext);
+                app.renameRestoredDb(dbName);
+                app.migrateDbName(dbName);
+            }
+        } catch (Throwable t) {
+            // ignore
         }
 
         // Set the flag for empty DB
