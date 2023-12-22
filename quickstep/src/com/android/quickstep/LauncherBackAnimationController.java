@@ -287,7 +287,7 @@ public class LauncherBackAnimationController {
         mBackInProgress = true;
         RemoteAnimationTarget appTarget = backEvent.getDepartingAnimationTarget();
 
-        if (appTarget == null) {
+        if (appTarget == null || appTarget.leash == null || !appTarget.leash.isValid()) {
             return;
         }
 
@@ -456,6 +456,7 @@ public class LauncherBackAnimationController {
                     mBackInProgress /* fromPredictiveBack */);
         startTransitionAnimations(pair.first, pair.second);
         mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
+        customizeStatusBarAppearance(true);
     }
 
     private void finishAnimation() {

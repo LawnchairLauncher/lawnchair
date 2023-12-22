@@ -149,6 +149,11 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_REFRESH_OVERVIEW_TARGET:
                 runOnTISBinder(TouchInteractionService.TISBinder::refreshOverviewTarget);
                 return response;
+
+            case TestProtocol.REQUEST_RECREATE_TASKBAR:
+                // Allow null-pointer to catch illegal states.
+                runOnTISBinder(tisBinder -> tisBinder.getTaskbarManager().recreateTaskbar());
+                return response;
         }
 
         return super.call(method, arg, extras);
