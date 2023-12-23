@@ -42,13 +42,14 @@
 -keep class app.lawnchair.LawnchairApp { *; }
 -keep class app.lawnchair.LawnchairLauncher { *; }
 -keep class app.lawnchair.compatlib.** { *; }
+
 -keep class com.google.protobuf.Timestamp { *; }
+
 # TODO: Remove this after the change in https://github.com/ChickenHook/RestrictionBypass/pull/9 has been released.
 -keep class org.chickenhook.restrictionbypass.** { *; }
--keep class androidx.compose.runtime.** { *; }
 
-# systemUIPluginCore
--keepattributes RuntimeVisible*Annotation*,AnnotationDefault
--keep interface com.android.systemui.plugins.annotations.** { *; }
--keep class com.android.systemui.plugins.BcSmartspaceDataPlugin$** { *; }
--keep,allowshrinking,allowoptimization,allowobfuscation,allowaccessmodification @com.android.systemui.plugins.annotations.** class *
+# TODO: These rules could be removed after Retrofit 2.10.0 released.
+# https://github.com/square/retrofit/blob/ef8d867ffb34b419355a323e11ba89db1904f8c2/retrofit/src/main/resources/META-INF/proguard/retrofit2.pro#L38-L45
+-if interface * { @retrofit2.http.* public *** *(...); }
+-keep,allowoptimization,allowshrinking,allowobfuscation class <3>
+-keep,allowoptimization,allowshrinking,allowobfuscation class kotlin.coroutines.Continuation
