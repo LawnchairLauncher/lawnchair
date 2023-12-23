@@ -176,7 +176,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hiddenApps = preference(
         key = stringSetPreferencesKey(name = "hidden_apps"),
         defaultValue = setOf(),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val roundedWidgets = preference(
@@ -221,13 +221,13 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val showHiddenAppsInSearch = preference(
         key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_hidden_apps_in_search),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val enableSmartHide = preference(
