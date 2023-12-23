@@ -83,6 +83,7 @@ public class TestStabilityRule implements TestRule {
 
     public static int getRunFlavor() {
         if (sRunFlavor != 0) return sRunFlavor;
+        if (isRobolectricTest()) return PLATFORM_POSTSUBMIT;
 
         final String flavorOverride = InstrumentationRegistry.getArguments().getString("flavor");
 
@@ -149,5 +150,9 @@ public class TestStabilityRule implements TestRule {
 
     public static boolean isPresubmit() {
         return getRunFlavor() == PLATFORM_PRESUBMIT;
+    }
+
+    public static boolean isRobolectricTest() {
+        return Build.FINGERPRINT.contains("robolectric");
     }
 }

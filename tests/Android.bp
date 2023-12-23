@@ -174,3 +174,77 @@ android_library {
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
  }
+
+filegroup {
+    name: "launcher-testing-helpers",
+    srcs: [
+      "src/**/*.java",
+      "src/**/*.kt",
+      "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
+      "tapl/com/android/launcher3/tapl/*.java",
+      "tapl/com/android/launcher3/tapl/*.kt",
+    ],
+    exclude_srcs: [
+        // Test classes
+        "src/**/*Test.java",
+        "src/**/*Test.kt",
+    ],
+}
+
+android_library {
+    name: "Launcher3Lib",
+    srcs: [
+        ":launcher-src",
+        ":launcher-src_shortcuts_overrides",
+        ":launcher-src_ui_overrides",
+    ],
+    static_libs: [
+        "Launcher3CommonDepsLib",
+    ],
+}
+
+android_robolectric_test {
+    enabled: true,
+    name: "Launcher3RoboTests",
+    srcs: [
+        "src/com/android/launcher3/util/*.java",
+        "src/com/android/launcher3/util/*.kt",
+
+        // Test util classes
+        ":launcher-testing-helpers",
+        ":launcher-testing-shared",
+    ],
+    exclude_srcs: [
+        "src/com/android/launcher3/util/CellContentDimensionsTest.kt", // Failing - b/316553889
+
+        // requires modification to work with inline mock maker
+        "src/com/android/launcher3/util/rule/StaticMockitoRule.java",
+
+        // requires kotlin mockito
+        "src/com/android/launcher3/util/LockedUserStateTest.kt",
+        "src/com/android/launcher3/util/DisplayControllerTest.kt",
+    ],
+    java_resource_dirs: ["config"],
+    static_libs: [
+        "flag-junit-base",
+        "com_android_launcher3_flags_lib",
+        "com_android_wm_shell_flags_lib",
+        "androidx.test.uiautomator_uiautomator",
+        "androidx.core_core-animation-testing",
+        "androidx.test.ext.junit",
+        "inline-mockito-robolectric-prebuilt",
+        "platform-parametric-runner-lib",
+        "testables",
+        "Launcher3TestResources",
+        "SystemUISharedLib",
+        "launcher-testing-shared",
+    ],
+    libs: [
+        "android.test.runner",
+        "android.test.base",
+        "android.test.mock",
+        "truth",
+    ],
+    instrumentation_for: "Launcher3",
+    upstream: true,
+}
