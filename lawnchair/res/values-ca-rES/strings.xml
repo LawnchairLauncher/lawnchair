@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Canal de notícies</string>
     <string name="minus_one_unavailable">No hi ha cap Feed instal·lat.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Default</string>
     <string name="wallpaper">Fons de pantalla</string>
     <string name="wallpaper_scrolling_label">Desplaçament de fons de pantalla</string>
     <string name="wallpaper_depth_effect_label">Efecte de profunditat del fons de pantalla</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Busqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Activar Dock</string>
     <string name="hotseat_mode_label">Widget de Barra de buscar</string>
     <string name="hotseat_mode_disabled">Desactivat</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">Aplicacions amagades</string>
     <string name="show_enable_smart_hide">Mostrar quan un nom complet està escrit</string>
     <string name="hide_hidden_apps_search">Amagar a la barra de cercar</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Carregar aplicacions en Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Carregar i mostrar icones en bulk en comptes d\'individualment carregar i mostrar icones</string>
     <string name="pref_category_search">Cerca</string>
     <string name="show_app_search_bar">Mostra la Barra de Cerca</string>
     <string name="pref_search_auto_show_keyboard">Mostrar teclat automàticament</string>
@@ -325,6 +330,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Aquests ajustaments seran ignorats, ja que Lawnchair no està configurat al proveïdor de recents.</string>
     <string name="translucent_background">Fons Translúcid</string>
     <string name="recents_actions_label">Accions ràpides</string>
     <!-- <string name="screenshot" /> (unknown source) -->

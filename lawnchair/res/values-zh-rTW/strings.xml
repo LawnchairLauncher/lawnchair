@@ -168,7 +168,9 @@
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Feed</string>
-    <string name="minus_one_unavailable">尚未安裝 Feed</string>
+    <string name="minus_one_unavailable">尚未安裝資訊頁提供服務。</string>
+    <string name="feed_provider">資訊頁內容</string>
+    <string name="feed_default">預設</string>
     <string name="wallpaper">桌布</string>
     <string name="wallpaper_scrolling_label">桌布隨頁面捲動</string>
     <string name="wallpaper_depth_effect_label">桌布景深效果</string>
@@ -182,7 +184,7 @@
     <!-- used in popup menu-->
     <string name="home_screen_locked">主畫面已鎖定。</string>
     <string name="popup_menu">彈出式選單</string>
-    <string name="home_screen_lock_toggle_from_home_popup">顯示鎖定按鈕</string>
+    <string name="home_screen_lock_toggle_from_home_popup">顯示鎖定桌面按鈕</string>
     <string name="show_system_settings_entry">顯示系統設定</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">顯示狀態列</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Google 搜尋</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">啟用底欄</string>
     <string name="hotseat_mode_label">搜尋列小工具</string>
     <string name="hotseat_mode_disabled">停用</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">隱藏的應用程式</string>
     <string name="show_enable_smart_hide">輸入全名時顯示</string>
     <string name="hide_hidden_apps_search">於搜尋結果中隱藏</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">批次處理應用程式</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">同時載入並顯示所有應用程式</string>
     <string name="pref_category_search">搜尋</string>
     <string name="show_app_search_bar">顯示搜尋列</string>
     <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
@@ -324,6 +329,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">尚未設定 Lawnchair 為預設 [最近使用的應用程式] 服務，這些設定將無法生效。</string>
     <string name="translucent_background">透明背景</string>
     <string name="recents_actions_label">快速操作</string>
     <!-- <string name="screenshot" /> (unknown source) -->

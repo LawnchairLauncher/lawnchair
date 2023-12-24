@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">ख़बर</string>
     <string name="minus_one_unavailable">कोई फ़ीड स्थापित नहीं है।</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Default</string>
     <string name="wallpaper">वॉलपेपर</string>
     <string name="wallpaper_scrolling_label">स्क्रॉल वॉलपेपर</string>
     <string name="wallpaper_depth_effect_label">वॉलपेपर गहराई प्रभाव</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">गूगल खोज</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">सर्च बार विजेट</string>
     <string name="hotseat_mode_disabled">अक्षम करें</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">छिपे हुए ऐप्स</string>
     <string name="show_enable_smart_hide">पूरा नाम टाईप होने पर दिखाएं</string>
     <string name="hide_hidden_apps_search">खोज परिणामों में छिपाएँ</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">खोजें</string>
     <string name="show_app_search_bar">खोज बार दिखाएँ</string>
     <string name="pref_search_auto_show_keyboard">स्वत: कीबोर्ड खोलें</string>
@@ -325,6 +330,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">धुंधला बैकग्राउंड</string>
     <string name="recents_actions_label">क्विक एक्शंस</string>
     <!-- <string name="screenshot" /> (unknown source) -->

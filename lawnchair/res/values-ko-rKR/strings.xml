@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">피드</string>
     <string name="minus_one_unavailable">피드를 이용할 수 없습니다.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Default</string>
     <string name="wallpaper">배경화면</string>
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
     <string name="wallpaper_depth_effect_label">배경 화면 깊이 효과</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">구글 검색</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">검색창 위젯</string>
     <string name="hotseat_mode_disabled">비활성화됨</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">숨겨진 앱</string>
     <string name="show_enable_smart_hide">전체 이름을 입력할 때 표시</string>
     <string name="hide_hidden_apps_search">검색 결과에서 숨기기</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">검색</string>
     <string name="show_app_search_bar">검색 창 활성화</string>
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
@@ -285,7 +290,7 @@
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Advanced Search</string>
     <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="pref_recent_suggestion_title">기록</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -324,6 +329,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">반투명 배경</string>
     <string name="recents_actions_label">빠른 바로가기</string>
     <!-- <string name="screenshot" /> (unknown source) -->
@@ -403,10 +409,10 @@
     <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
     <string name="all_apps_search_result_files">From your files</string>
     <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="warn_contact_permission_content">연락처 권한이 필요합니다</string>
+    <string name="warn_files_permission_content">저장소 권한이 필요합니다</string>
+    <string name="all_apps_search_result_files_description">미디어, 문서, 폴더 등</string>
+    <string name="all_apps_search_result_contacts_description">연락처 등</string>
     <string name="quickstep_incompatible">호환되지 않는 시스템 통합</string>
     <string name="quickstep_incompatible_description">기기가 %1$s에서 제공하는 시스템 제스처(Quickstep으로 알려져 있음)가 설정되어 있지만 %1$s의 이 버전은 Android 버전과 호환되지 않습니다. 장치를 계속 사용하려면 %1$s 업데이트를 제거하거나 시스템 제스처 공급자로 %1$s을(를) 비활성화하십시오.</string>
     <string name="delete">삭제</string>
