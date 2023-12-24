@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Fil</string>
     <string name="minus_one_unavailable">Aucun fil installé.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Par défaut</string>
     <string name="wallpaper">Fond d\'écran</string>
     <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="wallpaper_depth_effect_label">Effet de profondeur du fond d\'écran</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Recherche Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">Widget de barre de recherche</string>
     <string name="hotseat_mode_disabled">Désactivé</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">Applications Masquées</string>
     <string name="show_enable_smart_hide">Afficher quand le nom complet est saisi</string>
     <string name="hide_hidden_apps_search">Cacher dans les résultats de recherche</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">Rechercher</string>
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
     <string name="pref_search_auto_show_keyboard">Afficher automatiquement le clavier</string>
@@ -325,6 +330,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">Arrière-plan translucide</string>
     <string name="recents_actions_label">Actions rapides</string>
     <!-- <string name="screenshot" /> (unknown source) -->

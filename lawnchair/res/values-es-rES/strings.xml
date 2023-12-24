@@ -71,12 +71,12 @@
     <string name="show_notification_count">Mostrar contador de notificaciones</string>
     <string name="notification_dots_color">Color del punto de notificación</string>
     <string name="notification_dots_text_color">Color del contador de notificaciones</string>
-    <string name="notification_dots_color_contrast_warning_always">Advertencia: Los puntos de notificación y los contadores de colores no tienen suficiente contraste entre sí</string>
+    <string name="notification_dots_color_contrast_warning_always">Advertencia: Los puntos de notificación &amp; y los contadores de colores no tienen suficiente contraste entre sí</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Advertencia: Es posible que los colores de punto &amp; contador de notificaciones no siempre tengan suficiente contraste entre sí</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Se necesita acceso a las notificaciones</string>
     <string name="missing_notification_access_description">Se necesita acceso a las notificaciones.</string>
-    <string name="msg_missing_notification_access">Para usar los Puntos de notificación, concede acceso a las notificaciones a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">Para utilizar los puntos de notificación, permite que <xliff:g id="name" example="My App">%1$s</xliff:g> acceda a las notificaciones.</string>
     <string name="title_change_settings">Cambiar ajustes</string>
     <string name="colors">Colores</string>
     <string name="theme_label">Tema</string>
@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Predeterminado</string>
     <string name="wallpaper">Fondo de Pantalla</string>
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
     <string name="wallpaper_depth_effect_label">Efecto de profundidad del fondo de pantalla</string>
@@ -183,7 +185,7 @@
     <string name="home_screen_locked">La pantalla de inicio está bloqueada.</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo</string>
-    <string name="show_system_settings_entry">Mostrar entrada de ajustes del sistema</string>
+    <string name="show_system_settings_entry">Mostrar atajo a la configuración del sistema</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
     <string name="dark_status_bar_label">Barra de Estado Oscura</string>
@@ -216,7 +218,7 @@
     <string name="smartspace_widget_placeholder_date">Vie, 3 mar</string>
     <string name="preview_label">Vista previa</string>
     <string name="smartspace_calendar">Calendario</string>
-    <string name="smartspace_date_and_time">Fecha y hora</string>
+    <string name="smartspace_date_and_time">Fecha &amp; Hora</string>
     <string name="smartspace_date">Fecha</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_format">Formato de hora</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Búsqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">Widget de barra de búsqueda</string>
     <string name="hotseat_mode_disabled">Deshabilitado</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,27 +268,29 @@
     <string name="hidden_apps_label">Aplicaciones ocultas</string>
     <string name="show_enable_smart_hide">Mostrar cuando se escribe el nombre completo</string>
     <string name="hide_hidden_apps_search">Ocultar en los resultados de búsqueda</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">Buscar</string>
     <string name="show_app_search_bar">Mostrar Barra de Búsqueda</string>
     <string name="pref_search_auto_show_keyboard">Mostrar teclado automáticamente</string>
     <string name="fuzzy_search_title">Búsqueda Aproximada</string>
     <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
     <string name="max_search_result_count_title">Número máximo de resultados de la búsqueda</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">Número máximo de Contactos encontrado</string>
+    <string name="max_file_result_count_title">Número máximo de Documentos encontrados</string>
+    <string name="max_suggestion_result_count_title">Número máximo de Sugerencias en la búsqueda</string>
+    <string name="max_settings_entry_result_count_title">Número máximo de Ajustes encontrado</string>
+    <string name="max_recent_result_count_title">Número máximo de historial encontrado</string>
+    <string name="clear_history">Borrar</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Columnas del cajón de aplicaciones</string>
     <string name="row_height_label">Altura de fila</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="perform_wide_search_title">Buscar en el Dispositivo</string>
+    <string name="perform_wide_search_file">Archivos</string>
+    <string name="pref_suggestion_title">Sugerencias web (a través de <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Búsqueda Avanzada</string>
+    <string name="perform_wide_search_description">Busca tus contactos, archivos y ajustes en la búsqueda del cajón de aplicaciones.</string>
+    <string name="pref_recent_suggestion_title">Historial</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -325,6 +330,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Estos ajustes se ignorarán, ya que Lawnchair no está configurado como el proveedor de recientes.</string>
     <string name="translucent_background">Fondo translúcido</string>
     <string name="recents_actions_label">Acciones rápidas</string>
     <!-- <string name="screenshot" /> (unknown source) -->
@@ -374,7 +380,7 @@
     <string name="label">Etiqueta</string>
     <string name="hide_from_drawer">Ocultar del Cajón</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Mostrar aplicaciones sugeridas en la parte superior</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Reporte de errores de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha dejado de funcionar</string>
@@ -388,7 +394,7 @@
     <string name="bugreport_group_summary_multiple">Varios informes nuevos.</string>
     <!-- Search ig -->
     <string name="show_search_result_types">Mostrar en Resultados de Búsqueda</string>
-    <string name="search_pref_result_people_title">Gente</string>
+    <string name="search_pref_result_people_title">Contactos</string>
     <string name="search_pref_result_shortcuts_title">Accesos directos de aplicaciones</string>
     <string name="search_pref_result_tips_title">Consejos de Pixel</string>
     <string name="all_apps_device_search_hint">Buscar</string>
@@ -396,18 +402,18 @@
     <string name="label_search">Buscar</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Búsqueda por Voz</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Configuración</string>
     <string name="all_apps_search_market_message">Buscar más Aplicaciones</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Buscar en <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No hay tienda de aplicaciones ni navegador instalado.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">De internet</string>
+    <string name="all_apps_search_result_contacts_from_device">Tus contactos</string>
+    <string name="all_apps_search_result_files">De tus archivos</string>
+    <string name="all_apps_search_result_settings_entry_from_device">De tu configuración</string>
+    <string name="warn_contact_permission_content">Requiere acceso a tus contactos</string>
+    <string name="warn_files_permission_content">Requiere acceso al almacenamiento</string>
+    <string name="all_apps_search_result_files_description">Multimedia, documentos, carpetas y más.</string>
+    <string name="all_apps_search_result_contacts_description">Contactos y más</string>
     <string name="quickstep_incompatible">Integración del sistema incompatible</string>
     <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos del sistema.</string>
     <string name="delete">Eliminar</string>

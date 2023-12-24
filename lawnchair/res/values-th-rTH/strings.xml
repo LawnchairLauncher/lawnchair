@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">ฟีดข่าวสาร</string>
     <string name="minus_one_unavailable">ยังไม่ได้ติดตั้ง Feed</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">ค่าเริ่มต้น</string>
     <string name="wallpaper">ภาพพื้นหลัง</string>
     <string name="wallpaper_scrolling_label">เลื่อนพื้นหลัง</string>
     <string name="wallpaper_depth_effect_label">เอฟเฟกต์ความลึกของพื้นหลัง</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">แถบค้นหาของ Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">วิดเจ็ตแถบค้นหา</string>
     <string name="hotseat_mode_disabled">ปิด</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">แอปที่ซ่อนไว้</string>
     <string name="show_enable_smart_hide">แสดงเมื่อพิมพ์ชื่อเต็ม</string>
     <string name="hide_hidden_apps_search">ซ่อนในผลการค้นหา</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">ค้นหา</string>
     <string name="show_app_search_bar">แสดงแถบค้นหา</string>
     <string name="pref_search_auto_show_keyboard">แสดงคีย์บอร์ดอัตโนมัติ</string>
@@ -324,6 +329,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">พื้นหลังโปร่งแสง</string>
     <string name="recents_actions_label">การกระทำด่วน</string>
     <!-- <string name="screenshot" /> (unknown source) -->

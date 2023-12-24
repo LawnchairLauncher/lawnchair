@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">اخبار</string>
     <string name="minus_one_unavailable">هیچ اخباری نصب نشده است.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">پیش‌فرض</string>
     <string name="wallpaper">کاغذ دیواری</string>
     <string name="wallpaper_scrolling_label">پیمایش کاغذ دیواری</string>
     <string name="wallpaper_depth_effect_label">افکت عمق کاغذ دیواری</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">جستجوی گوگل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">ابزارک نوار جستوجو</string>
     <string name="hotseat_mode_disabled">غیر فعال</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">برنامه‌های مخفی‌شده</string>
     <string name="show_enable_smart_hide">نمایش زمانی که نام کامل تایپ شده است</string>
     <string name="hide_hidden_apps_search">پنهان شدن در نتایج جستجو</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">جست‌و‌جو</string>
     <string name="show_app_search_bar">نشان‌دادن نوار جستجو</string>
     <string name="pref_search_auto_show_keyboard">نمایش خودکار صفحه کلید</string>
@@ -325,6 +330,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">بک‌گراند نیمه‌شفاف</string>
     <string name="recents_actions_label">عملیات‌های سریع</string>
     <!-- <string name="screenshot" /> (unknown source) -->

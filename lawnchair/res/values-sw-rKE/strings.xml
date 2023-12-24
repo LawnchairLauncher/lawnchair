@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Mlisho wa Habari</string>
     <string name="minus_one_unavailable">Hakuna Mlisho wa Habari imesakinishwa.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Default</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="wallpaper_scrolling_label">Tembeza Wallpaper</string>
     <string name="wallpaper_depth_effect_label">Athari ya Kina cha Wallpaper</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Utafutaji wa Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">Wijeti ya Upau wa Utafutaji</string>
     <string name="hotseat_mode_disabled">Imezimwa</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -265,6 +268,8 @@
     <string name="hidden_apps_label">Programu Zilizofichwa</string>
     <string name="show_enable_smart_hide">Onyesha Wakati Jina Kamili Limechapwa</string>
     <string name="hide_hidden_apps_search">Ficha kwenye Matokeo ya Utafutaji</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">Tafuta</string>
     <string name="show_app_search_bar">Onyesha Upau wa Utafutaji</string>
     <string name="pref_search_auto_show_keyboard">Onyesha Kibodi kiotomatiki</string>
@@ -325,6 +330,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">Mandharinyuma angavu</string>
     <string name="recents_actions_label">Vitendo vya Haraka</string>
     <!-- <string name="screenshot" /> (unknown source) -->
