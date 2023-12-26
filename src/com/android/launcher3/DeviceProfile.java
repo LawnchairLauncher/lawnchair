@@ -1305,9 +1305,14 @@ public class DeviceProfile {
                     + allAppsLeftRightPadding * 2;
             allAppsLeftRightMargin = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
-            allAppsLeftRightPadding = Math.max(0, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
+            allAppsLeftRightPadding = Math.max(1, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
                     - (allAppsBorderSpacePx.x / 2));
         }
+        var allAppLeftRightMarginMultiplier = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getDrawerLeftRightMarginFactor());
+        var margin = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, allAppLeftRightMarginMultiplier);
+        allAppsLeftRightMargin *= margin;
+        allAppsLeftRightPadding *= margin;
     }
 
     private void setupAllAppsStyle(Context context) {

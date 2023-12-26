@@ -336,6 +336,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val drawerLeftRightMarginFactor = preference(
+        key = floatPreferencesKey(name = "drawer_left_right_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_left_right_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val enableFuzzySearch = preference(
         key = booleanPreferencesKey(name = "enable_fuzzy_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
