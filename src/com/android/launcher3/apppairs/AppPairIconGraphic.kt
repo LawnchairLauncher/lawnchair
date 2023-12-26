@@ -25,8 +25,10 @@ import android.util.Log
 import android.view.Gravity
 import android.widget.FrameLayout
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.icons.BitmapInfo
 import com.android.launcher3.icons.PlaceHolderIconDrawable
 import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.util.Themes
 
 /**
  * A FrameLayout marking the area on an [AppPairIcon] where the visual icon will be drawn. One of
@@ -95,9 +97,10 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
             return
         }
 
-        // Generate new icons
-        val newIcon1 = parentIcon.info.contents[0].newIcon(context)
-        val newIcon2 = parentIcon.info.contents[1].newIcon(context)
+        // Generate new icons, using themed flag if needed
+        val flags = if (Themes.isThemedIconEnabled(context)) BitmapInfo.FLAG_THEMED else 0
+        val newIcon1 = parentIcon.info.contents[0].newIcon(context, flags)
+        val newIcon2 = parentIcon.info.contents[1].newIcon(context, flags)
 
         // If app icons did not draw fully last time, animate to full icon
         (appIcon1 as? PlaceHolderIconDrawable)?.animateIconUpdate(newIcon1)
