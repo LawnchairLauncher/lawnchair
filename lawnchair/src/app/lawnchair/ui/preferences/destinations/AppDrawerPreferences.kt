@@ -262,6 +262,13 @@ fun AppDrawerPreferences() {
                 step = 0.1F,
                 showAsPercentage = true,
             )
+            SliderPreference(
+                adapter = prefs2.drawerLeftRightMarginFactor.getAdapter(),
+                label = stringResource(id = R.string.app_drawer_indent_label),
+                valueRange = 0.0F..1.0F,
+                step = 0.01F,
+                showAsPercentage = true,
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(

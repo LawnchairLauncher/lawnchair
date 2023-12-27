@@ -350,6 +350,7 @@
     <!-- <string name="grid" /> -->
       <string name="app_drawer_columns">App Drawer Columns</string>
       <string name="row_height_label">Row Height</string>
+      <string name="app_drawer_indent_label">App Drawer Indent</string>
 
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
