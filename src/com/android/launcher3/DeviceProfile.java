@@ -799,6 +799,9 @@ public class DeviceProfile {
 
         var space = Math.abs(hotseatCellHeightPx / 2) - 10;
 
+        hotseatBarBottomSpacePx *= PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getHotseatBottomFactor());
+
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
                     + hotseatBarSidePaddingEndPx + space;
