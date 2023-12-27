@@ -296,7 +296,7 @@
       <string name="corner_radius_label">Corner Radius</string>
       <string name="apply_accent_color_label">Apply Accent Color</string>
       <string name="search_provider">Search Provider</string>
-      <string name="hotseat_bottom_space_label">Hotseat Bottom Space</string>
+      <string name="hotseat_bottom_space_label">Bottom Padding</string>
 
 
     <string name="grid">Grid</string>
@@ -352,7 +352,7 @@
     <!-- <string name="grid" /> -->
       <string name="app_drawer_columns">App Drawer Columns</string>
       <string name="row_height_label">Row Height</string>
-      <string name="app_drawer_indent_label">App Drawer Indent</string>
+      <string name="app_drawer_indent_label">Horizontal Padding</string>
 
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
