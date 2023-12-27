@@ -65,13 +65,6 @@ fun DockPreferences() {
                 adapter = isHotseatEnabled,
                 label = stringResource(id = R.string.show_hotseat_title),
             )
-            SliderPreference(
-                adapter = prefs2.hotseatBottomFactor.getAdapter(),
-                label = stringResource(id = R.string.hotseat_bottom_space_label),
-                valueRange = 0.0F..1.7F,
-                step = 0.1F,
-                showAsPercentage = true,
-            )
         }
         ExpandAndShrink(visible = isHotseatEnabled.state.value) {
             DividerColumn(color = Color.Transparent) {
@@ -113,6 +106,13 @@ fun DockPreferences() {
                         adapter = prefs.hotseatColumns.getAdapter(),
                         step = 1,
                         valueRange = 3..10,
+                    )
+                    SliderPreference(
+                        adapter = prefs2.hotseatBottomFactor.getAdapter(),
+                        label = stringResource(id = R.string.hotseat_bottom_space_label),
+                        valueRange = 0.0F..1.7F,
+                        step = 0.1F,
+                        showAsPercentage = true,
                     )
                 }
             }
