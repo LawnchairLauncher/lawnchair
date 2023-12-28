@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
 import android.graphics.Point;
@@ -64,19 +62,23 @@ public abstract class Launchable {
                         + mObject.getVisibleCenter() + " in "
                         + mLauncher.getVisibleBounds(mObject));
 
-                if (launcherStopsAfterLaunch()) {
-                    mLauncher.executeAndWaitForLauncherStop(
-                            () -> mLauncher.clickLauncherObject(mObject),
-                            "clicking the launchable");
-                } else {
-                    mLauncher.clickLauncherObject(mObject);
-                }
+                performClick();
 
                 try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                     expectActivityStartEvents();
                     return mLauncher.assertAppLaunched(expectedPackageName);
                 }
             }
+        }
+    }
+
+    private void performClick() {
+        if (launcherStopsAfterLaunch()) {
+            mLauncher.executeAndWaitForLauncherStop(
+                    () -> mLauncher.clickLauncherObject(mObject),
+                    "clicking the launchable");
+        } else {
+            mLauncher.clickLauncherObject(mObject);
         }
     }
 
@@ -97,12 +99,8 @@ public abstract class Launchable {
             LauncherInstrumentation.log("Launchable.launch before click "
                     + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(
                     mObject));
-            mLauncher.executeAndWaitForLauncherEvent(
-                    () -> mLauncher.clickLauncherObject(mObject),
-                    accessibilityEvent ->
-                            accessibilityEvent.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                    () -> "Unable to click object to launch split",
-                    "Click launcher object to launch split");
+
+            performClick();
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, OverviewTask.SPLIT_START_EVENT);
