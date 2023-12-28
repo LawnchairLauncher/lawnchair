@@ -265,7 +265,7 @@ fun AppDrawerPreferences() {
             SliderPreference(
                 adapter = prefs2.drawerLeftRightMarginFactor.getAdapter(),
                 label = stringResource(id = R.string.app_drawer_indent_label),
-                valueRange = 0.0F..1.0F,
+                valueRange = 0.0F..2.0F,
                 step = 0.01F,
                 showAsPercentage = true,
             )
