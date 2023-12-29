@@ -62,23 +62,19 @@ public abstract class Launchable {
                         + mObject.getVisibleCenter() + " in "
                         + mLauncher.getVisibleBounds(mObject));
 
-                performClick();
+                if (launcherStopsAfterLaunch()) {
+                    mLauncher.executeAndWaitForLauncherStop(
+                            () -> mLauncher.clickLauncherObject(mObject),
+                            "clicking the launchable");
+                } else {
+                    mLauncher.clickLauncherObject(mObject);
+                }
 
                 try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                     expectActivityStartEvents();
                     return mLauncher.assertAppLaunched(expectedPackageName);
                 }
             }
-        }
-    }
-
-    private void performClick() {
-        if (launcherStopsAfterLaunch()) {
-            mLauncher.executeAndWaitForLauncherStop(
-                    () -> mLauncher.clickLauncherObject(mObject),
-                    "clicking the launchable");
-        } else {
-            mLauncher.clickLauncherObject(mObject);
         }
     }
 
@@ -100,7 +96,9 @@ public abstract class Launchable {
                     + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(
                     mObject));
 
-            performClick();
+            mLauncher.executeAndWaitForLauncherStop(
+                    () -> mLauncher.clickLauncherObject(mObject),
+                    "clicking the launchable");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, OverviewTask.SPLIT_START_EVENT);
