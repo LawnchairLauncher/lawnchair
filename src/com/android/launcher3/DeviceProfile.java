@@ -1313,8 +1313,9 @@ public class DeviceProfile {
         }
         var allAppLeftRightMarginMultiplier = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getDrawerLeftRightMarginFactor());
-        allAppsLeftRightMargin *= allAppLeftRightMarginMultiplier;
-        allAppsLeftRightPadding *= allAppLeftRightMarginMultiplier;
+        var marginMultiplier = allAppLeftRightMarginMultiplier * 100;
+        allAppsLeftRightMargin *= marginMultiplier;
+        allAppsLeftRightPadding *= marginMultiplier;
     }
 
     private void setupAllAppsStyle(Context context) {
