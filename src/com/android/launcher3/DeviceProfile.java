@@ -1313,7 +1313,7 @@ public class DeviceProfile {
         }
         var allAppLeftRightMarginMultiplier = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getDrawerLeftRightMarginFactor());
-        var marginMultiplier = allAppLeftRightMarginMultiplier * 100;
+        var marginMultiplier = allAppLeftRightMarginMultiplier * (!isTablet ? 100 : 2);
         allAppsLeftRightMargin *= marginMultiplier;
         allAppsLeftRightPadding *= marginMultiplier;
     }
