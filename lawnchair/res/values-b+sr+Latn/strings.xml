@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Radijus ugla</string>
     <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
     <string name="search_provider">Pretraživač</string>
+    <string name="hotseat_bottom_space_label">Donji razmak</string>
     <string name="grid">Mreža</string>
     <string name="dock_icons">Ikone u doku</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
     <string name="row_height_label">Visina reda</string>
+    <string name="app_drawer_indent_label">Horizontalni razmak</string>
     <string name="perform_wide_search_title">Pretraga uređaja</string>
     <string name="perform_wide_search_file">Fajlovi</string>
     <string name="pref_suggestion_title">Veb-predlozi (pomoću usluge <xliff:g id="startpage">Startpage</xliff:g>)</string>

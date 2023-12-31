@@ -46,7 +46,7 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Anpassning av typsnitt</string>
     <string name="font_picker_description">En del text förblir oförändrad.</string>
-    <string name="smartspace_calendar_label">Anpassning av Snabbkoll-kalender</string>
+    <string name="smartspace_calendar_label">Anpassning av snabböversiktskalender</string>
     <string name="smartspace_calendar_description">Tillåt att datum visas i icke-gregorianska kalendersystem.</string>
     <string name="workspace_increase_max_grid_size_label">Utökad maxstorlek på startskärmsrutnät</string>
     <string name="workspace_increase_max_grid_size_description">Utöka maxstorleken på startskärmsrutnätet från 10 x 10 till 20 x 20.</string>
@@ -54,7 +54,7 @@
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="transparent_background_icons">Transparenta tematiserade ikoner</string>
     <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
-    <string name="smartspace_mode_selection">Val av Snabbkoll-leverantör</string>
+    <string name="smartspace_mode_selection">Val av snabböversiktsleverantör</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotation av startskärmen</string>
     <string name="home_screen_rotaton_description">När enheten roteras.</string>
@@ -169,8 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Flöde</string>
     <string name="minus_one_unavailable">Inget flöde är installerat.</string>
-    <string name="feed_provider">Feed Provider</string>
-    <string name="feed_default">Default</string>
+    <string name="feed_provider">Flödesleverantör</string>
+    <string name="feed_default">Förvald</string>
     <string name="wallpaper">Bakgrundsbild</string>
     <string name="wallpaper_scrolling_label">Rulla bakgrundsbild</string>
     <string name="wallpaper_depth_effect_label">Djupeffekt på bakgrundsbild</string>
@@ -213,7 +213,7 @@
     <string name="smartspace_battery_low">Lågt batteri</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — fullt om %2$s"</string>
     <string name="accessibility_smartspace_page">Sida %1$d av %2$d</string>
-    <string name="smartspace_widget">Snabbkoll</string>
+    <string name="smartspace_widget">Snabböversikt</string>
     <string name="smartspace_widget_description">Vad ska visas</string>
     <string name="smartspace_widget_placeholder_date">fre 3 mar.</string>
     <string name="preview_label">Förhandsgranskning</string>
@@ -235,14 +235,14 @@
     <string name="smartspace_calendar_persian">Persisk</string>
     <string name="smartspace_preferences">Alternativ</string>
     <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
-    <string name="smartspace_widget_toggle_description">Snabbkoll kan läggas till manuellt genom att placera ut \"Lawnchair\"-widgeten.</string>
-    <string name="smartspace_mode_label">Snabbkoll-leverantör</string>
+    <string name="smartspace_widget_toggle_description">Snabböversikt kan läggas till manuellt genom att placera ut \"Lawnchair\"-widgeten.</string>
+    <string name="smartspace_mode_label">Snabböversiktsleverantör</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Sök</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Aktivera docka</string>
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Hörnradie</string>
     <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
+    <string name="hotseat_bottom_space_label">Avstånd nederkant</string>
     <string name="grid">Rutnät</string>
     <string name="dock_icons">Favoritfältsikoner</string>
     <!-- SearchProviderPreferences -->
@@ -268,8 +269,8 @@
     <string name="hidden_apps_label">Dolda appar</string>
     <string name="show_enable_smart_hide">Visa när fullständigt namn skrivs</string>
     <string name="hide_hidden_apps_search">Dölj i sökresultat</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Ladda appar i klump</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Ladda och visa ikoner i klump i stället för att ladda och visa ikoner var för sig</string>
     <string name="pref_category_search">Sök</string>
     <string name="show_app_search_bar">Visa sökfält</string>
     <string name="pref_search_auto_show_keyboard">Visa tangentbord automatiskt</string>
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumner i applådan</string>
     <string name="row_height_label">Radhöjd</string>
+    <string name="app_drawer_indent_label">Vågrätt avstånd</string>
     <string name="perform_wide_search_title">Enhetssökning</string>
     <string name="perform_wide_search_file">Filer</string>
     <string name="pref_suggestion_title">Webbförslag (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
@@ -330,7 +332,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">Dessa inställningar kommer att ignoreras eftersom Lawnchair inte är inställd som Senaste-leverantör.</string>
     <string name="translucent_background">Genomlysande bakgrund</string>
     <string name="recents_actions_label">Snabbåtgärder</string>
     <!-- <string name="screenshot" /> (unknown source) -->

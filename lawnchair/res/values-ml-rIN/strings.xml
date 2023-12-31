@@ -251,6 +251,7 @@
     <string name="corner_radius_label">കോണുകളുടെ ആരം</string>
     <string name="apply_accent_color_label">ആക്സൻ്റ് നിറം പ്രയോഗിക്കുക</string>
     <string name="search_provider">Search Provider</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">കളം</string>
     <string name="dock_icons">താഴത്തെ വരിയിലെ ഐക്കണുകൾ</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">ആപ്പ് ഡ്രോയർ കോളങ്ങൾ</string>
     <string name="row_height_label">വരിയുടെ ഉയരം</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

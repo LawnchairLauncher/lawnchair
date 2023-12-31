@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Radi ya kona</string>
     <string name="apply_accent_color_label">Weka Rangi ya Lafudhi</string>
     <string name="search_provider">Mhudumu wa Utafutaji</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Gridi</string>
     <string name="dock_icons">Ikoni za Gati</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Safu wima za Droo ya Programu</string>
     <string name="row_height_label">Urefu wa safu</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

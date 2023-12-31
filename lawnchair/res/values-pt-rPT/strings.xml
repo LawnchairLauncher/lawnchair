@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Raio dos Cantos</string>
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
     <string name="search_provider">Fornecedor de Pesquisa</string>
+    <string name="hotseat_bottom_space_label">Preenchimento Inferior</string>
     <string name="grid">Grelha</string>
     <string name="dock_icons">Ícones da Doca</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colunas da Gaveta de Aplicações</string>
     <string name="row_height_label">Altura da Linha</string>
+    <string name="app_drawer_indent_label">Preenchimento Horizontal</string>
     <string name="perform_wide_search_title">Pesquisa de Dispositivo</string>
     <string name="perform_wide_search_file">Ficheiros</string>
     <string name="pref_suggestion_title">Sugestões Web (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

@@ -253,6 +253,7 @@ workspace_increase_max_grid_size_label</string>
     <string name="corner_radius_label">Eckradius</string>
     <string name="apply_accent_color_label">Akzentfarbe anwenden</string>
     <string name="search_provider">Suchanbieter</string>
+    <string name="hotseat_bottom_space_label">Unterer Abstand</string>
     <string name="grid">Raster</string>
     <string name="dock_icons">Dock-Symbole</string>
     <!-- SearchProviderPreferences -->
@@ -287,6 +288,7 @@ workspace_increase_max_grid_size_label</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Spalten der App-Übersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>
+    <string name="app_drawer_indent_label">Seitlicher Abstand</string>
     <string name="perform_wide_search_title">Geräte-Suche</string>
     <string name="perform_wide_search_file">Dateien</string>
     <string name="pref_suggestion_title">Internet-Ergebnisse (von <xliff:g id="startpage">Startpage</xliff:g>)</string>

@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Raza colțurilor</string>
     <string name="apply_accent_color_label">Aplică culoarea de accent</string>
     <string name="search_provider">Motorul de căutare</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Grilă</string>
     <string name="dock_icons">Pictograme pentru bara inferioară de aplicații</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Coloane în sertarul de aplicații</string>
     <string name="row_height_label">Înălțimea rândului</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

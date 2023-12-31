@@ -251,6 +251,7 @@
     <string name="corner_radius_label">圓角大小</string>
     <string name="apply_accent_color_label">套用強調色</string>
     <string name="search_provider">搜尋服務供應商</string>
+    <string name="hotseat_bottom_space_label">底部邊距</string>
     <string name="grid">網格</string>
     <string name="dock_icons">底欄圖示</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">「所有應用程式」列數</string>
     <string name="row_height_label">行高</string>
+    <string name="app_drawer_indent_label">水平填充</string>
     <string name="perform_wide_search_title">裝置搜尋</string>
     <string name="perform_wide_search_file">檔案</string>
     <string name="pref_suggestion_title">網頁建議（由 <xliff:g id="startpage">Startpage</xliff:g> 提供）</string>

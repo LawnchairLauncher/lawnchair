@@ -169,7 +169,7 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">피드</string>
     <string name="minus_one_unavailable">피드를 이용할 수 없습니다.</string>
-    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_provider">피드 제공자</string>
     <string name="feed_default">Default</string>
     <string name="wallpaper">배경화면</string>
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
@@ -242,7 +242,7 @@
     <string name="smartspace_mode_google_search">구글 검색</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">독 활성화</string>
     <string name="hotseat_mode_label">검색창 위젯</string>
     <string name="hotseat_mode_disabled">비활성화됨</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -251,6 +251,7 @@
     <string name="corner_radius_label">가장자리 둥글기</string>
     <string name="apply_accent_color_label">강조 색상 적용하기</string>
     <string name="search_provider">검색 제공자</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">그리드</string>
     <string name="dock_icons">독 아이콘</string>
     <!-- SearchProviderPreferences -->
@@ -268,8 +269,8 @@
     <string name="hidden_apps_label">숨겨진 앱</string>
     <string name="show_enable_smart_hide">전체 이름을 입력할 때 표시</string>
     <string name="hide_hidden_apps_search">검색 결과에서 숨기기</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">대량 앱 로드</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">아이콘을 개별적으로가 아닌 대량으로 로드하고 표시합니다</string>
     <string name="pref_category_search">검색</string>
     <string name="show_app_search_bar">검색 창 활성화</string>
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
@@ -277,19 +278,20 @@
     <string name="fuzzy_search_desc">앱을 검색할 때 검색어와 유사한 앱을 찾아줍니다.</string>
     <string name="max_search_result_count_title">최대 검색 결과 수</string>
     <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_file_result_count_title">최대 파일 결과 수</string>
+    <string name="max_suggestion_result_count_title">최대 제안 결과 수</string>
+    <string name="max_settings_entry_result_count_title">최대 설정 항목 결과 수</string>
+    <string name="max_recent_result_count_title">최대 기록 결과 수</string>
+    <string name="clear_history">기록 삭제</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">앱 서랍 아이콘 가로 배치 수</string>
     <string name="row_height_label">가로 행 높이</string>
-    <string name="perform_wide_search_title">Device Search</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="perform_wide_search_title">장치 검색</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="pref_advance_search_category">고급 검색</string>
+    <string name="perform_wide_search_description">앱 서랍 검색에서 연락처, 파일, 설정을 검색</string>
     <string name="pref_recent_suggestion_title">기록</string>
     <!--
     <string name="icons" />
@@ -401,9 +403,9 @@
     <string name="label_search">검색</string>
     <string name="label_lens">구글 렌즈</string>
     <string name="label_voice_search">음성 검색</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">설정 항목</string>
     <string name="all_apps_search_market_message">더 많은 앱 검색하기</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message"><xliff:g id="startpage">Startpage</xliff:g>에서 검색</string>
     <string name="error_no_market_or_browser_installed">앱 스토어나 브라우저가 설치되어 있지 않습니다.</string>
     <string name="all_apps_search_result_suggestions">From the web</string>
     <string name="all_apps_search_result_contacts_from_device">From your contacts</string>

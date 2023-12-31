@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Закруглення кутів</string>
     <string name="apply_accent_color_label">Застосувати колір акценту</string>
     <string name="search_provider">Пошукова система</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Решітка</string>
     <string name="dock_icons">Значки док-панелі</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Кількість стовпців меню додатків</string>
     <string name="row_height_label">Висота рядка</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Пошук пристрою</string>
     <string name="perform_wide_search_file">Файли</string>
     <string name="pref_suggestion_title">Веб-пропозиції (через <xliff:g id="startpage">Початкова сторінка</xliff:g>)</string>

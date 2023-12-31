@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Πατήστε αυτή την κάρτα για να ορίσετε τον Lawnchair ως τον προεπιλεγμένο σας πρόγραμμα εκκίνησης.</string>
+    <string name="set_default_launcher_tip">Πατήστε αυτή την κάρτα για να ορίσετε τον Lawnchair ως το προεπιλεγμένο σας πρόγραμμα εκκίνησης.</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="general_label">Γενικά</string>
     <string name="general_description">Κουκκκίδες Ειδοποιήσεων, Πακέτο Εικονιδίων</string>
@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Ακτίνα Γωνίας</string>
     <string name="apply_accent_color_label">Εφαρμογή Χρώματος Έμφασης</string>
     <string name="search_provider">Πάροχος Αναζήτησης</string>
+    <string name="hotseat_bottom_space_label">Κάτω Περιθώριο</string>
     <string name="grid">Πλέγμα</string>
     <string name="dock_icons">Eικονίδια Dock</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Στήλες Συρταριού Εφαρμογών</string>
     <string name="row_height_label">Ύψος Γραμμής</string>
+    <string name="app_drawer_indent_label">Οριζόντιο Περιθώριο</string>
     <string name="perform_wide_search_title">Αναζήτηση Συσκευής</string>
     <string name="perform_wide_search_file">Αρχεία</string>
     <string name="pref_suggestion_title">Προτάσεις ιστού (μέσω <xliff:g id="startpage">Σελίδα έναρξης</xliff:g>)</string>
@@ -309,8 +311,8 @@
     <string name="folder_preview_bg_opacity_label">Αδιαφάνεια Φόντου Εικονιδίου</string>
     <string name="folder_preview_bg_color_label">Χρώμα Φόντου Εικονιδίου</string>
     <!-- <string name="grid" /> -->
-    <string name="max_folder_columns">Μεγ. Στήλες Φακέλου</string>
-    <string name="max_folder_rows">Μεγ. Σειρές Φακέλου</string>
+    <string name="max_folder_columns">Μέγιστος Αριθμός Στηλών Φακέλου</string>
+    <string name="max_folder_rows">Μέγιστος Αριθμός Σειρών Φακέλου</string>
     <!-- GesturePreference -->
     <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Διπλό Πάτημα</string>

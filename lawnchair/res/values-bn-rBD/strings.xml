@@ -251,6 +251,7 @@
     <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
     <string name="apply_accent_color_label">অ্যাকসেন্ট রং ব্যবহার করুন</string>
     <string name="search_provider">সার্চ প্রদানকারী</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">গ্রিড</string>
     <string name="dock_icons">ডকের আইকন-সমুহ</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">অ্যাপ ড্রয়ারের কলাম</string>
     <string name="row_height_label">সারির উচ্চতা</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

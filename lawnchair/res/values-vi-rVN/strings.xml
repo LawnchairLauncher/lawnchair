@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Độ cong của góc</string>
     <string name="apply_accent_color_label">Áp dụng màu nhấn</string>
     <string name="search_provider">Nhà cung cấp dịch vụ tìm kiếm</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Lưới</string>
     <string name="dock_icons">Biểu tượng ở khay ứng dụng</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Số cột của trang ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

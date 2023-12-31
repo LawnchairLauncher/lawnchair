@@ -242,7 +242,7 @@
     <string name="smartspace_mode_google_search">Recherche Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Activer le dock</string>
     <string name="hotseat_mode_label">Widget de barre de recherche</string>
     <string name="hotseat_mode_disabled">Désactivé</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -251,12 +251,13 @@
     <string name="corner_radius_label">Courbure des coins</string>
     <string name="apply_accent_color_label">Appliquer la couleur d\'accentuation</string>
     <string name="search_provider">Fournisseur de recherche</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Grille</string>
     <string name="dock_icons">Icônes dans la zone d\'ancrage</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Recherche d\'appli</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair a un accord de partage des revenus.\n\nLa recherche avec %1$s aide Lawnchair.</string>
     <string name="app_label">Application</string>
     <string name="website_label">Site internet</string>
     <string name="qsb_search_provider_app_required">Application requise.</string>
@@ -268,8 +269,8 @@
     <string name="hidden_apps_label">Applications Masquées</string>
     <string name="show_enable_smart_hide">Afficher quand le nom complet est saisi</string>
     <string name="hide_hidden_apps_search">Cacher dans les résultats de recherche</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Charger des applications en vrac</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Charger et afficher les icônes en vrac au lieu de charger et afficher individuellement les icônes</string>
     <string name="pref_category_search">Rechercher</string>
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
     <string name="pref_search_auto_show_keyboard">Afficher automatiquement le clavier</string>
@@ -277,14 +278,15 @@
     <string name="fuzzy_search_desc">Correspondance approximative pour les recherches d\'applications.</string>
     <string name="max_search_result_count_title">Nombre maximum de résultats de recherche</string>
     <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_file_result_count_title">Nombre maximum de résultats de recherche</string>
+    <string name="max_suggestion_result_count_title">Nombre maximum de résultats suggéré</string>
+    <string name="max_settings_entry_result_count_title">Nombre maximal de résultats des paramètres d\'entrée</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
     <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colonnes du tiroir d\'applications</string>
     <string name="row_height_label">Hauteur de la rangée</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
