@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Raio do Canto</string>
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
     <string name="search_provider">Provedor de Pesquisa</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Grade</string>
     <string name="dock_icons">Ícones da Dock</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colunas na Gaveta de Aplicativos</string>
     <string name="row_height_label">Altura da Linha</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

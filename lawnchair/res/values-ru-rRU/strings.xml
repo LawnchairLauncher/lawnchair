@@ -54,7 +54,7 @@
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="transparent_background_icons">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
-    <string name="smartspace_mode_selection">Выбрать поставщика At a Glance</string>
+    <string name="smartspace_mode_selection">Выбрать поставщика для Первый Взгляд</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
     <string name="home_screen_rotaton_description">При повороте устройства.</string>
@@ -210,10 +210,10 @@
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
     <string name="smartspace_battery_full">Заряжено</string>
-    <string name="smartspace_battery_low">Батарея разряжена</string>
+    <string name="smartspace_battery_low">Низкий заряд батареи</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Полная через %2$s"</string>
     <string name="accessibility_smartspace_page">Страница %1$d из %2$d</string>
-    <string name="smartspace_widget">Самое главное</string>
+    <string name="smartspace_widget">Первый Взгляд</string>
     <string name="smartspace_widget_description">Что показывать</string>
     <string name="smartspace_widget_placeholder_date">Пт, 3 Марта</string>
     <string name="preview_label">Предпросмотр</string>
@@ -251,8 +251,9 @@
     <string name="corner_radius_label">Радиус скругления углов</string>
     <string name="apply_accent_color_label">Применить цвет акцента</string>
     <string name="search_provider">Поисковик</string>
+    <string name="hotseat_bottom_space_label">Нижний отступ</string>
     <string name="grid">Сетка</string>
-    <string name="dock_icons">Иконки в док-баре</string>
+    <string name="dock_icons">Иконки док панели</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Поиск приложений</string>
@@ -266,7 +267,7 @@
     <string name="background_opacity">Прозрачность фона</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Скрытые приложения</string>
-    <string name="show_enable_smart_hide">Показать, когда полное название введено</string>
+    <string name="show_enable_smart_hide">Показать, когда название введено полностью</string>
     <string name="hide_hidden_apps_search">Скрывать в результатах поиска</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Массовая загрузка приложений</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Массовая загрузка и отображение значков, вместо загрузки и отображения значков по отдельности</string>
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
     <string name="row_height_label">Высота строки</string>
+    <string name="app_drawer_indent_label">Горизонтальный отступ</string>
     <string name="perform_wide_search_title">Поиск устройств</string>
     <string name="perform_wide_search_file">Файл</string>
     <string name="pref_suggestion_title">Веб-подсказки (через стартовую страницу <xliff:g id="startpage"></xliff:g>)</string>

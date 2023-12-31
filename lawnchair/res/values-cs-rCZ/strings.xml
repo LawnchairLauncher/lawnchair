@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Poloměr rohů</string>
     <string name="apply_accent_color_label">Použít zvýrazňující barvu</string>
     <string name="search_provider">Poskytovatel vyhledávání</string>
+    <string name="hotseat_bottom_space_label">Spodní mezera</string>
     <string name="grid">Mřížka</string>
     <string name="dock_icons">Ikony doku</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Sloupce seznamu aplikací</string>
     <string name="row_height_label">Výška řádku</string>
+    <string name="app_drawer_indent_label">Vodorovná mezera</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

@@ -251,6 +251,7 @@
     <string name="corner_radius_label">किनारे</string>
     <string name="apply_accent_color_label">असेंट रंग इस्तेमाल करें</string>
     <string name="search_provider">खोज प्रदाता</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">ग्रिड</string>
     <string name="dock_icons">डॉक आइकान्स</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">ऐप ड्रॉअर कॉलम</string>
     <string name="row_height_label">रॉ की ऊंचाई</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>

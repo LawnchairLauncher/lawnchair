@@ -251,6 +251,7 @@
     <string name="corner_radius_label">Radius Sudut</string>
     <string name="apply_accent_color_label">Terapkan Warna Aksen</string>
     <string name="search_provider">Provider Pencarian</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Kisi</string>
     <string name="dock_icons">Ikon Dok</string>
     <!-- SearchProviderPreferences -->
@@ -285,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
     <string name="row_height_label">Tinggi Baris</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Penelusuran Perangkat</string>
     <string name="perform_wide_search_file">File</string>
     <string name="pref_suggestion_title">Saran web (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
