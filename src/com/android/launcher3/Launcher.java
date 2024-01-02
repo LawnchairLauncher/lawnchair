@@ -991,7 +991,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                             presenterPos.cellX, presenterPos.cellY, newScreenId, CONTAINER_DESKTOP).screenId;
                 }
                 final CellLayout dropLayout = mWorkspace.getScreenWithId(presenterPos.screenId);
-
+                if (dropLayout == null) return;
                 dropLayout.setDropPending(true);
                 final Runnable onComplete = new Runnable() {
                     @Override
