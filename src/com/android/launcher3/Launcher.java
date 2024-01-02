@@ -1537,6 +1537,9 @@ public class Launcher extends StatefulActivity<LauncherState>
             hostView = mAppWidgetHolder.createView(this, appWidgetId, appWidgetInfo);
         }
 
+        if (appWidgetInfo.provider == null) {
+            appWidgetInfo.provider = itemInfo.getTargetComponent();
+        }
         LauncherAppWidgetInfo launcherInfo;
         launcherInfo = new LauncherAppWidgetInfo(
                 appWidgetId, appWidgetInfo.provider, appWidgetInfo, hostView);
