@@ -72,12 +72,13 @@ import com.android.launcher3.logger.LauncherAtom.WorkspaceContainer;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.util.UserIconInfo;
 import com.android.quickstep.logging.StatsLogCompatManager.StatsLogConsumer;
+import com.android.systemui.shared.system.SysUiStatsLog;
 
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.ObjIntConsumer;
-import java.util.function.Predicate;
 
 /**
  * Utility class to track stats log and emit corresponding app events
@@ -188,14 +189,13 @@ public class AppEventProducer implements StatsLogConsumer {
     }
 
     @Nullable
-    private AppTarget toAppTarget(LauncherAtom.ItemInfo info) {
-        UserHandle userHandle = Process.myUserHandle();
-        if (info.getIsWork()) {
-            userHandle = UserCache.INSTANCE.get(mContext).getUserProfiles().stream()
-                    .filter(((Predicate<UserHandle>) userHandle::equals).negate())
-                    .findAny()
-                    .orElse(null);
-        }
+    AppTarget toAppTarget(LauncherAtom.ItemInfo info) {
+        int iconInfoType = getIconInfoTypeFromItemInfo(info);
+        UserCache userCache = UserCache.getInstance(mContext);
+        UserHandle userHandle = userCache.getUserProfiles().stream()
+                .filter(user -> userCache.getUserInfo(user).type == iconInfoType)
+                .findFirst()
+                .orElse(null);
         if (userHandle == null) {
             return null;
         }
@@ -327,5 +327,17 @@ public class AppEventProducer implements StatsLogConsumer {
     private static ComponentName parseNullable(String componentNameString) {
         return TextUtils.isEmpty(componentNameString)
                 ? null : ComponentName.unflattenFromString(componentNameString);
+    }
+
+    private int getIconInfoTypeFromItemInfo(LauncherAtom.ItemInfo info) {
+        int userType = info.getUserType();
+        return switch (userType) {
+            case SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_WORK -> UserIconInfo.TYPE_WORK;
+            case SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_CLONED ->
+                    UserIconInfo.TYPE_CLONED;
+            case SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_PRIVATE ->
+                    UserIconInfo.TYPE_PRIVATE;
+            default -> UserIconInfo.TYPE_MAIN;
+        };
     }
 }
