@@ -305,7 +305,7 @@ public final class FeatureFlags {
 
     // TODO(Block 17): Clean up flags
     // Aconfig migration complete for ENABLE_TASKBAR_PINNING.
-    private static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
+    private static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(296231746,
             "ENABLE_TASKBAR_PINNING", TEAMFOOD,
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
