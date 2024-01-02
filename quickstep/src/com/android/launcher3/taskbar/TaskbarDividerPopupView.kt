@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -197,32 +196,19 @@ constructor(
             mActivityContext.deviceProfile.taskbarIconSize) / 2 + verticalOffsetForPopupView
     }
 
-    override fun animateClose() {
-        if (!mIsOpen) {
-            return
+    override fun onCreateCloseAnimation(anim: AnimatorSet?) {
+        // If taskbar pinning preference changed insert custom close animation for popup menu.
+        if (didPreferenceChange) {
+            mOpenCloseAnimator = getCloseAnimator()
         }
-        if (mOpenCloseAnimator != null) {
-            mOpenCloseAnimator.cancel()
-        }
-        mIsOpen = false
-
-        mOpenCloseAnimator = getCloseAnimator()
-
-        mOpenCloseAnimator.addListener(
-            object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    mOpenCloseAnimator = null
-                    if (mDeferContainerRemoval) {
-                        setVisibility(INVISIBLE)
-                    } else {
-                        closeComplete()
-                    }
-                }
-            }
-        )
         onCloseCallback(didPreferenceChange)
         onCloseCallback = {}
-        mOpenCloseAnimator.start()
+    }
+
+    /** Aligning the view pivot to center for animation. */
+    override fun setPivotForOpenCloseAnimation() {
+        pivotX = measuredWidth / 2f
+        pivotY = measuredHeight.toFloat()
     }
 
     private fun getCloseAnimator(): AnimatorSet {
