@@ -56,6 +56,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     private final T mActivityContext;
     private int mNumPredictedAppsPerRow;
+    // Vertical padding of the icon that contributes to the expected cell height.
+    private final int mVerticalPadding;
+    // Extra padding that is used in the top app rows (prediction and search) that is not used in
+    // the regular A-Z list. This only applies to single line label.
+    private final int mTopRowExtraHeight;
 
     // Helper to drawing the focus indicator.
     private final FocusIndicatorHelper mFocusHelper;
@@ -78,6 +83,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
         mActivityContext = ActivityContext.lookupContext(context);
         mNumPredictedAppsPerRow = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
+        mTopRowExtraHeight = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_search_top_row_extra_height);
+        mVerticalPadding = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_predicted_icon_vertical_padding);
         updateVisibility();
     }
 
@@ -126,13 +135,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
         int iconHeight = deviceProfile.allAppsIconSizePx;
         int iconPadding = deviceProfile.allAppsIconDrawablePaddingPx;
         int textHeight = Utilities.calculateTextHeight(deviceProfile.allAppsIconTextSizePx);
-        int verticalPadding = getResources().getDimensionPixelSize(
-                R.dimen.all_apps_predicted_icon_vertical_padding);
-        int totalHeight = iconHeight + iconPadding + textHeight + verticalPadding * 2;
-        if (FeatureFlags.enableTwolineAllapps()) {
-            // Add extra textHeight to the existing total height.
-            totalHeight += textHeight;
-        }
+        int totalHeight = iconHeight + iconPadding + textHeight + mVerticalPadding * 2;
+        // Prediction row height will be 4dp bigger than the regular apps in A-Z list when two line
+        // is not enabled. Otherwise, the extra height will increase by just the textHeight.
+        int extraHeight = FeatureFlags.enableTwolineAllapps() ? textHeight : mTopRowExtraHeight;
+        totalHeight += extraHeight;
         return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
 
