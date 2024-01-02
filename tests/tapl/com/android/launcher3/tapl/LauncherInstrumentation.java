@@ -1529,7 +1529,8 @@ public final class LauncherInstrumentation {
         }
     }
 
-    void runToState(Runnable command, int expectedState, String actionName) {
+    /** Run an action and wait for the specified Launcher state. */
+    public void runToState(Runnable command, int expectedState, String actionName) {
         final List<Integer> actualEvents = new ArrayList<>();
         executeAndWaitForLauncherEvent(
                 command,
