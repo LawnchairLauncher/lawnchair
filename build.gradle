@@ -235,27 +235,17 @@ android {
     }
 
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions += ["app", "recents", "channel"]
+    flavorDimensions += ["app", "recents"]
 
     productFlavors {
         lawn {
             dimension "app"
+            applicationId "app.lawnchair.v14"
         }
 
         withQuickstep {
             dimension "recents"
             minSdk 26
-        }
-
-        github {
-            applicationId 'app.lawnchair'
-            dimension "channel"
-        }
-
-        market {
-            applicationId "ch.deletescape.lawnchair.plah"
-            dimension "channel"
-            isDefault true
         }
 
         configureEach {
@@ -284,14 +274,6 @@ android {
             proto {
                 srcDirs = ['lawnchair/protos/']
             }
-        }
-
-        lawnWithQuickstepGithub {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-        }
-
-        lawnWithQuickstepMarket {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
         withQuickstep {
