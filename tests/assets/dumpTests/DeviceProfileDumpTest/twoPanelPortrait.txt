@@ -55,7 +55,7 @@ DeviceProfile:
 	bottomSheetCloseDuration: 500
 	bottomSheetWorkspaceScale: 0.97
 	bottomSheetDepth: 1.0
-	allAppsShiftRange: 2075.0px (790.4762dp)
+	allAppsShiftRange: 2208.0px (841.1429dp)
 	allAppsOpenDuration: 500
 	allAppsCloseDuration: 500
 	allAppsIconSizePx: 141.0px (53.714287dp)

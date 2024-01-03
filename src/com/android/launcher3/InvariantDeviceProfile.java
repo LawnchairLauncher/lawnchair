@@ -247,7 +247,7 @@ public class InvariantDeviceProfile {
     public InvariantDeviceProfile(Context context, String gridName) {
         String newName = initGrid(context, gridName);
         if (newName == null || !newName.equals(gridName)) {
-            throw new IllegalArgumentException("Unknown grid name");
+            throw new IllegalArgumentException("Unknown grid name: " + gridName);
         }
     }
 
