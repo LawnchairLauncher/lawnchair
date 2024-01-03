@@ -63,8 +63,8 @@ class ExecutorRunnableTest {
     fun run_and_complete() {
         awaitAllExecutorCompleted()
 
-        assertTrue(isTaskExecuted)
-        assertTrue(isCallbackExecuted)
+        assertTrue("task should be executed", isTaskExecuted)
+        assertTrue("callback should be executed", isCallbackExecuted)
         assertEquals(2, result)
     }
 
@@ -76,7 +76,7 @@ class ExecutorRunnableTest {
         underTest.cancel(false)
         awaitAllExecutorCompleted()
 
-        assertFalse(isCallbackExecuted)
+        assertFalse("callback should not be executed.", isCallbackExecuted)
         assertEquals(0, result)
     }
 
@@ -86,8 +86,8 @@ class ExecutorRunnableTest {
 
         underTest.cancel(false)
 
-        assertTrue(isTaskExecuted)
-        assertTrue(isCallbackExecuted)
+        assertTrue("task should be executed", isTaskExecuted)
+        assertTrue("callback should be executed", isCallbackExecuted)
         assertEquals(2, result)
     }
 

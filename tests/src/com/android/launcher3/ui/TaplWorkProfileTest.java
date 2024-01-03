@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.util.TestUtil.installDummyAppForUser;
 
 import static org.junit.Assert.assertEquals;
@@ -45,6 +46,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -98,7 +100,17 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
             launcher.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
         });
         TestUtil.uninstallDummyApp();
-        mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
+
+        mLauncher.runToState(
+                () -> {
+                    try {
+                        mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                NORMAL_STATE_ORDINAL,
+                "executing pm 'remove-user' command");
     }
 
     private void waitForWorkTabSetup() {

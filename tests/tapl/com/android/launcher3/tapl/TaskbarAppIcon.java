@@ -68,6 +68,7 @@ public final class TaskbarAppIcon extends AppIcon implements SplitscreenDragSour
 
     @Override
     protected boolean launcherStopsAfterLaunch() {
+        // false because if taskbar is showing then launcher is already stopped.
         return false;
     }
 }
