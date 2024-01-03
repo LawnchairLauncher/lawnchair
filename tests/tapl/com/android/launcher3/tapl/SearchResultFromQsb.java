@@ -39,7 +39,7 @@ public class SearchResultFromQsb implements SearchInputSource {
 
     /** Find the app from search results with app name. */
     public AppIcon findAppIcon(String appName) {
-        UiObject2 icon = mLauncher.waitForLauncherObject(By.clazz(TextView.class).text(appName));
+        UiObject2 icon = mLauncher.waitForLauncherObject(AppIcon.getAppIconSelector(appName));
         return createAppIcon(icon);
     }
 
