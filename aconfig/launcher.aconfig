@@ -105,3 +105,17 @@ flag {
     bug: "307527314"
     is_fixed_read_only: true
 }
+
+flag {
+    name: "enable_reboot_unlock_animation"
+    namespace: "launcher"
+    description: "Enables unlock animation after device reboot"
+    bug: "298231234"
+}
+
+flag {
+    name: "enable_workspace_inflation"
+    namespace: "launcher"
+    description: "Enables asnc inflation of workspace icons"
+    bug: "318539160"
+}
