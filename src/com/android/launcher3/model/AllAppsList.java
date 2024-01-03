@@ -205,6 +205,8 @@ public class AllAppsList {
                             && installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
                         continue;
                     }
+                    // TODO(b/302115555): Handle the case when archived apps are to be updated
+                    //  during unarchival start.
                     appInfo.setProgressLevel(installInfo);
 
                     updatedAppInfos.add(appInfo);

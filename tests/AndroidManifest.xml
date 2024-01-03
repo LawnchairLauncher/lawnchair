@@ -23,6 +23,14 @@
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
+
+        <receiver android:name="com.android.launcher3.compat.PromiseIconUiTest$UnarchiveBroadcastReceiver"
+                  android:enabled="true"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.UNARCHIVE_PACKAGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
     <instrumentation

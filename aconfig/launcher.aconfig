@@ -97,3 +97,10 @@ flag {
     description: "Enables full width two pane widget picker for tablets in landscape and portrait"
     bug: "315055849"
 }
+
+flag {
+    name: "enable_support_for_archiving"
+    namespace: "launcher"
+    description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."
+    bug: "210590852"
+}
