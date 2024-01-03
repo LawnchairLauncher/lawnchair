@@ -225,7 +225,7 @@ public final class FeatureFlags {
                 // Task bar pinning and task bar nav bar unification are both dependent on
                 // ENABLE_TASKBAR_NO_RECREATION. We want to turn ENABLE_TASKBAR_NO_RECREATION on
                 // when either of the dependent features is turned on.
-                || ENABLE_TASKBAR_PINNING.get() || ENABLE_TASKBAR_NAVBAR_UNIFICATION;
+                || enableTaskbarPinning() || ENABLE_TASKBAR_NAVBAR_UNIFICATION;
     }
 
     // TODO(Block 16): Clean up flags
