@@ -21,6 +21,7 @@ import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_SCROLL;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.AXIS_GESTURE_SWIPE_FINGER_COUNT;
 
@@ -1703,6 +1704,16 @@ public final class LauncherInstrumentation {
                 "scrolling");
     }
 
+    void pointerScroll(float pointerX, float pointerY, Direction direction) {
+        executeAndWaitForLauncherEvent(
+                () -> injectEvent(getPointerMotionEvent(
+                        ACTION_SCROLL, pointerX, pointerY, direction)),
+                event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
+                () -> "Didn't receive a scroll end message: " + direction + " scroll from ("
+                        + pointerX + ", " + pointerY + ")",
+                "scrolling");
+    }
+
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
     public void linearGesture(int startX, int startY, int endX, int endY, int steps,
@@ -1764,6 +1775,41 @@ public final class LauncherInstrumentation {
 
     public Resources getResources() {
         return getContext().getResources();
+    }
+
+    private static MotionEvent getPointerMotionEvent(
+            int action, float x, float y, Direction direction) {
+        MotionEvent.PointerCoords[] coordinates = new MotionEvent.PointerCoords[1];
+        coordinates[0] = new MotionEvent.PointerCoords();
+        coordinates[0].x = x;
+        coordinates[0].y = y;
+        boolean isVertical = direction == Direction.UP || direction == Direction.DOWN;
+        boolean isForward = direction == Direction.RIGHT || direction == Direction.DOWN;
+        coordinates[0].setAxisValue(
+                isVertical ? MotionEvent.AXIS_VSCROLL : MotionEvent.AXIS_HSCROLL,
+                isForward ? 1f : -1f);
+
+        MotionEvent.PointerProperties[] properties = new MotionEvent.PointerProperties[1];
+        properties[0] = new MotionEvent.PointerProperties();
+        properties[0].id = 0;
+        properties[0].toolType = MotionEvent.TOOL_TYPE_MOUSE;
+
+        final long downTime = SystemClock.uptimeMillis();
+        return MotionEvent.obtain(
+                downTime,
+                downTime,
+                action,
+                /* pointerCount= */ 1,
+                properties,
+                coordinates,
+                /* metaState= */ 0,
+                /* buttonState= */ 0,
+                /* xPrecision= */ 1f,
+                /* yPrecision= */ 1f,
+                /* deviceId= */ 0,
+                /* edgeFlags= */ 0,
+                InputDevice.SOURCE_CLASS_POINTER,
+                /* flags= */ 0);
     }
 
     private static MotionEvent getTrackpadMotionEvent(long downTime, long eventTime,
