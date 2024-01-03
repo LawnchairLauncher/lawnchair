@@ -266,8 +266,8 @@ public class QuickstepLauncher extends Launcher {
         mAppTransitionManager.registerRemoteTransitions();
 
         if (FeatureFlags.enableHomeTransitionListener()) {
-            mHomeTransitionController = new HomeTransitionController(this);
-            mHomeTransitionController.registerHomeTransitionListener();
+            mHomeTransitionController = new HomeTransitionController();
+            mHomeTransitionController.registerHomeTransitionListener(this);
         }
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
