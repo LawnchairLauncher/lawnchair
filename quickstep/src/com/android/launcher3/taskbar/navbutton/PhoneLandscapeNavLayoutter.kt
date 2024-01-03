@@ -106,7 +106,7 @@ open class PhoneLandscapeNavLayoutter(
             }
         }
 
-        repositionContextualButtons()
+        repositionContextualButtons(contextualButtonHeight.toInt())
     }
 
     open fun addThreeButtons() {
@@ -116,13 +116,15 @@ open class PhoneLandscapeNavLayoutter(
         navButtonContainer.addView(backButton)
     }
 
-    open fun repositionContextualButtons() {
+    open fun repositionContextualButtons(buttonSize: Int) {
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        val contextualMargin = resources.getDimensionPixelSize(
-                R.dimen.taskbar_contextual_button_padding)
-        repositionContextualContainer(startContextualContainer, contextualMargin, Gravity.TOP)
+        val roundedCornerContentMargin = resources.getDimensionPixelSize(
+                R.dimen.taskbar_phone_rounded_corner_content_margin)
+        val contentPadding = resources.getDimensionPixelSize(R.dimen.taskbar_phone_content_padding)
+        repositionContextualContainer(startContextualContainer, buttonSize,
+                roundedCornerContentMargin + contentPadding, 0, Gravity.TOP)
 
         if (imeSwitcher != null) {
             startContextualContainer.addView(imeSwitcher)
@@ -137,15 +139,16 @@ open class PhoneLandscapeNavLayoutter(
         }
     }
 
-    override fun repositionContextualContainer(contextualContainer: ViewGroup, barAxisMargin: Int,
+    override fun repositionContextualContainer(contextualContainer: ViewGroup, buttonSize: Int,
+                                               barAxisMarginTop: Int, barAxisMarginBottom: Int,
                                                gravity: Int) {
         val contextualContainerParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                ViewGroup.LayoutParams.MATCH_PARENT, buttonSize)
         contextualContainerParams.apply {
             marginStart = 0
             marginEnd = 0
-            topMargin = barAxisMargin
-            bottomMargin = barAxisMargin
+            topMargin = barAxisMarginTop
+            bottomMargin = barAxisMarginBottom
         }
         contextualContainerParams.gravity = gravity or Gravity.CENTER_HORIZONTAL
         contextualContainer.layoutParams = contextualContainerParams

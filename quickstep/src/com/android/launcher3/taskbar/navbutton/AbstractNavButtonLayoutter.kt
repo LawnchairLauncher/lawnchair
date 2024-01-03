@@ -65,18 +65,19 @@ abstract class AbstractNavButtonLayoutter(
 
     fun getParamsToCenterView(): FrameLayout.LayoutParams {
         val params = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         params.gravity = Gravity.CENTER
         return params;
     }
 
-    open fun repositionContextualContainer(contextualContainer: ViewGroup, barAxisMargin: Int,
+    open fun repositionContextualContainer(contextualContainer: ViewGroup, buttonSize: Int,
+                                           barAxisMarginStart: Int, barAxisMarginEnd: Int,
                                            gravity: Int) {
         val contextualContainerParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                buttonSize, ViewGroup.LayoutParams.MATCH_PARENT)
         contextualContainerParams.apply {
-            marginStart = barAxisMargin
-            marginEnd = barAxisMargin
+            marginStart = barAxisMarginStart
+            marginEnd = barAxisMarginEnd
             topMargin = 0
             bottomMargin = 0
         }

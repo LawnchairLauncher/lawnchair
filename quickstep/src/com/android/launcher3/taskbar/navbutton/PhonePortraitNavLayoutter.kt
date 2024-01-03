@@ -110,9 +110,8 @@ class PhonePortraitNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        val contextualMargin = resources.getDimensionPixelSize(
-                R.dimen.taskbar_contextual_button_padding)
-        repositionContextualContainer(endContextualContainer, contextualMargin, Gravity.END)
+        repositionContextualContainer(endContextualContainer, contextualButtonWidth.toInt(), 0,
+                roundedCornerContentMargin + contentPadding, Gravity.END)
 
         if (imeSwitcher != null) {
             endContextualContainer.addView(imeSwitcher)
