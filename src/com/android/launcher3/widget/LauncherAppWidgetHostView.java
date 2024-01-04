@@ -45,7 +45,6 @@ import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -96,8 +95,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     private boolean mTrackingWidgetUpdate = false;
 
-    private boolean mIsWidgetCachingDisabled = false;
-
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
@@ -144,10 +141,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
     }
 
-    public void setIsWidgetCachingDisabled(boolean isWidgetCachingDisabled) {
-        mIsWidgetCachingDisabled = isWidgetCachingDisabled;
-    }
-
     @Override
     @TargetApi(Build.VERSION_CODES.Q)
     public void updateAppWidget(RemoteViews remoteViews) {
@@ -157,19 +150,11 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
                     TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
             mTrackingWidgetUpdate = false;
         }
-        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()
-                && !mIsWidgetCachingDisabled) {
+        if (isDeferringUpdates()) {
             mLastRemoteViews = remoteViews;
-            if (isDeferringUpdates()) {
-                return;
-            }
-        } else {
-            if (isDeferringUpdates()) {
-                mLastRemoteViews = remoteViews;
-                return;
-            }
-            mLastRemoteViews = null;
+            return;
         }
+        mLastRemoteViews = null;
 
         super.updateAppWidget(remoteViews);
 
@@ -436,22 +421,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             target.advance();
         }
         scheduleNextAdvance();
-    }
-
-    public void reInflate() {
-        if (!isAttachedToWindow()) {
-            return;
-        }
-        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-        if (info == null) {
-            // This occurs when LauncherAppWidgetHostView is used to render a preview layout.
-            return;
-        }
-        // Remove and rebind the current widget (which was inflated in the wrong
-        // orientation), but don't delete it from the database
-        mLauncher.removeItem(this, info, false  /* deleteFromDb */,
-                "widget removed because of configuration change");
-        mLauncher.bindAppWidget(info);
     }
 
     @Override

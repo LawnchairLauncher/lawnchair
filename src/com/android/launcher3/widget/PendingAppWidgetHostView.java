@@ -24,11 +24,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.SizeF;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
@@ -46,7 +48,6 @@ import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
@@ -56,11 +57,20 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
 
+    private static final int FLAG_DRAW_SETTINGS = 1;
+    private static final int FLAG_DRAW_ICON = 2;
+    private static final int FLAG_DRAW_LABEL = 4;
+
+    private static final int DEFERRED_ALPHA = 0x77;
+
     private final Rect mRect = new Rect();
     private OnClickListener mClickListener;
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
     private final boolean mDisabledForSafeMode;
+    private final CharSequence mLabel;
+
+    private int mDragFlags;
 
     private Drawable mCenterDrawable;
     private Drawable mSettingIconDrawable;
@@ -72,18 +82,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
             IconCache cache, boolean disabledForSafeMode) {
-        super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
-
-        mInfo = info;
-        mStartState = info.restoreStatus;
-        mDisabledForSafeMode = disabledForSafeMode;
-
-        mPaint = new TextPaint();
-        mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
-        mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
-                mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
-        setBackgroundResource(R.drawable.pending_widget_bg);
-        setWillNotDraw(false);
+        this(context, info, disabledForSafeMode,
+                context.getResources().getText(R.string.gadget_complete_setup_text));
 
         super.updateAppWidget(null);
         setOnClickListener(mLauncher.getItemOnClickListener());
@@ -97,13 +97,60 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         }
     }
 
+    public PendingAppWidgetHostView(
+            Context context, int appWidgetId, LauncherAppWidgetProviderInfo appWidget) {
+        this(context, new LauncherAppWidgetInfo(appWidgetId, appWidget.provider), false,
+                appWidget.label);
+        getBackground().mutate().setAlpha(DEFERRED_ALPHA);
+
+        mCenterDrawable = new ColorDrawable(Color.TRANSPARENT);
+        mDragFlags = FLAG_DRAW_LABEL;
+        mDrawableSizeChanged = true;
+    }
+
+    private PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
+            boolean disabledForSafeMode, CharSequence label) {
+        super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
+
+        mInfo = info;
+        mStartState = info.restoreStatus;
+        mDisabledForSafeMode = disabledForSafeMode;
+        mLabel = label;
+
+        mPaint = new TextPaint();
+        mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
+        mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
+                mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
+
+        setWillNotDraw(false);
+        setBackgroundResource(R.drawable.pending_widget_bg);
+    }
+
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
         WidgetManagerHelper widgetManagerHelper = new WidgetManagerHelper(getContext());
         if (widgetManagerHelper.isAppWidgetRestored(mInfo.appWidgetId)) {
-            super.updateAppWidget(remoteViews);
             reInflate();
         }
+    }
+
+    /**
+     * Forces the Launcher to reinflate the widget view
+     */
+    public void reInflate() {
+        if (!isAttachedToWindow()) {
+            return;
+        }
+        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+        if (info == null) {
+            // This occurs when LauncherAppWidgetHostView is used to render a preview layout.
+            return;
+        }
+        // Remove and rebind the current widget (which was inflated in the wrong
+        // orientation), but don't delete it from the database
+        mLauncher.removeItem(this, info, false  /* deleteFromDb */,
+                "widget removed because of configuration change");
+        mLauncher.bindAppWidget(info);
     }
 
     @Override
@@ -147,7 +194,10 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             mCenterDrawable.setCallback(null);
             mCenterDrawable = null;
         }
+        mDragFlags = 0;
         if (info.bitmap.icon != null) {
+            mDragFlags = FLAG_DRAW_ICON;
+
             Drawable widgetCategoryIcon = getWidgetCategoryIcon();
             // The view displays three modes,
             //   1) App icon in the center
@@ -169,6 +219,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
                         : widgetCategoryIcon;
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
                 updateSettingColor(info.bitmap.color);
+
+                mDragFlags |= FLAG_DRAW_SETTINGS | FLAG_DRAW_LABEL;
             } else {
                 mCenterDrawable = widgetCategoryIcon == null
                         ? newPendingIcon(getContext(), info)
@@ -239,68 +291,63 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         int availableWidth = getWidth() - paddingLeft - paddingRight - 2 * minPadding;
         int availableHeight = getHeight() - paddingTop - paddingBottom - 2 * minPadding;
 
-        if (mSettingIconDrawable == null) {
-            int maxSize = grid.iconSizePx;
-            int size = Math.min(maxSize, Math.min(availableWidth, availableHeight));
+        float iconSize = ((mDragFlags & FLAG_DRAW_ICON) == 0) ? 0
+                : Math.max(0, Math.min(availableWidth, availableHeight));
+        // Use twice the setting size factor, as the setting is drawn at a corner and the
+        // icon is drawn in the center.
+        float settingIconScaleFactor = ((mDragFlags & FLAG_DRAW_SETTINGS) == 0) ? 0
+                : 1 + SETUP_ICON_SIZE_FACTOR * 2;
 
-            mRect.set(0, 0, size, size);
-            mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
-            mCenterDrawable.setBounds(mRect);
-        } else  {
-            float iconSize = Math.max(0, Math.min(availableWidth, availableHeight));
+        int maxSize = Math.max(availableWidth, availableHeight);
+        if (iconSize * settingIconScaleFactor > maxSize) {
+            // There is an overlap
+            iconSize = maxSize / settingIconScaleFactor;
+        }
 
-            // Use twice the setting size factor, as the setting is drawn at a corner and the
-            // icon is drawn in the center.
-            float settingIconScaleFactor = 1 + SETUP_ICON_SIZE_FACTOR * 2;
-            int maxSize = Math.max(availableWidth, availableHeight);
-            if (iconSize * settingIconScaleFactor > maxSize) {
-                // There is an overlap
-                iconSize = maxSize / settingIconScaleFactor;
+        int actualIconSize = (int) Math.min(iconSize, grid.iconSizePx);
+
+        // Icon top when we do not draw the text
+        int iconTop = (getHeight() - actualIconSize) / 2;
+        mSetupTextLayout = null;
+
+        if (availableWidth > 0 && !TextUtils.isEmpty(mLabel)
+                && ((mDragFlags & FLAG_DRAW_LABEL) != 0)) {
+            // Recreate the setup text.
+            mSetupTextLayout = new StaticLayout(
+                    mLabel, mPaint, availableWidth, Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+            int textHeight = mSetupTextLayout.getHeight();
+
+            // Extra icon size due to the setting icon
+            float minHeightWithText = textHeight + actualIconSize * settingIconScaleFactor
+                    + grid.iconDrawablePaddingPx;
+
+            if (minHeightWithText < availableHeight) {
+                // We can draw the text as well
+                iconTop = (getHeight() - textHeight
+                        - grid.iconDrawablePaddingPx - actualIconSize) / 2;
+
+            } else {
+                // We can't draw the text. Let the iconTop be same as before.
+                mSetupTextLayout = null;
             }
+        }
 
-            int actualIconSize = (int) Math.min(iconSize, grid.iconSizePx);
+        mRect.set(0, 0, actualIconSize, actualIconSize);
+        mRect.offset((getWidth() - actualIconSize) / 2, iconTop);
+        mCenterDrawable.setBounds(mRect);
 
-            // Icon top when we do not draw the text
-            int iconTop = (getHeight() - actualIconSize) / 2;
-            mSetupTextLayout = null;
-
-            if (availableWidth > 0) {
-                // Recreate the setup text.
-                mSetupTextLayout = new StaticLayout(
-                        getResources().getText(R.string.gadget_complete_setup_text), mPaint,
-                        availableWidth, Layout.Alignment.ALIGN_CENTER, 1, 0, true);
-                int textHeight = mSetupTextLayout.getHeight();
-
-                // Extra icon size due to the setting icon
-                float minHeightWithText = textHeight + actualIconSize * settingIconScaleFactor
-                        + grid.iconDrawablePaddingPx;
-
-                if (minHeightWithText < availableHeight) {
-                    // We can draw the text as well
-                    iconTop = (getHeight() - textHeight -
-                            grid.iconDrawablePaddingPx - actualIconSize) / 2;
-
-                } else {
-                    // We can't draw the text. Let the iconTop be same as before.
-                    mSetupTextLayout = null;
-                }
-            }
-
-            mRect.set(0, 0, actualIconSize, actualIconSize);
-            mRect.offset((getWidth() - actualIconSize) / 2, iconTop);
-            mCenterDrawable.setBounds(mRect);
-
+        if (mSettingIconDrawable != null) {
             mRect.left = paddingLeft + minPadding;
             mRect.right = mRect.left + (int) (SETUP_ICON_SIZE_FACTOR * actualIconSize);
             mRect.top = paddingTop + minPadding;
             mRect.bottom = mRect.top + (int) (SETUP_ICON_SIZE_FACTOR * actualIconSize);
             mSettingIconDrawable.setBounds(mRect);
+        }
 
-            if (mSetupTextLayout != null) {
-                // Set up position for dragging the text
-                mRect.left = paddingLeft + minPadding;
-                mRect.top = mCenterDrawable.getBounds().bottom + grid.iconDrawablePaddingPx;
-            }
+        if (mSetupTextLayout != null) {
+            // Set up position for dragging the text
+            mRect.left = paddingLeft + minPadding;
+            mRect.top = mCenterDrawable.getBounds().bottom + grid.iconDrawablePaddingPx;
         }
     }
 

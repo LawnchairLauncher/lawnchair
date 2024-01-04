@@ -387,10 +387,6 @@ public final class FeatureFlags {
             "ENABLE_NEW_MIGRATION_LOGIC", ENABLED,
             "Enable the new grid migration logic, keeping pages when src < dest");
 
-    public static final BooleanFlag ENABLE_CACHED_WIDGET = getDebugFlag(270395008,
-            "ENABLE_CACHED_WIDGET", ENABLED,
-            "Show previously cached widgets as opposed to deferred widget where available");
-
     // TODO(Block 25): Clean up flags
     public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(270396257,
             "ENABLE_NEW_GESTURE_NAV_TUTORIAL", ENABLED,
