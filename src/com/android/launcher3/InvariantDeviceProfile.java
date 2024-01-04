@@ -170,6 +170,7 @@ public class InvariantDeviceProfile {
      * Number of columns in the all apps list.
      */
     public int numAllAppsColumns;
+    public int numAllAppsRowsForCellHeightCalculation;
     public int numDatabaseAllAppsColumns;
     public @StyleRes int allAppsStyle;
 
@@ -393,6 +394,8 @@ public class InvariantDeviceProfile {
         workspaceCellSpecsTwoPanelId = closestProfile.mWorkspaceCellSpecsTwoPanelId;
         allAppsCellSpecsId = closestProfile.mAllAppsCellSpecsId;
         allAppsCellSpecsTwoPanelId = closestProfile.mAllAppsCellSpecsTwoPanelId;
+        numAllAppsRowsForCellHeightCalculation =
+                closestProfile.mNumAllAppsRowsForCellHeightCalculation;
         this.deviceType = deviceType;
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
@@ -423,6 +426,7 @@ public class InvariantDeviceProfile {
         allAppsStyle = closestProfile.allAppsStyle;
 
         numAllAppsColumns = closestProfile.numAllAppsColumns;
+
         numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseAllAppsColumns : closestProfile.numAllAppsColumns;
 
@@ -821,6 +825,7 @@ public class InvariantDeviceProfile {
 
         private final @StyleRes int allAppsStyle;
         private final int numAllAppsColumns;
+        private final int mNumAllAppsRowsForCellHeightCalculation;
         private final int numDatabaseAllAppsColumns;
         private final int numHotseatIcons;
         private final int numDatabaseHotseatIcons;
@@ -971,6 +976,9 @@ public class InvariantDeviceProfile {
                 mAllAppsCellSpecsTwoPanelId = a.getResourceId(
                         R.styleable.GridDisplayOption_allAppsCellSpecsTwoPanelId,
                         INVALID_RESOURCE_HANDLE);
+                mNumAllAppsRowsForCellHeightCalculation = a.getInt(
+                        R.styleable.GridDisplayOption_numAllAppsRowsForCellHeightCalculation,
+                        numRows);
             } else {
                 mWorkspaceSpecsId = INVALID_RESOURCE_HANDLE;
                 mWorkspaceSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
@@ -984,6 +992,7 @@ public class InvariantDeviceProfile {
                 mWorkspaceCellSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
                 mAllAppsCellSpecsId = INVALID_RESOURCE_HANDLE;
                 mAllAppsCellSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+                mNumAllAppsRowsForCellHeightCalculation = numRows;
             }
 
             int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,

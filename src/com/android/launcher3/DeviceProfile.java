@@ -640,8 +640,8 @@ public class DeviceProfile {
                     DimensionType.WIDTH, numShownAllAppsColumns, availableWidthPx,
                     mResponsiveWorkspaceWidthSpec);
             mResponsiveAllAppsHeightSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.HEIGHT, inv.numRows,  heightPx - mInsets.top,
-                    mResponsiveWorkspaceHeightSpec);
+                    DimensionType.HEIGHT, inv.numAllAppsRowsForCellHeightCalculation,
+                    heightPx - mInsets.top, mResponsiveWorkspaceHeightSpec);
 
             ResponsiveSpecsProvider folderSpecs = ResponsiveSpecsProvider.create(
                     new ResourceHelper(context,
@@ -1341,7 +1341,7 @@ public class DeviceProfile {
 
         if (allAppsCellHeightPx < cellContentDimensions.getCellContentHeight()) {
             if (isVerticalBarLayout()) {
-                if (allAppsCellHeightPx < iconSizePx) {
+                if (allAppsCellHeightPx < allAppsIconSizePx) {
                     cellContentDimensions.setIconSizePx(
                             mIconSizeSteps.getIconSmallerThan(allAppsCellHeightPx));
                 }
