@@ -23,6 +23,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
@@ -199,8 +201,12 @@ public class PredictionRowView<T extends Context & ActivityContext>
                 icon.setOnFocusChangeListener(mFocusHelper);
 
                 LayoutParams lp = (LayoutParams) icon.getLayoutParams();
-                // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                lp.height = mActivityContext.getDeviceProfile().allAppsCellHeightPx;
+                if (Flags.enableFocusOutline()) {
+                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                } else {
+                    // Ensure the all apps icon height matches the workspace icons in portrait mode.
+                    lp.height = mActivityContext.getDeviceProfile().allAppsCellHeightPx;
+                }
                 lp.width = 0;
                 lp.weight = 1;
                 addView(icon);

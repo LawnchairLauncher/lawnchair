@@ -56,7 +56,7 @@
     <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
-    <dimen name="resize_frame_margin">23dp</dimen>
+    <dimen name="resize_frame_margin">22dp</dimen>
     <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">24dp</dimen>
 
     <!-- App widget reconfigure button -->
@@ -369,6 +369,11 @@
     <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
     <dimen name="taskbar_phone_size">@*android:dimen/navigation_bar_frame_height</dimen>
+    <dimen name="taskbar_phone_home_button_size">80dp</dimen>
+    <dimen name="taskbar_phone_content_padding">8dp</dimen>
+    <dimen name="taskbar_phone_rounded_corner_content_margin">
+        @*android:dimen/rounded_corner_content_padding
+    </dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
     <dimen name="qsb_shadow_height">0dp</dimen>

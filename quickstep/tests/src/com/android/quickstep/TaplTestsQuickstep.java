@@ -210,11 +210,12 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         return launcher.<RecentsView>getOverviewPanel().getBottomRowTaskCountForTablet();
     }
 
-    @Ignore
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord // b/238461765
     public void testSwitchToOverview() throws Exception {
         startTestAppsWithCheck();
         assertNotNull("Workspace.switchToOverview() returned null",
@@ -236,7 +237,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         }
     }
 
-    @Ignore
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+
     @Test
     @NavigationModeSwitch
     @PortraitLandscape

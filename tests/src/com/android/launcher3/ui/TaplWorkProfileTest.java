@@ -21,6 +21,8 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.util.TestUtil.installDummyAppForUser;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,10 +42,10 @@ import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -135,8 +137,10 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
                 LauncherInstrumentation.WAIT_TIME_MS);
     }
 
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+
     @Test
-    @Ignore("b/243855320")
     public void toggleWorks() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
