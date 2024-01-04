@@ -30,6 +30,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDG
 import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_PROFILE_NOT_RESTORED;
 import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_WIDGETS_DISABLED;
 import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_WIDGET_REMOVED;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_BR_METRICS;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
 
@@ -198,7 +199,7 @@ public class RestoreDbTask {
         Arrays.fill(args, "?");
         final String where = "profileId NOT IN (" + TextUtils.join(", ", Arrays.asList(args)) + ")";
         logFavoritesTable(db, "items to delete from unrestored profiles:", where, profileIds);
-        if (enableLauncherBrMetrics()) {
+        if (enableLauncherBrMetrics() || ENABLE_LAUNCHER_BR_METRICS.get()) {
             reportUnrestoredProfiles(db, where, profileIds, restoreEventLogger);
         }
         int itemsDeletedCount = db.delete(Favorites.TABLE_NAME, where, profileIds);
@@ -360,7 +361,7 @@ public class RestoreDbTask {
         DeviceGridState deviceGridState = new DeviceGridState(context);
         FileLog.d(TAG, "restore initiated from backup: DeviceGridState=" + deviceGridState);
         LauncherPrefs.get(context).putSync(RESTORE_DEVICE.to(deviceGridState.getDeviceType()));
-        if (enableLauncherBrMetrics()) {
+        if (enableLauncherBrMetrics() || ENABLE_LAUNCHER_BR_METRICS.get()) {
             LauncherPrefs.get(context).putSync(IS_FIRST_LOAD_AFTER_RESTORE.to(true));
         }
     }
