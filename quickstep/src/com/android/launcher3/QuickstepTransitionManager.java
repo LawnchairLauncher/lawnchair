@@ -1607,7 +1607,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 || mLauncher.getWorkspace().isOverlayShown()
                 || shouldPlayFallbackClosingAnimation(appTargets);
 
-        boolean playWorkspaceReveal = true;
+        boolean playWorkspaceReveal = !fromPredictiveBack;
         boolean skipAllAppsScale = false;
         if (fromUnlock) {
             anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
@@ -1649,7 +1649,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         // targets list because it is already visible). In that case, we force
         // invisibility on touch down, and only reset it after the animation to home
         // is initialized.
-        if (launcherIsForceInvisibleOrOpening) {
+        if (launcherIsForceInvisibleOrOpening || fromPredictiveBack) {
             addCujInstrumentation(anim, playFallBackAnimation
                     ? Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK
                     : Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
@@ -1666,7 +1666,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             // Only register the content animation for cancellation when state changes
             mLauncher.getStateManager().setCurrentAnimation(anim);
 
-            if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+            if (mLauncher.isInState(LauncherState.ALL_APPS) && !fromPredictiveBack) {
                 Pair<AnimatorSet, Runnable> contentAnimator =
                         getLauncherContentAnimator(false, LAUNCHER_RESUME_START_DELAY,
                                 skipAllAppsScale);
@@ -1677,10 +1677,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         contentAnimator.second.run();
                     }
                 });
-            } else {
-                if (playWorkspaceReveal) {
+            } else if (playWorkspaceReveal) {
                     anim.play(new WorkspaceRevealAnim(mLauncher, false).getAnimators());
-                }
             }
         }
 
