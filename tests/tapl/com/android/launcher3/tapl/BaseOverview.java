@@ -16,7 +16,10 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_ESCAPE;
+
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Rect;
 
@@ -27,15 +30,24 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.shared.TestProtocol;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Common overview panel for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
+
+    private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
+    private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
+
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
     BaseOverview(LauncherInstrumentation launcher) {
@@ -365,6 +377,23 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         }
         // Overview actions aren't visible for split screen tasks.
         return !task.isTaskSplit();
+    }
+
+    /**
+     * Presses the esc key to dismiss Overview.
+     */
+    public Workspace dismissByEscKey() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
+                    NORMAL_STATE_ORDINAL, "pressing esc key");
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed esc key")) {
+                return mLauncher.getWorkspace();
+            }
+        }
     }
 
     private void verifyActionsViewVisibility() {
