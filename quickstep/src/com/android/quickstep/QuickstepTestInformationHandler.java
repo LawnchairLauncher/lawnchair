@@ -154,6 +154,14 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 // Allow null-pointer to catch illegal states.
                 runOnTISBinder(tisBinder -> tisBinder.getTaskbarManager().recreateTaskbar());
                 return response;
+
+            case TestProtocol.REQUEST_UNSTASH_BUBBLE_BAR_IF_STASHED:
+                runOnTISBinder(tisBinder -> {
+                    // Allow null-pointer to catch illegal states.
+                    tisBinder.getTaskbarManager().getCurrentActivityContext()
+                            .unstashBubbleBarIfStashed();
+                });
+                return response;
         }
 
         return super.call(method, arg, extras);

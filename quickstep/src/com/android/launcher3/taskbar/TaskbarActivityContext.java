@@ -1341,6 +1341,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
     }
 
+    /** Unstashes the Bubble Bar if it is stashed. */
+    @VisibleForTesting
+    public void unstashBubbleBarIfStashed() {
+        mControllers.bubbleControllers.ifPresent(bubbleControllers -> {
+            if (bubbleControllers.bubbleStashController.isStashed()) {
+                bubbleControllers.bubbleStashController.showBubbleBar(false);
+            }
+        });
+    }
+
     protected boolean isUserSetupComplete() {
         return mIsUserSetupComplete;
     }

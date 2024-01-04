@@ -172,6 +172,9 @@ public final class TestProtocol {
 
     public static final String REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW = "enable-grid-only-overview";
 
+    public static final String REQUEST_UNSTASH_BUBBLE_BAR_IF_STASHED =
+            "unstash-bubble-bar-if-stashed";
+
     /** Logs {@link Log#d(String, String)} if {@link #sDebugTracing} is true. */
     public static void testLogD(String tag, String message) {
         if (!sDebugTracing) {
