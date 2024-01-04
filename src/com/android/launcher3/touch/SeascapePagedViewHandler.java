@@ -285,7 +285,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         primaryIconView.setTranslationX(0);
         secondaryIconView.setTranslationX(0);
         if (enableOverviewIconMenu()) {
-            if (isRtl) {
+            if (primaryIconView.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
                 primaryIconView.setTranslationY(groupedTaskViewHeight - primarySnapshotHeight);
                 secondaryIconView.setTranslationY(0);
             } else {
@@ -295,25 +295,14 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         } else if (splitConfig.initiatedFromSeascape) {
             // if the split was initiated from seascape,
             // the task on the right (secondary) is slightly larger
-            if (isRtl) {
-                primaryIconView.setTranslationY(bottomToMidpointOffset - insetOffset);
-                secondaryIconView.setTranslationY(bottomToMidpointOffset - insetOffset
-                        + taskIconHeight);
-            } else {
-                primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset
-                        + taskIconHeight);
-                secondaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset);
-            }
+            primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset
+                    + taskIconHeight);
+            secondaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset);
         } else {
             // if not,
             // the task on the left (primary) is slightly larger
-            if (isRtl) {
-                primaryIconView.setTranslationY(bottomToMidpointOffset);
-                secondaryIconView.setTranslationY(bottomToMidpointOffset + taskIconHeight);
-            } else {
-                primaryIconView.setTranslationY(-bottomToMidpointOffset + taskIconHeight);
-                secondaryIconView.setTranslationY(-bottomToMidpointOffset);
-            }
+            primaryIconView.setTranslationY(-bottomToMidpointOffset + taskIconHeight);
+            secondaryIconView.setTranslationY(-bottomToMidpointOffset);
         }
 
         primaryIconView.setLayoutParams(primaryIconParams);
