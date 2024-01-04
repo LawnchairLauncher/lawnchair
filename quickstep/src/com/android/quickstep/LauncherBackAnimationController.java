@@ -54,12 +54,14 @@ import android.window.IOnBackInvokedCallback;
 
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.systemui.shared.system.QuickStepContract;
 
@@ -108,6 +110,7 @@ public class LauncherBackAnimationController {
     private final PointF mInitialTouchPos = new PointF();
 
     private RemoteAnimationTarget mBackTarget;
+    private View mLauncherTargetView;
     private SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
     private boolean mSpringAnimationInProgress = false;
     private boolean mAnimatorSetInProgress = false;
@@ -303,9 +306,20 @@ public class LauncherBackAnimationController {
             int insetBottom = mStartRect.bottom - appTarget.contentInsets.bottom;
             mStartRect.set(mStartRect.left, mStartRect.top, mStartRect.right, insetBottom);
         }
+        mLauncherTargetView = mQuickstepTransitionManager.findLauncherView(
+                new RemoteAnimationTarget[]{ mBackTarget });
+        setLauncherTargetViewVisible(false);
         mCurrentRect.set(mStartRect);
         addScrimLayer();
         mTransaction.apply();
+    }
+
+    private void setLauncherTargetViewVisible(boolean isVisible) {
+        if (mLauncherTargetView instanceof BubbleTextView) {
+            ((BubbleTextView) mLauncherTargetView).setIconVisible(isVisible);
+        } else if (mLauncherTargetView instanceof LauncherAppWidgetHostView) {
+            mLauncherTargetView.setAlpha(isVisible ? 1f : 0f);
+        }
     }
 
     void addScrimLayer() {
@@ -436,6 +450,8 @@ public class LauncherBackAnimationController {
             mLauncher.getStateManager().moveToRestState();
         }
 
+        setLauncherTargetViewVisible(true);
+
         // Explicitly close opened floating views (which is typically called from
         // Launcher#onResumed, but in the predictive back flow launcher is not resumed until
         // the transition is fully finished.)
@@ -470,6 +486,8 @@ public class LauncherBackAnimationController {
         mInitialTouchPos.set(0, 0);
         mAnimatorSetInProgress = false;
         mSpringAnimationInProgress = false;
+        setLauncherTargetViewVisible(true);
+        mLauncherTargetView = null;
         // We don't call customizeStatusBarAppearance here to prevent the status bar update with
         // the legacy appearance. It should be refreshed after the transition done.
         mOverridingStatusBarFlags = false;
