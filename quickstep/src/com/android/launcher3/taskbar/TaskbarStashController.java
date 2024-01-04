@@ -21,9 +21,7 @@ import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.FINAL_FRAME;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
-import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_SHOW;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
@@ -59,7 +57,6 @@ import androidx.annotation.VisibleForTesting;
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
@@ -949,8 +946,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return false;
         }
         // Do not stash if pinned taskbar and hardware keyboard is attached.
-        if (mActivity.isHardwareKeyboard() && enableTaskbarPinning()
-                && LauncherPrefs.get(mActivity).get(TASKBAR_PINNING)) {
+        if (mActivity.isHardwareKeyboard() && DisplayController.isPinnedTaskbar(mActivity)) {
             return false;
         }
         return mIsImeShowing || mIsImeSwitcherShowing;

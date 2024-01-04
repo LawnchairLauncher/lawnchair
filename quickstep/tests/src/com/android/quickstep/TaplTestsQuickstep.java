@@ -336,7 +336,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @TaskbarModeSwitch
-    @Ignore // b/314873201
+    @ScreenRecord // b/314873201
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
