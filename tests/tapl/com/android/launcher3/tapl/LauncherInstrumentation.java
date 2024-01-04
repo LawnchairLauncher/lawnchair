@@ -278,20 +278,34 @@ public final class LauncherInstrumentation {
         assertNotNull("Cannot find content provider for " + testProviderAuthority, pi);
         ComponentName cn = new ComponentName(pi.packageName, pi.name);
 
+        final int iterations = isLauncherTest ? 300 : 100;
+
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
             if (TestHelpers.isInLauncherProcess()) {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
             } else {
                 try {
                     final int userId = getContext().getUserId();
+                    final String launcherPidCommand = "pidof " + pi.packageName;
+                    final String initialPid = mDevice.executeShellCommand(launcherPidCommand);
+
                     mDevice.executeShellCommand(
                             "pm enable --user " + userId + " " + cn.flattenToString());
+
+                    // Wait for Launcher restart after enabling test provider.
+                    for (int i = 0; i < iterations; ++i) {
+                        final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
+                                .replaceAll("\\s", "");
+                        if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
+                        if (i == iterations - 1) {
+                            fail("Launcher didn't restart after enabling test provider");
+                        }
+                        SystemClock.sleep(100);
+                    }
                 } catch (IOException e) {
                     fail(e.toString());
                 }
             }
-
-            final int iterations = isLauncherTest ? 300 : 100;
 
             // Wait for Launcher content provider to become enabled.
             for (int i = 0; i < iterations; ++i) {
