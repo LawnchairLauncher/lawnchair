@@ -131,4 +131,12 @@ public class HomeAllApps extends AllApps {
             return new Workspace(mLauncher);
         }
     }
+
+    @Override
+    protected void touchOutside(boolean tapRight, UiObject2 container) {
+        mLauncher.runToState(
+                () -> super.touchOutside(tapRight, container),
+                NORMAL_STATE_ORDINAL,
+                "touching outside");
+    }
 }

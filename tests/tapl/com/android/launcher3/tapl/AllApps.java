@@ -375,12 +375,16 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
                     ? mLauncher.waitForLauncherObject(FAST_SCROLLER_RES_ID) :
                     mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
 
-            mLauncher.touchOutsideContainer(container, tapRight, false);
+            touchOutside(tapRight, container);
             try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
                     "tapped outside AllApps bottom sheet")) {
                 verifyVisibleContainerOnDismiss();
             }
         }
+    }
+
+    protected void touchOutside(boolean tapRight, UiObject2 container) {
+        mLauncher.touchOutsideContainer(container, tapRight, false);
     }
 
     /** Presses the meta keyboard shortcut to dismiss AllApps. */
