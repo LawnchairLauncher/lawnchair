@@ -159,6 +159,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private final int mTransientIconSize;
     private final int mPersistentIconSize;
 
+    private final float mTaskbarLeftRightMargin;
+
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
         mTransientTaskbarDp = mActivity.getTransientTaskbarDeviceProfile();
@@ -184,6 +186,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             mTaskbarThemedIconsBackgroundColor = ColorUtils.HSLToColor(colorHSL);
         }
         mIsRtl = Utilities.isRtl(mTaskbarView.getResources());
+        mTaskbarLeftRightMargin = mActivity.getResources().getDimensionPixelSize(
+                R.dimen.transient_taskbar_padding);
+
     }
 
     public void init(TaskbarControllers controllers) {
@@ -391,6 +396,26 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
     }
 
+    /**
+     * Calculates visual taskbar view width.
+     */
+    public float getCurrentVisualTaskbarWidth() {
+        if (mTaskbarView.getIconViews().length == 0) {
+            return 0;
+        }
+
+        View[] iconViews = mTaskbarView.getIconViews();
+
+        int leftIndex = mActivity.getDeviceProfile().isQsbInline && !mIsRtl ? 1 : 0;
+        int rightIndex = mActivity.getDeviceProfile().isQsbInline && mIsRtl
+                ? iconViews.length - 2
+                : iconViews.length - 1;
+
+        float left = iconViews[leftIndex].getX();
+        float right = iconViews[rightIndex].getRight() + iconViews[rightIndex].getTranslationX();
+
+        return right - left + (2 * mTaskbarLeftRightMargin);
+    }
 
     /**
      * Sets the translation of the TaskbarView during the swipe up gesture.

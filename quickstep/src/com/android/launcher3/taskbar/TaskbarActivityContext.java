@@ -456,6 +456,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mTransientTaskbarBounds;
     }
 
+    protected float getCurrentTaskbarWidth() {
+        return mControllers.taskbarViewController.getCurrentVisualTaskbarWidth();
+    }
+
     @Override
     public StatsLogManager getStatsLogManager() {
         // Used to mock, can't mock a default interface method directly

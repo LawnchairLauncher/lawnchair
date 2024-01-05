@@ -20,6 +20,7 @@ import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.core.animation.doOnEnd
+import com.android.app.animation.Interpolators
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE
@@ -106,6 +107,7 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
             taskbarViewController.taskbarIconTranslationXForPinning.animateToValue(animateToValue)
         )
 
+        animatorSet.interpolator = Interpolators.EMPHASIZED
         return animatorSet
     }
 
@@ -129,6 +131,6 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
     companion object {
         const val PINNING_PERSISTENT = 1f
         const val PINNING_TRANSIENT = 0f
-        const val PINNING_ANIMATION_DURATION = 500L
+        const val PINNING_ANIMATION_DURATION = 600L
     }
 }
