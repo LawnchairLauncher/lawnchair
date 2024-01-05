@@ -590,6 +590,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             mAnimator.addListener(AnimatorListeners.forEndCallback(() -> {
                 mAnimator = null;
                 mIsStashed = isStashed;
+                onIsStashedChanged();
             }));
             return;
         }
@@ -604,7 +605,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsStashed = isStashed;
-                onIsStashedChanged(mIsStashed);
+                onIsStashedChanged();
 
                 cancelTimeoutIfExists();
             }
@@ -829,9 +830,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 .setDuration(TASKBAR_HINT_STASH_DURATION).start();
     }
 
-    private void onIsStashedChanged(boolean isStashed) {
+    private void onIsStashedChanged() {
         mControllers.runAfterInit(() -> {
-            mControllers.stashedHandleViewController.onIsStashedChanged(isStashed);
+            mControllers.stashedHandleViewController.onIsStashedChanged();
             mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         });
     }
