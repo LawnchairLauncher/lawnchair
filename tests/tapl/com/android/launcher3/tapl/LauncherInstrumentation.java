@@ -2160,6 +2160,11 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED);
     }
 
+    /** Shows the bubble bar if it is stashed, otherwise this does nothing. */
+    public void showBubbleBarIfHidden() {
+        getTestInfo(TestProtocol.REQUEST_UNSTASH_BUBBLE_BAR_IF_STASHED);
+    }
+
     /** Blocks the taskbar from automatically stashing based on time. */
     public void enableBlockTimeout(boolean enable) {
         getTestInfo(enable
