@@ -42,8 +42,12 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.widget.LauncherAppWidgetHost.ListenableHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.IntConsumer;
 
 /**
@@ -61,15 +65,14 @@ public class LauncherWidgetHolder {
             FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED | FLAG_ACTIVITY_RESUMED;
 
     @NonNull
-    private final Context mContext;
+    protected final Context mContext;
 
     @NonNull
     private final AppWidgetHost mWidgetHost;
 
     @NonNull
     protected final SparseArray<LauncherAppWidgetHostView> mViews = new SparseArray<>();
-    @NonNull
-    private final SparseArray<PendingAppWidgetHostView> mPendingViews = new SparseArray<>();
+    protected final List<ProviderChangedListener> mProviderChangedListeners = new ArrayList<>();
 
     protected int mFlags = FLAG_STATE_IS_NORMAL;
 
@@ -86,7 +89,8 @@ public class LauncherWidgetHolder {
 
     protected AppWidgetHost createHost(
             Context context, @Nullable IntConsumer appWidgetRemovedCallback) {
-        return new LauncherAppWidgetHost(context, appWidgetRemovedCallback, this);
+        return new LauncherAppWidgetHost(
+                context, appWidgetRemovedCallback, mProviderChangedListeners);
     }
 
     /**
@@ -158,28 +162,6 @@ public class LauncherWidgetHolder {
     }
 
     /**
-     * Add the pending view to the host for complete configuration in further steps
-     * @param appWidgetId The ID of the specified app widget
-     * @param view The {@link PendingAppWidgetHostView} of the app widget
-     */
-    public void addPendingView(int appWidgetId, @NonNull PendingAppWidgetHostView view) {
-        mPendingViews.put(appWidgetId, view);
-    }
-
-    /**
-     * @param appWidgetId The app widget id of the specified widget
-     * @return The {@link PendingAppWidgetHostView} of the widget if it exists, null otherwise
-     */
-    @Nullable
-    protected PendingAppWidgetHostView getPendingView(int appWidgetId) {
-        return mPendingViews.get(appWidgetId);
-    }
-
-    protected void removePendingView(int appWidgetId) {
-        mPendingViews.remove(appWidgetId);
-    }
-
-    /**
      * Called when the launcher is destroyed
      */
     public void destroy() {
@@ -201,18 +183,18 @@ public class LauncherWidgetHolder {
      * Add a listener that is triggered when the providers of the widgets are changed
      * @param listener The listener that notifies when the providers changed
      */
-    public void addProviderChangeListener(@NonNull ProviderChangedListener listener) {
-        LauncherAppWidgetHost tempHost = (LauncherAppWidgetHost) mWidgetHost;
-        tempHost.addProviderChangeListener(listener);
+    public void addProviderChangeListener(
+            @NonNull LauncherWidgetHolder.ProviderChangedListener listener) {
+        MAIN_EXECUTOR.execute(() -> mProviderChangedListeners.add(listener));
     }
 
     /**
      * Remove the specified listener from the host
      * @param listener The listener that is to be removed from the host
      */
-    public void removeProviderChangeListener(ProviderChangedListener listener) {
-        LauncherAppWidgetHost tempHost = (LauncherAppWidgetHost) mWidgetHost;
-        tempHost.removeProviderChangeListener(listener);
+    public void removeProviderChangeListener(
+            LauncherWidgetHolder.ProviderChangedListener listener) {
+        MAIN_EXECUTOR.execute(() -> mProviderChangedListeners.remove(listener));
     }
 
     /**
@@ -316,32 +298,51 @@ public class LauncherWidgetHolder {
     }
 
     /**
+     * Adds a callback to be run everytime the provided app widget updates.
+     * @return a closable to remove this callback
+     */
+    public SafeCloseable addOnUpdateListener(
+            int appWidgetId, LauncherAppWidgetProviderInfo appWidget, Runnable callback) {
+        if (createView(appWidgetId, appWidget) instanceof ListenableHostView lhv) {
+            return lhv.addUpdateListener(callback);
+        }
+        return () -> { };
+    }
+
+    /**
      * Create a view for the specified app widget
-     * @param context The activity context for which the view is created
+     *
      * @param appWidgetId The ID of the widget
-     * @param appWidget The {@link LauncherAppWidgetProviderInfo} of the widget
+     * @param appWidget   The {@link LauncherAppWidgetProviderInfo} of the widget
      * @return A view for the widget
      */
     @NonNull
-    public AppWidgetHostView createView(@NonNull Context context, int appWidgetId,
-            @NonNull LauncherAppWidgetProviderInfo appWidget) {
-
+    public AppWidgetHostView createView(
+            int appWidgetId, @NonNull LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget()) {
-            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
+            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(mContext);
             lahv.setAppWidget(0, appWidget);
-            CustomWidgetManager.INSTANCE.get(context).onViewCreated(lahv);
+            CustomWidgetManager.INSTANCE.get(mContext).onViewCreated(lahv);
             return lahv;
-        } else if ((mFlags & FLAG_LISTENING) == 0) {
+        }
+
+        LauncherAppWidgetHostView view = createViewInternal(appWidgetId, appWidget);
+        mViews.put(appWidgetId, view);
+        return view;
+    }
+
+    @NonNull
+    protected LauncherAppWidgetHostView createViewInternal(
+            int appWidgetId, @NonNull LauncherAppWidgetProviderInfo appWidget) {
+        if ((mFlags & FLAG_LISTENING) == 0) {
             // Since the launcher hasn't started listening to widget updates, we can't simply call
-            // super.createView here because the later will make a binder call to retrieve
+            // host.createView here because the later will make a binder call to retrieve
             // RemoteViews from system process.
-            LauncherAppWidgetHostView view =
-                    new PendingAppWidgetHostView(context, appWidgetId, appWidget);
-            mViews.put(appWidgetId, view);
-            return view;
+            return new PendingAppWidgetHostView(mContext, appWidgetId, appWidget);
         } else {
             try {
-                return mWidgetHost.createView(context, appWidgetId, appWidget);
+                return (LauncherAppWidgetHostView) mWidgetHost.createView(
+                        mContext, appWidgetId, appWidget);
             } catch (Exception e) {
                 if (!Utilities.isBinderSizeError(e)) {
                     throw new RuntimeException(e);
@@ -352,7 +353,7 @@ public class LauncherWidgetHolder {
                 // will update.
                 LauncherAppWidgetHostView view = mViews.get(appWidgetId);
                 if (view == null) {
-                    view = onCreateView(mContext, appWidgetId);
+                    view = new ListenableHostView(mContext);
                 }
                 view.setAppWidget(appWidgetId, appWidget);
                 view.switchToErrorView();
@@ -369,26 +370,6 @@ public class LauncherWidgetHolder {
          * Notify the listener that the providers have changed
          */
         void notifyWidgetProvidersChanged();
-    }
-
-    /**
-     * Called to return a proper view when creating a view
-     *
-     * @param context     The context for which the widget view is created
-     * @param appWidgetId The ID of the added widget
-     * @return A view for the specified app widget
-     */
-    @NonNull
-    public LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId) {
-        final LauncherAppWidgetHostView view;
-        if (getPendingView(appWidgetId) != null) {
-            view = getPendingView(appWidgetId);
-            removePendingView(appWidgetId);
-        } else {
-            view = new LauncherAppWidgetHostView(context);
-        }
-        mViews.put(appWidgetId, view);
-        return view;
     }
 
     /**
