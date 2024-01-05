@@ -1027,17 +1027,25 @@ public final class LauncherInstrumentation {
             return;
         }
 
-        linearGesture(
-                displaySize.x / 2, displaySize.y - 1,
-                displaySize.x / 2, 0,
-                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                false, GestureScope.EXPECT_PILFER);
+        if (isLauncher3()) {
+            gestureToDismissPopup(displaySize);
+        } else {
+            runToState(() -> gestureToDismissPopup(displaySize), NORMAL_STATE_ORDINAL, "swiping");
+        }
 
         try (LauncherInstrumentation.Closable c1 = addContextLayer(
                 String.format("Swiped up from floating view %s to home", floatingRes.get()))) {
             waitUntilLauncherObjectGone(floatingRes.get());
             waitForLauncherObject(getAnyObjectSelector());
         }
+    }
+
+    private void gestureToDismissPopup(Point displaySize) {
+        linearGesture(
+                displaySize.x / 2, displaySize.y - 1,
+                displaySize.x / 2, 0,
+                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                false, GestureScope.EXPECT_PILFER);
     }
 
     /**
