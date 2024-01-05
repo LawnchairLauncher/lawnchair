@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
@@ -68,6 +70,25 @@ public class OverviewTaskMenu {
                     "tapped app info menu item")) {
                 mLauncher.waitUntilSystemLauncherObjectGone("overview_panel");
                 return new LaunchedAppState(mLauncher);
+            }
+        }
+    }
+
+    /** Taps the select menu item from the overview task menu. */
+    @NonNull
+    public SelectModeButtons tapSelectMenuItem() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "before tapping the select menu item")) {
+
+            mLauncher.runToState(
+                    () -> mLauncher.clickLauncherObject(
+                            mLauncher.findObjectInContainer(mMenu, By.text("Select"))),
+                    OVERVIEW_MODAL_TASK_STATE_ORDINAL, "tapping select menu item");
+
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "select menu item opened")) {
+                return new SelectModeButtons(mLauncher);
             }
         }
     }

@@ -44,6 +44,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
+import com.android.launcher3.tapl.SelectModeButtons;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.Wait;
@@ -194,6 +195,43 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         actionsView.clickAndDismissScreenshot();
     }
 
+    @Test
+    public void testDismissOverviewWithEscKey() throws Exception {
+        startTestAppsWithCheck();
+        final Overview overview = mLauncher.goHome().switchToOverview();
+        assertTrue("Launcher internal state is not Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+
+        overview.dismissByEscKey();
+        assertTrue("Launcher internal state is not Home",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    public void testDismissModalTaskAndOverviewWithEscKey() throws Exception {
+        startTestAppsWithCheck();
+        final Overview overview = mLauncher.goHome().switchToOverview();
+
+        final SelectModeButtons selectModeButtons;
+
+        if (mLauncher.isTablet() && mLauncher.isGridOnlyOverviewEnabled()) {
+            selectModeButtons = overview.getCurrentTask().tapMenu().tapSelectMenuItem();
+        } else {
+            selectModeButtons = overview.getOverviewActions().clickSelect();
+        }
+
+        assertTrue("Launcher internal state is not Overview Modal Task",
+                isInState(() -> LauncherState.OVERVIEW_MODAL_TASK));
+
+        selectModeButtons.dismissByEscKey();
+
+        assertTrue("Launcher internal state is not Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        overview.dismissByEscKey();
+        assertTrue("Launcher internal state is not Home",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
     private int getCurrentOverviewPage(Launcher launcher) {
         return launcher.<RecentsView>getOverviewPanel().getCurrentPage();
     }
@@ -298,7 +336,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @TaskbarModeSwitch
-    @Ignore // b/314873201
+    @ScreenRecord // b/314873201
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
