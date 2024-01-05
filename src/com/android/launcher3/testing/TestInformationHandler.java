@@ -330,6 +330,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return null;
             }
             T value = provider.apply(target);
+
             Bundle response = new Bundle();
             bundleSetter.set(response, TestProtocol.TEST_INFO_RESPONSE_FIELD, value);
             return response;

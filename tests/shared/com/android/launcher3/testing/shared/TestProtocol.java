@@ -147,6 +147,8 @@ public final class TestProtocol {
     public static final String REQUEST_GET_GRID_TASK_SIZE_RECT_FOR_TABLET =
             "get-grid-task-size-rect-for-tablet";
     public static final String REQUEST_GET_OVERVIEW_PAGE_SPACING = "get-overview-page-spacing";
+    public static final String REQUEST_GET_OVERVIEW_CURRENT_PAGE_INDEX =
+            "get-overview-current-page-index";
     public static final String REQUEST_ENABLE_ROTATION = "enable_rotation";
     public static final String REQUEST_ENABLE_SUGGESTION = "enable-suggestion";
     public static final String REQUEST_MODEL_QUEUE_CLEARED = "model-queue-cleared";

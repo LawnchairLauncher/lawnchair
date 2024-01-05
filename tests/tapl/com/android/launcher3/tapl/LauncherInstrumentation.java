@@ -420,6 +420,11 @@ public final class LauncherInstrumentation {
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    public int getOverviewCurrentPageIndex() {
+        return getTestInfo(TestProtocol.REQUEST_GET_OVERVIEW_CURRENT_PAGE_INDEX)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     float getExactScreenCenterX() {
         return getRealDisplaySize().x / 2f;
     }
