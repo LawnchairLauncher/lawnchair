@@ -19,8 +19,10 @@ import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PER
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
 
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.SystemProperties;
 import android.view.ViewTreeObserver;
 
 import com.android.launcher3.DeviceProfile;
@@ -38,6 +40,9 @@ import java.io.PrintWriter;
  */
 public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController,
         TaskbarControllers.BackgroundRendererController {
+
+    private static final boolean DEBUG = SystemProperties.getBoolean(
+            "persist.debug.draw_taskbar_debug_ui", false);
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -298,6 +303,16 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
                     mControllers.navbarButtonsViewController.getTouchController(),
                     mTaskbarStashViaTouchController,
             };
+        }
+
+        /**
+         * Draws debug UI on top of everything in TaskbarDragLayer.
+         */
+        public void drawDebugUi(Canvas canvas) {
+            if (!DEBUG) {
+                return;
+            }
+            mControllers.taskbarInsetsController.drawDebugTouchableRegionBounds(canvas);
         }
     }
 }

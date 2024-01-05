@@ -169,6 +169,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mBackgroundRenderer.setBackgroundProgress(mTaskbarBackgroundProgress);
         mBackgroundRenderer.draw(canvas);
         super.dispatchDraw(canvas);
+        mControllerCallbacks.drawDebugUi(canvas);
     }
 
     /**
