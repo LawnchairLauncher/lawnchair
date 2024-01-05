@@ -121,7 +121,10 @@ public final class Workspace extends Home {
              LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to open all apps search")) {
             verifyActiveContainer();
-            mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT),
+                    ALL_APPS_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "pressed meta key")) {
                 return new HomeAllApps(mLauncher);
