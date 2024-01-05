@@ -1087,7 +1087,12 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         backgroundRadiusAnim.addListener(
-                AnimatorListeners.forEndCallback(depthController::dispose));
+                AnimatorListeners.forEndCallback(() -> {
+                    // reset the depth to match the main depth controller's depth
+                    depthController.stateDepth
+                            .setValue(mLauncher.getDepthController().stateDepth.getValue());
+                    depthController.dispose();
+                }));
 
         return backgroundRadiusAnim;
     }
