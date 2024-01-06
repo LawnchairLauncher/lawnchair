@@ -22,11 +22,11 @@ import androidx.annotation.NonNull;
 
 public class SectionDecorationInfo {
 
-    public static final int ROUND_NOTHING = 1 << 1;
-    public static final int ROUND_TOP_LEFT = 1 << 2;
-    public static final int ROUND_TOP_RIGHT = 1 << 3;
-    public static final int ROUND_BOTTOM_LEFT = 1 << 4;
-    public static final int ROUND_BOTTOM_RIGHT = 1 << 5;
+    public static final int ROUND_NOTHING = 0;
+    public static final int ROUND_TOP_LEFT = 1 << 1;
+    public static final int ROUND_TOP_RIGHT = 1 << 2;
+    public static final int ROUND_BOTTOM_LEFT = 1 << 3;
+    public static final int ROUND_BOTTOM_RIGHT = 1 << 4;
     public static final int DECORATOR_ALPHA = 255;
 
     protected boolean mShouldDecorateItemsTogether;
