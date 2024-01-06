@@ -22,6 +22,7 @@ import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.android.launcher3.Flags;
@@ -338,26 +339,14 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             hasPrivateApps = appList.stream().
                     allMatch(mPrivateProviderManager.getItemInfoMatcher());
         }
-        int privateAppCount = 0;
-        int numberOfColumns = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
-        int numberOfAppRows = (int) Math.ceil((double) appList.size() / numberOfColumns);
-        for (AppInfo info : appList) {
+        for (int i = 0; i < appList.size(); i++) {
+            AppInfo info = appList.get(i);
             // Apply decorator to private apps.
             if (hasPrivateApps) {
-                int roundRegion = ROUND_NOTHING;
-                if ((privateAppCount / numberOfColumns) == numberOfAppRows - 1) {
-                    if ((privateAppCount % numberOfColumns) == 0) {
-                        // App is the first column
-                        roundRegion = ROUND_BOTTOM_LEFT;
-                    } else if ((privateAppCount % numberOfColumns) == numberOfColumns-1) {
-                        roundRegion = ROUND_BOTTOM_RIGHT;
-                    }
-                }
                 mAdapterItems.add(AdapterItem.asAppWithDecorationInfo(info,
                         new SectionDecorationInfo(mActivityContext.getApplicationContext(),
-                                roundRegion,
+                                getRoundRegions(i, appList.size()),
                                 true /* decorateTogether */)));
-                privateAppCount += 1;
             } else {
                 mAdapterItems.add(AdapterItem.asApp(info));
             }
@@ -370,6 +359,43 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             }
             startPosition++;
         }
+    }
+
+    /**
+     * Determines the corner regions that should be rounded for a specific app icon based on its
+     * position in a grid. Apps that should only be cared about rounding are the apps in the last
+     * row. In the last row on the first column, the app should only be rounded on the bottom left.
+     * Apps in the middle would not be rounded and the last app on the last row will ALWAYS have a
+     * {@link SectionDecorationInfo#ROUND_BOTTOM_RIGHT}.
+     *
+     * @param appIndex The index of the app icon within the app list.
+     * @param appListSize The total number of apps within the app list.
+     * @return  An integer representing the corner regions to be rounded, using bitwise flags:
+     *          - {@link SectionDecorationInfo#ROUND_NOTHING}: No corners should be rounded.
+     *          - {@link SectionDecorationInfo#ROUND_TOP_LEFT}: Round the top-left corner.
+     *          - {@link SectionDecorationInfo#ROUND_TOP_RIGHT}: Round the top-right corner.
+     *          - {@link SectionDecorationInfo#ROUND_BOTTOM_LEFT}: Round the bottom-left corner.
+     *          - {@link SectionDecorationInfo#ROUND_BOTTOM_RIGHT}: Round the bottom-right corner.
+     */
+    @VisibleForTesting
+    int getRoundRegions(int appIndex, int appListSize) {
+        int numberOfAppRows = (int) Math.ceil((double) appListSize / mNumAppsPerRowAllApps);
+        int roundRegion = ROUND_NOTHING;
+        // App is in the last row.
+        if ((appIndex / mNumAppsPerRowAllApps) == numberOfAppRows - 1) {
+            if ((appIndex % mNumAppsPerRowAllApps) == 0) {
+                // App is the first column.
+                roundRegion = ROUND_BOTTOM_LEFT;
+            } else if ((appIndex % mNumAppsPerRowAllApps) == mNumAppsPerRowAllApps-1) {
+                // App is in the last column.
+                roundRegion = ROUND_BOTTOM_RIGHT;
+            }
+            // Ensure the last private app is rounded on the bottom right.
+            if (appIndex == appListSize - 1) {
+                roundRegion |= ROUND_BOTTOM_RIGHT;
+            }
+        }
+        return roundRegion;
     }
 
     private static class MyDiffCallback extends DiffUtil.Callback {
