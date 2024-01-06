@@ -148,9 +148,19 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
 
     public final boolean isPromise() {
-        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON);
+        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)
+                // For archived apps, promise icons are always ready to be displayed.
+                || isArchived();
     }
 
+    /**
+     * Returns true if the workspace item supports promise icon UI. There are a few cases where they
+     * are supported:
+     * 1. Icons to be restored via backup/restore.
+     * 2. Icons added as an auto-install app.
+     * 3. Icons added due to it being an active install session created by the user.
+     * 4. Icons for archived apps.
+     */
     public boolean hasPromiseIconUi() {
         return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
     }

@@ -22,6 +22,8 @@ open class LauncherRestoreEventLogger : ResourceBasedOverride {
         const val RESTORE_ERROR_SHORTCUT_NOT_FOUND = "shortcut_not_found"
         const val RESTORE_ERROR_APP_NOT_INSTALLED = "app_not_installed"
         const val RESTORE_ERROR_WIDGETS_DISABLED = "widgets_disabled"
+        const val RESTORE_ERROR_PROFILE_NOT_RESTORED = "profile_not_restored"
+        const val RESTORE_ERROR_WIDGET_REMOVED = "widget_not_found"
 
         fun newInstance(context: Context?): LauncherRestoreEventLogger {
             return ResourceBasedOverride.Overrides.getObject(

@@ -71,13 +71,6 @@ flag {
 }
 
 flag {
-    name: "enable_split_from_fullscreen_with_keyboard_shortcuts"
-    namespace: "launcher"
-    description: "Enables initiating split from a fullscreen app using keyboard shortcuts"
-    bug: "270394122"
-}
-
-flag {
     name: "enable_launcher_br_metrics"
     namespace: "launcher"
     description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
@@ -96,4 +89,11 @@ flag {
     namespace: "launcher"
     description: "Enables full width two pane widget picker for tablets in landscape and portrait"
     bug: "315055849"
+}
+
+flag {
+    name: "enable_support_for_archiving"
+    namespace: "launcher"
+    description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."
+    bug: "210590852"
 }

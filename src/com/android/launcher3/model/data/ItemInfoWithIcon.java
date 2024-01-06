@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.Flags.enableSupportForArchiving;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
@@ -114,6 +116,12 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_NOT_PINNABLE = 1 << 13;
 
     /**
+     * Flag indicating whether the package related to the item & user corresponds to that of
+     * archived app.
+     */
+    public static final int FLAG_ARCHIVED = 1 << 14;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
@@ -143,6 +151,15 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     }
 
     /**
+     * Returns true if the app corresponding to the item is archived. */
+    public boolean isArchived() {
+        if (!enableSupportForArchiving()) {
+            return false;
+        }
+        return (runtimeStatusFlags & FLAG_ARCHIVED) != 0;
+    }
+
+    /**
      * Indicates whether we're using a low res icon
      */
     public boolean usingLowResIcon() {
@@ -158,7 +175,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public boolean isAppStartable() {
         return ((runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) == 0)
                 && (((runtimeStatusFlags & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0)
-                    || mProgressLevel == 100);
+                    || mProgressLevel == 100 || isArchived());
     }
 
     /**
@@ -167,7 +184,10 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * progress.
      */
     public int getProgressLevel() {
-        if ((runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+        if (((runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0)
+                // This condition for archived apps is so that in case unarchival/update of
+                // archived app is cancelled, the state transitions back to 0% installed state.
+                || isArchived()) {
             return mProgressLevel;
         }
         return 100;

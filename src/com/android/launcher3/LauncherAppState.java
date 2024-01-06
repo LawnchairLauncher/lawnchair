@@ -36,11 +36,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.LauncherApps;
 import android.os.UserHandle;
 import android.util.Log;
-import android.util.SparseArray;
-import android.widget.RemoteViews;
 
-import androidx.annotation.GuardedBy;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.graphics.IconShape;
@@ -76,12 +72,6 @@ public class LauncherAppState implements SafeCloseable {
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final RunnableList mOnTerminateCallback = new RunnableList();
-
-    // WORKAROUND: b/269335387 remove this after widget background listener is enabled
-    /* Array of RemoteViews cached by Launcher process */
-    @GuardedBy("itself")
-    @NonNull
-    public final SparseArray<RemoteViews> mCachedRemoteViews = new SparseArray<>();
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);

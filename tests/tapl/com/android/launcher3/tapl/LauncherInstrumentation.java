@@ -278,20 +278,34 @@ public final class LauncherInstrumentation {
         assertNotNull("Cannot find content provider for " + testProviderAuthority, pi);
         ComponentName cn = new ComponentName(pi.packageName, pi.name);
 
+        final int iterations = isLauncherTest ? 300 : 100;
+
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
             if (TestHelpers.isInLauncherProcess()) {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
             } else {
                 try {
                     final int userId = getContext().getUserId();
+                    final String launcherPidCommand = "pidof " + pi.packageName;
+                    final String initialPid = mDevice.executeShellCommand(launcherPidCommand);
+
                     mDevice.executeShellCommand(
                             "pm enable --user " + userId + " " + cn.flattenToString());
+
+                    // Wait for Launcher restart after enabling test provider.
+                    for (int i = 0; i < iterations; ++i) {
+                        final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
+                                .replaceAll("\\s", "");
+                        if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
+                        if (i == iterations - 1) {
+                            fail("Launcher didn't restart after enabling test provider");
+                        }
+                        SystemClock.sleep(100);
+                    }
                 } catch (IOException e) {
                     fail(e.toString());
                 }
             }
-
-            final int iterations = isLauncherTest ? 300 : 100;
 
             // Wait for Launcher content provider to become enabled.
             for (int i = 0; i < iterations; ++i) {
@@ -403,6 +417,11 @@ public final class LauncherInstrumentation {
 
     int getOverviewPageSpacing() {
         return getTestInfo(TestProtocol.REQUEST_GET_OVERVIEW_PAGE_SPACING)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    public int getOverviewCurrentPageIndex() {
+        return getTestInfo(TestProtocol.REQUEST_GET_OVERVIEW_CURRENT_PAGE_INDEX)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
@@ -2139,6 +2158,11 @@ public final class LauncherInstrumentation {
     /** Shows the taskbar if it is hidden, otherwise does nothing. */
     public void showTaskbarIfHidden() {
         getTestInfo(TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED);
+    }
+
+    /** Shows the bubble bar if it is stashed, otherwise this does nothing. */
+    public void showBubbleBarIfHidden() {
+        getTestInfo(TestProtocol.REQUEST_UNSTASH_BUBBLE_BAR_IF_STASHED);
     }
 
     /** Blocks the taskbar from automatically stashing based on time. */

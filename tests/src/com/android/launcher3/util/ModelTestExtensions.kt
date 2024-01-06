@@ -30,7 +30,7 @@ object ModelTestExtensions {
         loadModelSync()
         TestUtil.runOnExecutorSync(Executors.MODEL_EXECUTOR) {
             modelDbController.run {
-                tryMigrateDB()
+                tryMigrateDB(null /* restoreEventLogger */)
                 createEmptyDB()
                 clearEmptyDbFlag()
             }
@@ -72,7 +72,7 @@ object ModelTestExtensions {
         loadModelSync()
         TestUtil.runOnExecutorSync(Executors.MODEL_EXECUTOR) {
             val controller: ModelDbController = modelDbController
-            controller.tryMigrateDB()
+            controller.tryMigrateDB(null /* restoreEventLogger */)
             modelDbController.newTransaction().use { transaction ->
                 val values =
                     ContentValues().apply {

@@ -456,6 +456,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mTransientTaskbarBounds;
     }
 
+    protected float getCurrentTaskbarWidth() {
+        return mControllers.taskbarViewController.getCurrentVisualTaskbarWidth();
+    }
+
     @Override
     public StatsLogManager getStatsLogManager() {
         // Used to mock, can't mock a default interface method directly
@@ -1339,6 +1343,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         if (DisplayController.isTransientTaskbar(this)) {
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
         }
+    }
+
+    /** Unstashes the Bubble Bar if it is stashed. */
+    @VisibleForTesting
+    public void unstashBubbleBarIfStashed() {
+        mControllers.bubbleControllers.ifPresent(bubbleControllers -> {
+            if (bubbleControllers.bubbleStashController.isStashed()) {
+                bubbleControllers.bubbleStashController.showBubbleBar(false);
+            }
+        });
     }
 
     protected boolean isUserSetupComplete() {

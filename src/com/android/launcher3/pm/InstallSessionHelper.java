@@ -16,6 +16,8 @@
 
 package com.android.launcher3.pm;
 
+import static com.android.launcher3.Flags.enableSupportForArchiving;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
@@ -51,6 +53,7 @@ import java.util.Objects;
 /**
  * Utility class to tracking install sessions
  */
+@SuppressWarnings("NewApi")
 public class InstallSessionHelper {
 
     @NonNull
@@ -227,6 +230,11 @@ public class InstallSessionHelper {
     }
 
     public boolean verifySessionInfo(@Nullable final PackageInstaller.SessionInfo sessionInfo) {
+        // For archived apps we always want to show promise icons and the checks below don't apply.
+        if (enableSupportForArchiving() && sessionInfo != null && sessionInfo.isUnarchival()) {
+            return true;
+        }
+
         return verify(sessionInfo) != null
                 && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
                 && sessionInfo.getAppIcon() != null

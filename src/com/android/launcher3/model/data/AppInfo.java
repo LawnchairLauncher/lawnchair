@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 
 import android.content.ComponentName;
@@ -40,6 +41,7 @@ import java.util.Comparator;
 /**
  * Represents an app in AllAppsView.
  */
+@SuppressWarnings("NewApi")
 public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
 
     public static final AppInfo[] EMPTY_ARRAY = new AppInfo[0];
@@ -171,6 +173,9 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         ApplicationInfo appInfo = lai.getApplicationInfo();
         if (PackageManagerHelper.isAppSuspended(appInfo)) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
+        }
+        if (enableSupportForArchiving() && lai.getActivityInfo().isArchived) {
+            info.runtimeStatusFlags |= FLAG_ARCHIVED;
         }
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
                 ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;

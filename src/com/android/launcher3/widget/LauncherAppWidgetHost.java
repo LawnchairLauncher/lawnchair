@@ -89,7 +89,7 @@ class LauncherAppWidgetHost extends AppWidgetHost {
     @NonNull
     public LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        return mHolder.onCreateView(context, appWidgetId, appWidget);
+        return mHolder.onCreateView(context, appWidgetId);
     }
 
     /**

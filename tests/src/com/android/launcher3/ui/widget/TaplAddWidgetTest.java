@@ -18,7 +18,6 @@ package com.android.launcher3.ui.widget;
 import static org.junit.Assert.assertNotNull;
 
 import android.platform.test.annotations.PlatinumTest;
-import android.platform.test.rule.ScreenRecordRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -29,9 +28,11 @@ import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TestViewHelpers;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,9 +48,16 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        AbstractLauncherUiTest.initialize(this);
+    }
+
     @Test
     @PortraitLandscape
-    @ScreenRecordRule.ScreenRecord // b/289161193
+    @ScreenRecord // b/316910614
     public void testDragIcon() throws Throwable {
         mLauncher.enableDebugTracing(); // b/289161193
         new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
@@ -99,6 +107,7 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
      */
     @PlatinumTest(focusArea = "launcher")
     @Test
+    @ScreenRecord // b/316910614
     public void testResizeWidget() throws Throwable {
         new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
 

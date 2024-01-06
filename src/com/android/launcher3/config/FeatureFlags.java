@@ -167,6 +167,8 @@ public final class FeatureFlags {
             "Enable the ability to generate monochromatic icons, if it is not provided by the app");
 
     // TODO(Block 8): Clean up flags
+    public static final BooleanFlag ENABLE_LAUNCHER_BR_METRICS = getDebugFlag(305984208,
+            "ENABLE_LAUNCHER_BR_METRICS", TEAMFOOD, "Enable metrics for Launcher restore");
 
     // TODO(Block 9): Clean up flags
     public static final BooleanFlag MULTI_SELECT_EDIT_MODE = getDebugFlag(270709220,
@@ -386,10 +388,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(270393455,
             "ENABLE_NEW_MIGRATION_LOGIC", ENABLED,
             "Enable the new grid migration logic, keeping pages when src < dest");
-
-    public static final BooleanFlag ENABLE_CACHED_WIDGET = getDebugFlag(270395008,
-            "ENABLE_CACHED_WIDGET", ENABLED,
-            "Show previously cached widgets as opposed to deferred widget where available");
 
     // TODO(Block 25): Clean up flags
     public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(270396257,
