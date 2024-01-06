@@ -1,5 +1,6 @@
 package com.android.quickstep;
 
+import static com.android.launcher3.taskbar.TaskbarThresholdUtils.getFromNavThreshold;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.Activity;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.R;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -99,7 +99,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_TASKBAR_FROM_NAV_THRESHOLD: {
                 final Resources resources = mContext.getResources();
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        resources.getDimensionPixelSize(R.dimen.taskbar_from_nav_threshold));
+                        getFromNavThreshold(resources, mDeviceProfile));
                 return response;
             }
 
