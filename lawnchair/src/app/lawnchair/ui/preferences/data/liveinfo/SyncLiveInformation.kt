@@ -18,7 +18,7 @@ fun SyncLiveInformation(
         if (enabled) {
             CoroutineScope(Dispatchers.IO).launch {
                 getLiveInformation()?.let { liveInformation ->
-                    liveInformationManager.announcements.set(liveInformation.announcements)
+                    liveInformationManager.liveInformation.set(liveInformation)
                 }
             }
         }

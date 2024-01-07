@@ -23,11 +23,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences2.asState
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import app.lawnchair.ui.util.addIf
 import com.android.launcher3.BuildConfig
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun AnnouncementPreference() {
@@ -35,16 +36,16 @@ fun AnnouncementPreference() {
 
     val enabled by liveInformationManager.enabled.asState()
     val showAnnouncements by liveInformationManager.showAnnouncements.asState()
-    val announcements by liveInformationManager.announcements.asState()
+    val liveInformation by liveInformationManager.liveInformation.asState()
 
     if (enabled && showAnnouncements) {
-        AnnouncementPreference(announcements)
+        AnnouncementPreference(liveInformation.announcements)
     }
 }
 
 @Composable
 fun AnnouncementPreference(
-    announcements: ImmutableList<Announcement>,
+    announcements: List<Announcement>,
 ) {
     announcements.forEach { announcement ->
         ExpandAndShrink(
@@ -73,10 +74,10 @@ private fun AnnouncementPreferenceItem(
 @Composable
 private fun AnnouncementPreferenceItemContent(
     text: String,
-    url: String,
+    url: String?,
 ) {
     val context = LocalContext.current
-    val hasLink = url.isNotBlank()
+    val hasLink = !url.isNullOrBlank()
 
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),

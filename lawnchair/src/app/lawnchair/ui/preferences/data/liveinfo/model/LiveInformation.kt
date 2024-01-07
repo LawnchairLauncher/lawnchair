@@ -1,7 +1,15 @@
 package app.lawnchair.ui.preferences.data.liveinfo.model
 
-import kotlinx.collections.immutable.ImmutableList
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class LiveInformation(
-    val announcements: ImmutableList<Announcement>,
-)
+    val announcements: List<Announcement>,
+) {
+
+    companion object {
+        val default = LiveInformation(
+            announcements = emptyList(),
+        )
+    }
+}

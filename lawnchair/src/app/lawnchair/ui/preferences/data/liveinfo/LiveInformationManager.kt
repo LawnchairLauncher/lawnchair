@@ -6,11 +6,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
+import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.serialization.json.Json
 
 class LiveInformationManager private constructor(context: Context) : PreferenceManager {
 
@@ -38,11 +38,11 @@ class LiveInformationManager private constructor(context: Context) : PreferenceM
         defaultValue = context.resources.getBoolean(R.bool.config_default_live_information_show_announcements),
     )
 
-    val announcements = preference(
-        key = stringPreferencesKey(name = "announcements"),
-        defaultValue = persistentListOf(),
-        parse = { Announcement.fromString(it) },
-        save = { it.toString() },
+    val liveInformation = preference(
+        key = stringPreferencesKey(name = "live_information"),
+        defaultValue = LiveInformation.default,
+        parse = { Json.decodeFromString<LiveInformation>(it) },
+        save = { Json.encodeToString(LiveInformation.serializer(), it) },
     )
 }
 
