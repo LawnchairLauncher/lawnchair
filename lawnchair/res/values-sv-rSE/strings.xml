@@ -93,10 +93,10 @@
     <string name="icon_shape_corner_round">Rund</string>
     <string name="icon_shape_corner_squircle">Slät</string>
     <string name="icon_shape_corner_cut">Klippt</string>
-    <string name="icon_shape_top_left">Övre vänstra</string>
-    <string name="icon_shape_top_right">Övre högra</string>
-    <string name="icon_shape_bottom_left">Nedre vänstra</string>
-    <string name="icon_shape_bottom_right">Nedre högra</string>
+    <string name="icon_shape_top_left">Vänster överkant</string>
+    <string name="icon_shape_top_right">Höger överkant</string>
+    <string name="icon_shape_bottom_left">Vänster nederkant</string>
+    <string name="icon_shape_bottom_right">Höger nederkant</string>
     <string name="create">Skapa</string>
     <string name="clipboard">Urklipp</string>
     <string name="export_to_clipboard">Exportera till urklipp</string>
@@ -242,7 +242,7 @@
     <string name="smartspace_mode_google_search">Google Sök</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Aktivera docka</string>
+    <string name="show_hotseat_title">Aktivera favoritfält</string>
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>

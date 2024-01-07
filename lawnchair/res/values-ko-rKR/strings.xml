@@ -251,7 +251,7 @@
     <string name="corner_radius_label">가장자리 둥글기</string>
     <string name="apply_accent_color_label">강조 색상 적용하기</string>
     <string name="search_provider">검색 제공자</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">하단 패딩</string>
     <string name="grid">그리드</string>
     <string name="dock_icons">독 아이콘</string>
     <!-- SearchProviderPreferences -->
@@ -286,10 +286,10 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">앱 서랍 아이콘 가로 배치 수</string>
     <string name="row_height_label">가로 행 높이</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="app_drawer_indent_label">가로 패딩</string>
     <string name="perform_wide_search_title">장치 검색</string>
     <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_suggestion_title">웹 제안(<xliff:g id="startpage">Startpage</xliff:g>를 통해)</string>
     <string name="pref_advance_search_category">고급 검색</string>
     <string name="perform_wide_search_description">앱 서랍 검색에서 연락처, 파일, 설정을 검색</string>
     <string name="pref_recent_suggestion_title">기록</string>
