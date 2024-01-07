@@ -314,6 +314,8 @@ public class DeviceProfile {
 
     private final DeviceProfileOverrides.TextFactors mTextFactors;
 
+    private final PreferenceManager2 preferenceManager2;
+
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info, WindowBounds windowBounds,
             SparseArray<DotRenderer> dotRendererCache, boolean isMultiWindowMode,
@@ -323,7 +325,7 @@ public class DeviceProfile {
 
         mTextFactors = DeviceProfileOverrides.INSTANCE.get(context).getTextFactors();
 
-        PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
+        preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getDrawerCellHeightFactor());
 
@@ -538,7 +540,7 @@ public class DeviceProfile {
         }
 
         // Have a little space between the inset and the QSB
-        if (isQsbEnable && mInsets.bottom + minQsbMargin > hotseatBarBottomSpace) {
+        if (!isQsbEnable && mInsets.bottom + minQsbMargin > hotseatBarBottomSpace) {
             int availableSpace = hotseatQsbSpace - (mInsets.bottom - hotseatBarBottomSpace);
 
             // Only change the spaces if there is space
@@ -795,7 +797,10 @@ public class DeviceProfile {
         // radius.
         hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx);
 
-        var space = Math.abs(hotseatCellHeightPx / 2);
+        var space = Math.abs(hotseatCellHeightPx / 2) - 10;
+
+        hotseatBarBottomSpacePx *= PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getHotseatBottomFactor());
 
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
@@ -809,6 +814,10 @@ public class DeviceProfile {
                     + hotseatQsbVisualHeight
                     + hotseatBarBottomSpacePx
                     + space;
+        }
+        var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
+        if (!isHotseatEnabled) {
+            hotseatBarSizePx = 0;
         }
     }
 
@@ -1299,9 +1308,14 @@ public class DeviceProfile {
                     + allAppsLeftRightPadding * 2;
             allAppsLeftRightMargin = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
-            allAppsLeftRightPadding = Math.max(0, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
+            allAppsLeftRightPadding = Math.max(1, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
                     - (allAppsBorderSpacePx.x / 2));
         }
+        var allAppLeftRightMarginMultiplier = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getDrawerLeftRightMarginFactor());
+        var marginMultiplier = allAppLeftRightMarginMultiplier * (!isTablet ? 100 : 2);
+        allAppsLeftRightMargin *= marginMultiplier;
+        allAppsLeftRightPadding *= marginMultiplier;
     }
 
     private void setupAllAppsStyle(Context context) {
@@ -1426,6 +1440,9 @@ public class DeviceProfile {
 
             folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
         }
+
+        folderLabelTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
+        folderChildTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
     }
 
     public void updateInsets(Rect insets) {

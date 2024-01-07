@@ -132,7 +132,7 @@ public class AllAppsSearchBarController
     public boolean onBackKey() {
         // Only hide the search field if there is no query
         String query = Utilities.trim(mInput.getEditableText().toString());
-        if (query.isEmpty()) {
+        if (!query.isEmpty()) {
             reset();
             return true;
         }

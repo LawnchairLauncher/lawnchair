@@ -25,6 +25,7 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
@@ -43,6 +44,8 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+
+import java.util.ArrayList;
 
 /**
  * A set of utility methods for Launcher DB used for DB updates and migration.
@@ -172,8 +175,14 @@ public class LauncherDbUtils {
         }
 
         // Drop the unused columns
-        db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconPackage;");
-        db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconResource;");
+        try {
+            db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconPackage;");
+            db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " DROP COLUMN iconResource;");
+        } catch (SQLiteException ignored) {
+            // Compat users upgrade from Lawnchair 13, see https://github.com/LawnchairLauncher/lawnchair/issues/3881.
+            removeColumn(db, Favorites.TABLE_NAME, "iconPackage");
+            removeColumn(db, Favorites.TABLE_NAME, "iconResource");
+        }
     }
 
     /**
@@ -199,5 +208,29 @@ public class LauncherDbUtils {
         public SQLiteDatabase getDb() {
             return mDb;
         }
+    }
+
+    private static void removeColumn(SQLiteDatabase db, String tableName, String columnName) {
+        final var columns = new ArrayList<>();
+        // Get all column names from the table
+        try (Cursor c = db.rawQuery("PRAGMA table_info(" + tableName + ")", null)) {
+            while (c.moveToNext()) {
+                String column = c.getString(c.getColumnIndex("name"));
+                if (!column.equals(columnName)) {
+                    columns.add(column);
+                }
+            }
+        }
+
+        // Create a new table without the column
+        String newTable = tableName + "_new";
+        String columnsSeparated = TextUtils.join(",", columns);
+        db.execSQL("CREATE TABLE " + newTable + " AS SELECT " + columnsSeparated + " FROM " + tableName);
+
+        // Drop the old table
+        db.execSQL("DROP TABLE " + tableName);
+
+        // Rename the new table to the old table's name
+        db.execSQL("ALTER TABLE " + newTable + " RENAME TO " + tableName);
     }
 }

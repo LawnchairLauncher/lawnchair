@@ -1,0 +1,103 @@
+package app.lawnchair.ui.preferences.components.controls
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.util.bottomSheetHandler
+
+@Composable
+fun TextPreference(
+    adapter: PreferenceAdapter<String>,
+    label: String,
+    enabled: Boolean = true,
+    description: (String) -> String? = { it },
+) {
+    val value = adapter.state.value
+    TextPreference(
+        value = value,
+        onChange = adapter::onChange,
+        label = label,
+        description = description,
+        enabled = enabled,
+    )
+}
+
+@Composable
+fun TextPreference(
+    value: String,
+    onChange: (String) -> Unit,
+    label: String,
+    enabled: Boolean = true,
+    description: (String) -> String? = { it },
+) {
+    val bottomSheetHandler = bottomSheetHandler
+    PreferenceTemplate(
+        title = { Text(text = label) },
+        description = { description(value)?.let { Text(text = it) } },
+        modifier = Modifier
+            .clickable(enabled) {
+                bottomSheetHandler.show {
+                    TextPreferenceDialog(
+                        title = label,
+                        initialValue = value,
+                        onDismissRequest = { bottomSheetHandler.hide() },
+                        onConfirm = onChange,
+                    )
+                }
+            },
+        enabled = enabled,
+    )
+}
+
+@Composable
+fun TextPreferenceDialog(
+    title: String,
+    initialValue: String,
+    onDismissRequest: () -> Unit,
+    onConfirm: (String) -> Unit,
+) {
+    var value by remember { mutableStateOf(initialValue) }
+    AlertBottomSheetContent(
+        title = { Text(text = title) },
+        text = {
+            OutlinedTextField(
+                value = value,
+                onValueChange = { value = it },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+            )
+        },
+        buttons = {
+            OutlinedButton(
+                onClick = onDismissRequest,
+            ) {
+                Text(text = stringResource(id = android.R.string.cancel))
+            }
+            Spacer(modifier = Modifier.requiredWidth(8.dp))
+            Button(
+                onClick = {
+                    onDismissRequest()
+                    onConfirm(value)
+                },
+            ) {
+                Text(text = stringResource(id = android.R.string.ok))
+            }
+        },
+    )
+}

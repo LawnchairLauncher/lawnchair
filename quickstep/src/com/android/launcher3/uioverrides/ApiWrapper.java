@@ -30,10 +30,6 @@ import com.android.quickstep.util.FadeOutRemoteTransition;
 import java.util.Collections;
 import java.util.Map;
 
-import java.util.Map;
-
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
@@ -51,9 +47,18 @@ public class ApiWrapper {
     }
 
     public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
-        return LawnchairUtilsKt.isDefaultLauncher(context) ?
-                context.getSystemService(LauncherApps.class).getActivityOverrides()
+        return LawnchairUtilsKt.isDefaultLauncher(context)
+                && Utilities.ATLEAST_Q ?
+                getLauncherActivityOverrides(context)
                 : Collections.emptyMap();
+    }
+
+    private static Map<String, LauncherActivityInfo> getLauncherActivityOverrides(Context context) {
+        try {
+            return context.getSystemService(LauncherApps.class).getActivityOverrides();
+        } catch (Throwable t) {
+            return Collections.emptyMap();
+        }
     }
 
     /**
@@ -64,7 +69,7 @@ public class ApiWrapper {
             ActivityOptions options = ActivityOptions.makeBasic();
             options.setRemoteTransition(new RemoteTransition(new FadeOutRemoteTransition()));
             return options;
-        } catch (Exception e) {
+        } catch (Throwable t) {
             // TODO Create our own custom closing animation
             return ActivityOptions.makeCustomAnimation(context, 0, android.R.anim.fade_out);
         }

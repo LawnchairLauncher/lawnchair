@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Kanał</string>
     <string name="minus_one_unavailable">Aplikacja aktualności \"Feed\" niezainstalowana.</string>
+    <string name="feed_provider">Dostawca kanałów</string>
+    <string name="feed_default">Domyślnie</string>
     <string name="wallpaper">Tapeta</string>
     <string name="wallpaper_scrolling_label">Przewiń tapetę</string>
     <string name="wallpaper_depth_effect_label">Efekt głębi tapety</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Szukaj w Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Włącz docka</string>
     <string name="hotseat_mode_label">Widżet paska wyszukiwania</string>
     <string name="hotseat_mode_disabled">Wyłączono</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +251,7 @@
     <string name="corner_radius_label">Promień narożnika</string>
     <string name="apply_accent_color_label">Zastosuj kolor akcentujący</string>
     <string name="search_provider">Dostawca wyszukiwania</string>
+    <string name="hotseat_bottom_space_label">Dolny odstęp</string>
     <string name="grid">Siatka</string>
     <string name="dock_icons">Ikony docka</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +269,8 @@
     <string name="hidden_apps_label">Ukryte aplikacje</string>
     <string name="show_enable_smart_hide">Pokaż, gdy pełna nazwa jest wpisana</string>
     <string name="hide_hidden_apps_search">Ukryj w wynikach wyszukiwania</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Ładuj aplikacje zbiorczo</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Zbiorcze ładowanie i wyświetlanie ikon, zamiast ładowania i wyświetlania ikon pojedynczo</string>
     <string name="pref_category_search">Szukaj</string>
     <string name="show_app_search_bar">Pokaż pasek wyszukiwania</string>
     <string name="pref_search_auto_show_keyboard">Automatycznie pokazuj klawiaturę</string>
@@ -280,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumny szuflady aplikacji</string>
     <string name="row_height_label">Wysokość wiersza</string>
+    <string name="app_drawer_indent_label">Odstęp poziomy</string>
     <string name="perform_wide_search_title">Szukaj w urządzeniu</string>
     <string name="perform_wide_search_file">Pliki</string>
     <string name="pref_suggestion_title">Propozycje sieciowe (poprzez <xliff:g id="startpage">Startpage</xliff:g>)</string>
@@ -327,6 +334,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Te ustawienia zostaną zignorowane, ponieważ Lawnchair nie jest ustawiony jako dostawca ostatnich aplikacji.</string>
     <string name="translucent_background">Przezroczyste tło</string>
     <string name="recents_actions_label">Szybkie działania</string>
     <!-- <string name="screenshot" /> (unknown source) -->

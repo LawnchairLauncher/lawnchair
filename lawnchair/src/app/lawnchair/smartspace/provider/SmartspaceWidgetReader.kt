@@ -3,6 +3,7 @@ package app.lawnchair.smartspace.provider
 import android.app.Activity
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import app.lawnchair.BlankActivity
 import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.smartspace.model.SmartspaceAction
@@ -57,9 +57,9 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
     }
 
     private fun extractWidgetLayout(appWidgetHostView: ViewGroup): List<SmartspaceTarget> {
-        val children = appWidgetHostView.recursiveChildren.filter { it.isVisible }
+        val children = appWidgetHostView.recursiveChildren
         val texts = children.filterIsInstance<TextView>().filter { !it.text.isNullOrEmpty() }.toList()
-        val images = children.filterIsInstance<ImageView>().toList()
+        val images = children.filterIsInstance<ImageView>().toList().filter { it.drawable != null && it.drawable is BitmapDrawable }
         var weatherIconView: ImageView? = null
         var cardIconView: ImageView? = null
         var title: TextView? = null
@@ -68,7 +68,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
         var temperatureText: TextView? = null
         if (texts.isEmpty()) return listOf(dummyTarget)
         if (images.isNotEmpty()) {
-            weatherIconView = images.last()
+            weatherIconView = images.firstOrNull()
             temperatureText = texts.last()
         }
         if (images.size > 1 && texts.size > 2) {
@@ -103,6 +103,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                     title = ttl,
                     subtitle = sub.text,
                     pendingIntent = pendingIntent,
+                    intent = weather.baseAction?.intent,
                 ),
                 score = SmartspaceScores.SCORE_CALENDAR,
                 featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR,
@@ -119,6 +120,9 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
         val weatherData = parseWeatherData(
             weatherIcon, temperature, pendingIntent,
         ) ?: return null
+        val intent = Intent().apply {
+            component = WEATHER_COMPONENT
+        }
         return SmartspaceTarget(
             id = "smartspaceWidgetWeather",
             headerAction = SmartspaceAction(
@@ -127,6 +131,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                 title = "",
                 subtitle = weatherData.getTitle(),
                 pendingIntent = weatherData.pendingIntent,
+                intent = intent,
             ),
             score = SmartspaceScores.SCORE_WEATHER,
             featureType = SmartspaceTarget.FeatureType.FEATURE_WEATHER,
@@ -153,6 +158,8 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
     companion object {
         private const val GSA_PACKAGE = "com.google.android.googlequicksearchbox"
         private const val WIDGET_CLASS_NAME = "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
+        private const val GSA_WEATHER = "com.google.android.apps.search.weather.WeatherExportedActivity"
+        private val WEATHER_COMPONENT = ComponentName(GSA_PACKAGE, GSA_WEATHER)
 
         private val dummyTarget = SmartspaceTarget(
             id = "dummyTarget",

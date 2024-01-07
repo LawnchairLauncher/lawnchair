@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Kanál</string>
     <string name="minus_one_unavailable">Není nainstalován žádný kanál.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Výchozí</string>
     <string name="wallpaper">Tapeta</string>
     <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
     <string name="wallpaper_depth_effect_label">Efekt hloubky tapety</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Vyhledávání Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">Widget vyhledávacího panelu</string>
     <string name="hotseat_mode_disabled">Zakázáno</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +251,7 @@
     <string name="corner_radius_label">Poloměr rohů</string>
     <string name="apply_accent_color_label">Použít zvýrazňující barvu</string>
     <string name="search_provider">Poskytovatel vyhledávání</string>
+    <string name="hotseat_bottom_space_label">Spodní mezera</string>
     <string name="grid">Mřížka</string>
     <string name="dock_icons">Ikony doku</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +269,8 @@
     <string name="hidden_apps_label">Skryté aplikace</string>
     <string name="show_enable_smart_hide">Zobrazit při napsání celého jména</string>
     <string name="hide_hidden_apps_search">Skrýt ve výsledcích vyhledávání</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">Vyhledávání</string>
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
     <string name="pref_search_auto_show_keyboard">Automaticky zobrazit klávesnici</string>
@@ -280,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Sloupce seznamu aplikací</string>
     <string name="row_height_label">Výška řádku</string>
+    <string name="app_drawer_indent_label">Vodorovná mezera</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
@@ -327,6 +334,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">Průsvitné pozadí</string>
     <string name="recents_actions_label">Rychlé akce</string>
     <!-- <string name="screenshot" /> (unknown source) -->

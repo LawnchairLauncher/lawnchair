@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
+import android.R
 import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +18,8 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.config.GestureHandlerOption
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.LocalBottomSheetHandler
 import kotlinx.coroutines.launch
 
@@ -57,7 +60,7 @@ fun GestureHandlerPreference(
                     title = { Text(label) },
                     buttons = {
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
-                            Text(text = stringResource(id = android.R.string.cancel))
+                            Text(text = stringResource(id = R.string.cancel))
                         }
                     },
                 ) {

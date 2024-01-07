@@ -494,6 +494,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public Rect estimateItemPosition(CellLayout cl, int hCell, int vCell, int hSpan, int vSpan) {
         Rect r = new Rect();
+        if (cl == null) return r;
         cl.cellToRect(hCell, vCell, hSpan, vSpan, r);
         return r;
     }
@@ -1390,6 +1391,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void showPageIndicatorAtCurrentScroll() {
         if (mPageIndicator != null) {
             mPageIndicator.setScroll(getScrollX(), computeMaxScroll());
+            var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.isHotseatEnabled());
+            mPageIndicator.setVisibility(isHotseatEnabled ? VISIBLE : INVISIBLE);
         }
     }
 
@@ -2707,8 +2710,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     private boolean shouldUseHotseatAsDropLayout(DragObject dragObject) {
         if (mLauncher.getHotseat() == null
-                || mLauncher.getHotseat().getShortcutsAndWidgets() == null
-                || isDragWidget(dragObject)) {
+                || mLauncher.getHotseat().getShortcutsAndWidgets() == null) {
             return false;
         }
         View hotseatShortcuts = mLauncher.getHotseat().getShortcutsAndWidgets();

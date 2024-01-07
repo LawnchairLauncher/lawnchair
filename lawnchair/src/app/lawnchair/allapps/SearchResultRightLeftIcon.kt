@@ -66,6 +66,9 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             LayoutParams.MATCH_PARENT,
             heightRes,
         )
+        val horizontalMargin = 48
+        layoutParams.leftMargin = horizontalMargin
+        layoutParams.rightMargin = horizontalMargin
         this.layoutParams = layoutParams
     }
 

@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">フィード</string>
     <string name="minus_one_unavailable">フィードがインストールされていません</string>
+    <string name="feed_provider">フィードプロバイダー</string>
+    <string name="feed_default">デフォルト</string>
     <string name="wallpaper">壁紙</string>
     <string name="wallpaper_scrolling_label">壁紙のスクロール</string>
     <string name="wallpaper_depth_effect_label">壁紙の視差効果</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Google 検索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">ドックの有効化</string>
     <string name="hotseat_mode_label">検索バーウィジェット</string>
     <string name="hotseat_mode_disabled">無効</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +251,7 @@
     <string name="corner_radius_label">角の丸み</string>
     <string name="apply_accent_color_label">アクセントカラーを適用</string>
     <string name="search_provider">検索プロバイダー</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">グリッド</string>
     <string name="dock_icons">ドックアイコン</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +269,8 @@
     <string name="hidden_apps_label">非表示のアプリ</string>
     <string name="show_enable_smart_hide">アプリ名を入力したときに表示します</string>
     <string name="hide_hidden_apps_search">検索結果に表示しない</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">アプリの一括読み込み</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">アイコンを個別ではなく、一括で読み込んで表示します</string>
     <string name="pref_category_search">検索</string>
     <string name="show_app_search_bar">検索バーを表示</string>
     <string name="pref_search_auto_show_keyboard">キーボードを自動的に表示</string>
@@ -280,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">アプリドロワーの列</string>
     <string name="row_height_label">行の高さ</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">デバイス検索</string>
     <string name="perform_wide_search_file">ファイル</string>
     <string name="pref_suggestion_title">ウェブ提案 ( <xliff:g id="startpage">Startpage</xliff:g> から)</string>
@@ -324,6 +331,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Lawnchair がアプリ履歴として設定されていないため、これらの設定は無視されます</string>
     <string name="translucent_background">半透明の背景</string>
     <string name="recents_actions_label">クイック アクション</string>
     <!-- <string name="screenshot" /> (unknown source) -->

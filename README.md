@@ -9,7 +9,7 @@
 <img src="https://lawnchair.app/images/lawnchair.webp" width="100" style="border-radius: 50%">
 Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization.
 
-This branch houses the codebase of Lawnchair 14, currently in development and based on Launcher3 from Android 13. For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes, respectively.
+This branch houses the codebase of Lawnchair 14, currently in development and based on Launcher3 from Android 14. For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes, respectively.
 
 ## Contribute code
 

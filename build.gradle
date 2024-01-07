@@ -1,15 +1,16 @@
+import app.cash.licensee.LicenseeTask
 import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.2.0"
-    id 'com.android.library' version "8.2.0" apply false
-    id 'com.android.test' version '8.2.0' apply false
+    id 'com.android.application' version "8.2.1"
+    id 'com.android.library' version "8.2.1" apply false
+    id 'com.android.test' version '8.2.1' apply false
     id 'androidx.baselineprofile' version '1.2.2'
     id 'org.jetbrains.kotlin.android' version "1.9.21"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.21"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.21"
-    id "com.google.devtools.ksp" version "1.9.21-1.0.15"
+    id "com.google.devtools.ksp" version "1.9.21-1.0.16"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -76,7 +77,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.49'
+        daggerVersion = '2.50'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -124,7 +125,7 @@ final def quickstepMaxSdk = "34"
 android {
     namespace "com.android.launcher3"
     defaultConfig {
-        versionCode 13
+        versionCode 14
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -137,19 +138,25 @@ android {
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
 
-    applicationVariants.configureEach { variant ->
-        def capitalizedName = variant.name.capitalize()
-        def copyArtifactList = tasks.register("copy${capitalizedName}ArtifactList", Copy) {
-            dependsOn tasks.named("licenseeAndroid${capitalizedName}")
-            from reporting.file("licensee/android${capitalizedName}/artifacts.json")
-            into layout.buildDirectory.dir("generated/dependencyAssets/")
+    androidComponents {
+        onVariants(selector().all()) { variant ->
+            def capName = variant.name.capitalize()
+            def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
+            def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
+                dependsOn(licenseeTask)
+                from(licenseeTask.map { it.outputDir.file("artifacts.json") })
+                into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
+            }
+            variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
+                objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
+            }
         }
-        tasks.named("merge${variant.name.capitalize()}Assets").configure {
-            dependsOn copyArtifactList
-        }
+    }
 
+    applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
-            outputFileName = "Lawnchair ${variant.versionName}.apk"
+            def channel = variant.productFlavors.last().name
+            outputFileName = "Lawnchair ${variant.versionName} $channel ${variant.buildType.name}.apk"
         }
     }
 
@@ -161,7 +168,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -196,6 +203,12 @@ android {
         "META-INF/LGPL2.1",
     ]
 
+    // Load all proguard configs from AOSP
+    def proguardFilesFromAosp = allprojects
+        .collect { it.file("proguard.flags") }
+        .findAll { it.exists() }
+        .toArray()
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -208,7 +221,7 @@ android {
             signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
-            proguardFiles "proguard.flags", "proguard.pro"
+            proguardFiles proguardFilesFromAosp + "proguard.pro"
         }
     }
 
@@ -221,38 +234,28 @@ android {
         includeInBundle = false
     }
 
-    // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions += ["app", "recents"]
+    flavorDimensions += ["app", "recents", "channel"]
 
     productFlavors {
-        aosp {
-            dimension "app"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
-        }
-
-        l3go {
-            dimension "app"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
-        }
-
         lawn {
             dimension "app"
-            applicationId 'app.lawnchair'
-            testApplicationId 'com.android.launcher3.tests'
-            isDefault true
         }
 
         withQuickstep {
             dimension "recents"
             minSdk 26
-            isDefault true
         }
 
-        withoutQuickstep {
-            dimension "recents"
+        github {
+            applicationId 'app.lawnchair'
+            dimension "channel"
+        }
+
+        market {
+            applicationId "ch.deletescape.lawnchair.plah"
+            dimension "channel"
+            isDefault true
         }
 
         configureEach {
@@ -270,42 +273,6 @@ android {
             }
         }
 
-        androidTest {
-            res.srcDirs = ['tests/res']
-            java.srcDirs = ['tests/src', 'tests/tapl']
-            manifest.srcFile "tests/AndroidManifest-common.xml"
-        }
-
-        androidTestDebug {
-            manifest.srcFile "tests/AndroidManifest.xml"
-        }
-
-        aosp {
-            java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
-        }
-
-        aospWithoutQuickstep {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        aospWithQuickstep {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-        }
-
-        l3go {
-            res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src']
-            manifest.srcFile "go/AndroidManifest.xml"
-        }
-
-        l3goWithoutQuickstepDebug {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        l3goWithQuickstepDebug {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-        }
-
         lawn {
             java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
             aidl.srcDirs = ['lawnchair/aidl']
@@ -319,17 +286,12 @@ android {
             }
         }
 
-        lawnWithoutQuickstep {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        lawnWithQuickstep {
+        lawnWithQuickstepGithub {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
 
-        withoutQuickstep {
-            java.srcDirs = ['src_ui_overrides']
+        lawnWithQuickstepMarket {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
         withQuickstep {
@@ -354,17 +316,14 @@ dependencies {
     withQuickstepImplementation projects.systemUnFold
     withQuickstepImplementation projects.systemUIViewCapture
     withQuickstepImplementation projects.systemUILog
-    withQuickstepImplementation projects.systemUIPlugin
+    withQuickstepCompileOnly projects.systemUIPlugin
     withQuickstepImplementation projects.systemUIPluginCore
-    withQuickstepImplementation projects.systemUICommon
+    withQuickstepCompileOnly projects.systemUICommon
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-14.jar')
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
-
-    // Required for AOSP to compile. This is already included in the sysui_shared.jar
-    withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
@@ -377,7 +336,7 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2'
-    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.6"
+    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7"
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
@@ -392,9 +351,9 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.activity:activity-compose:1.8.1"
+    implementation "androidx.activity:activity-compose:1.8.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
-    implementation "androidx.navigation:navigation-compose:2.7.5"
+    implementation "androidx.navigation:navigation-compose:2.7.6"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     def accompanistVersion = '0.32.0'
@@ -402,7 +361,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
-    implementation "com.google.android.material:material:1.10.0"
+    implementation "com.google.android.material:material:1.11.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.0.7"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.5.0'
@@ -425,7 +384,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.2.0'
+    implementation 'com.airbnb.android:lottie:6.3.0'
 
     // Smartspacer
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.6') {
@@ -443,7 +402,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.3.5",
+            "io.nlopez.compose.rules:ktlint:0.3.8",
         ]).editorConfigOverride([
             "ktlint_compose_modifier-missing-check": "disabled",
             "ktlint_compose_compositionlocal-allowlist": "disabled",

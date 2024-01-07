@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">فیڈ دستیاب نہیں ہے.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Default</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">Search Bar Widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +251,7 @@
     <string name="corner_radius_label">Corner Radius</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="search_provider">Search Provider</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Grid</string>
     <string name="dock_icons">Dock Icons</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +269,8 @@
     <string name="hidden_apps_label">Hidden Apps</string>
     <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
     <string name="hide_hidden_apps_search">Hide in Search Results</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">Search</string>
     <string name="show_app_search_bar">Show Search Bar</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
@@ -280,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">App Drawer Columns</string>
     <string name="row_height_label">Row Height</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
@@ -325,6 +332,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">Translucent Background</string>
     <string name="recents_actions_label">Quick Actions</string>
     <!-- <string name="screenshot" /> (unknown source) -->

@@ -329,6 +329,7 @@ public final class Utilities {
      * {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
     public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
+        if (descendant == null || root == null || coord == null || coord.length < 2) return;
         sMatrix.reset();
         View v = descendant;
         while (v != root) {

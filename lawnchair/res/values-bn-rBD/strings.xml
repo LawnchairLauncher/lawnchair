@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">ফিড</string>
     <string name="minus_one_unavailable">ফিড ইনস্টল করা হয়নি.</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Default</string>
     <string name="wallpaper">ওয়ালপেপার</string>
     <string name="wallpaper_scrolling_label">স্ক্রোল ওয়ালপেপার</string>
     <string name="wallpaper_depth_effect_label">ওয়ালপেপারে ডেপ্থ প্রভাব</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">Search Bar Widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +251,7 @@
     <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
     <string name="apply_accent_color_label">অ্যাকসেন্ট রং ব্যবহার করুন</string>
     <string name="search_provider">সার্চ প্রদানকারী</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">গ্রিড</string>
     <string name="dock_icons">ডকের আইকন-সমুহ</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +269,8 @@
     <string name="hidden_apps_label">লুকানো অ্যাপস</string>
     <string name="show_enable_smart_hide">শুধুমাত্র পুরো নাম লিখলেই দেখান</string>
     <string name="hide_hidden_apps_search">সার্চ উত্তর থেকে লুকোন</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">অনুসন্ধান করুন</string>
     <string name="show_app_search_bar">সার্চ বার দেখান</string>
     <string name="pref_search_auto_show_keyboard">স্বয়ংক্রিয়ভাবে কীবোর্ড দেখান</string>
@@ -280,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">অ্যাপ ড্রয়ারের কলাম</string>
     <string name="row_height_label">সারির উচ্চতা</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
@@ -325,6 +332,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">স্বচ্ছ ব্যাকগ্রাউন্ড</string>
     <string name="recents_actions_label">দ্রুত কার্যক্রম</string>
     <!-- <string name="screenshot" /> (unknown source) -->

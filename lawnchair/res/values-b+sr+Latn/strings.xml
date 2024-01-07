@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Dodirnite ovu karticu da biste podesili Lawnchair kao podrazumevani pokretač.</string>
     <string name="settings">Podešavanja</string>
     <string name="general_label">Opšte</string>
     <string name="general_description">Boje, paketi ikona i tačke za obaveštenja</string>
@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Fid</string>
     <string name="minus_one_unavailable">Fid nije instaliran.</string>
+    <string name="feed_provider">Dobavljač fida</string>
+    <string name="feed_default">Podrazumevano</string>
     <string name="wallpaper">Pozadina</string>
     <string name="wallpaper_scrolling_label">Pomeranje pozadine</string>
     <string name="wallpaper_depth_effect_label">Efekat dubine pozadine</string>
@@ -183,7 +185,7 @@
     <string name="home_screen_locked">Početni ekran je zaključan.</string>
     <string name="popup_menu">Iskačući meni</string>
     <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje</string>
-    <string name="show_system_settings_entry">Prikaži unos u podešavanjima sistema</string>
+    <string name="show_system_settings_entry">Prikaži sistemsko podešavanje</string>
     <string name="status_bar_label">Statusna traka</string>
     <string name="show_status_bar">Prikaži statusnu traku</string>
     <string name="dark_status_bar_label">Tamna statusna traka</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Google pretraga</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Omogući dok</string>
     <string name="hotseat_mode_label">Vidžet trake za pretragu</string>
     <string name="hotseat_mode_disabled">Onemogućeno</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,12 +251,13 @@
     <string name="corner_radius_label">Radijus ugla</string>
     <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
     <string name="search_provider">Pretraživač</string>
+    <string name="hotseat_bottom_space_label">Donji razmak</string>
     <string name="grid">Mreža</string>
     <string name="dock_icons">Ikone u doku</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Pretraga aplikacija</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair ima ugovor o podeli prihoda.\n\nPretragom pomoću usluge %1$s podržavate Lawnchair.</string>
     <string name="app_label">Aplikacija</string>
     <string name="website_label">Veb-sajt</string>
     <string name="qsb_search_provider_app_required">Potrebna je aplikacija.</string>
@@ -265,27 +269,30 @@
     <string name="hidden_apps_label">Skrivene aplikacije</string>
     <string name="show_enable_smart_hide">Prikaži po unosu punog imena</string>
     <string name="hide_hidden_apps_search">Sakrij u rezultatima pretrage</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Učitavaj aplikacije odjednom</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Učitava i prikazuje ikone grupno umesto pojedinačno</string>
     <string name="pref_category_search">Pretraga</string>
     <string name="show_app_search_bar">Prikaži okvir za pretragu</string>
     <string name="pref_search_auto_show_keyboard">Automatski prikazuj tastaturu</string>
     <string name="fuzzy_search_title">Približna pretraga</string>
     <string name="fuzzy_search_desc">Približni rezultati pretrage na osnovu upita.</string>
     <string name="max_search_result_count_title">Maksimalan broj rezultata pretrage</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">Maksimalan broj rezultata kontakata</string>
+    <string name="max_file_result_count_title">Maksimalan broj rezultata fajlova</string>
+    <string name="max_suggestion_result_count_title">Maksimalan broj rezultata predloga</string>
+    <string name="max_settings_entry_result_count_title">Maksimalan broj rezultata podešavanja</string>
+    <string name="max_recent_result_count_title">Maksimalan broj rezultata istorije</string>
+    <string name="clear_history">Obriši</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
     <string name="row_height_label">Visina reda</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="app_drawer_indent_label">Horizontalni razmak</string>
+    <string name="perform_wide_search_title">Pretraga uređaja</string>
+    <string name="perform_wide_search_file">Fajlovi</string>
+    <string name="pref_suggestion_title">Veb-predlozi (pomoću usluge <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Napredna pretraga</string>
+    <string name="perform_wide_search_description">Pretražujte kontakte, fajlove i podešavanja na listi aplikacija.</string>
+    <string name="pref_recent_suggestion_title">Istorija</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -326,6 +333,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Ova podešavanja će biti ignorisana jer Lawnchair nije podešen kao dobavljač nedavnih aplikacija.</string>
     <string name="translucent_background">Poluprozirna pozadina</string>
     <string name="recents_actions_label">Brze radnje</string>
     <!-- <string name="screenshot" /> (unknown source) -->
@@ -375,7 +383,7 @@
     <string name="label">Oznaka</string>
     <string name="hide_from_drawer">Sakrij sa liste aplikacija</string>
     <string name="suggestion_pref_screen_title">Predlozi</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Prikazuj predloge na vrhu liste aplikacija</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Izveštaj o grešci u Lawnchairu</string>
     <string name="crash_report_notif_title">%1$s je otkazao</string>
@@ -397,18 +405,18 @@
     <string name="label_search">Pretražite</string>
     <string name="label_lens">Google objektiv</string>
     <string name="label_voice_search">Glasovna pretraga</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Podešavanje</string>
     <string name="all_apps_search_market_message">Pretražite više aplikacija</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Pretražuj pomoću usluge <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Nije instalirana prodavnica aplikacija ili pregledač.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">Veb</string>
+    <string name="all_apps_search_result_contacts_from_device">Kontakti</string>
+    <string name="all_apps_search_result_files">Fajlovi</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Podešavanja</string>
+    <string name="warn_contact_permission_content">Potrebna je dozvola za kontakte</string>
+    <string name="warn_files_permission_content">Potrebna je dozvola za memorijski prostor</string>
+    <string name="all_apps_search_result_files_description">Mediji, dokumenti, folderi i drugo.</string>
+    <string name="all_apps_search_result_contacts_description">Kontakti i drugo</string>
     <string name="quickstep_incompatible">Nekompatibilna integracija sa sistemom</string>
     <string name="quickstep_incompatible_description">Uređaj je podešen da koristi sistemske pokrete (poznate kao Quickstep), koje pruža %1$s, ali ova verzija aplikacije %1$s nije kompatibilna sa vašom verzijom Androida. Da biste nastavili da koristite uređaj, deinstalirajte ažuriranja aplikacije %1$s ili onemogućite %1$s kao dobavljača sistemskih pokreta.</string>
     <string name="delete">Izbriši</string>

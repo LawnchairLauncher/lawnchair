@@ -143,6 +143,15 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_themed_hotseat_qsb),
     )
 
+    val isHotseatEnabled = preference(
+        key = booleanPreferencesKey(name = "pref_show_hotseat"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_hotseat),
+        onSet = {
+            reloadHelper.recreate()
+            reloadHelper.reloadGrid()
+        },
+    )
+
     val hotseatQsbProvider = preference(
         key = stringPreferencesKey(name = "dock_search_bar_provider"),
         defaultValue = QsbSearchProvider.resolveDefault(context),
@@ -167,7 +176,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hiddenApps = preference(
         key = stringSetPreferencesKey(name = "hidden_apps"),
         defaultValue = setOf(),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val roundedWidgets = preference(
@@ -212,13 +221,13 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val showHiddenAppsInSearch = preference(
         key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_hidden_apps_in_search),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val enableSmartHide = preference(
@@ -285,6 +294,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val showIconLabelsOnHomeScreenFolder = preference(
+        key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen_folder"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val drawerIconSizeFactor = preference(
         key = floatPreferencesKey(name = "drawer_icon_size_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_icon_size_factor),
@@ -303,6 +318,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val homeIconLabelFolderSizeFactor = preference(
+        key = floatPreferencesKey(name = "home_icon_label_folder_size_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_home_icon_label_folder_size_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val drawerIconLabelSizeFactor = preference(
         key = floatPreferencesKey(name = "drawer_icon_label_size_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_icon_label_size_factor),
@@ -312,6 +333,18 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val drawerCellHeightFactor = preference(
         key = floatPreferencesKey(name = "drawer_cell_height_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_cell_height_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val drawerLeftRightMarginFactor = preference(
+        key = floatPreferencesKey(name = "drawer_left_right_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_left_right_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val hotseatBottomFactor = preference(
+        key = floatPreferencesKey(name = "hotseat_bottom_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_hotseat_bottom_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
 
@@ -359,7 +392,6 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val enableFeed = preference(
         key = booleanPreferencesKey(name = "enable_feed"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_feed),
-        onSet = { reloadHelper.recreate() },
     )
 
     val showComponentNames = preference(

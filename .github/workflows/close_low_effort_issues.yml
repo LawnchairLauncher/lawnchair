@@ -20,7 +20,7 @@ jobs:
           for i in "${DEFAULT_TITLES[@]}"
             do
               echo "$i"
-              if [ $ISSUE_TITLE == "$i" ]; then
+              if [ "$ISSUE_TITLE" == "$i" ]; then
                 echo "low effort"
                 echo "isLowEffort=true" >> $GITHUB_OUTPUT
                 break

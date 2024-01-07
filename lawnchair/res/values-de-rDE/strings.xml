@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tippe auf diese Karte, um Lawnchair als Standard-Launcher festzulegen.</string>
+    <string name="set_default_launcher_tip">Tippen Sie auf diese Karte, um Lawnchair als Standard-Launcher festzulegen.</string>
     <string name="settings">Einstellungen</string>
     <string name="general_label">Allgemein</string>
     <string name="general_description">Farben, Symbolpaket, Benachrichtigungspunkte</string>
@@ -48,8 +48,10 @@
     <string name="font_picker_description">Manche Texte bleiben unverändert.</string>
     <string name="smartspace_calendar_label">Auf einen Blick Kalenderanpassung</string>
     <string name="smartspace_calendar_description">Ermögliche die Anzeige des Datums in Nicht-Gregorianischen Kalendersystemen.</string>
-    <string name="workspace_increase_max_grid_size_label">Vergrößerte, maximale Startbildschirm-Rastergröße</string>
-    <string name="workspace_increase_max_grid_size_description">Vergrößere die erlaubte Startbildschirm-Rastergröße von 10 x 10 auf 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Maximale Startbildschirm-Raster Größe</string>
+    <string name="workspace_increase_max_grid_size_description">Vergrößere die erlaubte Startbildschirm-Rastergröße von 10 x 10 auf 20 x 20.
+workspace_increase_max_grid_size_label
+workspace_increase_max_grid_size_label</string>
     <string name="always_reload_icons_label">Symbole immer neu laden</string>
     <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
     <string name="transparent_background_icons">Transparente Symboldesigns</string>
@@ -169,6 +171,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed ist nicht verfügbar.</string>
+    <string name="feed_provider">Feed-Provider</string>
+    <string name="feed_default">Standard</string>
     <string name="wallpaper">Hintergrund</string>
     <string name="wallpaper_scrolling_label">Hintergrund scrollen</string>
     <string name="wallpaper_depth_effect_label">Hintergrundbild Tiefeneffekt</string>
@@ -240,6 +244,7 @@
     <string name="smartspace_mode_google_search">Google-Suche</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Dock aktivieren</string>
     <string name="hotseat_mode_label">Suchleisten-Widget</string>
     <string name="hotseat_mode_disabled">Deaktiviert</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +253,7 @@
     <string name="corner_radius_label">Eckradius</string>
     <string name="apply_accent_color_label">Akzentfarbe anwenden</string>
     <string name="search_provider">Suchanbieter</string>
+    <string name="hotseat_bottom_space_label">Unterer Abstand</string>
     <string name="grid">Raster</string>
     <string name="dock_icons">Dock-Symbole</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +271,8 @@
     <string name="hidden_apps_label">Versteckte Apps</string>
     <string name="show_enable_smart_hide">Anzeigen, wenn voller Name eingegeben wird</string>
     <string name="hide_hidden_apps_search">In Suchergebnissen verbergen</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Apps auf einmal laden</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Lädt und zeigt alle App-Icons auf einmal an, statt die Icons individuell zu laden</string>
     <string name="pref_category_search">Suchen</string>
     <string name="show_app_search_bar">Suchleiste anzeigen</string>
     <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
@@ -280,6 +288,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Spalten der App-Übersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>
+    <string name="app_drawer_indent_label">Seitlicher Abstand</string>
     <string name="perform_wide_search_title">Geräte-Suche</string>
     <string name="perform_wide_search_file">Dateien</string>
     <string name="pref_suggestion_title">Internet-Ergebnisse (von <xliff:g id="startpage">Startpage</xliff:g>)</string>
@@ -325,6 +334,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Diese Einstellungen werden ignoriert, da Lawnchair nicht als \"Recents-Provider\" eingestellt ist.</string>
     <string name="translucent_background">Transluzenter Hintergrund</string>
     <string name="recents_actions_label">Schnelle Aktionen</string>
     <!-- <string name="screenshot" /> (unknown source) -->

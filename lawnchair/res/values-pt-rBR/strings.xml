@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_default">Padrão</string>
     <string name="wallpaper">Papel de Parede</string>
     <string name="wallpaper_scrolling_label">Papel de Parede Deslizante</string>
     <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Plano de Fundo</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Pesquisa do Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Enable Dock</string>
     <string name="hotseat_mode_label">Widget da Barra de Pesquisa</string>
     <string name="hotseat_mode_disabled">Desativado</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +251,7 @@
     <string name="corner_radius_label">Raio do Canto</string>
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
     <string name="search_provider">Provedor de Pesquisa</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Grade</string>
     <string name="dock_icons">Ícones da Dock</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +269,8 @@
     <string name="hidden_apps_label">Aplicativos Ocultos</string>
     <string name="show_enable_smart_hide">Mostrar Quando o Nome Completo for Digitado</string>
     <string name="hide_hidden_apps_search">Ocultar nos Resultados da Pesquisa</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">Pesquisar</string>
     <string name="show_app_search_bar">Exibir Barra de Pesquisa</string>
     <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
@@ -280,6 +286,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colunas na Gaveta de Aplicativos</string>
     <string name="row_height_label">Altura da Linha</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
@@ -325,6 +332,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">Fundo Desfocado</string>
     <string name="recents_actions_label">Ações Rápidas</string>
     <!-- <string name="screenshot" /> (unknown source) -->

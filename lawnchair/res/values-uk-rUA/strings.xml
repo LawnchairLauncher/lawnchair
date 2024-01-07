@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Стрічка подій</string>
     <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="feed_provider">Постачальник каналів</string>
+    <string name="feed_default">За замовчуванням</string>
     <string name="wallpaper">Шпалери</string>
     <string name="wallpaper_scrolling_label">Пролистати шпалери</string>
     <string name="wallpaper_depth_effect_label">Глибина шпалер</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Пошук Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Увімкнути док-бар</string>
     <string name="hotseat_mode_label">Віджет панелі пошуку</string>
     <string name="hotseat_mode_disabled">Вимкнено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,12 +251,13 @@
     <string name="corner_radius_label">Закруглення кутів</string>
     <string name="apply_accent_color_label">Застосувати колір акценту</string>
     <string name="search_provider">Пошукова система</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">Решітка</string>
     <string name="dock_icons">Значки док-панелі</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Пошук застосунків</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair має угоду про розподіл доходів.\n\nПошук з %1$s допомагає Lawnchair.</string>
     <string name="app_label">Застосунок</string>
     <string name="website_label">Веб-сайт</string>
     <string name="qsb_search_provider_app_required">Необхідний додаток.</string>
@@ -265,27 +269,30 @@
     <string name="hidden_apps_label">Приховані Додатки</string>
     <string name="show_enable_smart_hide">Показувати, коли Повне Ім\'я введено</string>
     <string name="hide_hidden_apps_search">Приховати в результатах пошуку</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Завантажити додатки в парному режимі</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Завантажити та відобразити значки на масові замість кожного завантаження та відображення значків</string>
     <string name="pref_category_search">Пошук</string>
     <string name="show_app_search_bar">Показувати Рядок Пошуку</string>
     <string name="pref_search_auto_show_keyboard">Автоматично показувати клавіатуру</string>
     <string name="fuzzy_search_title">Приблизний Пошук</string>
     <string name="fuzzy_search_desc">Приблизна відповідність для пошуку додатків.</string>
     <string name="max_search_result_count_title">Максимальна кількість результатів пошуку</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">Кількість результатів пошуку серед людей</string>
+    <string name="max_file_result_count_title">Максимальна кількість результатів для файлів</string>
+    <string name="max_suggestion_result_count_title">Кількість результатів макс. пропозиції</string>
+    <string name="max_settings_entry_result_count_title">Максимальна кількість результатів запису в параметрах</string>
+    <string name="max_recent_result_count_title">Максимальна Кількість результатів історії</string>
+    <string name="clear_history">Очистити</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Кількість стовпців меню додатків</string>
     <string name="row_height_label">Висота рядка</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="perform_wide_search_title">Пошук пристрою</string>
+    <string name="perform_wide_search_file">Файли</string>
+    <string name="pref_suggestion_title">Веб-пропозиції (через <xliff:g id="startpage">Початкова сторінка</xliff:g>)</string>
+    <string name="pref_advance_search_category">Розширений пошук</string>
+    <string name="perform_wide_search_description">Пошук ваших контактів, файлів, у меню програм.</string>
+    <string name="pref_recent_suggestion_title">Журнал</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -327,6 +334,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Ці параметри буде проігноровано, оскільки Lawnchair не є постачальником нещодавніх.</string>
     <string name="translucent_background">Напівпрозорий фон</string>
     <string name="recents_actions_label">Швидкі дії</string>
     <!-- <string name="screenshot" /> (unknown source) -->
@@ -376,7 +384,7 @@
     <string name="label">Мітка</string>
     <string name="hide_from_drawer">Сховати з панелі програм</string>
     <string name="suggestion_pref_screen_title">Пропозиції</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Показати пропоновані додатки зверху</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Звіт про помилку Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Збій</string>
@@ -398,18 +406,18 @@
     <string name="label_search">Пошук</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Голосовий пошук</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Налаштування запису</string>
     <string name="all_apps_search_market_message">Пошук інших додатків</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Шукати в <xliff:g id="Головна сторінка">Головна сторінка</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Не встановлено жодного магазину додатків або браузера.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">З Інтернету</string>
+    <string name="all_apps_search_result_contacts_from_device">З ваших контактів</string>
+    <string name="all_apps_search_result_files">З ваших файлів</string>
+    <string name="all_apps_search_result_settings_entry_from_device">З ваших параметрів</string>
+    <string name="warn_contact_permission_content">Потребує дозволу для контактів</string>
+    <string name="warn_files_permission_content">Необхідний дозвіл на зберігання</string>
+    <string name="all_apps_search_result_files_description">Медіa, документи, папки та інше.</string>
+    <string name="all_apps_search_result_contacts_description">Контакти та інше</string>
     <string name="quickstep_incompatible">Несумісна системна інтеграція</string>
     <string name="quickstep_incompatible_description">Ваш пристрій налаштовано на використання системних жестів (відомих як Quickstep), які надає %1$s, але ця версія %1$s несумісна з вашою версією Android. Щоб продовжити використовувати свій пристрій, видаліть оновлення %1$s або вимкніть %1$s як постачальника системних жестів.</string>
     <string name="delete">Видалити</string>

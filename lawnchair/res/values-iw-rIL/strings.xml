@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">פיד</string>
     <string name="minus_one_unavailable">ההזנה אינה מותקנת.</string>
+    <string name="feed_provider">ספק הזנה</string>
+    <string name="feed_default">ברירת מחדל</string>
     <string name="wallpaper">רקע</string>
     <string name="wallpaper_scrolling_label">גלילת טפט</string>
     <string name="wallpaper_depth_effect_label">אפקט עומק של טפט</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">חיפוש בגוגל</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">אפשר מעגן (Dock)</string>
     <string name="hotseat_mode_label">ווידג\'ט שורת חיפוש</string>
     <string name="hotseat_mode_disabled">השבת</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,6 +251,7 @@
     <string name="corner_radius_label">רדיוס פינות</string>
     <string name="apply_accent_color_label">החל צבע הדגשה</string>
     <string name="search_provider">ספק חיפוש</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">רשת</string>
     <string name="dock_icons">הסמלים במעגן</string>
     <!-- SearchProviderPreferences -->
@@ -265,6 +269,8 @@
     <string name="hidden_apps_label">יישומים מוסתרים</string>
     <string name="show_enable_smart_hide">הצג כאשר מקלידים שם מלא</string>
     <string name="hide_hidden_apps_search">הסתבר בתוצאות חיפוש</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">חיפוש</string>
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
     <string name="pref_search_auto_show_keyboard">הצגה אוטומטית של המקלדת</string>
@@ -276,16 +282,17 @@
     <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="clear_history">ניקוי</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">עמודות במגירת היישומים</string>
     <string name="row_height_label">גובה שורה</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
+    <string name="perform_wide_search_file">קבצים</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="pref_advance_search_category">חיפוש מתקדם</string>
+    <string name="perform_wide_search_description">ניתן לחפש את אנשי הקשר, הקבצים וההגדרות שלך בחיפוש במגירת האפליקציות.</string>
+    <string name="pref_recent_suggestion_title">היסטוריה</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -327,6 +334,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">הגדרות אלו לא יחולו מכיוון ש- Lawnchair אינו מוגדר כספק מסך \'אחרונים\'.</string>
     <string name="translucent_background">רקע שקוף</string>
     <string name="recents_actions_label">פעולות מהירות</string>
     <!-- <string name="screenshot" /> (unknown source) -->
@@ -376,7 +384,7 @@
     <string name="label">תוית</string>
     <string name="hide_from_drawer">הסתר ממגירת היישומים</string>
     <string name="suggestion_pref_screen_title">המלצות</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">הצעות לאפליקציות יוצגו בראש המגירה</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">דיווח על תקלה</string>
     <string name="crash_report_notif_title">%1$s קרס</string>
@@ -402,14 +410,14 @@
     <string name="all_apps_search_market_message">חפש עוד יישומים</string>
     <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">לא נמצאו חנות או דפדפן מותקנים.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">מהרשת</string>
+    <string name="all_apps_search_result_contacts_from_device">מאנשי הקשר</string>
+    <string name="all_apps_search_result_files">מהקבצים</string>
+    <string name="all_apps_search_result_settings_entry_from_device">מההגדרות</string>
+    <string name="warn_contact_permission_content">נדרשת הרשאה לאנשי קשר</string>
+    <string name="warn_files_permission_content">נדרשת הרשאה לאחסון</string>
+    <string name="all_apps_search_result_files_description">מדיה, מסמכים, תיקיות ועוד.</string>
+    <string name="all_apps_search_result_contacts_description">אנשי קשר ועוד</string>
     <string name="quickstep_incompatible">גישור לא תואם למערכת</string>
     <string name="quickstep_incompatible_description">המכשיר שלך מוגדר עם מחוות-מערכת (ידועים כ-Quickstep) שפועלות ע\"י %1$s, אבל הגרסה הזאת של %1$s לא מתאימה לעבוד עם גרסת האנדרואיד שלך. בכדי להמשיך להשתמש במכשיר שלך, יש להסיר את עדכוני %1$s או להשבית את פעולת %1$s כמפעיל מחוות-המערכת.</string>
     <string name="delete">מחיקה</string>

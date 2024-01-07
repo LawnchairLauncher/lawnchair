@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.contains
-import app.lawnchair.LawnchairLauncher
 import app.lawnchair.allapps.SearchItemDecorator
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
@@ -16,9 +15,10 @@ import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.AllAppsGridAdapter
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider
+import com.android.launcher3.views.ActivityContext
 
 class LawnchairSearchAdapterProvider(
-    launcher: LawnchairLauncher,
+    launcher: ActivityContext,
     private val appsView: ActivityAllAppsContainerView<*>,
 ) : DefaultSearchAdapterProvider(launcher) {
 
@@ -68,11 +68,13 @@ class LawnchairSearchAdapterProvider(
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
 
-        val layoutParams = ViewGroup.MarginLayoutParams(view.layoutParams)
-        val horizontalMargin = 48
-        layoutParams.leftMargin = horizontalMargin
-        layoutParams.rightMargin = horizontalMargin
-        view.layoutParams = layoutParams
+        if (viewType != SEARCH_RESULT_ICON) {
+            val layoutParams = ViewGroup.MarginLayoutParams(view.layoutParams)
+            val horizontalMargin = 48
+            layoutParams.leftMargin = horizontalMargin
+            layoutParams.rightMargin = horizontalMargin
+            view.layoutParams = layoutParams
+        }
 
         return BaseAllAppsAdapter.ViewHolder(view)
     }

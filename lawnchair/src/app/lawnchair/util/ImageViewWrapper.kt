@@ -36,8 +36,8 @@ class ImageViewWrapper(context: Context, attrs: AttributeSet?) : ImageView(conte
         path.addRoundRect(rect, corners, Path.Direction.CW)
 
         paint.color = ColorTokens.GroupHighlight.resolveColor(context)
-        canvas.drawPath(path, paint)
         canvas.clipPath(path)
+        canvas.drawPath(path, paint)
         super.onDraw(canvas)
     }
 }

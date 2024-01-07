@@ -17,11 +17,10 @@ import com.android.launcher3.util.MainThreadInitializedObject
 
 class IconPackProvider(private val context: Context) {
 
-    private val systemIconPack = SystemIconPack(context)
     private val iconPacks = mutableMapOf<String, IconPack?>()
 
     fun getIconPackOrSystem(packageName: String): IconPack? {
-        if (packageName.isEmpty()) return systemIconPack
+        if (packageName.isEmpty()) return SystemIconPack(context, packageName)
         return getIconPack(packageName)
     }
 

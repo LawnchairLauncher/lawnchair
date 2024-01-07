@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Нажмите здесь, чтобы установить Lawnchair в качестве стандартного лончера.</string>
+    <string name="set_default_launcher_tip">Нажмите на эту карту, чтобы установить Lawnchair в качестве лаунчера по умолчанию.</string>
     <string name="settings">Настройки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
@@ -54,7 +54,7 @@
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="transparent_background_icons">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
-    <string name="smartspace_mode_selection">Выбрать поставщика At a Glance</string>
+    <string name="smartspace_mode_selection">Выбрать поставщика для Первый Взгляд</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
     <string name="home_screen_rotaton_description">При повороте устройства.</string>
@@ -169,6 +169,8 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Лента Google</string>
     <string name="minus_one_unavailable">Лент новостей не установлено.</string>
+    <string name="feed_provider">Поставщик ленты</string>
+    <string name="feed_default">По умолчанию</string>
     <string name="wallpaper">Обои</string>
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="wallpaper_depth_effect_label">Эффект глубины обоев</string>
@@ -208,10 +210,10 @@
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
     <string name="smartspace_battery_full">Заряжено</string>
-    <string name="smartspace_battery_low">Батарея разряжена</string>
+    <string name="smartspace_battery_low">Низкий заряд батареи</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Полная через %2$s"</string>
     <string name="accessibility_smartspace_page">Страница %1$d из %2$d</string>
-    <string name="smartspace_widget">Самое главное</string>
+    <string name="smartspace_widget">Первый Взгляд</string>
     <string name="smartspace_widget_description">Что показывать</string>
     <string name="smartspace_widget_placeholder_date">Пт, 3 Марта</string>
     <string name="preview_label">Предпросмотр</string>
@@ -240,6 +242,7 @@
     <string name="smartspace_mode_google_search">Поиск Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="show_hotseat_title">Включить док-бар</string>
     <string name="hotseat_mode_label">Виджет поиска</string>
     <string name="hotseat_mode_disabled">Отключено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -248,12 +251,13 @@
     <string name="corner_radius_label">Радиус скругления углов</string>
     <string name="apply_accent_color_label">Применить цвет акцента</string>
     <string name="search_provider">Поисковик</string>
+    <string name="hotseat_bottom_space_label">Нижний отступ</string>
     <string name="grid">Сетка</string>
-    <string name="dock_icons">Иконки в док-баре</string>
+    <string name="dock_icons">Иконки док панели</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Поиск приложений</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair имеет соглашение о разделе доходов.\n\nПоиск с помощью %1$s помогает поддерживать Lawnchair.</string>
     <string name="app_label">Приложение</string>
     <string name="website_label">Веб-сайт</string>
     <string name="qsb_search_provider_app_required">Требуется приложение.</string>
@@ -263,29 +267,32 @@
     <string name="background_opacity">Прозрачность фона</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Скрытые приложения</string>
-    <string name="show_enable_smart_hide">Показать, когда полное название введено</string>
+    <string name="show_enable_smart_hide">Показать, когда название введено полностью</string>
     <string name="hide_hidden_apps_search">Скрывать в результатах поиска</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Массовая загрузка приложений</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Массовая загрузка и отображение значков, вместо загрузки и отображения значков по отдельности</string>
     <string name="pref_category_search">Поиск</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
     <string name="pref_search_auto_show_keyboard">Автоматически выдвигать клавиатуру</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>
     <string name="max_search_result_count_title">Максимальное число результатов поиска</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">Макс. количество результатов пользователей</string>
+    <string name="max_file_result_count_title">Макс. количество результатов файлов</string>
+    <string name="max_suggestion_result_count_title">Макс. количество результатов предложения</string>
+    <string name="max_settings_entry_result_count_title">Макс. количество результатов записи</string>
+    <string name="max_recent_result_count_title">Макс. количество результатов истории</string>
+    <string name="clear_history">Очистить</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
     <string name="row_height_label">Высота строки</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="app_drawer_indent_label">Горизонтальный отступ</string>
+    <string name="perform_wide_search_title">Поиск устройств</string>
+    <string name="perform_wide_search_file">Файл</string>
+    <string name="pref_suggestion_title">Веб-подсказки (через стартовую страницу <xliff:g id="startpage"></xliff:g>)</string>
+    <string name="pref_advance_search_category">Расширенный поиск</string>
+    <string name="perform_wide_search_description">Поиск контактов, файлов и настроек в меню приложений.</string>
+    <string name="pref_recent_suggestion_title">История</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -327,6 +334,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
+    <string name="quickswitch_ignored_warning">Эти настройки будут проигнорированы, так как Lawnchair не установлен как провайдер недавних приложений.</string>
     <string name="translucent_background">Полупрозрачный фон</string>
     <string name="recents_actions_label">Быстрые действия</string>
     <!-- <string name="screenshot" /> (unknown source) -->
@@ -376,7 +384,7 @@
     <string name="label">Название</string>
     <string name="hide_from_drawer">Скрыть из меню приложений</string>
     <string name="suggestion_pref_screen_title">Рекомендации</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Показать рекомендуемые приложения в верхней части меню</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
     <string name="crash_report_notif_title">%1$s произошел сбой</string>
@@ -398,18 +406,18 @@
     <string name="label_search">Поиск</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Голосовой поиск</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Запись настроек</string>
     <string name="all_apps_search_market_message">Поиск дополнительных приложений</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Искать на <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Магазин приложений или браузер не установлены.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">Из Интернета</string>
+    <string name="all_apps_search_result_contacts_from_device">Из ваших контактов</string>
+    <string name="all_apps_search_result_files">Из ваших файлов</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Из ваших настроек</string>
+    <string name="warn_contact_permission_content">Требуется разрешение на контакты</string>
+    <string name="warn_files_permission_content">Требуется разрешение на хранение</string>
+    <string name="all_apps_search_result_files_description">Медиа, документы, папки и другое.</string>
+    <string name="all_apps_search_result_contacts_description">Контакты и другое</string>
     <string name="quickstep_incompatible">Несовместимая системная интеграция</string>
     <string name="quickstep_incompatible_description">Ваше устройство настроено на использование системных жестов (известных как Quickstep), предоставляемых %1$s, но эта версия %1$s не совместима с вашей версией Android. Чтобы продолжить использование вашего устройства, удалите обновления %1$s или отключите %1$s как поставщика системных жестов.</string>
     <string name="delete">Удалить</string>
