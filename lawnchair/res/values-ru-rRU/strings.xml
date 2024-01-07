@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Нажмите здесь, чтобы установить Lawnchair в качестве стандартного лончера.</string>
+    <string name="set_default_launcher_tip">Нажмите на эту карту, чтобы установить Lawnchair в качестве лаунчера по умолчанию.</string>
     <string name="settings">Настройки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
