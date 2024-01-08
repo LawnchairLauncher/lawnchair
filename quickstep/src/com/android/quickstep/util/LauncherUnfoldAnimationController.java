@@ -293,4 +293,48 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
             mHasRun = true;
         }
     }
+
+    /**
+     * Class to track the current status of the external transition provider (the events are coming
+     * from the SystemUI side through IPC), it allows to check if the transition has already
+     * finished or currently running on the SystemUI side since last unfold.
+     */
+    private static class TransitionStatusProvider implements TransitionProgressListener {
+
+        private boolean mHasRun = false;
+
+        @Override
+        public void onTransitionStarted() {
+            markAsRun();
+        }
+
+        @Override
+        public void onTransitionProgress(float progress) {
+            markAsRun();
+        }
+
+        @Override
+        public void onTransitionFinished() {
+            markAsRun();
+        }
+
+        /**
+         * Called when the device is folded, so we can reset the status of the animation
+         */
+        public void onFolded() {
+            mHasRun = false;
+        }
+
+        /**
+         * Returns true if there was an animation already (or it is currently running) after
+         * unfolding the device
+         */
+        public boolean hasRun() {
+            return mHasRun;
+        }
+
+        private void markAsRun() {
+            mHasRun = true;
+        }
+    }
 }
