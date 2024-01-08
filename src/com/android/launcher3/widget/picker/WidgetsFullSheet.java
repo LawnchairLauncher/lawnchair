@@ -220,6 +220,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         View collapseHandle = findViewById(R.id.collapse_handle);
         collapseHandle.setBackgroundColor(ColorTokens.TextColorSecondary.resolveColor(getContext()));
 
+        mContent = findViewById(R.id.container);
+        setContentBackgroundWithParent(getContext().getDrawable(R.drawable.bg_widgets_full_sheet),
+                mContent);
         mContent.setOutlineProvider(mViewOutlineProvider);
         mContent.setClipToOutline(true);
         setupSheet();

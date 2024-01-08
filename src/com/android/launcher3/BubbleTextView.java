@@ -207,6 +207,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mActivity = ActivityContext.lookupContext(context);
+        FastBitmapDrawable.setFlagHoverEnabled(ENABLE_CURSOR_HOVER_STATES.get());
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
@@ -418,6 +419,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         return (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
                 || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
                         && mDisplay == DISPLAY_SEARCH_RESULT);
+    }
+
+    /**
+     *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
+     */
+    protected boolean shouldUseTwoLine() {
+        return  (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+                || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
+                && mDisplay == DISPLAY_SEARCH_RESULT);
     }
 
     @UiThread

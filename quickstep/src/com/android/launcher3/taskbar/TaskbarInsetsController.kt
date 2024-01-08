@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar
 
+import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.graphics.Insets
 import android.graphics.Region
 import android.os.Binder

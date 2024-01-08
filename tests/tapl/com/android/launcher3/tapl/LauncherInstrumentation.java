@@ -594,6 +594,19 @@ public final class LauncherInstrumentation {
         return mTrackpadGestureType;
     }
     /**
+     * Set the trackpad gesture type of the interaction.
+     * @param trackpadGestureType whether it's not from trackpad, two-finger, three-finger, or
+     *                            four-finger gesture.
+     */
+    public void setTrackpadGestureType(TrackpadGestureType trackpadGestureType) {
+        mTrackpadGestureType = trackpadGestureType;
+    }
+
+    TrackpadGestureType getTrackpadGestureType() {
+        return mTrackpadGestureType;
+    }
+
+    /**
      * Sets expected rotation.
      * TAPL periodically checks that Launcher didn't suddenly change the rotation to unexpected one.
      * Null parameter disables checks. The initial state is "no checks".

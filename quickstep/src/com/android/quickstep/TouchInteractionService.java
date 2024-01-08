@@ -178,6 +178,10 @@ public class TouchInteractionService extends Service {
             mTis = new WeakReference<>(tis);
         }
 
+        private TISBinder(TouchInteractionService tis) {
+            mTis = new WeakReference<>(tis);
+        }
+
         @BinderThread
         public void onInitialize(Bundle bundle) {
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(

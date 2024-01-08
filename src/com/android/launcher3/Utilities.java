@@ -751,7 +751,8 @@ public final class Utilities {
         } else {
             return Process.myUserHandle().equals(info.user)
                     ? new ColorDrawable(Color.TRANSPARENT)
-                    : context.getDrawable(R.drawable.ic_work_app_badge);
+                    : context.getDrawable(isIconThemed
+                            ? R.drawable.ic_work_app_badge_themed : R.drawable.ic_work_app_badge);
         }
     }
 

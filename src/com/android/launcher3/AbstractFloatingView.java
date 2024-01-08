@@ -49,7 +49,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 public abstract class AbstractFloatingView extends LinearLayout implements TouchController,
-        OnBackPressedHandler {
+        OnBackAnimationCallback {
 
     @IntDef(flag = true, value = {
             TYPE_COMPOSE_VIEW,
@@ -136,6 +136,12 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU | TYPE_DRAG_DROP_POPUP | TYPE_COMPOSE_VIEW;
 
     public static final int TYPE_ALL_EXCEPT_ON_BOARD_POPUP = TYPE_ALL & ~TYPE_ON_BOARD_POPUP ;
+
+    // Floating views that are exclusive to the taskbar overlay window.
+    public static final int TYPE_TASKBAR_OVERLAYS =
+            TYPE_TASKBAR_ALL_APPS | TYPE_TASKBAR_EDUCATION_DIALOG;
+
+    public static final int TYPE_ALL_EXCEPT_ON_BOARD_POPUP = TYPE_ALL & ~TYPE_ON_BOARD_POPUP;
 
     protected boolean mIsOpen;
 

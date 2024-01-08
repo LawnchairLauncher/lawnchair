@@ -181,6 +181,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         super.onDestroy();
         WallpaperManagerCompat.INSTANCE.get(this).removeOnChangeListener(this);
         DisplayController.INSTANCE.get(this).removeChangeListener(this);
+        WallpaperColorHints.get(this).unregisterOnColorsChangedListener(this);
     }
 
     public void runOnceOnStart(Runnable action) {

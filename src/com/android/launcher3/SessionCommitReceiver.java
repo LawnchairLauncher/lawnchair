@@ -37,6 +37,8 @@ import app.lawnchair.preferences2.PreferenceManager2;
 
 import java.util.Locale;
 
+import java.util.Locale;
+
 /**
  * BroadcastReceiver to handle session commit intent.
  */

@@ -2888,6 +2888,7 @@ public class CellLayout extends ViewGroup {
         } else {
             throw new RuntimeException("Position exceeds the bound of this CellLayout");
         }
+        return true;
     }
 
     @Override

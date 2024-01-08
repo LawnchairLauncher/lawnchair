@@ -235,6 +235,56 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected void onOpenCloseAnimationPending(PendingAnimation animation) {
     }
 
+    /**
+     * Sets up a {@link #mOpenCloseAnimation} for opening with a given duration.
+     *
+     * @see #setUpOpenCloseAnimation(float, float, long)
+     */
+    protected final AnimatorPlaybackController setUpOpenAnimation(long duration) {
+        return setUpOpenCloseAnimation(
+                TRANSLATION_SHIFT_CLOSED, TRANSLATION_SHIFT_OPENED, duration);
+    }
+
+    private AnimatorPlaybackController setUpCloseAnimation(long duration) {
+        return setUpOpenCloseAnimation(
+                TRANSLATION_SHIFT_OPENED, TRANSLATION_SHIFT_CLOSED, duration);
+    }
+
+    /**
+     * Initializes a new {@link #mOpenCloseAnimation}.
+     *
+     * @param fromTranslationShift translation shift to animate from.
+     * @param toTranslationShift   translation shift to animate to.
+     * @param duration             animation duration.
+     * @return {@link #mOpenCloseAnimation}
+     */
+    private AnimatorPlaybackController setUpOpenCloseAnimation(
+            float fromTranslationShift, float toTranslationShift, long duration) {
+        mFromTranslationShift = fromTranslationShift;
+        mToTranslationShift = toTranslationShift;
+
+        PendingAnimation animation = new PendingAnimation(duration);
+        animation.addEndListener(b -> {
+            mSwipeDetector.finishedScrolling();
+            announceAccessibilityChanges();
+        });
+
+        animation.addFloat(
+                this, TRANSLATION_SHIFT, fromTranslationShift, toTranslationShift, LINEAR);
+        onOpenCloseAnimationPending(animation);
+
+        mOpenCloseAnimation = animation.createPlaybackController();
+        return mOpenCloseAnimation;
+    }
+
+    /**
+     * Invoked when a {@link #mOpenCloseAnimation} is being set up.
+     * <p>
+     * Subclasses can override this method to modify the animation before it's used to create a
+     * {@link AnimatorPlaybackController}.
+     */
+    protected void onOpenCloseAnimationPending(PendingAnimation animation) {}
+
     protected void attachToContainer() {
         if (mColorScrim != null) {
             getPopupContainer().addView(mColorScrim);
