@@ -115,9 +115,6 @@ public class TaskMenuView extends AbstractFloatingView {
             animateClose();
         } else {
             closeComplete();
-            if (enableOverviewIconMenu()) {
-                ((IconAppChipView) mTaskContainer.getIconView()).reset();
-            }
         }
     }
 
@@ -378,7 +375,16 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void closeComplete() {
         mIsOpen = false;
+        resetOverviewIconMenu();
         mActivity.getDragLayer().removeView(this);
+    }
+
+    private void resetOverviewIconMenu() {
+        if (enableOverviewIconMenu()) {
+            ((IconAppChipView) mTaskContainer.getIconView()).reset();
+            setTranslationY(mMenuTranslationYBeforeOpen);
+            mTaskContainer.getIconView().asView().setTranslationY(mIconViewTranslationYBeforeOpen);
+        }
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
