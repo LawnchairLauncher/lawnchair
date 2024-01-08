@@ -38,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.util.ArrayUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
@@ -185,6 +186,16 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 cleanUpRecentsAnimation(newCallbacks);
             }
 
+            private boolean isNonRecentsStartedTasksAppeared(
+                    RemoteAnimationTarget[] appearedTaskTargets) {
+                // For example, right after swiping from task X to task Y (e.g. from
+                // AbsSwipeUpHandler#startNewTask), and then task Y starts X immediately
+                // (e.g. in Y's onResume). The case will be: lastStartedTask=Y and appearedTask=X.
+                return mLastGestureState.getEndTarget() == GestureState.GestureEndTarget.NEW_TASK
+                        && ArrayUtils.find(appearedTaskTargets,
+                                mLastGestureState.mLastStartedTaskIdPredicate) == null;
+            }
+
             @Override
             public void onTasksAppeared(RemoteAnimationTarget[] appearedTaskTargets) {
                 RemoteAnimationTarget appearedTaskTarget = appearedTaskTargets[0];
@@ -213,7 +224,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     nonAppTargets = new RemoteAnimationTarget[0];
                 }
                 if ((activityInterface.isInLiveTileMode()
-                            || mLastGestureState.getEndTarget() == RECENTS)
+                            || mLastGestureState.getEndTarget() == RECENTS
+                            || isNonRecentsStartedTasksAppeared(appearedTaskTargets))
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
                             activityInterface.getCreatedActivity().getOverviewPanel();
