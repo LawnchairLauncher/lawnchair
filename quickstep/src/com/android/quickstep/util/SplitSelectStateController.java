@@ -498,6 +498,29 @@ public class SplitSelectStateController {
     }
 
     /**
+     * Used to launch split screen from a split pair that already exists, optionally with a custom
+     * remote transition.
+     * <p>
+     * See {@link SplitSelectStateController#launchExistingSplitPair(
+     * GroupedTaskView, int, int, int, Consumer, boolean, int, RemoteTransition)}
+     */
+    public void launchExistingSplitPair(@Nullable GroupedTaskView groupedTaskView,
+            int firstTaskId, int secondTaskId, @StagePosition int stagePosition,
+            Consumer<Boolean> callback, boolean freezeTaskList,
+            @PersistentSnapPosition int snapPosition) {
+        launchExistingSplitPair(
+                groupedTaskView,
+                firstTaskId,
+                secondTaskId,
+                stagePosition,
+                callback,
+                freezeTaskList,
+                snapPosition,
+                /* remoteTransition= */ null);
+    }
+
+
+    /**
      * Used to launch split screen from a split pair that already exists (usually accessible through
      * Overview). This is different than {@link #launchTasks(Consumer, boolean, int, InstanceId)}
      * in that this only launches split screen that are existing tasks. This doesn't determine which
@@ -509,7 +532,7 @@ public class SplitSelectStateController {
     public void launchExistingSplitPair(@Nullable GroupedTaskView groupedTaskView,
             int firstTaskId, int secondTaskId, @StagePosition int stagePosition,
             Consumer<Boolean> callback, boolean freezeTaskList,
-            @PersistentSnapPosition int snapPosition) {
+            @PersistentSnapPosition int snapPosition, @Nullable RemoteTransition remoteTransition) {
         mLaunchingTaskView = groupedTaskView;
         final ActivityOptions options1 = ActivityOptions.makeBasic();
         if (freezeTaskList) {
@@ -518,10 +541,12 @@ public class SplitSelectStateController {
         Bundle optionsBundle = options1.toBundle();
 
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-            final RemoteTransition remoteTransition = getShellRemoteTransition(firstTaskId,
-                    secondTaskId, callback, "LaunchExistingPair");
+            final RemoteTransition transition = remoteTransition == null
+                    ? getShellRemoteTransition(
+                            firstTaskId, secondTaskId, callback, "LaunchExistingPair")
+                    : remoteTransition;
             mSystemUiProxy.startTasks(firstTaskId, optionsBundle, secondTaskId, null /* options2 */,
-                    stagePosition, snapPosition, remoteTransition, null /*shellInstanceId*/);
+                    stagePosition, snapPosition, transition, null /*shellInstanceId*/);
         } else {
             final RemoteAnimationAdapter adapter = getLegacyRemoteAdapter(firstTaskId,
                     secondTaskId, callback);
