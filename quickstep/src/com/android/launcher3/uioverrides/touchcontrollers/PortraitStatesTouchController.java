@@ -106,7 +106,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected StateAnimationConfig getConfigForStates(
             LauncherState fromState, LauncherState toState) {
         final StateAnimationConfig config = new StateAnimationConfig();
-        config.userControlled = true;
+        config.animProps |= StateAnimationConfig.USER_CONTROLLED;
         if (fromState == NORMAL && toState == ALL_APPS) {
             AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mLauncher, config);
         } else if (fromState == ALL_APPS && toState == NORMAL) {
