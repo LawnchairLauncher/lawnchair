@@ -88,6 +88,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -183,7 +184,7 @@ public class TouchInteractionService extends Service {
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             IPip pip = IPip.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_PIP));
-            IBubbles bubbles = IBubbles.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_BUBBLES));
+            IBubbles bubbles = Utilities.ATLEAST_U ? IBubbles.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_BUBBLES)) : null;
             ISplitScreen splitscreen = ISplitScreen.Stub.asInterface(bundle.getBinder(
                     KEY_EXTRA_SHELL_SPLIT_SCREEN));
             IOneHanded onehanded = IOneHanded.Stub.asInterface(
@@ -706,7 +707,7 @@ public class TouchInteractionService extends Service {
         // Note this will create a new consumer every mouse click, as after ACTION_UP
         // from the click
         // an ACTION_HOVER_ENTER will fire as well.
-        boolean isHoverActionWithoutConsumer = event.isHoverEvent()
+        boolean isHoverActionWithoutConsumer = Utilities.ATLEAST_U ? event.isHoverEvent() : isHoverEvent(action)
                 && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
@@ -801,9 +802,15 @@ public class TouchInteractionService extends Service {
         traceToken.close();
     }
 
+    private boolean isHoverEvent(int action) {
+        return action == MotionEvent.ACTION_HOVER_ENTER
+                || action == MotionEvent.ACTION_HOVER_MOVE
+                || action == MotionEvent.ACTION_HOVER_EXIT;
+    }
+
     // Talkback generates hover events on touch, which we do not want to consume.
     private boolean isCursorHoverEvent(MotionEvent event) {
-        return event.isHoverEvent() && event.getSource() == InputDevice.SOURCE_MOUSE;
+        return Utilities.ATLEAST_U ? event.isHoverEvent() : isHoverEvent(event.getActionMasked()) && event.getSource() == InputDevice.SOURCE_MOUSE;
     }
 
     private InputConsumer tryCreateAssistantInputConsumer(
