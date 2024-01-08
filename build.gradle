@@ -119,7 +119,7 @@ final def releaseName = "Beta 1"
 final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
-final def quickstepMinSdk = "34"
+final def quickstepMinSdk = "33"
 final def quickstepMaxSdk = "34"
 
 android {
@@ -319,6 +319,9 @@ dependencies {
     withQuickstepCompileOnly projects.systemUIPlugin
     withQuickstepImplementation projects.systemUIPluginCore
     withQuickstepCompileOnly projects.systemUICommon
+
+    // QuickSwitch Compat
+    withQuickstepImplementation projects.compatLib
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-14.jar')
 
