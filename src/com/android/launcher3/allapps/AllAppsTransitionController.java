@@ -342,7 +342,7 @@ public class AllAppsTransitionController
             });
         }
 
-        if(FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() && config.userControlled
+        if (FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() && config.isUserControlled()
                 && Utilities.ATLEAST_S) {
             if (toState == ALL_APPS) {
                 builder.addOnFrameListener(
@@ -367,7 +367,7 @@ public class AllAppsTransitionController
 
         // need to decide depending on the release velocity
         Interpolator verticalProgressInterpolator = config.getInterpolator(ANIM_VERTICAL_PROGRESS,
-                config.userControlled ? LINEAR : DECELERATE_1_7);
+                config.isUserControlled() ? LINEAR : DECELERATE_1_7);
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(verticalProgressInterpolator);
         builder.add(anim);
