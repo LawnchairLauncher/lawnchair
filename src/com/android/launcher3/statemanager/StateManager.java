@@ -40,6 +40,8 @@ import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Class to manage transitions between different states for a StatefulActivity based on different
@@ -227,7 +229,15 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private void goToState(
             STATE_TYPE state, boolean animated, long delay, AnimatorListener listener) {
-        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "go to state " + state);
+        String stackTrace = Log.getStackTraceString(new Exception("tracing state transition"));
+        String truncatedTrace =
+                Arrays.stream(stackTrace.split("\\n"))
+                    .limit(5)
+                    .skip(1) // Removes the line "java.lang.Exception: tracing state transition"
+                    .filter(traceLine -> !traceLine.contains("StateManager.goToState"))
+                    .collect(Collectors.joining("\n"));
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME,
+                "go to state " + state + " partial trace:\n" + truncatedTrace);
 
         animated &= areAnimatorsEnabled();
         if (mActivity.isInState(state)) {
