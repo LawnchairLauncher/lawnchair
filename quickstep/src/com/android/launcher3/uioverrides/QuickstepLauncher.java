@@ -93,6 +93,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.OnBackPressedHandler;
 import com.android.launcher3.QuickstepAccessibilityDelegate;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -759,14 +760,13 @@ public class QuickstepLauncher extends Launcher {
 
                     @Override
                     public void onBackStarted(@NonNull BackEvent backEvent) {
-                        if (mActiveOnBackAnimationCallback != null) {
-                            mActiveOnBackAnimationCallback.onBackCancelled();
+                        if (mActiveOnBackPressedHandler != null) {
+                            mActiveOnBackPressedHandler.onBackCancelled();
                         }
-                        mActiveOnBackAnimationCallback = getOnBackAnimationCallback();
-                        mActiveOnBackAnimationCallback.onBackStarted(backEvent);
+                        mActiveOnBackPressedHandler = getOnBackPressedHandler();
+                        mActiveOnBackPressedHandler.onBackStarted();
                     }
 
-                    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
                     @Override
                     public void onBackInvoked() {
                         // Recreate mActiveOnBackPressedHandler if necessary to avoid NPE
@@ -775,11 +775,11 @@ public class QuickstepLauncher extends Launcher {
                         // called on ACTION_DOWN before onBackInvoked() is called in ACTION_UP.
                         // 2. Launcher#onBackPressed() will call onBackInvoked() without calling
                         // onBackInvoked() beforehand.
-                        if (mActiveOnBackAnimationCallback == null) {
-                            mActiveOnBackAnimationCallback = getOnBackAnimationCallback();
+                        if (mActiveOnBackPressedHandler == null) {
+                            mActiveOnBackPressedHandler = getOnBackPressedHandler();
                         }
-                        mActiveOnBackAnimationCallback.onBackInvoked();
-                        mActiveOnBackAnimationCallback = null;
+                        mActiveOnBackPressedHandler.onBackInvoked();
+                        mActiveOnBackPressedHandler = null;
                         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
                     }
                     @Override
@@ -797,8 +797,8 @@ public class QuickstepLauncher extends Launcher {
                                 && mActiveOnBackPressedHandler == null) {
                             return;
                         }
-                        mActiveOnBackAnimationCallback.onBackCancelled();
-                        mActiveOnBackAnimationCallback = null;
+                        mActiveOnBackPressedHandler.onBackCancelled();
+                        mActiveOnBackPressedHandler = null;
                     }
                 });
     }

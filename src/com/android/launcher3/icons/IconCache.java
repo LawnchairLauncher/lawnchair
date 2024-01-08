@@ -50,6 +50,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
 
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.BaseIconCache;

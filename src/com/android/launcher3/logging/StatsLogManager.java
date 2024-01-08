@@ -593,12 +593,7 @@ public class StatsLogManager implements ResourceBasedOverride {
         default StatsLogger withCardinality(int cardinality) {
             return this;
         }
-        /**
-         * Sets the input type of the log message.
-         */
-        default StatsLogger withInputType(int inputType) {
-            return this;
-        }
+
         /**
          * Sets the input type of the log message.
          */

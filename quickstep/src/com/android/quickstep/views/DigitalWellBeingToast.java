@@ -157,7 +157,11 @@ public final class DigitalWellBeingToast {
             }
             final long appUsageLimitTimeMs = usageLimit != null ? usageLimit.getTotalUsageLimit() : -1;
             final long appRemainingTimeMs = usageLimit != null ? usageLimit.getUsageRemaining() : -1;
-
+            mTaskView.post(() -> {
+                if (appUsageLimitTimeMs < 0 || appRemainingTimeMs < 0) {
+                    setNoLimit();
+                } else {
+                    setLimit(appUsageLimitTimeMs, appRemainingTimeMs);
                 }
             });
 

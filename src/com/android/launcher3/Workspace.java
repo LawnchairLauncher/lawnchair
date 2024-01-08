@@ -800,14 +800,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         });
     }
 
-
-    /**
-     * Returns if the given screenId is already in the Workspace
-     */
-    public boolean containsScreenId(int screenId) {
-        return this.mWorkspaceScreens.containsKey(screenId);
-    }
-
     /**
      * Returns if the given screenId is already in the Workspace
      */

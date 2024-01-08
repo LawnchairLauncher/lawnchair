@@ -24,6 +24,8 @@ import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUN
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetHostView;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -31,6 +33,7 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;

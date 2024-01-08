@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Rect;
@@ -103,7 +104,9 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         setInsets(mActivityContext.getDeviceProfile().getInsets());
         mTextView.setText(R.string.work_apps_pause_btn_text);
 
-        getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        if (Utilities.ATLEAST_U) {
+            getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        }
     }
 
     @Override
@@ -187,10 +190,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             rect.set(insets.left, insets.top, insets.right, insets.bottom);
         }
-    }
-
-    public Rect getImeInsets() {
-        return mImeInsets;
     }
 
     public Rect getImeInsets() {
