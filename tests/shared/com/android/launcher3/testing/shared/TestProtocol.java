@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.launcher3.testing.shared;
+
 import android.util.Log;
+
 /**
  * Protocol for custom accessibility events for communication with UI Automation tests.
  */
@@ -39,6 +42,7 @@ public final class TestProtocol {
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
     public static final String SEQUENCE_PILFER = "Pilfer";
+
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {
             case NORMAL_STATE_ORDINAL:
@@ -67,8 +71,10 @@ public final class TestProtocol {
                 return "Unknown";
         }
     }
+
     public static final String TEST_INFO_REQUEST_FIELD = "request";
     public static final String TEST_INFO_RESPONSE_FIELD = "response";
+
     public static final String REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT =
             "home-to-overview-swipe-height";
     public static final String REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT =
@@ -118,12 +124,16 @@ public final class TestProtocol {
             "taskbar-all-apps-top-padding";
     public static final String REQUEST_ALL_APPS_TOP_PADDING = "all-apps-top-padding";
     public static final String REQUEST_ALL_APPS_BOTTOM_PADDING = "all-apps-bottom-padding";
+
     public static final String REQUEST_WORKSPACE_CELL_LAYOUT_SIZE = "workspace-cell-layout-size";
     public static final String REQUEST_WORKSPACE_CELL_CENTER = "workspace-cell-center";
     public static final String REQUEST_WORKSPACE_COLUMNS_ROWS = "workspace-columns-rows";
+
     public static final String REQUEST_WORKSPACE_CURRENT_PAGE_INDEX =
             "workspace-current-page-index";
+
     public static final String REQUEST_HOTSEAT_CELL_CENTER = "hotseat-cell-center";
+
     public static final String REQUEST_GET_FOCUSED_TASK_HEIGHT_FOR_TABLET =
             "get-focused-task-height-for-tablet";
     public static final String REQUEST_GET_GRID_TASK_SIZE_RECT_FOR_TABLET =
@@ -132,16 +142,21 @@ public final class TestProtocol {
     public static final String REQUEST_ENABLE_ROTATION = "enable_rotation";
     public static final String REQUEST_ENABLE_SUGGESTION = "enable-suggestion";
     public static final String REQUEST_MODEL_QUEUE_CLEARED = "model-queue-cleared";
+
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
+
+
     public static boolean sDisableSensorRotation;
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
+
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP = "b/286084688";
     public static final String ICON_MISSING = "b/282963545";
     public static final String LAUNCH_SPLIT_PAIR = "b/288939273";
+
     public static final String OVERVIEW_OVER_HOME = "b/279059025";
     public static final String INCORRECT_HOME_STATE = "b/293191790";
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
@@ -149,9 +164,9 @@ public final class TestProtocol {
     public static final String REQUEST_IS_EMULATE_DISPLAY_RUNNING = "is-emulate-display-running";
     public static final String REQUEST_EMULATE_PRINT_DEVICE = "emulate-print-device";
 
+    public static final String REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW = "enable-grid-only-overview";
     public static final String WORK_TAB_MISSING = "b/243688989";
 
-    public static final String REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW = "enable-grid-only-overview";
     /** Logs {@link Log#d(String, String)} if {@link #sDebugTracing} is true. */
     public static void testLogD(String tag, String message) {
         if (!sDebugTracing) {
