@@ -16,8 +16,10 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ARCHIVED;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -53,6 +55,7 @@ import java.util.function.Predicate;
 /**
  * Stores the list of all applications for the all apps view.
  */
+@SuppressWarnings("NewApi")
 public class AllAppsList {
 
     private static final String TAG = "AllAppsList";
@@ -200,13 +203,18 @@ public class AllAppsList {
             if (tgtComp != null && tgtComp.getPackageName().equals(installInfo.packageName)
                     && appInfo.user.equals(user)) {
                 if (installInfo.state == PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING
-                        || installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
+                        || installInfo.state == PackageInstallInfo.STATUS_INSTALLING
+                        // In case unarchival fails, we would want to keep the icon and update
+                        // back the progress to 0 for the all apps view without removing the
+                        // icon, which is contrary to what happens during normal app installation
+                        // flow.
+                        || (installInfo.state == PackageInstallInfo.STATUS_FAILED
+                                && appInfo.isArchived())) {
                     if (appInfo.isAppStartable()
-                            && installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
+                            && installInfo.state == PackageInstallInfo.STATUS_INSTALLING
+                            && !appInfo.isArchived()) {
                         continue;
                     }
-                    // TODO(b/302115555): Handle the case when archived apps are to be updated
-                    //  during unarchival start.
                     appInfo.setProgressLevel(installInfo);
 
                     updatedAppInfos.add(appInfo);
@@ -322,6 +330,11 @@ public class AllAppsList {
                             PackageManagerHelper.getLoadingProgress(info),
                             PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                     applicationInfo.intent = launchIntent;
+                    if (enableSupportForArchiving() && info.getActivityInfo().isArchived) {
+                        // In case an app is archived, the respective item flag corresponding to
+                        // archiving should also be applied during package updates
+                        applicationInfo.runtimeStatusFlags |= FLAG_ARCHIVED;
+                    }
 
                     mDataChanged = true;
                 }
