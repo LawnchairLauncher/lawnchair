@@ -48,7 +48,10 @@ class CellContentDimensions(
             cellContentHeight = getCellContentHeight()
 
             // Step 3. Decrease label size
-            if (cellContentHeight > cellHeightPx) {
+            if (
+                cellContentHeight > cellHeightPx &&
+                    iconTextSizePx > iconSizeSteps.minimumIconLabelSize
+            ) {
                 iconTextSizePx =
                     max(
                         iconSizeSteps.minimumIconLabelSize,
