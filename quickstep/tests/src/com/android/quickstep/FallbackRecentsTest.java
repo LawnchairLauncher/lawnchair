@@ -298,7 +298,6 @@ public class FallbackRecentsTest {
 
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
-        waitForRecentsActivityStop(); // dismissAllTasks() will close Recents
         assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
     }

@@ -140,8 +140,19 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 flingForwardImpl();
             }
 
-            mLauncher.clickLauncherObject(
-                    mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector));
+            final Runnable clickClearAll = () -> mLauncher.clickLauncherObject(
+                    mLauncher.waitForObjectInContainer(verifyActiveContainer(),
+                            clearAllSelector));
+            if (mLauncher.is3PLauncher()) {
+                mLauncher.executeAndWaitForLauncherStop(
+                        clickClearAll,
+                        "clicking 'Clear All'");
+            } else {
+                mLauncher.runToState(
+                        clickClearAll,
+                        NORMAL_STATE_ORDINAL,
+                        "clicking 'Clear All'");
+            }
 
             mLauncher.waitUntilLauncherObjectGone(clearAllSelector);
         }
