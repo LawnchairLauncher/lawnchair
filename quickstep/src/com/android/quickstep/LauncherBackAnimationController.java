@@ -23,8 +23,6 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
-import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
-import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -301,11 +299,10 @@ public class LauncherBackAnimationController {
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         mStartRect.set(appTarget.windowConfiguration.getMaxBounds());
-        if (mLauncher.getDeviceProfile().isTaskbarPresent && enableTaskbarPinning()
-                && LauncherPrefs.get(mLauncher).get(TASKBAR_PINNING)) {
-            int insetBottom = mStartRect.bottom - appTarget.contentInsets.bottom;
-            mStartRect.set(mStartRect.left, mStartRect.top, mStartRect.right, insetBottom);
-        }
+
+        // inset bottom in case of pinned taskbar being present
+        mStartRect.inset(0, 0, 0, appTarget.contentInsets.bottom);
+
         mLauncherTargetView = mQuickstepTransitionManager.findLauncherView(
                 new RemoteAnimationTarget[]{ mBackTarget });
         setLauncherTargetViewVisible(false);
