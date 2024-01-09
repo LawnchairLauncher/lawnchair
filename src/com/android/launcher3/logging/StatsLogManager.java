@@ -281,6 +281,12 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User long presses on the bottom bezel area.")
         LAUNCHER_LONG_PRESS_NAVBAR(1544),
 
+        @UiEvent(doc = "User deep presses on the stashed taskbar")
+        LAUNCHER_DEEP_PRESS_STASHED_TASKBAR(1602),
+
+        @UiEvent(doc = "User long presses on the stashed taskbar")
+        LAUNCHER_LONG_PRESS_STASHED_TASKBAR(1592),
+
         @UiEvent(doc = "User swipes or fling in UP direction from bottom bazel area.")
         LAUNCHER_HOME_GESTURE(574),
 

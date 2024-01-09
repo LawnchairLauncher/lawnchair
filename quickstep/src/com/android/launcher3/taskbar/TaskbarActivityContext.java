@@ -120,6 +120,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.NavHandle;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -578,6 +579,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     @Nullable
     public BubbleControllers getBubbleControllers() {
         return mControllers.bubbleControllers.orElse(null);
+    }
+
+    @NonNull
+    public NavHandle getNavHandle() {
+        return mControllers.stashedHandleViewController;
     }
 
     @Override
