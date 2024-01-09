@@ -37,6 +37,7 @@ import android.util.FloatProperty;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Utilities;
@@ -71,7 +72,8 @@ public class PreviewItemManager {
 
     private final Context mContext;
     private final FolderIcon mIcon;
-    private final int mIconSize;
+    @VisibleForTesting
+    public final int mIconSize;
 
     // These variables are all associated with the drawing of the preview; they are stored
     // as member variables for shared usage and to avoid computation on each frame
@@ -428,7 +430,8 @@ public class PreviewItemManager {
         p.anim = anim;
     }
 
-    private void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
+    @VisibleForTesting
+    public void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
         if (item.hasPromiseIconUi() || (item.runtimeStatusFlags
                     & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
             PreloadIconDrawable drawable = newPendingIcon(mContext, item);
