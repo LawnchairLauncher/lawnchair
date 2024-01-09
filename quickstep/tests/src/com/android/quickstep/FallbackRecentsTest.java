@@ -77,6 +77,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -193,6 +194,7 @@ public class FallbackRecentsTest {
     @Test
     public void goToOverviewFromApp() {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        waitForRecentsActivityStop();
 
         mLauncher.getLaunchedAppState().switchToOverview();
     }
@@ -229,6 +231,19 @@ public class FallbackRecentsTest {
     }
 
     private void waitForRecentsActivityStop() {
+        try {
+            final boolean recentsActivityIsNull = MAIN_EXECUTOR.submit(
+                    () -> RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity() == null).get();
+            if (recentsActivityIsNull) {
+                // Null activity counts as a "stopped" one.
+                return;
+            }
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         Wait.atMost("Recents activity didn't stop",
                 () -> getFromRecents(recents -> !recents.isStarted()),
                 DEFAULT_UI_TIMEOUT, mLauncher);
@@ -241,6 +256,7 @@ public class FallbackRecentsTest {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
+        waitForRecentsActivityStop();
         Wait.atMost("Expected three apps in the task list",
                 () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
 

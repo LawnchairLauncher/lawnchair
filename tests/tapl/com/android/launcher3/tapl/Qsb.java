@@ -118,14 +118,16 @@ public abstract class Qsb implements SearchInputSource {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to open search result page");
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.clickLauncherObject(waitForQsbObject());
-            // wait for the result rendering to complete
-            mLauncher.waitForIdle();
+            clickQsb();
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
                     "clicked qsb to open search result page")) {
                 return createSearchResult();
             }
         }
+    }
+
+    protected void clickQsb() {
+        mLauncher.clickLauncherObject(waitForQsbObject());
     }
 
     @Override

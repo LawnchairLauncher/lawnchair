@@ -181,10 +181,10 @@ public class TaplOpenCloseAllAppsTest extends AbstractLauncherUiTest {
             executeOnLauncher(launcher -> assertTrue("flingBackward() didn't scroll App Apps",
                     flingBackwardY < flingForwardY));
 
-            // Test scrolling down to YouTube.
-            assertNotNull("All apps: can't find YouTube", allApps.getAppIcon("YouTube"));
-            // Test scrolling up to Camera.
-            assertNotNull("All apps: can't find Camera", allApps.getAppIcon("Camera"));
+            // Test scrolling down to the end of the app list.
+            assertNotNull("All apps: can't find YouTube", allApps.getAppIcon("ZZZ"));
+            // Test scrolling up to the beginning oof the app list.
+            assertNotNull("All apps: can't find Camera", allApps.getAppIcon("AAA"));
             // Test failing to find a non-existing app.
             final AllApps allAppsFinal = allApps;
             expectFail("All apps: could find a non-existing app",
