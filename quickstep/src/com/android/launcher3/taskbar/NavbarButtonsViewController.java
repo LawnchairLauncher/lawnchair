@@ -61,6 +61,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.RotateDrawable;
 import android.inputmethodservice.InputMethodService;
@@ -96,6 +97,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.systemui.shared.navigationbar.KeyButtonRipple;
 import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
 import com.android.systemui.shared.rotation.RotationButtonController;
@@ -665,6 +667,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
         for (ImageView button : mAllButtons) {
             button.setImageTintList(ColorStateList.valueOf(iconColor));
+            Drawable background = button.getBackground();
+            if (background instanceof KeyButtonRipple) {
+                ((KeyButtonRipple) background).setDarkIntensity(
+                        mTaskbarNavButtonDarkIntensity.value);
+            }
         }
     }
 
@@ -751,6 +758,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                             mA11yButton, res, isInKidsMode, isInSetup, isThreeButtonNav,
                             mContext.isPhoneMode(), mWindowManagerProxy.getRotation(mContext));
             navButtonLayoutter.layoutButtons(mContext, isA11yButtonPersistent());
+            updateButtonsBackground();
             updateNavButtonColor();
             return;
         }
@@ -870,7 +878,27 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 }
             }
         }
+    }
 
+    private void updateButtonsBackground() {
+        boolean clipped = !mContext.isPhoneButtonNavMode();
+        mNavButtonContainer.setClipToPadding(clipped);
+        mNavButtonContainer.setClipChildren(clipped);
+        mNavButtonsView.setClipToPadding(clipped);
+        mNavButtonsView.setClipChildren(clipped);
+
+        for (ImageView button : mAllButtons) {
+            updateButtonBackground(button, mContext.isPhoneButtonNavMode());
+        }
+    }
+
+    private static void updateButtonBackground(View view, boolean isPhoneButtonNavMode) {
+        if (isPhoneButtonNavMode) {
+            view.setBackground(new KeyButtonRipple(view.getContext(), view,
+                    R.dimen.key_button_ripple_max_width));
+        } else {
+            view.setBackgroundResource(R.drawable.taskbar_icon_click_feedback_roundrect);
+        }
     }
 
     public void onDestroy() {
