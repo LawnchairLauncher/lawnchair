@@ -173,9 +173,12 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
             OverviewTask currentTask = flingToFirstTask();
 
-            mLauncher.touchOutsideContainer(currentTask.getUiObject(),
-                    /* tapRight= */ true,
-                    /* halfwayToEdge= */ false);
+            mLauncher.runToState(
+                    () -> mLauncher.touchOutsideContainer(currentTask.getUiObject(),
+                            /* tapRight= */ true,
+                            /* halfwayToEdge= */ false),
+                    NORMAL_STATE_ORDINAL,
+                    "touching outside of first task");
 
             return new Workspace(mLauncher);
         }
