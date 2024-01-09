@@ -23,6 +23,7 @@ import android.animation.Animator;
 import android.app.ActivityOptions;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.window.RemoteTransition;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ import com.android.quickstep.util.SlideInRemoteTransition;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -148,8 +150,13 @@ public class KeyboardQuickSwitchViewController {
             return -1;
         }
 
+        TaskbarActivityContext context = mControllers.taskbarActivityContext;
         RemoteTransition remoteTransition = new RemoteTransition(new SlideInRemoteTransition(
-                Utilities.isRtl(mControllers.taskbarActivityContext.getResources())));
+                Utilities.isRtl(mControllers.taskbarActivityContext.getResources()),
+                context.getDeviceProfile().overviewPageSpacing,
+                QuickStepContract.getWindowCornerRadius(context),
+                AnimationUtils.loadInterpolator(
+                        context, android.R.interpolator.fast_out_extra_slow_in)));
         if (mOnDesktop) {
             UI_HELPER_EXECUTOR.execute(() ->
                     SystemUiProxy.INSTANCE.get(mKeyboardQuickSwitchView.getContext())
