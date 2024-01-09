@@ -84,6 +84,7 @@ import android.widget.TextClock;
 import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
 import android.window.OnBackInvokedDispatcher;
+import android.window.RemoteTransition;
 import android.window.SplashScreen;
 
 import androidx.annotation.BinderThread;
@@ -1271,7 +1272,8 @@ public class QuickstepLauncher extends Launcher {
     /**
      * Launches the given {@link GroupTask} in splitscreen.
      */
-    public void launchSplitTasks(@NonNull GroupTask groupTask) {
+    public void launchSplitTasks(
+            @NonNull GroupTask groupTask, @Nullable RemoteTransition remoteTransition) {
         // Top/left and bottom/right tasks respectively.
         Task task1 = groupTask.task1;
         // task2 should never be null when calling this method. Allow a crash to catch invalid calls
@@ -1285,7 +1287,8 @@ public class QuickstepLauncher extends Launcher {
                 /* freezeTaskList= */ false,
                 groupTask.mSplitBounds == null
                         ? SNAP_TO_50_50
-                        : groupTask.mSplitBounds.snapPosition);
+                        : groupTask.mSplitBounds.snapPosition,
+                remoteTransition);
     }
 
     /**

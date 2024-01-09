@@ -27,6 +27,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.TaskTransitionSpec;
 import android.view.WindowManagerGlobal;
+import android.window.RemoteTransition;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -390,8 +391,9 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void launchSplitTasks(@NonNull GroupTask groupTask) {
-        mLauncher.launchSplitTasks(groupTask);
+    public void launchSplitTasks(
+            @NonNull GroupTask groupTask, @Nullable RemoteTransition remoteTransition) {
+        mLauncher.launchSplitTasks(groupTask, remoteTransition);
     }
 
     @Override
