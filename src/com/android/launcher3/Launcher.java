@@ -1011,7 +1011,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         AppWidgetHostView boundWidget = null;
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
-            final AppWidgetHostView layout = mAppWidgetHolder.createView(this, appWidgetId,
+            final AppWidgetHostView layout = mAppWidgetHolder.createView(appWidgetId,
                     requestArgs.getWidgetHandler().getProviderInfo(this));
             boundWidget = layout;
             onCompleteRunnable = () -> {
@@ -1464,7 +1464,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (hostView == null) {
             // Perform actual inflation because we're live
-            hostView = mAppWidgetHolder.createView(this, appWidgetId, appWidgetInfo);
+            hostView = mAppWidgetHolder.createView(appWidgetId, appWidgetInfo);
         }
 
         LauncherAppWidgetInfo launcherInfo;
@@ -2319,7 +2319,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         final AppWidgetHostView view;
         if (mIsSafeModeEnabled) {
-            view = new PendingAppWidgetHostView(this, item, mIconCache, true);
+            view = new PendingAppWidgetHostView(this, item, null, true);
             prepareAppWidget(view, item);
             return view;
         }
@@ -2450,14 +2450,9 @@ public class Launcher extends StatefulActivity<LauncherState>
 
                 item.minSpanX = appWidgetInfo.minSpanX;
                 item.minSpanY = appWidgetInfo.minSpanY;
-                view = mAppWidgetHolder.createView(this, item.appWidgetId, appWidgetInfo);
-            } else if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
-                    && appWidgetInfo != null) {
-                mAppWidgetHolder.addPendingView(item.appWidgetId,
-                        new PendingAppWidgetHostView(this, item, mIconCache, false));
-                view = mAppWidgetHolder.createView(this, item.appWidgetId, appWidgetInfo);
+                view = mAppWidgetHolder.createView(item.appWidgetId, appWidgetInfo);
             } else {
-                view = new PendingAppWidgetHostView(this, item, mIconCache, false);
+                view = new PendingAppWidgetHostView(this, item, appWidgetInfo, false);
             }
             prepareAppWidget(view, item);
         } finally {
