@@ -363,6 +363,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
 
     /**
      * Taps outside bottom sheet to dismiss it. Available on tablets only.
+     *
      * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
      */
     public void dismissByTappingOutsideForTablet(boolean tapRight) {
@@ -391,12 +392,16 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
     /** Presses the meta keyboard shortcut to dismiss AllApps. */
     public void dismissByKeyboardShortcut() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+            pressMetaKey();
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "pressed meta key")) {
                 verifyVisibleContainerOnDismiss();
             }
         }
+    }
+
+    protected void pressMetaKey() {
+        mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
     }
 
     /** Presses the esc key to dismiss AllApps. */
@@ -419,6 +424,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
 
     /**
      * Return the QSB UI object on the AllApps screen.
+     *
      * @return the QSB UI object.
      */
     @NonNull
