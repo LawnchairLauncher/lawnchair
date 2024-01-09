@@ -18,6 +18,8 @@ package com.android.launcher3.tapl;
 
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
@@ -69,7 +71,10 @@ public class SelectModeButtons {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
-            mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE);
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
+                    OVERVIEW_STATE_ORDINAL,
+                    "pressing Esc");
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "pressed esc key")) {
                 return new Overview(mLauncher);
