@@ -106,7 +106,7 @@ import java.util.List;
 /**
  * Holds the reference to SystemUI.
  */
-public class SystemUiProxy implements ISystemUiProxy {
+public class SystemUiProxy implements ISystemUiProxy, NavHandle {
     private static final String TAG = SystemUiProxy.class.getSimpleName();
 
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
