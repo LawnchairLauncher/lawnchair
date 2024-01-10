@@ -27,9 +27,6 @@ import static com.android.launcher3.LauncherPrefs.RESTORE_DEVICE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_PROFILE_NOT_RESTORED;
-import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_WIDGETS_DISABLED;
-import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_WIDGET_REMOVED;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
 
@@ -60,6 +57,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.model.LoaderTask;
@@ -394,7 +392,7 @@ public class RestoreDbTask {
             FileLog.e(TAG, "Skipping widget ID remap as widgets not supported");
             host.deleteHost();
             launcherRestoreEventLogger.logFavoritesItemsRestoreFailed(Favorites.ITEM_TYPE_APPWIDGET,
-                    oldWidgetIds.length, RESTORE_ERROR_WIDGETS_DISABLED);
+                    oldWidgetIds.length, RestoreError.WIDGETS_DISABLED);
             return;
         }
         if (!RestoreDbTask.isPending(context)) {
@@ -460,7 +458,7 @@ public class RestoreDbTask {
                         host.deleteAppWidgetId(newWidgetIds[i]);
                         launcherRestoreEventLogger.logSingleFavoritesItemRestoreFailed(
                                 ITEM_TYPE_APPWIDGET,
-                                RESTORE_ERROR_WIDGET_REMOVED
+                                RestoreError.WIDGET_REMOVED
                         );
                     }
                 }
@@ -620,7 +618,7 @@ public class RestoreDbTask {
                     restoreEventLogger.logFavoritesItemsRestoreFailed(
                             cursor.getInt(cursor.getColumnIndexOrThrow(ITEM_TYPE)),
                             cursor.getInt(cursor.getColumnIndexOrThrow("count")),
-                            RESTORE_ERROR_PROFILE_NOT_RESTORED
+                            RestoreError.PROFILE_NOT_RESTORED
                     );
                 } while (cursor.moveToNext());
             }

@@ -32,22 +32,19 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.Utilities
-import com.android.launcher3.backuprestore.LauncherRestoreEventLogger
-import com.android.launcher3.icons.IconCache
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError
 import com.android.launcher3.logging.FileLog
 import com.android.launcher3.model.data.IconRequestInfo
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.pm.PackageInstallInfo
-import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
-import com.android.launcher3.widget.WidgetManagerHelper
-import com.android.launcher3.widget.custom.CustomWidgetManager
+import com.android.launcher3.widget.WidgetInflater
 
 /**
  * This items is used by LoaderTask to process items that have been loaded from the Launcher's DB.
@@ -59,26 +56,26 @@ import com.android.launcher3.widget.custom.CustomWidgetManager
 class WorkspaceItemProcessor(
     private val c: LoaderCursor,
     private val memoryLogger: LoaderMemoryLogger?,
-    private val restoreEventLogger: LauncherRestoreEventLogger?,
     private val userManagerState: UserManagerState,
     private val launcherApps: LauncherApps,
     private val pendingPackages: MutableSet<PackageUserKey>,
     private val shortcutKeyToPinnedShortcuts: Map<ShortcutKey, ShortcutInfo>,
     private val app: LauncherAppState,
-    private val iconCache: IconCache,
     private val bgDataModel: BgDataModel,
     private val widgetProvidersMap: MutableMap<ComponentKey, AppWidgetProviderInfo?>,
-    private val isRestoreFromBackup: Boolean,
     private val installingPkgs: HashMap<PackageUserKey, PackageInstaller.SessionInfo>,
     private val isSdCardReady: Boolean,
-    private val tempPackageKey: PackageUserKey,
-    private val widgetHelper: WidgetManagerHelper,
+    private val widgetInflater: WidgetInflater,
     private val pmHelper: PackageManagerHelper,
     private val iconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>>,
     private val unlockedUsers: LongSparseArray<Boolean>,
-    private val isSafeMode: Boolean,
     private val allDeepShortcuts: MutableList<ShortcutInfo>
 ) {
+
+    private val isSafeMode = app.isSafeModeEnabled
+    private val tempPackageKey = PackageUserKey(null, null)
+    private val iconCache = app.iconCache
+
     /**
      * This is the entry point for processing 1 workspace item. This method is like the midfielder
      * that delegates the actual processing to either processAppShortcut, processFolder, or
@@ -91,13 +88,7 @@ class WorkspaceItemProcessor(
         try {
             if (c.user == null) {
                 // User has been deleted, remove the item.
-                c.markDeleted("User has been deleted")
-                if (isRestoreFromBackup) {
-                    restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                        c.itemType,
-                        LauncherRestoreEventLogger.RESTORE_ERROR_PROFILE_DELETED
-                    )
-                }
+                c.markDeleted("User has been deleted", RestoreError.PROFILE_DELETED)
                 return
             }
             when (c.itemType) {
@@ -140,13 +131,7 @@ class WorkspaceItemProcessor(
         var allowMissingTarget = false
         var intent = c.parseIntent()
         if (intent == null) {
-            c.markDeleted("Invalid or null intent")
-            if (isRestoreFromBackup) {
-                restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                    c.itemType,
-                    LauncherRestoreEventLogger.RESTORE_ERROR_MISSING_INFO
-                )
-            }
+            c.markDeleted("Invalid or null intent", RestoreError.MISSING_INFO)
             return
         }
         var disabledState =
@@ -156,13 +141,7 @@ class WorkspaceItemProcessor(
         var cn = intent.component
         val targetPkg = if (cn == null) intent.getPackage() else cn.packageName
         if (TextUtils.isEmpty(targetPkg)) {
-            c.markDeleted("Shortcuts can't have null package")
-            if (isRestoreFromBackup) {
-                restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                    c.itemType,
-                    LauncherRestoreEventLogger.RESTORE_ERROR_MISSING_INFO
-                )
-            }
+            c.markDeleted("Shortcuts can't have null package", RestoreError.MISSING_INFO)
             return
         }
 
@@ -179,9 +158,6 @@ class WorkspaceItemProcessor(
             if (launcherApps.isActivityEnabled(cn, c.user)) {
                 // no special handling necessary for this item
                 c.markRestored()
-                if (isRestoreFromBackup) {
-                    restoreEventLogger?.logSingleFavoritesItemRestored(c.itemType)
-                }
             } else {
                 // Gracefully try to find a fallback activity.
                 intent = pmHelper.getAppLaunchIntent(targetPkg, c.user)
@@ -189,13 +165,10 @@ class WorkspaceItemProcessor(
                     c.restoreFlag = 0
                     c.updater().put(Favorites.INTENT, intent.toUri(0)).commit()
                 } else {
-                    c.markDeleted("Intent null, unable to find a launch target")
-                    if (isRestoreFromBackup) {
-                        restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                            c.itemType,
-                            LauncherRestoreEventLogger.RESTORE_ERROR_MISSING_INFO
-                        )
-                    }
+                    c.markDeleted(
+                        "Intent null, unable to find a launch target",
+                        RestoreError.MISSING_INFO
+                    )
                     return
                 }
             }
@@ -225,14 +198,9 @@ class WorkspaceItemProcessor(
                             }
                             else -> {
                                 c.markDeleted(
-                                    "removing app that is not restored and not installing. package: $targetPkg"
+                                    "removing app that is not restored and not installing. package: $targetPkg",
+                                    RestoreError.APP_NOT_INSTALLED
                                 )
-                                if (isRestoreFromBackup) {
-                                    restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                                        c.itemType,
-                                        LauncherRestoreEventLogger.RESTORE_ERROR_APP_NOT_INSTALLED
-                                    )
-                                }
                                 return
                             }
                         }
@@ -254,13 +222,10 @@ class WorkspaceItemProcessor(
                     }
                     else -> {
                         // Do not wait for external media load anymore.
-                        c.markDeleted("Invalid package removed: $targetPkg")
-                        if (isRestoreFromBackup) {
-                            restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                                c.itemType,
-                                LauncherRestoreEventLogger.RESTORE_ERROR_APP_NOT_INSTALLED
-                            )
-                        }
+                        c.markDeleted(
+                            "Invalid package removed: $targetPkg",
+                            RestoreError.APP_NOT_INSTALLED
+                        )
                         return
                     }
                 }
@@ -290,14 +255,9 @@ class WorkspaceItemProcessor(
                     if (pinnedShortcut == null) {
                         // The shortcut is no longer valid.
                         c.markDeleted(
-                            "Pinned shortcut not found from request. package=${key.packageName}, user=${c.user}"
+                            "Pinned shortcut not found from request. package=${key.packageName}, user=${c.user}",
+                            RestoreError.SHORTCUT_NOT_FOUND
                         )
-                        if (isRestoreFromBackup) {
-                            restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                                c.itemType,
-                                LauncherRestoreEventLogger.RESTORE_ERROR_SHORTCUT_NOT_FOUND
-                            )
-                        }
                         return
                     }
                     info = WorkspaceItemInfo(pinnedShortcut, app.context)
@@ -315,9 +275,6 @@ class WorkspaceItemProcessor(
                     info = c.loadSimpleWorkspaceItem()
                     info.runtimeStatusFlags =
                         info.runtimeStatusFlags or ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER
-                }
-                if (isRestoreFromBackup) {
-                    restoreEventLogger?.logSingleFavoritesItemRestored(c.itemType)
                 }
             }
             else -> { // item type == ITEM_TYPE_SHORTCUT
@@ -416,9 +373,6 @@ class WorkspaceItemProcessor(
 
         // no special handling required for restored folders
         c.markRestored()
-        if (isRestoreFromBackup) {
-            restoreEventLogger?.logSingleFavoritesItemRestored(c.itemType)
-        }
         c.checkAndAddItem(folderInfo, bgDataModel, memoryLogger)
     }
 
@@ -441,185 +395,94 @@ class WorkspaceItemProcessor(
      */
     @VisibleForTesting
     fun processWidget() {
-        if (WidgetsModel.GO_DISABLE_WIDGETS && c.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
-            c.markDeleted("Only legacy shortcuts can have null package")
-            if (isRestoreFromBackup) {
-                restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                    c.itemType,
-                    LauncherRestoreEventLogger.RESTORE_ERROR_WIDGETS_DISABLED
-                )
-            }
+        val component = ComponentName.unflattenFromString(c.appWidgetProvider)!!
+        val appWidgetInfo = LauncherAppWidgetInfo(c.appWidgetId, component)
+        c.applyCommonProperties(appWidgetInfo)
+        appWidgetInfo.spanX = c.spanX
+        appWidgetInfo.spanY = c.spanY
+        appWidgetInfo.options = c.options
+        appWidgetInfo.user = c.user
+        appWidgetInfo.sourceContainer = c.appWidgetSource
+        appWidgetInfo.restoreStatus = c.restoreFlag
+        if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
+            c.markDeleted(
+                "Widget has invalid size: ${appWidgetInfo.spanX}x${appWidgetInfo.spanY}",
+                RestoreError.INVALID_LOCATION
+            )
+            return
+        }
+        if (!c.isOnWorkspaceOrHotseat) {
+            c.markDeleted(
+                "Widget found where container != CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!",
+                RestoreError.INVALID_LOCATION
+            )
+            return
+        }
+        if (appWidgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG)) {
+            appWidgetInfo.bindOptions = c.parseIntent()
+        }
+        val inflationResult = widgetInflater.inflateAppWidget(appWidgetInfo)
+        var shouldUpdate = inflationResult.isUpdate
+        if (inflationResult.type == WidgetInflater.TYPE_DELETE) {
+            c.markDeleted(inflationResult.reason, inflationResult.restoreErrorType)
             return
         }
 
-        // Read all Launcher-specific widget details
-        val customWidget = (c.itemType == Favorites.ITEM_TYPE_CUSTOM_APPWIDGET)
-        val appWidgetId = c.appWidgetId
-        val savedProvider = c.appWidgetProvider
-        val component: ComponentName?
-        if (c.options and LauncherAppWidgetInfo.OPTION_SEARCH_WIDGET != 0) {
-            component = QsbContainerView.getSearchComponentName(app.context)
-            if (component == null) {
-                c.markDeleted("Discarding SearchWidget without package name")
-                if (isRestoreFromBackup) {
-                    restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                        c.itemType,
-                        LauncherRestoreEventLogger.RESTORE_ERROR_MISSING_INFO
-                    )
-                }
-                return
-            }
-        } else {
-            component = ComponentName.unflattenFromString(savedProvider)
-        }
-        val isIdValid = !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
-        val wasProviderReady = !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
-        val providerKey = ComponentKey(component, c.user)
-        if (!widgetProvidersMap.containsKey(providerKey)) {
-            if (customWidget) {
-                widgetProvidersMap[providerKey] =
-                    CustomWidgetManager.INSTANCE[app.context].getWidgetProvider(component)
-            } else {
-                widgetProvidersMap[providerKey] = widgetHelper.findProvider(component, c.user)
-            }
-        }
-        val provider = widgetProvidersMap[providerKey]
-        val isProviderReady = LoaderTask.isValidProvider(provider)
-        if (!isSafeMode && !customWidget && wasProviderReady && !isProviderReady) {
-            c.markDeleted("Deleting widget that isn't installed anymore: $provider")
-            if (isRestoreFromBackup) {
-                restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                    c.itemType,
-                    LauncherRestoreEventLogger.RESTORE_ERROR_APP_NOT_INSTALLED
-                )
-            }
-        } else {
-            val appWidgetInfo: LauncherAppWidgetInfo
-            if (isProviderReady) {
-                appWidgetInfo = LauncherAppWidgetInfo(appWidgetId, provider!!.provider)
+        val lapi = inflationResult.widgetInfo
+        if (inflationResult.type == WidgetInflater.TYPE_PENDING) {
+            tempPackageKey.update(component.packageName, c.user)
+            val si = installingPkgs[tempPackageKey]
 
-                // The provider is available. So the widget is either
-                // available or not available. We do not need to track
-                // any future restore updates.
-                var status =
-                    (c.restoreFlag and
-                        LauncherAppWidgetInfo.FLAG_RESTORE_STARTED.inv() and
-                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY.inv())
-                if (!wasProviderReady) {
-                    // If provider was not previously ready, update status and UI flag.
-
-                    // Id would be valid only if the widget restore broadcast received.
-                    if (isIdValid) {
-                        status = status or LauncherAppWidgetInfo.FLAG_UI_NOT_READY
-                    }
-                }
-                appWidgetInfo.restoreStatus = status
-            } else {
-                Log.v(
-                    TAG,
-                    "Widget restore pending id=${c.id} appWidgetId=$appWidgetId status=${c.restoreFlag}"
-                )
-                appWidgetInfo = LauncherAppWidgetInfo(appWidgetId, component)
-                appWidgetInfo.restoreStatus = c.restoreFlag
-                tempPackageKey.update(component!!.packageName, c.user)
-                val si = installingPkgs[tempPackageKey]
-                val installProgress = if (si == null) null else (si.getProgress() * 100).toInt()
-                when {
-                    c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) -> {
-                        // Restore has started once.
-                    }
-                    installProgress != null -> {
-                        // App restore has started. Update the flag
-                        appWidgetInfo.restoreStatus =
-                            appWidgetInfo.restoreStatus or
-                                LauncherAppWidgetInfo.FLAG_RESTORE_STARTED
-                    }
-                    !isSafeMode -> {
-                        c.markDeleted("Unrestored widget removed: $component")
-                        if (isRestoreFromBackup) {
-                            restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                                c.itemType,
-                                LauncherRestoreEventLogger.RESTORE_ERROR_APP_NOT_INSTALLED
-                            )
-                        }
-                        return
-                    }
-                }
-                appWidgetInfo.installProgress = installProgress ?: 0
-            }
-            if (appWidgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG)) {
-                appWidgetInfo.bindOptions = c.parseIntent()
-            }
-            c.applyCommonProperties(appWidgetInfo)
-            appWidgetInfo.spanX = c.spanX
-            appWidgetInfo.spanY = c.spanY
-            appWidgetInfo.options = c.options
-            appWidgetInfo.user = c.user
-            appWidgetInfo.sourceContainer = c.appWidgetSource
-            if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
-                c.markDeleted(
-                    "Widget has invalid size: ${appWidgetInfo.spanX}x${appWidgetInfo.spanY}"
-                )
-                if (isRestoreFromBackup) {
-                    restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                        c.itemType,
-                        LauncherRestoreEventLogger.RESTORE_ERROR_INVALID_LOCATION
-                    )
-                }
-                return
-            }
-            val widgetProviderInfo =
-                widgetHelper.getLauncherAppWidgetInfo(appWidgetId, appWidgetInfo.targetComponent)
             if (
-                widgetProviderInfo != null &&
-                    (appWidgetInfo.spanX < widgetProviderInfo.minSpanX ||
-                        appWidgetInfo.spanY < widgetProviderInfo.minSpanY)
+                !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) &&
+                    !isSafeMode &&
+                    (si == null) &&
+                    (lapi == null)
             ) {
+                // Restore never started
+                c.markDeleted(
+                    "Unrestored widget removed: $component",
+                    RestoreError.APP_NOT_INSTALLED
+                )
+                return
+            } else if (
+                !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) && si != null
+            ) {
+                shouldUpdate = true
+                appWidgetInfo.restoreStatus =
+                    appWidgetInfo.restoreStatus or LauncherAppWidgetInfo.FLAG_RESTORE_STARTED
+            }
+            appWidgetInfo.installProgress = if (si == null) 0 else (si.getProgress() * 100).toInt()
+            appWidgetInfo.pendingItemInfo =
+                WidgetsModel.newPendingItemInfo(
+                    app.context,
+                    appWidgetInfo.providerName,
+                    appWidgetInfo.user
+                )
+            iconCache.getTitleAndIconForApp(appWidgetInfo.pendingItemInfo, false)
+        }
+        if (shouldUpdate) {
+            c.updater()
+                .put(Favorites.APPWIDGET_PROVIDER, component.flattenToString())
+                .put(Favorites.APPWIDGET_ID, appWidgetInfo.appWidgetId)
+                .put(Favorites.RESTORED, appWidgetInfo.restoreStatus)
+                .commit()
+        }
+        if (lapi != null) {
+            widgetProvidersMap[ComponentKey(lapi.provider, lapi.user)] = inflationResult.widgetInfo
+            if (appWidgetInfo.spanX < lapi.minSpanX || appWidgetInfo.spanY < lapi.minSpanY) {
                 FileLog.d(
                     TAG,
-                    "Widget ${widgetProviderInfo.component} minSizes not meet:" +
-                        " span=${appWidgetInfo.spanX}x${appWidgetInfo.spanY}" +
-                        " minSpan=${widgetProviderInfo.minSpanX}x${widgetProviderInfo.minSpanY}"
+                    "Widget ${lapi.component} minSizes not meet: span=${appWidgetInfo.spanX}x${appWidgetInfo.spanY} minSpan=${lapi.minSpanX}x${lapi.minSpanY}"
                 )
-                logWidgetInfo(app.invariantDeviceProfile, widgetProviderInfo)
+                logWidgetInfo(app.invariantDeviceProfile, lapi)
             }
-            if (!c.isOnWorkspaceOrHotseat) {
-                c.markDeleted(
-                    "Widget found where container != CONTAINER_DESKTOP" +
-                        " nor CONTAINER_HOTSEAT - ignoring!"
-                )
-                if (isRestoreFromBackup) {
-                    restoreEventLogger?.logSingleFavoritesItemRestoreFailed(
-                        c.itemType,
-                        LauncherRestoreEventLogger.RESTORE_ERROR_INVALID_LOCATION
-                    )
-                }
-                return
-            }
-            if (!customWidget) {
-                val providerName = appWidgetInfo.providerName.flattenToString()
-                if (providerName != savedProvider || appWidgetInfo.restoreStatus != c.restoreFlag) {
-                    c.updater()
-                        .put(Favorites.APPWIDGET_PROVIDER, providerName)
-                        .put(Favorites.RESTORED, appWidgetInfo.restoreStatus)
-                        .commit()
-                }
-            }
-            if (appWidgetInfo.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED) {
-                appWidgetInfo.pendingItemInfo =
-                    WidgetsModel.newPendingItemInfo(
-                        app.context,
-                        appWidgetInfo.providerName,
-                        appWidgetInfo.user
-                    )
-                iconCache.getTitleAndIconForApp(appWidgetInfo.pendingItemInfo, false)
-            }
-            c.checkAndAddItem(appWidgetInfo, bgDataModel)
         }
+        c.checkAndAddItem(appWidgetInfo, bgDataModel)
     }
 
     companion object {
-        private val TAG = WorkspaceItemProcessor::class.java.simpleName
+        private const val TAG = "WorkspaceItemProcessor"
         private fun logWidgetInfo(
             idp: InvariantDeviceProfile,
             widgetProviderInfo: LauncherAppWidgetProviderInfo

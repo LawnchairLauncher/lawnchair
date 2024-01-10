@@ -19,6 +19,7 @@ package com.android.launcher3.widget
 import android.content.Context
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError
 import com.android.launcher3.logging.FileLog
 import com.android.launcher3.model.WidgetsModel
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
@@ -37,7 +38,8 @@ class WidgetInflater(private val context: Context) {
             if (item.providerName == null) {
                 return InflationResult(
                     TYPE_DELETE,
-                    reason = "search widget removed because search component cannot be found"
+                    reason = "search widget removed because search component cannot be found",
+                    restoreErrorType = RestoreError.NO_SEARCH_WIDGET
                 )
             }
         }
@@ -46,19 +48,25 @@ class WidgetInflater(private val context: Context) {
         }
         val appWidgetInfo: LauncherAppWidgetProviderInfo?
         var removalReason = ""
-        if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
-            // If the provider is not ready, bind as a pending widget.
-            appWidgetInfo = null
-            removalReason = "the provider isn't ready."
-        } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
+        @RestoreError var logReason = RestoreError.APP_NOT_INSTALLED
+        var update = false
+
+        if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
             // The widget id is not valid. Try to find the widget based on the provider info.
             appWidgetInfo = widgetHelper.findProvider(item.providerName, item.user)
             if (appWidgetInfo == null) {
                 if (WidgetsModel.GO_DISABLE_WIDGETS) {
                     removalReason = "widgets are disabled on go device."
+                    logReason = RestoreError.WIDGETS_DISABLED
                 } else {
                     removalReason = "WidgetManagerHelper cannot find a provider from provider info."
+                    logReason = RestoreError.MISSING_WIDGET_PROVIDER
                 }
+            } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
+                // since appWidgetInfo is not null anymore, update the provider status
+                item.restoreStatus =
+                    item.restoreStatus and LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY.inv()
+                update = true
             }
         } else {
             appWidgetInfo =
@@ -66,19 +74,19 @@ class WidgetInflater(private val context: Context) {
             if (appWidgetInfo == null) {
                 if (item.appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
                     removalReason = "CustomWidgetManager cannot find provider from that widget id."
+                    logReason = RestoreError.MISSING_INFO
                 } else {
                     removalReason =
                         ("AppWidgetManager cannot find provider for that widget id." +
                             " It could be because AppWidgetService is not available, or the" +
                             " appWidgetId has not been bound to a the provider yet, or you" +
                             " don't have access to that appWidgetId.")
+                    logReason = RestoreError.INVALID_WIDGET_ID
                 }
             }
         }
 
-        var update = false
-
-        // If the provider is ready, but the width is not yet restored, try to restore it.
+        // If the provider is ready, but the widget is not yet restored, try to restore it.
         if (
             !item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) &&
                 item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED
@@ -87,9 +95,8 @@ class WidgetInflater(private val context: Context) {
                 return InflationResult(
                     type = TYPE_DELETE,
                     reason =
-                        "Removing restored widget: id=${item.appWidgetId} belongs to component" +
-                            " ${item.providerName} user ${item.user}" +
-                            ", as the provider is null and $removalReason"
+                        "Removing restored widget: id=${item.appWidgetId} belongs to component ${item.providerName} user ${item.user}, as the provider is null and $removalReason",
+                    restoreErrorType = logReason
                 )
             }
 
@@ -182,6 +189,7 @@ class WidgetInflater(private val context: Context) {
     data class InflationResult(
         val type: Int,
         val reason: String? = null,
+        @RestoreError val restoreErrorType: String = RestoreError.APP_NOT_INSTALLED,
         val isUpdate: Boolean = false,
         val widgetInfo: LauncherAppWidgetProviderInfo? = null
     )

@@ -119,10 +119,6 @@ public class PackageManagerHelper {
         }
     }
 
-    public boolean isSafeMode() {
-        return mPm.isSafeMode();
-    }
-
     @Nullable
     public Intent getAppLaunchIntent(@Nullable final String pkg, @NonNull final UserHandle user) {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
