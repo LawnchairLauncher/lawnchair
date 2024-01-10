@@ -21,6 +21,7 @@ import static android.view.KeyEvent.KEYCODE_META_RIGHT;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -403,7 +404,10 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
-            mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE);
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
+                    NORMAL_STATE_ORDINAL,
+                    "pressing esc key");
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "pressed esc key")) {
                 verifyVisibleContainerOnDismiss();

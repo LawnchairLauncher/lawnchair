@@ -149,7 +149,8 @@
             android:name="com.android.launcher3.testcomponent.BaseTestingActivity"
             android:label="LauncherTestApp"
             android:exported="true"
-            android:taskAffinity="com.android.launcher3.testcomponent.Affinity1">
+            android:taskAffinity="com.android.launcher3.testcomponent.Affinity1"
+            android:theme="@style/Theme.TestActivities">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

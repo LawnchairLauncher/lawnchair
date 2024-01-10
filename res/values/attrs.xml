@@ -189,6 +189,10 @@
          defaults to 2 * numAllAppsColumns -->
         <attr name="numExtendedAllAppsColumns" format="integer" />
 
+        <!-- Number of rows to calculate the cell height for all apps when it's necessary.
+          Defaults to numRows. Requires FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE to be enabled. -->
+        <attr name="numAllAppsRowsForCellHeightCalculation" format="integer" />
+
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
         <!-- Number of icons to use when extending the hotseat size,

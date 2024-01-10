@@ -52,7 +52,7 @@
             <startPadding launcher:fixedSize="22dp" />
             <endPadding launcher:fixedSize="22dp" />
             <gutter launcher:fixedSize="16dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
     </specs>
 </workspaceSpecs>

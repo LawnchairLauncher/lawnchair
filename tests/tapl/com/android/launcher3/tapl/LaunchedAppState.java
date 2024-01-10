@@ -130,8 +130,11 @@ public final class LaunchedAppState extends Background {
             int endX = startX;
             int endY = startY - taskbarFromNavThreshold;
 
-            mLauncher.linearGesture(startX, startY, endX, endY, 10, /* slowDown= */ true,
-                    LauncherInstrumentation.GestureScope.EXPECT_PILFER);
+            mLauncher.executeAndWaitForLauncherStop(
+                    () -> mLauncher.linearGesture(startX, startY, endX, endY, 10,
+                            /* slowDown= */ true,
+                            LauncherInstrumentation.GestureScope.EXPECT_PILFER),
+                    "swiping");
             LauncherInstrumentation.log("swipeUpToUnstashTaskbar: sent linear swipe up gesture");
 
             return new Taskbar(mLauncher);

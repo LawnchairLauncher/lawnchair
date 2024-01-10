@@ -33,7 +33,6 @@ import android.text.TextUtils;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.compatibility.common.util.SystemUtil;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
@@ -141,10 +140,8 @@ public class TaplPromiseIconUiTest extends AbstractLauncherUiTest {
     @RequiresFlagsEnabled(FLAG_ENABLE_SUPPORT_FOR_ARCHIVING)
     public void testPromiseIcon_addedArchivedApp() throws Throwable {
         installDummyAppAndWaitForUIUpdate();
-        assertThat(
-                SystemUtil.runShellCommand(
-                        String.format("pm archive %s", DUMMY_PACKAGE))).isEqualTo(
-                "Success\n");
+        assertThat(mDevice.executeShellCommand(String.format("pm archive %s", DUMMY_PACKAGE)))
+                .isEqualTo("Success\n");
 
         final ItemOperator findPromiseApp = (info, view) ->
                 info != null && TextUtils.equals(info.title, DUMMY_LABEL);

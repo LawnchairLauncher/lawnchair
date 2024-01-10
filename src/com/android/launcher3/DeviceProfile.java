@@ -640,8 +640,8 @@ public class DeviceProfile {
                     DimensionType.WIDTH, numShownAllAppsColumns, availableWidthPx,
                     mResponsiveWorkspaceWidthSpec);
             mResponsiveAllAppsHeightSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.HEIGHT, inv.numRows,  heightPx - mInsets.top,
-                    mResponsiveWorkspaceHeightSpec);
+                    DimensionType.HEIGHT, inv.numAllAppsRowsForCellHeightCalculation,
+                    heightPx - mInsets.top, mResponsiveWorkspaceHeightSpec);
 
             ResponsiveSpecsProvider folderSpecs = ResponsiveSpecsProvider.create(
                     new ResourceHelper(context,
@@ -988,16 +988,6 @@ public class DeviceProfile {
         float workspaceCellPaddingY = getCellSize().y - iconSizePx - iconDrawablePaddingPx
                 - iconTextHeight;
 
-        if (mIsResponsiveGrid) {
-            iconTextSizePx = 0;
-            iconDrawablePaddingPx = 0;
-            int iconSizeWithOverlap = getIconSizeWithOverlap(iconSizePx);
-            cellYPaddingPx = Math.max(0, getCellSize().y - iconSizeWithOverlap) / 2;
-            autoResizeAllAppsCells();
-
-            return;
-        }
-
         // We want enough space so that the text is closer to its corresponding icon.
         if (workspaceCellPaddingY < iconTextHeight) {
             iconTextSizePx = 0;
@@ -1115,25 +1105,28 @@ public class DeviceProfile {
                 iconSizePx = mIconSizeSteps.getIconSmallerThan(cellWidthPx);
             }
 
-            iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
+            if (isVerticalLayout) {
+                iconDrawablePaddingPx = 0;
+                iconTextSizePx = 0;
+            } else {
+                iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
+            }
 
             CellContentDimensions cellContentDimensions = new CellContentDimensions(iconSizePx,
                     iconDrawablePaddingPx,
                     iconTextSizePx);
-            if (isVerticalLayout) {
-                if (cellHeightPx < iconSizePx) {
-                    cellContentDimensions.setIconSizePx(
-                            mIconSizeSteps.getIconSmallerThan(cellHeightPx));
-                }
-            } else {
-                cellContentDimensions.resizeToFitCellHeight(cellHeightPx, mIconSizeSteps);
-            }
+            int cellContentHeight = cellContentDimensions.resizeToFitCellHeight(cellHeightPx,
+                    mIconSizeSteps);
             iconSizePx = cellContentDimensions.getIconSizePx();
             iconDrawablePaddingPx = cellContentDimensions.getIconDrawablePaddingPx();
             iconTextSizePx = cellContentDimensions.getIconTextSizePx();
-            int cellContentHeight = cellContentDimensions.getCellContentHeight();
 
-            cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
+            if (isVerticalLayout) {
+                cellYPaddingPx = Math.max(0, getCellSize().y - getIconSizeWithOverlap(iconSizePx))
+                        / 2;
+            } else {
+                cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
+            }
         } else if (mIsScalableGrid) {
             iconDrawablePaddingPx = (int) (getNormalizedIconDrawablePadding() * iconScale);
             cellWidthPx = pxFromDp(inv.minCellSize[mTypeIndex].x, mMetrics, scale);
@@ -1217,7 +1210,7 @@ public class DeviceProfile {
             updateAllAppsIconSize(scale, res);
         }
         updateAllAppsContainerWidth();
-        if (isVerticalBarLayout()) {
+        if (isVerticalLayout && !mIsResponsiveGrid) {
             hideWorkspaceLabelsIfNotEnoughSpace();
         }
         if (FeatureFlags.enableTwolineAllapps()) {
@@ -1341,7 +1334,7 @@ public class DeviceProfile {
 
         if (allAppsCellHeightPx < cellContentDimensions.getCellContentHeight()) {
             if (isVerticalBarLayout()) {
-                if (allAppsCellHeightPx < iconSizePx) {
+                if (allAppsCellHeightPx < allAppsIconSizePx) {
                     cellContentDimensions.setIconSizePx(
                             mIconSizeSteps.getIconSmallerThan(allAppsCellHeightPx));
                 }
@@ -1355,6 +1348,10 @@ public class DeviceProfile {
         }
 
         allAppsCellHeightPx += mResponsiveAllAppsHeightSpec.getGutterPx();
+
+        if (isVerticalBarLayout()) {
+            autoResizeAllAppsCells();
+        }
     }
 
     /**

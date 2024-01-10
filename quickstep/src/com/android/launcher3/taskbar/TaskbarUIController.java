@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.view.View;
+import android.window.RemoteTransition;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -302,7 +303,8 @@ public class TaskbarUIController {
     /**
      * Launches the given task in split-screen.
      */
-    public void launchSplitTasks(@NonNull GroupTask groupTask) { }
+    public void launchSplitTasks(
+            @NonNull GroupTask groupTask, @Nullable RemoteTransition remoteTransition) { }
 
     /**
      * Returns the matching view (if any) in the taskbar.

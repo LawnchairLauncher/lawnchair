@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
@@ -53,6 +54,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.wm.shell.Flags;
 
+import kotlin.Unit;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-import kotlin.Unit;
 
 /**
  * TaskView that contains all tasks that are part of the desktop.
@@ -90,6 +92,8 @@ public class DesktopTaskView extends TaskView {
     private final TaskView.FullscreenDrawParams mSnapshotDrawParams;
 
     private View mBackgroundView;
+
+    private int mChildCountAtInflation;
 
     /** Check whether desktop windowing is enabled */
     public static boolean isDesktopModeSupported() {
@@ -151,6 +155,8 @@ public class DesktopTaskView extends TaskView {
         Drawable iconBackground = getResources().getDrawable(R.drawable.bg_circle,
                 getContext().getTheme());
         mIconView.setDrawable(new LayerDrawable(new Drawable[]{iconBackground, icon}));
+
+        mChildCountAtInflation = getChildCount();
     }
 
     @Override
@@ -196,7 +202,9 @@ public class DesktopTaskView extends TaskView {
             for (int i = 0; i < diff; i++) {
                 TaskThumbnailView snapshotView = new TaskThumbnailView(getContext());
                 mSnapshotViews.add(snapshotView);
-                addView(snapshotView, new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+                // Add snapshots from to position after the initial child views.
+                addView(snapshotView, mChildCountAtInflation,
+                        new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
             }
         }
 
