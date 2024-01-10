@@ -377,6 +377,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         onSystemBarAttributesChanged(sharedState.systemBarAttrsDisplayId,
                 sharedState.systemBarAttrsBehavior);
         onNavButtonsDarkIntensityChanged(sharedState.navButtonsDarkIntensity);
+        onNavigationBarLumaSamplingEnabled(sharedState.mLumaSamplingDisplayId,
+                sharedState.mIsLumaSamplingEnabled);
 
         if (ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             // W/ the flag not set this entire class gets re-created, which resets the value of
@@ -843,6 +845,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
         mControllers.navbarButtonsViewController.getTaskbarNavButtonDarkIntensity()
                 .updateValue(darkIntensity);
+    }
+
+    public void onNavigationBarLumaSamplingEnabled(int displayId, boolean enable) {
+        mControllers.stashedHandleViewController.onNavigationBarLumaSamplingEnabled(displayId,
+                enable);
     }
 
     /**
