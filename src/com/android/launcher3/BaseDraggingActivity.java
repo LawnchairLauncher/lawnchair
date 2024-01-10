@@ -39,7 +39,6 @@ import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.OnColorHintListener;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WallpaperColorHints;
 import com.android.launcher3.util.WindowBounds;
 
@@ -55,16 +54,12 @@ public abstract class BaseDraggingActivity extends BaseActivity
     public static final Object AUTO_CANCEL_ACTION_MODE = new Object();
 
     private ActionMode mCurrentActionMode;
-    protected boolean mIsSafeModeEnabled;
 
     private int mThemeRes = R.style.AppTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
-                () -> getPackageManager().isSafeMode());
         DisplayController.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
@@ -183,6 +178,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     @Override
     public boolean isAppBlockedForSafeMode() {
-        return mIsSafeModeEnabled;
+        return LauncherAppState.getInstance(this).isSafeModeEnabled();
     }
 }

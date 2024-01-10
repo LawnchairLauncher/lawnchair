@@ -88,8 +88,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private Layout mSetupTextLayout;
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            @Nullable LauncherAppWidgetProviderInfo appWidget, boolean disabledForSafeMode) {
-        this(context, info, disabledForSafeMode, appWidget,
+            @Nullable LauncherAppWidgetProviderInfo appWidget) {
+        this(context, info, appWidget,
                 context.getResources().getText(R.string.gadget_complete_setup_text));
 
         super.updateAppWidget(null);
@@ -107,7 +107,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     public PendingAppWidgetHostView(
             Context context, int appWidgetId, @NonNull LauncherAppWidgetProviderInfo appWidget) {
-        this(context, new LauncherAppWidgetInfo(appWidgetId, appWidget.provider), false,
+        this(context, new LauncherAppWidgetInfo(appWidgetId, appWidget.provider),
                 appWidget, appWidget.label);
         getBackground().mutate().setAlpha(DEFERRED_ALPHA);
 
@@ -117,14 +117,13 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     private PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            boolean disabledForSafeMode, LauncherAppWidgetProviderInfo appwidget,
-            CharSequence label) {
+            LauncherAppWidgetProviderInfo appwidget, CharSequence label) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
         mAppwidget = appwidget;
         mInfo = info;
         mStartState = info.restoreStatus;
-        mDisabledForSafeMode = disabledForSafeMode;
+        mDisabledForSafeMode = LauncherAppState.getInstance(context).isSafeModeEnabled();
         mLabel = label;
 
         mPaint = new TextPaint();
