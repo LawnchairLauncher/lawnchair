@@ -49,8 +49,7 @@ class StudyPlannerView @JvmOverloads constructor(context: Context, attrs: Attrib
     companion object {
         private val WEEKS = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
         private val MONTHS = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-//        private const val ONE_HR_IN_MS = 60 * 60 * 1000
-          private const val ONE_HR_IN_MS = 1000
+        private const val ONE_HR_IN_MS = 60 * 60 * 1000
     }
 
     private var quoteTextView: AppCompatTextView
