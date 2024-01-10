@@ -72,6 +72,8 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     private boolean mPredictionsEnabled = false;
 
+    private boolean mPredictionUiUpdatePaused = false;
+
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
     }
@@ -193,7 +195,18 @@ public class PredictionRowView<T extends Context & ActivityContext>
         applyPredictionApps();
     }
 
+    /** Pause the prediction row UI update */
+    public void setPredictionUiUpdatePaused(boolean predictionUiUpdatePaused) {
+        mPredictionUiUpdatePaused = predictionUiUpdatePaused;
+        if (!mPredictionUiUpdatePaused) {
+            applyPredictionApps();
+        }
+    }
+
     private void applyPredictionApps() {
+        if (mPredictionUiUpdatePaused) {
+            return;
+        }
         if (getChildCount() != mNumPredictedAppsPerRow) {
             while (getChildCount() > mNumPredictedAppsPerRow) {
                 removeViewAt(0);

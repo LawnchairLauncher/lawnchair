@@ -367,11 +367,19 @@ public class QuickstepLauncher extends Launcher {
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
         Log.d("b/318394698", "startActivitySafely being run, getTaskbarUIController is: "
                 + getTaskbarUIController());
+        PredictionRowView<?> predictionRowView =
+                getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class);
+        // Pause the prediction row updates until the transition (if it exists) ends.
+        predictionRowView.setPredictionUiUpdatePaused(true);
         RunnableList result = super.startActivitySafely(v, intent, item);
         if (result == null) {
             mHotseatPredictionController.setPauseUIUpdate(false);
+            predictionRowView.setPredictionUiUpdatePaused(false);
         } else {
-            result.add(() -> mHotseatPredictionController.setPauseUIUpdate(false));
+            result.add(() -> {
+                mHotseatPredictionController.setPauseUIUpdate(false);
+                predictionRowView.setPredictionUiUpdatePaused(false);
+            });
         }
         return result;
     }
@@ -468,7 +476,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public void bindExtraContainerItems(FixedContainerItems item) {
-        Log.d(TAG, "Bind extra container items");
+        Log.d(TAG, "Bind extra container items. ContainerId = " + item.containerId);
         if (item.containerId == Favorites.CONTAINER_PREDICTION) {
             mAllAppsPredictions = item;
             PredictionRowView<?> predictionRowView =
