@@ -89,6 +89,7 @@ public class LauncherAppState implements SafeCloseable {
         return mContext;
     }
 
+    @SuppressWarnings("NewApi")
     public LauncherAppState(Context context) {
         this(context, LauncherFiles.APP_ICONS_DB);
         Log.v(Launcher.TAG, "LauncherAppState initiated");
@@ -103,9 +104,14 @@ public class LauncherAppState implements SafeCloseable {
         });
 
         ModelLauncherCallbacks callbacks = mModel.newModelCallbacks();
-        mContext.getSystemService(LauncherApps.class).registerCallback(callbacks);
+        LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
+        launcherApps.registerCallback(callbacks);
         mOnTerminateCallback.add(() ->
                 mContext.getSystemService(LauncherApps.class).unregisterCallback(callbacks));
+        if (Flags.enableSupportForArchiving()) {
+            launcherApps.setArchiveCompatibilityOptions(/* enableIconOverlay= */ true,
+                    /* enableUnarchivalConfirmation= */ false);
+        }
 
         SimpleBroadcastReceiver modelChangeReceiver =
                 new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
