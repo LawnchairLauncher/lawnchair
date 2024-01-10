@@ -19,9 +19,11 @@ package com.android.launcher3.tapl;
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Rect;
+import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,6 +49,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
+    private static final Pattern EVENT_ENTER_DOWN = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ENTER");
+    private static final Pattern EVENT_ENTER_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ENTER");
 
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
@@ -410,6 +416,31 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "pressed esc key")) {
                 return mLauncher.getWorkspace();
+            }
+        }
+    }
+
+    /**
+     * Presses the enter key to launch the focused task
+     * <p>
+     * If no task is focused, this will fail.
+     */
+    public LaunchedAppState launchFocusedTaskByEnterKey(@NonNull String expectedPackageName) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ENTER_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ENTER_UP);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
+
+            mLauncher.executeAndWaitForLauncherStop(
+                    () -> mLauncher.assertTrue(
+                            "Failed to press enter",
+                            mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_ENTER)),
+                    "pressing enter");
+            mLauncher.assertAppLaunched(expectedPackageName);
+
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed enter")) {
+                return new LaunchedAppState(mLauncher);
             }
         }
     }

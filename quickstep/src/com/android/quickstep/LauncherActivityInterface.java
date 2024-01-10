@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.FLOATING_SEARCH_BAR;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 
@@ -212,7 +211,7 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
+    public boolean switchToRecentsIfVisible(Animator.AnimatorListener animatorListener) {
         Launcher launcher = getVisibleLauncher();
         if (launcher == null) {
             return false;
@@ -227,7 +226,7 @@ public final class LauncherActivityInterface extends
         closeOverlay();
         launcher.getStateManager().goToState(OVERVIEW,
                 launcher.getStateManager().shouldAnimateStateChange(),
-                onCompleteCallback == null ? null : forEndCallback(onCompleteCallback));
+                animatorListener);
         return true;
     }
 

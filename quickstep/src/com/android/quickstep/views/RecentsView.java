@@ -542,6 +542,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private int mOverScrollShift = 0;
     private long mScrollLastHapticTimestamp;
 
+    private int mKeyboardTaskFocusSnapAnimationDuration;
+    private int mKeyboardTaskFocusIndex = INVALID_PAGE;
+
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
      */
@@ -1704,6 +1707,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Removing views sets the currentPage to 0, so we save this and restore it after
         // the new set of views are added
         int previousCurrentPage = mCurrentPage;
+        int previousFocusedPage = indexOfChild(getFocusedChild());
         removeAllViews();
 
         // If we are entering Overview as a result of initiating a split from somewhere else
@@ -1833,6 +1837,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     targetPage = indexOfChild(currentTaskView);
                 }
             }
+        } else if (previousFocusedPage != INVALID_PAGE) {
+            targetPage = previousFocusedPage;
         } else {
             // Set the current page to the running task, but not if settling on new task.
             if (hasAnyValidTaskIds(runningTaskId)) {
@@ -2914,7 +2920,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int focusedTaskShift = 0;
         int focusedTaskWidthAndSpacing = 0;
         int snappedTaskRowWidth = 0;
-        int snappedPage = getNextPage();
+        int snappedPage = isKeyboardTaskFocusPending() ? mKeyboardTaskFocusIndex : getNextPage();
         TaskView snappedTaskView = getTaskViewAt(snappedPage);
         TaskView homeTaskView = getHomeTaskView();
         TaskView nextFocusedTaskView = null;
@@ -5577,6 +5583,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
+     * Returns how many pixels the running task is offset on the currently laid out dominant axis
+     * specifically during a Keyboard task focus.
+     */
+    public int getScrollOffsetForKeyboardTaskFocus() {
+        if (!isKeyboardTaskFocusPending()) {
+            return getScrollOffset(getRunningTaskIndex());
+        }
+        return getPagedOrientationHandler().getPrimaryScroll(this)
+                - getScrollForPage(mKeyboardTaskFocusIndex)
+                + getScrollOffset(getRunningTaskIndex());
+    }
+
+    /**
      * Sets whether or not we should clamp the scroll offset.
      * This is used to avoid x-axis movement when swiping up transient taskbar.
      * Should only be set at the beginning and end of the gesture, otherwise a jump may occur.
@@ -5609,14 +5628,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (pageIndex == -1) {
             return 0;
         }
-
-        int overScrollShift = getOverScrollShift();
-        if (mAdjacentPageHorizontalOffset > 0) {
-            // Don't dampen the scroll (due to overscroll) if the adjacent tasks are offscreen, so
-            // that the page can move freely given there's no visual indication why it shouldn't.
-            overScrollShift = (int) Utilities.mapRange(mAdjacentPageHorizontalOffset,
-                    overScrollShift, getUndampedOverScrollShift());
-        }
+        // Don't dampen the scroll (due to overscroll) if the adjacent tasks are offscreen, so that
+        // the page can move freely given there's no visual indication why it shouldn't.
+        int overScrollShift = mAdjacentPageHorizontalOffset > 0
+                        ? (int) Utilities.mapRange(
+                                mAdjacentPageHorizontalOffset,
+                                getOverScrollShift(),
+                                getUndampedOverScrollShift())
+                        : getOverScrollShift();
         return getScrollForPage(pageIndex) - getPagedOrientationHandler().getPrimaryScroll(this)
                 + overScrollShift + getOffsetFromScrollPosition(pageIndex);
     }
@@ -6025,11 +6044,50 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         dispatchScrollChanged();
     }
 
+    /**
+     * Prepares this RecentsView to scroll properly for an upcoming child view focus request from
+     * keyboard quick switching
+     */
+    public void setKeyboardTaskFocusIndex(int taskIndex) {
+        mKeyboardTaskFocusIndex = taskIndex;
+    }
+
+    /** Returns whether this RecentsView will be scrolling to a child view for a focus request */
+    public boolean isKeyboardTaskFocusPending() {
+        return mKeyboardTaskFocusIndex != INVALID_PAGE;
+    }
+
+    private boolean isKeyboardTaskFocusPendingForChild(View child) {
+        return isKeyboardTaskFocusPending() && mKeyboardTaskFocusIndex == indexOfChild(child);
+    }
+
     @Override
-    protected boolean shouldHandleRequestChildFocus() {
-        // If we are already scrolling to a task view, then the focus request has already been
-        // handled
-        return mScroller.isFinished();
+    protected int getSnapAnimationDuration() {
+        return isKeyboardTaskFocusPending()
+                ? mKeyboardTaskFocusSnapAnimationDuration : super.getSnapAnimationDuration();
+    }
+
+    @Override
+    protected void onVelocityValuesUpdated() {
+        super.onVelocityValuesUpdated();
+        mKeyboardTaskFocusSnapAnimationDuration =
+                getResources().getInteger(R.integer.config_keyboardTaskFocusSnapAnimationDuration);
+    }
+
+    @Override
+    protected boolean shouldHandleRequestChildFocus(View child) {
+        // If we are already scrolling to a task view and we aren't focusing to this child from
+        // keyboard quick switch, then the focus request has already been handled
+        return mScroller.isFinished() || isKeyboardTaskFocusPendingForChild(child);
+    }
+
+    @Override
+    public void requestChildFocus(View child, View focused) {
+        if (isKeyboardTaskFocusPendingForChild(child)) {
+            updateGridProperties();
+            updateScrollSynchronously();
+        }
+        super.requestChildFocus(child, focused);
     }
 
     private void dispatchScrollChanged() {

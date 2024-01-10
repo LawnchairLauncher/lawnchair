@@ -40,6 +40,7 @@ import android.util.Log;
 import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
@@ -344,6 +345,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      * Applies the target to the previously set parameters
      */
     public void apply(TransformParams params) {
+        apply(params, null);
+    }
+
+    /**
+     * Applies the target to the previously set parameters, optionally with an overridden
+     * surface transaction
+     */
+    public void apply(TransformParams params, @Nullable SurfaceTransaction surfaceTransaction) {
         if (mDp == null || mThumbnailPosition.isEmpty()) {
             return;
         }
@@ -404,7 +413,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mTempRectF.roundOut(mTmpCropRect);
 
         params.setProgress(1f - fullScreenProgress);
-        params.applySurfaceParams(params.createSurfaceParams(this));
+        params.applySurfaceParams(surfaceTransaction == null
+                ? params.createSurfaceParams(this) : surfaceTransaction);
 
         if (!DEBUG) {
             return;

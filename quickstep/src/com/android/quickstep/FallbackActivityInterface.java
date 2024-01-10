@@ -122,7 +122,7 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
+    public boolean switchToRecentsIfVisible(Animator.AnimatorListener animatorListener) {
         return false;
     }
 
