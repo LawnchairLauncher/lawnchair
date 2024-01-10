@@ -22,4 +22,5 @@
     <foreground>
         <bitmap android:src="@mipmap/ic_launcher_home_foreground"/>
     </foreground>
+    <monochrome android:drawable="@drawable/ic_launcher_home_monochrome"/>
 </adaptive-icon>

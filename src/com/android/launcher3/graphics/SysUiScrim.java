@@ -93,7 +93,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     private final View mRoot;
     private final BaseDraggingActivity mActivity;
-    private final boolean mHideSysUiScrim;
+    private boolean mHideSysUiScrim;
     private boolean mSkipScrimAnimationForTest = false;
 
     private boolean mAnimateScrimOnNextDraw = false;
@@ -122,6 +122,17 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         if (!KEYGUARD_ANIMATION.get() && !mHideSysUiScrim) {
             view.addOnAttachStateChangeListener(this);
         }
+
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(mRoot.getContext());
+        PreferenceExtensionsKt.onEach(
+                preferenceManager2.getShowTopShadow(),
+                ViewExtensionsKt.getViewAttachedScope(mRoot),
+                (showTopShadow) -> {
+                    mHideSysUiScrim = !showTopShadow;
+                    mRoot.invalidate();
+                    return null;
+                }
+        );
     }
 
     /**
