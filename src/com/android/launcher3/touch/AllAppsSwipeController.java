@@ -192,7 +192,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     protected StateAnimationConfig getConfigForStates(LauncherState fromState,
             LauncherState toState) {
         StateAnimationConfig config = super.getConfigForStates(fromState, toState);
-        config.userControlled = true;
+        config.animProps |= StateAnimationConfig.USER_CONTROLLED;
         if (fromState == NORMAL && toState == ALL_APPS) {
             applyNormalToAllAppsAnimConfig(mLauncher, config);
         } else if (fromState == ALL_APPS && toState == NORMAL) {
@@ -209,13 +209,13 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             config.setInterpolator(ANIM_SCRIM_FADE,
                     Interpolators.reverse(ALL_APPS_SCRIM_RESPONDER));
             config.setInterpolator(ANIM_ALL_APPS_FADE, FINAL_FRAME);
-            if (!config.userControlled) {
+            if (!config.isUserControlled()) {
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
             config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
         } else {
-            if (config.userControlled) {
+            if (config.isUserControlled()) {
                 config.setInterpolator(ANIM_DEPTH, Interpolators.reverse(BLUR_MANUAL));
                 config.setInterpolator(ANIM_WORKSPACE_FADE,
                         Interpolators.reverse(WORKSPACE_FADE_MANUAL));
@@ -250,29 +250,32 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
         if (launcher.getDeviceProfile().isTablet) {
             config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
             config.setInterpolator(ANIM_SCRIM_FADE, ALL_APPS_SCRIM_RESPONDER);
-            if (!config.userControlled) {
+            if (!config.isUserControlled()) {
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
             config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
         } else {
-            config.setInterpolator(ANIM_DEPTH, config.userControlled ? BLUR_MANUAL : BLUR_ATOMIC);
+            config.setInterpolator(ANIM_DEPTH,
+                    config.isUserControlled() ? BLUR_MANUAL : BLUR_ATOMIC);
             config.setInterpolator(ANIM_WORKSPACE_FADE,
-                    config.userControlled ? WORKSPACE_FADE_MANUAL : WORKSPACE_FADE_ATOMIC);
+                    config.isUserControlled() ? WORKSPACE_FADE_MANUAL : WORKSPACE_FADE_ATOMIC);
             config.setInterpolator(ANIM_WORKSPACE_SCALE,
-                    config.userControlled ? WORKSPACE_SCALE_MANUAL : WORKSPACE_SCALE_ATOMIC);
+                    config.isUserControlled() ? WORKSPACE_SCALE_MANUAL : WORKSPACE_SCALE_ATOMIC);
             config.setInterpolator(ANIM_HOTSEAT_FADE,
-                    config.userControlled ? HOTSEAT_FADE_MANUAL : HOTSEAT_FADE_ATOMIC);
+                    config.isUserControlled() ? HOTSEAT_FADE_MANUAL : HOTSEAT_FADE_ATOMIC);
             config.setInterpolator(ANIM_HOTSEAT_SCALE,
-                    config.userControlled ? HOTSEAT_SCALE_MANUAL : HOTSEAT_SCALE_ATOMIC);
+                    config.isUserControlled() ? HOTSEAT_SCALE_MANUAL : HOTSEAT_SCALE_ATOMIC);
             config.setInterpolator(ANIM_HOTSEAT_TRANSLATE,
-                    config.userControlled ? HOTSEAT_TRANSLATE_MANUAL : HOTSEAT_TRANSLATE_ATOMIC);
+                    config.isUserControlled()
+                            ? HOTSEAT_TRANSLATE_MANUAL
+                            : HOTSEAT_TRANSLATE_ATOMIC);
             config.setInterpolator(ANIM_SCRIM_FADE,
-                    config.userControlled ? SCRIM_FADE_MANUAL : SCRIM_FADE_ATOMIC);
+                    config.isUserControlled() ? SCRIM_FADE_MANUAL : SCRIM_FADE_ATOMIC);
             config.setInterpolator(ANIM_ALL_APPS_FADE,
-                    config.userControlled ? ALL_APPS_FADE_MANUAL : ALL_APPS_FADE_ATOMIC);
+                    config.isUserControlled() ? ALL_APPS_FADE_MANUAL : ALL_APPS_FADE_ATOMIC);
             config.setInterpolator(ANIM_VERTICAL_PROGRESS,
-                    config.userControlled
+                    config.isUserControlled()
                             ? ALL_APPS_VERTICAL_PROGRESS_MANUAL
                             : ALL_APPS_VERTICAL_PROGRESS_ATOMIC);
         }
@@ -285,7 +288,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
      */
     public static void applyOverviewToAllAppsAnimConfig(
             DeviceProfile deviceProfile, StateAnimationConfig config, float threshold) {
-        config.userControlled = true;
+        config.animProps |= StateAnimationConfig.USER_CONTROLLED;
         config.animFlags = SKIP_OVERVIEW;
         if (deviceProfile.isTablet) {
             config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
