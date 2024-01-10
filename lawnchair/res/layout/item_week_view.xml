@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_week"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/bg_circle"
+        android:gravity="center"
+        android:text="S"
+        android:textSize="12sp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_dot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="8dp"
+        android:tint="@color/lottie_blue400"
+        android:visibility="gone"
+        app:srcCompat="@drawable/bg_circle" />
+
+</LinearLayout>

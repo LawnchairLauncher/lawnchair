@@ -602,7 +602,7 @@ public class CellLayout extends ViewGroup {
 
     /**
      * See setSpringLoadedProgress
-     * 
+     *
      * @return progress
      */
     public float getSpringLoadedProgress() {
@@ -885,7 +885,7 @@ public class CellLayout extends ViewGroup {
 
     /**
      * Given a point, return the cell that strictly encloses that point
-     * 
+     *
      * @param x      X coordinate of the point
      * @param y      Y coordinate of the point
      * @param result Array of 2 ints to hold the x and y coordinate of the cell
@@ -1321,7 +1321,7 @@ public class CellLayout extends ViewGroup {
     /**
      * Find a vacant area that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
-     * 
+     *
      * @param relativeXPos   The X location relative to the Cell layout at which you
      *                       want to search
      *                       for a vacant area.

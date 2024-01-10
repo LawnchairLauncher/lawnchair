@@ -43,7 +43,7 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.ACCESS_RESTRICTED_SETTINGS" />
-    
+
     <!-- for rotating surface by arbitrary degree -->
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ROTATE_SURFACE_FLINGER" />
@@ -182,6 +182,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat"
+            android:launchMode="singleTop"
+            android:name="app.lawnchair.StudyPlannerActivity" />
 
         <!-- [b/197780098] Disable eager initialization of Jetpack libraries. -->
         <provider

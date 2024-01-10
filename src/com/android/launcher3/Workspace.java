@@ -658,25 +658,24 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // Always add a QSB on the first screen.
         if (mFirstPagePinnedItem == null) {
             SmartspaceMode smartspaceMode = PreferenceExtensionsKt
-                    .firstBlocking(mPreferenceManager2.getSmartspaceMode());
+                    .firstBlocking(mPreferenceManager2.getStudyPlannerSpaceMode());
             if (!smartspaceMode.isAvailable(this.mLauncher)) {
                 // The current smartspace mode is not available,
                 // setting the smartspace mode to one that is always available
                 smartspaceMode = LawnchairSmartspace.INSTANCE;
-                PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
+                PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getStudyPlannerSpaceMode(), smartspaceMode);
             }
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch
             // the
             // edges, we do not need a full width QSB.
-            mFirstPagePinnedItem = LayoutInflater.from(getContext())
-                    .inflate(smartspaceMode.getLayoutResourceId(), firstPage, false);
+            mFirstPagePinnedItem = LayoutInflater.from(getContext()).inflate(smartspaceMode.getLayoutResourceId(), firstPage, false);
         }
 
         int cellHSpan = mLauncher.getDeviceProfile().inv.numColumns;
-        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 1);
+        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 4);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(
-                mFirstPagePinnedItem, 0, R.id.search_container_workspace, lp, true)) {
+                mFirstPagePinnedItem, 0, R.id.study_planner, lp, false)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
         }
     }

@@ -16,6 +16,7 @@ sealed class SmartspaceMode(
             "google" -> GoogleSmartspace
             "google_search" -> GoogleSearchSmartspace
             "smartspacer" -> Smartspacer
+            "studyplanner" -> StudyPlannerSpace
             else -> LawnchairSmartspace
         }
 
@@ -27,10 +28,19 @@ sealed class SmartspaceMode(
             GoogleSmartspace,
             GoogleSearchSmartspace,
             Smartspacer,
+            StudyPlannerSpace
         )
     }
 
     abstract fun isAvailable(context: Context): Boolean
+}
+
+object StudyPlannerSpace: SmartspaceMode(
+    nameResourceId = R.string.study_planner,
+    layoutResourceId = R.layout.study_planner_container
+) {
+    override fun toString() = "studyplanner"
+    override fun isAvailable(context: Context) = true
 }
 
 object LawnchairSmartspace : SmartspaceMode(

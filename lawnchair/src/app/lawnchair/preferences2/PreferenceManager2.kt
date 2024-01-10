@@ -44,6 +44,7 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShape as L3IconShape
+import androidx.datastore.preferences.core.longPreferencesKey
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
@@ -434,6 +435,14 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.recreate() },
     )
 
+    val studyPlannerSpaceMode = preference(
+        key = stringPreferencesKey("studyplanner"),
+        defaultValue = SmartspaceMode.fromString("studyplanner"),
+        parse = { SmartspaceMode.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
+    )
+
     val smartspaceModeSelection = preference(
         key = booleanPreferencesKey("smartspace_mode_selection"),
         defaultValue = false,
@@ -507,6 +516,20 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val backPressGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("back_press_gesture_handler"),
         defaultValue = GestureHandlerConfig.NoOp,
+    )
+
+    val lastTimeStampQuoteShown = preference(
+        key = longPreferencesKey(name = "quote_shown_timestamp"),
+        defaultValue = 0,
+        parse = { it },
+        save = { it }
+    )
+
+    val lastQuoteShown = preference(
+        key = intPreferencesKey(name = "last_quote_shown"),
+        defaultValue = 0,
+        parse = { it },
+        save = { it }
     )
 
     private inline fun <reified T> serializablePreference(
