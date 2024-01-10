@@ -110,10 +110,13 @@ public class QuickstepAtomicAnimationFactory extends
                         clampToProgress(LINEAR, 0, 0.33f));
             }
 
+            // We sync the scrim fade with the taskbar animation duration to avoid any flickers for
+            // taskbar icons disappearing before hotseat icons show up.
+            float scrimUpperBoundFromSplit = TASKBAR_TO_HOME_DURATION / (float) config.duration;
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR, 0, 0.25f));
             config.setInterpolator(ANIM_SCRIM_FADE,
                     fromState == OVERVIEW_SPLIT_SELECT
-                            ? clampToProgress(LINEAR, 0.33f, 1)
+                            ? clampToProgress(LINEAR, 0.33f, scrimUpperBoundFromSplit)
                             : LINEAR);
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATE);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCELERATE);
