@@ -137,6 +137,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     public static final int TYPE_ALL_EXCEPT_ON_BOARD_POPUP = TYPE_ALL & ~TYPE_ON_BOARD_POPUP ;
 
+    // Floating views that are exclusive to the taskbar overlay window.
+    public static final int TYPE_TASKBAR_OVERLAYS =
+            TYPE_TASKBAR_ALL_APPS | TYPE_TASKBAR_EDUCATION_DIALOG;
+
     protected boolean mIsOpen;
 
     public AbstractFloatingView(Context context, AttributeSet attrs) {

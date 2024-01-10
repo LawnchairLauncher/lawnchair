@@ -225,15 +225,14 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         return mOpenCloseAnimation;
     }
 
+
     /**
      * Invoked when a {@link #mOpenCloseAnimation} is being set up.
      * <p>
-     * Subclasses can override this method to modify the animation before it's used
-     * to create a
+     * Subclasses can override this method to modify the animation before it's used to create a
      * {@link AnimatorPlaybackController}.
      */
-    protected void onOpenCloseAnimationPending(PendingAnimation animation) {
-    }
+    protected void onOpenCloseAnimationPending(PendingAnimation animation) {}
 
     protected void attachToContainer() {
         if (mColorScrim != null) {

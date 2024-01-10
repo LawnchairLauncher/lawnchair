@@ -593,12 +593,14 @@ public class StatsLogManager implements ResourceBasedOverride {
         default StatsLogger withCardinality(int cardinality) {
             return this;
         }
+
         /**
          * Sets the input type of the log message.
          */
         default StatsLogger withInputType(int inputType) {
             return this;
         }
+
         /**
          * Builds the final message and logs it as {@link EventEnum}.
          */

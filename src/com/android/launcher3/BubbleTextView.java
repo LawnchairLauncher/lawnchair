@@ -411,13 +411,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     /**
-     * Only if actual text can be displayed in two line, the {@code true} value will
-     * be effective.
+     *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+        return  (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
                 || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
-                        && mDisplay == DISPLAY_SEARCH_RESULT);
+                && mDisplay == DISPLAY_SEARCH_RESULT);
     }
 
     @UiThread

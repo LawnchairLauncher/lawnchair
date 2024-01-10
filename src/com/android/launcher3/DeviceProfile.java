@@ -1321,8 +1321,7 @@ public class DeviceProfile {
     private void setupAllAppsStyle(Context context) {
         TypedArray allAppsStyle = context.obtainStyledAttributes(
                 inv.allAppsStyle != INVALID_RESOURCE_HANDLE ? inv.allAppsStyle
-                        : R.style.AllAppsStyleDefault,
-                R.styleable.AllAppsStyle);
+                        : R.style.AllAppsStyleDefault, R.styleable.AllAppsStyle);
 
         allAppsLeftRightPadding = allAppsStyle.getDimensionPixelSize(
                 R.styleable.AllAppsStyle_horizontalPadding, 0);

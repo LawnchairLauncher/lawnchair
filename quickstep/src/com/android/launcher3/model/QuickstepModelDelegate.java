@@ -183,6 +183,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
         });
     }
 
+    @CallSuper
     @Override
     @WorkerThread
     public void bindAllModelExtras(@NonNull BgDataModel.Callbacks[] callbacks) {

@@ -154,55 +154,56 @@ public class TaskbarManager {
         }
     };
 
-    private final ActivityLifecycleCallbacksAdapter mLifecycleCallbacks = new ActivityLifecycleCallbacksAdapter() {
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            if (mActivity != activity)
-                return;
-            if (mActivity != null) {
-                mActivity.removeOnDeviceProfileChangeListener(
-                        mDebugActivityDeviceProfileChanged);
-                Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                        "unregistering activity lifecycle callbacks from "
-                                + "onActivityDestroyed.");
-                mActivity.unregisterActivityLifecycleCallbacks(this);
-            }
-            mActivity = null;
-            debugWhyTaskbarNotDestroyed("clearActivity");
-            if (mTaskbarActivityContext != null) {
-                mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
-            }
-            mUnfoldProgressProvider.setSourceProvider(null);
-        }
-    };
+    private final ActivityLifecycleCallbacksAdapter mLifecycleCallbacks =
+            new ActivityLifecycleCallbacksAdapter() {
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    if (mActivity != activity) return;
+                    if (mActivity != null) {
+                        mActivity.removeOnDeviceProfileChangeListener(
+                                mDebugActivityDeviceProfileChanged);
+                        Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                                "unregistering activity lifecycle callbacks from "
+                                        + "onActivityDestroyed.");
+                        mActivity.unregisterActivityLifecycleCallbacks(this);
+                    }
+                    mActivity = null;
+                    debugWhyTaskbarNotDestroyed("clearActivity");
+                    if (mTaskbarActivityContext != null) {
+                        mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
+                    }
+                    mUnfoldProgressProvider.setSourceProvider(null);
+                }
+            };
 
-    UnfoldTransitionProgressProvider.TransitionProgressListener mUnfoldTransitionProgressListener = new UnfoldTransitionProgressProvider.TransitionProgressListener() {
-        @Override
-        public void onTransitionStarted() {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition started getting called.");
-        }
+    UnfoldTransitionProgressProvider.TransitionProgressListener mUnfoldTransitionProgressListener =
+            new UnfoldTransitionProgressProvider.TransitionProgressListener() {
+                @Override
+                public void onTransitionStarted() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition started getting called.");
+                }
 
-        @Override
-        public void onTransitionProgress(float progress) {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition progress : " + progress);
-        }
+                @Override
+                public void onTransitionProgress(float progress) {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition progress : " + progress);
+                }
 
-        @Override
-        public void onTransitionFinishing() {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition finishing getting called.");
+                @Override
+                public void onTransitionFinishing() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition finishing getting called.");
 
-        }
+                }
 
-        @Override
-        public void onTransitionFinished() {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition finished getting called.");
+                @Override
+                public void onTransitionFinished() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition finished getting called.");
 
-        }
-    };
+                }
+            };
 
     @SuppressLint("WrongConstant")
     public TaskbarManager(TouchInteractionService service) {

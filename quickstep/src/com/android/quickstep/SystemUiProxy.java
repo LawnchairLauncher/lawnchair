@@ -337,6 +337,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    @MainThread
     @Override
     public void onAssistantProgress(float progress) {
         if (mSystemUiProxy != null) {

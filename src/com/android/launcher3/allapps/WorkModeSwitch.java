@@ -104,7 +104,9 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         setInsets(mActivityContext.getDeviceProfile().getInsets());
         mTextView.setText(R.string.work_apps_pause_btn_text);
 
-        getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        if (Utilities.ATLEAST_U) {
+            getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        }
     }
 
     @Override

@@ -35,6 +35,8 @@ import androidx.annotation.ColorInt;
 
 import androidx.annotation.ColorInt;
 
+import androidx.annotation.ColorInt;
+
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
