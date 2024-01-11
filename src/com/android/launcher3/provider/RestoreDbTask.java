@@ -18,7 +18,7 @@ package com.android.launcher3.provider;
 
 import static android.os.Process.myUserHandle;
 
-import static com.android.launcher3.Flags.enableLauncherBrMetrics;
+import static com.android.launcher3.Flags.enableLauncherBrMetricsFixed;
 import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
 import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE;
@@ -30,7 +30,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDG
 import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_PROFILE_NOT_RESTORED;
 import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_WIDGETS_DISABLED;
 import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_WIDGET_REMOVED;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_BR_METRICS;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
 
@@ -199,7 +198,7 @@ public class RestoreDbTask {
         Arrays.fill(args, "?");
         final String where = "profileId NOT IN (" + TextUtils.join(", ", Arrays.asList(args)) + ")";
         logFavoritesTable(db, "items to delete from unrestored profiles:", where, profileIds);
-        if (enableLauncherBrMetrics() || ENABLE_LAUNCHER_BR_METRICS.get()) {
+        if (enableLauncherBrMetricsFixed()) {
             reportUnrestoredProfiles(db, where, profileIds, restoreEventLogger);
         }
         int itemsDeletedCount = db.delete(Favorites.TABLE_NAME, where, profileIds);
@@ -361,7 +360,7 @@ public class RestoreDbTask {
         DeviceGridState deviceGridState = new DeviceGridState(context);
         FileLog.d(TAG, "restore initiated from backup: DeviceGridState=" + deviceGridState);
         LauncherPrefs.get(context).putSync(RESTORE_DEVICE.to(deviceGridState.getDeviceType()));
-        if (enableLauncherBrMetrics() || ENABLE_LAUNCHER_BR_METRICS.get()) {
+        if (enableLauncherBrMetricsFixed()) {
             LauncherPrefs.get(context).putSync(IS_FIRST_LOAD_AFTER_RESTORE.to(true));
         }
     }
