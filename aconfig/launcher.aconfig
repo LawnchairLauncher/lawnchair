@@ -92,6 +92,13 @@ flag {
 }
 
 flag {
+    name: "enable_shortcut_dont_suggest_app"
+    namespace: "launcher"
+    description: "Enables don't suggest app shortcut for suggested apps"
+    bug: "319250810"
+}
+
+flag {
     name: "enable_support_for_archiving"
     namespace: "launcher"
     description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."

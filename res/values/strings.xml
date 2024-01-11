@@ -175,7 +175,7 @@
     <string name="install_private_system_shortcut_label">Install in private</string>
     <!-- Label for install drop target. [CHAR_LIMIT=20] -->
     <string name="install_drop_target_label">Install</string>
-    <!-- Label for install dismiss prediction. -->
+    <!-- Label for dismiss prediction. -->
     <string name="dismiss_prediction_label">Don\'t suggest app</string>
     <!-- Label for pinning predicted app. -->
     <string name="pin_prediction">Pin Prediction</string>
