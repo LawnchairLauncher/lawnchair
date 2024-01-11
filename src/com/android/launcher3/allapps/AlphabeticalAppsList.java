@@ -322,6 +322,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     break;
                 case PrivateProfileManager.STATE_ENABLED:
                     // Add PS Apps only in Enabled State.
+                    mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
+                    position++;
                     addAppsWithSections(mPrivateApps, position);
                     if (mActivityContext.getAppsView() != null) {
                         mActivityContext.getAppsView().getActiveRecyclerView()

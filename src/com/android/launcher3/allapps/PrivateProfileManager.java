@@ -17,11 +17,14 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -30,13 +33,21 @@ import android.os.UserManager;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Flags;
+import com.android.launcher3.R;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsCache;
+import com.android.launcher3.util.UserIconInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -69,6 +80,39 @@ public class PrivateProfileManager extends UserProfileManager {
         adapterItems.add(new BaseAllAppsAdapter.AdapterItem(VIEW_TYPE_PRIVATE_SPACE_HEADER));
         mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
         return adapterItems.size();
+    }
+
+    /** Adds Private Space install app button to the layout. */
+    public void addPrivateSpaceInstallAppButton(List<BaseAllAppsAdapter.AdapterItem> adapterItems) {
+        Context context = mAllApps.getContext();
+        // Prepare intent
+        UserCache userCache = UserCache.getInstance(context);
+        UserHandle userHandle = userCache.getUserProfiles().stream()
+                .filter(user -> userCache.getUserInfo(user).type == UserIconInfo.TYPE_PRIVATE)
+                .findFirst()
+                .orElse(null);
+        Intent intent = ApiWrapper.getAppMarketActivityIntent(context,
+                BuildConfig.APPLICATION_ID, userHandle);
+
+        // Prepare bitmapInfo
+        Intent.ShortcutIconResource shortcut = Intent.ShortcutIconResource.fromContext(
+                context, com.android.launcher3.R.drawable.private_space_install_app_icon);
+        BitmapInfo bitmapInfo = LauncherIcons.obtain(context).createIconBitmap(shortcut);
+
+        AppInfo itemInfo = new AppInfo();
+        itemInfo.title = context.getResources().getString(R.string.ps_add_button_label);
+        itemInfo.intent = intent;
+        itemInfo.bitmap = bitmapInfo;
+        itemInfo.contentDescription = context.getResources().getString(
+                com.android.launcher3.R.string.ps_add_button_content_description);
+
+        BaseAllAppsAdapter.AdapterItem item = new BaseAllAppsAdapter.AdapterItem(VIEW_TYPE_ICON);
+        item.itemInfo = itemInfo;
+        item.decorationInfo = new SectionDecorationInfo(context, ROUND_NOTHING,
+                /* decorateTogether */ true);
+
+        adapterItems.add(item);
+        mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
     }
 
     /** Disables quiet mode for Private Space User Profile. */
