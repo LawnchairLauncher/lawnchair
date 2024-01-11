@@ -153,11 +153,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }, this::getCurrentActivity);
             }
 
-            case TestProtocol.REQUEST_IME_INSETS: {
+            case TestProtocol.REQUEST_SYSTEM_GESTURE_REGION: {
                 return getUIProperty(Bundle::putParcelable, activity -> {
                     WindowInsetsCompat insets = WindowInsetsCompat.toWindowInsetsCompat(
                             activity.getWindow().getDecorView().getRootWindowInsets());
-                    return insets.getInsets(WindowInsetsCompat.Type.ime()).toPlatformInsets();
+                    return insets.getInsets(WindowInsetsCompat.Type.ime()
+                            | WindowInsetsCompat.Type.systemGestures())
+                            .toPlatformInsets();
                 }, this::getCurrentActivity);
             }
 
