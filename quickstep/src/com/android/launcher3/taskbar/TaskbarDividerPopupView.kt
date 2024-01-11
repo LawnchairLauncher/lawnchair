@@ -181,7 +181,7 @@ constructor(
                     measuredWidth.toFloat(),
                     measuredHeight.toFloat(),
                     (measuredWidth - arrowWidth) / 2, // arrowOffsetX
-                    0f, // arrowOffsetY
+                    -mArrowOffsetVertical.toFloat(), // arrowOffsetY
                     false, // isPointingUp
                     true, // leftAligned
                     context.getColor(R.color.popup_shade_first),
