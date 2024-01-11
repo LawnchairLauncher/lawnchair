@@ -56,6 +56,7 @@ import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 public class LauncherAppState implements SafeCloseable {
@@ -71,6 +72,8 @@ public class LauncherAppState implements SafeCloseable {
     private final LauncherIconProvider mIconProvider;
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
+    private boolean mIsSafeModeEnabled;
+
     private final RunnableList mOnTerminateCallback = new RunnableList();
 
     public static LauncherAppState getInstance(final Context context) {
@@ -90,6 +93,8 @@ public class LauncherAppState implements SafeCloseable {
         Log.v(Launcher.TAG, "LauncherAppState initiated");
         Preconditions.assertUIThread();
 
+        mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
+                () -> context.getPackageManager().isSafeMode());
         mInvariantDeviceProfile.addOnChangeListener(modelPropertiesChanged -> {
             if (modelPropertiesChanged) {
                 refreshAndReloadLauncher();
@@ -222,6 +227,10 @@ public class LauncherAppState implements SafeCloseable {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
+    }
+
+    public boolean isSafeModeEnabled() {
+        return mIsSafeModeEnabled;
     }
 
     /**

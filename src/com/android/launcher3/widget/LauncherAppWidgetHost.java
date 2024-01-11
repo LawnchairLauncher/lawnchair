@@ -21,13 +21,22 @@ import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_I
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.widget.LauncherWidgetHolder.ProviderChangedListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.IntConsumer;
 
 /**
@@ -37,8 +46,7 @@ import java.util.function.IntConsumer;
  */
 class LauncherAppWidgetHost extends AppWidgetHost {
     @NonNull
-    private final ArrayList<LauncherWidgetHolder.ProviderChangedListener>
-            mProviderChangeListeners = new ArrayList<>();
+    private final List<ProviderChangedListener> mProviderChangeListeners;
 
     @NonNull
     private final Context mContext;
@@ -46,33 +54,13 @@ class LauncherAppWidgetHost extends AppWidgetHost {
     @Nullable
     private final IntConsumer mAppWidgetRemovedCallback;
 
-    @NonNull
-    private final LauncherWidgetHolder mHolder;
-
     public LauncherAppWidgetHost(@NonNull Context context,
-            @Nullable IntConsumer appWidgetRemovedCallback, @NonNull LauncherWidgetHolder holder) {
+            @Nullable IntConsumer appWidgetRemovedCallback,
+            List<ProviderChangedListener> providerChangeListeners) {
         super(context, APPWIDGET_HOST_ID);
         mContext = context;
         mAppWidgetRemovedCallback = appWidgetRemovedCallback;
-        mHolder = holder;
-    }
-
-    /**
-     * Add a listener that is triggered when the providers of the widgets are changed
-     * @param listener The listener that notifies when the providers changed
-     */
-    public void addProviderChangeListener(
-            @NonNull LauncherWidgetHolder.ProviderChangedListener listener) {
-        mProviderChangeListeners.add(listener);
-    }
-
-    /**
-     * Remove the specified listener from the host
-     * @param listener The listener that is to be removed from the host
-     */
-    public void removeProviderChangeListener(
-            LauncherWidgetHolder.ProviderChangedListener listener) {
-        mProviderChangeListeners.remove(listener);
+        mProviderChangeListeners = providerChangeListeners;
     }
 
     @Override
@@ -89,7 +77,7 @@ class LauncherAppWidgetHost extends AppWidgetHost {
     @NonNull
     public LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        return mHolder.onCreateView(context, appWidgetId);
+        return new ListenableHostView(context);
     }
 
     /**
@@ -115,7 +103,10 @@ class LauncherAppWidgetHost extends AppWidgetHost {
         if (mAppWidgetRemovedCallback == null) {
             return;
         }
-        mAppWidgetRemovedCallback.accept(appWidgetId);
+        // Route the call via model thread, in case it comes while a loader-bind is in progress
+        Executors.MODEL_EXECUTOR.execute(
+                () -> Executors.MAIN_EXECUTOR.execute(
+                        () -> mAppWidgetRemovedCallback.accept(appWidgetId)));
     }
 
     /**
@@ -126,4 +117,36 @@ class LauncherAppWidgetHost extends AppWidgetHost {
         super.clearViews();
     }
 
+    public static class ListenableHostView extends LauncherAppWidgetHostView {
+
+        private Set<Runnable> mUpdateListeners = Collections.EMPTY_SET;
+
+        ListenableHostView(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void updateAppWidget(RemoteViews remoteViews) {
+            super.updateAppWidget(remoteViews);
+            mUpdateListeners.forEach(Runnable::run);
+        }
+
+        @Override
+        public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+            super.onInitializeAccessibilityNodeInfo(info);
+            info.setClassName(LauncherAppWidgetHostView.class.getName());
+        }
+
+        /**
+         * Adds a callback to be run everytime the provided app widget updates.
+         * @return a closable to remove this callback
+         */
+        public SafeCloseable addUpdateListener(Runnable callback) {
+            if (mUpdateListeners == Collections.EMPTY_SET) {
+                mUpdateListeners = Collections.newSetFromMap(new WeakHashMap<>());
+            }
+            mUpdateListeners.add(callback);
+            return () -> mUpdateListeners.remove(callback);
+        }
+    }
 }

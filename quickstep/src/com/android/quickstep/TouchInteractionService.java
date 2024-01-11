@@ -372,6 +372,12 @@ public class TouchInteractionService extends Service {
                     taskbarManager.onNavButtonsDarkIntensityChanged(darkIntensity));
         }
 
+        @Override
+        public void onNavigationBarLumaSamplingEnabled(int displayId, boolean enable) {
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onNavigationBarLumaSamplingEnabled(displayId, enable));
+        }
+
         private void executeForTouchInteractionService(
                 @NonNull Consumer<TouchInteractionService> tisConsumer) {
             TouchInteractionService tis = mTis.get();

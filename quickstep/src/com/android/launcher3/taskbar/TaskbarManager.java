@@ -540,6 +540,14 @@ public class TaskbarManager {
         }
     }
 
+    public void onNavigationBarLumaSamplingEnabled(int displayId, boolean enable) {
+        mSharedState.mLumaSamplingDisplayId = displayId;
+        mSharedState.mIsLumaSamplingEnabled = enable;
+        if (mTaskbarActivityContext != null) {
+            mTaskbarActivityContext.onNavigationBarLumaSamplingEnabled(displayId, enable);
+        }
+    }
+
     private void removeActivityCallbacksAndListeners() {
         if (mActivity != null) {
             mActivity.removeOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);

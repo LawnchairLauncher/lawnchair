@@ -208,11 +208,15 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     public void touchTaskbarBottomCorner(boolean tapRight) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             Taskbar taskbar = new Taskbar(mLauncher);
-            taskbar.touchBottomCorner(tapRight);
             if (mLauncher.isTransientTaskbar()) {
+                mLauncher.runToState(
+                        () -> taskbar.touchBottomCorner(tapRight),
+                        NORMAL_STATE_ORDINAL,
+                        "touching taskbar");
                 // Tapping outside Transient Taskbar returns to Workspace, wait for that state.
                 new Workspace(mLauncher);
             } else {
+                taskbar.touchBottomCorner(tapRight);
                 // Should stay in Overview.
                 verifyActiveContainer();
                 verifyActionsViewVisibility();

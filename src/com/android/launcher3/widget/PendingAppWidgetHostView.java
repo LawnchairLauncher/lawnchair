@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -38,16 +39,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.FastBitmapDrawable;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
@@ -64,11 +67,15 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private static final int DEFERRED_ALPHA = 0x77;
 
     private final Rect mRect = new Rect();
-    private OnClickListener mClickListener;
+
+    private final LauncherAppWidgetProviderInfo mAppwidget;
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
     private final boolean mDisabledForSafeMode;
     private final CharSequence mLabel;
+
+    private OnClickListener mClickListener;
+    private SafeCloseable mOnDetachCleanup;
 
     private int mDragFlags;
 
@@ -81,8 +88,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private Layout mSetupTextLayout;
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            IconCache cache, boolean disabledForSafeMode) {
-        this(context, info, disabledForSafeMode,
+            @Nullable LauncherAppWidgetProviderInfo appWidget) {
+        this(context, info, appWidget,
                 context.getResources().getText(R.string.gadget_complete_setup_text));
 
         super.updateAppWidget(null);
@@ -91,16 +98,17 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         if (info.pendingItemInfo == null) {
             info.pendingItemInfo = new PackageItemInfo(info.providerName.getPackageName(),
                     info.user);
-            cache.updateIconInBackground(this, info.pendingItemInfo);
+            LauncherAppState.getInstance(context).getIconCache()
+                    .updateIconInBackground(this, info.pendingItemInfo);
         } else {
             reapplyItemInfo(info.pendingItemInfo);
         }
     }
 
     public PendingAppWidgetHostView(
-            Context context, int appWidgetId, LauncherAppWidgetProviderInfo appWidget) {
-        this(context, new LauncherAppWidgetInfo(appWidgetId, appWidget.provider), false,
-                appWidget.label);
+            Context context, int appWidgetId, @NonNull LauncherAppWidgetProviderInfo appWidget) {
+        this(context, new LauncherAppWidgetInfo(appWidgetId, appWidget.provider),
+                appWidget, appWidget.label);
         getBackground().mutate().setAlpha(DEFERRED_ALPHA);
 
         mCenterDrawable = new ColorDrawable(Color.TRANSPARENT);
@@ -109,12 +117,13 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     private PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            boolean disabledForSafeMode, CharSequence label) {
+            LauncherAppWidgetProviderInfo appwidget, CharSequence label) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
+        mAppwidget = appwidget;
         mInfo = info;
         mStartState = info.restoreStatus;
-        mDisabledForSafeMode = disabledForSafeMode;
+        mDisabledForSafeMode = LauncherAppState.getInstance(context).isSafeModeEnabled();
         mLabel = label;
 
         mPaint = new TextPaint();
@@ -128,9 +137,40 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
+        checkIfRestored();
+    }
+
+    private void checkIfRestored() {
         WidgetManagerHelper widgetManagerHelper = new WidgetManagerHelper(getContext());
         if (widgetManagerHelper.isAppWidgetRestored(mInfo.appWidgetId)) {
-            reInflate();
+            MAIN_EXECUTOR.getHandler().post(this::reInflate);
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        if ((mAppwidget != null)
+                && !mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
+                && mInfo.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+            // If the widget is not completely restored, but has a valid ID, then listen of
+            // updates from provider app for potential restore complete.
+            if (mOnDetachCleanup != null) {
+                mOnDetachCleanup.close();
+            }
+            mOnDetachCleanup = mLauncher.getAppWidgetHolder()
+                    .addOnUpdateListener(mInfo.appWidgetId, mAppwidget, this::checkIfRestored);
+            checkIfRestored();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mOnDetachCleanup != null) {
+            mOnDetachCleanup.close();
+            mOnDetachCleanup = null;
         }
     }
 

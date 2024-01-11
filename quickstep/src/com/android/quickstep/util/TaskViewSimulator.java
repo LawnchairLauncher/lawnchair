@@ -74,6 +74,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final boolean mIsRecentsRtl;
 
     private final Rect mTaskRect = new Rect();
+    private final Rect mFullTaskSize = new Rect();
     private final PointF mPivot = new PointF();
     private DeviceProfile mDp;
     @StagePosition
@@ -131,6 +132,47 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mDp = dp;
         mLayoutValid = false;
         mOrientationState.setDeviceProfile(dp);
+        calculateTaskSize();
+    }
+
+    private void calculateTaskSize() {
+        if (mDp == null) {
+            return;
+        }
+
+        if (mIsGridTask) {
+            mSizeStrategy.calculateGridTaskSize(mContext, mDp, mFullTaskSize,
+                    mOrientationState.getOrientationHandler());
+        } else {
+            mSizeStrategy.calculateTaskSize(mContext, mDp, mFullTaskSize,
+                    mOrientationState.getOrientationHandler());
+        }
+
+        if (mSplitBounds != null) {
+            // The task rect changes according to the staged split task sizes, but recents
+            // fullscreen scale and pivot remains the same since the task fits into the existing
+            // sized task space bounds
+            mTaskRect.set(mFullTaskSize);
+            mOrientationState.getOrientationHandler()
+                    .setSplitTaskSwipeRect(mDp, mTaskRect, mSplitBounds, mStagePosition);
+            mTaskRect.offset(mTaskRectTranslationX, mTaskRectTranslationY);
+        } else if (mIsDesktopTask) {
+            // For desktop, tasks can take up only part of the screen size.
+            // Full task size represents the whole screen size, but scaled down to fit in recents.
+            // Task rect will represent the scaled down thumbnail position and is placed inside
+            // full task size as it is on the home screen.
+            PointF fullscreenTaskDimension = new PointF();
+            BaseActivityInterface.getTaskDimension(mContext, mDp, fullscreenTaskDimension);
+            // Calculate the scale down factor used in recents
+            float scale = mFullTaskSize.width() / fullscreenTaskDimension.x;
+            mTaskRect.set(mThumbnailPosition);
+            mTaskRect.scale(scale);
+            // Ensure the task rect is inside the full task rect
+            mTaskRect.offset(mFullTaskSize.left, mFullTaskSize.top);
+        } else {
+            mTaskRect.set(mFullTaskSize);
+            mTaskRect.offset(mTaskRectTranslationX, mTaskRectTranslationY);
+        }
     }
 
     /**
@@ -148,44 +190,11 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mDp == null) {
             return 1;
         }
-
-        if (mIsGridTask) {
-            mSizeStrategy.calculateGridTaskSize(mContext, mDp, mTaskRect,
-                    mOrientationState.getOrientationHandler());
-        } else {
-            mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect,
-                    mOrientationState.getOrientationHandler());
-        }
-
-        Rect fullTaskSize;
-        if (mSplitBounds != null) {
-            // The task rect changes according to the staged split task sizes, but recents
-            // fullscreen scale and pivot remains the same since the task fits into the existing
-            // sized task space bounds
-            fullTaskSize = new Rect(mTaskRect);
-            mOrientationState.getOrientationHandler()
-                    .setSplitTaskSwipeRect(mDp, mTaskRect, mSplitBounds, mStagePosition);
-            mTaskRect.offset(mTaskRectTranslationX, mTaskRectTranslationY);
-        } else if (mIsDesktopTask) {
-            // For desktop, tasks can take up only part of the screen size.
-            // Full task size represents the whole screen size, but scaled down to fit in recents.
-            // Task rect will represent the scaled down thumbnail position and is placed inside
-            // full task size as it is on the home screen.
-            fullTaskSize = new Rect(mTaskRect);
-            PointF fullscreenTaskDimension = new PointF();
-            BaseActivityInterface.getTaskDimension(mContext, mDp, fullscreenTaskDimension);
-            // Calculate the scale down factor used in recents
-            float scale = fullTaskSize.width() / fullscreenTaskDimension.x;
-            mTaskRect.set(mThumbnailPosition);
-            mTaskRect.scale(scale);
-            // Ensure the task rect is inside the full task rect
-            mTaskRect.offset(fullTaskSize.left, fullTaskSize.top);
-        } else {
-            fullTaskSize = new Rect(mTaskRect);
-            mTaskRect.offset(mTaskRectTranslationX, mTaskRectTranslationY);
-        }
-        fullTaskSize.offset(mTaskRectTranslationX + mPivotOffsetX, mTaskRectTranslationY);
-        return mOrientationState.getFullScreenScaleAndPivot(fullTaskSize, mDp, mPivot);
+        // Copy mFullTaskSize instead of updating it directly so it could be reused next time
+        // without recalculating
+        Rect scaleRect = new Rect(mFullTaskSize);
+        scaleRect.offset(mTaskRectTranslationX + mPivotOffsetX, mTaskRectTranslationY);
+        return mOrientationState.getFullScreenScaleAndPivot(scaleRect, mDp, mPivot);
     }
 
     /**
@@ -209,13 +218,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mSplitBounds = splitInfo;
         if (mSplitBounds == null) {
             mStagePosition = STAGE_POSITION_UNDEFINED;
-            return;
+        } else {
+            mStagePosition = mThumbnailPosition.equals(splitInfo.leftTopBounds)
+                    ? STAGE_POSITION_TOP_OR_LEFT : STAGE_POSITION_BOTTOM_OR_RIGHT;
+            mPositionHelper.setSplitBounds(convertLauncherSplitBoundsToShell(mSplitBounds),
+                    mStagePosition);
         }
-        mStagePosition = mThumbnailPosition.equals(splitInfo.leftTopBounds) ?
-                STAGE_POSITION_TOP_OR_LEFT :
-                STAGE_POSITION_BOTTOM_OR_RIGHT;
-        mPositionHelper.setSplitBounds(convertLauncherSplitBoundsToShell(mSplitBounds),
-                mStagePosition);
+        calculateTaskSize();
     }
 
     /**
@@ -261,6 +270,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public void setTaskRectTranslation(int taskRectTranslationX, int taskRectTranslationY) {
         mTaskRectTranslationX = taskRectTranslationX;
         mTaskRectTranslationY = taskRectTranslationY;
+        // Re-calculate task size after changing translation
+        calculateTaskSize();
     }
 
     /**
@@ -269,7 +280,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public void addAppToOverviewAnim(PendingAnimation pa, TimeInterpolator interpolator) {
         pa.addFloat(fullScreenProgress, AnimatedFloat.VALUE, 1, 0, interpolator);
         if (enableGridOnlyOverview() && mDp.isTablet) {
-            int translationXToMiddle = mDp.widthPx / 2 - mTaskRect.centerX();
+            int translationXToMiddle = mDp.widthPx / 2 - mFullTaskSize.centerX();
             taskPrimaryTranslation.value = translationXToMiddle;
             mPivotOffsetX = translationXToMiddle;
         }
@@ -324,8 +335,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public void applyWindowToHomeRotation(Matrix matrix) {
         matrix.postTranslate(mDp.windowX, mDp.windowY);
         postDisplayRotation(deltaRotation(
-                mOrientationState.getRecentsActivityRotation(),
-                mOrientationState.getDisplayRotation()),
+                        mOrientationState.getRecentsActivityRotation(),
+                        mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, matrix);
     }
 

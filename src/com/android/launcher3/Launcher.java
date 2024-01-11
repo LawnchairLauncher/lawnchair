@@ -89,7 +89,6 @@ import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.L
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.WARM;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
-import static com.android.launcher3.model.data.LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -196,7 +195,6 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.StringCache;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -208,7 +206,6 @@ import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -252,6 +249,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
+import com.android.launcher3.widget.WidgetInflater;
+import com.android.launcher3.widget.WidgetInflater.InflationResult;
 import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -333,6 +332,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private WidgetManagerHelper mAppWidgetManager;
     private LauncherWidgetHolder mAppWidgetHolder;
+    private WidgetInflater mWidgetInflater;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
@@ -517,6 +517,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         setupViews();
 
         mAppWidgetManager = new WidgetManagerHelper(this);
+        mWidgetInflater = new WidgetInflater(this);
         mAppWidgetHolder = createAppWidgetHolder();
         mAppWidgetHolder.startListening();
         mAppWidgetHolder.addProviderChangeListener(() -> refreshAndBindWidgetsForPackageUser(null));
@@ -1011,7 +1012,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         AppWidgetHostView boundWidget = null;
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
-            final AppWidgetHostView layout = mAppWidgetHolder.createView(this, appWidgetId,
+            final AppWidgetHostView layout = mAppWidgetHolder.createView(appWidgetId,
                     requestArgs.getWidgetHandler().getProviderInfo(this));
             boundWidget = layout;
             onCompleteRunnable = () -> {
@@ -1464,7 +1465,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (hostView == null) {
             // Perform actual inflation because we're live
-            hostView = mAppWidgetHolder.createView(this, appWidgetId, appWidgetInfo);
+            hostView = mAppWidgetHolder.createView(appWidgetId, appWidgetInfo);
         }
 
         LauncherAppWidgetInfo launcherInfo;
@@ -2309,162 +2310,30 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private View inflateAppWidget(LauncherAppWidgetInfo item,
             @Nullable LauncherRestoreEventLogger restoreEventLogger) {
-        if (item.hasOptionFlag(LauncherAppWidgetInfo.OPTION_SEARCH_WIDGET)) {
-            item.providerName = QsbContainerView.getSearchComponentName(this);
-            if (item.providerName == null) {
-                getModelWriter().deleteItemFromDatabase(item,
-                        "search widget removed because search component cannot be found");
-                return null;
-            }
-        }
-        final AppWidgetHostView view;
-        if (mIsSafeModeEnabled) {
-            view = new PendingAppWidgetHostView(this, item, mIconCache, true);
-            prepareAppWidget(view, item);
-            return view;
-        }
-
         TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
         try {
-            final LauncherAppWidgetProviderInfo appWidgetInfo;
-            String removalReason = "";
-            if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
-                // If the provider is not ready, bind as a pending widget.
-                appWidgetInfo = null;
-                removalReason = "the provider isn't ready.";
-            } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
-                // The widget id is not valid. Try to find the widget based on the provider info.
-                appWidgetInfo = mAppWidgetManager.findProvider(item.providerName, item.user);
-                if (appWidgetInfo == null) {
-                    if (WidgetsModel.GO_DISABLE_WIDGETS) {
-                        removalReason = "widgets are disabled on go device.";
-                    } else {
-                        removalReason =
-                                "WidgetManagerHelper cannot find a provider from provider info.";
-                    }
+            InflationResult inflationResult = mWidgetInflater.inflateAppWidget(item);
+            if (inflationResult.getType() == WidgetInflater.TYPE_DELETE) {
+                getModelWriter().deleteItemFromDatabase(item, inflationResult.getReason());
+                if (restoreEventLogger != null) {
+                    restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                            ITEM_TYPE_APPWIDGET, RESTORE_ERROR_BIND_FAILURE);
                 }
-            } else {
-                appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId,
-                        item.getTargetComponent());
-                if (appWidgetInfo == null) {
-                    if (item.appWidgetId <= CUSTOM_WIDGET_ID) {
-                        removalReason =
-                                "CustomWidgetManager cannot find provider from that widget id.";
-                    } else {
-                        removalReason = "AppWidgetManager cannot find provider for that widget id."
-                                + " It could be because AppWidgetService is not available, or the"
-                                + " appWidgetId has not been bound to a the provider yet, or you"
-                                + " don't have access to that appWidgetId.";
-                    }
-                }
+                return null;
             }
 
-            // If the provider is ready, but the width is not yet restored, try to restore it.
-            if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
-                    && (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
-                if (appWidgetInfo == null) {
-                    getModelWriter().deleteItemFromDatabase(item,
-                            "Removing restored widget: id=" + item.appWidgetId
-                            + " belongs to component " + item.providerName + " user " + item.user
-                            + ", as the provider is null and " + removalReason);
-                    if (restoreEventLogger != null) {
-                        restoreEventLogger.logSingleFavoritesItemRestoreFailed(
-                                ITEM_TYPE_APPWIDGET, RESTORE_ERROR_BIND_FAILURE);
-                    }
-                    return null;
-                }
-
-                // If we do not have a valid id, try to bind an id.
-                if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
-                    if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
-                        // Id has not been allocated yet. Allocate a new id.
-                        item.appWidgetId = mAppWidgetHolder.allocateAppWidgetId();
-                        item.restoreStatus |= LauncherAppWidgetInfo.FLAG_ID_ALLOCATED;
-
-                        // Also try to bind the widget. If the bind fails, the user will be shown
-                        // a click to setup UI, which will ask for the bind permission.
-                        PendingAddWidgetInfo pendingInfo =
-                                new PendingAddWidgetInfo(appWidgetInfo, item.sourceContainer);
-                        pendingInfo.spanX = item.spanX;
-                        pendingInfo.spanY = item.spanY;
-                        pendingInfo.minSpanX = item.minSpanX;
-                        pendingInfo.minSpanY = item.minSpanY;
-                        Bundle options = pendingInfo.getDefaultSizeOptions(this);
-
-                        boolean isDirectConfig =
-                                item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
-                        if (isDirectConfig && item.bindOptions != null) {
-                            Bundle newOptions = item.bindOptions.getExtras();
-                            if (options != null) {
-                                newOptions.putAll(options);
-                            }
-                            options = newOptions;
-                        }
-                        boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                                item.appWidgetId, appWidgetInfo, options);
-
-                        // We tried to bind once. If we were not able to bind, we would need to
-                        // go through the permission dialog, which means we cannot skip the config
-                        // activity.
-                        item.bindOptions = null;
-                        item.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG;
-
-                        // Bind succeeded
-                        if (success) {
-                            // If the widget has a configure activity, it is still needs to set it
-                            // up, otherwise the widget is ready to go.
-                            item.restoreStatus = (appWidgetInfo.configure == null) || isDirectConfig
-                                    ? LauncherAppWidgetInfo.RESTORE_COMPLETED
-                                    : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
-                        }
-
-                        getModelWriter().updateItemInDatabase(item);
-                    }
-                } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
-                        && (appWidgetInfo.configure == null)) {
-                    // The widget was marked as UI not ready, but there is no configure activity to
-                    // update the UI.
-                    item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
-                    getModelWriter().updateItemInDatabase(item);
-                }
-                else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
-                        && appWidgetInfo.configure != null) {
-                    if (mAppWidgetManager.isAppWidgetRestored(item.appWidgetId)) {
-                        item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
-                        getModelWriter().updateItemInDatabase(item);
-                    }
-                }
+            if (inflationResult.isUpdate()) {
+                getModelWriter().updateItemInDatabase(item);
             }
-
-            if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
-                // Verify that we own the widget
-                if (appWidgetInfo == null) {
-                    FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
-                    getModelWriter().deleteWidgetInfo(item, getAppWidgetHolder(), removalReason);
-                    if (restoreEventLogger != null) {
-                        restoreEventLogger.logSingleFavoritesItemRestoreFailed(
-                                ITEM_TYPE_APPWIDGET, RESTORE_ERROR_BIND_FAILURE);
-                    }
-                    return null;
-                }
-
-                item.minSpanX = appWidgetInfo.minSpanX;
-                item.minSpanY = appWidgetInfo.minSpanY;
-                view = mAppWidgetHolder.createView(this, item.appWidgetId, appWidgetInfo);
-            } else if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
-                    && appWidgetInfo != null) {
-                mAppWidgetHolder.addPendingView(item.appWidgetId,
-                        new PendingAppWidgetHostView(this, item, mIconCache, false));
-                view = mAppWidgetHolder.createView(this, item.appWidgetId, appWidgetInfo);
-            } else {
-                view = new PendingAppWidgetHostView(this, item, mIconCache, false);
-            }
+            AppWidgetHostView view = inflationResult.getType() == WidgetInflater.TYPE_PENDING
+                    ? new PendingAppWidgetHostView(this, item, inflationResult.getWidgetInfo())
+                    : mAppWidgetHolder.createView(
+                            item.appWidgetId, inflationResult.getWidgetInfo());
             prepareAppWidget(view, item);
+            return view;
         } finally {
             TraceHelper.INSTANCE.endSection();
         }
-
-        return view;
     }
 
     /**
