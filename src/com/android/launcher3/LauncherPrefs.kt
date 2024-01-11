@@ -303,15 +303,11 @@ class LauncherPrefs(private val encryptedContext: Context) {
         const val SHOULD_SHOW_SMARTSPACE_KEY = "SHOULD_SHOW_SMARTSPACE_KEY"
         @JvmField
         val ICON_STATE =
-            nonRestorableItem(
-                    "pref_icon_shape_path",
-                "",
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
+            nonRestorableItem("pref_icon_shape_path", "", EncryptionType.MOVE_TO_DEVICE_PROTECTED)
         @JvmField
         val ALL_APPS_OVERVIEW_THRESHOLD =
             nonRestorableItem(
-                    "pref_all_apps_overview_threshold",
+                "pref_all_apps_overview_threshold",
                 180,
                 EncryptionType.MOVE_TO_DEVICE_PROTECTED
             )
@@ -319,58 +315,54 @@ class LauncherPrefs(private val encryptedContext: Context) {
         val LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE =
             nonRestorableItem(
                 "pref_long_press_nav_handle_slop_percentage",
-                        LPNH_SLOP_PERCENTAGE.get(),
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
+                LPNH_SLOP_PERCENTAGE.get(),
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
             )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_TIMEOUT_MS =
-                nonRestorableItem(
-                        "pref_long_press_nav_handle_timeout_ms",
-                        LPNH_TIMEOUT_MS.get(),
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            nonRestorableItem(
+                "pref_long_press_nav_handle_timeout_ms",
+                LPNH_TIMEOUT_MS.get(),
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT =
-                nonRestorableItem(
-                        "pref_long_press_nav_handle_haptic_hint_start_scale_percent",
-                        LPNH_HAPTIC_HINT_START_SCALE_PERCENT.get(),
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            nonRestorableItem(
+                "pref_long_press_nav_handle_haptic_hint_start_scale_percent",
+                LPNH_HAPTIC_HINT_START_SCALE_PERCENT.get(),
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT =
-                nonRestorableItem(
-                        "pref_long_press_nav_handle_haptic_hint_end_scale_percent",
-                        LPNH_HAPTIC_HINT_END_SCALE_PERCENT.get(),
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            nonRestorableItem(
+                "pref_long_press_nav_handle_haptic_hint_end_scale_percent",
+                LPNH_HAPTIC_HINT_END_SCALE_PERCENT.get(),
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT =
-                nonRestorableItem(
-                        "pref_long_press_nav_handle_haptic_hint_scale_exponent",
-                        LPNH_HAPTIC_HINT_SCALE_EXPONENT.get(),
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            nonRestorableItem(
+                "pref_long_press_nav_handle_haptic_hint_scale_exponent",
+                LPNH_HAPTIC_HINT_SCALE_EXPONENT.get(),
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS =
-                nonRestorableItem(
-                        "pref_long_press_nav_handle_haptic_hint_iterations",
-                        LPNH_HAPTIC_HINT_ITERATIONS.get(),
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            nonRestorableItem(
+                "pref_long_press_nav_handle_haptic_hint_iterations",
+                LPNH_HAPTIC_HINT_ITERATIONS.get(),
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY =
-                nonRestorableItem(
-                        "pref_long_press_nav_handle_haptic_hint_delay",
-                        LPNH_HAPTIC_HINT_DELAY.get(),
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            nonRestorableItem(
+                "pref_long_press_nav_handle_haptic_hint_delay",
+                LPNH_HAPTIC_HINT_DELAY.get(),
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         @JvmField
         val PRIVATE_SPACE_APPS =
-                nonRestorableItem(
-                        "pref_private_space_apps",
-                        0,
-                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            nonRestorableItem("pref_private_space_apps", 0, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
         @JvmField
         val THEMED_ICONS =
             backedUpItem(Themes.KEY_THEMED_ICONS, false, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
@@ -420,7 +412,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
             )
         @JvmField
         val IS_FIRST_LOAD_AFTER_RESTORE =
-            backedUpItem(
+            nonRestorableItem(
                 FIRST_LOAD_AFTER_RESTORE_KEY,
                 false,
                 EncryptionType.MOVE_TO_DEVICE_PROTECTED
