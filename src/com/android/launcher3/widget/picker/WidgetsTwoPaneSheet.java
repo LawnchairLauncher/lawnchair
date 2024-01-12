@@ -18,6 +18,7 @@ package com.android.launcher3.widget.picker;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Outline;
 import android.os.Process;
 import android.util.AttributeSet;
@@ -122,6 +123,9 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         // Set the fast scroller as not visible for two pane layout.
         mFastScroller.setVisibility(GONE);
     }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {}
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
