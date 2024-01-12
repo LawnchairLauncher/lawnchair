@@ -56,8 +56,8 @@ public abstract class Launchable {
      */
     public LaunchedAppState launch(String expectedPackageName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "want to launch an app from " + launchableType())) {
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(String.format(
+                    "want to launch an app (%s) from %s", expectedPackageName, launchableType()))) {
                 LauncherInstrumentation.log("Launchable.launch before click "
                         + mObject.getVisibleCenter() + " in "
                         + mLauncher.getVisibleBounds(mObject));
