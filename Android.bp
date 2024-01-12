@@ -112,9 +112,6 @@ android_library {
     resource_dirs: [],
     manifest: "tests/tapl/AndroidManifest.xml",
     platform_apis: true,
-    lint: {
-        baseline_filename: "lint-baseline.xml",
-    },
 }
 
 java_library_static {
@@ -132,9 +129,6 @@ java_library_static {
         ],
     },
     static_libs: ["libprotobuf-java-lite"],
-    lint: {
-        baseline_filename: "lint-baseline.xml",
-    },
 }
 
 java_library_static {
@@ -153,9 +147,6 @@ java_library_static {
         "libprotobuf-java-lite",
         "launcher_log_protos_lite",
     ],
-    lint: {
-        baseline_filename: "lint-baseline.xml",
-    },
 }
 
 java_library {
@@ -167,9 +158,6 @@ java_library {
 
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
-    lint: {
-        baseline_filename: "lint-baseline.xml",
-    },
 }
 
 // Library with all the dependencies for building Launcher3
@@ -196,7 +184,7 @@ android_library {
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
     lint: {
-        baseline_filename: "lint-baseline-res-lib.xml",
+        baseline_filename: "lint-baseline2.xml",
     },
 }
 
@@ -218,7 +206,7 @@ android_library {
     min_sdk_version: min_launcher3_sdk_version,
     manifest: "AndroidManifest-common.xml",
     lint: {
-        baseline_filename: "lint-baseline-common-deps-lib.xml",
+        baseline_filename: "lint-baseline2.xml",
     },
 }
 
@@ -265,7 +253,7 @@ android_app {
         "AndroidManifest-common.xml",
     ],
     lint: {
-        baseline_filename: "lint-baseline-launcher3.xml",
+        baseline_filename: "lint-baseline.xml",
     },
 }
 
@@ -289,9 +277,6 @@ android_library {
     ],
     manifest: "quickstep/AndroidManifest.xml",
     min_sdk_version: "current",
-    lint: {
-        baseline_filename: "lint-baseline.xml",
-    },
 }
 
 // Library with all the dependencies for building Launcher Go
@@ -323,9 +308,6 @@ android_library {
         "AndroidManifest-common.xml",
     ],
     min_sdk_version: "current",
-    lint: {
-        baseline_filename: "lint-baseline-go-res-lib.xml",
-    },
 }
 
 // Build rule for Quickstep library
@@ -354,9 +336,6 @@ android_library {
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
     min_sdk_version: "current",
-    lint: {
-        baseline_filename: "lint-baseline-launcher3.xml",
-    },
 }
 
 // Build rule for Launcher3 Go app for Android Go devices.
@@ -399,9 +378,6 @@ android_app {
     jacoco: {
         include_filter: ["com.android.launcher3.*"],
     },
-    lint: {
-        baseline_filename: "lint-baseline.xml",
-    },
 
 }
 
@@ -437,9 +413,6 @@ android_app {
     manifest: "quickstep/AndroidManifest.xml",
     jacoco: {
         include_filter: ["com.android.launcher3.*"],
-    },
-    lint: {
-        baseline_filename: "lint-baseline.xml",
     },
 
 }
@@ -490,9 +463,6 @@ android_app {
     manifest: "quickstep/AndroidManifest.xml",
     jacoco: {
         include_filter: ["com.android.launcher3.*"],
-    },
-    lint: {
-        baseline_filename: "lint-baseline.xml",
     },
 
 }
