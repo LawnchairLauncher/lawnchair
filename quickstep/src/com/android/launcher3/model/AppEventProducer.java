@@ -191,7 +191,7 @@ public class AppEventProducer implements StatsLogConsumer {
     @Nullable
     AppTarget toAppTarget(LauncherAtom.ItemInfo info) {
         int iconInfoType = getIconInfoTypeFromItemInfo(info);
-        UserCache userCache = UserCache.getInstance(mContext);
+        UserCache userCache = UserCache.INSTANCE.get(mContext);
         UserHandle userHandle = userCache.getUserProfiles().stream()
                 .filter(user -> userCache.getUserInfo(user).type == iconInfoType)
                 .findFirst()
