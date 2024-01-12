@@ -65,7 +65,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Den Startbildschirm aufrufen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Wenn du zum Startbildschirm gehen möchtest, wische einfach vom unteren Displayrand nach oben."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Wische mit zwei Fingern vom unteren Displayrand nach oben. So gelangst du immer zum Startbildschirm."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Zum StartU+00AD­bildschirm"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Zum Start­bildschirm"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Wische vom unteren Displayrand nach oben"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Gut gemacht!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Wische vom unteren Displayrand nach oben"</string>
