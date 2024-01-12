@@ -1,6 +1,5 @@
 package com.android.launcher3.model
 
-import android.content.Context
 import android.os.UserHandle
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,16 +10,20 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.LauncherModel.LoaderTransaction
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.icons.cache.CachingLogic
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler
+import com.android.launcher3.pm.InstallSessionHelper
 import com.android.launcher3.pm.UserCache
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.LooperIdleLock
+import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
 import com.android.launcher3.util.UserIconInfo
-import com.android.launcher3.util.rule.StaticMockitoRule
 import com.google.common.truth.Truth
 import java.util.concurrent.CountDownLatch
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,6 +42,7 @@ private const val INSERTION_STATEMENT_FILE = "databases/workspace_items.sql"
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class LoaderTaskTest {
+    private lateinit var context: SandboxContext
     @Mock private lateinit var app: LauncherAppState
     @Mock private lateinit var bgAllAppsList: AllAppsList
     @Mock private lateinit var modelDelegate: ModelDelegate
@@ -52,21 +56,28 @@ class LoaderTaskTest {
 
     @Spy private var userManagerState: UserManagerState? = UserManagerState()
 
-    @get:Rule(order = 0) val staticMockitoRule = StaticMockitoRule(UserCache::class.java)
-    @get:Rule(order = 1)
-    val setFlagsRule = SetFlagsRule().apply { initAllFlagsToReleaseConfigDefault() }
+    @get:Rule val setFlagsRule = SetFlagsRule().apply { initAllFlagsToReleaseConfigDefault() }
 
     @Before
     fun setup() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        MockitoAnnotations.initMocks(this)
+
+        context =
+            SandboxContext(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                InstallSessionHelper.INSTANCE,
+                LauncherPrefs.INSTANCE,
+                ItemInstallQueue.INSTANCE,
+                PluginManagerWrapper.INSTANCE
+            )
         val idp =
-            InvariantDeviceProfile.INSTANCE[context].apply {
+            InvariantDeviceProfile().apply {
                 numRows = 5
                 numColumns = 6
                 numDatabaseHotseatIcons = 5
             }
+        context.putObject(InvariantDeviceProfile.INSTANCE, idp)
 
-        MockitoAnnotations.initMocks(this)
         `when`(app.context).thenReturn(context)
         `when`(app.model).thenReturn(launcherModel)
         `when`(launcherModel.beginLoader(any(LoaderTask::class.java))).thenReturn(transaction)
@@ -77,7 +88,12 @@ class LoaderTaskTest {
         `when`(launcherBinder.newIdleLock(any(LoaderTask::class.java))).thenReturn(idleLock)
         `when`(idleLock.awaitLocked(1000)).thenReturn(false)
         `when`(iconCache.updateHandler).thenReturn(iconCacheUpdateHandler)
-        `when`(UserCache.getInstance(any(Context::class.java))).thenReturn(userCache)
+        context.putObject(UserCache.INSTANCE, userCache)
+    }
+
+    @After
+    fun tearDown() {
+        context.onDestroy()
     }
 
     @Test

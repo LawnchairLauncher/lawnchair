@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 import android.os.UserHandle;
@@ -39,13 +38,12 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.util.ActivityContextWrapper;
+import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 import com.android.launcher3.util.UserIconInfo;
-import com.android.launcher3.util.rule.StaticMockitoRule;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -65,20 +63,22 @@ public class AppEventProducerTest {
     private static final UserIconInfo PRIVATE_ICON_INFO =
             new UserIconInfo(PRIVATE_HANDLE, UserIconInfo.TYPE_PRIVATE);
 
-    private Context mContext;
+    private SandboxContext mContext;
     private AppEventProducer mAppEventProducer;
     @Mock
     private UserCache mUserCache;
 
-    @Rule
-    public final StaticMockitoRule mStaticMockitoRule = new StaticMockitoRule(UserCache.class);
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mContext = new ActivityContextWrapper(getApplicationContext());
-        when(UserCache.getInstance(any(Context.class))).thenReturn(mUserCache);
+        mContext = new SandboxContext(getApplicationContext());
+        mContext.putObject(UserCache.INSTANCE, mUserCache);
         mAppEventProducer = new AppEventProducer(mContext, null);
+    }
+
+    @After
+    public void tearDown() {
+        mContext.onDestroy();
     }
 
     @Test
