@@ -5,6 +5,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP;
 
 import android.app.ActivityOptions;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -34,6 +35,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -236,13 +238,21 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
                     return null;
                 }
                 // Do not show shortcut if an app is already installed to the space
-                ComponentKey targetKey =
-                        new ComponentKey(itemInfo.getTargetComponent(), privateProfileUser);
-                if (launcher.getAppsView().getAppsStore().getApp(targetKey) != null) {
+                ComponentName targetComponent = itemInfo.getTargetComponent();
+                if (launcher.getAppsView()
+                                .getAppsStore()
+                                .getApp(new ComponentKey(targetComponent, privateProfileUser))
+                        != null) {
                     return null;
                 }
 
-                // TODO(b/302666597): do not install app if it's in deny list (e.g. settings)
+                // Do not show shortcut for settings
+                String[] packagesToSkip =
+                        launcher.getResources()
+                                .getStringArray(R.array.skip_private_profile_shortcut_packages);
+                if (Arrays.asList(packagesToSkip).contains(targetComponent.getPackageName())) {
+                    return null;
+                }
 
                 return new InstallToPrivateProfile(
                         launcher, itemInfo, originalView, privateProfileUser);
