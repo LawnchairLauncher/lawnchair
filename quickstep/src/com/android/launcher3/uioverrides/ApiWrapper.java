@@ -129,8 +129,10 @@ public class ApiWrapper {
     public static Intent getAppMarketActivityIntent(Context context, String packageName,
             UserHandle user) {
         LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
-        if (android.os.Flags.allowPrivateProfile() && Flags.enablePrivateSpace()
-                && Flags.privateSpaceAppInstallerButton()) {
+        if (android.os.Flags.allowPrivateProfile()
+                && Flags.enablePrivateSpace()
+                && (Flags.privateSpaceAppInstallerButton()
+                        || Flags.enablePrivateSpaceInstallShortcut())) {
             StartActivityParams params = new StartActivityParams((PendingIntent) null, 0);
             params.intentSender = launcherApps.getAppMarketActivityIntent(packageName, user);
             return ProxyActivityStarter.getLaunchIntent(context, params);
