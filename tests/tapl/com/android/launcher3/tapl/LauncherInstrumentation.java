@@ -385,8 +385,8 @@ public final class LauncherInstrumentation {
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    Insets getImeInsets() {
-        return getTestInfo(TestProtocol.REQUEST_IME_INSETS)
+    Insets getSystemGestureRegion() {
+        return getTestInfo(TestProtocol.REQUEST_SYSTEM_GESTURE_REGION)
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
@@ -2366,12 +2366,13 @@ public final class LauncherInstrumentation {
                         : containerBounds.left - 1;
             }
             // If IME is visible and overlaps the container bounds, touch above it.
+            final Insets systemGestureRegion = getSystemGestureRegion();
             int bottomBound = Math.min(
                     containerBounds.bottom,
-                    getRealDisplaySize().y - getImeInsets().bottom);
+                    getRealDisplaySize().y - systemGestureRegion.bottom);
             int y = (bottomBound - containerBounds.top) / 2;
             // Do not tap in the status bar.
-            y = Math.max(y, getWindowInsets().top);
+            y = Math.max(y, systemGestureRegion.top);
 
             final long downTime = SystemClock.uptimeMillis();
             final Point tapTarget = new Point(x, y);

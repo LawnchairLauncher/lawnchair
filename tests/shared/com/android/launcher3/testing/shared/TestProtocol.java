@@ -107,7 +107,7 @@ public final class TestProtocol {
     public static final String REQUEST_WIDGETS_SCROLL_Y = "widgets-scroll-y";
     public static final String REQUEST_TARGET_INSETS = "target-insets";
     public static final String REQUEST_WINDOW_INSETS = "window-insets";
-    public static final String REQUEST_IME_INSETS = "ime-insets";
+    public static final String REQUEST_SYSTEM_GESTURE_REGION = "gesture-region";
     public static final String REQUEST_PID = "pid";
     public static final String REQUEST_FORCE_GC = "gc";
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";

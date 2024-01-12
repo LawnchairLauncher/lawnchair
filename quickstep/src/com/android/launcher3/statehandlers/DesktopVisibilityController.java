@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.statehandlers;
 
+import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
@@ -268,6 +270,9 @@ public class DesktopVisibilityController {
         View dragLayer = mLauncher.getDragLayer();
         if (dragLayer != null) {
             dragLayer.setVisibility(visibility);
+        }
+        if (mLauncher instanceof QuickstepLauncher ql && ql.getTaskbarUIController() != null) {
+            ql.getTaskbarUIController().onLauncherVisibilityChanged(visibility == VISIBLE);
         }
     }
 

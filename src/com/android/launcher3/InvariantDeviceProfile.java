@@ -948,34 +948,34 @@ public class InvariantDeviceProfile {
                         R.styleable.GridDisplayOption_workspaceSpecsId, INVALID_RESOURCE_HANDLE);
                 mWorkspaceSpecsTwoPanelId = a.getResourceId(
                         R.styleable.GridDisplayOption_workspaceSpecsTwoPanelId,
-                        INVALID_RESOURCE_HANDLE);
+                        mWorkspaceSpecsId);
                 mAllAppsSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_allAppsSpecsId, INVALID_RESOURCE_HANDLE);
                 mAllAppsSpecsTwoPanelId = a.getResourceId(
                         R.styleable.GridDisplayOption_allAppsSpecsTwoPanelId,
-                        INVALID_RESOURCE_HANDLE);
+                        mAllAppsSpecsId);
                 mFolderSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_folderSpecsId, INVALID_RESOURCE_HANDLE);
                 mFolderSpecsTwoPanelId = a.getResourceId(
                         R.styleable.GridDisplayOption_folderSpecsTwoPanelId,
-                        INVALID_RESOURCE_HANDLE);
+                        mFolderSpecsId);
                 mHotseatSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_hotseatSpecsId, INVALID_RESOURCE_HANDLE);
                 mHotseatSpecsTwoPanelId = a.getResourceId(
                         R.styleable.GridDisplayOption_hotseatSpecsTwoPanelId,
-                        INVALID_RESOURCE_HANDLE);
+                        mHotseatSpecsId);
                 mWorkspaceCellSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_workspaceCellSpecsId,
                         INVALID_RESOURCE_HANDLE);
                 mWorkspaceCellSpecsTwoPanelId = a.getResourceId(
                         R.styleable.GridDisplayOption_workspaceCellSpecsTwoPanelId,
-                        INVALID_RESOURCE_HANDLE);
+                        mWorkspaceCellSpecsId);
                 mAllAppsCellSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_allAppsCellSpecsId,
                         INVALID_RESOURCE_HANDLE);
                 mAllAppsCellSpecsTwoPanelId = a.getResourceId(
                         R.styleable.GridDisplayOption_allAppsCellSpecsTwoPanelId,
-                        INVALID_RESOURCE_HANDLE);
+                        mAllAppsCellSpecsId);
                 mNumAllAppsRowsForCellHeightCalculation = a.getInt(
                         R.styleable.GridDisplayOption_numAllAppsRowsForCellHeightCalculation,
                         numRows);

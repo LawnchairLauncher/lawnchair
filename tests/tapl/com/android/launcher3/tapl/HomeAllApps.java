@@ -30,8 +30,8 @@ public class HomeAllApps extends AllApps {
 
     /**
      * Swipes up or down to dismiss to Workspace.
-     * @param swipeDown Swipe all apps down to dismiss, otherwise swipe up to dismiss by going home.
      *
+     * @param swipeDown Swipe all apps down to dismiss, otherwise swipe up to dismiss by going home.
      * @return the Workspace object.
      */
     @NonNull
@@ -138,5 +138,13 @@ public class HomeAllApps extends AllApps {
                 () -> super.touchOutside(tapRight, container),
                 NORMAL_STATE_ORDINAL,
                 "touching outside");
+    }
+
+    @Override
+    protected void pressMetaKey() {
+        mLauncher.runToState(
+                () -> super.pressMetaKey(),
+                NORMAL_STATE_ORDINAL,
+                "pressing meta key");
     }
 }
