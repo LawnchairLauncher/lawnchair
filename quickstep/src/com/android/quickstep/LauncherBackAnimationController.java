@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
+import static android.view.RemoteAnimationTarget.MODE_OPENING;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
@@ -43,7 +44,6 @@ import android.view.IRemoteAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.View;
-import android.view.ViewRootImpl;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -55,7 +55,6 @@ import android.window.IOnBackInvokedCallback;
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -108,6 +107,7 @@ public class LauncherBackAnimationController {
     private final PointF mInitialTouchPos = new PointF();
 
     private RemoteAnimationTarget mBackTarget;
+    private RemoteAnimationTarget mLauncherTarget;
     private View mLauncherTargetView;
     private final SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
     private boolean mSpringAnimationInProgress = false;
@@ -248,7 +248,9 @@ public class LauncherBackAnimationController {
             for (final RemoteAnimationTarget target : apps) {
                 if (MODE_CLOSING == target.mode) {
                     controller.mBackTarget = target;
-                    break;
+                }
+                if (MODE_OPENING == target.mode) {
+                    controller.mLauncherTarget = target;
                 }
             }
             controller.mAnimationFinishedCallback = finishedCallback;
@@ -323,10 +325,7 @@ public class LauncherBackAnimationController {
     }
 
     void addScrimLayer() {
-        ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
-        SurfaceControl parent = viewRootImpl != null
-                ? viewRootImpl.getSurfaceControl()
-                : null;
+        SurfaceControl parent = mLauncherTarget != null ? mLauncherTarget.leash : null;
         if (parent == null || !parent.isValid()) {
             // Parent surface is not ready at the moment. Retry later.
             return;
@@ -477,6 +476,7 @@ public class LauncherBackAnimationController {
 
     private void finishAnimation() {
         mBackTarget = null;
+        mLauncherTarget = null;
         mBackInProgress = false;
         mBackProgress = 0;
         mTransformMatrix.reset();
