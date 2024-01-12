@@ -130,6 +130,7 @@ public class TaplOpenCloseAllAppsTest extends AbstractLauncherUiTest {
      */
     @Test
     @PortraitLandscape
+    @PlatinumTest(focusArea = "launcher")
     public void testAllAppsFromHome() {
         // Test opening all apps
         assertNotNull("switchToAllApps() returned null",
