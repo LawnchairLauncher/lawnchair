@@ -100,9 +100,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             }
 
         windowLayoutParams.providedInsets =
-            if (enableTaskbarNoRecreate()) {
+            if (enableTaskbarNoRecreate() && controllers.sharedState != null) {
                 getProvidedInsets(
-                    controllers.sharedState!!.insetsFrameProviders!!,
+                    controllers.sharedState!!.insetsFrameProviders,
                     insetsRoundedCornerFlag
                 )
             } else {
