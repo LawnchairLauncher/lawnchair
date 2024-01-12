@@ -178,5 +178,9 @@
     <string name="ps_container_settings" msgid="6059734123353320479">"ప్రైవేట్ స్పేస్ సెట్టింగ్‌లు"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ప్రైవేట్ స్పేస్‌ను లాక్/అన్‌లాక్ చేయండి"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ప్రైవేట్ స్పేస్ కేటాయించడం జరుగుతుంది"</string>
+    <!-- no translation found for ps_add_button_label (8611055839242385935) -->
+    <skip />
+    <!-- no translation found for ps_add_button_content_description (3254274107740952556) -->
+    <skip />
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ఓవర్‌ఫ్లో"</string>
 </resources>

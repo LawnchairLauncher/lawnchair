@@ -178,5 +178,9 @@
     <string name="ps_container_settings" msgid="6059734123353320479">"Privát terület beállításai"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Privát terület zárolása/zárolásának feloldása"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Átállás privát területre…"</string>
+    <!-- no translation found for ps_add_button_label (8611055839242385935) -->
+    <skip />
+    <!-- no translation found for ps_add_button_content_description (3254274107740952556) -->
+    <skip />
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Túlcsordulás"</string>
 </resources>
