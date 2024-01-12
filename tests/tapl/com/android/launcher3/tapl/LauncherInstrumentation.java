@@ -1749,32 +1749,38 @@ public final class LauncherInstrumentation {
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
+        long endTime = downTime;
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
-        if (mTrackpadGestureType != TrackpadGestureType.NONE) {
-            sendPointer(downTime, downTime, getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 1),
-                    start, gestureScope);
-            if (mTrackpadGestureType == TrackpadGestureType.THREE_FINGER
-                    || mTrackpadGestureType == TrackpadGestureType.FOUR_FINGER) {
+        try {
+
+            if (mTrackpadGestureType != TrackpadGestureType.NONE) {
                 sendPointer(downTime, downTime,
-                        getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 2),
+                        getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 1),
                         start, gestureScope);
-                if (mTrackpadGestureType == TrackpadGestureType.FOUR_FINGER) {
+                if (mTrackpadGestureType == TrackpadGestureType.THREE_FINGER
+                        || mTrackpadGestureType == TrackpadGestureType.FOUR_FINGER) {
                     sendPointer(downTime, downTime,
-                            getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 3),
+                            getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 2),
+                            start, gestureScope);
+                    if (mTrackpadGestureType == TrackpadGestureType.FOUR_FINGER) {
+                        sendPointer(downTime, downTime,
+                                getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 3),
+                                start, gestureScope);
+                    }
+                }
+            }
+            endTime = movePointer(
+                    start, end, steps, false, downTime, downTime, slowDown, gestureScope);
+            if (mTrackpadGestureType != TrackpadGestureType.NONE) {
+                for (int i = mPointerCount; i >= 2; i--) {
+                    sendPointer(downTime, downTime,
+                            getPointerAction(MotionEvent.ACTION_POINTER_UP, i - 1),
                             start, gestureScope);
                 }
             }
+        } finally {
+            sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end, gestureScope);
         }
-        final long endTime = movePointer(
-                start, end, steps, false, downTime, downTime, slowDown, gestureScope);
-        if (mTrackpadGestureType != TrackpadGestureType.NONE) {
-            for (int i = mPointerCount; i >= 2; i--) {
-                sendPointer(downTime, downTime,
-                        getPointerAction(MotionEvent.ACTION_POINTER_UP, i - 1),
-                        start, gestureScope);
-            }
-        }
-        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end, gestureScope);
     }
 
     private static int getPointerAction(int action, int index) {
