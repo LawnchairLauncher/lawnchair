@@ -572,6 +572,7 @@ public class TaskbarManager {
         UI_HELPER_EXECUTOR.execute(
                 () -> mTaskbarBroadcastReceiver.unregisterReceiverSafely(mContext));
         destroyExistingTaskbar();
+        removeTaskbarRootViewFromWindow();
         if (mUserUnlocked) {
             DisplayController.INSTANCE.get(mContext).removeChangeListener(mRecreationListener);
         }
