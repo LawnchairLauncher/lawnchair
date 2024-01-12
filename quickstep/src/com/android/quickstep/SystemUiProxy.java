@@ -59,6 +59,7 @@ import androidx.annotation.WorkerThread;
 import com.android.internal.logging.InstanceId;
 import com.android.internal.util.ScreenshotRequest;
 import com.android.internal.view.AppearanceRegion;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -231,7 +232,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         unlinkToDeath();
         mSystemUiProxy = proxy;
         mPip = pip;
-        mBubbles = bubbles;
+        mBubbles = Utilities.ATLEAST_U ? bubbles : null;
         mSplitScreen = splitScreen;
         mOneHanded = oneHanded;
         mShellTransitions = shellTransitions;
@@ -241,7 +242,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         mBackAnimation = backAnimation;
         mDesktopMode = desktopMode;
         mUnfoldAnimation = unfoldAnimation;
-        mDragAndDrop = dragAndDrop;
+        mDragAndDrop = Utilities.ATLEAST_U ? dragAndDrop : null;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized
         // yet.
@@ -425,17 +426,6 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
-
-    // public void setTaskbarEnabled(boolean enabled) {
-    // if (mSystemUiProxy != null) {
-    // try {
-    // mSystemUiProxy.setTaskbarEnabled(enabled);
-    // } catch (RemoteException e) {
-    // Log.w(TAG, "Failed call setTaskbarEnabled with arg: " +
-    // enabled, e);
-    // }
-    // }
-    // }
 
     public void notifyTaskbarStatus(boolean visible, boolean stashed) {
         if (mSystemUiProxy != null) {

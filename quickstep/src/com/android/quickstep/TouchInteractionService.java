@@ -184,7 +184,7 @@ public class TouchInteractionService extends Service {
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             IPip pip = IPip.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_PIP));
-            IBubbles bubbles = Utilities.ATLEAST_U ? IBubbles.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_BUBBLES)) : null;
+            IBubbles bubbles = IBubbles.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_BUBBLES));
             ISplitScreen splitscreen = ISplitScreen.Stub.asInterface(bundle.getBinder(
                     KEY_EXTRA_SHELL_SPLIT_SCREEN));
             IOneHanded onehanded = IOneHanded.Stub.asInterface(
@@ -207,12 +207,16 @@ public class TouchInteractionService extends Service {
             IDragAndDrop dragAndDrop = IDragAndDrop.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_DRAG_AND_DROP));
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
-                SystemUiProxy.INSTANCE.get(tis).setProxy(proxy, pip,
-                        bubbles, splitscreen, onehanded, shellTransitions, startingWindow,
-                        recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
-                        unfoldTransition, dragAndDrop);
-                tis.initInputMonitor("TISBinder#onInitialize()");
-                tis.preloadOverview(true /* fromInit */);
+                try {
+                    SystemUiProxy.INSTANCE.get(tis).setProxy(proxy, pip,
+                            bubbles, splitscreen, onehanded, shellTransitions, startingWindow,
+                            recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
+                            unfoldTransition, dragAndDrop);
+                    tis.initInputMonitor("TISBinder#onInitialize()");
+                    tis.preloadOverview(true /* fromInit */);
+                } catch (Throwable t) {
+                    // Ignore
+                }
             }));
             sIsInitialized = true;
         }

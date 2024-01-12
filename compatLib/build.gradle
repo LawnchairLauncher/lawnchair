@@ -6,4 +6,4 @@ android {
     namespace "app.lawnchair.compatlib"
 }
 
-addFrameworkJar('framework-12.jar')
+addFrameworkJar('framework-14.jar')
