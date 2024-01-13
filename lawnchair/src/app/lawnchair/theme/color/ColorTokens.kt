@@ -53,7 +53,7 @@ object ColorTokens {
 
     @JvmField val ColorBackground = DayNightColorToken(Neutral1_50, Neutral1_900)
 
-    @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral1_50, Neutral1_900)
+    @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral1_50, Neutral1_800)
 
     @JvmField val ColorPrimary = DayNightColorToken(Neutral1_50, Neutral1_900)
 
