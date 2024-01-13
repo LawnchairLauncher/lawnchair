@@ -25,6 +25,8 @@ import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_PINNED
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_UNPINNED
 import com.android.launcher3.taskbar.TaskbarDividerPopupView.Companion.createAndPopulate
 import java.io.PrintWriter
 
@@ -54,8 +56,10 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
                 }
                 val animateToValue =
                     if (!launcherPrefs.get(TASKBAR_PINNING)) {
+                        statsLogManager.logger().log(LAUNCHER_TASKBAR_PINNED)
                         PINNING_PERSISTENT
                     } else {
+                        statsLogManager.logger().log(LAUNCHER_TASKBAR_UNPINNED)
                         PINNING_TRANSIENT
                     }
                 taskbarSharedState.taskbarWasPinned = animateToValue == PINNING_TRANSIENT
