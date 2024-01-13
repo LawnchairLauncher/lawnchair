@@ -15,7 +15,11 @@
  */
 package com.android.launcher3.taskbar
 
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Insets
+import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.Region
 import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.os.Binder
@@ -47,6 +51,7 @@ import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarControlle
 import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
 import kotlin.jvm.optionals.getOrNull
+import kotlin.math.max
 
 /** Handles the insets that Taskbar provides to underlying apps and the IME. */
 class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTaskbarController {
@@ -58,7 +63,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
     /** The bottom insets taskbar provides to the IME when IME is visible. */
     val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(R.dimen.taskbar_ime_size)
-    private val touchableRegion: Region = Region()
+    // The touchableRegion we will set unless some other state takes precedence.
+    private val defaultTouchableRegion: Region = Region()
     private val insetsOwner: IBinder = Binder()
     private val deviceProfileChangeListener = { _: DeviceProfile ->
         onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
@@ -69,6 +75,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             context,
             this::onTaskbarOrBubblebarWindowHeightOrInsetsChanged
         )
+    private val debugTouchableRegion = DebugTouchableRegion()
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
@@ -124,7 +131,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             } else {
                 0
             }
-        val touchableHeight = Math.max(taskbarTouchableHeight, bubblesTouchableHeight)
+        val touchableHeight = max(taskbarTouchableHeight, bubblesTouchableHeight)
 
         if (
             controllers.bubbleControllers.isPresent &&
@@ -132,14 +139,14 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         ) {
             val iconBounds =
                 controllers.bubbleControllers.get().bubbleBarViewController.bubbleBarBounds
-            touchableRegion.set(
+            defaultTouchableRegion.set(
                 iconBounds.left,
                 iconBounds.top,
                 iconBounds.right,
                 iconBounds.bottom
             )
         } else {
-            touchableRegion.set(
+            defaultTouchableRegion.set(
                 0,
                 windowLayoutParams.height - touchableHeight,
                 context.deviceProfile.widthPx,
@@ -296,6 +303,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             context.dragLayer,
             insetsInfo.touchableRegion
         )
+        debugTouchableRegion.lastSetTouchableBounds.set(insetsInfo.touchableRegion.bounds)
+
         val bubbleBarVisible =
             controllers.bubbleControllers.isPresent &&
                 controllers.bubbleControllers.get().bubbleBarViewController.isBubbleBarVisible()
@@ -303,21 +312,28 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
+            debugTouchableRegion.lastSetTouchableReason = "Taskbar is invisible"
         } else if (
             controllers.navbarButtonsViewController.isImeVisible &&
                 controllers.taskbarStashController.isStashed
         ) {
+            // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
+            debugTouchableRegion.lastSetTouchableReason = "Stashed over IME"
         } else if (!controllers.uiController.isTaskbarTouchable) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
+            debugTouchableRegion.lastSetTouchableReason = "Taskbar is not touchable"
         } else if (controllers.taskbarDragController.isSystemDragInProgress) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
+            debugTouchableRegion.lastSetTouchableReason = "System drag is in progress"
         } else if (context.isTaskbarWindowFullscreen) {
             // Intercept entire fullscreen window.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME)
             insetsIsTouchableRegion = false
+            debugTouchableRegion.lastSetTouchableReason = "Taskbar is fullscreen"
+            context.dragLayer.getBoundsInWindow(debugTouchableRegion.lastSetTouchableBounds, false)
         } else if (
             controllers.taskbarViewController.areIconsVisible() ||
                 context.isNavBarKidsModeActive ||
@@ -346,19 +362,33 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                     region.op(bubbleBarBounds, Region.Op.UNION)
                 }
                 insetsInfo.touchableRegion.set(region)
+                debugTouchableRegion.lastSetTouchableReason = "Transient Taskbar is in Overview"
+                debugTouchableRegion.lastSetTouchableBounds.set(region.bounds)
             } else {
-                insetsInfo.touchableRegion.set(touchableRegion)
+                insetsInfo.touchableRegion.set(defaultTouchableRegion)
+                debugTouchableRegion.lastSetTouchableReason = "Using default touchable region"
+                debugTouchableRegion.lastSetTouchableBounds.set(defaultTouchableRegion.bounds)
             }
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
             insetsIsTouchableRegion = false
         } else {
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
+            debugTouchableRegion.lastSetTouchableReason =
+                "Icons are not visible, but other components such as 3 buttons might be"
         }
         context.excludeFromMagnificationRegion(insetsIsTouchableRegion)
     }
 
+    /** Draws the last set touchableRegion as a red rectangle onto the given Canvas. */
+    fun drawDebugTouchableRegionBounds(canvas: Canvas) {
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.style = Paint.Style.STROKE
+        canvas.drawRect(debugTouchableRegion.lastSetTouchableBounds, paint)
+    }
+
     override fun dumpLogs(prefix: String, pw: PrintWriter) {
-        pw.println(prefix + "TaskbarInsetsController:")
+        pw.println("${prefix}TaskbarInsetsController:")
         pw.println("$prefix\twindowHeight=${windowLayoutParams.height}")
         for (provider in windowLayoutParams.providedInsets) {
             pw.print(
@@ -377,5 +407,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             }
             pw.println()
         }
+        pw.println("$prefix\tlastSetTouchableBounds=${debugTouchableRegion.lastSetTouchableBounds}")
+        pw.println("$prefix\tlastSetTouchableReason=${debugTouchableRegion.lastSetTouchableReason}")
+    }
+
+    class DebugTouchableRegion {
+        val lastSetTouchableBounds = Rect()
+        var lastSetTouchableReason = ""
     }
 }

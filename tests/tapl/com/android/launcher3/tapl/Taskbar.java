@@ -153,7 +153,7 @@ public final class Taskbar {
         return By.clazz(TextView.class).text("");
     }
 
-    private Rect getVisibleBounds() {
+    public Rect getVisibleBounds() {
         return mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID).getVisibleBounds();
     }
 
