@@ -44,6 +44,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIconProvider;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.model.ModelLauncherCallbacks;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.InstallSessionTracker;
@@ -101,9 +102,10 @@ public class LauncherAppState implements SafeCloseable {
             }
         });
 
-        mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
+        ModelLauncherCallbacks callbacks = mModel.newModelCallbacks();
+        mContext.getSystemService(LauncherApps.class).registerCallback(callbacks);
         mOnTerminateCallback.add(() ->
-                mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel));
+                mContext.getSystemService(LauncherApps.class).unregisterCallback(callbacks));
 
         SimpleBroadcastReceiver modelChangeReceiver =
                 new SimpleBroadcastReceiver(mModel::onBroadcastIntent);

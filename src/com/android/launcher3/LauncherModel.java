@@ -20,6 +20,7 @@ import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURC
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
+import static com.android.launcher3.model.PackageUpdatedTask.OP_UPDATE;
 import static com.android.launcher3.pm.UserCache.ACTION_PROFILE_AVAILABLE;
 import static com.android.launcher3.pm.UserCache.ACTION_PROFILE_UNAVAILABLE;
 import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
@@ -28,7 +29,6 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
@@ -43,7 +43,6 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
@@ -55,8 +54,8 @@ import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.ModelDelegate;
+import com.android.launcher3.model.ModelLauncherCallbacks;
 import com.android.launcher3.model.ModelWriter;
-import com.android.launcher3.model.PackageIncrementalDownloadUpdatedTask;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ReloadStringCacheTask;
@@ -89,7 +88,7 @@ import java.util.function.Supplier;
  * LauncherModel object held in a static. Also provide APIs for updating the database state
  * for the Launcher.
  */
-public class LauncherModel extends LauncherApps.Callback implements InstallSessionTracker.Callback {
+public class LauncherModel implements InstallSessionTracker.Callback {
     private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
@@ -168,6 +167,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         return mModelDbController;
     }
 
+    public ModelLauncherCallbacks newModelCallbacks() {
+        return new ModelLauncherCallbacks(this::enqueueModelUpdateTask);
+    }
+
     /**
      * Adds the provided items to the workspace.
      */
@@ -186,77 +189,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 owner);
     }
 
-    @Override
-    public void onPackageChanged(
-            @NonNull final String packageName, @NonNull final UserHandle user) {
-        int op = PackageUpdatedTask.OP_UPDATE;
-        enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
-    }
-
-    @Override
-    public void onPackageRemoved(
-            @NonNull final String packageName, @NonNull final UserHandle user) {
-        onPackagesRemoved(user, packageName);
-    }
-
-    public void onPackagesRemoved(
-            @NonNull final UserHandle user, @NonNull final String... packages) {
-        int op = PackageUpdatedTask.OP_REMOVE;
-        FileLog.d(TAG, "package removed received " + TextUtils.join(",", packages));
-        enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packages));
-    }
-
-    @Override
-    public void onPackageAdded(@NonNull final String packageName, @NonNull final UserHandle user) {
-        int op = PackageUpdatedTask.OP_ADD;
-        enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
-    }
-
-    @Override
-    public void onPackagesAvailable(@NonNull final String[] packageNames,
-            @NonNull final UserHandle user, final boolean replacing) {
-        enqueueModelUpdateTask(
-                new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, user, packageNames));
-    }
-
-    @Override
-    public void onPackagesUnavailable(@NonNull final String[] packageNames,
-            @NonNull final UserHandle user, final boolean replacing) {
-        if (!replacing) {
-            enqueueModelUpdateTask(new PackageUpdatedTask(
-                    PackageUpdatedTask.OP_UNAVAILABLE, user, packageNames));
-        }
-    }
-
-    @Override
-    public void onPackagesSuspended(
-            @NonNull final String[] packageNames, @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_SUSPEND, user, packageNames));
-    }
-
-    @Override
-    public void onPackagesUnsuspended(
-            @NonNull final String[] packageNames, @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_UNSUSPEND, user, packageNames));
-    }
-
-    @Override
-    public void onPackageLoadingProgressChanged(@NonNull final String packageName,
-            @NonNull final UserHandle user, final float progress) {
-        if (Utilities.ATLEAST_S) {
-            enqueueModelUpdateTask(new PackageIncrementalDownloadUpdatedTask(
-                    packageName, user, progress));
-        }
-    }
-
-    @Override
-    public void onShortcutsChanged(@NonNull final String packageName,
-            @NonNull final List<ShortcutInfo> shortcuts, @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
-    }
-
     /**
      * Called when the icon for an app changes, outside of package event
      */
@@ -265,7 +197,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             @NonNull final UserHandle user) {
         // Update the icon for the calendar package
         Context context = mApp.getContext();
-        onPackageChanged(packageName, user);
+        enqueueModelUpdateTask(new PackageUpdatedTask(OP_UPDATE, user, packageName));
 
         List<ShortcutInfo> pinnedShortcuts = new ShortcutRequest(context, user)
                 .forPackage(packageName).query(ShortcutRequest.PINNED);
