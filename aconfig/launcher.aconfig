@@ -71,13 +71,6 @@ flag {
 }
 
 flag {
-    name: "enable_launcher_br_metrics"
-    namespace: "launcher"
-    description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
-    bug: "307527314"
-}
-
-flag {
     name: "enable_unfolded_two_pane_picker"
     namespace: "launcher"
     description: "Enables two pane widget picker for unfolded foldables"
@@ -96,4 +89,19 @@ flag {
     namespace: "launcher"
     description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."
     bug: "210590852"
+}
+
+flag {
+    name: "enable_private_space_install_shortcut"
+    namespace: "launcher"
+    description: "Enables long-press shortcut to install a copy of an app to Private space"
+    bug: "316118005"
+}
+
+flag {
+    name: "enable_launcher_br_metrics_fixed"
+    namespace: "launcher"
+    description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
+    bug: "307527314"
+    is_fixed_read_only: true
 }

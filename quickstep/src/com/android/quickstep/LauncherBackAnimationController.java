@@ -23,13 +23,13 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
-import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
-import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.content.ComponentCallbacks;
+import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -101,44 +101,45 @@ public class LauncherBackAnimationController {
     private final RectF mCurrentRect = new RectF();
     private final QuickstepLauncher mLauncher;
     private final int mWindowScaleMarginX;
-    /** Max window translation in the Y axis. */
-    private final int mWindowMaxDeltaY;
-    private final float mWindowScaleEndCornerRadius;
-    private final float mWindowScaleStartCornerRadius;
+    private float mWindowScaleEndCornerRadius;
+    private float mWindowScaleStartCornerRadius;
     private final Interpolator mCancelInterpolator;
     private final Interpolator mProgressInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
 
     private RemoteAnimationTarget mBackTarget;
     private View mLauncherTargetView;
-    private SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
+    private final SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
     private boolean mSpringAnimationInProgress = false;
     private boolean mAnimatorSetInProgress = false;
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
     private OnBackInvokedCallbackStub mBackCallback;
     private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
-    private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
+    private final BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
     private SurfaceControl mScrimLayer;
     private ValueAnimator mScrimAlphaAnimator;
     private float mScrimAlpha;
     private boolean mOverridingStatusBarFlags;
+
+    private final ComponentCallbacks mComponentCallbacks = new ComponentCallbacks() {
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+            loadCornerRadius();
+        }
+
+        @Override
+        public void onLowMemory() {}
+    };
 
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
             QuickstepTransitionManager quickstepTransitionManager) {
         mLauncher = launcher;
         mQuickstepTransitionManager = quickstepTransitionManager;
-        mWindowScaleEndCornerRadius = QuickStepContract.supportsRoundedCornersOnWindows(
-                mLauncher.getResources())
-                ? mLauncher.getResources().getDimensionPixelSize(
-                        R.dimen.swipe_back_window_corner_radius)
-                : 0;
-        mWindowScaleStartCornerRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
+        loadCornerRadius();
         mWindowScaleMarginX = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_scale_x_margin);
-        mWindowMaxDeltaY = mLauncher.getResources().getDimensionPixelSize(
-                R.dimen.swipe_back_window_max_delta_y);
         mCancelInterpolator =
                 AnimationUtils.loadInterpolator(mLauncher, R.interpolator.standard_interpolator);
     }
@@ -301,11 +302,10 @@ public class LauncherBackAnimationController {
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         mStartRect.set(appTarget.windowConfiguration.getMaxBounds());
-        if (mLauncher.getDeviceProfile().isTaskbarPresent && enableTaskbarPinning()
-                && LauncherPrefs.get(mLauncher).get(TASKBAR_PINNING)) {
-            int insetBottom = mStartRect.bottom - appTarget.contentInsets.bottom;
-            mStartRect.set(mStartRect.left, mStartRect.top, mStartRect.right, insetBottom);
-        }
+
+        // inset bottom in case of pinned taskbar being present
+        mStartRect.inset(0, 0, 0, appTarget.contentInsets.bottom);
+
         mLauncherTargetView = mQuickstepTransitionManager.findLauncherView(
                 new RemoteAnimationTarget[]{ mBackTarget });
         setLauncherTargetViewVisible(false);
@@ -550,6 +550,30 @@ public class LauncherBackAnimationController {
         mScrimAlphaAnimator.setDuration(SCRIM_FADE_DURATION).start();
         anim.start();
     }
+
+    private void loadCornerRadius() {
+        mWindowScaleEndCornerRadius = QuickStepContract.supportsRoundedCornersOnWindows(
+                mLauncher.getResources())
+                ? mLauncher.getResources().getDimensionPixelSize(
+                R.dimen.swipe_back_window_corner_radius)
+                : 0;
+        mWindowScaleStartCornerRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
+    }
+
+    /**
+     * Called when launcher is destroyed. Unregisters component callbacks to avoid memory leaks.
+     */
+    public void unregisterComponentCallbacks() {
+        mLauncher.unregisterComponentCallbacks(mComponentCallbacks);
+    }
+
+    /**
+     * Registers component callbacks with the launcher to receive configuration change events.
+     */
+    public void registerComponentCallbacks() {
+        mLauncher.registerComponentCallbacks(mComponentCallbacks);
+    }
+
 
     private void resetScrim() {
         removeScrimLayer();

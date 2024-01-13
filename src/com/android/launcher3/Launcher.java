@@ -515,6 +515,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mStateManager = new StateManager<>(this, NORMAL);
 
         setupViews();
+        updateDisallowBack();
 
         mAppWidgetManager = new WidgetManagerHelper(this);
         mWidgetInflater = new WidgetInflater(this);

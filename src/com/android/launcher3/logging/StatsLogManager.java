@@ -701,6 +701,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped private space settings button")
         LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP(1550),
 
+        @UiEvent(doc = "User tapped on install to private space system shortcut.")
+        LAUNCHER_PRIVATE_SPACE_INSTALL_SYSTEM_SHORTCUT_TAP(1565),
+
         // ADD MORE
         ;
 

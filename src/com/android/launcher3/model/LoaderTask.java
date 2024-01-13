@@ -18,7 +18,7 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.Flags.enableSupportForArchiving;
-import static com.android.launcher3.Flags.enableLauncherBrMetrics;
+import static com.android.launcher3.Flags.enableLauncherBrMetricsFixed;
 import static com.android.launcher3.LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE;
 import static com.android.launcher3.LauncherPrefs.SHOULD_SHOW_SMARTSPACE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
@@ -234,7 +234,7 @@ public class LoaderTask implements Runnable {
         mIsRestoreFromBackup =
                 (Boolean) LauncherPrefs.get(mApp.getContext()).get(IS_FIRST_LOAD_AFTER_RESTORE);
         LauncherRestoreEventLogger restoreEventLogger = null;
-        if (enableLauncherBrMetrics()) {
+        if (enableLauncherBrMetricsFixed()) {
             restoreEventLogger = LauncherRestoreEventLogger.Companion
                     .newInstance(mApp.getContext());
         }

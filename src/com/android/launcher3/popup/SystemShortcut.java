@@ -1,5 +1,6 @@
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_INSTALL_SYSTEM_SHORTCUT_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP;
 
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Process;
+import android.os.UserHandle;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
@@ -20,10 +22,12 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.PrivateProfileManager;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -209,6 +213,69 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
                 this.taskTitle = taskTitle;
                 this.nodeId = nodeId;
             }
+        }
+    }
+
+    public static final Factory<Launcher> PRIVATE_PROFILE_INSTALL =
+            (launcher, itemInfo, originalView) -> {
+                if (itemInfo.getTargetComponent() == null
+                        || !(itemInfo instanceof com.android.launcher3.model.data.AppInfo)
+                        || !itemInfo.getContainerInfo().hasAllAppsContainer()
+                        || !Process.myUserHandle().equals(itemInfo.user)) {
+                    return null;
+                }
+
+                PrivateProfileManager privateProfileManager =
+                        launcher.getAppsView().getPrivateProfileManager();
+                if (privateProfileManager == null || !privateProfileManager.isEnabled()) {
+                    return null;
+                }
+
+                UserHandle privateProfileUser = privateProfileManager.getProfileUser();
+                if (privateProfileUser == null) {
+                    return null;
+                }
+                // Do not show shortcut if an app is already installed to the space
+                ComponentKey targetKey =
+                        new ComponentKey(itemInfo.getTargetComponent(), privateProfileUser);
+                if (launcher.getAppsView().getAppsStore().getApp(targetKey) != null) {
+                    return null;
+                }
+
+                // TODO(b/302666597): do not install app if it's in deny list (e.g. settings)
+
+                return new InstallToPrivateProfile(
+                        launcher, itemInfo, originalView, privateProfileUser);
+            };
+
+    static class InstallToPrivateProfile extends SystemShortcut<Launcher> {
+        UserHandle mSpaceUser;
+
+        InstallToPrivateProfile(
+                Launcher target, ItemInfo itemInfo, View originalView, UserHandle spaceUser) {
+            // TODO(b/302666597): update icon once available
+            super(
+                    R.drawable.ic_install_to_private,
+                    R.string.install_private_system_shortcut_label,
+                    target,
+                    itemInfo,
+                    originalView);
+            mSpaceUser = spaceUser;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent =
+                    ApiWrapper.getAppMarketActivityIntent(
+                            view.getContext(),
+                            mItemInfo.getTargetComponent().getPackageName(),
+                            mSpaceUser);
+            mTarget.startActivitySafely(view, intent, mItemInfo);
+            AbstractFloatingView.closeAllOpenViews(mTarget);
+            mTarget.getStatsLogManager()
+                    .logger()
+                    .withItemInfo(mItemInfo)
+                    .log(LAUNCHER_PRIVATE_SPACE_INSTALL_SYSTEM_SHORTCUT_TAP);
         }
     }
 

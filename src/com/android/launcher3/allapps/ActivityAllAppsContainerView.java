@@ -1315,6 +1315,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 : mViewPager == null ? AdapterHolder.MAIN : mViewPager.getNextPage();
     }
 
+    public PrivateProfileManager getPrivateProfileManager() {
+        return mPrivateProfileManager;
+    }
+
     /**
      * Adds an update listener to animator that adds springs to the animation.
      */

@@ -178,5 +178,9 @@
     <string name="ps_container_settings" msgid="6059734123353320479">"Cilësimet e \"Hapësirës private\""</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Kyç/Shkyç \"Hapësirën private\""</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Kalimi te \"Hapësira private\""</string>
+    <!-- no translation found for ps_add_button_label (8611055839242385935) -->
+    <skip />
+    <!-- no translation found for ps_add_button_content_description (3254274107740952556) -->
+    <skip />
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Tejkalimi"</string>
 </resources>
