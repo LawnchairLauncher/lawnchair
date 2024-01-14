@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -493,6 +494,17 @@ public class SystemUiProxy implements ISystemUiProxy {
                         visibleInsets, task);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call handleImageBundleAsScreenshot");
+            }
+        }
+    }
+
+    @Override
+    public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.handleImageAsScreenshot(bitmap, rect, insets, i);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call handleImageAsScreenshot", e);
             }
         }
     }

@@ -51,7 +51,6 @@ import androidx.core.content.FileProvider;
 
 import com.android.internal.app.ChooserActivity;
 import com.android.internal.util.ScreenshotRequest;
-import com.android.internal.util.ScreenshotHelper;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -61,6 +60,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+
+import app.lawnchair.compatlib.utils.BitmapUtil;
 
 /**
  * Utility class containing methods to help manage image actions such as sharing, cropping, and
@@ -91,7 +92,8 @@ public class ImageActionUtils {
                             .build();
             systemUiProxy.takeScreenshot(request);
         } catch (Throwable t) {
-            // ignore
+            systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
+                    screenshotBounds, visibleInsets, task);
         }
     }
 

@@ -279,19 +279,13 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         final LauncherAnimationRunner wrapper = new LauncherAnimationRunner(
                 mUiHandler, mActivityLaunchAnimationRunner, true /* startAtFrontOfQueue */);
-        final ActivityOptions options = Utilities.ATLEAST_T ? ActivityOptions.makeRemoteAnimation(
+        final ActivityOptions options = ActivityOptionsCompat.makeRemoteAnimation(
                 new RemoteAnimationAdapter(wrapper, RECENTS_LAUNCH_DURATION,
                         RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
                                 - STATUS_BAR_TRANSITION_PRE_DELAY),
                 new RemoteTransitionCompat(wrapper.toRemoteTransition(), getIApplicationThread(),
-                        "LaunchFromRecents").getRemoteTransition())
-                : ActivityOptionsCompat.makeRemoteAnimation(
-                new RemoteAnimationAdapter(wrapper, RECENTS_LAUNCH_DURATION,
-                        RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
-                                - STATUS_BAR_TRANSITION_PRE_DELAY),
-                new RemoteTransitionCompat(wrapper.toRemoteTransition(), getIApplicationThread(),
-                "LaunchFromRecents").getRemoteTransition());
-        final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(options,
+                        "LaunchFromRecents").getRemoteTransition());
+        final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(Utilities.ATLEAST_S ? options : ActivityOptions.makeBasic(),
                 onEndCallback);
         if (Utilities.ATLEAST_T) {
             activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
@@ -432,11 +426,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private void startHomeInternal() {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
-        ActivityOptions options = Utilities.ATLEAST_T ? ActivityOptions.makeRemoteAnimation(
-                new RemoteAnimationAdapter(runner, HOME_APPEAR_DURATION, 0),
-                new RemoteTransitionCompat(runner.toRemoteTransition(), getIApplicationThread(),
-                        "StartHomeFromRecents").getRemoteTransition())
-                : ActivityOptionsCompat.makeRemoteAnimation(
+        ActivityOptions options = ActivityOptionsCompat.makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, HOME_APPEAR_DURATION, 0),
                 new RemoteTransitionCompat(runner.toRemoteTransition(), getIApplicationThread(),
                         "StartHomeFromRecents").getRemoteTransition());

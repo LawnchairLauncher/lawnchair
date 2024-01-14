@@ -20,6 +20,9 @@ public class WindowManagerCompatVR {
     public static final int WINDOWING_MODE_SPLIT_SCREEN_PRIMARY =
             WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_PRIMARY;
 
+    public static final int WINDOWING_MODE_SPLIT_SCREEN_SECONDARY =
+            WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_SECONDARY;
+
     public static int getNavBarPosition(int displayId) {
         try {
             return WindowManagerGlobal.getWindowManagerService().getNavBarPosition(displayId);

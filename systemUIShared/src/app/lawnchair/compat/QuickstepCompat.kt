@@ -18,6 +18,9 @@ object QuickstepCompat {
     @JvmField
     val ATLEAST_T: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
+    @JvmField
+    val ATLEAST_U: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+
 
     @JvmStatic
     val factory: QuickstepCompatFactory = if (ATLEAST_T) {

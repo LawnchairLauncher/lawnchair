@@ -155,7 +155,6 @@ import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.io.PrintWriter;
@@ -164,7 +163,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import app.lawnchair.LawnchairApp;
-import app.lawnchair.compat.QuickstepCompat;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
 import app.lawnchair.icons.shape.IconShapeManager;
@@ -313,24 +311,20 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         // Handle the case where an already visible task is launched which results in no
         // transition
-        if (Utilities.ATLEAST_S) {
-            TaskRestartedDuringLaunchListener restartedListener = new TaskRestartedDuringLaunchListener();
-            restartedListener.register(onEndCallback::executeAllAndDestroy);
-            onEndCallback.add(restartedListener::unregister);
-        }
+        TaskRestartedDuringLaunchListener restartedListener = new TaskRestartedDuringLaunchListener();
+        restartedListener.register(onEndCallback::executeAllAndDestroy);
+        onEndCallback.add(restartedListener::unregister);
 
         mAppLaunchRunner = new AppLaunchAnimationRunner(v, onEndCallback);
-        if (Utilities.ATLEAST_S) {
-            ItemInfo tag = (ItemInfo) v.getTag();
-            if (tag != null && tag.shouldUseBackgroundAnimation()) {
-                ContainerAnimationRunner containerAnimationRunner = ContainerAnimationRunner.from(v,
-                        mStartingWindowListener, onEndCallback);
-                if (containerAnimationRunner != null) {
-                    mAppLaunchRunner = containerAnimationRunner;
-                }
+        ItemInfo tag = (ItemInfo) v.getTag();
+        if (tag != null && tag.shouldUseBackgroundAnimation()) {
+            ContainerAnimationRunner containerAnimationRunner = ContainerAnimationRunner.from(v,
+                    mStartingWindowListener, onEndCallback);
+            if (containerAnimationRunner != null) {
+                mAppLaunchRunner = containerAnimationRunner;
             }
         }
-        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(
+        LauncherAnimationRunner runner = new LauncherAnimationRunner(
                 mHandler, mAppLaunchRunner, true /* startAtFrontOfQueue */);
 
         // Note that this duration is a guess as we do not know if the animation will be
@@ -342,19 +336,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         long statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
                 - STATUS_BAR_TRANSITION_PRE_DELAY;
-        ActivityOptions options = Utilities.ATLEAST_T ? ActivityOptions.makeRemoteAnimation(
+
+        ActivityOptions options = ActivityOptionsCompat.makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
                 new RemoteTransitionCompat(runner.toRemoteTransition(),
-                        mLauncher.getIApplicationThread(), "QuickstepLaunch").getRemoteTransition())
-                : ActivityOptions.makeRemoteAnimation(
-                new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay));
-        if (!Utilities.ATLEAST_S) {
-            options = ActivityOptionsCompat.makeRemoteAnimation(
-                    new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
-                    new RemoteTransitionCompat(runner.toRemoteTransition(), mLauncher.getIApplicationThread(),
-                    "QuickstepLaunch").getRemoteTransition());
-
-        }
+                        mLauncher.getIApplicationThread(), "QuickstepLaunch").getRemoteTransition());
         return new ActivityOptionsWrapper(options, onEndCallback);
     }
 
@@ -1125,10 +1111,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteAnimations() {
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
-            return;
-        }
-        if (!Utilities.ATLEAST_S) return;
+        if (SEPARATE_RECENTS_ACTIVITY.get() || !Utilities.ATLEAST_S) return;
         if (hasControlRemoteAppTransitionPermission()) {
             RemoteAnimationDefinition definition = new RemoteAnimationDefinition();
             addRemoteAnimations(definition);

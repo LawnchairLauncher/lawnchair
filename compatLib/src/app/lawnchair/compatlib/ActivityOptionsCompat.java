@@ -10,9 +10,6 @@ import android.window.RemoteTransition;
 abstract public class ActivityOptionsCompat {
     public abstract ActivityOptions makeCustomAnimation(Context context, int enterResId,
                                                         int exitResId, final Runnable callback, final Handler callbackHandler);
-    public static ActivityOptions makeRemoteTransition(RemoteTransition remoteTransition) {
-        return ActivityOptions.makeRemoteTransition(remoteTransition);
-    }
 
     public static ActivityOptions makeRemoteAnimation(
             RemoteAnimationAdapter remoteAnimationAdapter, RemoteTransition remoteTransition) {

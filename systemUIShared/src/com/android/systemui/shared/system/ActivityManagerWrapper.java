@@ -23,6 +23,7 @@ import static android.app.ActivityTaskManager.getService;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Activity;
+import android.app.ActivityClient;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
@@ -51,10 +52,12 @@ import com.android.internal.app.IVoiceInteractionManagerService;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import app.lawnchair.compat.ActivityOptionsCompatExt;
 import app.lawnchair.compat.QuickstepCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
@@ -72,7 +75,7 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-//    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
+    private final ActivityTaskManager mAtm = QuickstepCompat.ATLEAST_S ? ActivityTaskManager.getInstance() : null;
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
@@ -133,7 +136,12 @@ public class ActivityManagerWrapper {
      */
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents,
             int displayId) {
-        return QuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+        // Note: The set of running tasks from the system is ordered by recency
+        List<ActivityManager.RunningTaskInfo> tasks = mAtm != null ?
+                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST,
+                        filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId) : new ArrayList<>();
+        return QuickstepCompat.ATLEAST_U ? tasks.toArray(new RunningTaskInfo[tasks.size()])
+                : QuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
     }
 
     /**
@@ -166,7 +174,12 @@ public class ActivityManagerWrapper {
      *                     want us to find the home task for you.
      */
     public void invalidateHomeTaskSnapshot(@Nullable final Activity homeActivity) {
-        QuickstepCompat.getActivityManagerCompat().invalidateHomeTaskSnapshot(homeActivity);
+        if (QuickstepCompat.ATLEAST_U) {
+            ActivityClient.getInstance().invalidateHomeTaskSnapshot(
+                    homeActivity == null ? null : homeActivity.getActivityToken());
+        } else {
+            QuickstepCompat.getActivityManagerCompat().invalidateHomeTaskSnapshot(homeActivity);
+        }
     }
 
     /**
@@ -197,8 +210,8 @@ public class ActivityManagerWrapper {
                 runner = new RecentsAnimationRunnerCompat() {
                     @Override
                     public void onAnimationStart(IRecentsAnimationController controller,
-                                                 RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                                                 Rect homeContentInsets, Rect minimizedHomeBounds) {
+                        RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+                        Rect homeContentInsets, Rect minimizedHomeBounds) {
                         final RecentsAnimationControllerCompat controllerCompat =
                                 new RecentsAnimationControllerCompat(controller);
                         animationHandler.onAnimationStart(controllerCompat, apps,
@@ -267,6 +280,7 @@ public class ActivityManagerWrapper {
      * Starts a task from Recents synchronously.
      */
     public boolean startActivityFromRecents(Task.TaskKey taskKey, ActivityOptions options) {
+        ActivityOptionsCompatExt.addTaskInfo(options, taskKey);
         return startActivityFromRecents(taskKey.id, options);
     }
 

@@ -96,6 +96,15 @@ interface ISystemUiProxy {
     void stopScreenPinning() = 17;
 
     /**
+     * Handle the provided image as if it was a screenshot.
+     *
+     * Deprecated, use handleImageBundleAsScreenshot with image bundle and UserTask
+     * @deprecated
+     */
+     void handleImageAsScreenshot(in Bitmap screenImage, in Rect locationInScreen,
+                  in Insets visibleInsets, int taskId) = 21;
+
+    /**
      * Notifies that quickstep will switch to a new task
      * @param rotation indicates which Surface.Rotation the gesture was started in
      */
