@@ -58,7 +58,15 @@ include ':systemUILog'
 include ':systemUIAnim'
 include ':systemUnFold'
 include ':systemUIViewCapture'
+
 include ':compatLib'
+include ':compatLibVQ'
+project(':compatLibVQ').projectDir = new File(rootDir, 'compatLib/compatLibVQ')
 include ':compatLibVR'
+project(':compatLibVR').projectDir = new File(rootDir, 'compatLib/compatLibVR')
 include ':compatLibVS'
+project(':compatLibVS').projectDir = new File(rootDir, 'compatLib/compatLibVS')
+include ':compatLibVT'
+project(':compatLibVT').projectDir = new File(rootDir, 'compatLib/compatLibVT')
+
 include ':baseline-profile'

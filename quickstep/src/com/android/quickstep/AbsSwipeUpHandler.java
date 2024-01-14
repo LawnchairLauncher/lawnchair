@@ -702,8 +702,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         buildAnimationController();
 
         try (SafeCloseable c = TraceHelper.INSTANCE.allowIpcs("logToggleRecents")) {
-            LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
-                    (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+            if (Utilities.ATLEAST_S) {
+                LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
+                        (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+            }
         }
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can
@@ -712,8 +714,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         // overview state
         RecentsModel.INSTANCE.get(mContext).getThumbnailCache()
                 .getHighResLoadingState().setVisible(true);
-
-        DepthController depthController = mActivityInterface.getDepthController();
 
     }
 
@@ -1561,7 +1561,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     ? mRecentsAnimationTargets
                     .findTask(mGestureState.getTopRunningTaskId())
                     : null;
-            final ArrayList<IBinder> cookies = runningTaskTarget != null
+            final ArrayList<IBinder> cookies = Utilities.ATLEAST_S && runningTaskTarget != null
                     && runningTaskTarget.taskInfo != null
                             ? runningTaskTarget.taskInfo.launchCookies
                             : new ArrayList<>();
@@ -1571,6 +1571,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     && runningTaskTarget.leash.isValid();
             boolean appCanEnterPip = !mDeviceState.isPipActive()
                     && hasValidLeash
+                    && Utilities.ATLEAST_T
                     && runningTaskTarget.allowEnterPip
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
@@ -2224,7 +2225,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
             PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
                     .setAlpha(0f)
                     .build();
-            tx.setShouldDisableCanAffectSystemUiFlags(false);
+            try {
+                tx.setShouldDisableCanAffectSystemUiFlags(false);
+            } catch (NoSuchMethodError error) {
+                Log.w(TAG, "not android 13 qpr1 : ", error);
+            }
             int[] taskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
             for (int taskId : taskIds) {
                 mRecentsAnimationController.setFinishTaskTransaction(taskId,

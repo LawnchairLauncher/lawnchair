@@ -43,6 +43,8 @@ import com.android.wm.shell.util.CounterRotator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import app.lawnchair.compat.QuickstepCompat;
+
 public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner.Stub {
     private static final String TAG = "RemoteAnimRunnerCompat";
 
@@ -67,8 +69,174 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 });
     }
 
+    // Called only in R
+    public void onAnimationStart(RemoteAnimationTarget[] appTargets,
+                                 RemoteAnimationTarget[] wallpaperTargets, IRemoteAnimationFinishedCallback finishedCallback) {
+        onAnimationStart(0 /* transit */, appTargets, wallpaperTargets,
+                new RemoteAnimationTarget[0], finishedCallback);
+    }
+
+    // Called only in Q
+    public void onAnimationStart(RemoteAnimationTarget[] appTargets,
+                                 IRemoteAnimationFinishedCallback finishedCallback) {
+        onAnimationStart(appTargets, new RemoteAnimationTarget[0], finishedCallback);
+    }
+
+    public void onAnimationCancelled(boolean isKeyguardOccluded) {
+
+    }
+
+    // Called only in S
+    public void onAnimationCancelled() {
+        onAnimationCancelled(true);
+    }
+
     public IRemoteTransition toRemoteTransition() {
-        return wrap(this);
+        return QuickstepCompat.ATLEAST_S ? wrap(this) : new IRemoteTransition.Stub() {
+            final ArrayMap<IBinder, Runnable> mFinishRunnables = new ArrayMap<>();
+
+            @Override
+            public void startAnimation(IBinder token, TransitionInfo info,
+                                       SurfaceControl.Transaction t,
+                                       IRemoteTransitionFinishedCallback finishCallback) {
+                final ArrayMap<SurfaceControl, SurfaceControl> leashMap = new ArrayMap<>();
+                final RemoteAnimationTarget[] apps =
+                        RemoteAnimationTargetCompat.wrapApps(info, t, leashMap);
+                final RemoteAnimationTarget[] wallpapers =
+                        RemoteAnimationTargetCompat.wrapNonApps(
+                                info, true /* wallpapers */, t, leashMap);
+                final RemoteAnimationTarget[] nonApps =
+                        RemoteAnimationTargetCompat.wrapNonApps(
+                                info, false /* wallpapers */, t, leashMap);
+
+                // TODO(b/177438007): Move this set-up logic into launcher's animation impl.
+                boolean isReturnToHome = false;
+                TransitionInfo.Change launcherTask = null;
+                TransitionInfo.Change wallpaper = null;
+                int launcherLayer = 0;
+                int rotateDelta = 0;
+                float displayW = 0;
+                float displayH = 0;
+                for (int i = info.getChanges().size() - 1; i >= 0; --i) {
+                    final TransitionInfo.Change change = info.getChanges().get(i);
+                    // skip changes that we didn't wrap
+                    if (!leashMap.containsKey(change.getLeash())) continue;
+                    if (change.getTaskInfo() != null
+                            && change.getTaskInfo().getActivityType() == ACTIVITY_TYPE_HOME) {
+                        isReturnToHome = change.getMode() == TRANSIT_OPEN
+                                || change.getMode() == TRANSIT_TO_FRONT;
+                        launcherTask = change;
+                        launcherLayer = info.getChanges().size() - i;
+                    } else if ((change.getFlags() & FLAG_IS_WALLPAPER) != 0) {
+                        wallpaper = change;
+                    }
+                    if (change.getParent() == null && change.getEndRotation() >= 0
+                            && change.getEndRotation() != change.getStartRotation()) {
+                        rotateDelta = change.getEndRotation() - change.getStartRotation();
+                        displayW = change.getEndAbsBounds().width();
+                        displayH = change.getEndAbsBounds().height();
+                    }
+                }
+
+                // Prepare for rotation if there is one
+                final CounterRotator counterLauncher = new CounterRotator();
+                final CounterRotator counterWallpaper = new CounterRotator();
+                if (launcherTask != null && rotateDelta != 0 && launcherTask.getParent() != null) {
+                    counterLauncher.setup(t, info.getChange(launcherTask.getParent()).getLeash(),
+                            rotateDelta, displayW, displayH);
+                    if (counterLauncher.getSurface() != null) {
+                        t.setLayer(counterLauncher.getSurface(), launcherLayer);
+                    }
+                }
+
+                if (isReturnToHome) {
+                    if (counterLauncher.getSurface() != null) {
+                        t.setLayer(counterLauncher.getSurface(), info.getChanges().size() * 3);
+                    }
+                    // Need to "boost" the closing things since that's what launcher expects.
+                    for (int i = info.getChanges().size() - 1; i >= 0; --i) {
+                        final TransitionInfo.Change change = info.getChanges().get(i);
+                        final SurfaceControl leash = leashMap.get(change.getLeash());
+                        // skip changes that we didn't wrap
+                        if (leash == null) continue;
+                        final int mode = info.getChanges().get(i).getMode();
+                        // Only deal with independent layers
+                        if (!TransitionInfo.isIndependent(change, info)) continue;
+                        if (mode == TRANSIT_CLOSE || mode == TRANSIT_TO_BACK) {
+                            t.setLayer(leash, info.getChanges().size() * 3 - i);
+                            counterLauncher.addChild(t, leash);
+                        }
+                    }
+                    // Make wallpaper visible immediately since launcher apparently won't do this.
+                    for (int i = wallpapers.length - 1; i >= 0; --i) {
+                        t.show(wallpapers[i].leash);
+                        t.setAlpha(wallpapers[i].leash, 1.f);
+                    }
+                } else {
+                    if (launcherTask != null) {
+                        counterLauncher.addChild(t, leashMap.get(launcherTask.getLeash()));
+                    }
+                    if (wallpaper != null && rotateDelta != 0 && wallpaper.getParent() != null) {
+                        counterWallpaper.setup(t, info.getChange(wallpaper.getParent()).getLeash(),
+                                rotateDelta, displayW, displayH);
+                        if (counterWallpaper.getSurface() != null) {
+                            t.setLayer(counterWallpaper.getSurface(), -1);
+                            counterWallpaper.addChild(t, leashMap.get(wallpaper.getLeash()));
+                        }
+                    }
+                }
+                t.apply();
+
+                final Runnable animationFinishedCallback = () -> {
+                    final SurfaceControl.Transaction finishTransaction =
+                            new SurfaceControl.Transaction();
+                    counterLauncher.cleanUp(finishTransaction);
+                    counterWallpaper.cleanUp(finishTransaction);
+                    // Release surface references now. This is apparently to free GPU memory
+                    // before GC would.
+                    info.releaseAllSurfaces();
+                    // Don't release here since launcher might still be using them. Instead
+                    // let launcher release them (eg. via RemoteAnimationTargets)
+                    leashMap.clear();
+                    try {
+                        finishCallback.onTransitionFinished(null /* wct */, finishTransaction);
+                        finishTransaction.close();
+                    } catch (RemoteException e) {
+                        Log.e("ActivityOptionsCompat", "Failed to call app controlled animation"
+                                + " finished callback", e);
+                    }
+                };
+                synchronized (mFinishRunnables) {
+                    mFinishRunnables.put(token, animationFinishedCallback);
+                }
+                // TODO(bc-unlcok): Pass correct transit type.
+                onAnimationStart(TRANSIT_OLD_NONE,
+                        apps, wallpapers, nonApps, () -> {
+                            synchronized (mFinishRunnables) {
+                                if (mFinishRunnables.remove(token) == null) return;
+                            }
+                            animationFinishedCallback.run();
+                        });
+            }
+
+            @Override
+            public void mergeAnimation(IBinder token, TransitionInfo info,
+                                       SurfaceControl.Transaction t, IBinder mergeTarget,
+                                       IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
+                // TODO: hook up merge to recents onTaskAppeared if applicable. Until then, adapt
+                //       to legacy cancel.
+                final Runnable finishRunnable;
+                synchronized (mFinishRunnables) {
+                    finishRunnable = mFinishRunnables.remove(mergeTarget);
+                }
+                // Since we're not actually animating, release native memory now
+                t.close();
+                info.releaseAllSurfaces();
+                if (finishRunnable == null) return;
+                onAnimationCancelled(false /* isKeyguardOccluded */);
+                finishRunnable.run();
+            }
+        };
     }
 
     /** Wraps a remote animation runner in a remote-transition. */

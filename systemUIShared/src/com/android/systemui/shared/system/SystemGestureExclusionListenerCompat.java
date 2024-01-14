@@ -41,6 +41,11 @@ public abstract class SystemGestureExclusionListenerCompat {
                         onExclusionChanged(systemGestureExclusion, unrestricted);
                     }
                 }
+
+                public void onSystemGestureExclusionChanged(int displayId,
+                                                            Region systemGestureExclusion) {
+                    onSystemGestureExclusionChanged(displayId, systemGestureExclusion, null);
+                }
             };
     private boolean mRegistered;
 

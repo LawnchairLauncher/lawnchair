@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -65,7 +66,9 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
@@ -95,6 +98,8 @@ import com.android.wm.shell.util.GroupedRecentTaskInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Holds the reference to SystemUI.
@@ -384,6 +389,18 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
+    public Bundle monitorGestureInput(String name, int displayId) {
+        if (mSystemUiProxy != null) {
+            try {
+                return mSystemUiProxy.monitorGestureInput(name, displayId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call monitorGestureInput: " + name, e);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void notifyAccessibilityButtonClicked(int displayId) {
         if (mSystemUiProxy != null) {
             try {
@@ -468,6 +485,19 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
+    public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
+                                              Insets visibleInsets, Task.TaskKey task) {
+        if (mSystemUiProxy != null && Utilities.ATLEAST_S) {
+            try {
+                mSystemUiProxy.handleImageBundleAsScreenshot(screenImageBundle, locationInScreen,
+                        visibleInsets, task);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call handleImageBundleAsScreenshot");
+            }
+        }
+    }
+
+    @Override
     public void onStatusBarTrackpadEvent(MotionEvent event)  {
         if (mSystemUiProxy != null) {
             try {
@@ -517,7 +547,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         boolean visible = visibleInt != 0;
         boolean changed = visible != mLastShelfVisible || shelfHeight != mLastShelfHeight;
         IPip pip = mPip;
-        if (pip != null && changed) {
+        if (pip != null && changed && Utilities.ATLEAST_T) {
             mLastShelfVisible = visible;
             mLastShelfHeight = shelfHeight;
             try {
@@ -534,8 +564,10 @@ public class SystemUiProxy implements ISystemUiProxy {
      * the Launcher for the Hotseat.
      */
     public void setLauncherKeepClearAreaHeight(boolean visible, int height) {
-        Message.obtain(mAsyncHandler, MSG_SET_LAUNCHER_KEEP_CLEAR_AREA_HEIGHT,
-                visible ? 1 : 0, height).sendToTarget();
+        if (Utilities.ATLEAST_T) {
+            Message.obtain(mAsyncHandler, MSG_SET_LAUNCHER_KEEP_CLEAR_AREA_HEIGHT,
+                    visible ? 1 : 0, height).sendToTarget();
+        }
     }
 
     @WorkerThread
@@ -560,7 +592,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      * Sets listener to get pip animation callbacks.
      */
     public void setPipAnimationListener(IPipAnimationListener listener) {
-        if (mPip != null) {
+        if (mPip != null && Utilities.ATLEAST_T) {
             try {
                 mPip.setPipAnimationListener(listener);
             } catch (RemoteException e) {
@@ -626,7 +658,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      * Sets the next pip animation type to be the alpha animation.
      */
     public void setPipAnimationTypeToAlpha() {
-        if (mPip != null) {
+        if (mPip != null && Utilities.ATLEAST_T) {
             try {
                 mPip.setPipAnimationTypeToAlpha();
             } catch (RemoteException e) {
@@ -639,7 +671,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      * Sets the app icon size in pixel used by Launcher all apps.
      */
     public void setLauncherAppIconSize(int iconSizePx) {
-        if (mPip != null) {
+        if (mPip != null && Utilities.ATLEAST_T) {
             try {
                 mPip.setLauncherAppIconSize(iconSizePx);
             } catch (RemoteException e) {
@@ -861,7 +893,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     public void startTasksWithLegacyTransition(int taskId1, Bundle options1, int taskId2,
             Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
             float splitRatio, RemoteAnimationAdapter adapter, InstanceId instanceId) {
-        if (mSystemUiProxy != null) {
+        if (mSystemUiProxy != null && Utilities.ATLEAST_T) {
             try {
                 mSplitScreen.startTasksWithLegacyTransition(taskId1, options1, taskId2, options2,
                         splitPosition, splitRatio, adapter, instanceId);
@@ -1233,6 +1265,10 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
+        if (!Utilities.ATLEAST_T) {
+            List<ActivityManager.RecentTaskInfo> recentTaskInfoList = ActivityManagerWrapper.getInstance().getRecentTasks(numTasks, userId);
+            return recentTaskInfoList.stream().map(GroupedRecentTaskInfo::forSingleTask).collect(Collectors.toCollection(ArrayList::new));
+        }
         if (mRecentTasks != null) {
             try {
                 final GroupedRecentTaskInfo[] rawTasks = mRecentTasks.getRecentTasks(numTasks,
@@ -1243,6 +1279,11 @@ public class SystemUiProxy implements ISystemUiProxy {
                 return new ArrayList<>(Arrays.asList(rawTasks));
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call getRecentTasks", e);
+            } catch (Throwable throwable) {
+                // android 13-
+                Log.w(TAG, "Failed call getRecentTasks ,may be android 13- ", throwable);
+                List<ActivityManager.RecentTaskInfo> recentTaskInfoList = ActivityManagerWrapper.getInstance().getRecentTasks(numTasks, userId);
+                return recentTaskInfoList.stream().map(GroupedRecentTaskInfo::forSingleTask).collect(Collectors.toCollection(ArrayList::new));
             }
         }
         return new ArrayList<>();

@@ -20,6 +20,10 @@ import static android.app.WindowConfiguration.ROTATION_UNDEFINED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 import static android.content.res.Configuration.ORIENTATION_UNDEFINED;
 import static android.graphics.Bitmap.Config.ARGB_8888;
+import static android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+import static android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -31,6 +35,9 @@ import android.view.WindowInsetsController.Appearance;
 import android.window.TaskSnapshot;
 
 import java.util.HashMap;
+
+import app.lawnchair.compat.QuickstepCompat;
+import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
 /**
  * Data for a single thumbnail.
@@ -101,10 +108,31 @@ public class ThumbnailData {
         return temp;
     }
 
+    public ThumbnailData(ActivityManagerCompatVR.ThumbnailData data) {
+        letterboxInsets = new Rect();
+        thumbnail = data.thumbnail;
+        insets = data.insets;
+        orientation = data.orientation;
+        rotation = data.rotation;
+        reducedResolution = data.reducedResolution;
+        scale = data.scale;
+        isRealSnapshot = data.isRealSnapshot;
+        isTranslucent = data.isTranslucent;
+        windowingMode = data.windowingMode;
+        appearance = 0;
+        if ((data.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) != 0) {
+            appearance |= APPEARANCE_LIGHT_STATUS_BARS;
+        }
+        if ((data.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0) {
+            appearance |= APPEARANCE_LIGHT_NAVIGATION_BARS;
+        }
+        snapshotId = data.snapshotId;
+    }
+
     public ThumbnailData(TaskSnapshot snapshot) {
         thumbnail = makeThumbnail(snapshot);
         insets = new Rect(snapshot.getContentInsets());
-        letterboxInsets = new Rect(snapshot.getLetterboxInsets());
+        letterboxInsets = QuickstepCompat.ATLEAST_T ? new Rect(snapshot.getLetterboxInsets()) : new Rect();
         orientation = snapshot.getOrientation();
         rotation = snapshot.getRotation();
         reducedResolution = snapshot.isLowResolution();

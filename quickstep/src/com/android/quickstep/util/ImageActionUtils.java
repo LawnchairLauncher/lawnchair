@@ -51,6 +51,7 @@ import androidx.core.content.FileProvider;
 
 import com.android.internal.app.ChooserActivity;
 import com.android.internal.util.ScreenshotRequest;
+import com.android.internal.util.ScreenshotHelper;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -78,16 +79,20 @@ public class ImageActionUtils {
      */
     public static void saveScreenshot(SystemUiProxy systemUiProxy, Bitmap screenshot,
             Rect screenshotBounds, Insets visibleInsets, Task.TaskKey task) {
-        ScreenshotRequest request =
-                new ScreenshotRequest.Builder(TAKE_SCREENSHOT_PROVIDED_IMAGE, SCREENSHOT_OVERVIEW)
-                .setTopComponent(task.sourceComponent)
-                .setTaskId(task.id)
-                .setUserId(task.userId)
-                .setBitmap(screenshot)
-                .setBoundsOnScreen(screenshotBounds)
-                .setInsets(visibleInsets)
-                .build();
-        systemUiProxy.takeScreenshot(request);
+        try {
+            ScreenshotRequest request =
+                    new ScreenshotRequest.Builder(TAKE_SCREENSHOT_PROVIDED_IMAGE, SCREENSHOT_OVERVIEW)
+                            .setTopComponent(task.sourceComponent)
+                            .setTaskId(task.id)
+                            .setUserId(task.userId)
+                            .setBitmap(screenshot)
+                            .setBoundsOnScreen(screenshotBounds)
+                            .setInsets(visibleInsets)
+                            .build();
+            systemUiProxy.takeScreenshot(request);
+        } catch (Throwable t) {
+            // ignore
+        }
     }
 
     /**

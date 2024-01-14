@@ -34,12 +34,12 @@ interface ISystemUiProxy {
     /**
      * Begins screen pinning on the provided {@param taskId}.
      */
-    oneway void startScreenPinning(int taskId) = 1;
+    void startScreenPinning(int taskId) = 1;
 
     /**
      * Notifies SystemUI that Overview is shown.
      */
-    oneway void onOverviewShown(boolean fromHome) = 6;
+    void onOverviewShown(boolean fromHome) = 6;
 
     /**
      * Proxies motion events from the homescreen UI to the status bar. Only called when
@@ -48,23 +48,28 @@ interface ISystemUiProxy {
      *
      * Normal gesture: DOWN, MOVE/POINTER_DOWN/POINTER_UP)*, UP or CANCLE
      */
-    oneway void onStatusBarTouchEvent(in MotionEvent event) = 9;
+    void onStatusBarTouchEvent(in MotionEvent event) = 9;
 
     /**
      * Proxies the assistant gesture's progress started from navigation bar.
      */
-    oneway void onAssistantProgress(float progress) = 12;
+    void onAssistantProgress(float progress) = 12;
 
     /**
     * Proxies the assistant gesture fling velocity (in pixels per millisecond) upon completion.
     * Velocity is 0 for drag gestures.
     */
-    oneway void onAssistantGestureCompletion(float velocity) = 18;
+    void onAssistantGestureCompletion(float velocity) = 18;
+
+    /**
+    * Creates a new gesture monitor
+    */
+    Bundle monitorGestureInput(String name, int displayId) = 14;
 
     /**
      * Start the assistant.
      */
-    oneway void startAssistant(in Bundle bundle) = 13;
+    void startAssistant(in Bundle bundle) = 13;
 
     /**
      * Indicates that the given Assist invocation types should be handled by Launcher via
@@ -73,66 +78,72 @@ interface ISystemUiProxy {
      * @param invocationTypes The invocation types that will henceforth be handled via
      *         OverviewProxy (Launcher); other invocation types should be handled by SysUI.
      */
-    oneway void setAssistantOverridesRequested(in int[] invocationTypes) = 53;
+    void setAssistantOverridesRequested(in int[] invocationTypes) = 53;
 
     /**
      * Notifies that the accessibility button in the system's navigation area has been clicked
      */
-    oneway void notifyAccessibilityButtonClicked(int displayId) = 15;
+    void notifyAccessibilityButtonClicked(int displayId) = 15;
 
     /**
      * Notifies that the accessibility button in the system's navigation area has been long clicked
      */
-    oneway void notifyAccessibilityButtonLongClicked() = 16;
+    void notifyAccessibilityButtonLongClicked() = 16;
 
     /**
      * Ends the system screen pinning.
      */
-    oneway void stopScreenPinning() = 17;
+    void stopScreenPinning() = 17;
 
     /**
      * Notifies that quickstep will switch to a new task
      * @param rotation indicates which Surface.Rotation the gesture was started in
      */
-    oneway void notifyPrioritizedRotation(int rotation) = 25;
+    void notifyPrioritizedRotation(int rotation) = 25;
 
     /**
      * Notifies to expand notification panel.
      */
-    oneway void expandNotificationPanel() = 29;
+    void expandNotificationPanel() = 29;
 
     /**
      * Notifies SystemUI to invoke Back.
      */
-    oneway void onBackPressed() = 44;
+    void onBackPressed() = 44;
 
     /** Sets home rotation enabled. */
-    oneway void setHomeRotationEnabled(boolean enabled) = 45;
+    void setHomeRotationEnabled(boolean enabled) = 45;
 
     /** Notifies when taskbar status updated */
-    oneway void notifyTaskbarStatus(boolean visible, boolean stashed) = 47;
+    void notifyTaskbarStatus(boolean visible, boolean stashed) = 47;
 
     /**
      * Notifies sysui when taskbar requests autoHide to stop auto-hiding
      * If called to suspend, caller is also responsible for calling this method to un-suspend
      * @param suspend should be true to stop auto-hide, false to resume normal behavior
      */
-    oneway void notifyTaskbarAutohideSuspend(boolean suspend) = 48;
+    void notifyTaskbarAutohideSuspend(boolean suspend) = 48;
 
     /**
      * Notifies SystemUI to invoke IME Switcher.
      */
-    oneway void onImeSwitcherPressed() = 49;
+    void onImeSwitcherPressed() = 49;
 
     /**
      * Notifies to toggle notification panel.
      */
-    oneway void toggleNotificationPanel() = 50;
+    void toggleNotificationPanel() = 50;
 
     /**
      * Handle the screenshot request.
      */
-    oneway void takeScreenshot(in ScreenshotRequest request) = 51;
+    void takeScreenshot(in ScreenshotRequest request) = 51;
+
+    /**
+     * Handle the provided image as if it was a screenshot.
+     */
+    void handleImageBundleAsScreenshot(in Bundle screenImageBundle, in Rect locationInScreen,
+                  in Insets visibleInsets, in Task.TaskKey task) = 28;
 
     /**
      * Dispatches trackpad status bar motion event to the notification shade. Currently these events
@@ -142,7 +153,7 @@ interface ISystemUiProxy {
      * window slippery to allow the frameworks to route those events after passing the initial
      * threshold.
      */
-    oneway void onStatusBarTrackpadEvent(in MotionEvent event) = 52;
+    void onStatusBarTrackpadEvent(in MotionEvent event) = 52;
 
     // Next id = 54
 }

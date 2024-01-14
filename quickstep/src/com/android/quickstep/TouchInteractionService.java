@@ -224,7 +224,7 @@ public class TouchInteractionService extends Service {
         @BinderThread
         @Override
         public void onTaskbarToggled() {
-            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get())
+            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get() || !Utilities.ATLEAST_S)
                 return;
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
                 TaskbarActivityContext activityContext = tis.mTaskbarManager.getCurrentActivityContext();
@@ -364,12 +364,14 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onSystemBarAttributesChanged(int displayId, int behavior) {
+            if (!Utilities.ATLEAST_S) return;
             executeForTaskbarManager(
                     taskbarManager -> taskbarManager.onSystemBarAttributesChanged(displayId, behavior));
         }
 
         @Override
         public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
+            if (!Utilities.ATLEAST_S) return;
             executeForTaskbarManager(taskbarManager -> taskbarManager.onNavButtonsDarkIntensityChanged(darkIntensity));
         }
 
@@ -399,7 +401,7 @@ public class TouchInteractionService extends Service {
         @Nullable
         public TaskbarManager getTaskbarManager() {
             TouchInteractionService tis = mTis.get();
-            if (tis == null)
+            if (tis == null || !Utilities.ATLEAST_S)
                 return null;
             return tis.mTaskbarManager;
         }
@@ -494,14 +496,16 @@ public class TouchInteractionService extends Service {
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
-        mTaskbarManager = new TaskbarManager(this);
+        mTaskbarManager = Utilities.ATLEAST_S ? new TaskbarManager(this) : null;
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         BootAwarePreloader.start(this);
 
         // Call runOnUserUnlocked() before any other callbacks to ensure everything is
         // initialized.
         LockedUserState.get(this).runOnUserUnlocked(this::onUserUnlocked);
-        LockedUserState.get(this).runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
+        if (mTaskbarManager != null) {
+            LockedUserState.get(this).runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
+        }
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         sConnected = true;
     }
@@ -525,7 +529,16 @@ public class TouchInteractionService extends Service {
             return;
         }
 
-        mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
+        if (Utilities.ATLEAST_S) {
+            mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
+        } else {
+            if (!SystemUiProxy.INSTANCE.get(this).isActive()) {
+                return;
+            }
+            Bundle bundle = SystemUiProxy.INSTANCE.get(this).monitorGestureInput("swipe-up",
+                    mDeviceState.getDisplayId());
+            mInputMonitorCompat = InputMonitorCompat.fromBundle(bundle, "extra_input_monitor");
+        }
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
 
@@ -547,8 +560,10 @@ public class TouchInteractionService extends Service {
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this,
                 mOverviewComponentObserver, mTaskAnimationManager);
-        mResetGestureInputConsumer = new ResetGestureInputConsumer(
-                mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
+        if (Utilities.ATLEAST_S && mTaskbarManager != null) {
+            mResetGestureInputConsumer = new ResetGestureInputConsumer(
+                    mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
+        }
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
         onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
@@ -598,7 +613,7 @@ public class TouchInteractionService extends Service {
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
                 .getCreatedActivity();
-        if (newOverviewActivity != null) {
+        if (newOverviewActivity != null && mTaskbarManager != null) {
             mTaskbarManager.setActivity(newOverviewActivity);
         }
         mTISBinder.onOverviewTargetChange();
@@ -609,7 +624,7 @@ public class TouchInteractionService extends Service {
                 .setAction(INTENT_ACTION_ALL_APPS_TOGGLE);
         final PendingIntent actionPendingIntent;
 
-        if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
+        if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get() && mTaskbarManager != null) {
             actionPendingIntent = new PendingIntent(new IIntentSender.Stub() {
                 @Override
                 public void send(int code, Intent intent, String resolvedType,
@@ -639,7 +654,9 @@ public class TouchInteractionService extends Service {
             int systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
-            mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
+            if (mTaskbarManager != null) {
+                mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
+            }
 
             int isShadeExpandedFlag = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
             boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
@@ -676,10 +693,14 @@ public class TouchInteractionService extends Service {
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).clearProxy();
 
-        getSystemService(AccessibilityManager.class)
-                .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+        if (Utilities.ATLEAST_R) {
+            getSystemService(AccessibilityManager.class)
+                    .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+        }
 
-        mTaskbarManager.destroy();
+        if (mTaskbarManager != null) {
+            mTaskbarManager.destroy();
+        }
         sConnected = false;
         super.onDestroy();
     }
@@ -936,7 +957,7 @@ public class TouchInteractionService extends Service {
 
             // If Taskbar is present, we listen for swipe or cursor hover events to unstash
             // it.
-            TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
+            TaskbarActivityContext tac = mTaskbarManager != null ? mTaskbarManager.getCurrentActivityContext() : null;
             if (tac != null && !(base instanceof AssistantInputConsumer)) {
                 // Present always on large screen or on small screen w/ flag
                 DeviceProfile dp = tac.getDeviceProfile();

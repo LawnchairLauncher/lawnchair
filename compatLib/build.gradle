@@ -4,6 +4,15 @@ plugins {
 
 android {
     namespace "app.lawnchair.compatlib"
-}
 
-addFrameworkJar('framework-14.jar')
+    sourceSets {
+        main {
+            java.srcDirs = ["src"]
+        }
+    }
+
+    addFrameworkJar('framework-14.jar')
+}
+dependencies {
+    api("androidx.annotation:annotation:1.7.1")
+}

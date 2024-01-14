@@ -33,6 +33,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.StringJoiner;
 
+import app.lawnchair.compat.QuickstepCompat;
+
 /**
  * Various shared constants between Launcher and SysUI as part of quickstep
  */
@@ -383,7 +385,7 @@ public class QuickStepContract {
      * scaling, this means that we don't have to reload them on config changes.
      */
     public static float getWindowCornerRadius(Context context) {
-        if (sRecentsDisabled) {
+        if (sRecentsDisabled || !QuickstepCompat.ATLEAST_S) {
             return 0;
         }
         if (sHasCustomCornerRadius) {

@@ -16,10 +16,12 @@
 package com.android.quickstep.util;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
 
 import android.util.FloatProperty;
 import android.view.RemoteAnimationTarget;
+import android.view.SurfaceControl;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.Utilities;
@@ -162,7 +164,7 @@ public class TransformParams {
                 } else {
                     // Fade out translucent overlay.
                     // TODO(b/303351074): use app.isNotInRecents directly once it is fixed.
-                    boolean isNotInRecents = app.taskInfo != null
+                    boolean isNotInRecents = Utilities.ATLEAST_S && app.taskInfo != null
                             && (app.taskInfo.baseIntent.getFlags()
                                     & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
                     if (app.isTranslucent && isNotInRecents) {
@@ -187,6 +189,20 @@ public class TransformParams {
             transaction.forSurface(wallpaper.leash).setLayer(Integer.MIN_VALUE);
         }
         return transaction;
+    }
+
+    private static SurfaceControl getRecentsSurface(RemoteAnimationTargets targets) {
+        for (int i = 0; i < targets.unfilteredApps.length; i++) {
+            RemoteAnimationTarget app = targets.unfilteredApps[i];
+            if (app.mode == targets.targetMode) {
+                if (app.windowConfiguration.getActivityType() == ACTIVITY_TYPE_RECENTS) {
+                    return app.leash;
+                }
+            } else {
+                return app.leash;
+            }
+        }
+        return null;
     }
 
     // Pubic getters so outside packages can read the values.

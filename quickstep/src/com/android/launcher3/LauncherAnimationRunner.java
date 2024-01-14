@@ -127,7 +127,7 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
         });
     }
 
-    void onAnimationCancelled(boolean isKeyguardOccluded) {
+    public void onAnimationCancelled(boolean isKeyguardOccluded) {
         onAnimationCancelled();
     }
 

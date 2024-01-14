@@ -20,6 +20,8 @@ import android.graphics.Rect;
 import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
 
+import com.android.launcher3.Utilities;
+
 /**
  * Helper class for building a {@link Transaction}.
  */
@@ -103,7 +105,9 @@ public class SurfaceTransaction {
          * @return this Builder
          */
         public SurfaceProperties setShadowRadius(float radius) {
-            mTransaction.setShadowRadius(mSurface, radius);
+            if (Utilities.ATLEAST_R) {
+                mTransaction.setShadowRadius(mSurface, radius);
+            }
             return this;
         }
 

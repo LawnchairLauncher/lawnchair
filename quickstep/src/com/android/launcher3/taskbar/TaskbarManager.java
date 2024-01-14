@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static android.content.Context.RECEIVER_NOT_EXPORTED;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
@@ -54,6 +55,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
@@ -207,8 +209,7 @@ public class TaskbarManager {
 
     @SuppressLint("WrongConstant")
     public TaskbarManager(TouchInteractionService service) {
-        Display display = service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-        mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
+        mContext = getContext(service);
         mNavButtonController = new TaskbarNavButtonController(service,
                 SystemUiProxy.INSTANCE.get(mContext), new Handler(),
                 AssistUtils.newInstance(mContext));
@@ -217,8 +218,10 @@ public class TaskbarManager {
 
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
-                Trace.instantForTrack(Trace.TRACE_TAG_APP, "TaskbarManager",
-                        "onConfigurationChanged: " + newConfig);
+                if (Utilities.ATLEAST_T) {
+                    Trace.instantForTrack(Trace.TRACE_TAG_APP, "TaskbarManager",
+                            "onConfigurationChanged: " + newConfig);
+                }
                 debugWhyTaskbarNotDestroyed(
                         "TaskbarManager#mComponentCallbacks.onConfigurationChanged: " + newConfig);
                 DeviceProfile dp = mUserUnlocked
@@ -286,6 +289,21 @@ public class TaskbarManager {
         debugWhyTaskbarNotDestroyed("TaskbarManager created");
         recreateTaskbar();
     }
+
+    private Context getContext(TouchInteractionService service) {
+        Display display = service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
+
+        if (com.android.launcher3.Utilities.ATLEAST_T) {
+            return service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
+        } else if (com.android.launcher3.Utilities.ATLEAST_S) {
+            return service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null);
+        } else if (com.android.launcher3.Utilities.ATLEAST_R) {
+            return service.createWindowContext(TYPE_APPLICATION_OVERLAY, null);
+        } else {
+            return service;
+        }
+    }
+
 
     private void destroyExistingTaskbar() {
         debugWhyTaskbarNotDestroyed("destroyExistingTaskbar: " + mTaskbarActivityContext);

@@ -125,7 +125,7 @@ public class RecentsAnimationCallbacks implements
         } else {
             RemoteAnimationTarget[] nonAppTargets;
             if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-                nonAppTargets = mSystemUiProxy.onGoingToRecentsLegacy(appTargets);
+                nonAppTargets = Utilities.ATLEAST_T ? mSystemUiProxy.onGoingToRecentsLegacy(appTargets) : null;
             } else {
                 final ArrayList<RemoteAnimationTarget> apps = new ArrayList<>();
                 final ArrayList<RemoteAnimationTarget> nonApps = new ArrayList<>();

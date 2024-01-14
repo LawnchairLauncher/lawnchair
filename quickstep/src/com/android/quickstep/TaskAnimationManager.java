@@ -274,7 +274,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             if (!homeIsOnTop) {
                 options.setTransientLaunch();
             }
-            if (app.lawnchair.LawnchairApp.isAtleastT()) {
+            if (Utilities.ATLEAST_S) {
                 options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
                 if (Utilities.ATLEAST_U) {
                     SystemUiProxy.INSTANCE.getNoCreate().startRecentsActivity(intent, options, mCallbacks);

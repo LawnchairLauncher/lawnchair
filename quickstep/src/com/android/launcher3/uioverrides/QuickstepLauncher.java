@@ -1020,7 +1020,7 @@ public class QuickstepLauncher extends Launcher {
         ActivityOptionsWrapper activityOptions = mAppTransitionManager.hasControlRemoteAppTransitionPermission()
                 ? mAppTransitionManager.getActivityLaunchOptions(v)
                 : super.getActivityLaunchOptions(v, item);
-        if (mLastTouchUpTime > 0 && app.lawnchair.LawnchairApp.isAtleastT()) {
+        if (mLastTouchUpTime > 0 && Utilities.ATLEAST_S) {
             activityOptions.options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER,
                     mLastTouchUpTime);
         }
@@ -1033,9 +1033,11 @@ public class QuickstepLauncher extends Launcher {
                 activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
         }
-        activityOptions.options.setLaunchDisplayId(
-                (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
-                        : Display.DEFAULT_DISPLAY);
+        if (Utilities.ATLEAST_S) {
+            activityOptions.options.setLaunchDisplayId(
+                    (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
+                            : Display.DEFAULT_DISPLAY);
+        }
         if (app.lawnchair.LawnchairApp.isAtleastT()) {
             Utilities.allowBGLaunch(activityOptions.options);
             addLaunchCookie(item, activityOptions.options);
@@ -1046,11 +1048,13 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         RunnableList callbacks = new RunnableList();
-        ActivityOptions options = ActivityOptions.makeCustomAnimation(
+        ActivityOptions options = Utilities.ATLEAST_S ? ActivityOptions.makeCustomAnimation(
                 this, 0, 0, Color.TRANSPARENT,
                 Executors.MAIN_EXECUTOR.getHandler(), null,
-                elapsedRealTime -> callbacks.executeAllAndDestroy());
-        options.setSplashScreenStyle(splashScreenStyle);
+                elapsedRealTime -> callbacks.executeAllAndDestroy()) : ActivityOptions.makeBasic();
+        if (Utilities.ATLEAST_T) {
+            options.setSplashScreenStyle(splashScreenStyle);
+        }
         Utilities.allowBGLaunch(options);
         return new ActivityOptionsWrapper(options, callbacks);
     }

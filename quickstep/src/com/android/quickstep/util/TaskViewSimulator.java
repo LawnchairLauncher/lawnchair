@@ -182,7 +182,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public void setPreview(RemoteAnimationTarget runningTarget) {
         setPreviewBounds(
                 runningTarget.startBounds == null
-                        ? runningTarget.screenSpaceBounds : runningTarget.startBounds,
+                        ? (Utilities.ATLEAST_R ? runningTarget.screenSpaceBounds : runningTarget.sourceContainerBounds) : runningTarget.startBounds,
                 runningTarget.contentInsets);
     }
 

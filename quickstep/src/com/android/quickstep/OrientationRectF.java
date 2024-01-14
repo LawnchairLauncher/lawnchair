@@ -23,6 +23,8 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.android.launcher3.Utilities;
+
 public class OrientationRectF extends RectF {
 
     private static final String TAG = "OrientationRectF";
@@ -76,7 +78,11 @@ public class OrientationRectF extends RectF {
                         + "mRotation: " + mRotation
                         + " this: " + this);
             }
-            event.applyTransform(mTmpMatrix);
+            if (Utilities.ATLEAST_S) {
+                event.applyTransform(mTmpMatrix);
+            } else {
+                event.transform(mTmpMatrix);
+            }
             return true;
         }
         mTmpPoint[0] = event.getX();
@@ -92,7 +98,11 @@ public class OrientationRectF extends RectF {
         }
 
         if (contains(mTmpPoint[0], mTmpPoint[1])) {
-            event.applyTransform(mTmpMatrix);
+            if (Utilities.ATLEAST_S) {
+                event.applyTransform(mTmpMatrix);
+            } else {
+                event.transform(mTmpMatrix);
+            }
             return true;
         }
         return false;

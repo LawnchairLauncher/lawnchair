@@ -32,6 +32,7 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitStageInfo;
@@ -81,11 +82,14 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
 
     @Override
     public void onTaskRemoved(int taskId) {
+        if (!Utilities.ATLEAST_T) return;
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskId);
     }
 
     @Override
     public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
+        if (!Utilities.ATLEAST_T) return;
+
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskInfo.taskId);
         mOrderedTaskList.addFirst(taskInfo);
 
@@ -180,6 +184,14 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
      */
     @UiThread
     public CachedTaskInfo getCachedTopTask(boolean filterOnlyVisibleRecents) {
+        if (!Utilities.ATLEAST_T) {
+            RunningTaskInfo task = TraceHelper.allowIpcs("getCachedTopTask.false", () ->
+                    ActivityManagerWrapper.getInstance().getRunningTask(
+                            false /* filterOnlyVisibleRecents */));
+            ArrayList<RunningTaskInfo> taskList = new ArrayList<>();
+            Collections.addAll(taskList, task);
+            return new CachedTaskInfo(taskList);
+        }
         if (filterOnlyVisibleRecents) {
             // Since we only know about the top most task, any filtering may not be applied on the
             // cache. The second to top task may change while the top task is still the same.

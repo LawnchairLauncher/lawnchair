@@ -46,6 +46,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
+import app.lawnchair.compat.QuickstepCompat
 import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
@@ -86,11 +87,11 @@ import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
-import java.util.stream.Stream
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.stream.Stream
 
 class LawnchairLauncher :
     QuickstepLauncher(),
@@ -342,9 +343,9 @@ class LawnchairLauncher :
 
     override fun makeDefaultActivityOptions(splashScreenStyle: Int): ActivityOptionsWrapper {
         val callbacks = RunnableList()
-        val options = if (Utilities.ATLEAST_P || Utilities.ATLEAST_Q) {
+        val options = if (!Utilities.ATLEAST_R) {
             ActivityOptions.makeBasic()
-        } else {
+        } else if (Utilities.ATLEAST_T){
             ActivityOptions.makeCustomAnimation(
                 this,
                 0,
@@ -353,6 +354,9 @@ class LawnchairLauncher :
                 Executors.MAIN_EXECUTOR.handler,
                 null,
             ) { _ -> callbacks.executeAllAndDestroy() }
+        } else {
+            QuickstepCompat.activityOptionsCompat
+                .makeCustomAnimation(this, 0, 0, null, Executors.MAIN_EXECUTOR.handler)
         }
         if (Utilities.ATLEAST_T) {
             options.setSplashScreenStyle(splashScreenStyle)
