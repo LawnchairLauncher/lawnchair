@@ -57,7 +57,8 @@ class LawnchairIconProvider @JvmOverloads constructor(
     private var iconPackVersion = 0L
     private var themeMapName: String = ""
     private var _themeMap: Map<ComponentName, ThemedIconDrawable.ThemeData>? = null
-    private val themeMap: Map<ComponentName, ThemedIconDrawable.ThemeData>
+
+    val themeMap: Map<ComponentName, ThemedIconDrawable.ThemeData>
         get() {
             if (drawerThemedIcons.get() && !(isOlderLawnIconsInstalled)) {
                 _themeMap = DISABLED_MAP

@@ -154,12 +154,18 @@ class FeedBridge(private val context: Context) {
         private const val OVERLAY_ACTION = "com.android.launcher3.WINDOW_OVERLAY"
 
         private val whitelist = mapOf<String, Long>(
-            "ua.itaysonlab.homefeeder" to 0x887456ed, // HomeFeeder, t.me/homefeeder
-            "launcher.libre.dev" to 0x2e9dbab5, // Librechair, t.me/librechair
-            SmartspacerConstants.SMARTSPACER_PACKAGE_NAME to 0x15c6e36f, // Smartspacer
-            "amirz.aidlbridge" to 0xb662cc2f, // AIDL Bridge
-            "com.google.android.googlequicksearchbox" to 0xe3ca78d8, // Google
-            "com.google.android.apps.nexuslauncher" to 0xb662cc2f, // Pixel Bridge (or launcher)
+            // HomeFeeder, t.me/homefeeder
+            "ua.itaysonlab.homefeeder" to 0x887456ed,
+            // Librechair, t.me/librechair
+            "launcher.libre.dev" to 0x2e9dbab5,
+            // Smartspacer
+            SmartspacerConstants.SMARTSPACER_PACKAGE_NAME to 0x15c6e36f,
+            // AIDL Bridge
+            "amirz.aidlbridge" to 0xb662cc2f,
+            // Google
+            "com.google.android.googlequicksearchbox" to 0xe3ca78d8,
+            // Pixel Bridge (or launcher)
+            "com.google.android.apps.nexuslauncher" to 0xb662cc2f,
         )
 
         fun getAvailableProviders(context: Context) = context.packageManager

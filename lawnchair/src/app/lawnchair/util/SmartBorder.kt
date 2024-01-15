@@ -118,7 +118,10 @@ fun Modifier.smartBorder(
                             val rect = insetOutline.roundRect
                             addRoundRect(
                                 RoundRect(
-                                    rect.left, rect.top, rect.right, rect.bottom,
+                                    rect.left,
+                                    rect.top,
+                                    rect.right,
+                                    rect.bottom,
                                     CornerRadius(
                                         rect.topLeftCornerRadius.x - cornerCompensation,
                                         rect.topLeftCornerRadius.y - cornerCompensation,

@@ -127,7 +127,8 @@ class DismissView(context: Context) : FrameLayout(context) {
         circle.setup(config.backgroundResId, config.iconResId, config.iconSizeResId)
         val targetSize: Int = resources.getDimensionPixelSize(config.targetSizeResId)
         circle.layoutParams = LayoutParams(
-            targetSize, targetSize,
+            targetSize,
+            targetSize,
             Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
         )
         // Initial position with circle offscreen so it's animated up
