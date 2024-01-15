@@ -34,8 +34,14 @@ class SearchItemBackground(
         val bottomRadius = if (roundBottom) searchGroupRadius else searchResultRadius
 
         cornerRadii = floatArrayOf(
-            topRadius, topRadius, topRadius, topRadius,
-            bottomRadius, bottomRadius, bottomRadius, bottomRadius,
+            topRadius,
+            topRadius,
+            topRadius,
+            topRadius,
+            bottomRadius,
+            bottomRadius,
+            bottomRadius,
+            bottomRadius,
         )
     }
 

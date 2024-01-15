@@ -380,9 +380,12 @@ class FontCache private constructor(private val context: Context) {
 
         override suspend fun load(): Typeface? {
             val request = FontRequest(
-                "com.google.android.gms.fonts", // ProviderAuthority
-                "com.google.android.gms", // ProviderPackage
-                GoogleFontsListing.buildQuery(family, variant), // Query
+                // ProviderAuthority
+                "com.google.android.gms.fonts",
+                // ProviderPackage
+                "com.google.android.gms",
+                // Query
+                GoogleFontsListing.buildQuery(family, variant),
                 R.array.com_google_android_gms_fonts_certs,
             )
 

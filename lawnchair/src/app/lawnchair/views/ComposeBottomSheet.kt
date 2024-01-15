@@ -48,8 +48,8 @@ class ComposeBottomSheet<T>(context: Context) :
     private val container = ComposeView(context)
     private var imeShift = 0f
     private var _hintCloseProgress = mutableFloatStateOf(0f)
-    private val hintCloseProgress get() = _hintCloseProgress.floatValue
     private var hintCloseDistance = 0f
+    val hintCloseProgress: Float get() = _hintCloseProgress.floatValue
 
     init {
         layoutParams = BaseDragLayer.LayoutParams(MATCH_PARENT, MATCH_PARENT)
