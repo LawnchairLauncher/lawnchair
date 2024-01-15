@@ -52,6 +52,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
             RemoteAnimationTarget[] nonApps, Runnable finishedCallback);
 
+    @Override
     public final void onAnimationStart(@TransitionOldType int transit,
             RemoteAnimationTarget[] apps,
             RemoteAnimationTarget[] wallpapers,
@@ -230,13 +231,6 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     mFinishRunnables.put(token, animationFinishedCallback);
                 }
                 // TODO(bc-unlcok): Pass correct transit type.
-                onAnimationStart(TRANSIT_OLD_NONE,
-                        apps, wallpapers, nonApps, () -> {
-                            synchronized (mFinishRunnables) {
-                                if (mFinishRunnables.remove(token) == null) return;
-                            }
-                            animationFinishedCallback.run();
-                        });
                 if (!QuickstepCompat.ATLEAST_S) return;
                 runner.onAnimationStart(TRANSIT_OLD_NONE,
                         apps, wallpapers, nonApps, new IRemoteAnimationFinishedCallback() {

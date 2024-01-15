@@ -68,5 +68,8 @@ include ':compatLibVS'
 project(':compatLibVS').projectDir = new File(rootDir, 'compatLib/compatLibVS')
 include ':compatLibVT'
 project(':compatLibVT').projectDir = new File(rootDir, 'compatLib/compatLibVT')
+include ':compatLibVU'
+project(':compatLibVU').projectDir = new File(rootDir, 'compatLib/compatLibVU')
+
 
 include ':baseline-profile'

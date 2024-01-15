@@ -155,6 +155,7 @@ import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
+import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.io.PrintWriter;
@@ -163,6 +164,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.QuickstepCompat;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
 import app.lawnchair.icons.shape.IconShapeManager;
@@ -324,7 +326,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 mAppLaunchRunner = containerAnimationRunner;
             }
         }
-        LauncherAnimationRunner runner = new LauncherAnimationRunner(
+        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(
                 mHandler, mAppLaunchRunner, true /* startAtFrontOfQueue */);
 
         // Note that this duration is a guess as we do not know if the animation will be
@@ -336,11 +338,12 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         long statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
                 - STATUS_BAR_TRANSITION_PRE_DELAY;
-
-        ActivityOptions options = ActivityOptionsCompat.makeRemoteAnimation(
+        ActivityOptions options = QuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
                 new RemoteTransitionCompat(runner.toRemoteTransition(),
-                        mLauncher.getIApplicationThread(), "QuickstepLaunch").getRemoteTransition());
+                        mLauncher.getIApplicationThread(), "QuickstepLaunch").getRemoteTransition(),
+                "Lawnchair");
+
         return new ActivityOptionsWrapper(options, onEndCallback);
     }
 

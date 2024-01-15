@@ -1,0 +1,22 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'app.lawnchair.compatlib.fourteen'
+
+    sourceSets {
+        main {
+            java.srcDirs = ["src"]
+        }
+    }
+
+    addFrameworkJar('framework-14.jar')
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation project(':compatLib')
+    implementation project(':compatLibVS')
+    implementation project(':compatLibVT')
+}

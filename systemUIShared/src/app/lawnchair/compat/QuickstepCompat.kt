@@ -2,8 +2,10 @@ package app.lawnchair.compat
 
 import android.os.Build
 import app.lawnchair.compatlib.ActivityManagerCompat
+import app.lawnchair.compatlib.ActivityOptionsCompat
 import app.lawnchair.compatlib.QuickstepCompatFactory
 import app.lawnchair.compatlib.eleven.QuickstepCompatFactoryVR
+import app.lawnchair.compatlib.fourteen.QuickstepCompatFactoryVU
 import app.lawnchair.compatlib.ten.QuickstepCompatFactoryVQ
 import app.lawnchair.compatlib.thirteen.QuickstepCompatFactoryVT
 import app.lawnchair.compatlib.twelve.QuickstepCompatFactoryVS
@@ -23,7 +25,9 @@ object QuickstepCompat {
 
 
     @JvmStatic
-    val factory: QuickstepCompatFactory = if (ATLEAST_T) {
+    val factory: QuickstepCompatFactory = if (ATLEAST_U) {
+        QuickstepCompatFactoryVU()
+    } else if (ATLEAST_T) {
         QuickstepCompatFactoryVT()
     } else if (ATLEAST_S) {
         QuickstepCompatFactoryVS()
@@ -37,5 +41,5 @@ object QuickstepCompat {
     val activityManagerCompat: ActivityManagerCompat = factory.activityManagerCompat
 
     @JvmStatic
-    val activityOptionsCompat = factory.activityOptionsCompat
+    val activityOptionsCompat: ActivityOptionsCompat = factory.activityOptionsCompat
 }

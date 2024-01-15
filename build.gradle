@@ -106,6 +106,7 @@ allprojects {
                 compileOnly projects.compatLibVR
                 compileOnly projects.compatLibVS
                 compileOnly projects.compatLibVT
+                compileOnly projects.compatLibVU
             }
         }
     }
@@ -332,6 +333,7 @@ dependencies {
     withQuickstepImplementation projects.compatLibVR
     withQuickstepImplementation projects.compatLibVS
     withQuickstepImplementation projects.compatLibVT
+    withQuickstepImplementation projects.compatLibVU
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-14.jar')
 

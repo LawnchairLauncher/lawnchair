@@ -3,6 +3,7 @@ package app.lawnchair.compatlib.eleven;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
+import android.view.RemoteAnimationAdapter;
 
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 
@@ -19,5 +20,10 @@ public class ActivityOptionsCompatVR extends ActivityOptionsCompat {
                         }
                     }
                 }, null /* finishedListener */);
+    }
+
+    @Override
+    public ActivityOptions makeRemoteAnimation(RemoteAnimationAdapter remoteAnimationAdapter, Object remoteTransition, String debugName) {
+        return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter);
     }
 }
