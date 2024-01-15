@@ -50,11 +50,13 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.UserIconInfo;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -353,6 +355,8 @@ public class LoaderCursor extends CursorWrapper {
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.user = user;
         info.intent = newIntent;
+        UserCache userCache = UserCache.getInstance(mContext);
+        UserIconInfo userIconInfo = userCache.getUserInfo(user);
 
         if (loadIcon) {
             mIconCache.getTitleAndIcon(info, mActivityInfo, useLowResIcon);
@@ -362,7 +366,7 @@ public class LoaderCursor extends CursorWrapper {
         }
 
         if (mActivityInfo != null) {
-            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo);
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo, userIconInfo);
         }
 
         // from the db

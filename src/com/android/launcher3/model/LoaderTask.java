@@ -655,7 +655,7 @@ public class LoaderTask implements Runnable {
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
-                AppInfo appInfo = new AppInfo(app, user, quietMode);
+                AppInfo appInfo = new AppInfo(app, mUserCache.getUserInfo(user), quietMode);
                 if (enableSupportForArchiving() && app.getApplicationInfo().isArchived) {
                     // For archived apps, include progress info in case there is a pending
                     // install session post restart of device.
