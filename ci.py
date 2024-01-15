@@ -49,7 +49,7 @@ def send_internal_notifications():
         commits = list(repository.iter_commits(commit_range))
     except git.exc.GitCommandError as error:
         print(f"Error fetching commits: {e}")
-        commits = 0
+        return
     
     if len(commits) == 0: return
 
