@@ -684,9 +684,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             setter.addFloat(mThemedIconsBackgroundProgress, VALUE, 1f, 0f, LINEAR);
         }
 
-        int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
+        int collapsedHeight = mActivity.getDefaultTaskbarWindowSize();
         int expandedHeight = Math.max(collapsedHeight, taskbarDp.taskbarHeight + offsetY);
-        setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
+        setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowSize(
                 anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
 
         mTaskbarBottomMargin = isTransientTaskbar
@@ -822,8 +822,16 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             // We only translate on rotation when icon is aligned with hotseat
             return;
         }
-        mActivity.setTaskbarWindowHeight(
-                deviceProfile.taskbarHeight + deviceProfile.getTaskbarOffsetY());
+        int taskbarWindowSize;
+        if (mActivity.isPhoneMode()) {
+            taskbarWindowSize = mActivity.getResources().getDimensionPixelSize(
+                    mActivity.isThreeButtonNav()
+                            ? R.dimen.taskbar_phone_size
+                            : R.dimen.taskbar_stashed_size);
+        } else {
+            taskbarWindowSize = deviceProfile.taskbarHeight + deviceProfile.getTaskbarOffsetY();
+        }
+        mActivity.setTaskbarWindowSize(taskbarWindowSize);
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
