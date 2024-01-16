@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_WIDGET_ATTEMPT;
 
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
@@ -59,6 +60,9 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
                     remoteResponse.getLaunchOptions(view));
         }
         if (mLauncher.isSplitSelectionEnabled()) {
+            // Log metric
+            StatsLogManager.StatsLogger logger = mLauncher.getStatsLogManager().logger();
+            logger.log(LAUNCHER_SPLIT_WIDGET_ATTEMPT);
             Toast.makeText(hostView.getContext(), R.string.split_widgets_not_supported,
                     Toast.LENGTH_SHORT).show();
             return true;
