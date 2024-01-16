@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.util
 
+import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.app.WindowConfiguration.ACTIVITY_TYPE_HOME
 import android.graphics.Rect
@@ -30,7 +31,13 @@ import com.android.launcher3.util.Executors
 import com.android.wm.shell.util.TransitionUtil
 
 /** Remote animation which slides the opening targets in and the closing targets out */
-class SlideInRemoteTransition(val isRtl: Boolean) : IRemoteTransition.Stub() {
+class SlideInRemoteTransition(
+    private val isRtl: Boolean,
+    private val pageSpacing: Int,
+    private val cornerRadius: Float,
+    private val interpolator: TimeInterpolator,
+) : IRemoteTransition.Stub() {
+    private val animationDurationMs = 500L
 
     override fun mergeAnimation(
         iBinder: IBinder,
@@ -54,6 +61,8 @@ class SlideInRemoteTransition(val isRtl: Boolean) : IRemoteTransition.Stub() {
         finishCB: IRemoteTransitionFinishedCallback
     ) {
         val anim = ValueAnimator.ofFloat(0f, 1f)
+        anim.interpolator = interpolator
+        anim.duration = animationDurationMs
 
         val closingStartBounds: HashMap<SurfaceControl, Rect> = HashMap()
         val openingEndBounds: HashMap<SurfaceControl, Rect> = HashMap()
@@ -67,9 +76,11 @@ class SlideInRemoteTransition(val isRtl: Boolean) : IRemoteTransition.Stub() {
             }
             if (TransitionUtil.isClosingType(chg.mode)) {
                 closingStartBounds[leash] = chg.startAbsBounds
+                startT.setCrop(leash, chg.startAbsBounds).setCornerRadius(leash, cornerRadius)
             }
             if (TransitionUtil.isOpeningType(chg.mode)) {
                 openingEndBounds[leash] = chg.endAbsBounds
+                startT.setCrop(leash, chg.endAbsBounds).setCornerRadius(leash, cornerRadius)
             }
         }
         startT.apply()
@@ -80,7 +91,7 @@ class SlideInRemoteTransition(val isRtl: Boolean) : IRemoteTransition.Stub() {
                 // Translate the surface from its original position on-screen to off-screen on the
                 // right (or left in RTL)
                 val startBounds = closingStartBounds[it]
-                val targetX = (if (isRtl) -1 else 1) * startBounds!!.right
+                val targetX = (if (isRtl) -1 else 1) * (startBounds!!.right + pageSpacing)
                 t.setPosition(it, anim.animatedValue as Float * targetX, 0f)
             }
             openingEndBounds.keys.forEach {
@@ -90,7 +101,7 @@ class SlideInRemoteTransition(val isRtl: Boolean) : IRemoteTransition.Stub() {
                 // Translate the surface from off-screen on the left (or left in RTL) to its final
                 // position on-screen
                 val endBounds = openingEndBounds[it]
-                val targetX = (if (isRtl) -1 else 1) * endBounds!!.right
+                val targetX = (if (isRtl) -1 else 1) * (endBounds!!.right + pageSpacing)
                 t.setPosition(it, (1f - anim.animatedValue as Float) * -targetX, 0f)
             }
             t.apply()
