@@ -158,7 +158,10 @@ public class WidgetPickerActivity extends BaseActivity {
             LauncherAppState app = LauncherAppState.getInstance(this);
             mModel.update(app, null);
             final ArrayList<WidgetsListBaseEntry> widgets =
-                    mModel.getWidgetsListForPicker(app.getContext());
+                    mModel.getFilteredWidgetsListForPicker(
+                            app.getContext(),
+                            /*widgetItemFilter=*/ item -> item.widgetInfo != null
+                    );
             MAIN_EXECUTOR.execute(() -> mPopupDataProvider.setAllWidgets(widgets));
         });
     }
