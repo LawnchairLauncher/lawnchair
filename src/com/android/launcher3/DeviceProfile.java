@@ -81,6 +81,9 @@ public class DeviceProfile {
     private static final float MIN_FOLDER_TEXT_SIZE_SP = 16f;
     private static final float MIN_WIDGET_PADDING_DP = 6f;
 
+    // Minimum aspect ratio beyond which an extra top padding may be applied to a bottom sheet.
+    private static final float MIN_ASPECT_RATIO_FOR_EXTRA_TOP_PADDING = 1.5f;
+
     public static final PointF DEFAULT_SCALE = new PointF(1.0f, 1.0f);
     public static final ViewScaleProvider DEFAULT_PROVIDER = itemInfo -> DEFAULT_SCALE;
     public static final Consumer<DeviceProfile> DEFAULT_DIMENSION_PROVIDER = dp -> {
@@ -414,8 +417,14 @@ public class DeviceProfile {
         gridVisualizationPaddingY = res.getDimensionPixelSize(
                 R.dimen.grid_visualization_vertical_cell_spacing);
 
+        // Tablet portrait mode uses a single pane widget picker and extra padding may be applied on
+        // top to avoid making it look too elongated.
+        final boolean applyExtraTopPadding = isTablet
+                && !isLandscape
+                && (aspectRatio > MIN_ASPECT_RATIO_FOR_EXTRA_TOP_PADDING);
         bottomSheetTopPadding = mInsets.top // statusbar height
-                + res.getDimensionPixelSize(R.dimen.bottom_sheet_extra_top_padding)
+                + (applyExtraTopPadding ? res.getDimensionPixelSize(
+                R.dimen.bottom_sheet_extra_top_padding) : 0)
                 + (isTablet ? 0 : edgeMarginPx); // phones need edgeMarginPx additional padding
         bottomSheetOpenDuration = res.getInteger(R.integer.config_bottomSheetOpenDuration);
         bottomSheetCloseDuration = res.getInteger(R.integer.config_bottomSheetCloseDuration);
