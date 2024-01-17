@@ -15,8 +15,11 @@
  */
 package com.android.launcher3.widget.util;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Point;
@@ -91,20 +94,33 @@ public final class WidgetSizes {
      */
     public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Context context,
             int spanX, int spanY) {
-        AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
-        int widgetId = widgetView.getAppWidgetId();
-        if (widgetId <= 0) {
+        updateWidgetSizeRangesAsync(
+                widgetView.getAppWidgetId(), widgetView.getAppWidgetInfo(), context, spanX, spanY);
+    }
+
+    /**
+     * Updates a given {@code widgetId} with size, {@code spanX}, {@code spanY} asynchronously.
+     *
+     * <p>On Android S+, it also updates the given {@code widgetView} with a list of sizes derived
+     * from {@code spanX}, {@code spanY} in all supported device profiles.
+     */
+    public static void updateWidgetSizeRangesAsync(int widgetId,
+            AppWidgetProviderInfo info, Context context, int spanX, int spanY) {
+        if (widgetId <= 0 || info == null) {
             return;
         }
-        Bundle sizeOptions = getWidgetSizeOptions(context, widgetView.getAppWidgetInfo().provider,
-                spanX, spanY);
-        if (sizeOptions.<SizeF>getParcelableArrayList(
-                AppWidgetManager.OPTION_APPWIDGET_SIZES).equals(
-                widgetManager.getAppWidgetOptions(widgetId).<SizeF>getParcelableArrayList(
-                        AppWidgetManager.OPTION_APPWIDGET_SIZES))) {
-            return;
-        }
-        widgetManager.updateAppWidgetOptions(widgetId, sizeOptions);
+
+        UI_HELPER_EXECUTOR.execute(() -> {
+            AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+            Bundle sizeOptions = getWidgetSizeOptions(context, info.provider, spanX, spanY);
+            if (sizeOptions.<SizeF>getParcelableArrayList(
+                    AppWidgetManager.OPTION_APPWIDGET_SIZES).equals(
+                    widgetManager.getAppWidgetOptions(widgetId).<SizeF>getParcelableArrayList(
+                            AppWidgetManager.OPTION_APPWIDGET_SIZES))) {
+                return;
+            }
+            widgetManager.updateAppWidgetOptions(widgetId, sizeOptions);
+        });
     }
 
     /**

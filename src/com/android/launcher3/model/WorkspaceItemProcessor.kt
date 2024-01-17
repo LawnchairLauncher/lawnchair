@@ -45,6 +45,7 @@ import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.android.launcher3.widget.WidgetInflater
+import com.android.launcher3.widget.util.WidgetSizes
 
 /**
  * This items is used by LoaderTask to process items that have been loaded from the Launcher's DB.
@@ -423,44 +424,56 @@ class WorkspaceItemProcessor(
         }
         val inflationResult = widgetInflater.inflateAppWidget(appWidgetInfo)
         var shouldUpdate = inflationResult.isUpdate
-        if (inflationResult.type == WidgetInflater.TYPE_DELETE) {
-            c.markDeleted(inflationResult.reason, inflationResult.restoreErrorType)
-            return
-        }
-
         val lapi = inflationResult.widgetInfo
-        if (inflationResult.type == WidgetInflater.TYPE_PENDING) {
-            tempPackageKey.update(component.packageName, c.user)
-            val si = installingPkgs[tempPackageKey]
 
-            if (
-                !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) &&
-                    !isSafeMode &&
-                    (si == null) &&
-                    (lapi == null)
-            ) {
-                // Restore never started
-                c.markDeleted(
-                    "Unrestored widget removed: $component",
-                    RestoreError.APP_NOT_INSTALLED
-                )
+        when (inflationResult.type) {
+            WidgetInflater.TYPE_DELETE -> {
+                c.markDeleted(inflationResult.reason, inflationResult.restoreErrorType)
                 return
-            } else if (
-                !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) && si != null
-            ) {
-                shouldUpdate = true
-                appWidgetInfo.restoreStatus =
-                    appWidgetInfo.restoreStatus or LauncherAppWidgetInfo.FLAG_RESTORE_STARTED
             }
-            appWidgetInfo.installProgress = if (si == null) 0 else (si.getProgress() * 100).toInt()
-            appWidgetInfo.pendingItemInfo =
-                WidgetsModel.newPendingItemInfo(
+            WidgetInflater.TYPE_PENDING -> {
+                tempPackageKey.update(component.packageName, c.user)
+                val si = installingPkgs[tempPackageKey]
+
+                if (
+                    !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) &&
+                        !isSafeMode &&
+                        (si == null) &&
+                        (lapi == null)
+                ) {
+                    // Restore never started
+                    c.markDeleted(
+                        "Unrestored widget removed: $component",
+                        RestoreError.APP_NOT_INSTALLED
+                    )
+                    return
+                } else if (
+                    !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) && si != null
+                ) {
+                    shouldUpdate = true
+                    appWidgetInfo.restoreStatus =
+                        appWidgetInfo.restoreStatus or LauncherAppWidgetInfo.FLAG_RESTORE_STARTED
+                }
+                appWidgetInfo.installProgress =
+                    if (si == null) 0 else (si.getProgress() * 100).toInt()
+                appWidgetInfo.pendingItemInfo =
+                    WidgetsModel.newPendingItemInfo(
+                        app.context,
+                        appWidgetInfo.providerName,
+                        appWidgetInfo.user
+                    )
+                iconCache.getTitleAndIconForApp(appWidgetInfo.pendingItemInfo, false)
+            }
+            WidgetInflater.TYPE_REAL ->
+                WidgetSizes.updateWidgetSizeRangesAsync(
+                    appWidgetInfo.appWidgetId,
+                    lapi,
                     app.context,
-                    appWidgetInfo.providerName,
-                    appWidgetInfo.user
+                    appWidgetInfo.spanX,
+                    appWidgetInfo.spanY
                 )
-            iconCache.getTitleAndIconForApp(appWidgetInfo.pendingItemInfo, false)
         }
+
         if (shouldUpdate) {
             c.updater()
                 .put(Favorites.APPWIDGET_PROVIDER, component.flattenToString())
