@@ -48,7 +48,6 @@ import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
-import android.util.Property;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1446,22 +1445,10 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    private static final Property<ReorderPreviewAnimation, Float> ANIMATION_PROGRESS =
-            new Property<ReorderPreviewAnimation, Float>(float.class, "animationProgress") {
-                @Override
-                public Float get(ReorderPreviewAnimation anim) {
-                    return anim.animationProgress;
-                }
-
-                @Override
-                public void set(ReorderPreviewAnimation anim, Float progress) {
-                    anim.setAnimationProgress(progress);
-                }
-            };
-
     // Class which represents the reorder preview animations. These animations show that an item is
     // in a temporary state, and hint at where the item will return to.
-    class ReorderPreviewAnimation<T extends View & Reorderable> {
+    class ReorderPreviewAnimation<T extends View & Reorderable> implements
+            ValueAnimator.AnimatorUpdateListener {
         final T child;
         float finalDeltaX;
         float finalDeltaY;
@@ -1469,8 +1456,6 @@ public class CellLayout extends ViewGroup {
         float initDeltaY;
         final float finalScale;
         float initScale;
-        final int mode;
-        boolean repeating = false;
         private static final int PREVIEW_DURATION = 300;
         private static final int HINT_DURATION = Workspace.REORDER_TIMEOUT;
 
@@ -1479,8 +1464,7 @@ public class CellLayout extends ViewGroup {
         public static final int MODE_HINT = 0;
         public static final int MODE_PREVIEW = 1;
 
-        float animationProgress = 0;
-        ValueAnimator a;
+        ValueAnimator mAnimator;
 
         ReorderPreviewAnimation(View childView, int mode, int cellX0, int cellY0,
                 int cellX1, int cellY1, int spanX, int spanY) {
@@ -1494,7 +1478,6 @@ public class CellLayout extends ViewGroup {
             final int dY = y1 - y0;
 
             this.child = (T) childView;
-            this.mode = mode;
             finalDeltaX = 0;
             finalDeltaY = 0;
 
@@ -1503,6 +1486,20 @@ public class CellLayout extends ViewGroup {
             initDeltaY = mtd.getTranslationY(INDEX_REORDER_BOUNCE_OFFSET).getValue();
             initScale = child.getReorderBounceScale();
             finalScale = mChildScale - (CHILD_DIVIDEND / child.getWidth()) * initScale;
+
+            mAnimator = ObjectAnimator.ofFloat(0, 1);
+            mAnimator.addUpdateListener(this);
+
+            // Animations are disabled in power save mode, causing the repeated animation to jump
+            // spastically between beginning and end states. Since this looks bad, we don't repeat
+            // the animation in power save mode.
+            if (areAnimatorsEnabled() && mode == MODE_PREVIEW) {
+                mAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                mAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            }
+
+            mAnimator.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
+            mAnimator.setStartDelay((int) (Math.random() * 60));
 
             int dir = mode == MODE_HINT ? -1 : 1;
             if (dX == dY && dX == 0) {
@@ -1549,61 +1546,36 @@ public class CellLayout extends ViewGroup {
                 return;
             }
 
-            ValueAnimator va = ObjectAnimator.ofFloat(this, ANIMATION_PROGRESS, 0, 1);
-            a = va;
-
-            // Animations are disabled in power save mode, causing the repeated animation to jump
-            // spastically between beginning and end states. Since this looks bad, we don't repeat
-            // the animation in power save mode.
-            if (areAnimatorsEnabled()) {
-                va.setRepeatMode(ValueAnimator.REVERSE);
-                va.setRepeatCount(ValueAnimator.INFINITE);
-            }
-
-            va.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
-            va.setStartDelay((int) (Math.random() * 60));
-            va.addListener(new AnimatorListenerAdapter() {
-                public void onAnimationRepeat(Animator animation) {
-                    // We make sure to end only after a full period
-                    setInitialAnimationValuesToBaseline();
-                    repeating = true;
-                }
-            });
             mShakeAnimators.put(child, this);
-            va.start();
+            mAnimator.start();
         }
 
-        private void setAnimationProgress(float progress) {
-            animationProgress = progress;
-            float r1 = (mode == MODE_HINT && repeating) ? 1.0f : animationProgress;
-            float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
-            float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
-            child.getTranslateDelegate().setTranslation(INDEX_REORDER_BOUNCE_OFFSET, x, y);
-            float s = animationProgress * finalScale + (1 - animationProgress) * initScale;
-            child.setReorderBounceScale(s);
+        @Override
+        public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+            float progress = (float) updatedAnimation.getAnimatedValue();
+            child.getTranslateDelegate().setTranslation(
+                    INDEX_REORDER_BOUNCE_OFFSET,
+                    /* dx = */ progress * finalDeltaX + (1 - progress) * initDeltaX,
+                    /* dy = */ progress * finalDeltaY + (1 - progress) * initDeltaY
+            );
+            child.setReorderBounceScale(progress * finalScale + (1 - progress) * initScale);
         }
 
         private void cancel() {
-            if (a != null) {
-                a.cancel();
-            }
+            mAnimator.cancel();
         }
 
         /**
          * Smoothly returns the item to its baseline position / scale
          */
         @Thunk void finishAnimation() {
-            if (a != null) {
-                a.cancel();
-            }
-
+            mAnimator.cancel();
             setInitialAnimationValuesToBaseline();
-            ValueAnimator va = ObjectAnimator.ofFloat(this, ANIMATION_PROGRESS,
-                    animationProgress, 0);
-            a = va;
-            a.setInterpolator(DECELERATE_1_5);
-            a.setDuration(REORDER_ANIMATION_DURATION);
-            a.start();
+            mAnimator = ObjectAnimator.ofFloat((Float) mAnimator.getAnimatedValue(), 0);
+            mAnimator.addUpdateListener(this);
+            mAnimator.setInterpolator(DECELERATE_1_5);
+            mAnimator.setDuration(REORDER_ANIMATION_DURATION);
+            mAnimator.start();
         }
     }
 
