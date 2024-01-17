@@ -1512,7 +1512,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private void prepareAppWidget(AppWidgetHostView hostView, LauncherAppWidgetInfo item) {
         hostView.setTag(item);
-        item.onBindAppWidget(this, hostView);
         hostView.setFocusable(true);
         hostView.setOnFocusChangeListener(mFocusHandler);
     }
