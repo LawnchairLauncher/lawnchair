@@ -22,6 +22,7 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PRO
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
@@ -81,6 +82,8 @@ public class PrivateProfileManagerTest {
     @Mock
     private PackageManager mPackageManager;
 
+    private boolean mRunnableCalled = false;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -110,7 +113,7 @@ public class PrivateProfileManagerTest {
     public void unlockPrivateProfile_requestsQuietModeAsFalse() throws Exception {
         when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED)).thenReturn(true);
 
-        mPrivateProfileManager.unlockPrivateProfile();
+        mPrivateProfileManager.unlockPrivateProfile(() -> {});
 
         awaitTasksCompleted();
         Mockito.verify(mUserManager).requestQuietModeEnabled(false, PRIVATE_HANDLE);
@@ -133,6 +136,23 @@ public class PrivateProfileManagerTest {
     }
 
     @Test
+    public void transitioningToUnlocked_resetCallsPendingRunnable() throws Exception {
+        PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
+        doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
+        when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
+                .thenReturn(false);
+        when(privateProfileManager.getCurrentState()).thenReturn(STATE_DISABLED);
+        mRunnableCalled = false;
+
+        privateProfileManager.unlockPrivateProfile(this::testRunnable);
+        privateProfileManager.reset();
+
+        awaitTasksCompleted();
+        Mockito.verify(privateProfileManager).applyUnlockRunnable();
+        assertTrue(mRunnableCalled);
+    }
+
+    @Test
     public void openPrivateSpaceSettings_triggersSecurityAndPrivacyIntent() {
         Intent expectedIntent = new Intent(SAFETY_CENTER_INTENT);
         expectedIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
@@ -149,5 +169,9 @@ public class PrivateProfileManagerTest {
 
     private static void awaitTasksCompleted() throws Exception {
         UI_HELPER_EXECUTOR.submit(() -> null).get();
+    }
+
+    private void testRunnable() {
+        mRunnableCalled = true;
     }
 }

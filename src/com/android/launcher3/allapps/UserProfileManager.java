@@ -22,7 +22,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 
 import androidx.annotation.IntDef;
-import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
@@ -89,7 +88,6 @@ public abstract class UserProfileManager {
     }
 
     /** Returns current state for the profile type. */
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public int getCurrentState() {
         return mCurrentState;
     }
