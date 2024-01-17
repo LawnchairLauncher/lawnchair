@@ -95,7 +95,7 @@ import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.WidgetInflater;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -403,9 +403,8 @@ public class LoaderTask implements Runnable {
             @Nullable LauncherRestoreEventLogger restoreEventLogger) {
         final Context context = mApp.getContext();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
-        final boolean isSafeMode = pmHelper.isSafeMode();
         final boolean isSdCardReady = Utilities.isBootCompleted();
-        final WidgetManagerHelper widgetHelper = new WidgetManagerHelper(context);
+        final WidgetInflater widgetInflater = new WidgetInflater(context);
 
         ModelDbController dbController = mApp.getModel().getModelDbController();
         dbController.tryMigrateDB(restoreEventLogger);
@@ -422,13 +421,12 @@ public class LoaderTask implements Runnable {
             FileLog.d(TAG, "loadWorkspace: Packages with active install sessions: "
                     + installingPkgs.keySet().stream().map(info -> info.mPackageName).toList());
 
-            final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             mShortcutKeyToPinnedShortcuts = new HashMap<>();
             final LoaderCursor c = new LoaderCursor(
                     dbController.query(TABLE_NAME, null, selection, null, null),
-                    mApp, mUserManagerState);
+                    mApp, mUserManagerState, mIsRestoreFromBackup ? restoreEventLogger : null);
             final Bundle extras = c.getExtras();
             mDbName = extras == null ? null : extras.getString(ModelDbController.EXTRA_DB_NAME);
             try {
@@ -438,11 +436,11 @@ public class LoaderTask implements Runnable {
                 List<IconRequestInfo<WorkspaceItemInfo>> iconRequestInfos = new ArrayList<>();
 
                 WorkspaceItemProcessor itemProcessor = new WorkspaceItemProcessor(c, memoryLogger,
-                        restoreEventLogger, mUserManagerState, mLauncherApps, mPendingPackages,
-                        mShortcutKeyToPinnedShortcuts, mApp, mIconCache, mBgDataModel,
-                        mWidgetProvidersMap, mIsRestoreFromBackup, installingPkgs, isSdCardReady,
-                        tempPackageKey, widgetHelper, pmHelper, iconRequestInfos, unlockedUsers,
-                        isSafeMode, allDeepShortcuts);
+                        mUserManagerState, mLauncherApps, mPendingPackages,
+                        mShortcutKeyToPinnedShortcuts, mApp, mBgDataModel,
+                        mWidgetProvidersMap, installingPkgs, isSdCardReady,
+                        widgetInflater, pmHelper, iconRequestInfos, unlockedUsers,
+                        allDeepShortcuts);
 
                 while (!mStopped && c.moveToNext()) {
                     itemProcessor.processItem();

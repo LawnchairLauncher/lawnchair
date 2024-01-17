@@ -233,7 +233,7 @@ public class LauncherModelHelper {
         private final PackageManager mPm;
         private final File mDbDir;
 
-        SandboxModelContext() {
+        public SandboxModelContext() {
             super(ApplicationProvider.getApplicationContext(),
                     UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,

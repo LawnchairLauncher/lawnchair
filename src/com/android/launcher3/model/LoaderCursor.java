@@ -41,6 +41,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
@@ -70,6 +72,7 @@ public class LoaderCursor extends CursorWrapper {
     private final Context mContext;
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
+    private final @Nullable LauncherRestoreEventLogger mRestoreEventLogger;
 
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
@@ -107,7 +110,8 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
-    public LoaderCursor(Cursor cursor, LauncherAppState app, UserManagerState userManagerState) {
+    public LoaderCursor(Cursor cursor, LauncherAppState app, UserManagerState userManagerState,
+            @Nullable LauncherRestoreEventLogger restoreEventLogger) {
         super(cursor);
 
         mApp = app;
@@ -115,6 +119,7 @@ public class LoaderCursor extends CursorWrapper {
         mContext = app.getContext();
         mIconCache = app.getIconCache();
         mIDP = app.getInvariantDeviceProfile();
+        mRestoreEventLogger = restoreEventLogger;
 
         // Init column indices
         mIconIndex = getColumnIndexOrThrow(Favorites.ICON);
@@ -390,9 +395,12 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Marks the current item for removal
      */
-    public void markDeleted(String reason) {
+    public void markDeleted(String reason, @RestoreError String errorType) {
         FileLog.e(TAG, reason);
         mItemsToRemove.add(id);
+        if (mRestoreEventLogger != null) {
+            mRestoreEventLogger.logSingleFavoritesItemRestoreFailed(itemType, errorType);
+        }
     }
 
     /**
@@ -430,6 +438,9 @@ public class LoaderCursor extends CursorWrapper {
             values.put(Favorites.RESTORED, 0);
             mApp.getModel().getModelDbController().update(TABLE_NAME, values,
                     Utilities.createDbSelectionQuery(Favorites._ID, mRestoredRows), null);
+        }
+        if (mRestoreEventLogger != null) {
+            mRestoreEventLogger.reportLauncherRestoreResults();
         }
     }
 
@@ -473,8 +484,11 @@ public class LoaderCursor extends CursorWrapper {
         }
         if (checkItemPlacement(info, dataModel.isFirstPagePinnedItemEnabled)) {
             dataModel.addItem(mContext, info, false, logger);
+            if (mRestoreEventLogger != null) {
+                mRestoreEventLogger.logSingleFavoritesItemRestored(itemType);
+            }
         } else {
-            markDeleted("Item position overlap");
+            markDeleted("Item position overlap", RestoreError.INVALID_LOCATION);
         }
     }
 

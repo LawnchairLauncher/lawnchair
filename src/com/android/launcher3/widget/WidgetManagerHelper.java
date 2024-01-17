@@ -61,8 +61,7 @@ public class WidgetManagerHelper {
             int appWidgetId, ComponentName componentName) {
 
         // For custom widgets.
-        if (appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID && !CustomWidgetManager
-                .INSTANCE.get(mContext).getWidgetIdForCustomProvider(componentName).equals("")) {
+        if (appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
             return CustomWidgetManager.INSTANCE.get(mContext).getWidgetProvider(componentName);
         }
 

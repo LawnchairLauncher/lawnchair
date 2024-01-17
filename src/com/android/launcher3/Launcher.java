@@ -52,7 +52,6 @@ import static com.android.launcher3.LauncherConstants.TraceEvents.ON_CREATE_EVT;
 import static com.android.launcher3.LauncherConstants.TraceEvents.ON_NEW_INTENT_EVT;
 import static com.android.launcher3.LauncherConstants.TraceEvents.ON_RESUME_EVT;
 import static com.android.launcher3.LauncherConstants.TraceEvents.ON_START_EVT;
-import static com.android.launcher3.LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
@@ -65,8 +64,6 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_BIND_FAILURE;
-import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_INVALID_LOCATION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
@@ -165,7 +162,6 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.apppairs.AppPairIcon;
-import com.android.launcher3.backuprestore.LauncherRestoreEventLogger;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.celllayout.CellPosMapper.TwoPanelCellPosMapper;
@@ -2161,13 +2157,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         int newItemsScreenId = -1;
         int end = items.size();
         View newView = null;
-        LauncherRestoreEventLogger restoreEventLogger = null;
-        Boolean isRestoreFromBackup = (Boolean) LauncherPrefs.get(getApplicationContext())
-                .get(IS_FIRST_LOAD_AFTER_RESTORE);
-        if (isRestoreFromBackup) {
-            restoreEventLogger = LauncherRestoreEventLogger.Companion
-                    .newInstance(getApplicationContext());
-        }
         for (int i = 0; i < end; i++) {
             final ItemInfo item = items.get(i);
             // Short circuit if we are loading dock items for a configuration which has no dock
@@ -2198,14 +2187,9 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
                 case ITEM_TYPE_APPWIDGET:
                 case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET: {
-                    view = inflateAppWidget((LauncherAppWidgetInfo) item, restoreEventLogger);
+                    view = inflateAppWidget((LauncherAppWidgetInfo) item);
                     if (view == null) {
                         continue;
-                    }
-                    // Widgets have more checks when inflating, so we have to wait until here
-                    // to mark restored, instead of logging in LoaderTask.
-                    if (restoreEventLogger != null) {
-                        restoreEventLogger.logSingleFavoritesItemRestored(item.itemType);
                     }
                     break;
                 }
@@ -2230,10 +2214,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                     if (FeatureFlags.IS_STUDIO_BUILD) {
                         throw (new RuntimeException(desc));
                     } else {
-                        if (restoreEventLogger != null) {
-                            restoreEventLogger.logSingleFavoritesItemRestoreFailed(item.itemType,
-                                    RESTORE_ERROR_INVALID_LOCATION);
-                        }
                         getModelWriter().deleteItemFromDatabase(item, desc);
                         continue;
                     }
@@ -2292,9 +2272,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         } else if (focusFirstItemForAccessibility && viewToFocus != null) {
             viewToFocus.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
         }
-        if (restoreEventLogger != null) {
-            restoreEventLogger.reportLauncherRestoreResults();
-        }
         workspace.requestLayout();
     }
 
@@ -2302,24 +2279,19 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Add the views for a widget to the workspace.
      */
     public void bindAppWidget(LauncherAppWidgetInfo item) {
-        View view = inflateAppWidget(item, null);
+        View view = inflateAppWidget(item);
         if (view != null) {
             mWorkspace.addInScreen(view, item);
             mWorkspace.requestLayout();
         }
     }
 
-    private View inflateAppWidget(LauncherAppWidgetInfo item,
-            @Nullable LauncherRestoreEventLogger restoreEventLogger) {
+    private View inflateAppWidget(LauncherAppWidgetInfo item) {
         TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
         try {
             InflationResult inflationResult = mWidgetInflater.inflateAppWidget(item);
             if (inflationResult.getType() == WidgetInflater.TYPE_DELETE) {
                 getModelWriter().deleteItemFromDatabase(item, inflationResult.getReason());
-                if (restoreEventLogger != null) {
-                    restoreEventLogger.logSingleFavoritesItemRestoreFailed(
-                            ITEM_TYPE_APPWIDGET, RESTORE_ERROR_BIND_FAILURE);
-                }
                 return null;
             }
 

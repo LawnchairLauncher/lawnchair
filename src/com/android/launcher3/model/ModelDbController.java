@@ -65,6 +65,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -89,7 +90,6 @@ public class ModelDbController {
     private static final String TAG = "LauncherProvider";
 
     private static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
-    private static final String RESTORE_ERROR_GRID_MIGRATION_FAILURE = "grid_migration_failed";
     public static final String EXTRA_DB_NAME = "db_name";
 
     protected DatabaseHelper mOpenHelper;
@@ -335,7 +335,7 @@ public class ModelDbController {
                     restoreEventLogger.logFavoritesItemsRestoreFailed(
                             cursor.getInt(cursor.getColumnIndexOrThrow(ITEM_TYPE)),
                             cursor.getInt(cursor.getColumnIndexOrThrow("count")),
-                            RESTORE_ERROR_GRID_MIGRATION_FAILURE
+                            RestoreError.GRID_MIGRATION_FAILURE
                     );
                 } while (cursor.moveToNext());
             }
