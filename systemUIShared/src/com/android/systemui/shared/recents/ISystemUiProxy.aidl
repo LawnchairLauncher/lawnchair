@@ -62,6 +62,11 @@ interface ISystemUiProxy {
     void onAssistantGestureCompletion(float velocity) = 18;
 
     /**
+    * Get the secondary split screen app's rectangle when not minimized.
+    */
+    Rect getNonMinimizedSplitScreenSecondaryBounds() = 7;
+
+    /**
     * Creates a new gesture monitor
     */
     Bundle monitorGestureInput(String name, int displayId) = 14;
@@ -103,6 +108,19 @@ interface ISystemUiProxy {
      */
      void handleImageAsScreenshot(in Bitmap screenImage, in Rect locationInScreen,
                   in Insets visibleInsets, int taskId) = 21;
+
+     /**
+     * Sets the split-screen divider minimized state
+     */
+     void setSplitScreenMinimized(boolean minimized) = 22;
+
+     /*
+     * Notifies that the swipe-to-home (recents animation) is finished.
+     */
+    void notifySwipeToHomeFinished() = 23;
+
+    /** Notifies that a swipe-up gesture has started */
+    void notifySwipeUpGestureStarted() = 46;
 
     /**
      * Notifies that quickstep will switch to a new task

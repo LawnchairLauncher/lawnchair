@@ -164,8 +164,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import app.lawnchair.LawnchairApp;
-import app.lawnchair.compat.QuickstepCompat;
-import app.lawnchair.compatlib.ActivityOptionsCompat;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
 import app.lawnchair.icons.shape.IconShapeManager;
 import app.lawnchair.theme.color.ColorTokens;
@@ -338,7 +337,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         long statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
                 - STATUS_BAR_TRANSITION_PRE_DELAY;
-        ActivityOptions options = QuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
+        ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
                 new RemoteTransitionCompat(runner.toRemoteTransition(),
                         mLauncher.getIApplicationThread(), "QuickstepLaunch").getRemoteTransition(),
@@ -1152,13 +1151,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteTransitions() {
-        if (ENABLE_SHELL_TRANSITIONS && Utilities.ATLEAST_U) {
+        if (ENABLE_SHELL_TRANSITIONS && LawnchairQuickstepCompat.ATLEAST_U) {
             SystemUiProxy.INSTANCE.get(mLauncher).shareTransactionQueue();
         }
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
-        if (!Utilities.ATLEAST_T) return;
+        if (!LawnchairQuickstepCompat.ATLEAST_T) return;
         if (hasControlRemoteAppTransitionPermission()) {
             mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
             mLauncherOpenTransition = new RemoteTransitionCompat(

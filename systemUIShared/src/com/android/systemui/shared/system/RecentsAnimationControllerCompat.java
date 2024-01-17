@@ -25,7 +25,7 @@ import android.window.TaskSnapshot;
 
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
-import app.lawnchair.compat.QuickstepCompat;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
 public class RecentsAnimationControllerCompat {
@@ -41,8 +41,8 @@ public class RecentsAnimationControllerCompat {
     }
 
     public ThumbnailData screenshotTask(int taskId) {
-        if (!QuickstepCompat.ATLEAST_S) {
-            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) QuickstepCompat.getActivityManagerCompat();
+        if (!LawnchairQuickstepCompat.ATLEAST_S) {
+            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat();
             ActivityManagerCompatVR.ThumbnailData data = compat.takeScreenshot(mAnimationController, taskId);
             return data != null ? new ThumbnailData(data) : new ThumbnailData();
         }
@@ -125,7 +125,7 @@ public class RecentsAnimationControllerCompat {
      * @see {{@link IRecentsAnimationController#setWillFinishToHome(boolean)}}.
      */
     public void setWillFinishToHome(boolean willFinishToHome) {
-        if (!QuickstepCompat.ATLEAST_R) return;
+        if (!LawnchairQuickstepCompat.ATLEAST_R) return;
         try {
             mAnimationController.setWillFinishToHome(willFinishToHome);
         } catch (RemoteException e) {
@@ -149,7 +149,7 @@ public class RecentsAnimationControllerCompat {
      * @see IRecentsAnimationController#detachNavigationBarFromApp
      */
     public void detachNavigationBarFromApp(boolean moveHomeToTop) {
-        if (!QuickstepCompat.ATLEAST_S) return;
+        if (!LawnchairQuickstepCompat.ATLEAST_S) return;
         try {
             mAnimationController.detachNavigationBarFromApp(moveHomeToTop);
         } catch (RemoteException e) {
@@ -161,7 +161,7 @@ public class RecentsAnimationControllerCompat {
      * @see IRecentsAnimationController#animateNavigationBarToApp(long)
      */
     public void animateNavigationBarToApp(long duration) {
-        if (!QuickstepCompat.ATLEAST_S) return;
+        if (!LawnchairQuickstepCompat.ATLEAST_S) return;
         try {
             mAnimationController.animateNavigationBarToApp(duration);
         } catch (RemoteException e) {

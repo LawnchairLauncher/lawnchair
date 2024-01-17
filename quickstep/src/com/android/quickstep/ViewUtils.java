@@ -25,6 +25,8 @@ import com.android.launcher3.Utilities;
 
 import java.util.function.BooleanSupplier;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 /**
  * Utility class for helpful methods related to {@link View} objects.
  */
@@ -43,7 +45,7 @@ public class ViewUtils {
      */
     public static boolean postFrameDrawn(
             View view, Runnable onFinishRunnable, BooleanSupplier canceled) {
-        if (!Utilities.ATLEAST_T) {
+        if (!Utilities.ATLEAST_T || LawnchairQuickstepCompat.isDecember2022Patch()) {
             return new FrameHandlerVR(view, onFinishRunnable, canceled).schedule();
         }
         return new FrameHandler(view, onFinishRunnable, canceled).schedule();

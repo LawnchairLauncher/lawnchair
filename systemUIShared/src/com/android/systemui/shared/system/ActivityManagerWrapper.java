@@ -23,7 +23,6 @@ import static android.app.ActivityTaskManager.getService;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Activity;
-import android.app.ActivityClient;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
@@ -57,8 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-import app.lawnchair.compat.ActivityOptionsCompatExt;
-import app.lawnchair.compat.QuickstepCompat;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
@@ -75,7 +73,7 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-    private final ActivityTaskManager mAtm = QuickstepCompat.ATLEAST_S ? ActivityTaskManager.getInstance() : null;
+    private final ActivityTaskManager mAtm = LawnchairQuickstepCompat.ATLEAST_S ? ActivityTaskManager.getInstance() : null;
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
@@ -108,21 +106,21 @@ public class ActivityManagerWrapper {
      */
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
-        return QuickstepCompat.getActivityManagerCompat().getRunningTask(filterOnlyVisibleRecents);
+        return LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTask(filterOnlyVisibleRecents);
     }
 
     /**
      * @see #getRunningTasks(boolean , int)
      */
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        return QuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+        return LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
     }
 
     /**
      * @return a list of the recents tasks.
      */
     public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        return QuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
+        return LawnchairQuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
     }
 
     /**
@@ -140,8 +138,8 @@ public class ActivityManagerWrapper {
         List<ActivityManager.RunningTaskInfo> tasks = mAtm != null ?
                 mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST,
                         filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId) : new ArrayList<>();
-        return QuickstepCompat.ATLEAST_U ? tasks.toArray(new RunningTaskInfo[tasks.size()])
-                : QuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+        return LawnchairQuickstepCompat.ATLEAST_U ? tasks.toArray(new RunningTaskInfo[tasks.size()])
+                : LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
     }
 
     /**
@@ -149,8 +147,8 @@ public class ActivityManagerWrapper {
      *         The snapshot will be triggered if no cached {@link TaskSnapshot} exists.
      */
     public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        if (!QuickstepCompat.ATLEAST_S){
-            ActivityManagerCompatVR compat = ((ActivityManagerCompatVR) QuickstepCompat.getActivityManagerCompat());
+        if (!LawnchairQuickstepCompat.ATLEAST_S){
+            ActivityManagerCompatVR compat = ((ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat());
             ActivityManagerCompatVR.ThumbnailData data = compat.getTaskThumbnail(taskId, isLowResolution);
             if (data != null) {
                 return new ThumbnailData(data);
@@ -158,7 +156,7 @@ public class ActivityManagerWrapper {
                 return new ThumbnailData();
             }
         }
-        TaskSnapshot snapshot = QuickstepCompat.getActivityManagerCompat().getTaskSnapshot(taskId, isLowResolution, true);
+        TaskSnapshot snapshot = LawnchairQuickstepCompat.getActivityManagerCompat().getTaskSnapshot(taskId, isLowResolution, true);
         if (snapshot != null) {
             return new ThumbnailData(snapshot);
         } else {
@@ -174,12 +172,7 @@ public class ActivityManagerWrapper {
      *                     want us to find the home task for you.
      */
     public void invalidateHomeTaskSnapshot(@Nullable final Activity homeActivity) {
-        if (QuickstepCompat.ATLEAST_U) {
-            ActivityClient.getInstance().invalidateHomeTaskSnapshot(
-                    homeActivity == null ? null : homeActivity.getActivityToken());
-        } else {
-            QuickstepCompat.getActivityManagerCompat().invalidateHomeTaskSnapshot(homeActivity);
-        }
+        LawnchairQuickstepCompat.getActivityManagerCompat().invalidateHomeTaskSnapshot(homeActivity);
     }
 
     /**
@@ -229,11 +222,11 @@ public class ActivityManagerWrapper {
                      * compat for android 12/11/10
                      */
                     public void onAnimationCanceled(Object taskSnapshot) {
-                        if (QuickstepCompat.ATLEAST_S) {
+                        if (LawnchairQuickstepCompat.ATLEAST_S) {
                             animationHandler.onAnimationCanceled(
                                     ThumbnailData.wrap(new int[]{0}, new TaskSnapshot[]{(TaskSnapshot) taskSnapshot}));
-                        } else if (QuickstepCompat.ATLEAST_R) {
-                            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) QuickstepCompat.getActivityManagerCompat();
+                        } else if (LawnchairQuickstepCompat.ATLEAST_R) {
+                            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat();
                             ActivityManagerCompatVR.ThumbnailData data = compat.convertTaskSnapshotToThumbnailData(taskSnapshot);
                             HashMap<Integer, ThumbnailData> thumbnailDatas = new HashMap<>();
                             if (data != null) {
@@ -258,7 +251,7 @@ public class ActivityManagerWrapper {
                     }
                 };
             }
-            QuickstepCompat.getActivityManagerCompat().startRecentsActivity(intent, eventTime, runner);
+            LawnchairQuickstepCompat.getActivityManagerCompat().startRecentsActivity(intent, eventTime, runner);
             return true;
         } catch (Exception e) {
             return false;
@@ -280,7 +273,6 @@ public class ActivityManagerWrapper {
      * Starts a task from Recents synchronously.
      */
     public boolean startActivityFromRecents(Task.TaskKey taskKey, ActivityOptions options) {
-        ActivityOptionsCompatExt.addTaskInfo(options, taskKey);
         return startActivityFromRecents(taskKey.id, options);
     }
 

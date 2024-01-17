@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 import static android.view.RemoteAnimationTarget.MODE_OPENING;
 
@@ -36,14 +35,12 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Trace;
 import android.util.Log;
 import android.view.Display;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
-import android.window.RemoteTransition;
 import android.window.SplashScreen;
 
 import androidx.annotation.NonNull;
@@ -91,8 +88,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.List;
 
-import app.lawnchair.compat.QuickstepCompat;
-import app.lawnchair.compatlib.ActivityOptionsCompat;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
 
 /**
@@ -279,7 +275,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         final LauncherAnimationRunner wrapper = new LauncherAnimationRunner(
                 mUiHandler, mActivityLaunchAnimationRunner, true /* startAtFrontOfQueue */);
-        final ActivityOptions options = QuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
+        final ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(wrapper, RECENTS_LAUNCH_DURATION,
                         RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
                                 - STATUS_BAR_TRANSITION_PRE_DELAY),
@@ -427,7 +423,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private void startHomeInternal() {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
-        ActivityOptions options = QuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
+        ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, HOME_APPEAR_DURATION, 0),
                 new RemoteTransitionCompat(runner.toRemoteTransition(), getIApplicationThread(),
                         "StartHomeFromRecents").getRemoteTransition(),

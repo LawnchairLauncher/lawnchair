@@ -29,7 +29,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
@@ -101,6 +100,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Holds the reference to SystemUI.
@@ -368,6 +369,11 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
+    public Rect getNonMinimizedSplitScreenSecondaryBounds() {
+        return null;
+    }
+
+    @Override
     public void startAssistant(Bundle args) {
         if (mSystemUiProxy != null) {
             try {
@@ -505,6 +511,33 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSystemUiProxy.handleImageAsScreenshot(bitmap, rect, insets, i);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call handleImageAsScreenshot", e);
+            }
+        }
+    }
+
+    @Override
+    public void setSplitScreenMinimized(boolean minimized) throws RemoteException {
+
+    }
+
+    @Override
+    public void notifySwipeToHomeFinished() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.notifySwipeUpGestureStarted();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call notifySwipeUpGestureStarted", e);
+            }
+        }
+    }
+
+    @Override
+    public void notifySwipeUpGestureStarted() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.notifySwipeToHomeFinished();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call notifySwipeToHomeFinished", e);
             }
         }
     }
@@ -1277,7 +1310,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        if (!Utilities.ATLEAST_T) {
+        if (!LawnchairQuickstepCompat.ATLEAST_T || LawnchairQuickstepCompat.isDecember2022Patch()) {
             List<ActivityManager.RecentTaskInfo> recentTaskInfoList = ActivityManagerWrapper.getInstance().getRecentTasks(numTasks, userId);
             return recentTaskInfoList.stream().map(GroupedRecentTaskInfo::forSingleTask).collect(Collectors.toCollection(ArrayList::new));
         }
@@ -1305,8 +1338,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      * Gets the set of running tasks.
      */
     public ArrayList<ActivityManager.RunningTaskInfo> getRunningTasks(int numTasks) {
-        if (mRecentTasks != null
-                && mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)) {
+        if (mRecentTasks != null) {
             try {
                 return new ArrayList<>(Arrays.asList(mRecentTasks.getRunningTasks(numTasks)));
             } catch (RemoteException e) {

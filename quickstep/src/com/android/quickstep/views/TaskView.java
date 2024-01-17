@@ -122,7 +122,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import app.lawnchair.compat.QuickstepCompat;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * A task in the Recents view.
@@ -865,10 +865,8 @@ public class TaskView extends FrameLayout implements Reusable {
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts = mActivity.getActivityLaunchOptions(this, null);
-            if (Utilities.ATLEAST_S) {
-                opts.options.setLaunchDisplayId(
-                        getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
-            }
+            opts.options.setLaunchDisplayId(
+                    getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
                 RecentsView recentsView = getRecentsView();
@@ -954,7 +952,11 @@ public class TaskView extends FrameLayout implements Reusable {
             if (isQuickswitch) {
                 opts.setFreezeRecentTasksReordering();
             }
-            opts.setDisableStartingWindow(mSnapshotView.shouldShowSplashView());
+            try {
+                opts.setDisableStartingWindow(mSnapshotView.shouldShowSplashView());
+            } catch (Throwable t) {
+                // ignore
+            }
             Task.TaskKey key = mTask.key;
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (!ActivityManagerWrapper.getInstance().startActivityFromRecents(key, opts)) {
@@ -978,7 +980,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private ActivityOptions makeCustomAnimation(Context context, int enterResId,
             int exitResId, final Runnable callback, final Handler callbackHandler) {
         if (!Utilities.ATLEAST_T) {
-            return QuickstepCompat.getActivityOptionsCompat().makeCustomAnimation(context, enterResId, exitResId, callback, callbackHandler);
+            return LawnchairQuickstepCompat.getActivityOptionsCompat().makeCustomAnimation(context, enterResId, exitResId, callback, callbackHandler);
         }
         return ActivityOptions.makeCustomTaskAnimation(context, enterResId, exitResId,
                 callbackHandler,

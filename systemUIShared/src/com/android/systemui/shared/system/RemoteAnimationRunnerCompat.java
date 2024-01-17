@@ -43,7 +43,7 @@ import com.android.wm.shell.util.CounterRotator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import app.lawnchair.compat.QuickstepCompat;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner.Stub {
     private static final String TAG = "RemoteAnimRunnerCompat";
@@ -90,19 +90,13 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
     }
 
     public IRemoteTransition toRemoteTransition() {
-        if (!QuickstepCompat.ATLEAST_S) return null;
-        return wrap(this);
-    }
-
-    /** Wraps a remote animation runner in a remote-transition. */
-    public IRemoteTransition.Stub wrap(IRemoteAnimationRunner runner) {
         return new IRemoteTransition.Stub() {
             final ArrayMap<IBinder, Runnable> mFinishRunnables = new ArrayMap<>();
 
             @Override
             public void startAnimation(IBinder token, TransitionInfo info,
                     SurfaceControl.Transaction t,
-                    IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
+                    IRemoteTransitionFinishedCallback finishCallback) {
                 final ArrayMap<SurfaceControl, SurfaceControl> leashMap = new ArrayMap<>();
                 final RemoteAnimationTarget[] apps =
                         RemoteAnimationTargetCompat.wrapApps(info, t, leashMap);
@@ -146,8 +140,10 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 final CounterRotator counterLauncher = new CounterRotator();
                 final CounterRotator counterWallpaper = new CounterRotator();
                 if (launcherTask != null && rotateDelta != 0 && launcherTask.getParent() != null) {
+                    counterLauncher.setup(t, info.getChange(launcherTask.getParent()).getLeash(),
+                            rotateDelta, displayW, displayH);
                     final TransitionInfo.Change parent = info.getChange(launcherTask.getParent());
-                    if (parent != null) {
+                    if (parent != null && LawnchairQuickstepCompat.ATLEAST_S) {
                         counterLauncher.setup(t, parent.getLeash(), rotateDelta, displayW,
                                 displayH);
                     } else {
@@ -187,9 +183,13 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                         counterLauncher.addChild(t, leashMap.get(launcherTask.getLeash()));
                     }
                     if (wallpaper != null && rotateDelta != 0 && wallpaper.getParent() != null) {
-                        final TransitionInfo.Change parent = info.getChange(wallpaper.getParent());
-                        if (parent != null) {
-                            counterWallpaper.setup(t, parent.getLeash(), rotateDelta, displayW,
+                        counterWallpaper.setup(t, info.getChange(wallpaper.getParent()).getLeash(),
+                                rotateDelta, displayW, displayH);
+                        final TransitionInfo.Change parent = info.getChange(launcherTask.getParent());
+                        counterLauncher.setup(t, info.getChange(launcherTask.getParent()).getLeash(),
+                                rotateDelta, displayW, displayH);
+                        if (parent != null && LawnchairQuickstepCompat.ATLEAST_S) {
+                            counterLauncher.setup(t, parent.getLeash(), rotateDelta, displayW,
                                     displayH);
                         } else {
                             Log.e(TAG, "Malformed: " + wallpaper + " has parent="
@@ -231,21 +231,12 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     mFinishRunnables.put(token, animationFinishedCallback);
                 }
                 // TODO(bc-unlcok): Pass correct transit type.
-                if (!QuickstepCompat.ATLEAST_S) return;
-                runner.onAnimationStart(TRANSIT_OLD_NONE,
-                        apps, wallpapers, nonApps, new IRemoteAnimationFinishedCallback() {
-                            @Override
-                            public void onAnimationFinished() {
-                                synchronized (mFinishRunnables) {
-                                    if (mFinishRunnables.remove(token) == null) return;
-                                }
-                                animationFinishedCallback.run();
+                onAnimationStart(TRANSIT_OLD_NONE,
+                        apps, wallpapers, nonApps, () -> {
+                            synchronized (mFinishRunnables) {
+                                if (mFinishRunnables.remove(token) == null) return;
                             }
-
-                            @Override
-                            public IBinder asBinder() {
-                                return null;
-                            }
+                            animationFinishedCallback.run();
                         });
             }
 
@@ -253,7 +244,6 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
             public void mergeAnimation(IBinder token, TransitionInfo info,
                     SurfaceControl.Transaction t, IBinder mergeTarget,
                     IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
-                if (!QuickstepCompat.ATLEAST_S) return;
                 // TODO: hook up merge to recents onTaskAppeared if applicable. Until then, adapt
                 //       to legacy cancel.
                 final Runnable finishRunnable;
@@ -269,7 +259,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     Log.e ("" , "mergeAnimation: ", e);
                 }
                 if (finishRunnable == null) return;
-                runner.onAnimationCancelled();
+                onAnimationCancelled(false /* isKeyguardOccluded */);
                 finishRunnable.run();
             }
         };

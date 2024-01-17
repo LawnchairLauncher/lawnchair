@@ -32,7 +32,6 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitStageInfo;
@@ -52,6 +51,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * This class tracked the top-most task and  some 'approximate' task history to allow faster
@@ -82,13 +83,13 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
 
     @Override
     public void onTaskRemoved(int taskId) {
-        if (!Utilities.ATLEAST_T) return;
+        if (!LawnchairQuickstepCompat.ATLEAST_T) return;
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskId);
     }
 
     @Override
     public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
-        if (!Utilities.ATLEAST_T) return;
+        if (!LawnchairQuickstepCompat.ATLEAST_T) return;
 
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskInfo.taskId);
         mOrderedTaskList.addFirst(taskInfo);
@@ -184,7 +185,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
      */
     @UiThread
     public CachedTaskInfo getCachedTopTask(boolean filterOnlyVisibleRecents) {
-        if (!Utilities.ATLEAST_T) {
+        if (!LawnchairQuickstepCompat.ATLEAST_T || LawnchairQuickstepCompat.isDecember2022Patch()) {
             RunningTaskInfo task = TraceHelper.allowIpcs("getCachedTopTask.false", () ->
                     ActivityManagerWrapper.getInstance().getRunningTask(
                             false /* filterOnlyVisibleRecents */));

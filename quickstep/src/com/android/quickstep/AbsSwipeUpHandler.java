@@ -101,15 +101,12 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarUIController;
-import com.android.launcher3.tracing.InputConsumerProto;
-import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
@@ -157,6 +154,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.util.CompatibilityKt;
 
 /**
@@ -672,15 +670,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
             runningTasks = cachedTaskInfo.getPlaceholderTasks();
         }
 
-        // Safeguard against any null tasks being sent to recents view, happens when
-        // quickswitching
-        // very quickly w/ split tasks because TopTaskTracker provides stale information
-        // compared to
-        // actual running tasks in the recents animation.
-        // TODO(b/236226779), Proper fix (ag/22237143)
-        if (Arrays.stream(runningTasks).anyMatch(Objects::isNull)) {
-            return;
-        }
 
         // Safeguard against any null tasks being sent to recents view, happens when
         // quickswitching
@@ -1078,6 +1067,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         }
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
+        if (!LawnchairQuickstepCompat.ATLEAST_S) {
+            SystemUiProxy.INSTANCE.get(mContext).notifySwipeUpGestureStarted();
+        }
     }
 
     /**
@@ -1204,6 +1196,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                 break;
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
+                if (!LawnchairQuickstepCompat.ATLEAST_S) {
+                    SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
+                }
                 // Notify the SysUI to use fade-in animation when entering PiP
                 SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
                 if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {

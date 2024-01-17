@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEASURE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
@@ -67,11 +66,9 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.display.DisplayManager;
 import android.media.permission.SafeCloseable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemProperties;
-import android.os.Trace;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -86,7 +83,7 @@ import android.window.SplashScreen;
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
+
 import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -185,6 +182,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 public class QuickstepLauncher extends Launcher {
     private static final boolean TRACE_LAYOUTS = SystemProperties.getBoolean("persist.debug.trace_layouts", false);
@@ -1020,26 +1019,24 @@ public class QuickstepLauncher extends Launcher {
         ActivityOptionsWrapper activityOptions = mAppTransitionManager.hasControlRemoteAppTransitionPermission()
                 ? mAppTransitionManager.getActivityLaunchOptions(v)
                 : super.getActivityLaunchOptions(v, item);
-        if (mLastTouchUpTime > 0 && Utilities.ATLEAST_S) {
+        if (mLastTouchUpTime > 0 && LawnchairQuickstepCompat.ATLEAST_S) {
             activityOptions.options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER,
                     mLastTouchUpTime);
         }
         if (item != null && (item.animationType == DEFAULT_NO_ICON
-                || item.animationType == VIEW_BACKGROUND) && app.lawnchair.LawnchairApp.isAtleastT()) {
+                || item.animationType == VIEW_BACKGROUND) && LawnchairQuickstepCompat.ATLEAST_T) {
             activityOptions.options.setSplashScreenStyle(
                     SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
         } else {
-            if (app.lawnchair.LawnchairApp.isAtleastT()) {
+            if (LawnchairQuickstepCompat.ATLEAST_T) {
                 activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
         }
-        if (Utilities.ATLEAST_S) {
-            activityOptions.options.setLaunchDisplayId(
-                    (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
-                            : Display.DEFAULT_DISPLAY);
-        }
-        if (app.lawnchair.LawnchairApp.isAtleastT()) {
-            Utilities.allowBGLaunch(activityOptions.options);
+        activityOptions.options.setLaunchDisplayId(
+                (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
+                        : Display.DEFAULT_DISPLAY);
+        Utilities.allowBGLaunch(activityOptions.options);
+        if (LawnchairQuickstepCompat.ATLEAST_T) {
             addLaunchCookie(item, activityOptions.options);
         }
         return activityOptions;
@@ -1048,11 +1045,11 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         RunnableList callbacks = new RunnableList();
-        ActivityOptions options = Utilities.ATLEAST_S ? ActivityOptions.makeCustomAnimation(
+        ActivityOptions options = LawnchairQuickstepCompat.ATLEAST_R ? ActivityOptions.makeCustomAnimation(
                 this, 0, 0, Color.TRANSPARENT,
                 Executors.MAIN_EXECUTOR.getHandler(), null,
                 elapsedRealTime -> callbacks.executeAllAndDestroy()) : ActivityOptions.makeBasic();
-        if (Utilities.ATLEAST_T) {
+        if (LawnchairQuickstepCompat.ATLEAST_T) {
             options.setSplashScreenStyle(splashScreenStyle);
         }
         Utilities.allowBGLaunch(options);

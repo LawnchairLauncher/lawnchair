@@ -54,6 +54,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Manages the recent task list from the system, caching it as necessary.
@@ -88,7 +89,7 @@ public class RecentTasksList {
         mSysUiProxy = sysUiProxy;
 
         if (LawnchairApp.isRecentsEnabled()) {
-            if (Utilities.ATLEAST_T) {
+            if (LawnchairQuickstepCompat.ATLEAST_T && !LawnchairQuickstepCompat.isDecember2022Patch()) {
                 sysUiProxy.registerRecentTasksListener(new IRecentTasksListener.Stub() {
                     @Override
                     public void onRecentTasksChanged() throws RemoteException {
@@ -109,7 +110,7 @@ public class RecentTasksList {
                         });
                     }
                 });
-            } else if (Utilities.ATLEAST_Q) {
+            } else if (LawnchairQuickstepCompat.ATLEAST_Q) {
                 TaskStackChangeListeners.getInstance().registerTaskStackListener(new TaskStackChangeListener () {
                     @Override
                     public void onTaskStackChanged() {
