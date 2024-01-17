@@ -20,6 +20,8 @@ import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,6 +44,7 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.UserIconInfo;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -136,6 +139,7 @@ public class PrivateProfileManagerTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/320703862
     public void transitioningToUnlocked_resetCallsPendingRunnable() throws Exception {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
