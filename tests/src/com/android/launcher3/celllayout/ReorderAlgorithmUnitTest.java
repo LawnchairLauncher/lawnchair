@@ -29,8 +29,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.MultipageCellLayout;
 import com.android.launcher3.celllayout.board.CellLayoutBoard;
 import com.android.launcher3.celllayout.board.IconPoint;
@@ -41,8 +39,7 @@ import com.android.launcher3.celllayout.testgenerator.RandomMultiBoardGenerator;
 import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,7 +67,8 @@ public class ReorderAlgorithmUnitTest {
     private static final int TOTAL_OF_CASES_GENERATED = 300;
     private Context mApplicationContext;
 
-    private int mPrevNumColumns, mPrevNumRows;
+    @Rule
+    public UnitTestCellLayoutBuilderRule mCellLayoutBuilder = new UnitTestCellLayoutBuilderRule();
 
     /**
      * This test reads existing test cases and makes sure the CellLayout produces the same
@@ -144,34 +142,10 @@ public class ReorderAlgorithmUnitTest {
                 (CellLayoutLayoutParams) cell.getLayoutParams(), true);
     }
 
-    public CellLayout createCellLayout(int width, int height, boolean isMulti) {
-        Context c = mApplicationContext;
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(c).getDeviceProfile(c).copy(c);
-        // modify the device profile.
-        dp.inv.numColumns = isMulti ? width / 2 : width;
-        dp.inv.numRows = height;
-        dp.cellLayoutBorderSpacePx = new Point(0, 0);
-
-        CellLayout cl = isMulti ? new MultipageCellLayout(getWrappedContext(c, dp))
-                : new CellLayout(getWrappedContext(c, dp));
-        // I put a very large number for width and height so that all the items can fit, it doesn't
-        // need to be exact, just bigger than the sum of cell border
-        cl.measure(View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.EXACTLY));
-        return cl;
-    }
-
-    private Context getWrappedContext(Context context, DeviceProfile dp) {
-        return new ActivityContextWrapper(context) {
-            public DeviceProfile getDeviceProfile() {
-                return dp;
-            }
-        };
-    }
-
     public ItemConfiguration solve(CellLayoutBoard board, int x, int y, int spanX,
             int spanY, int minSpanX, int minSpanY, boolean isMulti) {
-        CellLayout cl = createCellLayout(board.getWidth(), board.getHeight(), isMulti);
+        CellLayout cl = mCellLayoutBuilder.createCellLayout(board.getWidth(), board.getHeight(),
+                isMulti);
 
         // The views have to be sorted or the result can vary
         board.getIcons()
@@ -247,22 +221,6 @@ public class ReorderAlgorithmUnitTest {
             assertTrue("End result and test case result board doesn't match ",
                     finishBoard.compareTo(testCase.endBoard) == 0);
         }
-    }
-
-    @Before
-    public void storePreviousValues() {
-        Context c = new ActivityContextWrapper(getApplicationContext());
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(c).getDeviceProfile(c).copy(c);
-        mPrevNumColumns = dp.inv.numColumns;
-        mPrevNumRows = dp.inv.numRows;
-    }
-
-    @After
-    public void restorePreviousValues() {
-        Context c = new ActivityContextWrapper(getApplicationContext());
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(c).getDeviceProfile(c).copy(c);
-        dp.inv.numColumns = mPrevNumColumns;
-        dp.inv.numRows = mPrevNumRows;
     }
 
     private ReorderAlgorithmUnitTestCase generateRandomTestCase(
