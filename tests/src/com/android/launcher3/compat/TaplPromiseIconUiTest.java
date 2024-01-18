@@ -35,6 +35,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.TestUtil;
@@ -143,16 +144,26 @@ public class TaplPromiseIconUiTest extends AbstractLauncherUiTest {
         assertThat(mDevice.executeShellCommand(String.format("pm archive %s", DUMMY_PACKAGE)))
                 .isEqualTo("Success\n");
 
-        final ItemOperator findPromiseApp = (info, view) ->
-                info != null && TextUtils.equals(info.title, DUMMY_LABEL);
-
         // Create and add test session
         mSessionId = createSession(DUMMY_PACKAGE, /* label= */ "",
                 Bitmap.createBitmap(100, 100, Bitmap.Config.ALPHA_8));
 
-        // Verify promise icon is added
-        waitForLauncherCondition("Test Promise App not found on workspace", launcher ->
-                launcher.getWorkspace().getFirstMatch(findPromiseApp) != null);
+        // Verify promise icon is added to all apps view. The icon may not be added to the
+        // workspace even if there might be no icon present for archived app. But icon will
+        // always be in all apps view. In case an icon is not added, an exception would be thrown.
+        final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+
+        // Wait for the promise icon to be added.
+        waitForLauncherCondition(
+                DUMMY_PACKAGE + " app was not found on all apps after being archived",
+                launcher -> {
+                    try {
+                        allApps.getAppIcon(DUMMY_LABEL);
+                    } catch (Throwable t) {
+                        return false;
+                    }
+                    return true;
+                });
 
         // Remove session
         mTargetContext.getPackageManager().getPackageInstaller().abandonSession(mSessionId);

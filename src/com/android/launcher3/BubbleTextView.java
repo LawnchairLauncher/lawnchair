@@ -933,9 +933,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             if (mIcon instanceof PreloadIconDrawable) {
                 preloadIconDrawable = (PreloadIconDrawable) mIcon;
                 preloadIconDrawable.setLevel(progressLevel);
-                // TODO(b/302115555): For archived apps, show icon as disabled if active session
-                //  exists.
-                preloadIconDrawable.setIsDisabled(info.getProgressLevel() == 0);
+                preloadIconDrawable.setIsDisabled(isIconDisabled(info));
             } else {
                 preloadIconDrawable = makePreloadIcon();
                 setIcon(preloadIconDrawable);
@@ -960,9 +958,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         final PreloadIconDrawable preloadDrawable = newPendingIcon(getContext(), info);
 
         preloadDrawable.setLevel(progressLevel);
-        // TODO(b/302115555): For archived apps, show icon as disabled if active session exists.
-        preloadDrawable.setIsDisabled(info.getProgressLevel() == 0);
+        preloadDrawable.setIsDisabled(isIconDisabled(info));
         return preloadDrawable;
+    }
+
+    private boolean isIconDisabled(ItemInfoWithIcon info) {
+        if (info.isArchived()) {
+            return info.getProgressLevel() == 0
+                    && (info.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0;
+        }
+        return info.getProgressLevel() == 0;
     }
 
     public void applyDotState(ItemInfo itemInfo, boolean animate) {
