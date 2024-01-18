@@ -2386,7 +2386,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         if (mRecentsAnimationController != null) {
             boolean hasStartedTaskBefore = Arrays.stream(appearedTaskTargets).anyMatch(
                     mGestureState.mLastStartedTaskIdPredicate);
-            if (!mStateCallback.hasStates(STATE_GESTURE_COMPLETED) && !hasStartedTaskBefore && LawnchairQuickstepCompat.ATLEAST_S) {
+            if (!mStateCallback.hasStates(STATE_GESTURE_COMPLETED) && !hasStartedTaskBefore) {
                 // This is a special case, if a task is started mid-gesture that wasn't a part
                 // of a
                 // previous quickswitch task launch, then cancel the animation back to the app

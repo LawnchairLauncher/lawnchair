@@ -74,6 +74,8 @@ import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 import java.io.PrintWriter;
 import java.util.StringJoiner;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 /**
  * Class to manage taskbar lifecycle
  */
@@ -209,7 +211,16 @@ public class TaskbarManager {
 
     @SuppressLint("WrongConstant")
     public TaskbarManager(TouchInteractionService service) {
-        mContext = getContext(service);
+        Display display =
+                service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
+        mContext = (LawnchairQuickstepCompat.ATLEAST_T) ?
+                service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null) :
+                (LawnchairQuickstepCompat.ATLEAST_S) ?
+                        service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null) :
+                        (LawnchairQuickstepCompat.ATLEAST_R) ?
+                                service.createWindowContext(TYPE_APPLICATION_OVERLAY, null) :
+                                service;
+
         mNavButtonController = new TaskbarNavButtonController(service,
                 SystemUiProxy.INSTANCE.get(mContext), new Handler(),
                 AssistUtils.newInstance(mContext));
@@ -218,7 +229,7 @@ public class TaskbarManager {
 
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
-                if (Utilities.ATLEAST_T) {
+                if (LawnchairQuickstepCompat.ATLEAST_T) {
                     Trace.instantForTrack(Trace.TRACE_TAG_APP, "TaskbarManager",
                             "onConfigurationChanged: " + newConfig);
                 }
@@ -289,21 +300,6 @@ public class TaskbarManager {
         debugWhyTaskbarNotDestroyed("TaskbarManager created");
         recreateTaskbar();
     }
-
-    private Context getContext(TouchInteractionService service) {
-        Display display = service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-
-        if (com.android.launcher3.Utilities.ATLEAST_T) {
-            return service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
-        } else if (com.android.launcher3.Utilities.ATLEAST_S) {
-            return service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null);
-        } else if (com.android.launcher3.Utilities.ATLEAST_R) {
-            return service.createWindowContext(TYPE_APPLICATION_OVERLAY, null);
-        } else {
-            return service;
-        }
-    }
-
 
     private void destroyExistingTaskbar() {
         debugWhyTaskbarNotDestroyed("destroyExistingTaskbar: " + mTaskbarActivityContext);
