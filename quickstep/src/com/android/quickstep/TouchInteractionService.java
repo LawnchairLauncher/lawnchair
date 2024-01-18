@@ -604,10 +604,12 @@ public class TouchInteractionService extends Service {
     private void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
         AccessibilityManager am = getSystemService(AccessibilityManager.class);
 
-        if (isHomeAndOverviewSame) {
-            am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-        } else {
-            am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+        if (LawnchairQuickstepCompat.ATLEAST_R) {
+            if (isHomeAndOverviewSame) {
+                am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            } else {
+                am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            }
         }
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
