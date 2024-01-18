@@ -52,6 +52,7 @@
         <item name="workspaceAmbientShadowColor">#40000000</item>
         <item name="workspaceKeyShadowColor">#89000000</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+        <item name="focusOutlineColor">@color/material_color_on_secondary_container</item>
         <item name="folderPaginationColor">@color/folder_pagination_color_light</item>
         <item name="folderPreviewColor">@color/folder_preview_light</item>
         <item name="folderBackgroundColor">@color/folder_background_light</item>

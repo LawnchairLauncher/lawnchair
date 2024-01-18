@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -46,6 +47,19 @@ public class WidgetsModel {
     public static final boolean GO_DISABLE_NOTIFICATION_DOTS = true;
 
     private static final ArrayList<WidgetsListBaseEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
+
+    /**
+     * Returns a list of {@link WidgetsListBaseEntry} filtered using given widget item filter. All
+     * {@link WidgetItem}s in a single row are sorted (based on label and user), but the overall
+     * list of {@link WidgetsListBaseEntry}s is not sorted.
+     *
+     * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
+     */
+    public synchronized ArrayList<WidgetsListBaseEntry> getFilteredWidgetsListForPicker(
+            Context context,
+            Predicate<WidgetItem> widgetItemFilter) {
+        return EMPTY_WIDGET_LIST;
+    }
 
     /**
      * Returns a list of {@link WidgetsListBaseEntry}. All {@link WidgetItem} in a single row are

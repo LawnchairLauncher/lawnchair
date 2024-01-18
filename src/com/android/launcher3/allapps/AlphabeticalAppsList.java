@@ -325,10 +325,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
                     position++;
                     addAppsWithSections(mPrivateApps, position);
-                    if (mActivityContext.getAppsView() != null) {
-                        mActivityContext.getAppsView().getActiveRecyclerView()
-                                .scrollToBottomWithMotion();
-                    }
                     break;
             }
         }

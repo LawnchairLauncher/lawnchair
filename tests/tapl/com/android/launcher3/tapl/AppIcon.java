@@ -42,7 +42,8 @@ public abstract class AppIcon extends Launchable {
      * @param appName app icon to look for
      */
     static BySelector getAppIconSelector(String appName) {
-        return By.clazz(TextView.class).text(makeMultilinePattern(appName));
+        // focusable=true to avoid matching folder labels
+        return By.clazz(TextView.class).text(makeMultilinePattern(appName)).focusable(true);
     }
 
     /**

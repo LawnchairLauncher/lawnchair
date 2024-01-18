@@ -253,4 +253,10 @@
 
     <!--  Used for custom widgets  -->
     <array name="custom_widget_providers"/>
+
+
+    <!-- Skip "Install to private" long-press shortcut packages name -->
+    <string-array name="skip_private_profile_shortcut_packages" translatable="false">
+        <item>com.android.settings</item>
+    </string-array>
 </resources>

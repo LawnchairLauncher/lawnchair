@@ -1,25 +1,23 @@
 package com.android.launcher3.model
 
+import android.appwidget.AppWidgetManager
 import android.os.UserHandle
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.LauncherModel.LoaderTransaction
-import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.icons.cache.CachingLogic
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler
-import com.android.launcher3.pm.InstallSessionHelper
 import com.android.launcher3.pm.UserCache
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper
+import com.android.launcher3.ui.TestViewHelpers
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
+import com.android.launcher3.util.LauncherModelHelper.SandboxModelContext
 import com.android.launcher3.util.LooperIdleLock
-import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
 import com.android.launcher3.util.UserIconInfo
 import com.google.common.truth.Truth
 import java.util.concurrent.CountDownLatch
@@ -29,6 +27,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.times
@@ -36,13 +35,14 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.Spy
+import org.mockito.kotlin.doReturn
 
 private const val INSERTION_STATEMENT_FILE = "databases/workspace_items.sql"
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class LoaderTaskTest {
-    private lateinit var context: SandboxContext
+    private var context = SandboxModelContext()
     @Mock private lateinit var app: LauncherAppState
     @Mock private lateinit var bgAllAppsList: AllAppsList
     @Mock private lateinit var modelDelegate: ModelDelegate
@@ -62,14 +62,6 @@ class LoaderTaskTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        context =
-            SandboxContext(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                InstallSessionHelper.INSTANCE,
-                LauncherPrefs.INSTANCE,
-                ItemInstallQueue.INSTANCE,
-                PluginManagerWrapper.INSTANCE
-            )
         val idp =
             InvariantDeviceProfile().apply {
                 numRows = 5
@@ -77,7 +69,11 @@ class LoaderTaskTest {
                 numDatabaseHotseatIcons = 5
             }
         context.putObject(InvariantDeviceProfile.INSTANCE, idp)
+        context.putObject(LauncherAppState.INSTANCE, app)
 
+        doReturn(TestViewHelpers.findWidgetProvider(false))
+            .`when`(context.spyService(AppWidgetManager::class.java))
+            .getAppWidgetInfo(anyInt())
         `when`(app.context).thenReturn(context)
         `when`(app.model).thenReturn(launcherModel)
         `when`(launcherModel.beginLoader(any(LoaderTask::class.java))).thenReturn(transaction)

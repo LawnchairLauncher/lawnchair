@@ -42,6 +42,7 @@
     <attr name="overviewScrimColor" format="color" />
     <attr name="popupNotificationDotColor" format="color" />
     <attr name="notificationDotColor" format="color" />
+    <attr name="focusOutlineColor" format="color" />
 
     <attr name="folderPaginationColor" format="color" />
     <attr name="folderPreviewColor" format="color" />

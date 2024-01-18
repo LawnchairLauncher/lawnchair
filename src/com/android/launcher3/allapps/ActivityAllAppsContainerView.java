@@ -260,7 +260,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
         if (Flags.enablePrivateSpace()) {
             mPrivateSpaceHeaderViewController =
-                    new PrivateSpaceHeaderViewController(mPrivateProfileManager);
+                    new PrivateSpaceHeaderViewController(this, mPrivateProfileManager);
         }
 
         mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN,
@@ -978,6 +978,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     public WorkProfileManager getWorkManager() {
         return mWorkManager;
+    }
+
+    /** Returns whether Private Profile has been setup. */
+    public boolean hasPrivateProfile() {
+        return mHasPrivateApps;
     }
 
     @Override
