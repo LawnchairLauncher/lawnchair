@@ -19,6 +19,7 @@ import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_INSTALL_APP_BUTTON_TAP;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_QUIET_USER;
@@ -352,6 +353,12 @@ public class ItemClickHandler {
                     appInfo.getTargetComponent().getPackageName(), Process.myUserHandle());
         } else {
             intent = item.getIntent();
+            if (item instanceof AppInfo
+                    && (((ItemInfoWithIcon) item).runtimeStatusFlags
+                    & ItemInfoWithIcon.FLAG_PRIVATE_SPACE_INSTALL_APP) != 0) {
+                launcher.getStatsLogManager().logger().log(
+                        LAUNCHER_PRIVATE_SPACE_INSTALL_APP_BUTTON_TAP);
+            }
         }
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
