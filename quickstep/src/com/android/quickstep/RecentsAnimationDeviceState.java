@@ -19,7 +19,6 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.view.Display.DEFAULT_DISPLAY;
 
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
@@ -66,7 +65,6 @@ import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
@@ -608,7 +606,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
         if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
             float customSlopMultiplier =
-                    LauncherPrefs.get(mContext).get(LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE) / 100f;
+                    FeatureFlags.LPNH_SLOP_PERCENTAGE.get() / 100f;
             return customSlopMultiplier * slopMultiplier * touchSlop;
         } else {
             return slopMultiplier * touchSlop;
