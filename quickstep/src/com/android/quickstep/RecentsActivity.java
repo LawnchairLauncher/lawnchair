@@ -41,6 +41,7 @@ import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
+import android.window.RemoteTransition;
 import android.window.SplashScreen;
 
 import androidx.annotation.NonNull;
@@ -89,7 +90,6 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import app.lawnchair.compat.LawnchairQuickstepCompat;
-import app.lawnchair.compatlib.RemoteTransitionCompat;
 
 /**
  * A recents activity that shows the recently launched tasks as swipable task
@@ -279,8 +279,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 new RemoteAnimationAdapter(wrapper, RECENTS_LAUNCH_DURATION,
                         RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
                                 - STATUS_BAR_TRANSITION_PRE_DELAY),
-                new RemoteTransitionCompat(wrapper.toRemoteTransition(), getIApplicationThread(),
-                        "LaunchFromRecents").getRemoteTransition(),
+                new RemoteTransition(wrapper.toRemoteTransition(), getIApplicationThread(),
+                        "LaunchFromRecents"),
                 "Lawnchair");
         final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(options,
                 onEndCallback);
@@ -425,8 +425,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
         ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, HOME_APPEAR_DURATION, 0),
-                new RemoteTransitionCompat(runner.toRemoteTransition(), getIApplicationThread(),
-                        "StartHomeFromRecents").getRemoteTransition(),
+                new RemoteTransition(runner.toRemoteTransition(), getIApplicationThread(),
+                        "StartHomeFromRecents"),
                 "Lawnchair");
         startHomeIntentSafely(this, options.toBundle());
     }

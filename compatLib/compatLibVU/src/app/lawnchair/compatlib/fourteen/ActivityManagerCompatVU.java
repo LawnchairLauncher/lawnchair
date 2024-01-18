@@ -18,7 +18,6 @@ import app.lawnchair.compatlib.thirteen.ActivityManagerCompatVT;
 public class ActivityManagerCompatVU extends ActivityManagerCompatVT {
 
     private static final String TAG = "ActivityManagerCompatVU";
-    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
 
     @Override
     public void startRecentsActivity(Intent intent, long eventTime, RecentsAnimationRunnerCompat runnerCompat) {

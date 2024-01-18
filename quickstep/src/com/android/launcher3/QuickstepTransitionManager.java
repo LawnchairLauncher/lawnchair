@@ -165,7 +165,6 @@ import java.util.List;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.compat.LawnchairQuickstepCompat;
-import app.lawnchair.compatlib.RemoteTransitionCompat;
 import app.lawnchair.icons.shape.IconShapeManager;
 import app.lawnchair.theme.color.ColorTokens;
 
@@ -339,8 +338,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 - STATUS_BAR_TRANSITION_PRE_DELAY;
         ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
-                new RemoteTransitionCompat(runner.toRemoteTransition(),
-                        mLauncher.getIApplicationThread(), "QuickstepLaunch").getRemoteTransition(),
+                new RemoteTransition(runner.toRemoteTransition(),
+                        mLauncher.getIApplicationThread(), "QuickstepLaunch"),
                 "Lawnchair");
 
         return new ActivityOptionsWrapper(options, onEndCallback);
@@ -1160,10 +1159,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (!LawnchairQuickstepCompat.ATLEAST_T) return;
         if (hasControlRemoteAppTransitionPermission()) {
             mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
-            mLauncherOpenTransition = new RemoteTransitionCompat(
+            mLauncherOpenTransition = new RemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */).toRemoteTransition(),
-                    mLauncher.getIApplicationThread(), "QuickstepLaunchHome").getRemoteTransition();
+                    mLauncher.getIApplicationThread(), "QuickstepLaunchHome");
 
             TransitionFilter homeCheck = new TransitionFilter();
             // No need to handle the transition that also dismisses keyguard.

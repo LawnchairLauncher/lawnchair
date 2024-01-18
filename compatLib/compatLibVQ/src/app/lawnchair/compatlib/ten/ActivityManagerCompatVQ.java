@@ -12,10 +12,10 @@ import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 
+import java.util.List;
+
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
-
-import java.util.List;
 
 public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
 
@@ -61,9 +61,7 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
                     runnerCompat.onAnimationStart(controller, apps, null, homeContentInsets, minimizedHomeBounds);
                 }
 
-                public void reportAllDrawn() {
-
-                }
+                public void reportAllDrawn() {}
 
                 @Override
                 public void onAnimationCanceled(boolean deferredWithScreenshot) {
@@ -76,8 +74,6 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
         } catch (RemoteException e) {
 
         }
-
-
     }
 
     @Override
@@ -103,17 +99,6 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
     @Override
     public ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
         ThumbnailData data = new ThumbnailData();
-//        final GraphicBuffer buffer = snapshot.getSnapshot();
-//        if (buffer == null || (buffer.getUsage() & HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE) == 0) {
-//            // TODO(b/157562905): Workaround for a crash when we get a snapshot without this state
-//            Log.e("ThumbnailData", "Unexpected snapshot without USAGE_GPU_SAMPLED_IMAGE: "
-//                    + buffer);
-//            Point taskSize = snapshot.getTaskSize();
-//            data.thumbnail = Bitmap.createBitmap(taskSize.x, taskSize.y, ARGB_8888);
-//            data.thumbnail.eraseColor(Color.BLACK);
-//        } else {
-//            data.thumbnail = Bitmap.wrapHardwareBuffer(buffer, snapshot.getColorSpace());
-//        }
         data.thumbnail = Bitmap.wrapHardwareBuffer(snapshot.getSnapshot(), snapshot.getColorSpace());
         data.insets = new Rect(snapshot.getContentInsets());
         data.orientation = snapshot.getOrientation();
@@ -125,7 +110,6 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
         data.isTranslucent = snapshot.isTranslucent();
         data.windowingMode = snapshot.getWindowingMode();
         data.systemUiVisibility = snapshot.getSystemUiVisibility();
-        //data.snapshotId = snapshot.getId();
         return data;
     }
 }
