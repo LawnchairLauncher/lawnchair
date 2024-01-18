@@ -41,6 +41,8 @@ import com.android.quickstep.util.BaseDepthController;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 /**
  * Controls blur and wallpaper zoom, for the Launcher surface only.
  */
@@ -77,7 +79,7 @@ public class DepthController extends BaseDepthController implements StateHandler
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View view) {
-                    if (app.lawnchair.LawnchairApp.isAtleastT()) {
+                    if (LawnchairQuickstepCompat.ATLEAST_S) {
                         CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
                                 mCrossWindowBlurListener);
                     }
@@ -114,7 +116,7 @@ public class DepthController extends BaseDepthController implements StateHandler
     }
 
     private void removeSecondaryListeners() {
-        if (mCrossWindowBlurListener != null) {
+        if (mCrossWindowBlurListener != null && LawnchairQuickstepCompat.ATLEAST_S) {
             CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
         }
         if (mOpaquenessListener != null) {

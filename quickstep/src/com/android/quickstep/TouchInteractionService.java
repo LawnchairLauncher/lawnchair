@@ -149,6 +149,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -224,7 +225,7 @@ public class TouchInteractionService extends Service {
         @BinderThread
         @Override
         public void onTaskbarToggled() {
-            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get() || !Utilities.ATLEAST_S)
+            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get())
                 return;
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
                 TaskbarActivityContext activityContext = tis.mTaskbarManager.getCurrentActivityContext();
@@ -364,14 +365,12 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onSystemBarAttributesChanged(int displayId, int behavior) {
-            if (!Utilities.ATLEAST_S) return;
             executeForTaskbarManager(
                     taskbarManager -> taskbarManager.onSystemBarAttributesChanged(displayId, behavior));
         }
 
         @Override
         public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
-            if (!Utilities.ATLEAST_S) return;
             executeForTaskbarManager(taskbarManager -> taskbarManager.onNavButtonsDarkIntensityChanged(darkIntensity));
         }
 
@@ -401,7 +400,7 @@ public class TouchInteractionService extends Service {
         @Nullable
         public TaskbarManager getTaskbarManager() {
             TouchInteractionService tis = mTis.get();
-            if (tis == null || !Utilities.ATLEAST_S)
+            if (tis == null)
                 return null;
             return tis.mTaskbarManager;
         }
@@ -496,7 +495,7 @@ public class TouchInteractionService extends Service {
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
-        mTaskbarManager = Utilities.ATLEAST_S ? new TaskbarManager(this) : null;
+        mTaskbarManager = new TaskbarManager(this);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         BootAwarePreloader.start(this);
 
@@ -529,7 +528,7 @@ public class TouchInteractionService extends Service {
             return;
         }
 
-        if (Utilities.ATLEAST_S) {
+        if (LawnchairQuickstepCompat.ATLEAST_S) {
             mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
         } else {
             if (!SystemUiProxy.INSTANCE.get(this).isActive()) {
@@ -560,7 +559,7 @@ public class TouchInteractionService extends Service {
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this,
                 mOverviewComponentObserver, mTaskAnimationManager);
-        if (Utilities.ATLEAST_S && mTaskbarManager != null) {
+        if (mTaskbarManager != null) {
             mResetGestureInputConsumer = new ResetGestureInputConsumer(
                     mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
         }
@@ -693,7 +692,7 @@ public class TouchInteractionService extends Service {
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).clearProxy();
 
-        if (Utilities.ATLEAST_R) {
+        if (LawnchairQuickstepCompat.ATLEAST_S) {
             getSystemService(AccessibilityManager.class)
                     .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
         }

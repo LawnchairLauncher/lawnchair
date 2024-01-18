@@ -219,6 +219,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.OverScrollerCompat;
 
@@ -5461,7 +5462,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        final boolean sendUserLeaveHint = toRecents && shouldPip;
+        final boolean sendUserLeaveHint = toRecents && shouldPip && LawnchairQuickstepCompat.ATLEAST_S;
         if (sendUserLeaveHint) {
             // Notify the SysUI to use fade-in animation when entering PiP from live tile.
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());

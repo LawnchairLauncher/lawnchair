@@ -1067,9 +1067,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         }
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
-        if (!LawnchairQuickstepCompat.ATLEAST_S) {
-            SystemUiProxy.INSTANCE.get(mContext).notifySwipeUpGestureStarted();
-        }
     }
 
     /**
@@ -1196,9 +1193,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                 break;
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
-                if (!LawnchairQuickstepCompat.ATLEAST_S) {
-                    SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
-                }
                 // Notify the SysUI to use fade-in animation when entering PiP
                 SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
                 if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
@@ -2392,7 +2386,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         if (mRecentsAnimationController != null) {
             boolean hasStartedTaskBefore = Arrays.stream(appearedTaskTargets).anyMatch(
                     mGestureState.mLastStartedTaskIdPredicate);
-            if (!mStateCallback.hasStates(STATE_GESTURE_COMPLETED) && !hasStartedTaskBefore) {
+            if (!mStateCallback.hasStates(STATE_GESTURE_COMPLETED) && !hasStartedTaskBefore && LawnchairQuickstepCompat.ATLEAST_S) {
                 // This is a special case, if a task is started mid-gesture that wasn't a part
                 // of a
                 // previous quickswitch task launch, then cancel the animation back to the app
@@ -2437,7 +2431,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     transaction.forSurface(target.leash).setAlpha(1).setLayer(-1).setShow();
                 }
                 surfaceApplier.scheduleApply(transaction);
-
+                if (!LawnchairQuickstepCompat.ATLEAST_S) return;
                 SplashScreenExitAnimationUtils.startAnimations(splashView, taskTarget.leash,
                         mSplashMainWindowShiftLength, new TransactionPool(), new Rect(),
                         SPLASH_ANIMATION_DURATION, SPLASH_FADE_OUT_DURATION,

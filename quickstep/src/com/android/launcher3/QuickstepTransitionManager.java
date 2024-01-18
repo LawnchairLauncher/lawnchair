@@ -351,7 +351,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * animation
      * from the recents view. Note that if the remote animation targets are not
      * provided, this
-     * may not always be correct as we may resolve registerRemoteTransitions() opening app to a task when
+     * may not always be correct as we may resolve the opening app to a task when
      * the animation
      * starts.
      *

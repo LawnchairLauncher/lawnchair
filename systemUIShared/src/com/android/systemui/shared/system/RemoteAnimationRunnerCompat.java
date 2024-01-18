@@ -140,10 +140,8 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 final CounterRotator counterLauncher = new CounterRotator();
                 final CounterRotator counterWallpaper = new CounterRotator();
                 if (launcherTask != null && rotateDelta != 0 && launcherTask.getParent() != null) {
-                    counterLauncher.setup(t, info.getChange(launcherTask.getParent()).getLeash(),
-                            rotateDelta, displayW, displayH);
                     final TransitionInfo.Change parent = info.getChange(launcherTask.getParent());
-                    if (parent != null && LawnchairQuickstepCompat.ATLEAST_S) {
+                    if (parent != null) {
                         counterLauncher.setup(t, parent.getLeash(), rotateDelta, displayW,
                                 displayH);
                     } else {
@@ -185,11 +183,9 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     if (wallpaper != null && rotateDelta != 0 && wallpaper.getParent() != null) {
                         counterWallpaper.setup(t, info.getChange(wallpaper.getParent()).getLeash(),
                                 rotateDelta, displayW, displayH);
-                        final TransitionInfo.Change parent = info.getChange(launcherTask.getParent());
-                        counterLauncher.setup(t, info.getChange(launcherTask.getParent()).getLeash(),
-                                rotateDelta, displayW, displayH);
-                        if (parent != null && LawnchairQuickstepCompat.ATLEAST_S) {
-                            counterLauncher.setup(t, parent.getLeash(), rotateDelta, displayW,
+                        final TransitionInfo.Change parent = info.getChange(wallpaper.getParent());
+                        if (parent != null) {
+                            counterWallpaper.setup(t, parent.getLeash(), rotateDelta, displayW,
                                     displayH);
                         } else {
                             Log.e(TAG, "Malformed: " + wallpaper + " has parent="

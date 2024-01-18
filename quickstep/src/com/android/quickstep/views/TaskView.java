@@ -938,7 +938,7 @@ public class TaskView extends FrameLayout implements Reusable {
             }
             // Indicate success once the system has indicated that the transition has
             // started
-            ActivityOptions opts = Utilities.ATLEAST_T ? ActivityOptions.makeCustomTaskAnimation(getContext(), 0, 0,
+            ActivityOptions opts = LawnchairQuickstepCompat.ATLEAST_T ? ActivityOptions.makeCustomTaskAnimation(getContext(), 0, 0,
                     MAIN_EXECUTOR.getHandler(),
                     elapsedRealTime -> {
                         callback.accept(true);
@@ -979,7 +979,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     private ActivityOptions makeCustomAnimation(Context context, int enterResId,
             int exitResId, final Runnable callback, final Handler callbackHandler) {
-        if (!Utilities.ATLEAST_T) {
+        if (!LawnchairQuickstepCompat.ATLEAST_T) {
             return LawnchairQuickstepCompat.getActivityOptionsCompat().makeCustomAnimation(context, enterResId, exitResId, callback, callbackHandler);
         }
         return ActivityOptions.makeCustomTaskAnimation(context, enterResId, exitResId,

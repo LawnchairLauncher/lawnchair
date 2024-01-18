@@ -177,7 +177,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
                 for (RemoteAnimationTarget compat : appearedTaskTargets) {
                     if (compat.windowConfiguration.getActivityType() == ACTIVITY_TYPE_HOME
-                            && activityInterface.getCreatedActivity() instanceof RecentsActivity) {
+                            && activityInterface.getCreatedActivity() instanceof RecentsActivity
+                            && DisplayController.getNavigationMode(mCtx) != NO_BUTTON) {
                         // The only time we get onTasksAppeared() in button navigation with a
                         // 3p launcher is if the user goes to overview first, and in this case we
                         // can immediately finish the transition
