@@ -314,14 +314,6 @@ public final class FeatureFlags {
         return ENABLE_TASKBAR_PINNING.get() || Flags.enableTaskbarPinning();
     }
 
-    /**
-     * Use a static boolean to gate the taskbar pinning education step
-     */
-    public static boolean enableTaskbarPinningEdu() {
-        boolean enableTaskbarPinningEdu = false;
-        return enableTaskbarPinning() && enableTaskbarPinningEdu;
-    }
-
     public static final BooleanFlag MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE = getDebugFlag(
             251502424, "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED,
             "Marks LauncherPref data as (and allows it to) available while the device is"

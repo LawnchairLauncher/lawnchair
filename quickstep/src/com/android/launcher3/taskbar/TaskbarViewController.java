@@ -529,6 +529,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return reveal;
     }
 
+    public View getTaskbarDividerView() {
+        return mTaskbarView.getTaskbarDividerView();
+    }
+
     /**
      * Defers any updates to the UI for the setup wizard animation.
      */
