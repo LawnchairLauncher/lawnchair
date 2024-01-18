@@ -74,6 +74,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"നീക്കംചെയ്യുക"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"അൺഇൻസ്റ്റാൾ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ആപ്പ് വിവരങ്ങൾ"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"സ്വകാര്യമായി ഇൻസ്റ്റാൾ ചെയ്യൂ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ഇൻസ്‌റ്റാൾ ചെയ്യുക"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ആപ്പ് നിർദ്ദേശിക്കരുത്"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"പ്രവചനം പിൻ ചെയ്യുക"</string>
@@ -178,9 +179,7 @@
     <string name="ps_container_settings" msgid="6059734123353320479">"സ്വകാര്യ സ്‌പേസ് ക്രമീകരണം"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"സ്വകാര്യ സ്‌പേസ് ലോക്ക് ചെയ്യുക/അൺലോക്ക് ചെയ്യുക"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"പ്രൈവറ്റ് സ്‌പേസ് ട്രാൻസിഷനിംഗ്"</string>
-    <!-- no translation found for ps_add_button_label (8611055839242385935) -->
-    <skip />
-    <!-- no translation found for ps_add_button_content_description (3254274107740952556) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8611055839242385935">"ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"സ്വകാര്യ സ്പേസിലേക്ക് ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ഓവർഫ്ലോ"</string>
 </resources>

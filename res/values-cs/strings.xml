@@ -74,6 +74,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Odstranit"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Odinstalovat"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"O aplikaci"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Instalovat soukromě"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Nainstalovat"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Nenavrhovat aplikaci"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Připnout předpověď"</string>
@@ -178,9 +179,7 @@
     <string name="ps_container_settings" msgid="6059734123353320479">"Nastavení soukromého prostoru"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Zamknout/odemknout soukromý prostor"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Převádění soukromého prostoru"</string>
-    <!-- no translation found for ps_add_button_label (8611055839242385935) -->
-    <skip />
-    <!-- no translation found for ps_add_button_content_description (3254274107740952556) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8611055839242385935">"Instalace aplikací"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalovat aplikace do soukromého prostoru"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Rozbalovací nabídka"</string>
 </resources>
