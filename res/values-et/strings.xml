@@ -30,12 +30,13 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Jagatud ekraanikuva"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Rakenduse teave: %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Salvesta rakendusepaar"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Vidina teisaldamiseks puudutage ja hoidke all."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Vidina teisaldamiseks või kohandatud toimingute kasutamiseks topeltpuudutage ja hoidke all."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d lai ja %2$d kõrge"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Vidina teisaldamiseks avakuval puudutage vidinat ja hoidke seda all"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Vidina teisaldamiseks avakuval puudutage vidinat pikalt"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Lisa avakuvale"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g> lisati avakuvale"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Soovitused"</string>
@@ -50,6 +51,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Isiklikud"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Töö"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Vestlused"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Märkmete tegemine"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Kasulik teave on teie käeulatuses"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Teabe saamiseks rakendusi avamata võite oma avakuvale lisada vidinaid"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Puudutage vidina seadete muutmiseks"</string>
@@ -71,7 +73,7 @@
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Töörakenduste loend"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Eemalda"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalli"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"Rakenduste teave"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Rakenduse teave"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installimine"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ära soovita rakendust"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Kinnita ennustus"</string>
@@ -98,10 +100,9 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Kausta uus nimi: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Kaust: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> üksust"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Kaust: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> või rohkem üksust"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Taustapildid"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"Rakendusepaar: <xliff:g id="APP1">%1$s</xliff:g> ja <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Taustapilt ja stiil"</string>
-    <!-- no translation found for edit_home_screen (8947858375782098427) -->
-    <skip />
+    <string name="edit_home_screen" msgid="8947858375782098427">"Muuda avaekraani"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Avakuva seaded"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Keelas administraator"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Luba avakuva pööramine"</string>
@@ -169,9 +170,13 @@
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Töörakendustel on märk ja need on teie IT-administraatorile nähtavad"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Selge"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Peata töörakendused"</string>
-    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Jätka"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Lõpeta peatamine"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Otsimine telefonist"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Otsimine tahvelarvutist"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nurjus: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Privaatne ruum"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Privaatne"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"Privaatse ruumi seaded"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Privaatse ruumi lukustamine/avamine"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Privaatse ruumi üleviimine"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Ületäide"</string>
 </resources>

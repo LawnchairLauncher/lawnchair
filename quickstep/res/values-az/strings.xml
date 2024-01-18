@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Tətbiq təklifləri aktivdir"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Tətbiq təklifləri deaktivdir"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Proqnozlaşdırılan tətbiq: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Ekranın ən sağ və ya sol kənarından sürüşdürün."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Ekranın sağ və ya sol kənarından ortasına sürüşdürüb buraxın."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Cihazı fırladın"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Jest naviqasiyası təlimatını tamamlamaq üçün cihazı fırladın"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Ən sağ və ya sol kənardan sürüşdürün"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Sağ və ya sol kənardan ekranın ortasına sürüşdürüb, buraxın"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Geri qayıtmaq üçün sağdan sürüşdürmək qaydasını öyrəndiniz. Sonra tətbiqləri keçirməyi öyrənin."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Geri getmə jestini tamamladınız."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Ekranın altına çox yaxın sürüşdürmədiyinizə əmin olun."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Geri qayıtma jestini tamamladınız"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Barmağınızı ekranın aşağı kənarına çox yaxınlaşdırmayın"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri qayıtma jestinin həssaslığını dəyişmək üçün Ayarlara keçin"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri qayıtmaq üçün sürüşdürün"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Sonuncu ekrana qayıtmaq üçün ekranın sol, yaxud sağ kənarından mərkəzinə doğru sürüşdürün."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Sonuncu ekrana qayıtmaq üçün 2 barmaqla ekranın sol, yaxud sağ kənarından mərkəzinə doğru sürüşdürün."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Geri qayıdın"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ekranın ən kənar aşağısından yuxarı sürüşdürün."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Buraxmazdan əvvəl durdurmadığınıza əmin olun."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Birbaşa yuxarı sürüşdürün."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Əsas səhifəyə keçmə jestini tamamladınız. Sonra geri qayıtmağı öyrənin."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Əsas səhifəyə keçmə jestini tamamladınız."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Sol və ya sağ kənardan ekranın ortasına sürüşdürün"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Ekranın aşağı kənarından yuxarı sürüşdürün"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Buraxmazdan əvvəl durdurmayın"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Düz yuxarı sürüşdürün"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Əsas ekrana keçid jestini tamamladınız. Geri qayıtmağı öyrənin."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Əsas ekrana keçid jestini tamamladınız"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Əsas səhifəyə keçmək üçün sürüşdürün"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın aşağısından yuxarısına sürüşdürün. Bu jest həmişə Əsas səhifəyə aparır."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 barmaqla ekranın aşağısından yuxarısına sürüşdürün. Bu jest həmişə Əsas səhifəyə aparır."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Əsas səhifəyə qayıdın"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"İstənilən vaxt əsas ekranınıza getmək üçün ekranın aşağısından yuxarı sürüşdürün"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Ekranın ən kənar aşağısından yuxarı sürüşdürün."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Barmağı buraxmadan öncə displeydə bir müddət saxlayın."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Sürüşdürüb ekranın yuxarı kənarında saxlayın."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Ekranın aşağısından yuxarı sürüşdürün"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Əla!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Ekranın aşağı kənarından yuxarı sürüşdürün"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Buraxmazdan öncə pəncərəni bir müddət saxlayın"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Düz yuxarı sürüşdürüb, durdurun"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Jestlərdən istifadə qaydasını öyrəndiniz. Jestləri deaktiv etmək üçün Ayarlara keçin."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Tətbiqləri keçirmə jestini tamamladınız."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Tətbiqlər arasında keçid jestini tamamladınız"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Tətbiqi keçirmək üçün sürüşdürün"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Tətbiqlər arasında keçid üçün ekranın aşağısından yuxarı doğru sürüşdürüb saxlayın, sonra buraxın."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Tətbiqlər arasında keçid üçün 2 barmaqla ekranın aşağısından yuxarı doğru sürüşdürüb saxlayın, sonra buraxın."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Tətbiqləri dəyişin"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Ekranın aşağısından yuxarı sürüşdürüb saxlayın, sonra buraxın"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Afərin!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tam hazır"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Oldu"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ayarlar"</string>
@@ -89,8 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Skrinşot"</string>
     <string name="action_split" msgid="2098009717623550676">"Ayırın"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Bölünmüş ekran üçün başqa tətbiqə toxunun"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Ləğv edin"</b></string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Bölünmüş ekran seçimindən çıxın"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Bölünmüş ekrandan istifadə üçün başqa tətbiq seçin"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Bu əməliyyata tətbiq və ya təşkilatınız tərəfindən icazə verilmir"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Vidcetlər dəstəklənmir, başqa tətbiq seçin"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Naviqasiya dərsliyi ötürülsün?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Bunu sonra <xliff:g id="NAME">%1$s</xliff:g> tətbiqində tapa bilərsiniz"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Ləğv edin"</string>
@@ -100,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Eyni anda 2 tətbiqi istifadə etmək üçün bir tətbiqi yan tərəfə çəkin"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Tapşırıq panelini göstərmək üçün astaca yuxarı sürüşdürün"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Rejiminizə əsasən tətbiq təklifləri alın"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Tapşırıq panelini avtomatik gizlətmək üçün Ayarlarda jest naviqasiyasını aktiv edin"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Ayırıcı üzərinə basıb saxlayaraq İşləmə panelini bərkidin"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Tapşırıq paneli ilə daha çox şey edin"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Bağlayın"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hazırdır"</string>
@@ -115,8 +124,13 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"İşləmə paneli göstərilir"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"İşləmə paneli gizlədilib"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Naviqasiya paneli"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"İşləmə paneli həmişə görünsün"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Naviqasiya rejimini dəyişin"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"İşləmə paneli ayırıcısı"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Yuxarı/sola köçürün"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Aşağı/sağa köçürün"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Daha # tətbiqi göstərin.}other{Daha # tətbiqi göstərin.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> və <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Tətbiqin masaüstünə əlavə edilməsi"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Ləğv edin"</string>
 </resources>

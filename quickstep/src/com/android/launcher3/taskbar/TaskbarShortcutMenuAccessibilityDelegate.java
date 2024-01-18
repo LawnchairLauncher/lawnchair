@@ -34,6 +34,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ShortcutUtil;
@@ -84,9 +85,9 @@ public class TaskbarShortcutMenuAccessibilityDelegate
 
     @Override
     protected boolean performAction(View host, ItemInfo item, int action, boolean fromKeyboard) {
-        if (item instanceof WorkspaceItemInfo
+        if (item instanceof ItemInfoWithIcon
                 && (action == MOVE_TO_TOP_OR_LEFT || action == MOVE_TO_BOTTOM_OR_RIGHT)) {
-            WorkspaceItemInfo info = (WorkspaceItemInfo) item;
+            ItemInfoWithIcon info = (ItemInfoWithIcon) item;
             int side = action == MOVE_TO_TOP_OR_LEFT
                     ? STAGE_POSITION_TOP_OR_LEFT : STAGE_POSITION_BOTTOM_OR_RIGHT;
 
@@ -97,10 +98,11 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                     .withInstanceId(instanceIds.second)
                     .log(getLogEventForPosition(side));
 
-            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                    && item instanceof WorkspaceItemInfo) {
                 SystemUiProxy.INSTANCE.get(mContext).startShortcut(
                         info.getIntent().getPackage(),
-                        info.getDeepShortcutId(),
+                        ((WorkspaceItemInfo) info).getDeepShortcutId(),
                         side,
                         /* bundleOpts= */ null,
                         info.user,

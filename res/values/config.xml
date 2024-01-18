@@ -86,6 +86,7 @@
     <string name="widget_holder_factory_class" translatable="false"></string>
     <string name="taskbar_search_session_controller_class" translatable="false"></string>
     <string name="taskbar_model_callbacks_factory_class" translatable="false"></string>
+    <string name="launcher_restore_event_logger_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -228,6 +229,10 @@
     <dimen name="iconSize60dp">66dp</dimen>
     <dimen name="iconSize66dp">72dp</dimen>
     <dimen name="iconSize72dp">79dp</dimen>
+    <dimen name="iconSize82dp">90dp</dimen>
+    <dimen name="iconSize110dp">121dp</dimen>
+    <dimen name="iconSize144dp">158dp</dimen>
+
 
     <!--  Icon size steps in dp  -->
     <integer-array name="icon_size_steps">
@@ -240,5 +245,13 @@
         <item>@dimen/iconSize60dp</item>
         <item>@dimen/iconSize66dp</item>
         <item>@dimen/iconSize72dp</item>
+        <item>@dimen/iconSize82dp</item>
+        <item>@dimen/iconSize110dp</item>
+        <item>@dimen/iconSize144dp</item>
     </integer-array>
+
+    <dimen name="minimum_icon_label_size">8sp</dimen>
+
+    <!--  Used for custom widgets  -->
+    <array name="custom_widget_providers"/>
 </resources>

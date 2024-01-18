@@ -46,6 +46,8 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.quickstep.util.GroupTask;
 
 import java.util.HashMap;
@@ -360,11 +362,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                                         OPEN_OUTLINE_INTERPOLATOR));
                     }
                 });
-                if (currentFocusIndexOverride == -1) {
-                    initializeScroll(/* index= */ 0, /* shouldTruncateTarget= */ false);
-                } else {
-                    animateFocusMove(-1, currentFocusIndexOverride);
-                }
+                animateFocusMove(-1, currentFocusIndexOverride == -1
+                        ? Math.min(mContent.getChildCount(), 1) : currentFocusIndexOverride);
                 displayedContent.setVisibility(VISIBLE);
                 setVisibility(VISIBLE);
                 requestFocus();
@@ -413,7 +412,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                     // there are more tasks
                     initializeScroll(
                             firstVisibleTaskIndex,
-                            /* shouldTruncateTarget= */ firstVisibleTaskIndex != toIndex);
+                            /* shouldTruncateTarget= */ firstVisibleTaskIndex != 0
+                                    && firstVisibleTaskIndex != toIndex);
                 } else if (toIndex > fromIndex || toIndex == 0) {
                     // Scrolling to next task view
                     if (mIsRtl) {
@@ -439,6 +439,13 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        TestLogging.recordKeyEvent(
+                TestProtocol.SEQUENCE_MAIN, "KeyboardQuickSwitchView key event", event);
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return (mViewCallbacks != null
                 && mViewCallbacks.onKeyUp(keyCode, event, mIsRtl, mDisplayingRecentTasks))
@@ -454,56 +461,80 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
             return;
         }
         if (mIsRtl) {
-            scrollRightTo(
-                    task, shouldTruncateTarget, /* smoothScroll= */ false);
-        } else {
             scrollLeftTo(
-                    task, shouldTruncateTarget, /* smoothScroll= */ false);
+                    task,
+                    shouldTruncateTarget,
+                    /* smoothScroll= */ false,
+                    /* waitForLayout= */ true);
+        } else {
+            scrollRightTo(
+                    task,
+                    shouldTruncateTarget,
+                    /* smoothScroll= */ false,
+                    /* waitForLayout= */ true);
         }
     }
 
     private void scrollRightTo(@NonNull View targetTask) {
-        scrollRightTo(targetTask, /* shouldTruncateTarget= */ false, /* smoothScroll= */ true);
+        scrollRightTo(
+                targetTask,
+                /* shouldTruncateTarget= */ false,
+                /* smoothScroll= */ true,
+                /* waitForLayout= */ false);
     }
 
     private void scrollRightTo(
-            @NonNull View targetTask, boolean shouldTruncateTarget, boolean smoothScroll) {
+            @NonNull View targetTask,
+            boolean shouldTruncateTarget,
+            boolean smoothScroll,
+            boolean waitForLayout) {
         if (!mDisplayingRecentTasks) {
             return;
         }
         if (smoothScroll && !shouldScroll(targetTask, shouldTruncateTarget)) {
             return;
         }
-        int scrollTo = targetTask.getLeft() - mSpacing
-                + (shouldTruncateTarget ? targetTask.getWidth() / 2 : 0);
-        // Scroll so that the focused task is to the left of the list
-        if (smoothScroll) {
-            mScrollView.smoothScrollTo(scrollTo, 0);
-        } else {
-            mScrollView.scrollTo(scrollTo, 0);
-        }
+        runScrollCommand(waitForLayout, () -> {
+            int scrollTo = targetTask.getLeft() - mSpacing
+                    + (shouldTruncateTarget ? targetTask.getWidth() / 2 : 0);
+            // Scroll so that the focused task is to the left of the list
+            if (smoothScroll) {
+                mScrollView.smoothScrollTo(scrollTo, 0);
+            } else {
+                mScrollView.scrollTo(scrollTo, 0);
+            }
+        });
     }
 
     private void scrollLeftTo(@NonNull View targetTask) {
-        scrollLeftTo(targetTask, /* shouldTruncateTarget= */ false, /* smoothScroll= */ true);
+        scrollLeftTo(
+                targetTask,
+                /* shouldTruncateTarget= */ false,
+                /* smoothScroll= */ true,
+                /* waitForLayout= */ false);
     }
 
     private void scrollLeftTo(
-            @NonNull View targetTask, boolean shouldTruncateTarget, boolean smoothScroll) {
+            @NonNull View targetTask,
+            boolean shouldTruncateTarget,
+            boolean smoothScroll,
+            boolean waitForLayout) {
         if (!mDisplayingRecentTasks) {
             return;
         }
         if (smoothScroll && !shouldScroll(targetTask, shouldTruncateTarget)) {
             return;
         }
-        int scrollTo = targetTask.getRight() + mSpacing - mScrollView.getWidth()
-                - (shouldTruncateTarget ? targetTask.getWidth() / 2 : 0);
-        // Scroll so that the focused task is to the right of the list
-        if (smoothScroll) {
-            mScrollView.smoothScrollTo(scrollTo, 0);
-        } else {
-            mScrollView.scrollTo(scrollTo, 0);
-        }
+        runScrollCommand(waitForLayout, () -> {
+            int scrollTo = targetTask.getRight() + mSpacing - mScrollView.getWidth()
+                    - (shouldTruncateTarget ? targetTask.getWidth() / 2 : 0);
+            // Scroll so that the focused task is to the right of the list
+            if (smoothScroll) {
+                mScrollView.smoothScrollTo(scrollTo, 0);
+            } else {
+                mScrollView.scrollTo(scrollTo, 0);
+            }
+        });
     }
 
     private boolean shouldScroll(@NonNull View targetTask, boolean shouldTruncateTarget) {
@@ -512,6 +543,21 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                         || Math.max(0, targetTask.getLeft() - mSpacing) < mScrollView.getScrollX();
 
         return isTargetTruncated && !shouldTruncateTarget;
+    }
+
+    private void runScrollCommand(boolean waitForLayout, @NonNull Runnable scrollCommand) {
+        if (!waitForLayout) {
+            scrollCommand.run();
+            return;
+        }
+        mScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        scrollCommand.run();
+                        mScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
     }
 
     @Nullable

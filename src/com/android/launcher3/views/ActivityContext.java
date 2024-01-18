@@ -34,6 +34,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -74,7 +76,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ActivityOptionsWrapper;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
@@ -143,6 +144,15 @@ public interface ActivityContext {
     default void startSplitSelection(
             SplitConfigurationOptions.SplitSelectSource splitSelectSource) {
         // Overridden, intentionally empty
+    }
+
+    /**
+     * @return {@code true} if user has selected the first split app and is in the process of
+     *         selecting the second
+     */
+    default boolean isSplitSelectionEnabled() {
+        // Overridden
+        return false;
     }
 
     /**
@@ -222,12 +232,6 @@ public interface ActivityContext {
      */
     default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
 
-    /** Onboarding preferences for any onboarding data within this context. */
-    @Nullable
-    default OnboardingPrefs<?> getOnboardingPrefs() {
-        return null;
-    }
-
     /** Returns {@code true} if items are currently being bound within this context. */
     default boolean isBindingItems() {
         return false;
@@ -273,13 +277,19 @@ public interface ActivityContext {
             final WindowInsetsController wic = root.getWindowInsetsController();
             WindowInsets insets = root.getRootWindowInsets();
             boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
-            if (wic != null && isImeShown) {
-                StatsLogManager slm  = getStatsLogManager();
-                slm.keyboardStateManager().setKeyboardState(HIDE);
+            if (wic != null) {
+                // Only hide the keyboard if it is actually showing.
+                if (isImeShown) {
+                    StatsLogManager slm = getStatsLogManager();
+                    slm.keyboardStateManager().setKeyboardState(HIDE);
 
-                // this method cannot be called cross threads
-                wic.hide(WindowInsets.Type.ime());
-                slm.logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
+                    // this method cannot be called cross threads
+                    wic.hide(WindowInsets.Type.ime());
+                    slm.logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
+                }
+
+                // If the WindowInsetsController is not null, we end here regardless of whether we
+                // hid the keyboard or not.
                 return;
             }
         }
@@ -294,6 +304,33 @@ public interface ActivityContext {
                             getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED));
                 }
             });
+        }
+    }
+
+    /**
+     * Returns if the connected keyboard is a hardware keyboard.
+     */
+    default boolean isHardwareKeyboard() {
+        return Configuration.KEYBOARD_QWERTY
+                == ((Context) this).getResources().getConfiguration().keyboard;
+    }
+
+    /**
+     * Returns if the software keyboard is hidden. Hardware keyboards do not display on screen by
+     * default.
+     */
+    default boolean isSoftwareKeyboardHidden() {
+        if (isHardwareKeyboard()) {
+            return true;
+        } else {
+            View dragLayer = getDragLayer();
+            WindowInsets insets = dragLayer.getRootWindowInsets();
+            if (insets == null) {
+                return false;
+            }
+            WindowInsetsCompat insetsCompat =
+                    WindowInsetsCompat.toWindowInsetsCompat(insets, dragLayer);
+            return !insetsCompat.isVisible(WindowInsetsCompat.Type.ime());
         }
     }
 
@@ -439,7 +476,18 @@ public interface ActivityContext {
     }
 
     default CellPosMapper getCellPosMapper() {
-        return CellPosMapper.DEFAULT;
+        DeviceProfile dp = getDeviceProfile();
+        return new CellPosMapper(dp.isVerticalBarLayout(), dp.numShownHotseatIcons);
+    }
+
+    /** Whether bubbles are enabled. */
+    default boolean isBubbleBarEnabled() {
+        return false;
+    }
+
+    /** Whether the bubble bar has bubbles. */
+    default boolean hasBubbles() {
+        return false;
     }
 
     /**

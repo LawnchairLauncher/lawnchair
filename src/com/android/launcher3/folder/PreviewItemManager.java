@@ -43,6 +43,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
@@ -434,7 +435,8 @@ public class PreviewItemManager {
             drawable.setLevel(item.getProgressLevel());
             p.drawable = drawable;
         } else {
-            p.drawable = item.newIcon(mContext, FLAG_THEMED);
+            p.drawable = item.newIcon(mContext,
+                    Themes.isThemedIconEnabled(mContext) ? FLAG_THEMED : 0);
         }
         p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         p.item = item;

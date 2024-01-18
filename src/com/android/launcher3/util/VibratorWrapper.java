@@ -15,9 +15,15 @@
  */
 package com.android.launcher3.util;
 
+import static android.os.VibrationEffect.Composition.PRIMITIVE_LOW_TICK;
 import static android.os.VibrationEffect.createPredefined;
 import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
 
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -35,10 +41,9 @@ import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.PendingAnimation;
-
-import java.util.function.Consumer;
+import com.android.launcher3.config.FeatureFlags;
 
 /**
  * Wrapper around {@link Vibrator} to easily perform haptic feedback where necessary.
@@ -57,6 +62,7 @@ public class VibratorWrapper {
     public static final VibrationEffect EFFECT_CLICK =
             createPredefined(VibrationEffect.EFFECT_CLICK);
 
+    private static final float LOW_TICK_SCALE = 0.9f;
     private static final float DRAG_TEXTURE_SCALE = 0.03f;
     private static final float DRAG_COMMIT_SCALE = 0.5f;
     private static final float DRAG_BUMP_SCALE = 0.4f;
@@ -70,7 +76,7 @@ public class VibratorWrapper {
     private final VibrationEffect mBumpEffect;
 
     @Nullable
-    private final VibrationEffect mAssistEffect;
+    private final VibrationEffect mSearchEffect;
 
     private long mLastDragTime;
     private final int mThresholdUntilNextDragCallMillis;
@@ -80,12 +86,14 @@ public class VibratorWrapper {
      */
     public static final VibrationEffect OVERVIEW_HAPTIC = EFFECT_CLICK;
 
+    private final Context mContext;
     private final Vibrator mVibrator;
     private final boolean mHasVibrator;
 
     private boolean mIsHapticFeedbackEnabled;
 
     private VibratorWrapper(Context context) {
+        mContext = context;
         mVibrator = context.getSystemService(Vibrator.class);
         mHasVibrator = mVibrator.hasVibrator();
         if (mHasVibrator) {
@@ -104,22 +112,22 @@ public class VibratorWrapper {
         }
 
         if (Utilities.ATLEAST_S && mVibrator.areAllPrimitivesSupported(
-                VibrationEffect.Composition.PRIMITIVE_LOW_TICK)) {
+                PRIMITIVE_LOW_TICK)) {
 
             // Drag texture, Commit, and Bump should only be used for premium phones.
             // Before using these haptics make sure check if the device can use it
             VibrationEffect.Composition dragEffect = VibrationEffect.startComposition();
             for (int i = 0; i < DRAG_TEXTURE_EFFECT_SIZE; i++) {
                 dragEffect.addPrimitive(
-                        VibrationEffect.Composition.PRIMITIVE_LOW_TICK, DRAG_TEXTURE_SCALE);
+                        PRIMITIVE_LOW_TICK, DRAG_TEXTURE_SCALE);
             }
             mDragEffect = dragEffect.compose();
             mCommitEffect = VibrationEffect.startComposition().addPrimitive(
                     VibrationEffect.Composition.PRIMITIVE_TICK, DRAG_COMMIT_SCALE).compose();
             mBumpEffect = VibrationEffect.startComposition().addPrimitive(
-                    VibrationEffect.Composition.PRIMITIVE_LOW_TICK, DRAG_BUMP_SCALE).compose();
+                    PRIMITIVE_LOW_TICK, DRAG_BUMP_SCALE).compose();
             int primitiveDuration = mVibrator.getPrimitiveDurations(
-                    VibrationEffect.Composition.PRIMITIVE_LOW_TICK)[0];
+                    PRIMITIVE_LOW_TICK)[0];
 
             mThresholdUntilNextDragCallMillis =
                     DRAG_TEXTURE_EFFECT_SIZE * primitiveDuration + 100;
@@ -133,14 +141,20 @@ public class VibratorWrapper {
         if (Utilities.ATLEAST_R && mVibrator.areAllPrimitivesSupported(
                 VibrationEffect.Composition.PRIMITIVE_QUICK_RISE,
                 VibrationEffect.Composition.PRIMITIVE_TICK)) {
-            // quiet ramp, short pause, then sharp tick
-            mAssistEffect = VibrationEffect.startComposition()
-                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_RISE, 0.25f)
-                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 1f, 50)
-                    .compose();
+            if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get()) {
+                mSearchEffect = VibrationEffect.startComposition()
+                        .addPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 1f)
+                        .compose();
+            } else {
+                // quiet ramp, short pause, then sharp tick
+                mSearchEffect = VibrationEffect.startComposition()
+                        .addPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_RISE, 0.25f)
+                        .addPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 1f, 50)
+                        .compose();
+            }
         } else {
             // fallback for devices without composition support
-            mAssistEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK);
+            mSearchEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK);
         }
     }
 
@@ -184,20 +198,10 @@ public class VibratorWrapper {
     }
 
     /**
-     * The assist haptic is used to be called when an assistant is invoked
-     */
-    public void vibrateForAssist() {
-        if (mAssistEffect != null) {
-            vibrate(mAssistEffect);
-        }
-    }
-
-    /**
      * This should be used to cancel a haptic in case where the haptic shouldn't be vibrating. For
-     * example, when no animation is happening but a vibrator happens to be vibrating still. Need
-     * boolean parameter for {@link PendingAnimation#addEndListener(Consumer)}.
+     * example, when no animation is happening but a vibrator happens to be vibrating still.
      */
-    public void cancelVibrate(boolean unused) {
+    public void cancelVibrate() {
         UI_HELPER_EXECUTOR.execute(mVibrator::cancel);
         // reset dragTexture timestamp to be able to play dragTexture again whenever cancelled
         mLastDragTime = 0;
@@ -231,6 +235,59 @@ public class VibratorWrapper {
                     mVibrator.vibrate(fallbackEffect, VIBRATION_ATTRS);
                 }
             });
+        }
+    }
+
+    /** Indicates that search has been invoked. */
+    public void vibrateForSearch() {
+        if (mSearchEffect != null) {
+            vibrate(mSearchEffect);
+        }
+    }
+
+    /** Indicates that Taskbar has been invoked. */
+    public void vibrateForTaskbarUnstash() {
+        if (Utilities.ATLEAST_S && mVibrator.areAllPrimitivesSupported(PRIMITIVE_LOW_TICK)) {
+            VibrationEffect primitiveLowTickEffect = VibrationEffect
+                    .startComposition()
+                    .addPrimitive(PRIMITIVE_LOW_TICK, LOW_TICK_SCALE)
+                    .compose();
+
+            vibrate(primitiveLowTickEffect);
+        }
+    }
+
+    /** Indicates that search will be invoked if the current gesture is maintained. */
+    public void vibrateForSearchHint() {
+        if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get() && Utilities.ATLEAST_S
+                && mVibrator.areAllPrimitivesSupported(PRIMITIVE_LOW_TICK)) {
+            LauncherPrefs launcherPrefs = LauncherPrefs.get(mContext);
+            float startScale = launcherPrefs.get(
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT) / 100f;
+            float endScale = launcherPrefs.get(
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT) / 100f;
+            int scaleExponent = launcherPrefs.get(
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT);
+            int iterations = launcherPrefs.get(
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS);
+            int delayMs = launcherPrefs.get(
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY);
+
+            VibrationEffect.Composition composition = VibrationEffect.startComposition();
+            for (int i = 0; i < iterations; i++) {
+                float t = i / (iterations - 1f);
+                float scale = (float) Math.pow((1 - t) * startScale + t * endScale,
+                        scaleExponent);
+                if (i == 0) {
+                    // Adds a delay before the ramp starts
+                    composition.addPrimitive(PRIMITIVE_LOW_TICK, scale,
+                            delayMs);
+                } else {
+                    composition.addPrimitive(PRIMITIVE_LOW_TICK, scale);
+                }
+            }
+
+            vibrate(composition.compose());
         }
     }
 }

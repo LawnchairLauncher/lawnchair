@@ -125,6 +125,9 @@
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
     <dimen name="all_apps_height_extra">6dp</dimen>
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_padding">1dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_group_radius">28dp</dimen>
+    <dimen name="all_apps_recycler_view_decorator_result_radius">4dp</dimen>
 
     <dimen name="all_apps_icon_drawable_padding">8dp</dimen>
     <dimen name="all_apps_predicted_icon_vertical_padding">8dp</dimen>
@@ -132,6 +135,8 @@
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
     <dimen name="arrow_toast_elevation">2dp</dimen>
     <dimen name="arrow_toast_arrow_width">10dp</dimen>
+    <dimen name="arrow_toast_arrow_height">10dp</dimen>
+    <dimen name="arrow_toast_text_size">14sp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
@@ -141,6 +146,7 @@
     <dimen name="work_fab_icon_size">24dp</dimen>
     <dimen name="work_fab_text_start_margin">8dp</dimen>
     <dimen name="work_card_padding_horizontal">10dp</dimen>
+    <dimen name="work_fab_width">214dp</dimen>
     <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_fab_margin_bottom">20dp</dimen>
@@ -173,6 +179,7 @@
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
+    <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
 
     <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
 
@@ -244,8 +251,7 @@
     <dimen name="keyboard_drag_stroke_width">4dp</dimen>
 
     <!-- Folders -->
-    <dimen name="page_indicator_dot_size">8dp</dimen>
-    <dimen name="page_indicator_dot_size_v2">6dp</dimen>
+    <dimen name="page_indicator_dot_size">6dp</dimen>
     <dimen name="page_indicator_size">10dp</dimen>
 
 
@@ -282,12 +288,12 @@
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
-    <dimen name="deep_shortcut_icon_size">32dp</dimen>
+    <!-- Possibly related to b/235886078, icon needs to be scaled up to match expected visual size of 32 dp -->
+    <dimen name="deep_shortcut_icon_size">35dp</dimen>
     <dimen name="popup_margin">2dp</dimen>
     <dimen name="popup_single_item_radius">100dp</dimen>
     <dimen name="popup_smaller_radius">4dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">16dp</dimen>
-    <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
     <dimen name="popup_padding_end">14dp</dimen>
     <dimen name="popup_vertical_padding">4dp</dimen>
@@ -361,6 +367,7 @@
 
     <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
+    <dimen name="taskbar_phone_size">@*android:dimen/navigation_bar_frame_height</dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
     <dimen name="qsb_shadow_height">0dp</dimen>
@@ -385,6 +392,9 @@
     <dimen name="taskbar_button_margin_split">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
 
+    <!-- Bubble bar (placeholders to compile in Launcher3 without Quickstep) -->
+    <dimen name="bubblebar_hotseat_adjustment_threshold">0dp</dimen>
+
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
 
@@ -395,6 +405,13 @@
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_max_width">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_start_margin">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_background_max_width">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_corner_radius">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_drawable_size">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_drawable_touch_size">0dp</dimen>
+    <dimen name="task_menu_edge_padding">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
     <dimen name="overview_actions_height">0dp</dimen>
     <dimen name="overview_actions_button_spacing">0dp</dimen>
@@ -403,6 +420,9 @@
     <dimen name="overview_grid_side_margin">0dp</dimen>
     <dimen name="overview_grid_row_spacing">0dp</dimen>
     <dimen name="overview_page_spacing">0dp</dimen>
+    <dimen name="overview_top_margin_grid_only">0dp</dimen>
+    <dimen name="overview_bottom_margin_grid_only">0dp</dimen>
+
     <dimen name="split_placeholder_size">72dp</dimen>
     <dimen name="split_placeholder_inset">16dp</dimen>
     <dimen name="split_placeholder_icon_size">44dp</dimen>
@@ -414,9 +434,10 @@
     <dimen name="split_instructions_drawable_padding">10dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
-    
+    <dimen name="split_instructions_start_margin_cancel">8dp</dimen>
+
     <!-- Workspace grid visualization parameters -->
-    <dimen name="grid_visualization_rounding_radius">28dp</dimen>
+    <dimen name="grid_visualization_rounding_radius">16dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
     <dimen name="grid_visualization_vertical_cell_spacing">6dp</dimen>
 
@@ -443,4 +464,17 @@
     <!-- Default Ime height. Used only for logging purposes.
     Assume this is default keyboard height in EN locale in case the keyboard height is not known when queried.-->
     <dimen name="default_ime_height">300dp</dimen>
+
+    <!-- Private Space parameters -->
+    <dimen name="ps_container_corner_radius">24dp</dimen>
+    <dimen name="ps_header_height">64dp</dimen>
+    <dimen name="ps_header_relative_layout_height">48dp</dimen>
+    <dimen name="ps_header_image_height">36dp</dimen>
+    <dimen name="ps_header_text_height">24dp</dimen>
+    <dimen name="ps_header_layout_margin">16dp</dimen>
+    <dimen name="ps_header_settings_icon_margin_end">8dp</dimen>
+    <dimen name="ps_header_text_size">16sp</dimen>
+    <dimen name="ps_button_height">36dp</dimen>
+    <dimen name="ps_button_width">36dp</dimen>
+    <dimen name="ps_lock_button_width">89dp</dimen>
 </resources>

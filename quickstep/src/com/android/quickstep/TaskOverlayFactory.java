@@ -34,8 +34,8 @@ import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -80,7 +80,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
         boolean isTablet = activity.getDeviceProfile().isTablet;
 
-        boolean isGridOnlyOverview = isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get();
+        boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
         // Add overview actions to the menu when in in-place rotate landscape mode, or in
         // grid-only overview.
         if ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview) {
@@ -190,6 +190,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         public void endLiveTileMode(@NonNull Runnable callback) {
             RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
+            // Task has already been dismissed
+            if (recentsView == null) return;
             recentsView.switchToScreenshot(
                     () -> recentsView.finishRecentsAnimation(true /* toRecents */,
                             false /* shouldPip */, callback));
@@ -210,6 +212,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
         private void enterSplitSelect() {
             RecentsView overviewPanel = mThumbnailView.getTaskView().getRecentsView();
+            // Task has already been dismissed
+            if (overviewPanel == null) return;
             overviewPanel.initiateSplitSelect(mThumbnailView.getTaskView());
         }
 

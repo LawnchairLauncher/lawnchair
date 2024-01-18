@@ -67,6 +67,7 @@
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
+        android:name="com.android.launcher3.LauncherApplication"
         android:fullBackupOnly="true"
         android:backupInForeground="true"
         android:fullBackupContent="@xml/backupscheme"

@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.content.ContentValues;
@@ -257,7 +258,8 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                         Favorites.SCREEN, IntArray.wrap(-777, -778)), null);
             }
             case 30: {
-                if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+                if (FeatureFlags.QSB_ON_FIRST_SCREEN
+                        && !shouldShowFirstPageWidget()) {
                     // Clean up first row in screen 0 as it might contain junk data.
                     Log.d(TAG, "Cleaning up first row");
                     db.delete(Favorites.TABLE_NAME,
@@ -267,7 +269,6 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                                     Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
                                     Favorites.CELLY, 0), null);
                 }
-                return;
             }
             case 31: {
                 LauncherDbUtils.migrateLegacyShortcuts(mContext, db);

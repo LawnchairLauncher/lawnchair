@@ -32,6 +32,7 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__OVERVIEW;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.StatsEvent;
 import android.view.View;
@@ -104,6 +105,8 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int SEARCH_ATTRIBUTES_DIRECT_MATCH = 1 << 1;
     private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS = 1 << 2;
     private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_QSB = 1 << 3;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_OVERVIEW = 1 << 4;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_TASKBAR = 1 << 5;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -224,6 +227,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         private LauncherAtom.Slice mSlice;
         private Optional<Integer> mCardinality = Optional.empty();
         private int mInputType = SysUiStatsLog.LAUNCHER_UICHANGED__INPUT_TYPE__UNKNOWN;
+        private Optional<Integer> mFeatures = Optional.empty();
+        private Optional<String> mPackageName = Optional.empty();
 
         StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -319,6 +324,18 @@ public class StatsLogCompatManager extends StatsLogManager {
         @Override
         public StatsLogger withInputType(int inputType) {
             this.mInputType = inputType;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withFeatures(int feature) {
+            this.mFeatures = Optional.of(feature);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withPackageName(@Nullable String packageName) {
+            mPackageName = Optional.ofNullable(packageName);
             return this;
         }
 
@@ -422,6 +439,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             int srcState = mSrcState;
             int dstState = mDstState;
             int inputType = mInputType;
+            String packageName = mPackageName.orElseGet(() -> getPackageName(atomInfo));
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
@@ -439,6 +457,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                 if (atomInfo.hasContainerInfo()) {
                     logStringBuilder.append("\n").append(atomInfo);
                 }
+                if (!TextUtils.isEmpty(packageName)) {
+                    logStringBuilder.append(String.format("\nPackage name: %s", packageName));
+                }
                 Log.d(TAG, logStringBuilder.toString());
             }
 
@@ -451,6 +472,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return;
             }
             int cardinality = mCardinality.orElseGet(() -> getCardinality(atomInfo));
+            int features = mFeatures.orElseGet(() -> getFeatures(atomInfo));
             SysUiStatsLog.write(
                     SysUiStatsLog.LAUNCHER_EVENT,
                     SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
@@ -462,7 +484,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getItemCase().getNumber() /* target_id */,
                     instanceId.getId() /* instance_id TODO */,
                     0 /* uid TODO */,
-                    getPackageName(atomInfo) /* package_name */,
+                    packageName /* package_name */,
                     getComponentName(atomInfo) /* component_name */,
                     getGridX(atomInfo, false) /* grid_x */,
                     getGridY(atomInfo, false) /* grid_y */,
@@ -471,17 +493,17 @@ public class StatsLogCompatManager extends StatsLogManager {
                     getGridY(atomInfo, true) /* grid_y_parent */,
                     getParentPageId(atomInfo) /* page_id_parent */,
                     getHierarchy(atomInfo) /* hierarchy */,
-                    atomInfo.getIsWork() /* is_work_profile */,
+                    false /* is_work_profile, deprecated */,
                     atomInfo.getRank() /* rank */,
                     atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
                     cardinality /* cardinality */,
-                    getFeatures(atomInfo) /* features */,
+                    features /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
                     getAttributes(atomInfo) /* attributes */,
-                    inputType /* input_type */
-            );
+                    inputType /* input_type */,
+                    atomInfo.getUserType() /* user_type */);
         }
     }
 
@@ -848,6 +870,10 @@ public class StatsLogCompatManager extends StatsLogManager {
             response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS;
         } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.QSB) {
             response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_QSB;
+        } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.OVERVIEW) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_OVERVIEW;
+        } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.TASKBAR) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_TASKBAR;
         }
 
         return response;

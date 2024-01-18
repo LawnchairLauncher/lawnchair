@@ -276,8 +276,11 @@ public final class LauncherActivityInterface extends
     @Override
     public boolean isInLiveTileMode() {
         Launcher launcher = getCreatedActivity();
-        return launcher != null && launcher.getStateManager().getState() == OVERVIEW &&
-                launcher.isStarted();
+
+        return launcher != null
+                && launcher.getStateManager().getState() == OVERVIEW
+                && launcher.isStarted()
+                && TopTaskTracker.INSTANCE.get(launcher).getCachedTopTask(false).isHomeTask();
     }
 
     @Override

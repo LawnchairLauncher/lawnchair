@@ -180,7 +180,7 @@ public final class DigitalWellBeingToast {
         }
 
         // For portrait grid only height of task changes, not width. So we keep the text the same
-        if (!mActivity.getDeviceProfile().isLandscape) {
+        if (!mActivity.getDeviceProfile().isLeftRightSplit) {
             mSplitBannerConfig = SPLIT_GRID_BANNER_LARGE;
             return;
         }

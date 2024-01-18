@@ -32,6 +32,8 @@ import android.widget.TextClock.ClockEventDelegate;
 
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SettingsCache.OnChangeListener;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -42,7 +44,11 @@ import java.util.List;
 /**
  * Extension of {@link ClockEventDelegate} to support async event registration
  */
-public class AsyncClockEventDelegate extends ClockEventDelegate implements OnChangeListener {
+public class AsyncClockEventDelegate extends ClockEventDelegate
+        implements OnChangeListener, SafeCloseable {
+
+    public static final MainThreadInitializedObject<AsyncClockEventDelegate> INSTANCE =
+            new MainThreadInitializedObject<>(AsyncClockEventDelegate::new);
 
     private final Context mContext;
     private final SimpleBroadcastReceiver mReceiver =
@@ -55,7 +61,7 @@ public class AsyncClockEventDelegate extends ClockEventDelegate implements OnCha
     private boolean mFormatRegistered = false;
     private boolean mDestroyed = false;
 
-    public AsyncClockEventDelegate(Context context) {
+    private AsyncClockEventDelegate(Context context) {
         super(context);
         mContext = context;
 
@@ -79,6 +85,9 @@ public class AsyncClockEventDelegate extends ClockEventDelegate implements OnCha
 
     @Override
     public void registerFormatChangeObserver(ContentObserver observer, int userHandle) {
+        if (mDestroyed) {
+            return;
+        }
         synchronized (mFormatObservers) {
             if (!mFormatRegistered && !mDestroyed) {
                 SettingsCache.INSTANCE.get(mContext).register(mFormatUri, this);
@@ -114,10 +123,8 @@ public class AsyncClockEventDelegate extends ClockEventDelegate implements OnCha
         }
     }
 
-    /**
-     * Unregisters all system callbacks and destroys this delegate
-     */
-    public void onDestroy() {
+    @Override
+    public void close() {
         mDestroyed = true;
         SettingsCache.INSTANCE.get(mContext).unregister(mFormatUri, this);
         UI_HELPER_EXECUTOR.execute(() -> mReceiver.unregisterReceiverSafely(mContext));

@@ -24,6 +24,7 @@ import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
@@ -267,5 +268,23 @@ public class BubbleStashedHandleViewController {
             }
         });
         return revealAnim;
+    }
+
+    /** Checks that the stash handle is visible and that the motion event is within bounds. */
+    public boolean isEventOverHandle(MotionEvent ev) {
+        if (mStashedHandleView.getVisibility() != VISIBLE) {
+            return false;
+        }
+
+        // the bounds of the handle only include the visible part, so we check that the Y coordinate
+        // is anywhere within the stashed taskbar height.
+        int top = mActivity.getDeviceProfile().heightPx - mStashedTaskbarHeight;
+
+        return (int) ev.getRawY() >= top && containsX((int) ev.getRawX());
+    }
+
+    /** Checks if the given x coordinate is within the stashed handle bounds. */
+    public boolean containsX(int x) {
+        return x >= mStashedHandleBounds.left && x <= mStashedHandleBounds.right;
     }
 }

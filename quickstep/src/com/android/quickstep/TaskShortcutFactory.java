@@ -20,6 +20,7 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -29,7 +30,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.os.SystemProperties;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
@@ -49,6 +50,7 @@ import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
@@ -127,12 +129,12 @@ public interface TaskShortcutFactory {
 
     /**
      * A menu item, "Save app pair", that allows the user to preserve the current app combination as
-     * a single persistent icon on the Home screen, allowing for quick split screen initialization.
+     * one persistent icon on the Home screen, allowing for quick split screen launching.
      */
     class SaveAppPairSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
-        private final TaskView mTaskView;
+        private final GroupedTaskView mTaskView;
 
-        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, TaskView taskView) {
+        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, GroupedTaskView taskView) {
             super(R.drawable.ic_save_app_pair, R.string.save_app_pair, activity,
                     taskView.getItemInfo(), taskView);
             mTaskView = taskView;
@@ -188,7 +190,7 @@ public interface TaskShortcutFactory {
             }
             if (options != null
                     && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
-                            options)) {
+                    options)) {
                 final Runnable animStartedListener = () -> {
                     // Hide the task view and wait for the window to be resized
                     // TODO: Consider animating in launcher and do an in-place start activity
@@ -214,12 +216,13 @@ public interface TaskShortcutFactory {
 
                 AppTransitionAnimationSpecsFuture future =
                         new AppTransitionAnimationSpecsFuture(mHandler) {
-                    @Override
-                    public List<AppTransitionAnimationSpecCompat> composeSpecs() {
-                        return Collections.singletonList(new AppTransitionAnimationSpecCompat(
-                                taskId, thumbnail, taskBounds));
-                    }
-                };
+                            @Override
+                            public List<AppTransitionAnimationSpecCompat> composeSpecs() {
+                                return Collections.singletonList(
+                                        new AppTransitionAnimationSpecCompat(
+                                                taskId, thumbnail, taskBounds));
+                            }
+                        };
                 overridePendingAppTransitionMultiThumbFuture(
                         future, animStartedListener, mHandler, true /* scaleUp */,
                         taskKey.displayId);
@@ -262,38 +265,35 @@ public interface TaskShortcutFactory {
 
     /**
      * Does NOT add split options in the following scenarios:
-     * * The taskView to add split options is already showing split screen tasks
-     * * There aren't at least 2 tasks in overview to show split options for
-     * * Split isn't supported by the task itself (non resizable activity)
-     * * We aren't currently in multi-window
-     * * The taskView to show split options for is the focused task AND we haven't started
-     * scrolling in overview (if we haven't scrolled, there's a split overview action button so
-     * we don't need this menu option)
+     * * 1. Taskbar is not present AND aren't at least 2 tasks in overview to show split options for
+     * * 2. Split isn't supported by the task itself (non resizable activity)
+     * * 3. We aren't currently in multi-window
+     * * 4. The taskView to show split options for is the focused task AND we haven't started
+     * * scrolling in overview (if we haven't scrolled, there's a split overview action button so
+     * * we don't need this menu option)
      */
     TaskShortcutFactory SPLIT_SELECT = new TaskShortcutFactory() {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
             DeviceProfile deviceProfile = activity.getDeviceProfile();
-            final Task task  = taskContainer.getTask();
+            final Task task = taskContainer.getTask();
             final int intentFlags = task.key.baseIntent.getFlags();
             final TaskView taskView = taskContainer.getTaskView();
             final RecentsView recentsView = taskView.getRecentsView();
             final PagedOrientationHandler orientationHandler =
                     recentsView.getPagedOrientationHandler();
 
-            boolean notEnoughTasksToSplit = recentsView.getTaskViewCount() < 2;
-            boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
-            boolean isTaskInExpectedScrollPosition =
-                    recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
+            boolean notEnoughTasksToSplit =
+                    !deviceProfile.isTaskbarPresent && recentsView.getTaskViewCount() < 2;
             boolean isTaskSplitNotSupported = !task.isDockable ||
                     (intentFlags & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
             boolean hideForExistingMultiWindow = activity.getDeviceProfile().isMultiWindowMode;
+            boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
+            boolean isTaskInExpectedScrollPosition =
+                    recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
 
-            if (taskView.containsMultipleTasks()
-                    || notEnoughTasksToSplit
-                    || isTaskSplitNotSupported
-                    || hideForExistingMultiWindow
+            if (notEnoughTasksToSplit || isTaskSplitNotSupported || hideForExistingMultiWindow
                     || (isFocusedTask && isTaskInExpectedScrollPosition)) {
                 return null;
             }
@@ -313,11 +313,12 @@ public interface TaskShortcutFactory {
                 TaskIdAttributeContainer taskContainer) {
             final TaskView taskView = taskContainer.getTaskView();
 
-            if (!FeatureFlags.ENABLE_APP_PAIRS.get() || !taskView.containsMultipleTasks()) {
+            if (!FeatureFlags.enableAppPairs() || !taskView.containsMultipleTasks()) {
                 return null;
             }
 
-            return Collections.singletonList(new SaveAppPairSystemShortcut(activity, taskView));
+            return Collections.singletonList(
+                    new SaveAppPairSystemShortcut(activity, (GroupedTaskView) taskView));
         }
 
         @Override
@@ -330,7 +331,7 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            final Task task  = taskContainer.getTask();
+            final Task task = taskContainer.getTask();
             if (!task.isDockable) {
                 return null;
             }
@@ -345,9 +346,10 @@ public interface TaskShortcutFactory {
         }
 
         private boolean isAvailable(BaseDraggingActivity activity, int displayId) {
-            return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity)
-                    && !SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false)
-                    && !SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
+            return Settings.Global.getInt(
+                    activity.getContentResolver(),
+                    Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0
+                    && !isDesktopModeSupported();
         }
     };
 
@@ -385,7 +387,8 @@ public interface TaskShortcutFactory {
         @Override
         public void onClick(View view) {
             if (mTaskView.launchTaskAnimated() != null) {
-                SystemUiProxy.INSTANCE.get(mTarget).startScreenPinning(mTaskView.getTask().key.id);
+                SystemUiProxy.INSTANCE.get(mTarget).startScreenPinning(
+                        mTaskView.getTask().key.id);
             }
             dismissTaskMenuView(mTarget);
             mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
@@ -401,7 +404,7 @@ public interface TaskShortcutFactory {
             return InstantAppResolver.newInstance(activity).isInstantApp(
                     t.getTopComponent().getPackageName(), t.getKey().userId)
                     ? Collections.singletonList(new SystemShortcut.Install(activity,
-                            taskContainer.getItemInfo(), taskContainer.getTaskView()))
+                    taskContainer.getItemInfo(), taskContainer.getTaskView()))
                     : null;
         }
     };
@@ -421,9 +424,10 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            SystemShortcut screenshotShortcut = taskContainer.getThumbnailView().getTaskOverlay()
-                    .getScreenshotShortcut(activity, taskContainer.getItemInfo(),
-                            taskContainer.getTaskView());
+            SystemShortcut screenshotShortcut =
+                    taskContainer.getThumbnailView().getTaskOverlay()
+                            .getScreenshotShortcut(activity, taskContainer.getItemInfo(),
+                                    taskContainer.getTaskView());
             return createSingletonShortcutList(screenshotShortcut);
         }
     };

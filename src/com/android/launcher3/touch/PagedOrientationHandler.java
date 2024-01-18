@@ -173,6 +173,8 @@ public interface PagedOrientationHandler {
     // Overview TaskMenuView methods
     void setTaskIconParams(FrameLayout.LayoutParams iconParams,
             int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl);
+    void setIconAppChipMenuParams(View iconAppChipMenuView, FrameLayout.LayoutParams iconMenuParams,
+            int iconMenuMargin, int thumbnailTopMargin);
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
@@ -185,9 +187,9 @@ public interface PagedOrientationHandler {
      * getTaskMenuWidth()), so we directly use that in the calculations.
      */
     float getTaskMenuX(float x, View thumbnailView, DeviceProfile deviceProfile,
-            float taskInsetMargin);
+            float taskInsetMargin, View taskViewIcon);
     float getTaskMenuY(float y, View thumbnailView, int stagePosition,
-            View taskMenuView, float taskInsetMargin);
+            View taskMenuView, float taskInsetMargin, View taskViewIcon);
     int getTaskMenuWidth(View thumbnailView, DeviceProfile deviceProfile,
             @StagePosition int stagePosition);
     /**

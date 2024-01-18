@@ -16,7 +16,7 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -251,7 +251,7 @@ public class ClearAllButton extends Button {
     private float getOriginalTranslationY() {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         if (deviceProfile.isTablet) {
-            if (ENABLE_GRID_ONLY_OVERVIEW.get()) {
+            if (enableGridOnlyOverview()) {
                 return (getRecentsView().getLastComputedTaskSize().height()
                         + deviceProfile.overviewTaskThumbnailTopMarginPx) / 2.0f
                         + deviceProfile.overviewRowSpacing;

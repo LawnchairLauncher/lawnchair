@@ -29,6 +29,7 @@ import android.annotation.UserIdInt;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -178,6 +179,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
     /**
      * Returns the CachedTaskInfo for the top most task
      */
+    @NonNull
     @UiThread
     public CachedTaskInfo getCachedTopTask(boolean filterOnlyVisibleRecents) {
         if (filterOnlyVisibleRecents) {

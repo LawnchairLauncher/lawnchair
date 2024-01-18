@@ -18,6 +18,8 @@ package com.android.quickstep.util;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.util.Preconditions;
+
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,23 +33,17 @@ import java.util.Objects;
  */
 public class ActiveGestureLog {
 
-    private static final int MAX_GESTURES_TRACKED = 10;
+    private static final int MAX_GESTURES_TRACKED = 15;
 
     public static final ActiveGestureLog INSTANCE = new ActiveGestureLog();
+
+    private boolean mIsFullyGesturalNavMode;
 
     /**
      * NOTE: This value should be kept same as
      * ActivityTaskManagerService#INTENT_EXTRA_LOG_TRACE_ID in platform
      */
     public static final String INTENT_EXTRA_LOG_TRACE_ID = "INTENT_EXTRA_LOG_TRACE_ID";
-
-    private static final int TYPE_ONE_OFF = 0;
-    private static final int TYPE_FLOAT = 1;
-    private static final int TYPE_INTEGER = 2;
-    private static final int TYPE_BOOL_TRUE = 3;
-    private static final int TYPE_BOOL_FALSE = 4;
-    private static final int TYPE_INPUT_CONSUMER = 5;
-    private static final int TYPE_GESTURE_EVENT = 6;
 
     private final EventLog[] logs;
     private int nextIndex;
@@ -65,9 +61,12 @@ public class ActiveGestureLog {
      *                   execution.
      */
     public void trackEvent(@Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
-        addLog(TYPE_GESTURE_EVENT, "", 0, CompoundString.NO_OP, gestureEvent);
+        addLog(CompoundString.NO_OP, gestureEvent);
     }
 
+    /**
+     * Adds a log to be printed at log-dump-time.
+     */
     public void addLog(String event) {
         addLog(event, null);
     }
@@ -80,51 +79,43 @@ public class ActiveGestureLog {
         addLog(event, extras, null);
     }
 
-    public void addLog(CompoundString compoundString) {
-        addLog(TYPE_INPUT_CONSUMER, "", 0, compoundString, null);
-    }
-
     /**
-     * Adds a log and track the associated event for error detection.
+     * Adds a log to be printed at log-dump-time and track the associated event for error detection.
      *
      * @param gestureEvent GestureEvent representing the event being logged.
      */
     public void addLog(
             String event, @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
-        addLog(TYPE_ONE_OFF, event, 0, CompoundString.NO_OP, gestureEvent);
+        addLog(new CompoundString(event), gestureEvent);
     }
 
     public void addLog(
             String event,
             int extras,
             @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
-        addLog(TYPE_INTEGER, event, extras, CompoundString.NO_OP, gestureEvent);
+        addLog(new CompoundString(event).append(": ").append(extras), gestureEvent);
     }
 
     public void addLog(
             String event,
             boolean extras,
             @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
-        addLog(
-                extras ? TYPE_BOOL_TRUE : TYPE_BOOL_FALSE,
-                event,
-                0,
-                CompoundString.NO_OP,
-                gestureEvent);
+        addLog(new CompoundString(event).append(": ").append(extras), gestureEvent);
     }
 
-    private void addLog(
-            int type,
-            String event,
-            float extras,
+    public void addLog(CompoundString compoundString) {
+        addLog(compoundString, null);
+    }
+
+    public void addLog(
             CompoundString compoundString,
             @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         EventLog lastEventLog = logs[(nextIndex + logs.length - 1) % logs.length];
         if (lastEventLog == null || mCurrentLogId != lastEventLog.logId) {
-            EventLog eventLog = new EventLog(mCurrentLogId);
+            EventLog eventLog = new EventLog(mCurrentLogId, mIsFullyGesturalNavMode);
             EventEntry eventEntry = new EventEntry();
 
-            eventEntry.update(type, event, extras, compoundString, gestureEvent);
+            eventEntry.update(compoundString, gestureEvent);
             eventLog.eventEntries.add(eventEntry);
             logs[nextIndex] = eventLog;
             nextIndex = (nextIndex + 1) % logs.length;
@@ -133,17 +124,17 @@ public class ActiveGestureLog {
 
         // Update the last EventLog
         List<EventEntry> lastEventEntries = lastEventLog.eventEntries;
-        EventEntry lastEntry = lastEventEntries.size() > 0
+        EventEntry lastEntry = !lastEventEntries.isEmpty()
                 ? lastEventEntries.get(lastEventEntries.size() - 1) : null;
 
         // Update the last EventEntry if it's a duplicate
-        if (isEntrySame(lastEntry, type, event, extras, compoundString, gestureEvent)) {
+        if (isEntrySame(lastEntry, compoundString, gestureEvent)) {
             lastEntry.duplicateCount++;
             return;
         }
         EventEntry eventEntry = new EventEntry();
 
-        eventEntry.update(type, event, extras, compoundString, gestureEvent);
+        eventEntry.update(compoundString, gestureEvent);
         lastEventEntries.add(eventEntry);
     }
 
@@ -168,30 +159,14 @@ public class ActiveGestureLog {
 
             writer.println(prefix + "\tLogs for logId: " + eventLog.logId);
             for (EventEntry eventEntry : eventLog.eventEntries) {
+                if (eventEntry.mCompoundString.mIsNoOp) {
+                    continue;
+                }
                 date.setTime(eventEntry.time);
 
-                StringBuilder msg = new StringBuilder(prefix + "\t\t").append(sdf.format(date))
-                        .append(eventEntry.event);
-                switch (eventEntry.type) {
-                    case TYPE_BOOL_FALSE:
-                        msg.append(": false");
-                        break;
-                    case TYPE_BOOL_TRUE:
-                        msg.append(": true");
-                        break;
-                    case TYPE_FLOAT:
-                        msg.append(": ").append(eventEntry.extras);
-                        break;
-                    case TYPE_INTEGER:
-                        msg.append(": ").append((int) eventEntry.extras);
-                        break;
-                    case TYPE_INPUT_CONSUMER:
-                        msg.append(eventEntry.mCompoundString);
-                        break;
-                    case TYPE_GESTURE_EVENT:
-                        continue;
-                    default: // fall out
-                }
+                StringBuilder msg = new StringBuilder(prefix + "\t\t")
+                        .append(sdf.format(date))
+                        .append(eventEntry.mCompoundString);
                 if (eventEntry.duplicateCount > 0) {
                     msg.append(" & ").append(eventEntry.duplicateCount).append(" similar events");
                 }
@@ -208,6 +183,10 @@ public class ActiveGestureLog {
         return mCurrentLogId++;
     }
 
+    public void setIsFullyGesturalNavMode(boolean isFullyGesturalNavMode) {
+        mIsFullyGesturalNavMode = isFullyGesturalNavMode;
+    }
+
     /** Returns the current log ID. This should be used when a log trace is being reused. */
     public int getLogId() {
         return mCurrentLogId;
@@ -215,15 +194,9 @@ public class ActiveGestureLog {
 
     private boolean isEntrySame(
             EventEntry entry,
-            int type,
-            String event,
-            float extras,
             CompoundString compoundString,
             ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         return entry != null
-                && entry.type == type
-                && entry.event.equals(event)
-                && Float.compare(entry.extras, extras) == 0
                 && entry.mCompoundString.equals(compoundString)
                 && entry.gestureEvent == gestureEvent;
     }
@@ -231,9 +204,6 @@ public class ActiveGestureLog {
     /** A single event entry. */
     protected static class EventEntry {
 
-        private int type;
-        private String event;
-        private float extras;
         @NonNull private CompoundString mCompoundString;
         private ActiveGestureErrorDetector.GestureEvent gestureEvent;
         private long time;
@@ -247,18 +217,16 @@ public class ActiveGestureLog {
         }
 
         private void update(
-                int type,
-                String event,
-                float extras,
                 @NonNull CompoundString compoundString,
                 ActiveGestureErrorDetector.GestureEvent gestureEvent) {
-            this.type = type;
-            this.event = event;
-            this.extras = extras;
             this.mCompoundString = compoundString;
             this.gestureEvent = gestureEvent;
             time = System.currentTimeMillis();
             duplicateCount = 0;
+        }
+
+        public long getTime() {
+            return time;
         }
     }
 
@@ -267,9 +235,11 @@ public class ActiveGestureLog {
 
         protected final List<EventEntry> eventEntries = new ArrayList<>();
         protected final int logId;
+        protected final boolean mIsFullyGesturalNavMode;
 
-        private EventLog(int logId) {
+        private EventLog(int logId, boolean isFullyGesturalNavMode) {
             this.logId = logId;
+            mIsFullyGesturalNavMode = isFullyGesturalNavMode;
         }
     }
 
@@ -279,6 +249,7 @@ public class ActiveGestureLog {
         public static final CompoundString NO_OP = new CompoundString();
 
         private final List<String> mSubstrings;
+        private final List<Object> mArgs;
 
         private final boolean mIsNoOp;
 
@@ -290,10 +261,12 @@ public class ActiveGestureLog {
             mIsNoOp = substring == null;
             if (mIsNoOp) {
                 mSubstrings = null;
+                mArgs = null;
                 return;
             }
             mSubstrings = new ArrayList<>();
             mSubstrings.add(substring);
+            mArgs = new ArrayList<>();
         }
 
         public CompoundString append(CompoundString substring) {
@@ -314,11 +287,42 @@ public class ActiveGestureLog {
             return this;
         }
 
+        public CompoundString append(int num) {
+            mArgs.add(num);
+
+            return append("%d");
+        }
+
+        public CompoundString append(float num) {
+            mArgs.add(num);
+
+            return append("%.2f");
+        }
+
+        public CompoundString append(double num) {
+            mArgs.add(num);
+
+            return append("%.2f");
+        }
+
+        public CompoundString append(boolean bool) {
+            mArgs.add(bool);
+
+            return append("%b");
+        }
+
+        public Object[] getArgs() {
+            return mArgs.toArray();
+        }
+
         @Override
         public String toString() {
-            if (mIsNoOp) {
-                return "ERROR: cannot use No-Op compound string";
-            }
+            return String.format(toUnformattedString(), getArgs());
+        }
+
+        public String toUnformattedString() {
+            Preconditions.assertTrue(!mIsNoOp);
+
             StringBuilder sb = new StringBuilder();
             for (String substring : mSubstrings) {
                 sb.append(substring);

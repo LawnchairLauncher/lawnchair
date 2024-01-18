@@ -18,7 +18,6 @@ package com.android.launcher3.views;
 import static androidx.core.content.ContextCompat.getColorStateList;
 
 import static com.android.launcher3.LauncherState.EDIT_MODE;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
@@ -26,7 +25,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -149,11 +147,14 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
 
     @Override
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
-            assignMarginsAndBackgrounds(viewGroup,
-                    getColorStateList(getContext(), mColorIds[0]).getDefaultColor());
-        } else {
-            assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
+        assignMarginsAndBackgrounds(viewGroup,
+                getColorStateList(getContext(), mColorIds[0]).getDefaultColor());
+        // last shortcut doesn't need bottom margin
+        final int count = viewGroup.getChildCount() - 1;
+        for (int i = 0; i < count; i++) {
+            // These are shortcuts and not shortcut containers, but they still need bottom margin
+            MarginLayoutParams mlp = (MarginLayoutParams) viewGroup.getChildAt(i).getLayoutParams();
+            mlp.bottomMargin = mChildContainerMargin;
         }
     }
 
@@ -165,12 +166,16 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         return show(activityContext, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
-            ActivityContext activityContext,
+    @Nullable
+    private static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            @Nullable ActivityContext activityContext,
             RectF targetRect,
             List<OptionItem> items,
             boolean shouldAddArrow,
             int width) {
+        if (activityContext == null) {
+            return null;
+        }
         OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;

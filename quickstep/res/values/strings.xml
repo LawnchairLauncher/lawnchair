@@ -230,11 +230,13 @@
     <string name="action_split">Split</string>
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
     <string name="toast_split_select_app">Tap another app to use split screen</string>
+    <string name="toast_split_select_app_cancel"><b>Cancel</b></string>
     <string name="toast_split_select_cont_desc">Exit split screen selection</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
     <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
     <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
+    <string name="split_widgets_not_supported">Widgets not currently supported, please select another app</string>
 
     <!-- ******* Skip tutorial dialog ******* -->
     <!-- Title for the dialog that allows the user to skip the gesture navigation tutorial. [CHAR_LIMIT=40] -->
@@ -258,8 +260,8 @@
     <string name="taskbar_edu_stashing">Slow-swipe up to show the Taskbar</string>
     <!-- Text in dialog that lets a user know how the Taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_suggestions">Get app suggestions based on your routine</string>
-    <!-- Text in dialog that lets a user know that Taskbar will auto-hide, if the user switches to gesture navigation in system settings. [CHAR_LIMIT=90] -->
-    <string name="taskbar_edu_settings_persistent">Turn on gesture navigation in Settings to auto-hide the Taskbar</string>
+    <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <string name="taskbar_edu_pinning">Long press on the divider to pin the Taskbar</string>
     <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_features">Do more with the Taskbar</string>
     <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->

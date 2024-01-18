@@ -28,7 +28,9 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
@@ -71,6 +73,8 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.apppairs.AppPairIcon;
+import com.android.launcher3.celllayout.CellInfo;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
@@ -186,7 +190,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     /**
      * CellInfo for the cell that is currently being dragged
      */
-    protected CellLayout.CellInfo mDragInfo;
+    protected CellInfo mDragInfo;
 
     /**
      * Target drop area calculated during last acceptDrop call.
@@ -346,7 +350,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             setPageSpacing(Math.max(maxInsets, maxPadding));
         }
 
-        updateCellLayoutPadding();
+        updateCellLayoutMeasures();
         updateWorkspaceWidgetsSizes();
         setPageIndicatorInset();
     }
@@ -370,10 +374,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mPageIndicator.setLayoutParams(lp);
     }
 
-    private void updateCellLayoutPadding() {
+    private void updateCellLayoutMeasures() {
         Rect padding = mLauncher.getDeviceProfile().cellLayoutPaddingPx;
-        mWorkspaceScreens.forEach(
-                s -> s.setPadding(padding.left, padding.top, padding.right, padding.bottom));
+        mWorkspaceScreens.forEach(cellLayout -> {
+            cellLayout.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+            cellLayout.setSpaceBetweenCellLayoutsPx(getPageSpacing() / 4);
+        });
     }
 
     private void updateWorkspaceWidgetsSizes() {
@@ -594,17 +600,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Initializes and binds the first page
      */
     public void bindAndInitFirstWorkspaceScreen() {
-        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
+        if ((!FeatureFlags.QSB_ON_FIRST_SCREEN
+                || !mLauncher.getIsFirstPagePinnedItemEnabled())
+                || shouldShowFirstPageWidget()) {
+            mFirstPagePinnedItem = null;
             return;
         }
 
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
-        // Always add a first page pinned widget on the first screen.
         if (mFirstPagePinnedItem == null) {
             // In transposed layout, we add the first page pinned widget in the Grid.
             // As workspace does not touch the edges, we do not need a full
-            // width first page pinned widget.
+            // width first page pinned item.
             mFirstPagePinnedItem = LayoutInflater.from(getContext())
                     .inflate(R.layout.search_container_workspace, firstPage, false);
         }
@@ -624,7 +632,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // transition animations competing with us changing the scroll when we add pages
         disableLayoutTransitions();
 
-        // Recycle the first page pinned widget
+        // Recycle the first page pinned item
         if (mFirstPagePinnedItem != null) {
             ((ViewGroup) mFirstPagePinnedItem.getParent()).removeView(mFirstPagePinnedItem);
         }
@@ -635,11 +643,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
 
+        // Ensure that the first page is always present
+        if (!ENABLE_SMARTSPACE_REMOVAL.get()) {
+            bindAndInitFirstWorkspaceScreen();
+        }
+
         // Remove any deferred refresh callbacks
         mLauncher.mHandler.removeCallbacksAndMessages(DeferredWidgetRefresh.class);
-
-        // Ensure that the first page is always present
-        bindAndInitFirstWorkspaceScreen();
 
         // Re-enable the layout transitions
         enableLayoutTransitions();
@@ -683,7 +693,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 mLauncher.getStateManager().getState(), newScreen, insertIndex);
 
         updatePageScrollValues();
-        updateCellLayoutPadding();
+        updateCellLayoutMeasures();
         return newScreen;
     }
 
@@ -799,6 +809,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // and we store them as extra empty screens.
         for (int i = 0; i < finalScreens.size(); i++) {
             int screenId = finalScreens.keyAt(i);
+
+            // We don't want to remove the first screen even if it's empty because that's where
+            // first page pinned item would go if it gets turned back on.
+            if (ENABLE_SMARTSPACE_REMOVAL.get() && screenId == FIRST_SCREEN_ID) {
+                continue;
+            }
+
             CellLayout screen = finalScreens.get(screenId);
 
             mWorkspaceScreens.remove(screenId);
@@ -1012,7 +1029,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             int id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
-            if ((!FeatureFlags.QSB_ON_FIRST_SCREEN || id > FIRST_SCREEN_ID)
+            if (((!FeatureFlags.QSB_ON_FIRST_SCREEN
+                    || shouldShowFirstPageWidget())
+                    || id > FIRST_SCREEN_ID)
                     && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
@@ -1602,7 +1621,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         page.setAccessibilityDelegate(null);
     }
 
-    public void startDrag(CellLayout.CellInfo cellInfo, DragOptions options) {
+    public void startDrag(CellInfo cellInfo, DragOptions options) {
         View child = cellInfo.cell;
 
         mDragInfo = cellInfo;
@@ -1766,7 +1785,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             int spanX;
             int spanY;
             if (mDragInfo != null) {
-                final CellLayout.CellInfo dragCellInfo = mDragInfo;
+                final CellInfo dragCellInfo = mDragInfo;
                 spanX = dragCellInfo.spanX;
                 spanY = dragCellInfo.spanY;
             } else {
@@ -2858,6 +2877,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, mLauncher, cellLayout,
                             (FolderInfo) info);
                     break;
+                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
+                    view = AppPairIcon.inflateIcon(R.layout.app_pair_icon, mLauncher, cellLayout,
+                            (FolderInfo) info);
+                    break;
                 default:
                     throw new IllegalStateException("Unknown item type: " + info.itemType);
             }
@@ -3056,7 +3079,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * so that Launcher can sync this object with the correct info when the activity is created/
      * destroyed
      */
-    public CellLayout.CellInfo getDragInfo() {
+    public CellInfo getDragInfo() {
         return mDragInfo;
     }
 
@@ -3413,7 +3436,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                 widgetInfo = widgetHelper.findProvider(item.providerName, item.user);
             } else {
-                widgetInfo = widgetHelper.getLauncherAppWidgetInfo(item.appWidgetId);
+                widgetInfo = widgetHelper.getLauncherAppWidgetInfo(item.appWidgetId,
+                        item.getTargetComponent());
             }
 
             if (widgetInfo != null) {

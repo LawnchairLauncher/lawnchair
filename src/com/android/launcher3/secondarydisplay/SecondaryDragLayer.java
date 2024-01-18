@@ -18,7 +18,6 @@ package com.android.launcher3.secondarydisplay;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 
 import android.content.Context;
@@ -45,7 +44,6 @@ import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -203,20 +201,10 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         }
         int deepShortcutCount = popupDataProvider.getShortcutCountForItem(item);
         final PopupContainerWithArrow<SecondaryDisplayLauncher> container;
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
-            container = (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
-                    R.layout.popup_container_material_u, mActivity.getDragLayer(), false);
-            container.populateAndShowRowsMaterialU((BubbleTextView) v, deepShortcutCount,
-                    systemShortcuts);
-        } else {
-            container = (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
-                    R.layout.popup_container, mActivity.getDragLayer(), false);
-            container.populateAndShow(
-                    (BubbleTextView) v,
-                    deepShortcutCount,
-                    Collections.emptyList(),
-                    systemShortcuts);
-        }
+        container = (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
+                R.layout.popup_container, mActivity.getDragLayer(), false);
+        container.populateAndShowRows((BubbleTextView) v, deepShortcutCount,
+                systemShortcuts);
         container.requestFocus();
 
         if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {

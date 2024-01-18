@@ -54,6 +54,7 @@ import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.SourceResources;
 import com.android.launcher3.ConstantItem;
 import com.android.launcher3.DefaultLayoutParser;
+import com.android.launcher3.EncryptionType;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherFiles;
@@ -61,6 +62,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -261,7 +263,7 @@ public class ModelDbController {
      */
     public void tryMigrateDB() {
         if (!migrateGridIfNeeded()) {
-            Log.d(TAG, "Migration failed: resetting launcher database");
+            FileLog.d(TAG, "Migration failed: resetting launcher database");
             createEmptyDB();
             LauncherPrefs.get(mContext).putSync(
                     getEmptyDbCreatedKey(mOpenHelper.getDatabaseName()).to(true));
@@ -281,15 +283,17 @@ public class ModelDbController {
         createDbIfNotExists();
         if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey())) {
             // If we have already create a new DB, ignore migration
+            Log.d(TAG, "migrateGridIfNeeded: new DB already created, skipping migration");
             return false;
         }
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
         if (!GridSizeMigrationUtil.needsToMigrate(mContext, idp)) {
+            Log.d(TAG, "migrateGridIfNeeded: no grid migration needed");
             return true;
         }
         String targetDbName = new DeviceGridState(idp).getDbFile();
         if (TextUtils.equals(targetDbName, mOpenHelper.getDatabaseName())) {
-            Log.e(TAG, "migrateGridIfNeeded - target db is same as current: " + targetDbName);
+            Log.e(TAG, "migrateGridIfNeeded: target db is same as current: " + targetDbName);
             return false;
         }
         DatabaseHelper oldHelper = mOpenHelper;
@@ -298,6 +302,9 @@ public class ModelDbController {
         try {
             return GridSizeMigrationUtil.migrateGridIfNeeded(mContext, idp, mOpenHelper,
                    oldHelper.getWritableDatabase());
+        } catch (Exception e) {
+            FileLog.e(TAG, "Failed to migrate grid", e);
+            return false;
         } finally {
             if (mOpenHelper != oldHelper) {
                 oldHelper.close();
@@ -499,11 +506,11 @@ public class ModelDbController {
     private ConstantItem<Boolean> getEmptyDbCreatedKey(String dbName) {
         if (mContext instanceof SandboxContext) {
             return LauncherPrefs.nonRestorableItem(EMPTY_DATABASE_CREATED,
-                    false /* default value */, false /* boot aware */);
+                    false /* default value */, EncryptionType.ENCRYPTED);
         }
         String key = TextUtils.equals(dbName, LauncherFiles.LAUNCHER_DB)
                 ? EMPTY_DATABASE_CREATED : EMPTY_DATABASE_CREATED + "@" + dbName;
-        return LauncherPrefs.backedUpItem(key, false /* default value */, false /* boot aware */);
+        return LauncherPrefs.backedUpItem(key, false /* default value */, EncryptionType.ENCRYPTED);
     }
 
     /**

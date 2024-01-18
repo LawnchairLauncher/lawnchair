@@ -83,17 +83,6 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_SYSTEM_MASK = FLAG_SYSTEM_YES | FLAG_SYSTEM_NO;
 
     /**
-     * Flag indicating that the icon is an {@link android.graphics.drawable.AdaptiveIconDrawable}
-     * that can be optimized in various way.
-     */
-    public static final int FLAG_ADAPTIVE_ICON = 1 << 8;
-
-    /**
-     * Flag indicating that the icon is badged.
-     */
-    public static final int FLAG_ICON_BADGED = 1 << 9;
-
-    /**
      * The icon is being installed. If {@link WorkspaceItemInfo#FLAG_RESTORED_ICON} or
      * {@link WorkspaceItemInfo#FLAG_AUTOINSTALL_ICON} is set, then the icon is either being
      * installed or is in a broken state.

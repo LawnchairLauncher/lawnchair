@@ -33,7 +33,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
@@ -43,8 +42,6 @@ import java.util.function.ToIntFunction;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
-
-    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
@@ -60,13 +57,6 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        if (FeatureFlags.IS_STUDIO_BUILD) {
-            Log.d(TAG, "Launcher process started");
-        }
-
-        // The content provider exists for the entire duration of the launcher main process and
-        // is the first component to get created.
-        MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
     }
 

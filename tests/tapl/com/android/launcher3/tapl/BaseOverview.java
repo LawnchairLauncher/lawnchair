@@ -16,15 +16,19 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -182,7 +186,14 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             Taskbar taskbar = new Taskbar(mLauncher);
             taskbar.touchBottomCorner(tapRight);
-            verifyActiveContainer();
+            if (mLauncher.isTransientTaskbar()) {
+                // Tapping outside Transient Taskbar returns to Workspace, wait for that state.
+                new Workspace(mLauncher);
+            } else {
+                // Should stay in Overview.
+                verifyActiveContainer();
+                verifyActionsViewVisibility();
+            }
         }
     }
 
@@ -201,7 +212,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             OverviewTask task = getCurrentTask();
             mLauncher.assertNotNull("current task is null", task);
             mLauncher.scrollLeftByDistance(verifyActiveContainer(),
-                    task.getVisibleWidth() + mLauncher.getOverviewPageSpacing());
+                    mLauncher.getRealDisplaySize().x - task.getUiObject().getVisibleBounds().left
+                            + mLauncher.getOverviewPageSpacing());
 
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("scrolled task off screen")) {
@@ -231,14 +243,13 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         final List<UiObject2> taskViews = getTasks();
         mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
-        // taskViews contains up to 3 task views: the 'main' (having the widest visible part) one
-        // in the center, and parts of its right and left siblings. Find the main task view by
-        // its width.
-        final UiObject2 widestTask = Collections.max(taskViews,
-                (t1, t2) -> Integer.compare(mLauncher.getVisibleBounds(t1).width(),
-                        mLauncher.getVisibleBounds(t2).width()));
-
-        return new OverviewTask(mLauncher, widestTask, this);
+        // The widest, and most top-right task should be the current task
+        UiObject2 currentTask = Collections.max(taskViews,
+                Comparator.comparingInt((UiObject2 t) -> t.getParent().getVisibleBounds().width())
+                        .thenComparingInt((UiObject2 t) -> t.getParent().getVisibleCenter().x)
+                        .thenComparing(Comparator.comparing(
+                                (UiObject2 t) -> t.getParent().getVisibleCenter().y).reversed()));
+        return new OverviewTask(mLauncher, currentTask, this);
     }
 
     /** Returns an overview task matching TestActivity {@param activityNumber}. */
@@ -320,6 +331,22 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.getOverviewObjectSelector("clear_all"));
     }
 
+    /**
+     * Returns the taskbar if it's a tablet, or {@code null} otherwise.
+     */
+    @Nullable
+    public Taskbar getTaskbar() {
+        if (!mLauncher.isTablet()) {
+            return null;
+        }
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get the taskbar")) {
+            mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
+
+            return new Taskbar(mLauncher);
+        }
+    }
+
     protected boolean isActionsViewVisible() {
         if (!hasTasks() || isClearAllVisible()) {
             return false;
@@ -366,8 +393,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         }
         int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
         for (UiObject2 task : taskViews) {
-            if (task.getVisibleBounds().height() == focusedTaskHeight) {
-                return new OverviewTask(mLauncher, task, this);
+            OverviewTask overviewTask = new OverviewTask(mLauncher, task, this);
+
+            if (overviewTask.getVisibleHeight() == focusedTaskHeight) {
+                return overviewTask;
             }
         }
         return null;

@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +43,7 @@ import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 import com.android.quickstep.util.TISBindHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /** Shows the gesture interactive sandbox in full screen mode. */
@@ -101,7 +104,10 @@ public class GestureSandboxActivity extends FragmentActivity {
             correctUserOrientation();
         }
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+
+        initWindowInsets();
     }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -111,6 +117,42 @@ public class GestureSandboxActivity extends FragmentActivity {
         if (FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
             correctUserOrientation();
         }
+    }
+
+    private void initWindowInsets() {
+        View root = findViewById(android.R.id.content);
+        root.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                updateExclusionRects(root);
+            }
+        });
+
+        // Return CONSUMED if you don't want want the window insets to keep being
+        // passed down to descendant views.
+        root.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                return WindowInsets.CONSUMED;
+            }
+        });
+    }
+
+    private void updateExclusionRects(View rootView) {
+        Insets gestureInsets = rootView.getRootWindowInsets()
+                .getInsets(WindowInsets.Type.systemGestures());
+        ArrayList<Rect> exclusionRects = new ArrayList<>();
+        // Add rect for left
+        exclusionRects.add(new Rect(0, 0, gestureInsets.left, rootView.getHeight()));
+        // Add rect for right
+        exclusionRects.add(new Rect(
+                rootView.getWidth() - gestureInsets.right,
+                0,
+                rootView.getWidth(),
+                rootView.getHeight()
+        ));
+        rootView.setSystemGestureExclusionRects(exclusionRects);
     }
 
     /**

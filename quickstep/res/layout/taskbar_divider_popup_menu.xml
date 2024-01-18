@@ -19,7 +19,7 @@
     android:layout_width="@dimen/taskbar_pinning_popup_menu_width"
     android:layout_height="wrap_content"
     android:focusable="true"
-    android:background="@drawable/popup_background_material_u"
+    android:background="@drawable/popup_background"
     android:orientation="vertical">
 
     <LinearLayout
@@ -38,6 +38,7 @@
         android:theme="@style/PopupItem">
 
         <View
+            android:id="@+id/taskbar_pinning_visibility_icon"
             android:layout_margin="6dp"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -45,14 +46,18 @@
             android:backgroundTint="?android:attr/textColorPrimary" />
 
         <Switch
-            style="@style/BaseIcon"
+            style="@style/Switch.SettingsLib"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/taskbar_pinning_switch"
             android:background="@null"
             android:clickable="false"
             android:gravity="start|center_vertical"
             android:textAlignment="viewStart"
             android:paddingStart="12dp"
-            android:singleLine="true"
+            android:layout_weight="1"
+            android:fontFamily="@*android:string/config_bodyFontFamilyMedium"
+            android:lines="1"
             android:ellipsize="end"
             android:textSize="14sp"
             android:textColor="?android:attr/textColorPrimary"

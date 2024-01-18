@@ -16,6 +16,12 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_BUBBLE_ADJUSTMENT_ANIM;
+
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -27,6 +33,10 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.util.HorizontalInsettableView;
+import com.android.launcher3.util.MultiTranslateDelegate;
+import com.android.launcher3.views.ActivityContext;
+
 /**
  * View class that represents the bottom row of the home screen.
  */
@@ -34,6 +44,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
     // Ratio of empty space, qsb should take up to appear visually centered.
     public static final float QSB_CENTER_FACTOR = .325f;
+    private static final int BUBBLE_BAR_ADJUSTMENT_ANIMATION_DURATION_MS = 250;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
@@ -72,15 +83,98 @@ public class Hotseat extends CellLayout implements Insettable {
     }
 
     public void resetLayout(boolean hasVerticalHotseat) {
+        ActivityContext activityContext = ActivityContext.lookupContext(getContext());
+        boolean bubbleBarEnabled = activityContext.isBubbleBarEnabled();
+        boolean hasBubbles = activityContext.hasBubbles();
         removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         DeviceProfile dp = mActivity.getDeviceProfile();
+
+        if (bubbleBarEnabled) {
+            float adjustedBorderSpace = dp.getHotseatAdjustedBorderSpaceForBubbleBar(getContext());
+            if (hasBubbles && Float.compare(adjustedBorderSpace, 0f) != 0) {
+                getShortcutsAndWidgets().setTranslationProvider(child -> {
+                    int index = getShortcutsAndWidgets().indexOfChild(child);
+                    float borderSpaceDelta = adjustedBorderSpace - dp.hotseatBorderSpace;
+                    return dp.iconSizePx + index * borderSpaceDelta;
+                });
+                if (mQsb instanceof HorizontalInsettableView) {
+                    HorizontalInsettableView insettableQsb = (HorizontalInsettableView) mQsb;
+                    final float insetFraction = (float) dp.iconSizePx / dp.hotseatQsbWidth;
+                    // post this to the looper so that QSB has a chance to redraw itself, e.g.
+                    // after device rotation
+                    mQsb.post(() -> insettableQsb.setHorizontalInsets(insetFraction));
+                }
+            } else {
+                getShortcutsAndWidgets().setTranslationProvider(null);
+                if (mQsb instanceof HorizontalInsettableView) {
+                    ((HorizontalInsettableView) mQsb).setHorizontalInsets(0);
+                }
+            }
+        }
+
         resetCellSize(dp);
         if (hasVerticalHotseat) {
             setGridSize(1, dp.numShownHotseatIcons);
         } else {
             setGridSize(dp.numShownHotseatIcons, 1);
         }
+    }
+
+    /**
+     * Adjust the hotseat icons for the bubble bar.
+     *
+     * <p>When the bubble bar becomes visible, if needed, this method animates the hotseat icons
+     * to reduce the spacing between them and make room for the bubble bar. The QSB width is
+     * animated as well to align with the hotseat icons.
+     *
+     * <p>When the bubble bar goes away, any adjustments that were previously made are reversed.
+     */
+    public void adjustForBubbleBar(boolean isBubbleBarVisible) {
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        float adjustedBorderSpace = dp.getHotseatAdjustedBorderSpaceForBubbleBar(getContext());
+        if (Float.compare(adjustedBorderSpace, 0f) == 0) {
+            return;
+        }
+
+        ShortcutAndWidgetContainer icons = getShortcutsAndWidgets();
+        AnimatorSet animatorSet = new AnimatorSet();
+        float borderSpaceDelta = adjustedBorderSpace - dp.hotseatBorderSpace;
+
+        // update the translation provider for future layout passes of hotseat icons.
+        if (isBubbleBarVisible) {
+            icons.setTranslationProvider(child -> {
+                int index = icons.indexOfChild(child);
+                return dp.iconSizePx + index * borderSpaceDelta;
+            });
+        } else {
+            icons.setTranslationProvider(null);
+        }
+
+        for (int i = 0; i < icons.getChildCount(); i++) {
+            View child = icons.getChildAt(i);
+            float tx = isBubbleBarVisible ? dp.iconSizePx + i * borderSpaceDelta : 0;
+            if (child instanceof Reorderable) {
+                MultiTranslateDelegate mtd = ((Reorderable) child).getTranslateDelegate();
+                animatorSet.play(
+                        mtd.getTranslationX(INDEX_BUBBLE_ADJUSTMENT_ANIM).animateToValue(tx));
+            } else {
+                animatorSet.play(ObjectAnimator.ofFloat(child, VIEW_TRANSLATE_X, tx));
+            }
+        }
+        if (mQsb instanceof HorizontalInsettableView) {
+            HorizontalInsettableView horizontalInsettableQsb = (HorizontalInsettableView) mQsb;
+            ValueAnimator qsbAnimator = ValueAnimator.ofFloat(0f, 1f);
+            qsbAnimator.addUpdateListener(animation -> {
+                float fraction = qsbAnimator.getAnimatedFraction();
+                float insetFraction = isBubbleBarVisible
+                        ? (float) dp.iconSizePx * fraction / dp.hotseatQsbWidth
+                        : (float) dp.iconSizePx * (1 - fraction) / dp.hotseatQsbWidth;
+                horizontalInsettableQsb.setHorizontalInsets(insetFraction);
+            });
+            animatorSet.play(qsbAnimator);
+        }
+        animatorSet.setDuration(BUBBLE_BAR_ADJUSTMENT_ANIMATION_DURATION_MS).start();
     }
 
     @Override
