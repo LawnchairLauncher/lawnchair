@@ -54,7 +54,6 @@ import static com.android.launcher3.LauncherConstants.TraceEvents.ON_RESUME_EVT;
 import static com.android.launcher3.LauncherConstants.TraceEvents.ON_START_EVT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.FLAG_MULTI_PAGE;
@@ -219,6 +218,7 @@ import com.android.launcher3.util.CannedAnimationCoordinator;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.ItemInflater;
 import com.android.launcher3.util.KeyboardShortcutsDelegate;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.PackageUserKey;
@@ -246,8 +246,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
-import com.android.launcher3.widget.WidgetInflater;
-import com.android.launcher3.widget.WidgetInflater.InflationResult;
 import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -329,7 +327,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private WidgetManagerHelper mAppWidgetManager;
     private LauncherWidgetHolder mAppWidgetHolder;
-    private WidgetInflater mWidgetInflater;
+    private ItemInflater<Launcher> mItemInflater;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
@@ -515,10 +513,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         updateDisallowBack();
 
         mAppWidgetManager = new WidgetManagerHelper(this);
-        mWidgetInflater = new WidgetInflater(this);
         mAppWidgetHolder = createAppWidgetHolder();
         mAppWidgetHolder.startListening();
         mAppWidgetHolder.addProviderChangeListener(() -> refreshAndBindWidgetsForPackageUser(null));
+        mItemInflater = new ItemInflater<>(this, mAppWidgetHolder, getItemOnClickListener(),
+                mFocusHandler, new CellLayout(mWorkspace.getContext()));
 
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
@@ -1354,35 +1353,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /**
-     * Creates a view representing a shortcut.
-     *
-     * @param info The data structure describing the shortcut.
-     */
-    View createShortcut(WorkspaceItemInfo info) {
-        // This can be called before PagedView#pageScrollsInitialized returns true, so use the
-        // first page, which we always assume to be present.
-        return createShortcut((ViewGroup) mWorkspace.getChildAt(0), info);
-    }
-
-    /**
-     * Creates a view representing a shortcut inflated from the specified resource.
-     *
-     * @param parent The group the shortcut belongs to. This is not necessarily the group where
-     *               the shortcut should be added.
-     * @param info   The data structure describing the shortcut.
-     * @return A View inflated from layoutResId.
-     */
-    public View createShortcut(@Nullable ViewGroup parent, WorkspaceItemInfo info) {
-        BubbleTextView favorite =
-                (BubbleTextView) LayoutInflater.from(parent != null ? parent.getContext() : this)
-                        .inflate(R.layout.app_icon, parent, false);
-        favorite.applyFromWorkspaceItem(info);
-        favorite.setOnClickListener(getItemOnClickListener());
-        favorite.setOnFocusChangeListener(mFocusHandler);
-        return favorite;
-    }
-
-    /**
      * Add a shortcut to the workspace or to a Folder.
      *
      * @param data The intent describing the shortcut.
@@ -1405,7 +1375,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (container < 0) {
             // Adding a shortcut to the Workspace.
-            final View view = createShortcut(info);
+            final View view = mItemInflater.inflateItem(info, getModelWriter());
             boolean foundCellSpan = false;
             // First we check if we already know the exact location where we want to add this item.
             if (cellX >= 0 && cellY >= 0) {
@@ -1491,7 +1461,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 itemInfo.container, presenterPos.screenId, presenterPos.cellX, presenterPos.cellY);
 
         hostView.setVisibility(View.VISIBLE);
-        prepareAppWidget(hostView, launcherInfo);
+        mItemInflater.prepareAppWidget(hostView, launcherInfo);
         mWorkspace.addInScreen(hostView, launcherInfo);
         announceForAccessibility(R.string.item_added_to_workspace);
 
@@ -1514,12 +1484,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 });
             }
         }
-    }
-
-    private void prepareAppWidget(AppWidgetHostView hostView, LauncherAppWidgetInfo item) {
-        hostView.setTag(item);
-        hostView.setFocusable(true);
-        hostView.setOnFocusChangeListener(mFocusHandler);
     }
 
     private final ScreenOnListener mScreenOnListener = this::onScreenOnChanged;
@@ -2157,63 +2121,19 @@ public class Launcher extends StatefulActivity<LauncherState>
             final boolean focusFirstItemForAccessibility) {
         // Get the list of added items and intersect them with the set of items here
         final Collection<Animator> bounceAnims = new ArrayList<>();
-        boolean canAnimatePageChange = canAnimatePageChange();
         Workspace<?> workspace = mWorkspace;
         int newItemsScreenId = -1;
         int end = items.size();
         View newView = null;
         for (int i = 0; i < end; i++) {
             final ItemInfo item = items.get(i);
-            // Short circuit if we are loading dock items for a configuration which has no dock
-            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                    mHotseat == null) {
-                continue;
-            }
 
-            final View view;
-            switch (item.itemType) {
-                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    WorkspaceItemInfo info = (WorkspaceItemInfo) item;
-                    view = createShortcut(info);
-                    break;
-                }
-                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
-                    view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this,
-                            (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
-                            (FolderInfo) item);
-                    break;
-                }
-                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR: {
-                    view = AppPairIcon.inflateIcon(R.layout.app_pair_icon, this,
-                            (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
-                            (FolderInfo) item);
-                    break;
-                }
-                case ITEM_TYPE_APPWIDGET:
-                case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET: {
-                    view = inflateAppWidget((LauncherAppWidgetInfo) item);
-                    if (view == null) {
-                        continue;
-                    }
-                    break;
-                }
-                default:
-                    throw new RuntimeException("Invalid Item Type");
-            }
-
-            /*
-             * Remove colliding items.
-             */
+            // Remove colliding items.
             CellPos presenterPos = getCellPosMapper().mapModelToPresenter(item);
             if (item.container == CONTAINER_DESKTOP) {
                 CellLayout cl = mWorkspace.getScreenWithId(presenterPos.screenId);
                 if (cl != null && cl.isOccupied(presenterPos.cellX, presenterPos.cellY)) {
-                    View v = cl.getChildAt(presenterPos.cellX, presenterPos.cellY);
-                    if (v == null) {
-                        Log.e(TAG, "bindItems failed when removing colliding item=" + item);
-                    }
-                    Object tag = v.getTag();
+                    Object tag = cl.getChildAt(presenterPos.cellX, presenterPos.cellY).getTag();
                     String desc = "Collision while binding workspace item: " + item
                             + ". Collides with " + tag;
                     if (FeatureFlags.IS_STUDIO_BUILD) {
@@ -2223,6 +2143,11 @@ public class Launcher extends StatefulActivity<LauncherState>
                         continue;
                     }
                 }
+            }
+
+            final View view = mItemInflater.inflateItem(item, getModelWriter());
+            if (view == null) {
+                continue;
             }
             workspace.addInScreenFromBind(view, item);
             if (forceAnimateIcons) {
@@ -2240,7 +2165,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         View viewToFocus = newView;
-        // Animate to the correct pager
+        // Animate to the correct page
         if (forceAnimateIcons && newItemsScreenId > -1) {
             AnimatorSet anim = new AnimatorSet();
             anim.playTogether(bounceAnims);
@@ -2257,19 +2182,13 @@ public class Launcher extends StatefulActivity<LauncherState>
             final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
             final Runnable startBounceAnimRunnable = anim::start;
 
-            if (canAnimatePageChange && newItemsScreenId != currentScreenId) {
+            if (canAnimatePageChange() && newItemsScreenId != currentScreenId) {
                 // We post the animation slightly delayed to prevent slowdowns
                 // when we are loading right after we return to launcher.
-                mWorkspace.postDelayed(new Runnable() {
-                    public void run() {
-                        if (mWorkspace != null) {
-                            closeOpenViews(false);
-
-                            mWorkspace.snapToPage(newScreenIndex);
-                            mWorkspace.postDelayed(startBounceAnimRunnable,
-                                    NEW_APPS_ANIMATION_DELAY);
-                        }
-                    }
+                mWorkspace.postDelayed(() -> {
+                    closeOpenViews(false);
+                    mWorkspace.snapToPage(newScreenIndex);
+                    mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
                 }, NEW_APPS_PAGE_MOVE_DELAY);
             } else {
                 mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
@@ -2284,33 +2203,10 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Add the views for a widget to the workspace.
      */
     public void bindAppWidget(LauncherAppWidgetInfo item) {
-        View view = inflateAppWidget(item);
+        View view = mItemInflater.inflateItem(item, getModelWriter());
         if (view != null) {
             mWorkspace.addInScreen(view, item);
             mWorkspace.requestLayout();
-        }
-    }
-
-    private View inflateAppWidget(LauncherAppWidgetInfo item) {
-        TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
-        try {
-            InflationResult inflationResult = mWidgetInflater.inflateAppWidget(item);
-            if (inflationResult.getType() == WidgetInflater.TYPE_DELETE) {
-                getModelWriter().deleteItemFromDatabase(item, inflationResult.getReason());
-                return null;
-            }
-
-            if (inflationResult.isUpdate()) {
-                getModelWriter().updateItemInDatabase(item);
-            }
-            AppWidgetHostView view = inflationResult.getType() == WidgetInflater.TYPE_PENDING
-                    ? new PendingAppWidgetHostView(this, item, inflationResult.getWidgetInfo())
-                    : mAppWidgetHolder.createView(
-                            item.appWidgetId, inflationResult.getWidgetInfo());
-            prepareAppWidget(view, item);
-            return view;
-        } finally {
-            TraceHelper.INSTANCE.endSection();
         }
     }
 
@@ -3094,6 +2990,10 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public StatsLogManager getStatsLogManager() {
         return super.getStatsLogManager().withDefaultInstanceId(mAllAppsSessionLogId);
+    }
+
+    public ItemInflater<Launcher> getItemInflater() {
+        return mItemInflater;
     }
 
     /**
