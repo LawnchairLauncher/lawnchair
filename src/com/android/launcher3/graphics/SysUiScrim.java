@@ -139,6 +139,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
      * Draw the top and bottom scrims
      */
     public void draw(Canvas canvas) {
+        if (canvas == null) return;
         if (!mHideSysUiScrim) {
             if (mSysUiProgress.value <= 0) {
                 mAnimateScrimOnNextDraw = false;
@@ -156,10 +157,10 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
                 mAnimateScrimOnNextDraw = false;
             }
 
-            if (mDrawTopScrim) {
+            if (mDrawTopScrim && mTopMaskBitmap != null) {
                 canvas.drawBitmap(mTopMaskBitmap, null, mTopMaskRect, mTopMaskPaint);
             }
-            if (mDrawBottomScrim) {
+            if (mDrawBottomScrim && mBottomMaskBitmap != null) {
                 canvas.drawBitmap(mBottomMaskBitmap, null, mBottomMaskRect, mBottomMaskPaint);
             }
         }
