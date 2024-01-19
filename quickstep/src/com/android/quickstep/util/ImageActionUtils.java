@@ -54,6 +54,7 @@ import com.android.internal.util.ScreenshotRequest;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -92,8 +93,12 @@ public class ImageActionUtils {
                             .build();
             systemUiProxy.takeScreenshot(request);
         } catch (Throwable t) {
-            systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
-                    screenshotBounds, visibleInsets, task);
+            try {
+                systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
+                        screenshotBounds, visibleInsets, task);
+            } catch (Throwable ee) {
+                Shell.su("input keyevent 120").exec();
+            }
         }
     }
 
