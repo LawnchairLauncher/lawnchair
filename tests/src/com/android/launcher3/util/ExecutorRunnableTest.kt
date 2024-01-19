@@ -20,6 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.util.rule.TestStabilityRule
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.locks.ReentrantLock
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
@@ -35,6 +36,7 @@ class ExecutorRunnableTest {
 
     private lateinit var underTest: ExecutorRunnable<Int>
 
+    private val lock = ReentrantLock()
     private var result: Int = -1
     private var isTaskExecuted = false
     private var isCallbackExecuted = false
@@ -44,6 +46,10 @@ class ExecutorRunnableTest {
     @Before
     fun setup() {
         reset()
+        submitJob()
+    }
+
+    private fun submitJob() {
         underTest =
             ExecutorRunnable.createAndExecute(
                 Executors.UI_HELPER_EXECUTOR,
@@ -69,13 +75,36 @@ class ExecutorRunnableTest {
     }
 
     @Test
-    @TestStabilityRule.Stability(
-        flavors = TestStabilityRule.LOCAL or TestStabilityRule.PLATFORM_POSTSUBMIT
-    ) // b/316588649
-    fun run_and_cancel_cancelCallback() {
-        underTest.cancel(false)
+    fun run_and_cancel_cancelTaskAndCallback() {
         awaitAllExecutorCompleted()
+        reset()
+        lock.lock()
+        Executors.UI_HELPER_EXECUTOR.submit { lock.lock() }
+        submitJob()
 
+        underTest.cancel(false)
+
+        lock.unlock() // unblock task on UI_HELPER_EXECUTOR
+        awaitAllExecutorCompleted()
+        assertFalse("task should not be executed.", isTaskExecuted)
+        assertFalse("callback should not be executed.", isCallbackExecuted)
+        assertEquals(0, result)
+    }
+
+    @Test
+    fun run_and_cancel_cancelCallback() {
+        awaitAllExecutorCompleted()
+        reset()
+        lock.lock()
+        Executors.VIEW_PREINFLATION_EXECUTOR.submit { lock.lock() }
+        submitJob()
+        awaitExecutorCompleted(Executors.UI_HELPER_EXECUTOR)
+        assertTrue("task should be executed.", isTaskExecuted)
+
+        underTest.cancel(false)
+
+        lock.unlock() // unblock callback on VIEW_PREINFLATION_EXECUTOR
+        awaitExecutorCompleted(Executors.VIEW_PREINFLATION_EXECUTOR)
         assertFalse("callback should not be executed.", isCallbackExecuted)
         assertEquals(0, result)
     }
