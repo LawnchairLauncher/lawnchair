@@ -4,6 +4,7 @@ import android.os.Build
 import app.lawnchair.compatlib.ActivityManagerCompat
 import app.lawnchair.compatlib.ActivityOptionsCompat
 import app.lawnchair.compatlib.QuickstepCompatFactory
+import app.lawnchair.compatlib.RemoteTransitionCompat
 import app.lawnchair.compatlib.eleven.QuickstepCompatFactoryVR
 import app.lawnchair.compatlib.fourteen.QuickstepCompatFactoryVU
 import app.lawnchair.compatlib.ten.QuickstepCompatFactoryVQ
@@ -56,4 +57,7 @@ object LawnchairQuickstepCompat {
 
     @JvmStatic
     val activityOptionsCompat: ActivityOptionsCompat = factory.activityOptionsCompat
+
+    @JvmStatic
+    val remoteTransitionCompat: RemoteTransitionCompat = factory.remoteTransitionCompat
 }

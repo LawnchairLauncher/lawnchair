@@ -279,7 +279,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 new RemoteAnimationAdapter(wrapper, RECENTS_LAUNCH_DURATION,
                         RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
                                 - STATUS_BAR_TRANSITION_PRE_DELAY),
-                new RemoteTransition(wrapper.toRemoteTransition(), getIApplicationThread(),
+                LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(wrapper.toRemoteTransition(), getIApplicationThread(),
                         "LaunchFromRecents"),
                 "Lawnchair");
         final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(options,
@@ -425,7 +425,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
         ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, HOME_APPEAR_DURATION, 0),
-                new RemoteTransition(runner.toRemoteTransition(), getIApplicationThread(),
+                LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(runner.toRemoteTransition(), getIApplicationThread(),
                         "StartHomeFromRecents"),
                 "Lawnchair");
         startHomeIntentSafely(this, options.toBundle());

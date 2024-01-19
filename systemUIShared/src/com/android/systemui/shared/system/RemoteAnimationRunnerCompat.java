@@ -206,13 +206,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     counterWallpaper.cleanUp(finishTransaction);
                     // Release surface references now. This is apparently to free GPU memory
                     // before GC would.
-                    try {
-                        Method method = info.getClass ().getMethod ("releaseAllSurfaces");
-                        method.invoke (info);
-                    } catch (NoSuchMethodException | IllegalAccessException |
-                             InvocationTargetException e) {
-                        Log.e ("animationFinishedCallback" , "mergeAnimation: ", e);
-                    }
+                    info.releaseAllSurfaces();
                     // Don't release here since launcher might still be using them. Instead
                     // let launcher release them (eg. via RemoteAnimationTargets)
                     leashMap.clear();
@@ -248,12 +242,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 }
                 // Since we're not actually animating, release native memory now
                 t.close();
-                try {
-                    Method method = info.getClass ().getMethod ("releaseAllSurfaces");
-                    method.invoke (info);
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    Log.e ("" , "mergeAnimation: ", e);
-                }
+                info.releaseAllSurfaces();
                 if (finishRunnable == null) return;
                 onAnimationCancelled(false /* isKeyguardOccluded */);
                 finishRunnable.run();

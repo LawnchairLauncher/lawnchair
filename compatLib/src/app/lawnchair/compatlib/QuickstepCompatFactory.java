@@ -10,4 +10,7 @@ public abstract class QuickstepCompatFactory {
     @NonNull
     public abstract ActivityOptionsCompat getActivityOptionsCompat();
 
+    @NonNull
+    public abstract RemoteTransitionCompat getRemoteTransitionCompat();
+
 }

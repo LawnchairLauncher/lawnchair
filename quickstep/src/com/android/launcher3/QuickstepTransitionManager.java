@@ -338,7 +338,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 - STATUS_BAR_TRANSITION_PRE_DELAY;
         ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
-                new RemoteTransition(runner.toRemoteTransition(),
+                LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(runner.toRemoteTransition(),
                         mLauncher.getIApplicationThread(), "QuickstepLaunch"),
                 "Lawnchair");
 
@@ -1159,7 +1159,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (!LawnchairQuickstepCompat.ATLEAST_T) return;
         if (hasControlRemoteAppTransitionPermission()) {
             mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
-            mLauncherOpenTransition = new RemoteTransition(
+            mLauncherOpenTransition = LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */).toRemoteTransition(),
                     mLauncher.getIApplicationThread(), "QuickstepLaunchHome");
