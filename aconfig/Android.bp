@@ -20,7 +20,6 @@ package {
 aconfig_declarations {
     name: "com_android_launcher3_flags",
     package: "com.android.launcher3",
-    container: "system",
     srcs: ["**/*.aconfig"],
 }
 
