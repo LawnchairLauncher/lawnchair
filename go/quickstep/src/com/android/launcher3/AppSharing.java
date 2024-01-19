@@ -31,6 +31,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
@@ -45,6 +47,9 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.views.ActivityContext;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * Defines the Share system shortcut and its factory.
@@ -112,6 +117,9 @@ public final class AppSharing {
         private final PopupDataProvider mPopupDataProvider;
         private final boolean mSharingEnabledForUser;
 
+        private final Set<View> mBoundViews = Collections.newSetFromMap(new WeakHashMap<>());
+        private boolean mIsEnabled = true;
+
         public Share(Launcher target, ItemInfo itemInfo, View originalView) {
             super(R.drawable.ic_share, R.string.app_share_drop_target_label, target, itemInfo,
                     originalView);
@@ -128,10 +136,23 @@ public final class AppSharing {
         }
 
         @Override
+        public void setIconAndLabelFor(View iconView, TextView labelView) {
+            super.setIconAndLabelFor(iconView, labelView);
+            mBoundViews.add(iconView);
+            mBoundViews.add(labelView);
+        }
+
+        @Override
+        public void setIconAndContentDescriptionFor(ImageView view) {
+            super.setIconAndContentDescriptionFor(view);
+            mBoundViews.add(view);
+        }
+
+        @Override
         public void onClick(View view) {
             ActivityContext.lookupContext(view.getContext())
                     .getStatsLogManager().logger().log(LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP);
-            if (!isEnabled()) {
+            if (!mIsEnabled) {
                 showCannotShareToast(view.getContext());
                 return;
             }
@@ -179,7 +200,6 @@ public final class AppSharing {
                 return;
             }
             checkShareability(/* requestUpdateIfUnknown */ false);
-            mTarget.runOnUiThread(mPopupDataProvider::redrawSystemShortcuts);
         }
 
         private void checkShareability(boolean requestUpdateIfUnknown) {
@@ -208,6 +228,17 @@ public final class AppSharing {
                     : blockedByMessage;
             int duration = Toast.LENGTH_SHORT;
             Toast.makeText(context, text, duration).show();
+        }
+
+        public void setEnabled(boolean isEnabled) {
+            if (mIsEnabled != isEnabled) {
+                mIsEnabled = isEnabled;
+                mBoundViews.forEach(v -> v.setEnabled(isEnabled));
+            }
+        }
+
+        public boolean isEnabled() {
+            return mIsEnabled;
         }
     }
 
