@@ -111,6 +111,10 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Get app suggestions based on your routine"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Long press on the divider to pin the Taskbar"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Do more with the Taskbar"</string>
+    <!-- no translation found for taskbar_edu_pinning_title (210102174154211712) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_pinning_standalone (2636919474366410467) -->
+    <skip />
     <string name="taskbar_edu_close" msgid="887022990168191073">"Close"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Done"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>
