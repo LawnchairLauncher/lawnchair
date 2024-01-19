@@ -51,6 +51,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -618,9 +619,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         super.onDraw(canvas);
         if (mLeaveBehindFolderIcon != null) {
             canvas.save();
-            canvas.translate(mLeaveBehindFolderIcon.getLeft(), mLeaveBehindFolderIcon.getTop());
-            mLeaveBehindFolderIcon.getFolderBackground().drawLeaveBehind(canvas,
-                    mFolderLeaveBehindColor);
+            canvas.translate(
+                    mLeaveBehindFolderIcon.getLeft() + mLeaveBehindFolderIcon.getTranslationX(),
+                    mLeaveBehindFolderIcon.getTop());
+            PreviewBackground previewBackground = mLeaveBehindFolderIcon.getFolderBackground();
+            previewBackground.drawLeaveBehind(canvas, mFolderLeaveBehindColor);
             canvas.restore();
         }
     }
