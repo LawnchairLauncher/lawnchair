@@ -1,6 +1,7 @@
 package app.lawnchair.compat
 
 import android.os.Build
+import android.util.Log
 import app.lawnchair.compatlib.ActivityManagerCompat
 import app.lawnchair.compatlib.ActivityOptionsCompat
 import app.lawnchair.compatlib.QuickstepCompatFactory
@@ -13,6 +14,8 @@ import app.lawnchair.compatlib.twelve.QuickstepCompatFactoryVS
 
 object LawnchairQuickstepCompat {
 
+    val TAG: String = "LawnchairQuickstepCompat"
+    
     @JvmField
     val ATLEAST_Q: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
@@ -42,14 +45,21 @@ object LawnchairQuickstepCompat {
         QuickstepCompatFactoryVQ()
     }
 
-    // For rom Android 13 empty recent checker
+    /**
+     * For rom Android 13 empty recent checker
+     *  TODO
+     */
     @JvmStatic
     val isDecember2022Patch: Boolean
         get() {
             val december2022Patch = "2022-12"
             val currentSecurityPatch = Build.VERSION.SECURITY_PATCH
+            val currentBuildNumber = Build.ID
             val currentYearMonth = currentSecurityPatch.substring(0, 7)
-            return currentYearMonth <= december2022Patch && ATLEAST_T
+            Log.d(TAG, ": $currentBuildNumber $currentYearMonth")
+            return (currentYearMonth <= december2022Patch && ATLEAST_T) 
+                    || (currentBuildNumber.contains("TQ1") && ATLEAST_T)
+                    || (currentBuildNumber.contains("TQ2") && ATLEAST_T)
         }
 
     @JvmStatic

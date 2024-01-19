@@ -51,6 +51,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import app.lawnchair.compat.LawnchairQuickstepCompat;
 
@@ -253,7 +254,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
             List<RunningTaskInfo> visibleNonExcludedTasks = mAllCachedTasks.stream()
                     .filter(t -> t.isVisible
                             && (t.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0)
-                    .toList();
+                    .collect(Collectors.toList());
             return visibleNonExcludedTasks.isEmpty() ? null
                     : new CachedTaskInfo(visibleNonExcludedTasks);
         }
