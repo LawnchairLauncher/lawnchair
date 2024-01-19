@@ -175,7 +175,6 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
 
             if (!mTmpPosition.equals(mIconPosition)) {
                 mIconPosition.set(mTmpPosition);
-                sendIconInfo();
 
                 LayoutParams lp = (LayoutParams) mSurfaceView.getLayoutParams();
                 lp.width = Math.round(mIconPosition.width());
@@ -184,6 +183,9 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
                 lp.topMargin = Math.round(mIconPosition.top);
             }
         }
+
+        sendIconInfo();
+
         if (mIcon != null && iconChanged && !mIconBounds.isEmpty()) {
             // Record the icon display
             setCurrentIconVisible(true);
@@ -197,7 +199,7 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
     }
 
     private void sendIconInfo() {
-        if (mContract != null && !mIconPosition.isEmpty()) {
+        if (mContract != null) {
             mContract.sendEndPosition(mIconPosition, mLauncher, mSurfaceView.getSurfaceControl());
         }
     }
