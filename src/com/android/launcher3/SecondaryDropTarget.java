@@ -155,6 +155,9 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             }
             return INVALID;
         } else if (info.isPredictedItem()) {
+            if (Flags.enableShortcutDontSuggestApp()) {
+                return INVALID;
+            }
             return DISMISS_PREDICTION;
         }
 

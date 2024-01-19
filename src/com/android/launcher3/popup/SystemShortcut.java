@@ -2,6 +2,7 @@ package com.android.launcher3.popup;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_INSTALL_SYSTEM_SHORTCUT_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP;
 
 import android.app.ActivityOptions;
@@ -321,6 +322,34 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
                     Process.myUserHandle());
             mTarget.startActivitySafely(view, intent, mItemInfo);
             AbstractFloatingView.closeAllOpenViews(mTarget);
+        }
+    }
+
+    public static final Factory<Launcher> DONT_SUGGEST_APP = new Factory<Launcher>() {
+        @Nullable
+        @Override
+        public SystemShortcut<Launcher> getShortcut(Launcher activity, ItemInfo itemInfo,
+                View originalView) {
+            if (!itemInfo.isPredictedItem()) {
+                return null;
+            }
+            return new DontSuggestApp(activity, itemInfo, originalView);
+        }
+    };
+
+    private static class DontSuggestApp extends SystemShortcut<Launcher> {
+        DontSuggestApp(Launcher target, ItemInfo itemInfo,
+                View originalView) {
+            super(R.drawable.ic_block_no_shadow, R.string.dismiss_prediction_label, target,
+                    itemInfo, originalView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            dismissTaskMenuView(mTarget);
+            mTarget.getStatsLogManager().logger()
+                    .withItemInfo(mItemInfo)
+                    .log(LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP);
         }
     }
 

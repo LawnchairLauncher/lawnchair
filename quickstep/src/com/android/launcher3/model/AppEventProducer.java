@@ -38,6 +38,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_LEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.model.PredictionHelper.isTrackedForHotseatPrediction;
@@ -137,7 +138,8 @@ public class AppEventProducer implements StatsLogConsumer {
                 || event == LAUNCHER_QUICKSWITCH_LEFT
                 || event == LAUNCHER_APP_LAUNCH_DRAGDROP) {
             sendEvent(atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
-        } else if (event == LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST) {
+        } else if (event == LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST
+                || event == LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP) {
             sendEvent(atomInfo, ACTION_DISMISS, CONTAINER_PREDICTION);
         } else if (event == LAUNCHER_ITEM_DRAG_STARTED) {
             mLastDragItem = atomInfo;

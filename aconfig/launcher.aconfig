@@ -1,4 +1,5 @@
 package: "com.android.launcher3"
+container: "system"
 
 flag {
     name: "enable_expanding_pause_work_button"
@@ -85,6 +86,13 @@ flag {
 }
 
 flag {
+    name: "enable_shortcut_dont_suggest_app"
+    namespace: "launcher"
+    description: "Enables don't suggest app shortcut for suggested apps"
+    bug: "319250810"
+}
+
+flag {
     name: "enable_support_for_archiving"
     namespace: "launcher"
     description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."
@@ -104,4 +112,18 @@ flag {
     description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
     bug: "307527314"
     is_fixed_read_only: true
+}
+
+flag {
+    name: "enable_reboot_unlock_animation"
+    namespace: "launcher"
+    description: "Enables unlock animation after device reboot"
+    bug: "298231234"
+}
+
+flag {
+    name: "enable_workspace_inflation"
+    namespace: "launcher"
+    description: "Enables asnc inflation of workspace icons"
+    bug: "318539160"
 }

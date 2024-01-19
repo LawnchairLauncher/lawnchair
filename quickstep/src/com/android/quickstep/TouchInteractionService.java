@@ -1005,14 +1005,22 @@ public class TouchInteractionService extends Service {
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
                             mOverviewCommandHelper);
                 }
-            } else if (canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()) {
+            }
+
+            NavHandle navHandle = tac != null ? tac.getNavHandle()
+                    : SystemUiProxy.INSTANCE.get(this);
+            if (canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()
+                    && navHandle.canNavHandleBeLongPressed()) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
-                        .append("Not running recents animation, ")
-                        .append("using NavHandleLongPressInputConsumer");
+                        .append("Not running recents animation, ");
+                if (tac != null && tac.getNavHandle().canNavHandleBeLongPressed()) {
+                    reasonString.append("stashed handle is long-pressable, ");
+                }
+                reasonString.append("using NavHandleLongPressInputConsumer");
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat,
-                        mDeviceState);
+                        mDeviceState, navHandle);
             }
 
             if (mDeviceState.isBubblesExpanded()) {

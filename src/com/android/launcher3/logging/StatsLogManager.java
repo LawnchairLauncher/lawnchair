@@ -211,6 +211,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped on pin system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP(522),
 
+        @UiEvent(doc = "User tapped on don't suggest app system shortcut.")
+        LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP(1603),
+
         @UiEvent(doc = "User is shown All Apps education view.")
         LAUNCHER_ALL_APPS_EDU_SHOWN(523),
 
@@ -283,6 +286,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User long presses on the bottom bezel area.")
         LAUNCHER_LONG_PRESS_NAVBAR(1544),
+
+        @UiEvent(doc = "User deep presses on the stashed taskbar")
+        LAUNCHER_DEEP_PRESS_STASHED_TASKBAR(1602),
+
+        @UiEvent(doc = "User long presses on the stashed taskbar")
+        LAUNCHER_LONG_PRESS_STASHED_TASKBAR(1592),
 
         @UiEvent(doc = "User swipes or fling in UP direction from bottom bazel area.")
         LAUNCHER_HOME_GESTURE(574),

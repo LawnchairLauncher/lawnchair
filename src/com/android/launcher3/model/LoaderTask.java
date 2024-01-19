@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.Flags.enableLauncherBrMetricsFixed;
+import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE;
 import static com.android.launcher3.LauncherPrefs.SHOULD_SHOW_SMARTSPACE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
@@ -30,6 +31,7 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_WORK_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
@@ -143,6 +145,7 @@ public class LoaderTask implements Runnable {
     private final UserManagerState mUserManagerState;
     protected final Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap = new ArrayMap<>();
     private Map<ShortcutKey, ShortcutInfo> mShortcutKeyToPinnedShortcuts;
+    private HashMap<PackageUserKey, SessionInfo> mInstallingPkgsCached;
 
     private boolean mStopped;
 
@@ -170,6 +173,7 @@ public class LoaderTask implements Runnable {
         mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
         mUserManagerState = userManagerState;
+        mInstallingPkgsCached = null;
     }
 
     protected synchronized void waitForIdle() {
@@ -253,7 +257,7 @@ public class LoaderTask implements Runnable {
             Trace.beginSection("LoadAllApps");
             List<LauncherActivityInfo> allActivityList;
             try {
-               allActivityList = loadAllApps();
+                allActivityList = loadAllApps();
             } finally {
                 Trace.endSection();
             }
@@ -417,6 +421,9 @@ public class LoaderTask implements Runnable {
 
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
                     mSessionHelper.getActiveSessions();
+            if (enableSupportForArchiving()) {
+                mInstallingPkgsCached = installingPkgs;
+            }
             installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
             FileLog.d(TAG, "loadWorkspace: Packages with active install sessions: "
                     + installingPkgs.keySet().stream().map(info -> info.mPackageName).toList());
@@ -649,8 +656,20 @@ public class LoaderTask implements Runnable {
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
                 AppInfo appInfo = new AppInfo(app, user, quietMode);
-                // TODO(b/302115555): Handle the case when archived apps with active sessions are
-                //  loaded.
+                if (enableSupportForArchiving() && app.getApplicationInfo().isArchived) {
+                    // For archived apps, include progress info in case there is a pending
+                    // install session post restart of device.
+                    String appPackageName = app.getApplicationInfo().packageName;
+                    SessionInfo si = mInstallingPkgsCached != null ? mInstallingPkgsCached.get(
+                            new PackageUserKey(appPackageName, user))
+                            : mSessionHelper.getActiveSessionInfo(user,
+                                    appPackageName);
+                    if (si != null) {
+                        appInfo.runtimeStatusFlags |= FLAG_INSTALL_SESSION_ACTIVE;
+                        appInfo.setProgressLevel((int) (si.getProgress() * 100),
+                                PackageInstallInfo.STATUS_INSTALLING);
+                    }
+                }
 
                 iconRequestInfos.add(new IconRequestInfo<>(
                         appInfo, app, /* useLowResIcon= */ false));
