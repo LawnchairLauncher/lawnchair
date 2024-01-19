@@ -170,7 +170,7 @@ interface ISystemUiProxy {
      * Handle the provided image as if it was a screenshot.
      */
     void handleImageBundleAsScreenshot(in Bundle screenImageBundle, in Rect locationInScreen,
-                  in Insets visibleInsets, in Task.TaskKey task) = 28;
+                  in Insets visibleInsets, in Task.TaskKey task) = 26;
 
     /**
      * Dispatches trackpad status bar motion event to the notification shade. Currently these events

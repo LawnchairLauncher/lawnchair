@@ -494,7 +494,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     @Override
     public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
                                               Insets visibleInsets, Task.TaskKey task) {
-        if (mSystemUiProxy != null && Utilities.ATLEAST_S) {
+        if (mSystemUiProxy != null) {
             try {
                 mSystemUiProxy.handleImageBundleAsScreenshot(screenImageBundle, locationInScreen,
                         visibleInsets, task);
@@ -504,7 +504,6 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    @Override
     public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
         if (mSystemUiProxy != null) {
             try {
@@ -516,9 +515,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void setSplitScreenMinimized(boolean minimized) throws RemoteException {
-
-    }
+    public void setSplitScreenMinimized(boolean minimized) throws RemoteException {}
 
     @Override
     public void notifySwipeToHomeFinished() {
