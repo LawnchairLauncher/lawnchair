@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
+import static android.view.WindowInsetsAnimation.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
@@ -67,6 +68,8 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
+import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
+import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.SHOW;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -139,6 +142,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnPreDrawListener;
+import android.view.WindowInsets;
+import android.view.WindowInsetsAnimation;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
@@ -1084,6 +1089,25 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         DiscoveryBounce.showForHomeIfNeeded(this);
         mAppWidgetHolder.setActivityResumed(true);
+
+        // Listen for IME changes to keep state up to date.
+        getRootView().setWindowInsetsAnimationCallback(
+                new WindowInsetsAnimation.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
+                    @Override
+                    public WindowInsets onProgress(WindowInsets windowInsets,
+                            List<WindowInsetsAnimation> windowInsetsAnimations) {
+                        return windowInsets;
+                    }
+
+                    @Override
+                    public void onEnd(WindowInsetsAnimation animation) {
+                        WindowInsets insets = getRootView().getRootWindowInsets();
+                        boolean isImeVisible =
+                                insets != null && insets.isVisible(WindowInsets.Type.ime());
+                        getStatsLogManager().keyboardStateManager().setKeyboardState(
+                                isImeVisible ? SHOW : HIDE);
+                    }
+                });
     }
 
     private void logStopAndResume(boolean isResume) {
