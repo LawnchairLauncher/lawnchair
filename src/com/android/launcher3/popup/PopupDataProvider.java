@@ -36,7 +36,6 @@ import com.android.launcher3.widget.model.WidgetsListContentEntry;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mNotificationDotsChangeListener.accept(updatedDots);
-        mChangeListener.onNotificationDotsUpdated(updatedDots);
     }
 
     @Override
@@ -98,7 +96,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 mPackageUserToDotInfos.remove(removedPackageUserKey);
             }
             updateNotificationDots(removedPackageUserKey::equals);
-            trimNotifications(mPackageUserToDotInfos);
         }
     }
 
@@ -136,11 +133,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         if (!updatedDots.isEmpty()) {
             updateNotificationDots(updatedDots::containsKey);
         }
-        trimNotifications(updatedDots);
-    }
-
-    private void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) {
-        mChangeListener.trimNotifications(updatedDots);
     }
 
     public void setDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
@@ -169,26 +161,23 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         if (dotInfo == null) {
             return null;
         }
-        List<NotificationKeyData> notifications = getNotificationsForItem(
-                info, dotInfo.getNotificationKeys());
-        if (notifications.isEmpty()) {
-            return null;
-        }
-        return dotInfo;
-    }
 
-    public @NonNull List<NotificationKeyData> getNotificationKeysForItem(ItemInfo info) {
-        DotInfo dotInfo = getDotInfoForItem(info);
-        return dotInfo == null ? Collections.EMPTY_LIST
-                : getNotificationsForItem(info, dotInfo.getNotificationKeys());
-    }
-
-    public void cancelNotification(String notificationKey) {
-        NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
-        if (notificationListener == null) {
-            return;
+        // If the item represents a pinned shortcut, ensure that there is a notification
+        // for this shortcut
+        String shortcutId = ShortcutUtil.getShortcutIdIfPinnedShortcut(info);
+        if (shortcutId == null) {
+            return dotInfo;
         }
-        notificationListener.cancelNotificationFromLauncher(notificationKey);
+        String[] personKeys = ShortcutUtil.getPersonKeysIfPinnedShortcut(info);
+        return (dotInfo.getNotificationKeys().stream().anyMatch(notification -> {
+            if (notification.shortcutId != null) {
+                return notification.shortcutId.equals(shortcutId);
+            }
+            if (notification.personKeysFromNotification.length != 0) {
+                return Arrays.equals(notification.personKeysFromNotification, personKeys);
+            }
+            return false;
+        })) ? dotInfo : null;
     }
 
     /**
@@ -247,27 +236,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 .orElse(null);
     }
 
-    /**
-     * Returns a list of notifications that are relevant to given ItemInfo.
-     */
-    public static @NonNull List<NotificationKeyData> getNotificationsForItem(
-            @NonNull ItemInfo info, @NonNull List<NotificationKeyData> notifications) {
-        String shortcutId = ShortcutUtil.getShortcutIdIfPinnedShortcut(info);
-        if (shortcutId == null) {
-            return notifications;
-        }
-        String[] personKeys = ShortcutUtil.getPersonKeysIfPinnedShortcut(info);
-        return notifications.stream().filter((NotificationKeyData notification) -> {
-                    if (notification.shortcutId != null) {
-                        return notification.shortcutId.equals(shortcutId);
-                    }
-                    if (notification.personKeysFromNotification.length != 0) {
-                        return Arrays.equals(notification.personKeysFromNotification, personKeys);
-                    }
-                    return false;
-                }).collect(Collectors.toList());
-    }
-
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "PopupDataProvider:");
         writer.println(prefix + "\tmPackageUserToDotInfos:" + mPackageUserToDotInfos);
@@ -283,10 +251,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public interface PopupDataChangeListener {
 
         PopupDataChangeListener INSTANCE = new PopupDataChangeListener() { };
-
-        default void onNotificationDotsUpdated(Predicate<PackageUserKey> updatedDots) { }
-
-        default void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) { }
 
         default void onWidgetsBound() { }
 

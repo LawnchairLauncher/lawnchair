@@ -18,7 +18,6 @@ package com.android.launcher3.dot;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 
 import java.util.ArrayList;
@@ -32,8 +31,7 @@ public class DotInfo {
     public static final int MAX_COUNT = 999;
 
     /**
-     * The keys of the notifications that this dot represents. These keys can later be
-     * used to retrieve {@link NotificationInfo}'s.
+     * The keys of the notifications that this dot represents.
      */
     private final List<NotificationKeyData> mNotificationKeys = new ArrayList<>();
 

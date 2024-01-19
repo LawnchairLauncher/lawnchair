@@ -34,7 +34,6 @@ import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 
-import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -64,8 +63,7 @@ public class NotificationListener extends NotificationListenerService {
     private static final int MSG_NOTIFICATION_POSTED = 1;
     private static final int MSG_NOTIFICATION_REMOVED = 2;
     private static final int MSG_NOTIFICATION_FULL_REFRESH = 3;
-    private static final int MSG_CANCEL_NOTIFICATION = 4;
-    private static final int MSG_RANKING_UPDATE = 5;
+    private static final int MSG_RANKING_UPDATE = 4;
 
     private static NotificationListener sNotificationListenerInstance = null;
     private static final ArraySet<NotificationsChangedListener> sNotificationsChangedListeners =
@@ -81,9 +79,6 @@ public class NotificationListener extends NotificationListenerService {
     /** Maps keys to their corresponding current group key */
     private final Map<String, String> mNotificationGroupKeyMap = new HashMap<>();
 
-    /** The last notification key that was dismissed from launcher UI */
-    private String mLastKeyDismissedByLauncher;
-
     private SettingsCache mSettingsCache;
     private SettingsCache.OnChangeListener mNotificationSettingsChangedListener;
 
@@ -93,7 +88,7 @@ public class NotificationListener extends NotificationListenerService {
         sNotificationListenerInstance = this;
     }
 
-    public static @Nullable NotificationListener getInstanceIfConnected() {
+    private static @Nullable NotificationListener getInstanceIfConnected() {
         return sIsConnected ? sNotificationListenerInstance : null;
     }
 
@@ -139,16 +134,8 @@ public class NotificationListener extends NotificationListenerService {
                 if (notificationGroup != null) {
                     notificationGroup.removeChildKey(key);
                     if (notificationGroup.isEmpty()) {
-                        if (key.equals(mLastKeyDismissedByLauncher)) {
-                            // Only cancel the group notification if launcher dismissed the
-                            // last child.
-                            cancelNotification(notificationGroup.getGroupSummaryKey());
-                        }
                         mNotificationGroupMap.remove(sbn.getGroupKey());
                     }
-                }
-                if (key.equals(mLastKeyDismissedByLauncher)) {
-                    mLastKeyDismissedByLauncher = null;
                 }
                 return true;
             }
@@ -164,11 +151,6 @@ public class NotificationListener extends NotificationListenerService {
 
                 mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
                 return true;
-            case MSG_CANCEL_NOTIFICATION: {
-                mLastKeyDismissedByLauncher = (String) message.obj;
-                cancelNotification(mLastKeyDismissedByLauncher);
-                return true;
-            }
             case MSG_RANKING_UPDATE: {
                 String[] keys = ((RankingMap) message.obj).getOrderedKeys();
                 for (StatusBarNotification sbn : getActiveNotificationsSafely(keys)) {
@@ -272,14 +254,6 @@ public class NotificationListener extends NotificationListenerService {
         mWorkerHandler.obtainMessage(MSG_RANKING_UPDATE, rankingMap).sendToTarget();
     }
 
-    /**
-     * Cancels a notification
-     */
-    @AnyThread
-    public void cancelNotificationFromLauncher(String key) {
-        mWorkerHandler.obtainMessage(MSG_CANCEL_NOTIFICATION, key).sendToTarget();
-    }
-
     @WorkerThread
     private void updateGroupKeyIfNecessary(StatusBarNotification sbn) {
         String childKey = sbn.getKey();
@@ -312,15 +286,6 @@ public class NotificationListener extends NotificationListenerService {
                 notificationGroup.addChildKey(childKey);
             }
         }
-    }
-
-    /**
-     * This makes a potentially expensive binder call and should be run on a background thread.
-     */
-    @WorkerThread
-    public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> keys) {
-        return Arrays.asList(getActiveNotificationsSafely(
-                keys.stream().map(n -> n.notificationKey).toArray(String[]::new)));
     }
 
     /**
