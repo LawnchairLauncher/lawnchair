@@ -42,9 +42,12 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.UserIconInfo;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -55,6 +58,9 @@ import java.util.Arrays;
 
 @RunWith(AndroidJUnit4.class)
 public class PrivateProfileManagerTest {
+
+    @Rule(order = 0)
+    public TestRule testStabilityRule = new TestStabilityRule();
 
     private static final UserHandle MAIN_HANDLE = Process.myUserHandle();
     private static final UserHandle PRIVATE_HANDLE = new UserHandle(11);
