@@ -1718,7 +1718,7 @@ public class CellLayout extends ViewGroup {
 
         // First we determine if things have moved enough to cause a different layout
         ItemConfiguration swapSolution = findReorderSolution(pixelXY[0], pixelXY[1], spanX, spanY,
-                spanX,  spanY, direction, dragView,  true,  new ItemConfiguration());
+                spanX,  spanY, direction, dragView,  true);
 
         setUseTempCoords(true);
         if (swapSolution != null && swapSolution.isSolution) {
@@ -1747,13 +1747,13 @@ public class CellLayout extends ViewGroup {
     }
 
     protected ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
-            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
-            ItemConfiguration solution) {
+            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX) {
         ItemConfiguration configuration = new ItemConfiguration();
         copyCurrentStateToSolution(configuration);
         ReorderParameters parameters = new ReorderParameters(pixelX, pixelY, spanX, spanY, minSpanX,
                 minSpanY, dragView, configuration);
-        return createReorderAlgorithm().findReorderSolution(parameters, decX);
+        int[] directionVector = direction != null ? direction : mDirectionVector;
+        return createReorderAlgorithm().findReorderSolution(parameters, directionVector, decX);
     }
 
     public void copyCurrentStateToSolution(ItemConfiguration solution) {
@@ -2077,7 +2077,7 @@ public class CellLayout extends ViewGroup {
                 cellToPoint(cellX, cellY, cellPoint);
                 if (findReorderSolution(cellPoint[0], cellPoint[1], itemInfo.minSpanX,
                         itemInfo.minSpanY, itemInfo.spanX, itemInfo.spanY, mDirectionVector, null,
-                        true, new ItemConfiguration()).isSolution) {
+                        true).isSolution) {
                     return true;
                 }
             }
@@ -2092,9 +2092,18 @@ public class CellLayout extends ViewGroup {
         int[] cellPoint = new int[2];
         int[] directionVector = new int[]{0, -1};
         cellToPoint(0, mCountY, cellPoint);
-        ItemConfiguration configuration = new ItemConfiguration();
-        if (findReorderSolution(cellPoint[0], cellPoint[1], mCountX, 1, mCountX, 1,
-                directionVector, null, false, configuration).isSolution) {
+        ItemConfiguration configuration = findReorderSolution(
+                cellPoint[0] /* pixelX */,
+                cellPoint[1] /* pixelY */,
+                mCountX /* minSpanX */,
+                1 /* minSpanY */,
+                mCountX /* spanX */,
+                1 /* spanY */,
+                directionVector /* direction */,
+                null /* dragView */,
+                false /* decX */
+        );
+        if (configuration.isSolution) {
             if (commitConfig) {
                 copySolutionToTempState(configuration, null);
                 commitTempPlacement(null);

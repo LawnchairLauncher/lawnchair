@@ -365,6 +365,8 @@ public class QuickstepLauncher extends Launcher {
     public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
         // Only pause is taskbar controller is not present until the transition (if it exists) ends
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
+        Log.d("b/318394698", "startActivitySafely being run, getTaskbarUIController is: "
+                + getTaskbarUIController());
         RunnableList result = super.startActivitySafely(v, intent, item);
         if (result == null) {
             mHotseatPredictionController.setPauseUIUpdate(false);

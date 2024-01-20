@@ -111,6 +111,10 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtenha sugestões de apps baseadas na sua rotina"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Mantenha o divisor premido para fixar a Barra de tarefas"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Faça mais com a Barra de tarefas"</string>
+    <!-- no translation found for taskbar_edu_pinning_title (210102174154211712) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_pinning_standalone (2636919474366410467) -->
+    <skip />
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fechar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Concluir"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Início"</string>

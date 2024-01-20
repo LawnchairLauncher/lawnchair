@@ -41,6 +41,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
@@ -55,6 +56,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -415,6 +417,10 @@ public class HotseatPredictionController implements DragController.DragListener,
     public SystemShortcut<QuickstepLauncher> getShortcut(QuickstepLauncher activity,
             ItemInfo itemInfo, View originalView) {
         if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            return null;
+        }
+        if (Flags.enablePrivateSpace() && UserCache.getInstance(
+                activity.getApplicationContext()).getUserInfo(itemInfo.user).isPrivate()) {
             return null;
         }
         return new PinPrediction(activity, itemInfo, originalView);

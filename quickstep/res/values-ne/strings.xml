@@ -111,6 +111,10 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"आफ्नो रुटिनका आधारमा एपसम्बन्धी सुझावहरू प्राप्त गर्नुहोस्"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"टास्कबार पिन गर्न डिभाइडरमा केही बेरसम्म थिच्नुहोस्"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार प्रयोग गरेर अझ धेरै कार्य गर्नुहोस्"</string>
+    <!-- no translation found for taskbar_edu_pinning_title (210102174154211712) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_pinning_standalone (2636919474366410467) -->
+    <skip />
     <string name="taskbar_edu_close" msgid="887022990168191073">"बन्द गर्नुहोस्"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"सम्पन्न भयो"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>

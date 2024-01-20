@@ -111,6 +111,10 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ನಿಮ್ಮ ದಿನಚರಿಯ ಆಧಾರದ ಮೇಲೆ ಆ್ಯಪ್ ಸಲಹೆಗಳನ್ನು ಪಡೆಯಿರಿ"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ಟಾಸ್ಕ್ ಬಾರ್ ಅನ್ನು ಪಿನ್ ಮಾಡಲು ಡಿವೈಡರ್ ಮೇಲೆ ದೀರ್ಘಕಾಲ ಒತ್ತಿರಿ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ಟಾಸ್ಕ್‌ಬಾರ್ ಮೂಲಕ ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
+    <!-- no translation found for taskbar_edu_pinning_title (210102174154211712) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_pinning_standalone (2636919474366410467) -->
+    <skip />
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಆಯಿತು"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>

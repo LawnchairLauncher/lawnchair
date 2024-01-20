@@ -74,6 +74,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Xóa"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Gỡ cài đặt"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Thông tin ứng dụng"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Cài đặt ở chế độ riêng tư"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Cài đặt"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Không đề xuất ứng dụng"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Ghim ứng dụng dự đoán"</string>
@@ -178,9 +179,7 @@
     <string name="ps_container_settings" msgid="6059734123353320479">"Cài đặt không gian riêng tư"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Khoá/mở khoá không gian riêng tư"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Chuyển đổi sang không gian riêng tư"</string>
-    <!-- no translation found for ps_add_button_label (8611055839242385935) -->
-    <skip />
-    <!-- no translation found for ps_add_button_content_description (3254274107740952556) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8611055839242385935">"Cài đặt ứng dụng"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Cài đặt ứng dụng vào Không gian riêng tư"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Bong bóng bổ sung"</string>
 </resources>
