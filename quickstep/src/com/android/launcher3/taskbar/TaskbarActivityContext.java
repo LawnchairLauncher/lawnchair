@@ -165,7 +165,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private WindowManager.LayoutParams mWindowLayoutParams;
     private boolean mIsFullscreen;
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
-    private int mLastRequestedNonFullscreenHeight;
+    private int mLastRequestedNonFullscreenSize;
 
     private NavigationMode mNavMode;
     private boolean mImeDrawsImeNavBar;
@@ -364,7 +364,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     public void init(@NonNull TaskbarSharedState sharedState) {
         mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, getResources(), false);
-        mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
+        mLastRequestedNonFullscreenSize = getDefaultTaskbarWindowSize();
         mWindowLayoutParams = createAllWindowParams();
 
         // Initialize controllers after all are constructed.
@@ -485,7 +485,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
                 MATCH_PARENT,
-                mLastRequestedNonFullscreenHeight,
+                mLastRequestedNonFullscreenSize,
                 type,
                 windowFlags,
                 PixelFormat.TRANSLUCENT);
@@ -530,16 +530,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 case Surface.ROTATION_0, Surface.ROTATION_180 -> {
                     // Defaults are fine
                     width = WindowManager.LayoutParams.MATCH_PARENT;
-                    height = mLastRequestedNonFullscreenHeight;
+                    height = mLastRequestedNonFullscreenSize;
                     gravity = Gravity.BOTTOM;
                 }
                 case Surface.ROTATION_90 -> {
-                    width = mLastRequestedNonFullscreenHeight;
+                    width = mLastRequestedNonFullscreenSize;
                     height = WindowManager.LayoutParams.MATCH_PARENT;
                     gravity = Gravity.END;
                 }
                 case Surface.ROTATION_270 -> {
-                    width = mLastRequestedNonFullscreenHeight;
+                    width = mLastRequestedNonFullscreenSize;
                     height = WindowManager.LayoutParams.MATCH_PARENT;
                     gravity = Gravity.START;
                 }
@@ -564,7 +564,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void onConfigurationChanged(@Config int configChanges) {
         mControllers.onConfigurationChanged(configChanges);
         if (!mIsUserSetupComplete) {
-            setTaskbarWindowHeight(getSetupWindowHeight());
+            setTaskbarWindowSize(getSetupWindowSize());
         }
     }
 
@@ -871,7 +871,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void setTaskbarWindowFullscreen(boolean fullscreen) {
         setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_FULLSCREEN, fullscreen);
         mIsFullscreen = fullscreen;
-        setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
+        setTaskbarWindowSize(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenSize);
     }
 
     /**
@@ -896,16 +896,20 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
-     * Updates the TaskbarContainer height (pass {@link #getDefaultTaskbarWindowHeight()} to reset).
+     * Updates the TaskbarContainer size (pass {@link #getDefaultTaskbarWindowSize()} to reset).
      */
-    public void setTaskbarWindowHeight(int height) {
-        if (mWindowLayoutParams.height == height || mIsDestroyed) {
+    public void setTaskbarWindowSize(int size) {
+        // In landscape phone button nav mode, we should set the task bar width instead of height
+        // because this is the only case in which the nav bar is not on the display bottom.
+        boolean landscapePhoneButtonNav = isPhoneButtonNavMode() && mDeviceProfile.isLandscape;
+        if ((landscapePhoneButtonNav ? mWindowLayoutParams.width : mWindowLayoutParams.height)
+                == size || mIsDestroyed) {
             return;
         }
-        if (height == MATCH_PARENT) {
-            height = mDeviceProfile.heightPx;
+        if (size == MATCH_PARENT) {
+            size = mDeviceProfile.heightPx;
         } else {
-            mLastRequestedNonFullscreenHeight = height;
+            mLastRequestedNonFullscreenSize = size;
             if (mIsFullscreen) {
                 // We still need to be fullscreen, so defer any change to our height until we call
                 // setTaskbarWindowFullscreen(false). For example, this could happen when dragging
@@ -914,15 +918,20 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 return;
             }
         }
-        mWindowLayoutParams.height = height;
+        if (landscapePhoneButtonNav) {
+            mWindowLayoutParams.width = size;
+        } else {
+            mWindowLayoutParams.height = size;
+        }
         mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         notifyUpdateLayoutParams();
     }
 
     /**
-     * Returns the default height of the window, including the static corner radii above taskbar.
+     * Returns the default size (in most cases height, but in 3-button phone mode, width) of the
+     * window, including the static corner radii above taskbar.
      */
-    public int getDefaultTaskbarWindowHeight() {
+    public int getDefaultTaskbarWindowSize() {
         Resources resources = getResources();
 
         if (ENABLE_TASKBAR_NAVBAR_UNIFICATION && mDeviceProfile.isPhone) {
@@ -932,7 +941,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
 
         if (!isUserSetupComplete()) {
-            return getSetupWindowHeight();
+            return getSetupWindowSize();
         }
 
         boolean shouldTreatAsTransient = DisplayController.isTransientTaskbar(this)
@@ -963,7 +972,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 + extraHeightForTaskbarTooltips;
     }
 
-    public int getSetupWindowHeight() {
+    public int getSetupWindowSize() {
         return getResources().getDimensionPixelSize(R.dimen.taskbar_suw_frame);
     }
 

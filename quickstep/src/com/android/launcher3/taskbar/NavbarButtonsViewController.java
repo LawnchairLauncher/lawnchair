@@ -237,7 +237,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         DeviceProfile deviceProfile = mContext.getDeviceProfile();
         Resources resources = mContext.getResources();
         Point p = !mContext.isUserSetupComplete()
-                ? new Point(0, mControllers.taskbarActivityContext.getSetupWindowHeight())
+                ? new Point(0, mControllers.taskbarActivityContext.getSetupWindowSize())
                 : DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
                         mContext.isPhoneMode());
         mNavButtonsView.getLayoutParams().height = p.y;
@@ -733,7 +733,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         navButtonsLayoutParams.setMarginEnd(0);
         navButtonsLayoutParams.gravity = Gravity.START;
         mNavButtonsView.getLayoutParams().height =
-                mControllers.taskbarActivityContext.getSetupWindowHeight();
+                mControllers.taskbarActivityContext.getSetupWindowSize();
         mNavButtonContainer.setLayoutParams(navButtonsLayoutParams);
     }
 

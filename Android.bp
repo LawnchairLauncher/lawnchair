@@ -107,10 +107,10 @@ android_library {
         "launcher-testing-shared",
     ],
     srcs: [
-        "tests/tapl/**/*.java",
+        "tests/multivalentTests/tapl/**/*.java",
     ],
     resource_dirs: [],
-    manifest: "tests/tapl/AndroidManifest.xml",
+    manifest: "tests/multivalentTests/tapl/AndroidManifest.xml",
     platform_apis: true,
 }
 
