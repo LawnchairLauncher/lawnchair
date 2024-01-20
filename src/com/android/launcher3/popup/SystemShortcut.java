@@ -49,7 +49,6 @@ import java.util.List;
 public abstract class SystemShortcut<T extends Context & ActivityContext> extends ItemInfo
         implements View.OnClickListener {
 
-    private static final String TAG = SystemShortcut.class.getSimpleName();
     private final int mIconResId;
     protected final int mLabelResId;
     protected int mAccessibilityActionId;
@@ -57,11 +56,6 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
     protected final T mTarget;
     protected final ItemInfo mItemInfo;
     protected final View mOriginalView;
-
-    /**
-     * Indicates if it's invokable or not through some disabled UI
-     */
-    private boolean isEnabled = true;
 
     public SystemShortcut(int iconResId, int labelResId, T target, ItemInfo itemInfo,
             View originalView) {
@@ -82,37 +76,19 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         mOriginalView = other.mOriginalView;
     }
 
-    /**
-     * Should be in the left group of icons in app's context menu header.
-     */
-    public boolean isLeftGroup() {
-        return false;
-    }
-
     public void setIconAndLabelFor(View iconView, TextView labelView) {
         iconView.setBackgroundResource(mIconResId);
-        iconView.setEnabled(isEnabled);
         labelView.setText(mLabelResId);
-        labelView.setEnabled(isEnabled);
     }
 
     public void setIconAndContentDescriptionFor(ImageView view) {
         view.setImageResource(mIconResId);
         view.setContentDescription(view.getContext().getText(mLabelResId));
-        view.setEnabled(isEnabled);
     }
 
     public AccessibilityNodeInfo.AccessibilityAction createAccessibilityAction(Context context) {
         return new AccessibilityNodeInfo.AccessibilityAction(
                 mAccessibilityActionId, context.getText(mLabelResId));
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
     }
 
     public boolean hasHandlerForAction(int action) {

@@ -119,9 +119,4 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
                     .show();
         }
     }
-
-    @Override
-    public boolean isLeftGroup() {
-        return true;
-    }
 }
