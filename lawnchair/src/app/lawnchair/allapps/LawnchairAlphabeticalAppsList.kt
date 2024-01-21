@@ -15,23 +15,23 @@ import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
 
 class LawnchairAlphabeticalAppsList<T>(
-    context: Context,
+    context: T,
     appsStore: AllAppsStore<T>,
     workProfileManager: WorkProfileManager?,
 ) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager)
     where T : Context, T : ActivityContext {
 
     private var hiddenApps: Set<String> = setOf()
+    private val prefs = PreferenceManager2.getInstance(context)
 
-    override fun initialize(context: Context) {
-        val prefs = PreferenceManager2.getInstance(context)
+    init {
         try {
             prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
                 hiddenApps = it
                 onAppsUpdated()
             }
         } catch (t: Throwable) {
-            Log.e(TAG, "initialize: ", t)
+            Log.w(TAG, "Failed initialize ignore: ", t)
         }
     }
 

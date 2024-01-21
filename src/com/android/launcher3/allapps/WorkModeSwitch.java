@@ -99,8 +99,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         var textColor = ColorTokens.ColorPrimary.resolveColor(getContext());
         mIcon.setColorFilter(textColor);
         mTextView.setTextColor(textColor);
-        DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
-        setInsets(grid.getInsets());
         setInsets(mActivityContext.getDeviceProfile().getInsets());
         mTextView.setText(R.string.work_apps_pause_btn_text);
 
