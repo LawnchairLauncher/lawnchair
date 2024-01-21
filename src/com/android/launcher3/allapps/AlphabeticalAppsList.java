@@ -99,6 +99,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         if (mAllAppsStore != null) {
             mAllAppsStore.addUpdateListener(this);
         }
+        initialize(context);
     }
 
     /** Set the number of apps per row when device profile changes. */
@@ -305,6 +306,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     .dispatchUpdatesTo(mAdapter);
         }
     }
+
+    protected void initialize(Context context) {}
 
     private static class MyDiffCallback extends DiffUtil.Callback {
 

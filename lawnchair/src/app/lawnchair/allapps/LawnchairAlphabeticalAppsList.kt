@@ -1,6 +1,7 @@
 package app.lawnchair.allapps
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
@@ -14,7 +15,7 @@ import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
 
 class LawnchairAlphabeticalAppsList<T>(
-    context: T,
+    context: Context,
     appsStore: AllAppsStore<T>,
     workProfileManager: WorkProfileManager?,
 ) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager)
@@ -22,11 +23,15 @@ class LawnchairAlphabeticalAppsList<T>(
 
     private var hiddenApps: Set<String> = setOf()
 
-    init {
+    override fun initialize(context: Context) {
         val prefs = PreferenceManager2.getInstance(context)
-        prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
-            hiddenApps = it
-            onAppsUpdated()
+        try {
+            prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
+                hiddenApps = it
+                onAppsUpdated()
+            }
+        } catch (t: Throwable) {
+            Log.e(TAG, "initialize: ", t)
         }
     }
 
