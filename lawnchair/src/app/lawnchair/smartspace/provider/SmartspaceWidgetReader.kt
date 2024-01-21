@@ -118,7 +118,9 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
         val temperature = temperatureText?.text?.toString()
         val pendingIntent = (temperatureText?.parent as? View)?.pendingIntent
         val weatherData = parseWeatherData(
-            weatherIcon, temperature, pendingIntent,
+            weatherIcon,
+            temperature,
+            pendingIntent,
         ) ?: return null
         val intent = Intent().apply {
             component = WEATHER_COMPONENT

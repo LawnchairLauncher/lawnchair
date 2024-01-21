@@ -10,12 +10,12 @@ plugins {
     id 'org.jetbrains.kotlin.android' version "1.9.22"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.22"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.22"
-    id "com.google.devtools.ksp" version "1.9.22-1.0.16"
+    id "com.google.devtools.ksp" version "1.9.22-1.0.17"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'org.gradle.android.cache-fix' version '3.0'
-    id 'com.diffplug.spotless' version '6.23.3'
+    id 'com.diffplug.spotless' version '6.24.0'
 }
 
 allprojects {
@@ -65,7 +65,7 @@ allprojects {
 
     plugins.withType(JavaBasePlugin).configureEach {
         java {
-            toolchain.languageVersion = JavaLanguageVersion.of(17)
+            toolchain.languageVersion = JavaLanguageVersion.of(21)
         }
     }
 
@@ -418,7 +418,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.3.9",
+            "io.nlopez.compose.rules:ktlint:0.3.10",
         ]).editorConfigOverride([
             "ktlint_compose_modifier-missing-check": "disabled",
             "ktlint_compose_compositionlocal-allowlist": "disabled",

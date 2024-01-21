@@ -45,8 +45,12 @@ def send_artifact_to_telegram_chat(chat_id):
 def send_internal_notifications():
     repository = git.Repo(".")
     commit_range = f"{github_event_before}...{github_sha}"
-    commits = list(repository.iter_commits(commit_range))
-
+    try:
+        commits = list(repository.iter_commits(commit_range))
+    except git.exc.GitCommandError as error:
+        print(f"Error fetching commits: {error}")
+        return
+    
     if len(commits) == 0: return
 
     overview_link = f"https://github.com/{github_repository}/compare/{commit_range}"

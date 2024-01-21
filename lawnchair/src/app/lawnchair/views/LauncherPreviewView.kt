@@ -92,7 +92,7 @@ class LauncherPreviewView(
                 ModelDelegate(),
                 LauncherBinder(
                     LauncherAppState.getInstance(previewContext),
-                    BgDataModel(), /* bgAllAppsList= */
+                    BgDataModel(),
                     null,
                     arrayOfNulls<BgDataModel.Callbacks>(0),
                 ),
