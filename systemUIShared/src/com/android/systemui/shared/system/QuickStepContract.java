@@ -391,7 +391,11 @@ public class QuickStepContract {
         if (sHasCustomCornerRadius) {
             return sCustomCornerRadius;
         }
-        return ScreenDecorationsUtils.getWindowCornerRadius(context);
+        try {
+            return ScreenDecorationsUtils.getWindowCornerRadius(context);
+        } catch (Throwable t) {
+            return 0;
+        }
     }
 
     /**
