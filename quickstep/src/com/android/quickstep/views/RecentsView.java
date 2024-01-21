@@ -5471,18 +5471,22 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Transaction to hide the task to avoid flicker for entering PiP from
             // split-screen.
             // See also {@link AbsSwipeUpHandler#maybeFinishSwipeToHome}.
-            PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
-                    .setAlpha(0f)
-                    .build();
             try {
-                tx.setShouldDisableCanAffectSystemUiFlags(false);
-            } catch (NoSuchMethodError error) {
-                Log.w(TAG, "not android 13 qpr1 : ", error);
-            }
-            int[] taskIds = TopTaskTracker.INSTANCE.get(getContext()).getRunningSplitTaskIds();
-            for (int taskId : taskIds) {
-                mRecentsAnimationController.setFinishTaskTransaction(taskId,
-                        tx, null /* overlay */);
+                PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
+                        .setAlpha(0f)
+                        .build();
+                try {
+                    tx.setShouldDisableCanAffectSystemUiFlags(false);
+                } catch (NoSuchMethodError n) {
+                    Log.w(TAG, "not Android 13 qpr1 : ", n);
+                }
+                int[] taskIds = TopTaskTracker.INSTANCE.get(getContext()).getRunningSplitTaskIds();
+                for (int taskId : taskIds) {
+                    mRecentsAnimationController.setFinishTaskTransaction(taskId,
+                            tx, null /* overlay */);
+                }
+            } catch (Throwable error) {
+                Log.w(TAG, "Failed PictureInPictureSurfaceTransaction: ", error);
             }
         }
         mRecentsAnimationController.finish(toRecents, () -> {

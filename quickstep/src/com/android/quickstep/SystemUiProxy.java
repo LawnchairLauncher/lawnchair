@@ -830,14 +830,18 @@ public class SystemUiProxy implements ISystemUiProxy {
     //
 
     public void registerSplitScreenListener(ISplitScreenListener listener) {
-        if (mSplitScreen != null) {
-            try {
-                mSplitScreen.registerSplitScreenListener(listener);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call registerSplitScreenListener");
+        try {
+            if (mSplitScreen != null) {
+                try {
+                    mSplitScreen.registerSplitScreenListener(listener);
+                } catch (RemoteException e) {
+                    Log.w(TAG, "Failed call registerSplitScreenListener");
+                }
             }
+            mSplitScreenListener = listener;
+        } catch (Throwable t) {
+            Log.w (TAG , "Not supported: " , t);
         }
-        mSplitScreenListener = listener;
     }
 
     public void unregisterSplitScreenListener(ISplitScreenListener listener) {

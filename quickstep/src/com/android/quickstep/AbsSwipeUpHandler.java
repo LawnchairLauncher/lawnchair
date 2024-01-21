@@ -2211,18 +2211,22 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         } else if (mIsSwipeForSplit) {
             // Transaction to hide the task to avoid flicker for entering PiP from
             // split-screen.
-            PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
-                    .setAlpha(0f)
-                    .build();
             try {
-                tx.setShouldDisableCanAffectSystemUiFlags(false);
-            } catch (NoSuchMethodError error) {
-                Log.w(TAG, "not android 13 qpr1 : ", error);
-            }
-            int[] taskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
-            for (int taskId : taskIds) {
-                mRecentsAnimationController.setFinishTaskTransaction(taskId,
-                        tx, null /* overlay */);
+                PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
+                        .setAlpha(0f)
+                        .build();
+                try {
+                    tx.setShouldDisableCanAffectSystemUiFlags(false);
+                } catch (NoSuchMethodError error) {
+                    Log.w(TAG, "not android 13 qpr1 : ", error);
+                }
+                int[] taskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
+                for (int taskId : taskIds) {
+                    mRecentsAnimationController.setFinishTaskTransaction(taskId,
+                            tx, null /* overlay */);
+                }
+            } catch (Throwable t) {
+                Log.w(TAG, "Failed PictureInPictureSurfaceTransaction: ", t);
             }
         }
     }
