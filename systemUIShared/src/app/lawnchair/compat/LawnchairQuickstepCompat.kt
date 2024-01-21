@@ -63,11 +63,11 @@ object LawnchairQuickstepCompat {
         }
 
     @JvmStatic
-    val activityManagerCompat: ActivityManagerCompat = factory.getActivityManagerCompat()
+    val activityManagerCompat: ActivityManagerCompat = factory.activityManagerCompat
 
     @JvmStatic
-    val activityOptionsCompat: ActivityOptionsCompat = factory.getActivityOptionsCompat()
+    val activityOptionsCompat: ActivityOptionsCompat = factory.activityOptionsCompat
 
     @JvmStatic
-    val remoteTransitionCompat: RemoteTransitionCompat = factory.getRemoteTransitionCompat()
+    val remoteTransitionCompat: RemoteTransitionCompat = factory.remoteTransitionCompat
 }

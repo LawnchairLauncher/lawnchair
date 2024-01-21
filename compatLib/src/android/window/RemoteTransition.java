@@ -65,18 +65,6 @@ public class RemoteTransition implements Parcelable {
         this.mDebugName = debugName;
         // onConstructed(); // You can define this method to get a callback
     }
-
-    @DataClass.Generated.Member
-    public RemoteTransition(
-            @NonNull IRemoteTransition remoteTransition,
-            @Nullable IApplicationThread appThread) {
-        this.mRemoteTransition = remoteTransition;
-        com.android.internal.util.AnnotationValidations.validate(
-                NonNull.class, null, mRemoteTransition);
-        this.mAppThread = appThread;
-        // onConstructed(); // You can define this method to get a callback
-    }
-
     /**
      * The actual remote-transition interface used to run the transition animation.
      */
