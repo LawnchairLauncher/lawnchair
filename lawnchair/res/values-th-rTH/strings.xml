@@ -169,7 +169,7 @@
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">ฟีดข่าวสาร</string>
     <string name="minus_one_unavailable">ยังไม่ได้ติดตั้ง Feed</string>
-    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_provider">ผู้ให้บริการข่าว</string>
     <string name="feed_default">ค่าเริ่มต้น</string>
     <string name="wallpaper">ภาพพื้นหลัง</string>
     <string name="wallpaper_scrolling_label">เลื่อนพื้นหลัง</string>
@@ -242,7 +242,7 @@
     <string name="smartspace_mode_google_search">แถบค้นหาของ Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">\@ObsessedYaoi18</string>
     <string name="hotseat_mode_label">วิดเจ็ตแถบค้นหา</string>
     <string name="hotseat_mode_disabled">ปิด</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -251,7 +251,7 @@
     <string name="corner_radius_label">รัศมีมุม</string>
     <string name="apply_accent_color_label">ใช้งานสีที่เน้น</string>
     <string name="search_provider">ผู้ให้บริการค้นหา</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">เว้นขอบล่าง</string>
     <string name="grid">กริด</string>
     <string name="dock_icons">จำนวนไอคอน</string>
     <!-- SearchProviderPreferences -->
@@ -269,30 +269,30 @@
     <string name="hidden_apps_label">แอปที่ซ่อนไว้</string>
     <string name="show_enable_smart_hide">แสดงเมื่อพิมพ์ชื่อเต็ม</string>
     <string name="hide_hidden_apps_search">ซ่อนในผลการค้นหา</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">โหลดแอปเป็นชุด</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">โหลดและแสดงไอคอนเป็นชุด แทนที่จะโหลดและแสดงไอคอนทีละตัว</string>
     <string name="pref_category_search">ค้นหา</string>
     <string name="show_app_search_bar">แสดงแถบค้นหา</string>
     <string name="pref_search_auto_show_keyboard">แสดงคีย์บอร์ดอัตโนมัติ</string>
     <string name="fuzzy_search_title">การค้นหาแบบคาดเดา</string>
     <string name="fuzzy_search_desc">การจับคูแบบประมาณสำหรับค้นหาแอพ</string>
     <string name="max_search_result_count_title">จำนวนผลการค้นหาสูงสุด</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="clear_history">Clear</string>
+    <string name="max_people_result_count_title">จำนวนผลการค้นหาผู้คนสูงสุด</string>
+    <string name="max_file_result_count_title">จำนวนผลการค้นหาผู้คนสูงสุด</string>
+    <string name="max_suggestion_result_count_title">จำนวนผลคำแนะนำสูงสุด</string>
+    <string name="max_settings_entry_result_count_title">\@ObsessedYaoi18</string>
+    <string name="max_recent_result_count_title">จำนวนผลการค้นหาผู้คนสูงสุด</string>
+    <string name="clear_history">ล้าง</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">จำนวนคอลัมน์</string>
     <string name="row_height_label">ความสูงของแถว</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
+    <string name="app_drawer_indent_label">เว้นขอบข้าง</string>
+    <string name="perform_wide_search_title">ค้นหาในอุปกรณ์</string>
+    <string name="perform_wide_search_file">ไฟล์</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="pref_advance_search_category">ค้นหาขั้นสูง</string>
     <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="pref_recent_suggestion_title">ประวัติ</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -407,14 +407,14 @@
     <string name="all_apps_search_market_message">ค้นหาแอพเพิ่มเติม</string>
     <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">ยังไม่ได้ติดตั้งแอพสโตร์หรือเบราว์เซอร์</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_suggestions">จากเว็บไซต์</string>
+    <string name="all_apps_search_result_contacts_from_device">จากรายชื่อ</string>
+    <string name="all_apps_search_result_files">จากไฟล์</string>
+    <string name="all_apps_search_result_settings_entry_from_device">จากการตั้งค่า</string>
+    <string name="warn_contact_permission_content">ต้องการการอนุญาตเข้าถึงรายชื่อ</string>
+    <string name="warn_files_permission_content">ต้องการการอนุญาตเข้าถึงที่เก็บข้อมูล</string>
+    <string name="all_apps_search_result_files_description">สื่อ, เอกสาร, แฟ้ม และอื่น ๆ</string>
+    <string name="all_apps_search_result_contacts_description">รายชื่อและอื่น ๆ</string>
     <string name="quickstep_incompatible">ระบบไม่สามารถเข้ากันได้</string>
     <string name="quickstep_incompatible_description">อุปกรณ์ของคุณได้รับการกำหนดค่าให้มีรูปแบบลายเส้นของระบบ (เรียกว่า Quickstep) ซึ่งให้บริการโดย %1$s แต่ %1$s เวอร์ชันนี้ไม่สามารถทำงานร่วมกับ Android เวอร์ชันของคุณได้ หากต้องการใช้อุปกรณ์ของคุณต่อไป โปรดถอนการติดตั้งการอัปเดต %1$s หรือปิดใช้งาน %1$s ในการตั้งค่า</string>
     <string name="delete">ลบ</string>
