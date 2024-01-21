@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -16,4 +17,5 @@ android {
 dependencies {
     implementation project(':compatLib')
     implementation project(':compatLibVR')
+    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-10.jar')
 }
