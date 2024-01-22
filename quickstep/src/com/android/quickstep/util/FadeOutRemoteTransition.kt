@@ -25,7 +25,7 @@ import android.window.IRemoteTransitionFinishedCallback
 import android.window.TransitionInfo
 import com.android.launcher3.anim.AnimatorListeners.forEndCallback
 import com.android.launcher3.util.Executors
-import com.android.wm.shell.util.TransitionUtil
+import com.android.wm.shell.shared.TransitionUtil
 
 /** Remote animation which fades out the closing targets */
 class FadeOutRemoteTransition : IRemoteTransition.Stub() {
@@ -84,6 +84,5 @@ class FadeOutRemoteTransition : IRemoteTransition.Stub() {
         Executors.MAIN_EXECUTOR.execute { anim.start() }
     }
 
-    override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {
-    }
+    override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {}
 }
