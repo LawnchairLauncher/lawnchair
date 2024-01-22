@@ -1064,7 +1064,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         if (mSplitScreen != null) {
             try {
                 return mSplitScreen.onStartingSplitLegacy(apps);
-            } catch (RemoteException e) {
+            } catch (Throwable e) {
                 Log.w(TAG, "Failed call onStartingSplitLegacy");
             }
         }
