@@ -196,12 +196,13 @@ public final class TaskViewUtils {
                 remoteTargetHandles = gluer.assignTargets(targets);
             }
         }
+
         final int recentsActivityRotation =
                 recentsView.getPagedViewOrientedState().getRecentsActivityRotation();
-        for (RemoteTargetHandle remoteTargetGluer : remoteTargetHandles) {
-            remoteTargetGluer.getTaskViewSimulator().getOrientationState().setRecentsRotation(
-                    recentsActivityRotation);
-            remoteTargetGluer.getTransformParams().setSyncTransactionApplier(applier);
+        for (RemoteTargetHandle remoteTargetHandle : remoteTargetHandles) {
+            remoteTargetHandle.getTaskViewSimulator().getOrientationState()
+                    .setRecentsRotation(recentsActivityRotation);
+            remoteTargetHandle.getTransformParams().setSyncTransactionApplier(applier);
         }
 
         int taskIndex = recentsView.indexOfChild(v);
@@ -393,6 +394,13 @@ public final class TaskViewUtils {
         }
 
         out.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                for (RemoteTargetHandle remoteTargetHandle : remoteTargetHandles) {
+                    remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
+                }
+            }
+
             @Override
             public void onAnimationSuccess(Animator animator) {
                 if (isQuickSwitch) {
