@@ -120,11 +120,7 @@ public class PrivateSpaceHeaderViewController {
                 (ActivityAllAppsContainerView<?>.AdapterHolder) mAllApps.mAH.get(MAIN);
         if (Flags.enablePrivateSpace() && Flags.privateSpaceAnimation()
                 && mAllApps.getActiveRecyclerView() == mainAdapterHolder.mRecyclerView) {
-            RecyclerViewAnimationController recyclerViewAnimationController =
-                    new RecyclerViewAnimationController(mAllApps);
-            recyclerViewAnimationController.animateToState(true /* expand */,
-                    ANIMATION_DURATION, () -> {});
-            mAllApps.getActiveRecyclerView().scrollToBottomWithMotion();
+            mAllApps.getActiveRecyclerView().scrollToBottomWithMotion(ANIMATION_DURATION);
         }
     }
 

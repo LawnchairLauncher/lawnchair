@@ -126,6 +126,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
     protected static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
+    private static final int SCROLL_TO_BOTTOM_DURATION = 500;
     private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 300;
     // Render the header protection at all times to debug clipping issues.
     private static final boolean DEBUG_HEADER_PROTECTION = false;
@@ -515,7 +516,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Switch to the main tab
             switchToTab(ActivityAllAppsContainerView.AdapterHolder.MAIN);
             // Scroll to bottom
-            getActiveRecyclerView().scrollToBottomWithMotion();
+            getActiveRecyclerView().scrollToBottomWithMotion(SCROLL_TO_BOTTOM_DURATION);
         });
     }
 
