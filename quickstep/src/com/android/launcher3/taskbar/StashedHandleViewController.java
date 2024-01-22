@@ -149,7 +149,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         });
         initRegionSampler();
         if (isPhoneGestureNavMode(deviceProfile)) {
-            onIsStashedChanged();
+            onIsStashedChanged(true);
         }
     }
 
@@ -236,8 +236,8 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     }
 
     /** Called when taskbar is stashed or unstashed. */
-    public void onIsStashedChanged() {
-        mIsStashed = isStashedHandleVisible();
+    public void onIsStashedChanged(boolean isStashed) {
+        mIsStashed = isStashed;
         updateRegionSamplingWindowVisibility();
         if (mIsStashed) {
             mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
