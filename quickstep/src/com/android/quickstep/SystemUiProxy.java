@@ -656,7 +656,7 @@ public class SystemUiProxy implements ISystemUiProxy {
             try {
                 return mPip.startSwipePipToHome(componentName, activityInfo,
                         pictureInPictureParams, launcherRotation, hotseatKeepClearArea);
-            } catch (RemoteException e) {
+            } catch (Throwable e) {
                 Log.w(TAG, "Failed call startSwipePipToHome", e);
             }
         }
@@ -700,12 +700,16 @@ public class SystemUiProxy implements ISystemUiProxy {
      * Sets the next pip animation type to be the alpha animation.
      */
     public void setPipAnimationTypeToAlpha() {
-        if (mPip != null && Utilities.ATLEAST_T) {
-            try {
-                mPip.setPipAnimationTypeToAlpha();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setPipAnimationTypeToAlpha", e);
+        try {
+            if (mPip != null) {
+                try {
+                    mPip.setPipAnimationTypeToAlpha();
+                } catch (RemoteException e) {
+                    Log.w(TAG, "Failed call setPipAnimationTypeToAlpha", e);
+                }
             }
+        } catch (Throwable t) {
+            Log.w(TAG, "Failed call setPipAnimationTypeToAlpha not supported", t);
         }
     }
 
@@ -1312,27 +1316,26 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
         if (!LawnchairQuickstepCompat.ATLEAST_T || LawnchairQuickstepCompat.isDecember2022Patch()) {
-            List<ActivityManager.RecentTaskInfo> recentTaskInfoList = ActivityManagerWrapper.getInstance().getRecentTasks(numTasks, userId);
-            return recentTaskInfoList.stream().map(GroupedRecentTaskInfo::forSingleTask).collect(Collectors.toCollection(ArrayList::new));
+            return getRecentTasksFromWrapper(numTasks, userId);
         }
-        if (mRecentTasks != null) {
-            try {
+        try {
+            if (mRecentTasks != null) {
                 final GroupedRecentTaskInfo[] rawTasks = mRecentTasks.getRecentTasks(numTasks,
                         RECENT_IGNORE_UNAVAILABLE, userId);
-                if (rawTasks == null) {
-                    return new ArrayList<>();
-                }
                 return new ArrayList<>(Arrays.asList(rawTasks));
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call getRecentTasks", e);
-            } catch (Throwable throwable) {
-                // android 13-
-                Log.w(TAG, "Failed call getRecentTasks ,may be android 13- ", throwable);
-                List<ActivityManager.RecentTaskInfo> recentTaskInfoList = ActivityManagerWrapper.getInstance().getRecentTasks(numTasks, userId);
-                return recentTaskInfoList.stream().map(GroupedRecentTaskInfo::forSingleTask).collect(Collectors.toCollection(ArrayList::new));
             }
+        } catch (Throwable t) {
+            Log.w(TAG, "Failed call getRecentTasks ,may be android 13- ", t);
+            return getRecentTasksFromWrapper(numTasks, userId);
         }
         return new ArrayList<>();
+    }
+
+    private ArrayList<GroupedRecentTaskInfo> getRecentTasksFromWrapper(int numTasks, int userId) {
+        List<ActivityManager.RecentTaskInfo> recentTaskInfoList = ActivityManagerWrapper.getInstance().getRecentTasks(numTasks, userId);
+        return recentTaskInfoList.stream()
+                .map(GroupedRecentTaskInfo::forSingleTask)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

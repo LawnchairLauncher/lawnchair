@@ -60,6 +60,7 @@ object LawnchairQuickstepCompat {
             return (currentYearMonth <= december2022Patch && ATLEAST_T) 
                     || (currentBuildNumber.contains("TQ1") && ATLEAST_T)
                     || (currentBuildNumber.contains("TQ2") && ATLEAST_T)
+                    || (currentBuildNumber.contains("TP1") && ATLEAST_T)
         }
 
     @JvmStatic
