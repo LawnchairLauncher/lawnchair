@@ -20,4 +20,5 @@ dependencies {
     implementation project(':compatLib')
     implementation project(':compatLibVS')
     implementation project(':compatLibVT')
+    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
 }
