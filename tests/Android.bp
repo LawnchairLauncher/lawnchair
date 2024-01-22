@@ -176,6 +176,7 @@ android_library {
     name: "launcher-testing-shared",
     srcs: [
         "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.java",
+        "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.kt"
     ],
     resource_dirs: [],
     manifest: "multivalentTests/shared/AndroidManifest.xml",
