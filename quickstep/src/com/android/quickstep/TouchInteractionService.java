@@ -733,7 +733,7 @@ public class TouchInteractionService extends Service {
         // Note this will create a new consumer every mouse click, as after ACTION_UP
         // from the click
         // an ACTION_HOVER_ENTER will fire as well.
-        boolean isHoverActionWithoutConsumer = Utilities.ATLEAST_U ? event.isHoverEvent() : isHoverEvent(action)
+        boolean isHoverActionWithoutConsumer =  isHoverEvent(action)
                 && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
@@ -836,7 +836,7 @@ public class TouchInteractionService extends Service {
 
     // Talkback generates hover events on touch, which we do not want to consume.
     private boolean isCursorHoverEvent(MotionEvent event) {
-        return Utilities.ATLEAST_U ? event.isHoverEvent() : isHoverEvent(event.getActionMasked()) && event.getSource() == InputDevice.SOURCE_MOUSE;
+        return isHoverEvent(event.getActionMasked()) && event.getSource() == InputDevice.SOURCE_MOUSE;
     }
 
     private InputConsumer tryCreateAssistantInputConsumer(
