@@ -191,8 +191,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             entry.contentDescription = getBadgedContentDescription(
                     activityInfo, task.key.userId, task.taskDescription);
             if (enableOverviewIconMenu()) {
-                entry.title = Utilities.trim(
-                        activityInfo.applicationInfo.loadLabel(mContext.getPackageManager()));
+                entry.title = Utilities.trim(activityInfo.loadLabel(mContext.getPackageManager()));
             }
         }
 
