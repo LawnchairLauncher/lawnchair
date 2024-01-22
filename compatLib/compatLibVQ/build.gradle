@@ -10,10 +10,11 @@ android {
             java.srcDirs = ["src"]
         }
     }
-
-    addFrameworkJar('framework-10.jar')
 }
+
+addFrameworkJar('framework-10.jar')
+
 dependencies {
-    implementation project(':compatLib')
-    implementation project(':compatLibVR')
+    implementation projects.compatLib
+    implementation projects.compatLibVR
 }

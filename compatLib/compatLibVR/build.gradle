@@ -10,11 +10,10 @@ android {
             java.srcDirs = ["src"]
         }
     }
-
-    addFrameworkJar('framework-11.jar')
 }
 
+addFrameworkJar('framework-11.jar')
+
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
     implementation projects.compatLib
 }
