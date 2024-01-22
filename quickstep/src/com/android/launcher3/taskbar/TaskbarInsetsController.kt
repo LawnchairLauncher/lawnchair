@@ -77,7 +77,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
 
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
-        gestureNavSettingsObserver.registerForCallingUser()
+        try {
+            gestureNavSettingsObserver.registerForCallingUser()
+        } catch (t: Throwable) {
+            // Ignore
+        }
     }
 
     fun onDestroy() {
