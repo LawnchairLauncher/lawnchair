@@ -56,7 +56,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     private static final int MAXIMUM_WIDTH_LEFT_PANE_FOLDABLE_DP = 395;
     private static final String SUGGESTIONS_PACKAGE_NAME = "widgets_list_suggestions_entry";
 
-    private LinearLayout mSuggestedWidgetsContainer;
+    private FrameLayout mSuggestedWidgetsContainer;
     private WidgetsListHeader mSuggestedWidgetsHeader;
     private LinearLayout mRightPane;
 
