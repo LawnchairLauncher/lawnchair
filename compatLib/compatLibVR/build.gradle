@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -18,5 +17,4 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation project(':compatLib')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-11.jar')
 }
