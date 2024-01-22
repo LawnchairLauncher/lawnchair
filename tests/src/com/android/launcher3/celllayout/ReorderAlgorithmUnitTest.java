@@ -191,21 +191,9 @@ public class ReorderAlgorithmUnitTest {
 
         int[] testCaseXYinPixels = new int[2];
         cl.regionToCenterPoint(x, y, spanX, spanY, testCaseXYinPixels);
-        ItemConfiguration configuration = new ItemConfiguration();
-        cl.copyCurrentStateToSolution(configuration);
-        ItemConfiguration solution = cl.createReorderAlgorithm()
-                .calculateReorder(
-                        new ReorderParameters(
-                                testCaseXYinPixels[0],
-                                testCaseXYinPixels[1],
-                                spanX,
-                                spanY,
-                                minSpanX,
-                                minSpanY,
-                                null,
-                                configuration
-                        )
-                );
+        ItemConfiguration solution = cl.createReorderAlgorithm().calculateReorder(
+                testCaseXYinPixels[0], testCaseXYinPixels[1], minSpanX, minSpanY, spanX, spanY,
+                null);
         if (solution == null) {
             solution = new ItemConfiguration();
             solution.isSolution = false;
