@@ -207,7 +207,7 @@ public class TaskbarLauncherStateController {
                     applyState();
                     boolean disallowLongClick =
                             FeatureFlags.enableSplitContextually()
-                                    ? mLauncher.isSplitSelectionEnabled()
+                                    ? mLauncher.isSplitSelectionActive()
                                     : finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
                     com.android.launcher3.taskbar.Utilities.setOverviewDragState(
                             mControllers, finalState.disallowTaskbarGlobalDrag(),
