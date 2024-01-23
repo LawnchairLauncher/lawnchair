@@ -50,6 +50,22 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
 
     var width: Float = 0f
 
+    /**
+     * Set whether the drawable is anchored to the left or right edge of the container.
+     *
+     * When `anchorLeft` is set to `true`, drawable left edge aligns up with the container left
+     * edge. Drawable can be drawn outside container bounds on the right edge. When it is set to
+     * `false` (the default), drawable right edge aligns up with the container right edge. Drawable
+     * can be drawn outside container bounds on the left edge.
+     */
+    var anchorLeft: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                invalidateSelf()
+            }
+        }
+
     init {
         paint.color = context.getColor(R.color.taskbar_background)
         paint.flags = Paint.ANTI_ALIAS_FLAG
@@ -106,15 +122,9 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
 
         // Draw background.
         val radius = backgroundHeight / 2f
-        canvas.drawRoundRect(
-            canvas.width.toFloat() - width,
-            0f,
-            canvas.width.toFloat(),
-            canvas.height.toFloat(),
-            radius,
-            radius,
-            paint
-        )
+        val left = if (anchorLeft) 0f else canvas.width.toFloat() - width
+        val right = if (anchorLeft) width else canvas.width.toFloat()
+        canvas.drawRoundRect(left, 0f, right, canvas.height.toFloat(), radius, radius, paint)
 
         if (showingArrow) {
             // Draw arrow.
