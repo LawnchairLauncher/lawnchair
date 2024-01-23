@@ -146,6 +146,13 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
 
         Rect newRect = getDrawRect();
         if (newRect != null) {
+            if (Flags.enableFocusOutline()) {
+                // Stroke is drawn with half outside and half inside the view. Inset by half
+                // stroke width to move the whole stroke inside the view and avoid other views
+                // occluding it
+                int halfStrokeWidth = (int) mPaint.getStrokeWidth() / 2;
+                newRect.inset(halfStrokeWidth, halfStrokeWidth);
+            }
             mDirtyRect.set(newRect);
             c.drawRoundRect((float) mDirtyRect.left, (float) mDirtyRect.top,
                     (float) mDirtyRect.right, (float) mDirtyRect.bottom,
