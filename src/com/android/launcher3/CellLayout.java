@@ -70,7 +70,6 @@ import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.celllayout.DelegatedCellDrawing;
 import com.android.launcher3.celllayout.ItemConfiguration;
 import com.android.launcher3.celllayout.ReorderAlgorithm;
-import com.android.launcher3.celllayout.ReorderParameters;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
@@ -1749,11 +1748,8 @@ public class CellLayout extends ViewGroup {
     protected ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
             ItemConfiguration solution) {
-        ItemConfiguration configuration = new ItemConfiguration();
-        copyCurrentStateToSolution(configuration);
-        ReorderParameters parameters = new ReorderParameters(pixelX, pixelY, spanX, spanY, minSpanX,
-                minSpanY, dragView, configuration);
-        return createReorderAlgorithm().findReorderSolution(parameters, decX);
+        return createReorderAlgorithm().findReorderSolution(pixelX, pixelY, minSpanX, minSpanY,
+                spanX, spanY, direction, dragView, decX, solution);
     }
 
     public void copyCurrentStateToSolution(ItemConfiguration solution) {
@@ -1783,12 +1779,8 @@ public class CellLayout extends ViewGroup {
      */
     public ItemConfiguration calculateReorder(int pixelX, int pixelY, int minSpanX, int minSpanY,
             int spanX, int spanY, View dragView) {
-        ItemConfiguration configuration = new ItemConfiguration();
-        copyCurrentStateToSolution(configuration);
-        return createReorderAlgorithm().calculateReorder(
-                new ReorderParameters(pixelX, pixelY, spanX, spanY,  minSpanX, minSpanY, dragView,
-                        configuration)
-        );
+        return createReorderAlgorithm().calculateReorder(pixelX, pixelY, minSpanX, minSpanY,
+                spanX, spanY, dragView);
     }
 
     int[] performReorder(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
