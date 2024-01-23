@@ -11,24 +11,19 @@ import android.os.RemoteException;
 import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
-
-import java.util.List;
-
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
+import java.util.List;
 
 public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
 
-
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
-        //do nothing ,android Q not support
+        // do nothing ,android Q not support
     }
-
 
     @Override
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-
 
         int ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
         if (filterOnlyVisibleRecents) {
@@ -38,7 +33,11 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
         try {
 
             List<ActivityManager.RunningTaskInfo> tasks =
-                    ActivityTaskManager.getService().getFilteredTasks(NUM_RECENT_ACTIVITIES_REQUEST, ignoreActivityType, WindowConfiguration.WINDOWING_MODE_PINNED);
+                    ActivityTaskManager.getService()
+                            .getFilteredTasks(
+                                    NUM_RECENT_ACTIVITIES_REQUEST,
+                                    ignoreActivityType,
+                                    WindowConfiguration.WINDOWING_MODE_PINNED);
             if (tasks.isEmpty()) {
                 return null;
             }
@@ -49,25 +48,30 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
     }
 
     @Override
-    public void startRecentsActivity(Intent intent, long eventTime, RecentsAnimationRunnerCompat runnerCompat) {
+    public void startRecentsActivity(
+            Intent intent, long eventTime, RecentsAnimationRunnerCompat runnerCompat) {
 
         IRecentsAnimationRunner runner = null;
         if (runnerCompat != null) {
-            runner = new IRecentsAnimationRunner.Stub() {
-                @Override
-                public void onAnimationStart(IRecentsAnimationController controller,
-                                             RemoteAnimationTarget[] apps, Rect homeContentInsets,
-                                             Rect minimizedHomeBounds) {
-                    runnerCompat.onAnimationStart(controller, apps, null, homeContentInsets, minimizedHomeBounds);
-                }
+            runner =
+                    new IRecentsAnimationRunner.Stub() {
+                        @Override
+                        public void onAnimationStart(
+                                IRecentsAnimationController controller,
+                                RemoteAnimationTarget[] apps,
+                                Rect homeContentInsets,
+                                Rect minimizedHomeBounds) {
+                            runnerCompat.onAnimationStart(
+                                    controller, apps, null, homeContentInsets, minimizedHomeBounds);
+                        }
 
-                public void reportAllDrawn() {}
+                        public void reportAllDrawn() {}
 
-                @Override
-                public void onAnimationCanceled(boolean deferredWithScreenshot) {
-                    runnerCompat.onAnimationCanceled(deferredWithScreenshot);
-                }
-            };
+                        @Override
+                        public void onAnimationCanceled(boolean deferredWithScreenshot) {
+                            runnerCompat.onAnimationCanceled(deferredWithScreenshot);
+                        }
+                    };
         }
         try {
             ActivityTaskManager.getService().startRecentsActivity(intent, null, runner);
@@ -85,7 +89,11 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
         }
         try {
             List<ActivityManager.RunningTaskInfo> tasks =
-                    ActivityTaskManager.getService().getFilteredTasks(1, ignoreActivityType, WindowConfiguration.WINDOWING_MODE_PINNED);
+                    ActivityTaskManager.getService()
+                            .getFilteredTasks(
+                                    1,
+                                    ignoreActivityType,
+                                    WindowConfiguration.WINDOWING_MODE_PINNED);
             if (tasks.isEmpty()) {
                 return null;
             }
@@ -93,13 +101,13 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
         } catch (RemoteException e) {
             return null;
         }
-
     }
 
     @Override
     public ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
         ThumbnailData data = new ThumbnailData();
-        data.thumbnail = Bitmap.wrapHardwareBuffer(snapshot.getSnapshot(), snapshot.getColorSpace());
+        data.thumbnail =
+                Bitmap.wrapHardwareBuffer(snapshot.getSnapshot(), snapshot.getColorSpace());
         data.insets = new Rect(snapshot.getContentInsets());
         data.orientation = snapshot.getOrientation();
         data.reducedResolution = snapshot.isReducedResolution();

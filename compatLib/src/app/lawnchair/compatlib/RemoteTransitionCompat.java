@@ -8,10 +8,8 @@ import android.window.RemoteTransition;
 
 public abstract class RemoteTransitionCompat {
 
-
-    public abstract RemoteTransition getRemoteTransition(@NonNull IRemoteTransition remoteTransition,
-                                  @Nullable IApplicationThread appThread,
-                                  @Nullable String debugName);
-
-
+    public abstract RemoteTransition getRemoteTransition(
+            @NonNull IRemoteTransition remoteTransition,
+            @Nullable IApplicationThread appThread,
+            @Nullable String debugName);
 }

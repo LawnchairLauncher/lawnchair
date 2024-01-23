@@ -1,13 +1,11 @@
 package app.lawnchair.compatlib.ten;
 
 import androidx.annotation.NonNull;
-
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 import app.lawnchair.compatlib.eleven.QuickstepCompatFactoryVR;
 
 public class QuickstepCompatFactoryVQ extends QuickstepCompatFactoryVR {
-
 
     @NonNull
     @Override
@@ -20,5 +18,4 @@ public class QuickstepCompatFactoryVQ extends QuickstepCompatFactoryVR {
     public ActivityOptionsCompat getActivityOptionsCompat() {
         return new ActivityOptionsCompatVQ();
     }
-
 }

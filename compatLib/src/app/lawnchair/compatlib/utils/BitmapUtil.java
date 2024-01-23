@@ -22,15 +22,17 @@ import android.graphics.ParcelableColorSpace;
 import android.hardware.HardwareBuffer;
 import android.os.Bundle;
 import java.util.Objects;
-/**
- * Utils for working with Bitmaps.
- */
+
+/** Utils for working with Bitmaps. */
 public final class BitmapUtil {
     private static final String KEY_BUFFER = "bitmap_util_buffer";
     private static final String KEY_COLOR_SPACE = "bitmap_util_color_space";
-    private BitmapUtil(){ }
+
+    private BitmapUtil() {}
+
     /**
      * Creates a Bundle that represents the given Bitmap.
+     *
      * <p>The Bundle will contain a wrapped version of the Bitmaps HardwareBuffer, so will avoid
      * copies when passing across processes, only pass to processes you trust.
      *
@@ -38,10 +40,9 @@ public final class BitmapUtil {
      * returned Bundle should be treated as a standalone object.
      *
      * @param bitmap to convert to bundle
-     * @return a Bundle representing the bitmap, should only be parsed by
-     *         {@link #bundleToHardwareBitmap(Bundle)}
+     * @return a Bundle representing the bitmap, should only be parsed by {@link
+     *     #bundleToHardwareBitmap(Bundle)}
      */
-
     public static Bundle hardwareBitmapToBundle(Bitmap bitmap) {
         if (bitmap.getConfig() != Bitmap.Config.HARDWARE) {
             throw new IllegalArgumentException(
@@ -73,7 +74,7 @@ public final class BitmapUtil {
         }
         HardwareBuffer buffer = bundle.getParcelable(KEY_BUFFER);
         ParcelableColorSpace colorSpace = bundle.getParcelable(KEY_COLOR_SPACE);
-        return Bitmap.wrapHardwareBuffer(Objects.requireNonNull(buffer),
-                colorSpace.getColorSpace());
+        return Bitmap.wrapHardwareBuffer(
+                Objects.requireNonNull(buffer), colorSpace.getColorSpace());
     }
 }

@@ -15,12 +15,9 @@ import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
-
 import androidx.annotation.Nullable;
-
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
-
 import java.util.List;
 
 public class ActivityManagerCompatVS extends ActivityManagerCompat {
@@ -31,8 +28,9 @@ public class ActivityManagerCompatVS extends ActivityManagerCompat {
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
         try {
-            ActivityClient.getInstance().invalidateHomeTaskSnapshot(
-                    homeActivity == null ? null : homeActivity.getActivityToken());
+            ActivityClient.getInstance()
+                    .invalidateHomeTaskSnapshot(
+                            homeActivity == null ? null : homeActivity.getActivityToken());
         } catch (Throwable e) {
             Log.w(TAG, "Failed to invalidate home snapshot", e);
         }
@@ -40,38 +38,48 @@ public class ActivityManagerCompatVS extends ActivityManagerCompat {
 
     @Nullable
     @Override
-    public TaskSnapshot getTaskSnapshot(int taskId, boolean isLowResolution, boolean takeSnapshotIfNeeded) {
+    public TaskSnapshot getTaskSnapshot(
+            int taskId, boolean isLowResolution, boolean takeSnapshotIfNeeded) {
         try {
             return getService().getTaskSnapshot(taskId, isLowResolution);
-        }catch (RemoteException e) {
+        } catch (RemoteException e) {
             Log.w(TAG, "Failed to getTaskSnapshot", e);
             return null;
         }
-
     }
 
     @Override
-    public void startRecentsActivity(Intent intent, long eventTime, RecentsAnimationRunnerCompat runnerCompat) {
+    public void startRecentsActivity(
+            Intent intent, long eventTime, RecentsAnimationRunnerCompat runnerCompat) {
         IRecentsAnimationRunner runner = null;
         if (runnerCompat != null) {
-            runner = new IRecentsAnimationRunner.Stub() {
-                @Override
-                public void onAnimationStart(IRecentsAnimationController controller,
-                                             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                                             Rect homeContentInsets, Rect minimizedHomeBounds) {
-                    runnerCompat.onAnimationStart(controller, apps, wallpapers, homeContentInsets, minimizedHomeBounds);
-                }
+            runner =
+                    new IRecentsAnimationRunner.Stub() {
+                        @Override
+                        public void onAnimationStart(
+                                IRecentsAnimationController controller,
+                                RemoteAnimationTarget[] apps,
+                                RemoteAnimationTarget[] wallpapers,
+                                Rect homeContentInsets,
+                                Rect minimizedHomeBounds) {
+                            runnerCompat.onAnimationStart(
+                                    controller,
+                                    apps,
+                                    wallpapers,
+                                    homeContentInsets,
+                                    minimizedHomeBounds);
+                        }
 
-                @Override
-                public void onAnimationCanceled(TaskSnapshot taskSnapshot) {
-                    runnerCompat.onAnimationCanceled(taskSnapshot);
-                }
+                        @Override
+                        public void onAnimationCanceled(TaskSnapshot taskSnapshot) {
+                            runnerCompat.onAnimationCanceled(taskSnapshot);
+                        }
 
-                @Override
-                public void onTaskAppeared(RemoteAnimationTarget app) {
-                    runnerCompat.onTaskAppeared(app);
-                }
-            };
+                        @Override
+                        public void onTaskAppeared(RemoteAnimationTarget app) {
+                            runnerCompat.onTaskAppeared(app);
+                        }
+                    };
         }
         try {
             getService().startRecentsActivity(intent, eventTime, runner);
@@ -83,8 +91,7 @@ public class ActivityManagerCompatVS extends ActivityManagerCompat {
     @Override
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(1, filterOnlyVisibleRecents);
+        List<ActivityManager.RunningTaskInfo> tasks = mAtm.getTasks(1, filterOnlyVisibleRecents);
         if (tasks.isEmpty()) {
             return null;
         }

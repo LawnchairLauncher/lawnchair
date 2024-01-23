@@ -12,5 +12,4 @@ public abstract class QuickstepCompatFactory {
 
     @NonNull
     public abstract RemoteTransitionCompat getRemoteTransitionCompat();
-
 }

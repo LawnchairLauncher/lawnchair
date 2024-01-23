@@ -416,6 +416,10 @@ ksp {
 }
 
 spotless {
+    java {
+        target("compatLib/**/src/**/*.java")
+        googleJavaFormat().aosp()
+    }
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([

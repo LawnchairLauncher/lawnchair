@@ -16,7 +16,6 @@ public class WindowManagerCompatVR {
     public static final int NAV_BAR_POS_RIGHT = NAV_BAR_RIGHT;
     public static final int NAV_BAR_POS_BOTTOM = NAV_BAR_BOTTOM;
 
-
     public static final int WINDOWING_MODE_SPLIT_SCREEN_PRIMARY =
             WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_PRIMARY;
 
