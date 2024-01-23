@@ -1771,6 +1771,7 @@ public final class LauncherInstrumentation {
             }
             endTime = movePointer(
                     start, end, steps, false, downTime, downTime, slowDown, gestureScope);
+        } finally {
             if (mTrackpadGestureType != TrackpadGestureType.NONE) {
                 for (int i = mPointerCount; i >= 2; i--) {
                     sendPointer(downTime, downTime,
@@ -1778,7 +1779,6 @@ public final class LauncherInstrumentation {
                             start, gestureScope);
                 }
             }
-        } finally {
             sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end, gestureScope);
         }
     }
