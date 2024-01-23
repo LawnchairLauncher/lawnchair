@@ -4,12 +4,6 @@ plugins {
 
 android {
     namespace "app.lawnchair.compatlib.ten"
-
-    sourceSets {
-        main {
-            java.srcDirs = ["src"]
-        }
-    }
 }
 
 addFrameworkJar('framework-10.jar')

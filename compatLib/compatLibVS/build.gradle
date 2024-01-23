@@ -4,12 +4,6 @@ plugins {
 
 android {
     namespace "app.lawnchair.compatlib.twelve"
-
-    sourceSets {
-        main {
-            java.srcDirs = ["src"]
-        }
-    }
 }
 
 addFrameworkJar('framework-12.jar')

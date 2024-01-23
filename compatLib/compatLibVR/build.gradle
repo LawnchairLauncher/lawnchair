@@ -4,12 +4,6 @@ plugins {
 
 android {
     namespace "app.lawnchair.compatlib.eleven"
-
-    sourceSets {
-        main {
-            java.srcDirs = ["src"]
-        }
-    }
 }
 
 addFrameworkJar('framework-11.jar')
