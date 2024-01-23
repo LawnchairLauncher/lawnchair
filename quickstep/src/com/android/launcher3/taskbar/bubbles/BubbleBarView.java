@@ -425,9 +425,12 @@ public class BubbleBarView extends FrameLayout {
         }
         // Find the center of the bubble when it's expanded, set the arrow position to it.
         final float tx = arrowPositionForSelectedWhenExpanded();
-
+        final float currentArrowPosition = mBubbleBarBackground.getArrowPositionX();
+        if (shouldAnimate && currentArrowPosition > expandedWidth()) {
+            Log.d(TAG, "arrow out of bounds of expanded view, skip animation");
+            shouldAnimate = false;
+        }
         if (shouldAnimate) {
-            final float currentArrowPosition = mBubbleBarBackground.getArrowPositionX();
             ValueAnimator animator = ValueAnimator.ofFloat(currentArrowPosition, tx);
             animator.setDuration(ARROW_POSITION_ANIMATION_DURATION_MS);
             animator.addUpdateListener(animation -> {
