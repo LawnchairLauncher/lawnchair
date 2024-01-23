@@ -186,7 +186,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
      */
     @UiThread
     public CachedTaskInfo getCachedTopTask(boolean filterOnlyVisibleRecents) {
-        if (!LawnchairQuickstepCompat.ATLEAST_T || LawnchairQuickstepCompat.isDecember2022Patch()) {
+        if (!LawnchairQuickstepCompat.ATLEAST_U) {
             RunningTaskInfo task = TraceHelper.allowIpcs("getCachedTopTask.false", () ->
                     ActivityManagerWrapper.getInstance().getRunningTask(
                             false /* filterOnlyVisibleRecents */));

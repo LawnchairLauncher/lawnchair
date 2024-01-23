@@ -89,7 +89,7 @@ public class RecentTasksList {
         mSysUiProxy = sysUiProxy;
 
         if (LawnchairApp.isRecentsEnabled()) {
-            if (LawnchairQuickstepCompat.ATLEAST_T && !LawnchairQuickstepCompat.isDecember2022Patch()) {
+            if (LawnchairQuickstepCompat.ATLEAST_U) {
                 sysUiProxy.registerRecentTasksListener(new IRecentTasksListener.Stub() {
                     @Override
                     public void onRecentTasksChanged() throws RemoteException {

@@ -1315,7 +1315,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        if (!LawnchairQuickstepCompat.ATLEAST_T || LawnchairQuickstepCompat.isDecember2022Patch()) {
+        if (!LawnchairQuickstepCompat.ATLEAST_U) {
             return getRecentTasksFromWrapper(numTasks, userId);
         }
         try {

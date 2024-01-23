@@ -45,7 +45,7 @@ public class ViewUtils {
      */
     public static boolean postFrameDrawn(
             View view, Runnable onFinishRunnable, BooleanSupplier canceled) {
-        if (!Utilities.ATLEAST_T || LawnchairQuickstepCompat.isDecember2022Patch()) {
+        if (!LawnchairQuickstepCompat.ATLEAST_U) {
             return new FrameHandlerVR(view, onFinishRunnable, canceled).schedule();
         }
         return new FrameHandler(view, onFinishRunnable, canceled).schedule();
