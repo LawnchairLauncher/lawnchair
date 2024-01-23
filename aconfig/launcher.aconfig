@@ -85,6 +85,13 @@ flag {
 }
 
 flag {
+    name: "enable_two_pane_launcher_settings"
+    namespace: "launcher"
+    description: "Enables two panel settings when on large enough displays"
+    bug: "204463748"
+}
+
+flag {
     name: "enable_shortcut_dont_suggest_app"
     namespace: "launcher"
     description: "Enables don't suggest app shortcut for suggested apps"
@@ -125,4 +132,11 @@ flag {
     namespace: "launcher"
     description: "Enables asnc inflation of workspace icons"
     bug: "318539160"
+}
+
+flag {
+    name: "enable_unfold_state_animation"
+    namespace: "launcher"
+    description: "Tie unfold animation with state animation"
+    bug: "297057373"
 }

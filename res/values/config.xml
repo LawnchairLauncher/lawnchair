@@ -252,6 +252,9 @@
     <!--  Used for custom widgets  -->
     <array name="custom_widget_providers"/>
 
+    <!-- Embed parameters -->
+    <dimen name="activity_split_ratio"  format="float">0.5</dimen>
+    <integer name="min_width_split">720</integer>
 
     <!-- Skip "Install to private" long-press shortcut packages name -->
     <string-array name="skip_private_profile_shortcut_packages" translatable="false">

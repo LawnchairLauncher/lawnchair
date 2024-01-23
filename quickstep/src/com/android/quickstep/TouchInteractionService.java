@@ -77,7 +77,6 @@ import android.view.Choreographer;
 import android.view.InputDevice;
 import android.view.InputEvent;
 import android.view.MotionEvent;
-import android.view.SurfaceControl;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.BinderThread;
@@ -301,15 +300,6 @@ public class TouchInteractionService extends Service {
                     Log.w(TAG, "Failed to invoke Assist override");
                 }
             });
-        }
-
-        @Override
-        public void onNavigationBarSurface(SurfaceControl surface) {
-            // TODO: implement
-            if (surface != null) {
-                surface.release();
-                surface = null;
-            }
         }
 
         @BinderThread

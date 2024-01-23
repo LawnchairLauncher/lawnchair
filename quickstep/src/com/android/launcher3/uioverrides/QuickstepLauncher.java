@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEAS
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.PENDING_SPLIT_SELECT_INFO;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE;
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
@@ -170,6 +171,8 @@ import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.SplitToWorkspaceController;
 import com.android.quickstep.util.SplitWithKeyboardShortcutController;
 import com.android.quickstep.util.TISBindHelper;
+import com.android.quickstep.util.unfold.LauncherUnfoldTransitionController;
+import com.android.quickstep.util.unfold.ProxyUnfoldTransitionProvider;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -367,11 +370,19 @@ public class QuickstepLauncher extends Launcher {
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
         Log.d("b/318394698", "startActivitySafely being run, getTaskbarUIController is: "
                 + getTaskbarUIController());
+        PredictionRowView<?> predictionRowView =
+                getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class);
+        // Pause the prediction row updates until the transition (if it exists) ends.
+        predictionRowView.setPredictionUiUpdatePaused(true);
         RunnableList result = super.startActivitySafely(v, intent, item);
         if (result == null) {
             mHotseatPredictionController.setPauseUIUpdate(false);
+            predictionRowView.setPredictionUiUpdatePaused(false);
         } else {
-            result.add(() -> mHotseatPredictionController.setPauseUIUpdate(false));
+            result.add(() -> {
+                mHotseatPredictionController.setPauseUIUpdate(false);
+                predictionRowView.setPredictionUiUpdatePaused(false);
+            });
         }
         return result;
     }
@@ -468,7 +479,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public void bindExtraContainerItems(FixedContainerItems item) {
-        Log.d(TAG, "Bind extra container items");
+        Log.d(TAG, "Bind extra container items. ContainerId = " + item.containerId);
         if (item.containerId == Favorites.CONTAINER_PREDICTION) {
             mAllAppsPredictions = item;
             PredictionRowView<?> predictionRowView =
@@ -957,9 +968,17 @@ public class QuickstepLauncher extends Launcher {
     }
 
     private void initUnfoldTransitionProgressProvider() {
-        final UnfoldTransitionConfig config = new ResourceUnfoldTransitionConfig();
-        if (config.isEnabled()) {
-            initRemotelyCalculatedUnfoldAnimation(config);
+        if (!enableUnfoldStateAnimation()) {
+            final UnfoldTransitionConfig config = new ResourceUnfoldTransitionConfig();
+            if (config.isEnabled()) {
+                initRemotelyCalculatedUnfoldAnimation(config);
+            }
+        } else {
+            ProxyUnfoldTransitionProvider provider =
+                    SystemUiProxy.INSTANCE.get(this).getUnfoldTransitionProvider();
+            if (provider != null) {
+                new LauncherUnfoldTransitionController(this, provider);
+            }
         }
     }
 

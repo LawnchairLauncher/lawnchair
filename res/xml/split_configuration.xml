@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:window="http://schemas.android.com/apk/res-auto">
+    <!-- Automatically split the following activity pairs. -->
+    <SplitPairRule
+        window:splitRatio="@dimen/activity_split_ratio"
+        window:splitLayoutDirection="locale"
+        window:splitMinWidthDp="@integer/min_width_split"
+        window:splitMaxAspectRatioInPortrait="alwaysAllow"
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
+        window:clearTop="false">
+        <SplitPairFilter
+            window:primaryActivityName="com.android.launcher3.settings.SettingsActivity"
+            window:secondaryActivityName="com.android.launcher3.settings.SettingsActivity"/>
+
+    </SplitPairRule>
+</resources>

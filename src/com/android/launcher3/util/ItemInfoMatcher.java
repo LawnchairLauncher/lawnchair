@@ -70,6 +70,15 @@ public abstract class ItemInfoMatcher {
     }
 
     /**
+     * Returns a matcher for items within app pairs.
+     */
+    public static Predicate<ItemInfo> forAppPairMatch(Predicate<ItemInfo> childOperator) {
+        Predicate<ItemInfo> isAppPair = info ->
+                info instanceof FolderInfo fi && fi.itemType == Favorites.ITEM_TYPE_APP_PAIR;
+        return isAppPair.and(forFolderMatch(childOperator));
+    }
+
+    /**
      * Returns a matcher for items with provided ids
      */
     public static Predicate<ItemInfo> ofItemIds(IntSet ids) {

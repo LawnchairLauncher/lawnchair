@@ -22,6 +22,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
+import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate;
@@ -405,8 +406,12 @@ public class TaskbarManager {
      */
     private UnfoldTransitionProgressProvider getUnfoldTransitionProgressProviderForActivity(
             StatefulActivity activity) {
-        if (activity instanceof QuickstepLauncher) {
-            return ((QuickstepLauncher) activity).getUnfoldTransitionProgressProvider();
+        if (!enableUnfoldStateAnimation()) {
+            if (activity instanceof QuickstepLauncher ql) {
+                return ql.getUnfoldTransitionProgressProvider();
+            }
+        } else {
+            return SystemUiProxy.INSTANCE.get(mContext).getUnfoldTransitionProvider();
         }
         return null;
     }
