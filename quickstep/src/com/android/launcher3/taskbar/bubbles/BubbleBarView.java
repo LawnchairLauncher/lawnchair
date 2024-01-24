@@ -199,8 +199,10 @@ public class BubbleBarView extends FrameLayout {
 
     @Override
     public void onRtlPropertiesChanged(int layoutDirection) {
-        // TODO(b/273310265): set this based on bubble bar position and not LTR or RTL
-        mBubbleBarBackground.setAnchorLeft(layoutDirection == LAYOUT_DIRECTION_RTL);
+        // TODO(b/313661121): set this based on bubble bar position and not LTR or RTL
+        boolean onLeft = layoutDirection == LAYOUT_DIRECTION_RTL;
+        mBubbleBarBackground.setAnchorLeft(onLeft);
+        mRelativePivotX = onLeft ? 0f : 1f;
     }
 
     private boolean isOnLeft() {
