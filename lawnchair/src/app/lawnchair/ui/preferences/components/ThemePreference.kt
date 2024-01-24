@@ -16,7 +16,7 @@ object ThemeChoice {
     const val SYSTEM = "system"
 }
 
-val themeEntries = listOf(
+val themeEntries = sequenceOf(
     ListPreferenceEntry(ThemeChoice.LIGHT) { stringResource(id = R.string.theme_light) },
     ListPreferenceEntry(ThemeChoice.DARK) { stringResource(id = R.string.theme_dark) },
     ListPreferenceEntry(ThemeChoice.SYSTEM) {
@@ -28,13 +28,13 @@ val themeEntries = listOf(
             ThemeChoice.SYSTEM -> Utilities.ATLEAST_O_MR1
             else -> true
         }
-    }
+    }.toPersistentList()
 
 @Composable
 fun ThemePreference() {
     ListPreference(
         adapter = preferenceManager().launcherTheme.getAdapter(),
-        entries = themeEntries.toPersistentList(),
+        entries = themeEntries,
         label = stringResource(id = R.string.theme_label),
     )
 }
