@@ -458,7 +458,7 @@ public class ModelDbController {
             LauncherWidgetHolder widgetHolder) {
         ContentResolver cr = mContext.getContentResolver();
         String blobHandlerDigest = Settings.Secure.getString(cr, LAYOUT_DIGEST_KEY);
-        if (Utilities.ATLEAST_R && !TextUtils.isEmpty(blobHandlerDigest)) {
+        if (!TextUtils.isEmpty(blobHandlerDigest)) {
             BlobStoreManager blobManager = mContext.getSystemService(BlobStoreManager.class);
             try (InputStream in = new ParcelFileDescriptor.AutoCloseInputStream(
                     blobManager.openBlob(BlobHandle.createWithSha256(

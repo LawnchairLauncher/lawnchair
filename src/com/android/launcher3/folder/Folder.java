@@ -297,10 +297,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFooter = findViewById(R.id.folder_footer);
         mFooterHeight = dp.folderFooterHeightPx;
 
-        if (Utilities.ATLEAST_R) {
-            mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
-            setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
-        }
+        mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
+        setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
     }
 
     public boolean onLongClick(View v) {
@@ -422,18 +420,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets windowInsets) {
-        if (Utilities.ATLEAST_R) {
-            this.setTranslationY(0);
+        this.setTranslationY(0);
 
-            if (windowInsets.isVisible(WindowInsets.Type.ime())) {
-                Insets keyboardInsets = windowInsets.getInsets(WindowInsets.Type.ime());
-                int folderHeightFromBottom = getHeightFromBottom();
+        if (windowInsets.isVisible(WindowInsets.Type.ime())) {
+            Insets keyboardInsets = windowInsets.getInsets(WindowInsets.Type.ime());
+            int folderHeightFromBottom = getHeightFromBottom();
 
-                if (keyboardInsets.bottom > folderHeightFromBottom) {
-                    // Translate this folder above the keyboard, then add the folder name's padding
-                    this.setTranslationY(folderHeightFromBottom - keyboardInsets.bottom
-                            - mFolderName.getPaddingBottom());
-                }
+            if (keyboardInsets.bottom > folderHeightFromBottom) {
+                // Translate this folder above the keyboard, then add the folder name's padding
+                this.setTranslationY(folderHeightFromBottom - keyboardInsets.bottom
+                        - mFolderName.getPaddingBottom());
             }
         }
 
@@ -812,15 +808,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                if (Utilities.ATLEAST_R) {
-                    setWindowInsetsAnimationCallback(null);
-                }
+                setWindowInsetsAnimationCallback(null);
                 mIsAnimatingClosed = true;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (Utilities.ATLEAST_R && mKeyboardInsetAnimationCallback != null) {
+                if (mKeyboardInsetAnimationCallback != null) {
                     setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
                 }
                 closeComplete(true);

@@ -24,7 +24,6 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
-import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 
@@ -34,7 +33,6 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.SessionCommitReceiver;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.util.IntArray;
@@ -132,7 +130,7 @@ public class InstallSessionHelper {
     public SessionInfo getActiveSessionInfo(UserHandle user, String pkg) {
         for (SessionInfo info : getAllVerifiedSessions()) {
             boolean match = pkg.equals(info.getAppPackageName());
-            if (Utilities.ATLEAST_Q && !user.equals(getUserHandle(info))) {
+            if (!user.equals(getUserHandle(info))) {
                 match = false;
             }
             if (match) {
@@ -180,9 +178,8 @@ public class InstallSessionHelper {
 
     @NonNull
     public List<SessionInfo> getAllVerifiedSessions() {
-        List<SessionInfo> list = new ArrayList<>(Utilities.ATLEAST_Q
-                ? Objects.requireNonNull(mLauncherApps).getAllPackageInstallerSessions()
-                : mInstaller.getAllSessions());
+        List<SessionInfo> list = new ArrayList<>(
+                Objects.requireNonNull(mLauncherApps).getAllPackageInstallerSessions());
         Iterator<SessionInfo> it = list.iterator();
         while (it.hasNext()) {
             if (verify(it.next()) == null) {
@@ -252,6 +249,6 @@ public class InstallSessionHelper {
     }
 
     public static UserHandle getUserHandle(@NonNull final SessionInfo info) {
-        return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
+        return info.getUser();
     }
 }

@@ -581,9 +581,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mRotationHelper.initialize();
         TraceHelper.INSTANCE.endSection();
 
-        if (Utilities.ATLEAST_R) {
-            getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        }
+        getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         setTitle(R.string.home_screen);
         mStartupLatencyLogger.logEnd(LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE);
 

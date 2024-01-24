@@ -28,12 +28,10 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.media.AudioAttributes;
-import android.os.Build;
 import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -48,7 +46,6 @@ import com.android.launcher3.config.FeatureFlags;
 /**
  * Wrapper around {@link Vibrator} to easily perform haptic feedback where necessary.
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class VibratorWrapper {
 
     public static final MainThreadInitializedObject<VibratorWrapper> INSTANCE =
@@ -138,7 +135,7 @@ public class VibratorWrapper {
             mThresholdUntilNextDragCallMillis = 0;
         }
 
-        if (Utilities.ATLEAST_R && mVibrator.areAllPrimitivesSupported(
+        if (mVibrator.areAllPrimitivesSupported(
                 VibrationEffect.Composition.PRIMITIVE_QUICK_RISE,
                 VibrationEffect.Composition.PRIMITIVE_TICK)) {
             if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get()) {
@@ -226,8 +223,7 @@ public class VibratorWrapper {
     public void vibrate(int primitiveId, float primitiveScale, VibrationEffect fallbackEffect) {
         if (mHasVibrator && mIsHapticFeedbackEnabled) {
             UI_HELPER_EXECUTOR.execute(() -> {
-                if (Utilities.ATLEAST_R && primitiveId >= 0
-                        && mVibrator.areAllPrimitivesSupported(primitiveId)) {
+                if (primitiveId >= 0 && mVibrator.areAllPrimitivesSupported(primitiveId)) {
                     mVibrator.vibrate(VibrationEffect.startComposition()
                             .addPrimitive(primitiveId, primitiveScale)
                             .compose(), VIBRATION_ATTRS);

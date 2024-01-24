@@ -16,11 +16,9 @@
 
 package com.android.launcher3.widget;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -44,7 +42,6 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -105,7 +102,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             setDefaultFocusHighlightEnabled(false);
         }
 
-        if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
+        if (Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }
         mColorExtractor = new LocalColorExtractor(); // no-op
@@ -131,10 +128,9 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.Q)
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
-        if (!mTrackingWidgetUpdate && Utilities.ATLEAST_Q) {
+        if (!mTrackingWidgetUpdate) {
             mTrackingWidgetUpdate = true;
             Trace.beginAsyncSection(TRACE_METHOD_NAME + info.provider, appWidgetId);
             Log.i(TAG, "App widget created with id: " + appWidgetId);
@@ -142,9 +138,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.Q)
     public void updateAppWidget(RemoteViews remoteViews) {
-        if (mTrackingWidgetUpdate && remoteViews != null && Utilities.ATLEAST_Q) {
+        if (mTrackingWidgetUpdate && remoteViews != null) {
             Log.i(TAG, "App widget with id: " + getAppWidgetId() + " loaded");
             Trace.endAsyncSection(
                     TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
@@ -288,8 +283,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         super.onLayout(changed, left, top, right, bottom);
         mIsScrollable = checkScrollableRecursively(this);
 
-        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
-            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo info) {
             mTempRect.set(left, top, right, bottom);
             mColorExtractor.setWorkspaceLocation(mTempRect, (View) getParent(), info.screenId);
         }
@@ -425,8 +419,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     @Override
     protected boolean shouldAllowDirectClick() {
-        if (getTag() instanceof ItemInfo) {
-            ItemInfo item = (ItemInfo) getTag();
+        if (getTag() instanceof ItemInfo item) {
             return item.spanX == 1 && item.spanY == 1;
         }
         return false;

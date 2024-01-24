@@ -551,25 +551,21 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
-            Insets gestureInsets = insets.getMandatorySystemGestureInsets();
-            int gestureInsetBottom = gestureInsets.bottom;
-            Insets imeInset = Utilities.ATLEAST_R
-                    ? insets.getInsets(WindowInsets.Type.ime())
-                    : Insets.NONE;
-            DeviceProfile dp = mActivity.getDeviceProfile();
-            if (dp.isTaskbarPresent) {
-                // Ignore taskbar gesture insets to avoid interfering with TouchControllers.
-                gestureInsetBottom = ResourceUtils.getNavbarSize(
-                        ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources());
-            }
-            mSystemGestureRegion.set(
-                    Math.max(gestureInsets.left, imeInset.left),
-                    Math.max(gestureInsets.top, imeInset.top),
-                    Math.max(gestureInsets.right, imeInset.right),
-                    Math.max(gestureInsetBottom, imeInset.bottom)
-            );
+        Insets gestureInsets = insets.getMandatorySystemGestureInsets();
+        int gestureInsetBottom = gestureInsets.bottom;
+        Insets imeInset = insets.getInsets(WindowInsets.Type.ime());
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        if (dp.isTaskbarPresent) {
+            // Ignore taskbar gesture insets to avoid interfering with TouchControllers.
+            gestureInsetBottom = ResourceUtils.getNavbarSize(
+                    ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources());
         }
+        mSystemGestureRegion.set(
+                Math.max(gestureInsets.left, imeInset.left),
+                Math.max(gestureInsets.top, imeInset.top),
+                Math.max(gestureInsets.right, imeInset.right),
+                Math.max(gestureInsetBottom, imeInset.bottom)
+        );
         return super.dispatchApplyWindowInsets(insets);
     }
 }

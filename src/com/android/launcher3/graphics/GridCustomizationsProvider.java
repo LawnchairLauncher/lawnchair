@@ -19,7 +19,6 @@ import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.Themes.isThemedIconEnabled;
 
-import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
@@ -27,7 +26,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -41,7 +39,6 @@ import android.util.Pair;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
 import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Executors;
 
 /**
@@ -184,13 +181,12 @@ public class GridCustomizationsProvider extends ContentProvider {
             return null;
         }
 
-        if (!Utilities.ATLEAST_R || !METHOD_GET_PREVIEW.equals(method)) {
+        if (!METHOD_GET_PREVIEW.equals(method)) {
             return null;
         }
         return getPreview(extras);
     }
 
-    @TargetApi(Build.VERSION_CODES.R)
     private synchronized Bundle getPreview(Bundle request) {
         PreviewLifecycleObserver observer = null;
         try {
