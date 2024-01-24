@@ -24,7 +24,7 @@
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
 
-        <receiver android:name="com.android.launcher3.compat.PromiseIconUiTest$UnarchiveBroadcastReceiver"
+        <receiver android:name="com.android.launcher3.compat.TaplPromiseIconUiTest$UnarchiveBroadcastReceiver"
                   android:enabled="true"
                   android:exported="true">
             <intent-filter>

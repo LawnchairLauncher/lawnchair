@@ -53,13 +53,10 @@ public class ProxyActivityStarter extends Activity {
 
         try {
             if (mParams.intent != null) {
-                startActivityForResult(mParams.intent, mParams.requestCode, mParams.options);
+                startActivity();
                 return;
             } else if (mParams.intentSender != null) {
-                startIntentSenderForResult(mParams.intentSender, mParams.requestCode,
-                        mParams.fillInIntent, mParams.flagsMask, mParams.flagsValues,
-                        mParams.extraFlags,
-                        mParams.options);
+                startIntentSender();
                 return;
             }
         } catch (NullPointerException | ActivityNotFoundException | SecurityException
@@ -82,5 +79,27 @@ public class ProxyActivityStarter extends Activity {
                 .putExtra(EXTRA_PARAMS, params)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    }
+
+    private void startActivity() throws SendIntentException {
+        if (mParams.requireActivityResult) {
+            startActivityForResult(mParams.intent, mParams.requestCode, mParams.options);
+        } else {
+            startActivity(mParams.intent, mParams.options);
+            finishAndRemoveTask();
+        }
+    }
+
+    private void startIntentSender() throws SendIntentException {
+        if (mParams.requireActivityResult) {
+            startIntentSenderForResult(mParams.intentSender, mParams.requestCode,
+                    mParams.fillInIntent, mParams.flagsMask, mParams.flagsValues,
+                    mParams.extraFlags,
+                    mParams.options);
+        } else {
+            startIntentSender(mParams.intentSender, mParams.fillInIntent, mParams.flagsMask,
+                    mParams.flagsValues, mParams.extraFlags, mParams.options);
+            finishAndRemoveTask();
+        }
     }
 }

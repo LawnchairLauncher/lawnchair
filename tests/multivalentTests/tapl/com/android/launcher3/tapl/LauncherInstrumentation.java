@@ -1771,6 +1771,7 @@ public final class LauncherInstrumentation {
             }
             endTime = movePointer(
                     start, end, steps, false, downTime, downTime, slowDown, gestureScope);
+        } finally {
             if (mTrackpadGestureType != TrackpadGestureType.NONE) {
                 for (int i = mPointerCount; i >= 2; i--) {
                     sendPointer(downTime, downTime,
@@ -1778,7 +1779,6 @@ public final class LauncherInstrumentation {
                             start, gestureScope);
                 }
             }
-        } finally {
             sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end, gestureScope);
         }
     }
@@ -2055,11 +2055,14 @@ public final class LauncherInstrumentation {
         final long downTime = SystemClock.uptimeMillis();
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter,
                 GestureScope.DONT_EXPECT_PILFER);
-        expectEvent(TestProtocol.SEQUENCE_MAIN, longClickEvent);
-        final UiObject2 result = waitForLauncherObject(resName);
-        sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter,
-                GestureScope.DONT_EXPECT_PILFER);
-        return result;
+        try {
+            expectEvent(TestProtocol.SEQUENCE_MAIN, longClickEvent);
+            final UiObject2 result = waitForLauncherObject(resName);
+            return result;
+        } finally {
+            sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter,
+                    GestureScope.DONT_EXPECT_PILFER);
+        }
     }
 
     @NonNull
@@ -2070,12 +2073,15 @@ public final class LauncherInstrumentation {
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter,
                 GestureScope.DONT_EXPECT_PILFER, InputDevice.SOURCE_MOUSE,
                 /* isRightClick= */ true);
-        expectEvent(TestProtocol.SEQUENCE_MAIN, rightClickEvent);
-        final UiObject2 result = waitForLauncherObject(resName);
-        sendPointer(downTime, SystemClock.uptimeMillis(), ACTION_UP, targetCenter,
-                GestureScope.DONT_EXPECT_PILFER, InputDevice.SOURCE_MOUSE,
-                /* isRightClick= */ true);
-        return result;
+        try {
+            expectEvent(TestProtocol.SEQUENCE_MAIN, rightClickEvent);
+            final UiObject2 result = waitForLauncherObject(resName);
+            return result;
+        } finally {
+            sendPointer(downTime, SystemClock.uptimeMillis(), ACTION_UP, targetCenter,
+                    GestureScope.DONT_EXPECT_PILFER, InputDevice.SOURCE_MOUSE,
+                    /* isRightClick= */ true);
+        }
     }
 
     private static int getSystemIntegerRes(Context context, String resName) {

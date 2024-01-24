@@ -138,6 +138,11 @@ public class ApiWrapper {
                         || Flags.enablePrivateSpaceInstallShortcut())) {
             StartActivityParams params = new StartActivityParams((PendingIntent) null, 0);
             params.intentSender = launcherApps.getAppMarketActivityIntent(packageName, user);
+            ActivityOptions options = ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(ActivityOptions
+                            .MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+            params.options = options.toBundle();
+            params.requireActivityResult = false;
             return ProxyActivityStarter.getLaunchIntent(context, params);
         } else {
             return new Intent(Intent.ACTION_VIEW)
