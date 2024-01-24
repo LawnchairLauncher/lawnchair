@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
-import app.lawnchair.ui.preferences.components.layout.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.unsafeLazy
 import kotlin.coroutines.resume
@@ -42,7 +41,6 @@ class BlankActivity : AppCompatActivity() {
             return
         }
         setContent {
-            SystemUi()
             LawnchairTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

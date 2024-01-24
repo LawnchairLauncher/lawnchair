@@ -360,7 +360,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
     implementation "com.google.android.material:material:1.11.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.0.7"
     implementation 'dev.kdrag0n:colorkt:1.0.5'

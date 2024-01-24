@@ -30,7 +30,6 @@ import app.lawnchair.backup.ui.createBackupGraph
 import app.lawnchair.backup.ui.restoreBackupGraph
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.colorpreference.colorSelectionGraph
-import app.lawnchair.ui.preferences.components.layout.SystemUi
 import app.lawnchair.ui.preferences.destinations.PreferencesDashboard
 import app.lawnchair.ui.preferences.destinations.appDrawerGraph
 import app.lawnchair.ui.preferences.destinations.debugMenuGraph
@@ -91,7 +90,6 @@ fun Preferences(
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val slideDistance = rememberSlideDistance()
 
-    SystemUi()
     Providers {
         Surface {
             CompositionLocalProvider(
