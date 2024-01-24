@@ -27,7 +27,7 @@ import org.mockito.kotlin.whenever
 class NavButtonLayoutFactoryTest {
 
     private val mockDeviceProfile: DeviceProfile = mock()
-    private val mockParentButtonContainer: FrameLayout = mock()
+    private val mockParentButtonContainer: NearestTouchFrame = mock()
     private val mockNavLayout: LinearLayout = mock()
     private val mockStartContextualLayout: ViewGroup = mock()
     private val mockEndContextualLayout: ViewGroup = mock()

@@ -56,7 +56,7 @@ class NavButtonLayoutFactory {
          */
         fun getUiLayoutter(
                 deviceProfile: DeviceProfile,
-                navButtonsView: FrameLayout,
+                navButtonsView: NearestTouchFrame,
                 imeSwitcher: ImageView?,
                 rotationButton: RotationButton?,
                 a11yButton: ImageView?,
@@ -78,6 +78,7 @@ class NavButtonLayoutFactory {
             return when {
                 isPhoneNavMode -> {
                     if (!deviceProfile.isLandscape) {
+                        navButtonsView.setIsVertical(false)
                         PhonePortraitNavLayoutter(
                                 resources,
                                 navButtonContainer,
@@ -88,6 +89,7 @@ class NavButtonLayoutFactory {
                                 a11yButton
                         )
                     } else if (surfaceRotation == ROTATION_90) {
+                        navButtonsView.setIsVertical(true)
                         PhoneLandscapeNavLayoutter(
                                 resources,
                                 navButtonContainer,
@@ -98,6 +100,7 @@ class NavButtonLayoutFactory {
                                 a11yButton
                         )
                     } else {
+                        navButtonsView.setIsVertical(true)
                         PhoneSeascapeNavLayoutter(
                                 resources,
                                 navButtonContainer,

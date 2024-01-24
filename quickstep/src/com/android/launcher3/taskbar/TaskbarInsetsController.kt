@@ -309,7 +309,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             controllers.bubbleControllers.isPresent &&
                 controllers.bubbleControllers.get().bubbleBarViewController.isBubbleBarVisible()
         var insetsIsTouchableRegion = true
-        if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
+        if (context.isPhoneButtonNavMode &&
+                (!controllers.navbarButtonsViewController.isImeVisible
+                        || !controllers.navbarButtonsViewController.isImeRenderingNavButtons)) {
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME)
+            insetsIsTouchableRegion = false
+        } else if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
             debugTouchableRegion.lastSetTouchableReason = "Taskbar is invisible"
