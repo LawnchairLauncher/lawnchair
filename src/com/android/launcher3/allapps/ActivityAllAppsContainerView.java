@@ -80,6 +80,7 @@ import com.android.launcher3.allapps.search.AllAppsSearchUiDelegate;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
@@ -1535,7 +1536,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // No animations will occur when changes occur to the items in this RecyclerView.
             mRecyclerView.setItemAnimator(null);
             onInitializeRecyclerView(mRecyclerView);
-            FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mRecyclerView);
+            // Use ViewGroupFocusHelper for SearchRecyclerView to draw focus outline for the
+            // buttons in the view (e.g. query builder button and setting button)
+            FocusedItemDecorator focusedItemDecorator = isSearch() ? new FocusedItemDecorator(
+                    new ViewGroupFocusHelper(mRecyclerView)) : new FocusedItemDecorator(
+                    mRecyclerView);
             mRecyclerView.addItemDecoration(focusedItemDecorator);
             mOnFocusChangeListener = focusedItemDecorator.getFocusListener();
             mAdapter.setIconFocusListener(mOnFocusChangeListener);
