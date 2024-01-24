@@ -206,7 +206,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 mLauncher.getStatsLogManager().logger().log(LAUNCHER_WORKSPACE_LONGPRESS);
                 mLauncher.showDefaultOptions(mTouchDownPoint.x, mTouchDownPoint.y);
-                if (FeatureFlags.enableSplitContextually() && mLauncher.isSplitSelectionEnabled()) {
+                if (FeatureFlags.enableSplitContextually() && mLauncher.isSplitSelectionActive()) {
                     mLauncher.dismissSplitSelection();
                 }
             } else {

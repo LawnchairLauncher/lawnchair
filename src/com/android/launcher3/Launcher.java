@@ -2760,7 +2760,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         LauncherRootView rv = getRootView();
         if (rv != null) {
-            boolean isSplitSelectionEnabled = isSplitSelectionEnabled();
+            boolean isSplitSelectionEnabled = isSplitSelectionActive();
             boolean disableBack = getStateManager().getState() == NORMAL
                     && AbstractFloatingView.getTopOpenView(this) == null
                     && !isSplitSelectionEnabled;
@@ -2769,7 +2769,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /** To be overridden by subclasses */
-    public boolean isSplitSelectionEnabled() {
+    public boolean isSplitSelectionActive() {
         // Overridden
         return false;
     }

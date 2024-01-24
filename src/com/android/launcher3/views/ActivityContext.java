@@ -150,7 +150,7 @@ public interface ActivityContext {
      * @return {@code true} if user has selected the first split app and is in the process of
      *         selecting the second
      */
-    default boolean isSplitSelectionEnabled() {
+    default boolean isSplitSelectionActive() {
         // Overridden
         return false;
     }

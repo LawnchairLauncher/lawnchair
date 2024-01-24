@@ -59,7 +59,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             return RemoteViews.startPendingIntent(hostView, pendingIntent,
                     remoteResponse.getLaunchOptions(view));
         }
-        if (mLauncher.isSplitSelectionEnabled()) {
+        if (mLauncher.isSplitSelectionActive()) {
             // Log metric
             StatsLogManager.StatsLogger logger = mLauncher.getStatsLogManager().logger();
             logger.log(LAUNCHER_SPLIT_WIDGET_ATTEMPT);
