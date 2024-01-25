@@ -206,6 +206,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
                 .firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
         boolean showSystemSettings = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getShowSystemSettingsEntryOnPopUp());
+        boolean showEditMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEditHomeScreenButtonOnPopUp());
 
         ArrayList<OptionItem> options = new ArrayList<>();
         if (showLockToggle) {
@@ -235,7 +236,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
                     LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                     OptionsPopupView::onWidgetsClicked));
         }
-        if (MULTI_SELECT_EDIT_MODE.get()) {
+        if (!lockHomeScreen && showEditMode) {
             options.add(new OptionItem(launcher,
                     R.string.edit_home_screen,
                     R.drawable.enter_home_gardening_icon,

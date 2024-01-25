@@ -44,7 +44,6 @@ import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 object HomeScreenRoutes {
@@ -130,6 +129,11 @@ fun HomeScreenPreferences() {
                 adapter = prefs2.showSystemSettingsEntryOnPopUp.getAdapter(),
                 label = stringResource(id = R.string.show_system_settings_entry),
             )
+            SwitchPreference(
+                adapter = prefs2.editHomeScreenButtonOnPopUp.getAdapter(),
+                label = stringResource(id = R.string.home_screen_edit_toggle_from_home_popup),
+                enabled = lockHomeScreenAdapter.state.value.not(),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
             val showStatusBarAdapter = prefs2.showStatusBar.getAdapter()
@@ -195,7 +199,7 @@ fun HomeScreenPreferences() {
 fun HomeScreenTextColorPreference() {
     ListPreference(
         adapter = preferenceManager2().workspaceTextColor.getAdapter(),
-        entries = ColorMode.entries().toPersistentList(),
+        entries = ColorMode.entries(),
         label = stringResource(id = R.string.home_screen_text_color),
     )
 }
