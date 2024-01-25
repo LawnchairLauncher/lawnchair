@@ -212,6 +212,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val editHomeScreenButtonOnPopUp = preference(
+        key = booleanPreferencesKey(name = "edit_home_screen_on_popup"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_edit_home_screen_on_popup),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showSystemSettingsEntryOnPopUp = preference(
         key = booleanPreferencesKey(name = "show_system_settings_entry_on_popup"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_system_settings_entry_on_popup),

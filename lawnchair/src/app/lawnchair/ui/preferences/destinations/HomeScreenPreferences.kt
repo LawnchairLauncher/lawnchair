@@ -129,6 +129,11 @@ fun HomeScreenPreferences() {
                 adapter = prefs2.showSystemSettingsEntryOnPopUp.getAdapter(),
                 label = stringResource(id = R.string.show_system_settings_entry),
             )
+            SwitchPreference(
+                adapter = prefs2.editHomeScreenButtonOnPopUp.getAdapter(),
+                label = stringResource(id = R.string.home_screen_edit_toggle_from_home_popup),
+                enabled = lockHomeScreenAdapter.state.value.not(),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
             val showStatusBarAdapter = prefs2.showStatusBar.getAdapter()
