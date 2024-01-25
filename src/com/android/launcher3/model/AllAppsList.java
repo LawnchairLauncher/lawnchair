@@ -330,12 +330,15 @@ public class AllAppsList {
                             PackageManagerHelper.getLoadingProgress(info),
                             PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                     applicationInfo.intent = launchIntent;
-                    if (enableSupportForArchiving() && info.getActivityInfo().isArchived) {
+                    if (enableSupportForArchiving()) {
                         // In case an app is archived, the respective item flag corresponding to
                         // archiving should also be applied during package updates
-                        applicationInfo.runtimeStatusFlags |= FLAG_ARCHIVED;
+                        if (info.getActivityInfo().isArchived) {
+                            applicationInfo.runtimeStatusFlags |= FLAG_ARCHIVED;
+                        } else {
+                            applicationInfo.runtimeStatusFlags &= (~FLAG_ARCHIVED);
+                        }
                     }
-
                     mDataChanged = true;
                 }
             }
