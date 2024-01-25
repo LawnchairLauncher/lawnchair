@@ -54,7 +54,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"如要變更「返回」手勢的敏感度，請前往「設定」"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"滑動即可返回"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"如要返回上一個畫面，請從螢幕左側或右側邊緣往中央滑動。"</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"如要返回上一個畫面，請用 2 隻手指從螢幕左側或右側邊緣往中央滑動。"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"如要返回上一個畫面，請用兩指從螢幕左側或右側邊緣往中央滑動。"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"返回"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"從螢幕左側或右側邊緣往中央滑動"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"請確保從螢幕底部邊緣向上滑動"</string>
@@ -64,7 +64,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"你已完成「返回主畫面」手勢的教學課程"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"向上滑動即可返回主畫面"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"從螢幕底部向上滑動。這個手勢在所有畫面下都可讓你返回主畫面。"</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"請用 2 隻手指從螢幕底部向上滑動。這個手勢在所有畫面下都可讓你返回主畫面。"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"請用兩指從螢幕底部向上滑動。這個手勢在所有畫面下都可讓你返回主畫面。"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"返回主畫面"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"從螢幕底部向上滑動"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"太好了！"</string>
@@ -75,7 +75,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"你已完成「切換應用程式」手勢的教學課程"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑動即可切換應用程式"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如要切換應用程式，請從螢幕底部向上滑動並按住，然後放開。"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如要切換應用程式，請用 2 隻手指從螢幕底部向上滑動並按住，然後放開手指。"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如要切換應用程式，請用兩指從螢幕底部向上滑動並按住，然後放開手指。"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"切換應用程式"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"從螢幕底部向上滑動並按住，然後放開"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"做得好！"</string>
