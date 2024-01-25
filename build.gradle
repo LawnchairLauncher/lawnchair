@@ -356,7 +356,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:2.7.6"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
-    def accompanistVersion = '0.32.0'
+    def accompanistVersion = '0.34.0'
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
