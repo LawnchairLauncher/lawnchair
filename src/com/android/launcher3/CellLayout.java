@@ -16,18 +16,13 @@
 
 package com.android.launcher3;
 
-import static android.animation.ValueAnimator.areAnimatorsEnabled;
-
-import static com.android.app.animation.Interpolators.DECELERATE_1_5;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.dragndrop.DraggableView.DRAGGABLE_ICON;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
-import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_BOUNCE_OFFSET;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_PREVIEW_OFFSET;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -70,6 +65,7 @@ import com.android.launcher3.celllayout.DelegatedCellDrawing;
 import com.android.launcher3.celllayout.ItemConfiguration;
 import com.android.launcher3.celllayout.ReorderAlgorithm;
 import com.android.launcher3.celllayout.ReorderParameters;
+import com.android.launcher3.celllayout.ReorderPreviewAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
@@ -188,7 +184,7 @@ public class CellLayout extends ViewGroup {
 
     @ContainerType private final int mContainerType;
 
-    private final float mChildScale = 1f;
+    public static final float DEFAULT_SCALE = 1f;
 
     public static final int MODE_SHOW_REORDER_HINT = 0;
     public static final int MODE_DRAG_OVER = 1;
@@ -198,8 +194,8 @@ public class CellLayout extends ViewGroup {
     private static final boolean DESTRUCTIVE_REORDER = false;
     private static final boolean DEBUG_VISUALIZE_OCCUPIED = false;
 
-    private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
-    private static final int REORDER_ANIMATION_DURATION = 150;
+    public static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
+    public static final int REORDER_ANIMATION_DURATION = 150;
     @Thunk final float mReorderPreviewAnimationMagnitude;
 
     private final ArrayList<View> mIntersectingViews = new ArrayList<>();
@@ -761,8 +757,8 @@ public class CellLayout extends ViewGroup {
             bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
         }
 
-        child.setScaleX(mChildScale);
-        child.setScaleY(mChildScale);
+        child.setScaleX(DEFAULT_SCALE);
+        child.setScaleY(DEFAULT_SCALE);
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
@@ -1438,144 +1434,11 @@ public class CellLayout extends ViewGroup {
 
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             if (c != null && !skip && (child instanceof Reorderable)) {
-                ReorderPreviewAnimation rha = new ReorderPreviewAnimation(child,
-                        mode, lp.getCellX(), lp.getCellY(), c.cellX, c.cellY, c.spanX, c.spanY);
+                ReorderPreviewAnimation rha = new ReorderPreviewAnimation(child, mode,
+                        lp.getCellX(), lp.getCellY(), c.cellX, c.cellY, c.spanX, c.spanY,
+                        mReorderPreviewAnimationMagnitude, this, mShakeAnimators);
                 rha.animate();
             }
-        }
-    }
-
-    // Class which represents the reorder preview animations. These animations show that an item is
-    // in a temporary state, and hint at where the item will return to.
-    class ReorderPreviewAnimation<T extends View & Reorderable> implements
-            ValueAnimator.AnimatorUpdateListener {
-        final T child;
-        float finalDeltaX;
-        float finalDeltaY;
-        float initDeltaX;
-        float initDeltaY;
-        final float finalScale;
-        float initScale;
-        private static final int PREVIEW_DURATION = 300;
-        private static final int HINT_DURATION = Workspace.REORDER_TIMEOUT;
-
-        private static final float CHILD_DIVIDEND = 4.0f;
-
-        public static final int MODE_HINT = 0;
-        public static final int MODE_PREVIEW = 1;
-
-        ValueAnimator mAnimator;
-
-        ReorderPreviewAnimation(View childView, int mode, int cellX0, int cellY0,
-                int cellX1, int cellY1, int spanX, int spanY) {
-            regionToCenterPoint(cellX0, cellY0, spanX, spanY, mTmpPoint);
-            final int x0 = mTmpPoint[0];
-            final int y0 = mTmpPoint[1];
-            regionToCenterPoint(cellX1, cellY1, spanX, spanY, mTmpPoint);
-            final int x1 = mTmpPoint[0];
-            final int y1 = mTmpPoint[1];
-            final int dX = x1 - x0;
-            final int dY = y1 - y0;
-
-            this.child = (T) childView;
-            finalDeltaX = 0;
-            finalDeltaY = 0;
-
-            MultiTranslateDelegate mtd = child.getTranslateDelegate();
-            initDeltaX = mtd.getTranslationX(INDEX_REORDER_BOUNCE_OFFSET).getValue();
-            initDeltaY = mtd.getTranslationY(INDEX_REORDER_BOUNCE_OFFSET).getValue();
-            initScale = child.getReorderBounceScale();
-            finalScale = mChildScale - (CHILD_DIVIDEND / child.getWidth()) * initScale;
-
-            mAnimator = ObjectAnimator.ofFloat(0, 1);
-            mAnimator.addUpdateListener(this);
-
-            // Animations are disabled in power save mode, causing the repeated animation to jump
-            // spastically between beginning and end states. Since this looks bad, we don't repeat
-            // the animation in power save mode.
-            if (areAnimatorsEnabled() && mode == MODE_PREVIEW) {
-                mAnimator.setRepeatCount(ValueAnimator.INFINITE);
-                mAnimator.setRepeatMode(ValueAnimator.REVERSE);
-            }
-
-            mAnimator.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
-            mAnimator.setStartDelay((int) (Math.random() * 60));
-
-            int dir = mode == MODE_HINT ? -1 : 1;
-            if (dX == dY && dX == 0) {
-            } else {
-                if (dY == 0) {
-                    finalDeltaX = -dir * Math.signum(dX) * mReorderPreviewAnimationMagnitude;
-                } else if (dX == 0) {
-                    finalDeltaY = -dir * Math.signum(dY) * mReorderPreviewAnimationMagnitude;
-                } else {
-                    double angle = Math.atan( (float) (dY) / dX);
-                    finalDeltaX = (int) (-dir * Math.signum(dX)
-                            * Math.abs(Math.cos(angle) * mReorderPreviewAnimationMagnitude));
-                    finalDeltaY = (int) (-dir * Math.signum(dY)
-                            * Math.abs(Math.sin(angle) * mReorderPreviewAnimationMagnitude));
-                }
-            }
-        }
-
-        void setInitialAnimationValuesToBaseline() {
-            initScale = mChildScale;
-            initDeltaX = 0;
-            initDeltaY = 0;
-        }
-
-        void animate() {
-            boolean noMovement = (finalDeltaX == 0) && (finalDeltaY == 0);
-
-            if (mShakeAnimators.containsKey(child)) {
-                ReorderPreviewAnimation oldAnimation = mShakeAnimators.get(child);
-                mShakeAnimators.remove(child);
-
-                if (noMovement) {
-                    // A previous animation for this item exists, and no new animation will exist.
-                    // Finish the old animation smoothly.
-                    oldAnimation.finishAnimation();
-                    return;
-                } else {
-                    // A previous animation for this item exists, and a new one will exist. Stop
-                    // the old animation in its tracks, and proceed with the new one.
-                    oldAnimation.cancel();
-                }
-            }
-            if (noMovement) {
-                return;
-            }
-
-            mShakeAnimators.put(child, this);
-            mAnimator.start();
-        }
-
-        @Override
-        public void onAnimationUpdate(ValueAnimator updatedAnimation) {
-            float progress = (float) updatedAnimation.getAnimatedValue();
-            child.getTranslateDelegate().setTranslation(
-                    INDEX_REORDER_BOUNCE_OFFSET,
-                    /* dx = */ progress * finalDeltaX + (1 - progress) * initDeltaX,
-                    /* dy = */ progress * finalDeltaY + (1 - progress) * initDeltaY
-            );
-            child.setReorderBounceScale(progress * finalScale + (1 - progress) * initScale);
-        }
-
-        private void cancel() {
-            mAnimator.cancel();
-        }
-
-        /**
-         * Smoothly returns the item to its baseline position / scale
-         */
-        @Thunk void finishAnimation() {
-            mAnimator.cancel();
-            setInitialAnimationValuesToBaseline();
-            mAnimator = ObjectAnimator.ofFloat((Float) mAnimator.getAnimatedValue(), 0);
-            mAnimator.addUpdateListener(this);
-            mAnimator.setInterpolator(DECELERATE_1_5);
-            mAnimator.setDuration(REORDER_ANIMATION_DURATION);
-            mAnimator.start();
         }
     }
 
