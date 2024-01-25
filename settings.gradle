@@ -60,16 +60,10 @@ include ':systemUnFold'
 include ':systemUIViewCapture'
 
 include ':compatLib'
-include ':compatLibVQ'
-project(':compatLibVQ').projectDir = new File(rootDir, 'compatLib/compatLibVQ')
-include ':compatLibVR'
-project(':compatLibVR').projectDir = new File(rootDir, 'compatLib/compatLibVR')
-include ':compatLibVS'
-project(':compatLibVS').projectDir = new File(rootDir, 'compatLib/compatLibVS')
-include ':compatLibVT'
-project(':compatLibVT').projectDir = new File(rootDir, 'compatLib/compatLibVT')
-include ':compatLibVU'
-project(':compatLibVU').projectDir = new File(rootDir, 'compatLib/compatLibVU')
-
+include ':compatLib:compatLibVQ'
+include ':compatLib:compatLibVR'
+include ':compatLib:compatLibVS'
+include ':compatLib:compatLibVT'
+include ':compatLib:compatLibVU'
 
 include ':baseline-profile'

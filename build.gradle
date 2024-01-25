@@ -104,11 +104,11 @@ allprojects {
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
 
                 compileOnly projects.compatLib
-                compileOnly projects.compatLibVQ
-                compileOnly projects.compatLibVR
-                compileOnly projects.compatLibVS
-                compileOnly projects.compatLibVT
-                compileOnly projects.compatLibVU
+                compileOnly projects.compatLib.compatLibVQ
+                compileOnly projects.compatLib.compatLibVR
+                compileOnly projects.compatLib.compatLibVS
+                compileOnly projects.compatLib.compatLibVT
+                compileOnly projects.compatLib.compatLibVU
             }
         }
     }
@@ -331,11 +331,11 @@ dependencies {
 
     // QuickSwitch Compat
     withQuickstepImplementation projects.compatLib
-    withQuickstepImplementation projects.compatLibVQ
-    withQuickstepImplementation projects.compatLibVR
-    withQuickstepImplementation projects.compatLibVS
-    withQuickstepImplementation projects.compatLibVT
-    withQuickstepImplementation projects.compatLibVU
+    withQuickstepImplementation projects.compatLib.compatLibVQ
+    withQuickstepImplementation projects.compatLib.compatLibVR
+    withQuickstepImplementation projects.compatLib.compatLibVS
+    withQuickstepImplementation projects.compatLib.compatLibVT
+    withQuickstepImplementation projects.compatLib.compatLibVU
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-14.jar')
 

@@ -10,6 +10,6 @@ addFrameworkJar('framework-14.jar')
 
 dependencies {
     implementation projects.compatLib
-    implementation projects.compatLibVS
-    implementation projects.compatLibVT
+    implementation projects.compatLib.compatLibVS
+    implementation projects.compatLib.compatLibVT
 }

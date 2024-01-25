@@ -10,5 +10,5 @@ addFrameworkJar('framework-10.jar')
 
 dependencies {
     implementation projects.compatLib
-    implementation projects.compatLibVR
+    implementation projects.compatLib.compatLibVR
 }

@@ -10,5 +10,5 @@ addFrameworkJar('framework-13.jar')
 
 dependencies {
     implementation projects.compatLib
-    implementation projects.compatLibVS
+    implementation projects.compatLib.compatLibVS
 }
