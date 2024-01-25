@@ -76,7 +76,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Prevucite da prebacujete između aplikacija"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Da se prebacujete između aplikacija, prevucite s dna ekrana nagore, zadržite, a zatim pustite."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Da se prebacujete između aplikacija, prevucite s 2 prsta od dna ekrana, zadržite, a zatim pustite."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Prebacujte se između aplikacija"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Prebacujte između aplikacija"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Prevucite s dna ekrana prema gore, zadržite, a zatim pustite"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Odlično!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Sve je spremno"</string>
