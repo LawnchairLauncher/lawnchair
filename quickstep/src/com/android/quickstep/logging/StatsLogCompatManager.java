@@ -139,7 +139,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (IS_VERBOSE) {
             Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
         }
-        if (!Utilities.ATLEAST_R || Utilities.isRunningInTestHarness()) {
+        if (Utilities.isRunningInTestHarness()) {
             return;
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
@@ -342,9 +342,6 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         @Override
         public void log(EventEnum event) {
-            if (!Utilities.ATLEAST_R) {
-                return;
-            }
             if (DEBUG) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";

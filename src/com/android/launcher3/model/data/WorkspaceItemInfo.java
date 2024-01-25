@@ -189,8 +189,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
-        if (Utilities.ATLEAST_P
-                && shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
+        if (shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
             runtimeStatusFlags |= FLAG_DISABLED_VERSION_LOWER;
         } else {
             runtimeStatusFlags &= ~FLAG_DISABLED_VERSION_LOWER;

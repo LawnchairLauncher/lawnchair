@@ -21,9 +21,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_T
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.annotation.TargetApi;
 import android.graphics.PointF;
-import android.os.Build;
 import android.os.Handler;
 
 import androidx.annotation.ColorInt;
@@ -42,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /** A {@link TutorialController} for the Overview tutorial. */
-@TargetApi(Build.VERSION_CODES.R)
 final class OverviewGestureTutorialController extends SwipeUpGestureTutorialController {
 
     private static final float LAUNCHER_COLOR_BLENDING_RATIO = 0.4f;

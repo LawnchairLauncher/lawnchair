@@ -158,10 +158,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     private int getNavBarScrimHeight(WindowInsets insets) {
         if (mDisableNavBarScrim) {
             return 0;
-        } else if (Utilities.ATLEAST_Q) {
-            return insets.getTappableElementInsets().bottom;
         } else {
-            return insets.getStableInsetBottom();
+            return insets.getTappableElementInsets().bottom;
         }
     }
 

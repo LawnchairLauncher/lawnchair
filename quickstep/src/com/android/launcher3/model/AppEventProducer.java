@@ -45,14 +45,12 @@ import static com.android.launcher3.model.PredictionHelper.isTrackedForHotseatPr
 import static com.android.launcher3.model.PredictionHelper.isTrackedForWidgetPrediction;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
-import android.annotation.TargetApi;
 import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
@@ -84,7 +82,6 @@ import java.util.function.ObjIntConsumer;
 /**
  * Utility class to track stats log and emit corresponding app events
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class AppEventProducer implements StatsLogConsumer {
 
     private static final int MSG_LAUNCH = 0;

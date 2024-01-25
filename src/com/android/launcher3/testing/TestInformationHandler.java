@@ -15,19 +15,17 @@
  */
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowInsets;
 
@@ -60,7 +58,6 @@ import java.util.function.Supplier;
 /**
  * Class to handle requests from tests
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class TestInformationHandler implements ResourceBasedOverride {
 
     public static TestInformationHandler newInstance(Context context) {

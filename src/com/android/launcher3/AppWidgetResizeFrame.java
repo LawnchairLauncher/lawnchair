@@ -191,14 +191,12 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if (Utilities.ATLEAST_Q) {
-            for (int i = 0; i < HANDLE_COUNT; i++) {
-                View dragHandle = mDragHandles[i];
-                mSystemGestureExclusionRects.get(i).set(dragHandle.getLeft(), dragHandle.getTop(),
-                        dragHandle.getRight(), dragHandle.getBottom());
-            }
-            setSystemGestureExclusionRects(mSystemGestureExclusionRects);
+        for (int i = 0; i < HANDLE_COUNT; i++) {
+            View dragHandle = mDragHandles[i];
+            mSystemGestureExclusionRects.get(i).set(dragHandle.getLeft(), dragHandle.getTop(),
+                    dragHandle.getRight(), dragHandle.getBottom());
         }
+        setSystemGestureExclusionRects(mSystemGestureExclusionRects);
     }
 
     public static void showForWidget(LauncherAppWidgetHostView widget, CellLayout cellLayout) {

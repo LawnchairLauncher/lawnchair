@@ -19,7 +19,6 @@ import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
 
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
 import static com.android.launcher3.Utilities.allowBGLaunch;
-import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_PENDING_INTENT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
@@ -266,32 +265,26 @@ public interface ActivityContext {
         if (root == null) {
             return;
         }
-        if (Utilities.ATLEAST_R) {
-            Preconditions.assertUIThread();
-            //  Hide keyboard with WindowInsetsController if could. In case
-            //  hideSoftInputFromWindow may get ignored by input connection being finished
-            //  when the screen is off.
-            //
-            // In addition, inside IMF, the keyboards are closed asynchronously that launcher no
-            // longer need to post to the message queue.
-            final WindowInsetsController wic = root.getWindowInsetsController();
-            WindowInsets insets = root.getRootWindowInsets();
-            boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
-            if (wic != null) {
-                // Only hide the keyboard if it is actually showing.
-                if (isImeShown) {
-                    StatsLogManager slm = getStatsLogManager();
-                    slm.keyboardStateManager().setKeyboardState(HIDE);
-
-                    // this method cannot be called cross threads
-                    wic.hide(WindowInsets.Type.ime());
-                    slm.logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
-                }
-
-                // If the WindowInsetsController is not null, we end here regardless of whether we
-                // hid the keyboard or not.
-                return;
+        Preconditions.assertUIThread();
+        // Hide keyboard with WindowInsetsController if could. In case hideSoftInputFromWindow may
+        // get ignored by input connection being finished when the screen is off.
+        //
+        // In addition, inside IMF, the keyboards are closed asynchronously that launcher no longer
+        // need to post to the message queue.
+        final WindowInsetsController wic = root.getWindowInsetsController();
+        WindowInsets insets = root.getRootWindowInsets();
+        boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
+        if (wic != null) {
+            // Only hide the keyboard if it is actually showing.
+            if (isImeShown) {
+                // this method cannot be called cross threads
+                wic.hide(WindowInsets.Type.ime());
+                getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
             }
+
+            // If the WindowInsetsController is not null, we end here regardless of whether we hid
+            // the keyboard or not.
+            return;
         }
 
         InputMethodManager imm = root.getContext().getSystemService(InputMethodManager.class);

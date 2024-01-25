@@ -15,8 +15,6 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.SHOW;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
@@ -93,7 +91,6 @@ public class ExtendedEditText extends EditText {
      * @return true if the keyboard is shown correctly and focus is given to this view.
      */
     public boolean showKeyboard() {
-        onKeyboardShown();
         return requestFocus() && showSoftInputInternal();
     }
 
@@ -118,11 +115,6 @@ public class ExtendedEditText extends EditText {
         if (clearFocus) {
             clearFocus();
         }
-    }
-
-    protected void onKeyboardShown() {
-        ActivityContext.lookupContext(getContext()).getStatsLogManager()
-                .keyboardStateManager().setKeyboardState(SHOW);
     }
 
     private boolean showSoftInputInternal() {

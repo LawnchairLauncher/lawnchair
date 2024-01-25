@@ -59,7 +59,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     private static final long MAX_TASK_DISMISS_ANIMATION_DURATION = 600;
 
     public static final int TASK_DISMISS_VIBRATION_PRIMITIVE =
-            Utilities.ATLEAST_R ? VibrationEffect.Composition.PRIMITIVE_TICK : -1;
+            VibrationEffect.Composition.PRIMITIVE_TICK;
     public static final float TASK_DISMISS_VIBRATION_PRIMITIVE_SCALE = 1f;
     public static final VibrationEffect TASK_DISMISS_VIBRATION_FALLBACK =
             VibrationConstants.EFFECT_TEXTURE_TICK;

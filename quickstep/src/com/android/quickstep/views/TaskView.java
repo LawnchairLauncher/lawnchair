@@ -1339,10 +1339,8 @@ public class TaskView extends FrameLayout implements Reusable {
             setPivotX((right - left) * 0.5f);
             setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
         }
-        if (Utilities.ATLEAST_Q) {
-            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
-            setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
-        }
+        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
+        setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
     }
 
     /**
