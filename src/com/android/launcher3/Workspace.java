@@ -73,7 +73,6 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellInfo;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
@@ -99,7 +98,6 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.statemanager.StateManager;
@@ -2339,10 +2337,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
-    public CellLayout getCurrentDragOverlappingLayout() {
-        return mDragOverlappingLayout;
-    }
-
     void setCurrentDropOverCell(int x, int y) {
         if (x != mDragOverX || y != mDragOverY) {
             mDragOverX = x;
@@ -2854,36 +2848,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
             mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
-            View view;
-
-            switch (info.itemType) {
-                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                case LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION:
-                    if (info instanceof WorkspaceItemFactory) {
-                        // Came from all apps -- make a copy
-                        info = ((WorkspaceItemFactory) info).makeWorkspaceItem(mLauncher);
-                        d.dragInfo = info;
-                    }
-                    if (info instanceof WorkspaceItemInfo
-                            && info.container == LauncherSettings.Favorites.CONTAINER_PREDICTION) {
-                        // Came from all apps prediction row -- make a copy
-                        info = new WorkspaceItemInfo((WorkspaceItemInfo) info);
-                        d.dragInfo = info;
-                    }
-                    view = mLauncher.createShortcut(cellLayout, (WorkspaceItemInfo) info);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                    view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, mLauncher, cellLayout,
-                            (FolderInfo) info);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
-                    view = AppPairIcon.inflateIcon(R.layout.app_pair_icon, mLauncher, cellLayout,
-                            (FolderInfo) info);
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown item type: " + info.itemType);
-            }
+            View view = mLauncher.getItemInflater()
+                    .inflateItem(info, mLauncher.getModelWriter(), cellLayout);
+            d.dragInfo = info = (ItemInfo) view.getTag();
 
             // First we find the cell nearest to point at which the item is
             // dropped, without any consideration to whether there is an item there.
