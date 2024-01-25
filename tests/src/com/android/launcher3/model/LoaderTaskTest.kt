@@ -95,6 +95,10 @@ class LoaderTaskTest {
     @Test
     fun loadsDataProperly() =
         with(BgDataModel()) {
+            val MAIN_HANDLE = UserHandle.of(0)
+            val mockUserHandles = arrayListOf<UserHandle>(MAIN_HANDLE)
+            `when`(userCache.userProfiles).thenReturn(mockUserHandles)
+            `when`(userCache.getUserInfo(MAIN_HANDLE)).thenReturn(UserIconInfo(MAIN_HANDLE, 1))
             LoaderTask(app, bgAllAppsList, this, modelDelegate, launcherBinder)
                 .runSyncOnBackgroundThread()
             Truth.assertThat(workspaceItems.size).isAtLeast(25)

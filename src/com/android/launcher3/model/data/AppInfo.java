@@ -31,10 +31,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.UserIconInfo;
 
 import java.util.Comparator;
 
@@ -83,20 +86,21 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      * Must not hold the Context.
      */
     public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
-        this(info, user, context.getSystemService(UserManager.class).isQuietModeEnabled(user));
+        this(info, UserCache.INSTANCE.get(context).getUserInfo(user),
+                context.getSystemService(UserManager.class).isQuietModeEnabled(user));
     }
 
-    public AppInfo(LauncherActivityInfo info, UserHandle user, boolean quietModeEnabled) {
+    public AppInfo(LauncherActivityInfo info, UserIconInfo userIconInfo, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = CONTAINER_ALL_APPS;
-        this.user = user;
+        this.user = userIconInfo.user;
         intent = makeLaunchIntent(info);
 
         if (quietModeEnabled) {
             runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
         }
         uid = info.getApplicationInfo().uid;
-        updateRuntimeFlagsForActivityTarget(this, info);
+        updateRuntimeFlagsForActivityTarget(this, info, userIconInfo);
     }
 
     public AppInfo(AppInfo info) {
@@ -170,7 +174,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
     }
 
     public static void updateRuntimeFlagsForActivityTarget(
-            ItemInfoWithIcon info, LauncherActivityInfo lai) {
+            ItemInfoWithIcon info, LauncherActivityInfo lai, UserIconInfo userIconInfo) {
         ApplicationInfo appInfo = lai.getApplicationInfo();
         if (PackageManagerHelper.isAppSuspended(appInfo)) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
@@ -180,6 +184,12 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         }
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
                 ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
+
+        if (Flags.privateSpaceRestrictAccessibilityDrag()) {
+            if (userIconInfo.isPrivate()) {
+                info.runtimeStatusFlags |= FLAG_NOT_PINNABLE;
+            }
+        }
 
         // Sets the progress level, installation and incremental download flags.
         info.setProgressLevel(
