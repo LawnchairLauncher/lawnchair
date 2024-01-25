@@ -36,11 +36,7 @@ public class InputMonitorCompat {
      * Monitor input on the specified display for gestures.
      */
     public InputMonitorCompat(String name, int displayId) {
-        mInputMonitor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
-                ? InputManagerGlobal.getInstance()
-                .monitorGestureInput(name, displayId) :
-                InputManager.getInstance()
-                        .monitorGestureInput(name, displayId);
+        mInputMonitor = InputManager.getInstance().monitorGestureInput(name, displayId);
     }
 
     /**

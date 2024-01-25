@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.ISystemGestureExclusionListener;
 import android.view.WindowManagerGlobal;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 /**
  * Utility class to listen for exclusion rect changes.
  */
@@ -44,6 +46,7 @@ public abstract class SystemGestureExclusionListenerCompat {
 
                 public void onSystemGestureExclusionChanged(int displayId,
                                                             Region systemGestureExclusion) {
+                    if (LawnchairQuickstepCompat.ATLEAST_U) return;
                     onSystemGestureExclusionChanged(displayId, systemGestureExclusion, null);
                 }
             };
