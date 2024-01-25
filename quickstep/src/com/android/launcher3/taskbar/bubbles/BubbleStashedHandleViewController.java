@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar.bubbles;
 
 import static android.view.View.INVISIBLE;
+import static android.view.View.LAYOUT_DIRECTION_RTL;
 import static android.view.View.VISIBLE;
 
 import android.animation.Animator;
@@ -124,20 +125,33 @@ public class BubbleStashedHandleViewController {
     private void updateBounds() {
         // As more bubbles get added, the icon bounds become larger. To ensure a consistent
         // handle bar position, we pin it to the edge of the screen.
-        final int right =
-                mActivity.getDeviceProfile().widthPx - mBarViewController.getHorizontalMargin();
-
         final int stashedCenterY = mStashedHandleView.getHeight() - mStashedTaskbarHeight / 2;
+        if (isOnLeft()) {
+            final int left = mBarViewController.getHorizontalMargin();
+            mStashedHandleBounds.set(
+                    left,
+                    stashedCenterY - mStashedHandleHeight / 2,
+                    left + mStashedHandleWidth,
+                    stashedCenterY + mStashedHandleHeight / 2);
+            mStashedHandleView.setPivotX(0);
+        } else {
+            final int right =
+                    mActivity.getDeviceProfile().widthPx - mBarViewController.getHorizontalMargin();
+            mStashedHandleBounds.set(
+                    right - mStashedHandleWidth,
+                    stashedCenterY - mStashedHandleHeight / 2,
+                    right,
+                    stashedCenterY + mStashedHandleHeight / 2);
+            mStashedHandleView.setPivotX(mStashedHandleView.getWidth());
+        }
 
-        mStashedHandleBounds.set(
-                right - mStashedHandleWidth,
-                stashedCenterY - mStashedHandleHeight / 2,
-                right,
-                stashedCenterY + mStashedHandleHeight / 2);
         mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
-
-        mStashedHandleView.setPivotX(mStashedHandleView.getWidth());
         mStashedHandleView.setPivotY(mStashedHandleView.getHeight() - mStashedTaskbarHeight / 2f);
+    }
+
+    private boolean isOnLeft() {
+        // TODO(b/313661121): set this based on bubble bar position and not LTR or RTL
+        return mStashedHandleView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
     public void onDestroy() {

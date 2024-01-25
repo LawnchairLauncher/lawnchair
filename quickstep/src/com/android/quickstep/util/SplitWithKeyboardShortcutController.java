@@ -43,6 +43,7 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.Task;
@@ -75,7 +76,9 @@ public class SplitWithKeyboardShortcutController {
 
     @BinderThread
     public void enterStageSplit(boolean leftOrTop) {
-        if (!enableSplitContextually()) {
+        if (!enableSplitContextually() ||
+                // Do not enter stage split from keyboard shortcuts if the user is already in split
+                TopTaskTracker.INSTANCE.get(mLauncher).getRunningSplitTaskIds().length == 2) {
             return;
         }
         RecentsAnimationCallbacks callbacks = new RecentsAnimationCallbacks(

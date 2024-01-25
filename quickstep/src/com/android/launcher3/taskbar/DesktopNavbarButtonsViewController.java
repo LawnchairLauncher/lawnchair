@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.taskbar.navbutton.NearestTouchFrame;
 
 /**
  * Controller for managing buttons and status icons in taskbar in a desktop environment.
@@ -43,7 +44,7 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
     private TaskbarControllers mControllers;
 
     public DesktopNavbarButtonsViewController(TaskbarActivityContext context,
-            @Nullable Context navigationBarPanelContext, FrameLayout navButtonsView) {
+            @Nullable Context navigationBarPanelContext, NearestTouchFrame navButtonsView) {
         super(context, navigationBarPanelContext, navButtonsView);
         mContext = context;
         mNavButtonsView = navButtonsView;

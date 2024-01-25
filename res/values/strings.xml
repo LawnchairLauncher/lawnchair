@@ -447,8 +447,10 @@
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
 
     <!-- Strings for Private Space -->
-    <!-- Private space label -->
+    <!-- Private space tile label -->
     <string name="private_space_label">Private space</string>
+    <!-- Private space tile secondary label -->
+    <string name="private_space_secondary_label">Keep private apps locked and hidden</string>
     <!-- Title for Private Space Container shown at the bottom of all apps drawer -->
     <string name="ps_container_title">Private</string>
     <!-- Description for Private Space Settings button -->

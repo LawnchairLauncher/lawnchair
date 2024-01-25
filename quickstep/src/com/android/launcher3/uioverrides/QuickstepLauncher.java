@@ -725,7 +725,7 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    public boolean isSplitSelectionEnabled() {
+    public boolean isSplitSelectionActive() {
         return mSplitSelectStateController.isSplitSelectActive();
     }
 
