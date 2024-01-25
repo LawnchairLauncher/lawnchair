@@ -13,6 +13,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -33,7 +34,6 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.AllAppsStore
-import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
 import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
@@ -64,7 +64,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         Selection.setSelection(this, 0)
     }
 
-    private lateinit var apps: AlphabeticalAppsList<*>
+    private lateinit var apps: LawnchairAlphabeticalAppsList<*>
     private lateinit var appsView: ActivityAllAppsContainerView<*>
 
     private var focusedResultTitle = ""
@@ -192,7 +192,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     }
 
     override fun initializeSearch(appsView: ActivityAllAppsContainerView<*>) {
-        apps = appsView.searchResultList
+        apps = appsView.searchResultList as LawnchairAlphabeticalAppsList<*>
         this.appsView = appsView
         searchBarController.initialize(
             LawnchairSearchAlgorithm.create(context),

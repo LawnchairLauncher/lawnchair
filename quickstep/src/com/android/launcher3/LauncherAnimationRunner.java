@@ -127,6 +127,10 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
         });
     }
 
+    public void onAnimationCancelled(boolean isKeyguardOccluded) {
+        onAnimationCancelled();
+    }
+
     /**
      * Used by RemoteAnimationFactory implementations to run the actual animation and its lifecycle
      * callbacks.
@@ -196,13 +200,19 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                         finish();
                     }
                 });
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU) {
+                    mAnimator.start();
+                }
+
                 if (skipFirstFrame) {
                     // Because t=0 has the app icon in its original spot, we can skip the
                     // first frame and have the same movement one frame earlier.
                     mAnimator.setCurrentPlayTime(
                             Math.min(getSingleFrameMs(context), mAnimator.getTotalDuration()));
                 }
-                mAnimator.start();
+                if (Utilities.ATLEAST_U) {
+                    mAnimator.start();
+                }
             }
         }
 
@@ -233,6 +243,11 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                 RemoteAnimationTarget[] wallpaperTargets,
                 RemoteAnimationTarget[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result);
+
+        @UiThread
+        default void onAnimationCancelled(boolean isKeyguardOccluded) {
+            onAnimationCancelled();
+        }
 
         /**
          * Called when the animation is cancelled. This can happen with or without

@@ -219,6 +219,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.OverScrollerCompat;
 
@@ -5461,7 +5462,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        final boolean sendUserLeaveHint = toRecents && shouldPip;
+        final boolean sendUserLeaveHint = toRecents && shouldPip && LawnchairQuickstepCompat.ATLEAST_S;
         if (sendUserLeaveHint) {
             // Notify the SysUI to use fade-in animation when entering PiP from live tile.
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
@@ -5470,14 +5471,22 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Transaction to hide the task to avoid flicker for entering PiP from
             // split-screen.
             // See also {@link AbsSwipeUpHandler#maybeFinishSwipeToHome}.
-            PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
-                    .setAlpha(0f)
-                    .build();
-            tx.setShouldDisableCanAffectSystemUiFlags(false);
-            int[] taskIds = TopTaskTracker.INSTANCE.get(getContext()).getRunningSplitTaskIds();
-            for (int taskId : taskIds) {
-                mRecentsAnimationController.setFinishTaskTransaction(taskId,
-                        tx, null /* overlay */);
+            try {
+                PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
+                        .setAlpha(0f)
+                        .build();
+                try {
+                    tx.setShouldDisableCanAffectSystemUiFlags(false);
+                } catch (NoSuchMethodError n) {
+                    Log.w(TAG, "not Android 13 qpr1 : ", n);
+                }
+                int[] taskIds = TopTaskTracker.INSTANCE.get(getContext()).getRunningSplitTaskIds();
+                for (int taskId : taskIds) {
+                    mRecentsAnimationController.setFinishTaskTransaction(taskId,
+                            tx, null /* overlay */);
+                }
+            } catch (Throwable error) {
+                Log.w(TAG, "Failed PictureInPictureSurfaceTransaction: ", error);
             }
         }
         mRecentsAnimationController.finish(toRecents, () -> {

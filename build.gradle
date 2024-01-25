@@ -92,6 +92,9 @@ allprojects {
                     libraries.from(files(frameworkJar))
                 }
             }
+            dependencies {
+                compileOnly files(frameworkJar)
+            }
         }
 
         compileOnlyCommonJars = {
@@ -99,7 +102,13 @@ allprojects {
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
+
+                compileOnly projects.compatLib
+                compileOnly projects.compatLib.compatLibVQ
+                compileOnly projects.compatLib.compatLibVR
+                compileOnly projects.compatLib.compatLibVS
+                compileOnly projects.compatLib.compatLibVT
+                compileOnly projects.compatLib.compatLibVU
             }
         }
     }
@@ -119,7 +128,7 @@ final def releaseName = "Beta 1"
 final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
-final def quickstepMinSdk = "34"
+final def quickstepMinSdk = "29"
 final def quickstepMaxSdk = "34"
 
 android {
@@ -320,6 +329,14 @@ dependencies {
     withQuickstepImplementation projects.systemUIPluginCore
     withQuickstepCompileOnly projects.systemUICommon
 
+    // QuickSwitch Compat
+    withQuickstepImplementation projects.compatLib
+    withQuickstepImplementation projects.compatLib.compatLibVQ
+    withQuickstepImplementation projects.compatLib.compatLibVR
+    withQuickstepImplementation projects.compatLib.compatLibVS
+    withQuickstepImplementation projects.compatLib.compatLibVT
+    withQuickstepImplementation projects.compatLib.compatLibVU
+
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-14.jar')
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
@@ -398,6 +415,10 @@ ksp {
 }
 
 spotless {
+    java {
+        target("compatLib/**/src/**/*.java")
+        googleJavaFormat().aosp()
+    }
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([

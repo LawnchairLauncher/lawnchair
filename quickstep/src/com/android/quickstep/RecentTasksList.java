@@ -34,11 +34,14 @@ import android.util.SparseBooleanArray;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 import com.android.wm.shell.util.SplitBounds;
@@ -51,6 +54,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Manages the recent task list from the system, caching it as necessary.
@@ -83,26 +87,60 @@ public class RecentTasksList {
         mKeyguardManager = keyguardManager;
         mChangeId = 1;
         mSysUiProxy = sysUiProxy;
-        sysUiProxy.registerRecentTasksListener(new IRecentTasksListener.Stub() {
-            @Override
-            public void onRecentTasksChanged() throws RemoteException {
-                mMainThreadExecutor.execute(RecentTasksList.this::onRecentTasksChanged);
-            }
 
-            @Override
-            public void onRunningTaskAppeared(ActivityManager.RunningTaskInfo taskInfo) {
-                mMainThreadExecutor.execute(() -> {
-                    RecentTasksList.this.onRunningTaskAppeared(taskInfo);
+        if (LawnchairApp.isRecentsEnabled()) {
+            if (LawnchairQuickstepCompat.ATLEAST_U) {
+                sysUiProxy.registerRecentTasksListener(new IRecentTasksListener.Stub() {
+                    @Override
+                    public void onRecentTasksChanged() throws RemoteException {
+                        mMainThreadExecutor.execute(RecentTasksList.this::onRecentTasksChanged);
+                    }
+
+                    @Override
+                    public void onRunningTaskAppeared(ActivityManager.RunningTaskInfo taskInfo) {
+                        mMainThreadExecutor.execute(() -> {
+                            RecentTasksList.this.onRunningTaskAppeared(taskInfo);
+                        });
+                    }
+
+                    @Override
+                    public void onRunningTaskVanished(ActivityManager.RunningTaskInfo taskInfo) {
+                        mMainThreadExecutor.execute(() -> {
+                            RecentTasksList.this.onRunningTaskVanished(taskInfo);
+                        });
+                    }
+                });
+            } else if (LawnchairQuickstepCompat.ATLEAST_Q) {
+                TaskStackChangeListeners.getInstance().registerTaskStackListener(new TaskStackChangeListener () {
+                    @Override
+                    public void onTaskStackChanged() {
+                        onRecentTasksChanged();
+                    }
+
+                    @Override
+                    public void onRecentTaskListUpdated() {
+                        onRecentTasksChanged();
+                    }
+
+                    @Override
+                    public void onTaskRemoved(int taskId) {
+                        onRecentTasksChanged();
+                    }
+
+                    @Override
+                    public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+                        onRecentTasksChanged();
+                    }
+
+                    @Override
+                    public void onActivityUnpinned() {
+                        onRecentTasksChanged();
+                    }
                 });
             }
 
-            @Override
-            public void onRunningTaskVanished(ActivityManager.RunningTaskInfo taskInfo) {
-                mMainThreadExecutor.execute(() -> {
-                    RecentTasksList.this.onRunningTaskVanished(taskInfo);
-                });
-            }
-        });
+        }
+        
         // We may receive onRunningTaskAppeared events later for tasks which have already been
         // included in the list returned by mSysUiProxy.getRunningTasks(), or may receive
         // onRunningTaskVanished for tasks not included in the returned list. These cases will be
@@ -297,7 +335,7 @@ public class RecentTasksList {
                         : Task.from(task2Key, taskInfo2,
                                 tmpLockedUsers.get(task2Key.userId) /* isLocked */);
                 task2.setLastSnapshotData(taskInfo2);
-            } else {
+            } else if (Utilities.ATLEAST_S) {
                 // Is fullscreen task
                 if (numVisibleTasks > 0) {
                     boolean isExcluded = (taskInfo1.baseIntent.getFlags()
@@ -309,8 +347,10 @@ public class RecentTasksList {
                     }
                 }
             }
-            if (taskInfo1.isVisible) {
-                numVisibleTasks++;
+            if (Utilities.ATLEAST_S) {
+                if (taskInfo1.isVisible) {
+                    numVisibleTasks++;
+                }
             }
             final SplitConfigurationOptions.SplitBounds launcherSplitBounds =
                     convertSplitBounds(rawTask.getSplitBounds());

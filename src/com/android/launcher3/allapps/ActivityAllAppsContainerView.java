@@ -1495,7 +1495,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         final Rect mPadding = new Rect();
         AllAppsRecyclerView mRecyclerView;
 
-        AdapterHolder(int type, LawnchairAlphabeticalAppsList<T> appsList) {
+        AdapterHolder(int type, AlphabeticalAppsList<T> appsList) {
             mType = type;
             mAppsList = appsList;
             mAdapter = createAdapter(mAppsList);

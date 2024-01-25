@@ -101,15 +101,12 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarUIController;
-import com.android.launcher3.tracing.InputConsumerProto;
-import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
@@ -157,6 +154,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.util.CompatibilityKt;
 
 /**
@@ -672,15 +670,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
             runningTasks = cachedTaskInfo.getPlaceholderTasks();
         }
 
-        // Safeguard against any null tasks being sent to recents view, happens when
-        // quickswitching
-        // very quickly w/ split tasks because TopTaskTracker provides stale information
-        // compared to
-        // actual running tasks in the recents animation.
-        // TODO(b/236226779), Proper fix (ag/22237143)
-        if (Arrays.stream(runningTasks).anyMatch(Objects::isNull)) {
-            return;
-        }
 
         // Safeguard against any null tasks being sent to recents view, happens when
         // quickswitching
@@ -702,8 +691,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         buildAnimationController();
 
         try (SafeCloseable c = TraceHelper.INSTANCE.allowIpcs("logToggleRecents")) {
-            LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
-                    (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+            if (Utilities.ATLEAST_S) {
+                LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
+                        (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+            }
         }
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can
@@ -712,8 +703,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         // overview state
         RecentsModel.INSTANCE.get(mContext).getThumbnailCache()
                 .getHighResLoadingState().setVisible(true);
-
-        DepthController depthController = mActivityInterface.getDepthController();
 
     }
 
@@ -1561,7 +1550,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     ? mRecentsAnimationTargets
                     .findTask(mGestureState.getTopRunningTaskId())
                     : null;
-            final ArrayList<IBinder> cookies = runningTaskTarget != null
+            final ArrayList<IBinder> cookies = Utilities.ATLEAST_S && runningTaskTarget != null
                     && runningTaskTarget.taskInfo != null
                             ? runningTaskTarget.taskInfo.launchCookies
                             : new ArrayList<>();
@@ -1571,6 +1560,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     && runningTaskTarget.leash.isValid();
             boolean appCanEnterPip = !mDeviceState.isPipActive()
                     && hasValidLeash
+                    && Utilities.ATLEAST_T
                     && runningTaskTarget.allowEnterPip
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
@@ -2221,14 +2211,22 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         } else if (mIsSwipeForSplit) {
             // Transaction to hide the task to avoid flicker for entering PiP from
             // split-screen.
-            PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
-                    .setAlpha(0f)
-                    .build();
-            tx.setShouldDisableCanAffectSystemUiFlags(false);
-            int[] taskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
-            for (int taskId : taskIds) {
-                mRecentsAnimationController.setFinishTaskTransaction(taskId,
-                        tx, null /* overlay */);
+            try {
+                PictureInPictureSurfaceTransaction tx = new PictureInPictureSurfaceTransaction.Builder()
+                        .setAlpha(0f)
+                        .build();
+                try {
+                    tx.setShouldDisableCanAffectSystemUiFlags(false);
+                } catch (NoSuchMethodError error) {
+                    Log.w(TAG, "not android 13 qpr1 : ", error);
+                }
+                int[] taskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
+                for (int taskId : taskIds) {
+                    mRecentsAnimationController.setFinishTaskTransaction(taskId,
+                            tx, null /* overlay */);
+                }
+            } catch (Throwable t) {
+                Log.w(TAG, "Failed PictureInPictureSurfaceTransaction: ", t);
             }
         }
     }
@@ -2437,7 +2435,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     transaction.forSurface(target.leash).setAlpha(1).setLayer(-1).setShow();
                 }
                 surfaceApplier.scheduleApply(transaction);
-
+                if (!LawnchairQuickstepCompat.ATLEAST_S) return;
                 SplashScreenExitAnimationUtils.startAnimations(splashView, taskTarget.leash,
                         mSplashMainWindowShiftLength, new TransactionPool(), new Rect(),
                         SPLASH_ANIMATION_DURATION, SPLASH_FADE_OUT_DURATION,

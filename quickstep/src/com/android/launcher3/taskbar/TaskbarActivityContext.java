@@ -645,7 +645,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 this, 0, 0, Color.TRANSPARENT,
                 Executors.MAIN_EXECUTOR.getHandler(), null,
                 elapsedRealTime -> callbacks.executeAllAndDestroy());
-        options.setSplashScreenStyle(splashScreenStyle);
+        if (Utilities.ATLEAST_T) {
+            options.setSplashScreenStyle(splashScreenStyle);
+        }
         Utilities.allowBGLaunch(options);
         return new ActivityOptionsWrapper(options, callbacks);
     }

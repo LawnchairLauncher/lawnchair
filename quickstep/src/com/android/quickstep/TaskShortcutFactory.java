@@ -65,6 +65,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 /**
  * Represents a system shortcut that can be shown for a recent task. Appears as
  * a single entry in
@@ -281,6 +283,7 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
+            if (!LawnchairQuickstepCompat.ATLEAST_T) return null;
             DeviceProfile deviceProfile = activity.getDeviceProfile();
             final Task task = taskContainer.getTask();
             final int intentFlags = task.key.baseIntent.getFlags();

@@ -42,6 +42,8 @@ import com.android.internal.util.ArrayUtils;
 import java.io.PrintWriter;
 import java.util.Objects;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 /**
  * A task in the recent tasks list.
  * TODO: Move this into Launcher or see if we can remove now
@@ -245,7 +247,9 @@ public class Task {
 
     // Last snapshot data, only used for recent tasks
     public ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData lastSnapshotData =
-            new ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData();
+            LawnchairQuickstepCompat.ATLEAST_S
+                    ? new ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData()
+                    : null;
 
     public Task() {
         // Do nothing
@@ -258,7 +262,7 @@ public class Task {
         ActivityManager.TaskDescription td = taskInfo.taskDescription;
         // Also consider undefined activity type to include tasks in overview right after rebooting
         // the device.
-        final boolean isDockable = taskInfo.supportsMultiWindow
+        final boolean isDockable = LawnchairQuickstepCompat.ATLEAST_S && taskInfo.supportsMultiWindow
                 && ArrayUtils.contains(
                         CONTROLLED_WINDOWING_MODES_WHEN_ACTIVE, taskInfo.getWindowingMode())
                 && (taskInfo.getActivityType() == ACTIVITY_TYPE_UNDEFINED
@@ -277,7 +281,10 @@ public class Task {
     public Task(Task other) {
         this(other.key, other.colorPrimary, other.colorBackground, other.isDockable,
                 other.isLocked, other.taskDescription, other.topActivity);
-        lastSnapshotData.set(other.lastSnapshotData);
+        if (LawnchairQuickstepCompat.ATLEAST_S) {
+            ((ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) lastSnapshotData)
+                    .set((ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) other.lastSnapshotData);
+        }
         positionInParent = other.positionInParent;
         appBounds = other.appBounds;
     }
@@ -308,7 +315,10 @@ public class Task {
     }
 
     public void setLastSnapshotData(ActivityManager.RecentTaskInfo rawTask) {
-        lastSnapshotData.set(rawTask.lastSnapshotData);
+        if (LawnchairQuickstepCompat.ATLEAST_S) {
+            ((ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) lastSnapshotData)
+                    .set(rawTask.lastSnapshotData);
+        }
     }
 
     public TaskKey getKey() {
@@ -319,6 +329,9 @@ public class Task {
      * Returns the visible width to height ratio. Returns 0f if snapshot data is not available.
      */
     public float getVisibleThumbnailRatio(boolean clipInsets) {
+        ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData lastSnapshotData =
+                (ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) this.lastSnapshotData;
+
         if (lastSnapshotData.taskSize == null || lastSnapshotData.contentInsets == null) {
             return 0f;
         }

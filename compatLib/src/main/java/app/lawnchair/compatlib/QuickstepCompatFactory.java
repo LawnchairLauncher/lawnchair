@@ -1,10 +1,5 @@
 package app.lawnchair.compatlib;
 
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.view.AppTransitionAnimationSpec;
-import android.view.IRemoteAnimationRunner;
-
 import androidx.annotation.NonNull;
 
 public abstract class QuickstepCompatFactory {
@@ -12,7 +7,9 @@ public abstract class QuickstepCompatFactory {
     @NonNull
     public abstract ActivityManagerCompat getActivityManagerCompat();
 
-    public abstract IRemoteAnimationRunner.Stub wrapRemoteAnimationRunnerStub(RemoteAnimationRunnerStub compatStub);
+    @NonNull
+    public abstract ActivityOptionsCompat getActivityOptionsCompat();
 
-    public abstract AppTransitionAnimationSpec createAppTransitionAnimationSpec(int taskId, Bitmap buffer, Rect rect);
+    @NonNull
+    public abstract RemoteTransitionCompat getRemoteTransitionCompat();
 }

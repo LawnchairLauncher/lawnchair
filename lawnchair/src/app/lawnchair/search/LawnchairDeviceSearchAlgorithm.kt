@@ -9,6 +9,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import androidx.core.os.bundleOf
+import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.requireSystemService
@@ -66,6 +67,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) :
     }
 
     private fun createSearchSession() {
+        if (LawnchairQuickstepCompat.ATLEAST_U) return
         Executors.UI_HELPER_EXECUTOR.execute {
             searchSession?.destroy()
             val idp = LauncherAppState.getIDP(context)
@@ -122,6 +124,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) :
 
     companion object {
         fun checkSearchCompatibility(context: Context) {
+            if (LawnchairQuickstepCompat.ATLEAST_U) return
             Executors.UI_HELPER_EXECUTOR.execute {
                 val searchContext = SearchContext(1 or 2, 200, Bundle())
                 val searchManager = context.requireSystemService<SearchUiManager>()

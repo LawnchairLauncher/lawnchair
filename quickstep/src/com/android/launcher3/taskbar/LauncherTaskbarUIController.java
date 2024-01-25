@@ -239,9 +239,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 WindowManagerGlobal.getWindowManagerService().clearTaskTransitionSpec();
             } else {
                 // Adjust task transition spec to account for taskbar being visible
-                WindowManagerGlobal.getWindowManagerService().setTaskTransitionSpec(
-                        new TaskTransitionSpec(
-                                mLauncher.getColor(R.color.taskbar_background)));
+                if (Utilities.ATLEAST_U) {
+                    WindowManagerGlobal.getWindowManagerService().setTaskTransitionSpec(
+                            new TaskTransitionSpec(
+                                    mLauncher.getColor(R.color.taskbar_background)));
+                }
             }
         } catch (RemoteException e) {
             // This shouldn't happen but if it does task animations won't look good until the

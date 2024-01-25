@@ -130,6 +130,7 @@ public class RemoteAnimationTargets {
     }
 
     private static void release(RemoteAnimationTarget[] targets) {
+        if (targets == null) return;
         for (RemoteAnimationTarget target : targets) {
             if (target.leash != null) {
                 target.leash.release();

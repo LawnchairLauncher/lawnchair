@@ -8,12 +8,13 @@ import android.view.WindowManager
 import androidx.annotation.Keep
 import app.lawnchair.LawnchairApp
 import com.android.internal.policy.SystemBarUtils
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
 
 @Keep
-class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(true) {
+class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(Utilities.ATLEAST_T) {
 
     override fun getRotation(displayInfoContext: Context): Int {
         if (LawnchairApp.isAtleastT) {

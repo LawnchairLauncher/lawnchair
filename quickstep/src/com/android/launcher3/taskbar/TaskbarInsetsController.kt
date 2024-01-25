@@ -77,7 +77,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
 
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
-        gestureNavSettingsObserver.registerForCallingUser()
+        try {
+            gestureNavSettingsObserver.registerForCallingUser()
+        } catch (t: Throwable) {
+            // Ignore
+        }
     }
 
     fun onDestroy() {
@@ -161,19 +165,23 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     private fun getProvidedInsets(insetsRoundedCornerFlag: Int): Array<InsetsFrameProvider> {
         val navBarsFlag =
                 (if (context.isGestureNav) FLAG_SUPPRESS_SCRIM else 0) or insetsRoundedCornerFlag
-        return arrayOf(
+        try {
+            return arrayOf(
                 InsetsFrameProvider(insetsOwner, 0, navigationBars())
-                        .setFlags(
-                                navBarsFlag,
-                                FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
-                        ),
+                    .setFlags(
+                        navBarsFlag,
+                        FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
+                    ),
                 InsetsFrameProvider(insetsOwner, 0, tappableElement()),
                 InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
                 InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
-                        .setSource(SOURCE_DISPLAY),
+                    .setSource(SOURCE_DISPLAY),
                 InsetsFrameProvider(insetsOwner, INDEX_RIGHT, systemGestures())
-                        .setSource(SOURCE_DISPLAY)
-        )
+                    .setSource(SOURCE_DISPLAY)
+            )
+        }catch (t: Throwable) {
+            return emptyArray()
+        }
     }
 
     private fun setProviderInsets(provider: InsetsFrameProvider, gravity: Int) {
