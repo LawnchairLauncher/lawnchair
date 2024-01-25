@@ -155,10 +155,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"បន្ថយកម្ពស់"</string>
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ផ្លូវកាត់ និង​ការជូនដំណឹង"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ច្រានចោល"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"បិទ"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ការងារ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"កម្រងព័ត៌មានការងារ"</string>
@@ -175,6 +173,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"តម្រង"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"បន្ទប់​ឯកជន"</string>
+    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"ឯកជន"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ការកំណត់ Private Space"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ចាក់សោ/ដោះសោ Private Space"</string>
