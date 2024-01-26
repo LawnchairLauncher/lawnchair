@@ -30,6 +30,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -561,6 +562,11 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     @Nullable
     public ViewGroup getContentViewParent() {
         return mContentViewParent;
+    }
+
+    /** Return true if {@link mContent} is a {@link AppWidgetHostView}. */
+    public boolean containsAppWidgetHostView() {
+        return mContent instanceof AppWidgetHostView;
     }
 
     private static class SpringFloatValue {

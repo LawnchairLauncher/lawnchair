@@ -2988,7 +2988,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public void animateWidgetDrop(ItemInfo info, CellLayout cellLayout, final DragView dragView,
-            final Runnable onCompleteRunnable, int animationType, final View finalView,
+            final Runnable onCompleteRunnable, int animationType, @Nullable final View finalView,
             boolean external) {
         int[] finalPos = new int[2];
         float scaleXY[] = new float[2];

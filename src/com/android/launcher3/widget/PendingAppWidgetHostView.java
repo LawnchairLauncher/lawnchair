@@ -16,13 +16,20 @@
 
 package com.android.launcher3.widget;
 
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
+import static android.graphics.Paint.DITHER_FLAG;
+import static android.graphics.Paint.FILTER_BITMAP_FLAG;
+
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -85,7 +92,11 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private boolean mDrawableSizeChanged;
 
     private final TextPaint mPaint;
+
+    private final Paint mPreviewPaint;
     private Layout mSetupTextLayout;
+
+    @Nullable private Bitmap mPreviewBitmap;
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
             @Nullable LauncherAppWidgetProviderInfo appWidget) {
@@ -116,6 +127,15 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mDrawableSizeChanged = true;
     }
 
+    /** Set {@link Bitmap} of widget preview. */
+    public void setPreviewBitmap(@Nullable Bitmap previewBitmap) {
+        if (this.mPreviewBitmap == previewBitmap) {
+            return;
+        }
+        this.mPreviewBitmap = previewBitmap;
+        invalidate();
+    }
+
     private PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
             LauncherAppWidgetProviderInfo appwidget, CharSequence label) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
@@ -130,9 +150,14 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
                 mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
-
+        mPreviewPaint = new Paint(ANTI_ALIAS_FLAG | DITHER_FLAG | FILTER_BITMAP_FLAG);
         setWillNotDraw(false);
         setBackgroundResource(R.drawable.pending_widget_bg);
+    }
+
+    @Override
+    public AppWidgetProviderInfo getAppWidgetInfo() {
+        return mAppwidget;
     }
 
     @Override
@@ -393,6 +418,11 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (mPreviewBitmap != null
+                && (mInfo.restoreStatus & LauncherAppWidgetInfo.FLAG_UI_NOT_READY) != 0) {
+            canvas.drawBitmap(mPreviewBitmap, 0, 0, mPreviewPaint);
+            return;
+        }
         if (mCenterDrawable == null) {
             // Nothing to draw
             return;
