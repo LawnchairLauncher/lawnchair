@@ -19,9 +19,6 @@ import static com.android.launcher3.Flags.FLAG_ENABLE_SUPPORT_FOR_ARCHIVING;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -168,13 +165,6 @@ public class TaplPromiseIconUiTest extends AbstractLauncherUiTest {
         // Remove session
         mTargetContext.getPackageManager().getPackageInstaller().abandonSession(mSessionId);
         mSessionId = -1;
-    }
-
-    // Dummy receiver to fulfill archiving platform requirements, unused in reality.
-    public static class UnarchiveBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-        }
     }
 
     private void installDummyAppAndWaitForUIUpdate() throws IOException {
