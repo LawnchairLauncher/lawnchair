@@ -1663,14 +1663,20 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     ? Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK
                     : Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
 
-            anim.addListener(new AnimatorListenerAdapter() {
+            AnimatorListenerAdapter endListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     AccessibilityManagerCompat.sendTestProtocolEventToTest(
                             mLauncher, WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE);
                 }
-            });
+            };
+
+            if (fromPredictiveBack) {
+                rectFSpringAnim.addAnimatorListener(endListener);
+            } else {
+                anim.addListener(endListener);
+            }
 
             // Only register the content animation for cancellation when state changes
             mLauncher.getStateManager().setCurrentAnimation(anim);
