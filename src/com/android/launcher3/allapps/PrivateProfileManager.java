@@ -19,6 +19,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_PRIVATE_SPACE_INSTALL_APP;
@@ -45,10 +46,11 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsCache;
-import com.android.launcher3.util.UserIconInfo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -62,6 +64,8 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final String PS_SETTINGS_FRAGMENT_VALUE = "AndroidPrivateSpace_personal";
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
+    private Set<String> mPreInstalledSystemPackages = new HashSet<>();
+    private Intent mAppInstallerIntent = new Intent();
     private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
     private boolean mPrivateSpaceSettingsAvailable;
     private Runnable mUnlockRunnable;
@@ -73,7 +77,7 @@ public class PrivateProfileManager extends UserProfileManager {
         super(userManager, statsLogManager, userCache);
         mAllApps = allApps;
         mPrivateProfileMatcher = (user) -> userCache.getUserInfo(user).isPrivate();
-        UI_HELPER_EXECUTOR.post(this::setPrivateSpaceSettingsAvailable);
+        UI_HELPER_EXECUTOR.post(this::initializeInBackgroundThread);
     }
 
     /** Adds Private Space Header to the layout. */
@@ -83,18 +87,17 @@ public class PrivateProfileManager extends UserProfileManager {
         return adapterItems.size();
     }
 
+    /** Adds Private Space System Apps Divider to the layout. */
+    public int addSystemAppsDivider(List<BaseAllAppsAdapter.AdapterItem> adapterItems) {
+        adapterItems.add(new BaseAllAppsAdapter
+                .AdapterItem(VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER));
+        mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
+        return adapterItems.size();
+    }
+
     /** Adds Private Space install app button to the layout. */
     public void addPrivateSpaceInstallAppButton(List<BaseAllAppsAdapter.AdapterItem> adapterItems) {
         Context context = mAllApps.getContext();
-        // Prepare intent
-        UserCache userCache = UserCache.getInstance(context);
-        UserHandle userHandle = userCache.getUserProfiles().stream()
-                .filter(user -> userCache.getUserInfo(user).type == UserIconInfo.TYPE_PRIVATE)
-                .findFirst()
-                .orElse(null);
-        Intent intent = ApiWrapper.getAppMarketActivityIntent(context,
-                BuildConfig.APPLICATION_ID, userHandle);
-
         // Prepare bitmapInfo
         Intent.ShortcutIconResource shortcut = Intent.ShortcutIconResource.fromContext(
                 context, com.android.launcher3.R.drawable.private_space_install_app_icon);
@@ -102,7 +105,7 @@ public class PrivateProfileManager extends UserProfileManager {
 
         AppInfo itemInfo = new AppInfo();
         itemInfo.title = context.getResources().getString(R.string.ps_add_button_label);
-        itemInfo.intent = intent;
+        itemInfo.intent = mAppInstallerIntent;
         itemInfo.bitmap = bitmapInfo;
         itemInfo.contentDescription = context.getResources().getString(
                 com.android.launcher3.R.string.ps_add_button_content_description);
@@ -166,6 +169,22 @@ public class PrivateProfileManager extends UserProfileManager {
         return mPrivateSpaceSettingsAvailable;
     }
 
+    /** Initializes binder call based properties in non-main thread.
+     * <p>
+     * This can cause the Private Space container items to not load/respond correctly sometimes,
+     * when the All Apps Container loads for the first time (device restarts, new profiles
+     * added/removed, etc.), as the properties are being set in non-ui thread whereas the container
+     * loads in the ui thread.
+     * This case should still be ok, as locking the Private Space container and unlocking it,
+     * reloads the values, fixing the incorrect UI.
+     */
+    private void initializeInBackgroundThread() {
+        Preconditions.assertNonUiThread();
+        setPreInstalledSystemPackages();
+        setAppInstallerIntent();
+        setPrivateSpaceSettingsAvailable();
+    }
+
     private void setPrivateSpaceSettingsAvailable() {
         if (mPrivateSpaceSettingsAvailable) {
             return;
@@ -176,6 +195,22 @@ public class PrivateProfileManager extends UserProfileManager {
         ResolveInfo resolveInfo = mAllApps.getContext().getPackageManager()
                 .resolveActivity(psSettingsIntent, PackageManager.MATCH_SYSTEM_ONLY);
         mPrivateSpaceSettingsAvailable = resolveInfo != null;
+    }
+
+    private void setPreInstalledSystemPackages() {
+        Preconditions.assertNonUiThread();
+        if (getProfileUser() != null) {
+            mPreInstalledSystemPackages = new HashSet<>(ApiWrapper
+                    .getPreInstalledSystemPackages(mAllApps.getContext(), getProfileUser()));
+        }
+    }
+
+    private void setAppInstallerIntent() {
+        Preconditions.assertNonUiThread();
+        if (getProfileUser() != null) {
+            mAppInstallerIntent = ApiWrapper.getAppMarketActivityIntent(mAllApps.getContext(),
+                    BuildConfig.APPLICATION_ID, getProfileUser());
+        }
     }
 
     @VisibleForTesting
@@ -224,5 +259,15 @@ public class PrivateProfileManager extends UserProfileManager {
     @Override
     public Predicate<UserHandle> getUserMatcher() {
         return mPrivateProfileMatcher;
+    }
+
+    /**
+     * Splits private apps into user installed and system apps.
+     * When the list of system apps is empty, all apps are treated as system.
+     */
+    public Predicate<AppInfo> splitIntoUserInstalledAndSystemApps() {
+        return appInfo -> !mPreInstalledSystemPackages.isEmpty()
+                && (appInfo.componentName == null
+                || !(mPreInstalledSystemPackages.contains(appInfo.componentName.getPackageName())));
     }
 }

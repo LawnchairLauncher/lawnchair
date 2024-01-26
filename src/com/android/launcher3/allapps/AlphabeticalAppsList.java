@@ -35,6 +35,7 @@ import com.android.launcher3.views.ActivityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Predicate;
@@ -269,10 +270,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 addApps = mWorkProviderManager.shouldShowWorkApps();
             }
             if (addApps) {
-                addAppsWithSections(mApps, position);
+                position = addAppsWithSections(mApps, position);
             }
             if (Flags.enablePrivateSpace()) {
-                addPrivateSpaceItems(position);
+                position = addPrivateSpaceItems(position);
             }
         }
         mAccessibilityResultsCount = (int) mAdapterItems.stream()
@@ -287,7 +288,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             for (AdapterItem item : mAdapterItems) {
                 item.rowIndex = 0;
                 if (BaseAllAppsAdapter.isDividerViewType(item.viewType)
-                        || BaseAllAppsAdapter.isPrivateSpaceHeaderView(item.viewType)) {
+                        || BaseAllAppsAdapter.isPrivateSpaceHeaderView(item.viewType)
+                        || BaseAllAppsAdapter.isPrivateSpaceSysAppsDividerView(item.viewType)) {
                     numAppsInSection = 0;
                 } else if (BaseAllAppsAdapter.isIconViewType(item.viewType)) {
                     if (numAppsInSection % mNumAppsPerRowAllApps == 0) {
@@ -309,12 +311,12 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         }
     }
 
-    void addPrivateSpaceItems(int position) {
+    int addPrivateSpaceItems(int position) {
         if (mPrivateProviderManager != null
                 && !mPrivateProviderManager.isPrivateSpaceHidden()
                 && !mPrivateApps.isEmpty()) {
             // Always add PS Header if Space is present and visible.
-            position += mPrivateProviderManager.addPrivateSpaceHeader(mAdapterItems);
+            position = mPrivateProviderManager.addPrivateSpaceHeader(mAdapterItems);
             int privateSpaceState = mPrivateProviderManager.getCurrentState();
             switch (privateSpaceState) {
                 case PrivateProfileManager.STATE_DISABLED:
@@ -322,15 +324,37 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     break;
                 case PrivateProfileManager.STATE_ENABLED:
                     // Add PS Apps only in Enabled State.
-                    mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
-                    position++;
-                    addAppsWithSections(mPrivateApps, position);
+                    position = addPrivateSpaceApps(position);
                     break;
             }
         }
+        return position;
     }
 
-    private void addAppsWithSections(List<AppInfo> appList, int startPosition) {
+    private int addPrivateSpaceApps(int position) {
+        // Add Install Apps Button first.
+        if (Flags.privateSpaceAppInstallerButton()) {
+            mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
+            position++;
+        }
+
+        // Split of private space apps into user-installed and system apps.
+        Map<Boolean, List<AppInfo>> split = mPrivateApps.stream()
+                .collect(Collectors.partitioningBy(mPrivateProviderManager
+                                .splitIntoUserInstalledAndSystemApps()));
+        // Add user installed apps
+        position = addAppsWithSections(split.get(true), position);
+        // Add system apps separator.
+        if (Flags.privateSpaceSysAppsSeparation()) {
+            position = mPrivateProviderManager.addSystemAppsDivider(mAdapterItems);
+        }
+        // Add system apps.
+        position = addAppsWithSections(split.get(false), position);
+
+        return position;
+    }
+
+    private int addAppsWithSections(List<AppInfo> appList, int startPosition) {
         String lastSectionName = null;
         boolean hasPrivateApps = false;
         if (mPrivateProviderManager != null) {
@@ -357,6 +381,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             }
             startPosition++;
         }
+        return startPosition;
     }
 
     /**
