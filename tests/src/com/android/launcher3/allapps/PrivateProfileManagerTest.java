@@ -151,11 +151,13 @@ public class PrivateProfileManagerTest {
 
         // In first call the state should be disabled.
         privateProfileManager.reset();
-        assertEquals(STATE_ENABLED, privateProfileManager.getCurrentState());
+        assertEquals("Profile State is not Disabled", STATE_ENABLED,
+                privateProfileManager.getCurrentState());
 
         // In the next call the state should be disabled.
         privateProfileManager.reset();
-        assertEquals(STATE_DISABLED, privateProfileManager.getCurrentState());
+        assertEquals("Profile State is not Disabled", STATE_DISABLED,
+                privateProfileManager.getCurrentState());
     }
 
     @Test
@@ -173,7 +175,7 @@ public class PrivateProfileManagerTest {
 
         awaitTasksCompleted();
         Mockito.verify(privateProfileManager).applyUnlockRunnable();
-        assertTrue(mRunnableCalled);
+        assertTrue("Unlock Runnable not Invoked", mRunnableCalled);
     }
 
     @Test
@@ -186,8 +188,10 @@ public class PrivateProfileManagerTest {
 
         Mockito.verify(mContext).startActivity(acIntent.capture());
         Intent actualIntent = acIntent.getValue();
-        assertEquals(expectedIntent.getAction(), actualIntent.getAction());
-        assertEquals(expectedIntent.getStringExtra(PS_SETTINGS_FRAGMENT_KEY),
+        assertEquals("Intent Action is different", expectedIntent.getAction(),
+                actualIntent.getAction());
+        assertEquals("Settings Fragment is incorrect in Intent",
+                expectedIntent.getStringExtra(PS_SETTINGS_FRAGMENT_KEY),
                 actualIntent.getStringExtra(PS_SETTINGS_FRAGMENT_KEY));
     }
 
