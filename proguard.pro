@@ -26,6 +26,7 @@
 
 # Common rules.
 -keep class com.android.** { *; }
+-keep class android.window.** { *; }
 -keepclasseswithmembernames class * {
     native <methods>;
 }
