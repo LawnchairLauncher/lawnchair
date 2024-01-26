@@ -717,7 +717,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_PRIVATE_SPACE_INSTALL_APP_BUTTON_TAP(1605),
 
         @UiEvent(doc = "User attempted to create split screen with a widget")
-        LAUNCHER_SPLIT_WIDGET_ATTEMPT(1604)
+        LAUNCHER_SPLIT_WIDGET_ATTEMPT(1604),
+
+        @UiEvent(doc = "User tapped on private space uninstall system shortcut.")
+        LAUNCHER_PRIVATE_SPACE_UNINSTALL_SYSTEM_SHORTCUT_TAP(1608),
 
         // ADD MORE
         ;

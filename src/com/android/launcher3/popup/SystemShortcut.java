@@ -1,6 +1,7 @@
 package com.android.launcher3.popup;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_INSTALL_SYSTEM_SHORTCUT_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNINSTALL_SYSTEM_SHORTCUT_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP;
@@ -17,17 +18,21 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.SecondaryDropTarget;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.PrivateProfileManager;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
@@ -301,16 +306,11 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         }
     }
 
-    public static final Factory<Launcher> DONT_SUGGEST_APP = new Factory<Launcher>() {
-        @Nullable
-        @Override
-        public SystemShortcut<Launcher> getShortcut(Launcher activity, ItemInfo itemInfo,
-                View originalView) {
-            if (!itemInfo.isPredictedItem()) {
-                return null;
-            }
-            return new DontSuggestApp(activity, itemInfo, originalView);
+    public static final Factory<Launcher> DONT_SUGGEST_APP = (activity, itemInfo, originalView) -> {
+        if (!itemInfo.isPredictedItem()) {
+            return null;
         }
+        return new DontSuggestApp(activity, itemInfo, originalView);
     };
 
     private static class DontSuggestApp extends SystemShortcut<Launcher> {
@@ -326,6 +326,51 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
             mTarget.getStatsLogManager().logger()
                     .withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP);
+        }
+    }
+
+    public static final Factory<Launcher> UNINSTALL_APP = (activity, itemInfo, originalView) -> {
+        if (!Flags.enablePrivateSpace()) {
+            return null;
+        }
+        if (!UserCache.getInstance(activity.getApplicationContext()).getUserInfo(
+                itemInfo.user).isPrivate()) {
+            // If app is not Private Space app.
+            return null;
+        }
+        ComponentName cn = SecondaryDropTarget.getUninstallTarget(activity.getApplicationContext(),
+                itemInfo);
+        if (cn == null) {
+            // If component name is null, don't show uninstall shortcut.
+            // System apps will have component name as null.
+            return null;
+        }
+        return new UninstallApp(activity, itemInfo, originalView, cn);
+    };
+
+    private static class UninstallApp extends SystemShortcut<Launcher> {
+        private static final String TAG = "UninstallApp";
+        Context mContext;
+        @NonNull
+        ComponentName mComponentName;
+
+        UninstallApp(Launcher target, ItemInfo itemInfo, View originalView,
+                @NonNull ComponentName cn) {
+            super(R.drawable.ic_uninstall_no_shadow, R.string.uninstall_drop_target_label, target,
+                    itemInfo, originalView);
+            mContext = target.getApplicationContext();
+            mComponentName = cn;
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            dismissTaskMenuView(mTarget);
+            SecondaryDropTarget.performUninstall(mContext, mComponentName, mItemInfo);
+            mTarget.getStatsLogManager()
+                    .logger()
+                    .withItemInfo(mItemInfo)
+                    .log(LAUNCHER_PRIVATE_SPACE_UNINSTALL_SYSTEM_SHORTCUT_TAP);
         }
     }
 
