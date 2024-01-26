@@ -25,10 +25,12 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
@@ -120,6 +122,11 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public WorkspaceItemInfo(ShortcutInfo shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+        if (Flags.privateSpaceRestrictAccessibilityDrag()) {
+            if (UserCache.INSTANCE.get(context).getUserInfo(user).isPrivate()) {
+                runtimeStatusFlags |= FLAG_NOT_PINNABLE;
+            }
+        }
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 

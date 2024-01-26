@@ -309,6 +309,8 @@ android_library {
         "AndroidManifest-common.xml",
     ],
     min_sdk_version: "current",
+    // TODO(b/319712088): re-enable use_resource_processor
+    use_resource_processor: false,
 }
 
 // Build rule for Quickstep library
@@ -337,6 +339,8 @@ android_library {
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
     min_sdk_version: "current",
+    // TODO(b/319712088): re-enable use_resource_processor
+    use_resource_processor: false,
 }
 
 // Build rule for Launcher3 Go app for Android Go devices.
