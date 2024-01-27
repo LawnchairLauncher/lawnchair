@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.InsetsFrameProvider.SOURCE_DISPLAY;
 import static android.view.WindowInsets.Type.mandatorySystemGestures;
 import static android.view.WindowInsets.Type.navigationBars;
@@ -53,8 +54,8 @@ public class TaskbarSharedState {
     public float navButtonsDarkIntensity;
 
     // TaskbarManager#onNavigationBarLumaSamplingEnabled()
-    public int mLumaSamplingDisplayId;
-    public boolean mIsLumaSamplingEnabled;
+    public int mLumaSamplingDisplayId = DEFAULT_DISPLAY;
+    public boolean mIsLumaSamplingEnabled = true;
 
     public boolean setupUIVisible = false;
 
