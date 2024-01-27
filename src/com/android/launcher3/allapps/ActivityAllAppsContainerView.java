@@ -100,6 +100,7 @@ import java.util.stream.Stream;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
  * All apps container view with search support for use in a dragging activity.
@@ -107,7 +108,7 @@ import app.lawnchair.font.FontManager;
  * @param <T> Type of context inflating all apps.
  */
 public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
-        extends SpringRelativeLayout implements DragSource, Insettable,
+        extends StretchRecyclerViewContainer implements DragSource, Insettable,
         OnDeviceProfileChangeListener, PersonalWorkSlidingTabStrip.OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
 
