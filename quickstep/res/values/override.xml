@@ -33,6 +33,8 @@
 
   <string name="taskbar_model_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarModelCallbacksFactory</string>
 
+  <string name="taskbar_view_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarViewCallbacksFactory</string>
+
   <string name="assist_state_manager_class" translatable="false"></string>
 
   <string name="launcher_restore_event_logger_class" translatable="false">com.android.quickstep.LauncherRestoreEventLoggerImpl</string>
