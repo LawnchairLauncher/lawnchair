@@ -190,16 +190,12 @@ public class ItemClickHandler {
             boolean downloadStarted) {
         ItemInfo item = (ItemInfo) v.getTag();
         CompletableFuture<SessionInfo> siFuture;
-        if (Utilities.ATLEAST_Q) {
-            siFuture = CompletableFuture.supplyAsync(() ->
-                    InstallSessionHelper.INSTANCE.get(launcher)
-                            .getActiveSessionInfo(item.user, packageName),
-                    UI_HELPER_EXECUTOR);
-        } else {
-            siFuture = CompletableFuture.completedFuture(null);
-        }
+        siFuture = CompletableFuture.supplyAsync(() ->
+                        InstallSessionHelper.INSTANCE.get(launcher)
+                                .getActiveSessionInfo(item.user, packageName),
+                UI_HELPER_EXECUTOR);
         Consumer<SessionInfo> marketLaunchAction = sessionInfo -> {
-            if (sessionInfo != null && Utilities.ATLEAST_Q) {
+            if (sessionInfo != null) {
                 LauncherApps launcherApps = launcher.getSystemService(LauncherApps.class);
                 try {
                     launcherApps.startPackageInstallerSessionDetailsActivity(sessionInfo, null,

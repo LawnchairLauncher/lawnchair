@@ -19,6 +19,7 @@ package com.android.launcher3.allapps;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
@@ -63,9 +64,10 @@ public class AlphabeticalAppsListTest {
 
     private static final int PRIVATE_SPACE_HEADER_ITEM_COUNT = 1;
     private static final int MAIN_USER_APP_COUNT = 2;
-    private static final int PRIVATE_USER_APP_COUNT = 1;
+    private static final int PRIVATE_USER_APP_COUNT = 2;
     private static final int NUM_APP_COLS = 4;
     private static final int NUM_APP_ROWS = 3;
+    private static final int PRIVATE_SPACE_SYS_APP_SEPARATOR_ITEM_COUNT = 1;
 
     private AlphabeticalAppsList<?> mAlphabeticalAppsList;
     @Mock
@@ -96,6 +98,10 @@ public class AlphabeticalAppsListTest {
         when(mPrivateProfileManager.addPrivateSpaceHeader(any()))
                 .thenAnswer(answer(this::addPrivateSpaceHeader));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
+        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps())
+                .thenReturn(iteminfo -> iteminfo.componentName == null
+                        || !iteminfo.componentName.getPackageName()
+                        .equals("com.android.launcher3.tests.camera"));
 
         mAlphabeticalAppsList.updateItemFilter(info -> info != null
                 && info.user.equals(MAIN_HANDLE));
@@ -109,6 +115,44 @@ public class AlphabeticalAppsListTest {
                 mAlphabeticalAppsList.getAdapterItems().stream().filter(item ->
                         item.itemInfo != null
                                 && item.itemInfo.user.equals(PRIVATE_HANDLE)).toList().size());
+    }
+
+    @Test
+    public void privateProfileEnabled_privateProfileAppsShownWithSeparator() {
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_PRIVATE_SPACE);
+        mSetFlagsRule.enableFlags(Flags.FLAG_PRIVATE_SPACE_SYS_APPS_SEPARATION);
+        when(mAllAppsStore.getApps()).thenReturn(createAppInfoListForMainAndPrivateUser());
+        when(mPrivateProfileManager.addPrivateSpaceHeader(any()))
+                .thenAnswer(answer(this::addPrivateSpaceHeader));
+        when(mPrivateProfileManager.addSystemAppsDivider(any()))
+                .thenAnswer(answer(this::addSystemAppsDivider));
+        when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
+        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps())
+                .thenReturn(iteminfo -> iteminfo.componentName == null
+                        || !iteminfo.componentName.getPackageName()
+                        .equals("com.android.launcher3.tests.camera"));
+
+        mAlphabeticalAppsList.updateItemFilter(info -> info != null
+                && info.user.equals(MAIN_HANDLE));
+
+        assertEquals(MAIN_USER_APP_COUNT + PRIVATE_SPACE_HEADER_ITEM_COUNT
+                + PRIVATE_SPACE_SYS_APP_SEPARATOR_ITEM_COUNT
+                + PRIVATE_USER_APP_COUNT, mAlphabeticalAppsList.getAdapterItems().size());
+        assertEquals(PRIVATE_SPACE_HEADER_ITEM_COUNT,
+                mAlphabeticalAppsList.getAdapterItems().stream().filter(item ->
+                        item.viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER).toList().size());
+        assertEquals(PRIVATE_SPACE_SYS_APP_SEPARATOR_ITEM_COUNT,
+                mAlphabeticalAppsList.getAdapterItems().stream().filter(item ->
+                        item.viewType == VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER).toList().size());
+        List<BaseAllAppsAdapter.AdapterItem> psApps = mAlphabeticalAppsList.getAdapterItems()
+                .stream()
+                .filter(item -> item.itemInfo != null && item.itemInfo.user.equals(PRIVATE_HANDLE))
+                .toList();
+        assertEquals(PRIVATE_USER_APP_COUNT, psApps.size());
+        assert psApps.get(0).itemInfo.title != null;
+        assertEquals("Private Messenger", psApps.get(0).itemInfo.title.toString());
+        assert psApps.get(1).itemInfo.title != null;
+        assertEquals("Private Camera", psApps.get(1).itemInfo.title.toString());
     }
 
     @Test
@@ -281,6 +325,12 @@ public class AlphabeticalAppsListTest {
         return adapterItemList.size();
     }
 
+    private int addSystemAppsDivider(List<BaseAllAppsAdapter.AdapterItem> adapterItemList) {
+        adapterItemList.add(new BaseAllAppsAdapter
+                .AdapterItem(VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER));
+        return adapterItemList.size();
+    }
+
     private AppInfo[] createAppInfoListForMainUser() {
         ComponentName gmailComponentName = new ComponentName(mContext,
                 "com.android.launcher3.tests.Activity" + "Gmail");
@@ -298,7 +348,11 @@ public class AlphabeticalAppsListTest {
                 "com.android.launcher3.tests.Activity" + "PrivateMessenger");
         AppInfo privateMessengerAppInfo = new AppInfo(privateMessengercomponentName,
                 "Private Messenger", PRIVATE_HANDLE, new Intent());
-        return new AppInfo[]{privateMessengerAppInfo};
+        ComponentName privateCameraComponentName = new ComponentName(
+                "com.android.launcher3.tests.camera", "CameraActivity");
+        AppInfo privateCameraAppInfo = new AppInfo(privateCameraComponentName,
+                "Private Camera", PRIVATE_HANDLE, new Intent());
+        return new AppInfo[]{privateMessengerAppInfo, privateCameraAppInfo};
     }
 
     private AppInfo[] createAppInfoListForMainAndPrivateUser() {

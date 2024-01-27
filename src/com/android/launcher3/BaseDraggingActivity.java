@@ -20,11 +20,8 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.ActionMode;
-import android.view.Display;
 import android.view.View;
 
 import androidx.annotation.MainThread;
@@ -165,15 +162,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected abstract void reapplyUi();
 
     protected WindowBounds getMultiWindowDisplaySize() {
-        if (Utilities.ATLEAST_R) {
-            return WindowBounds.fromWindowMetrics(getWindowManager().getCurrentWindowMetrics());
-        }
-        // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
-        // the app window size
-        Display display = getWindowManager().getDefaultDisplay();
-        Point mwSize = new Point();
-        display.getSize(mwSize);
-        return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect());
+        return WindowBounds.fromWindowMetrics(getWindowManager().getCurrentWindowMetrics());
     }
 
     @Override

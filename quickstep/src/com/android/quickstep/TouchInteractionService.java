@@ -56,7 +56,6 @@ import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_SH
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_SPLIT_SCREEN;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_STARTING_WINDOW;
 
-import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
@@ -66,7 +65,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
@@ -152,7 +150,6 @@ import java.util.function.Function;
 /**
  * Service connected by system-UI for handling touch interaction.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class TouchInteractionService extends Service {
 
     private static final String SUBSTRING_PREFIX = "; ";

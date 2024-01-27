@@ -43,14 +43,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.View;
@@ -94,7 +92,6 @@ import java.util.function.Consumer;
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public final class TaskViewUtils {
 
     private TaskViewUtils() {}

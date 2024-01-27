@@ -37,24 +37,23 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
+import static com.android.quickstep.util.AnimUtils.completeRunnableListCallback;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
-import android.app.ActivityTaskManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo.Config;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
+import android.os.IRemoteCallback;
 import android.os.Process;
 import android.os.Trace;
 import android.provider.Settings;
@@ -66,7 +65,6 @@ import android.view.Surface;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -134,13 +132,10 @@ import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
@@ -744,13 +739,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     @Override
     public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         RunnableList callbacks = new RunnableList();
-        ActivityOptions options = ActivityOptions.makeCustomAnimation(
-                this, 0, 0, Color.TRANSPARENT,
-                Executors.MAIN_EXECUTOR.getHandler(), null,
-                elapsedRealTime -> callbacks.executeAllAndDestroy());
+        ActivityOptions options = ActivityOptions.makeCustomAnimation(this, 0, 0);
         options.setSplashScreenStyle(splashScreenStyle);
         options.setPendingIntentBackgroundActivityStartMode(
                 ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+        IRemoteCallback endCallback = completeRunnableListCallback(callbacks);
+        options.setOnAnimationAbortListener(endCallback);
+        options.setOnAnimationFinishedListener(endCallback);
+
         return new ActivityOptionsWrapper(options, callbacks);
     }
 
@@ -1179,25 +1175,15 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     @Nullable Task foundTask = foundTasks[0];
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
-                        if (foundTaskView != null) {
-                            // The foundTaskView contains the 1-2 taskIds we are looking for.
-                            // If we are already in-app and running the correct tasks, no need
-                            // to do anything.
-                            if (FeatureFlags.enableAppPairs()
-                                    && isAlreadyInApp(foundTaskView.getTaskIds())) {
-                                return;
-                            }
-                            // If we are in Overview and the TaskView tile is visible, expand that
-                            // tile.
-                            if (foundTaskView.isVisibleToUser()) {
-                                TestLogging.recordEvent(
-                                        TestProtocol.SEQUENCE_MAIN, "start: taskbarAppIcon");
-                                foundTaskView.launchTasks();
-                                return;
-                            }
+                        if (foundTaskView != null
+                                && foundTaskView.isVisibleToUser()) {
+                            TestLogging.recordEvent(
+                                    TestProtocol.SEQUENCE_MAIN, "start: taskbarAppIcon");
+                            foundTaskView.launchTasks();
+                            return;
                         }
                     }
-                    // If none of the above cases apply, launch a new app or app pair.
+
                     if (findExactPairMatch) {
                         // We did not find the app pair we were looking for, so launch one.
                         recents.getSplitSelectController().getAppPairsController().launchAppPair(
@@ -1207,27 +1193,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     }
                 }
         );
-    }
-
-    /**
-     * Checks if a given list of taskIds are all already running in-app.
-     */
-    private boolean isAlreadyInApp(int[] ids) {
-        if (mControllers.uiController.isInOverview()) {
-            return false;
-        }
-
-        RunningTaskInfo[] currentlyRunningTasks = ActivityManagerWrapper.getInstance()
-                .getRunningTasks(false /* filterOnlyVisibleRecents */);
-        Set<Integer> currentlyRunningIds = Arrays.stream(currentlyRunningTasks)
-                .map(task -> task.taskId).collect(Collectors.toSet());
-
-        for (int id : ids) {
-            if (id != ActivityTaskManager.INVALID_TASK_ID && !currentlyRunningIds.contains(id)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void startItemInfoActivity(ItemInfo info) {

@@ -24,9 +24,7 @@ import static com.android.systemui.shared.recents.utilities.Utilities.postAtFron
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.view.IRemoteAnimationFinishedCallback;
@@ -57,7 +55,6 @@ import java.lang.ref.WeakReference;
  * the runner implementation.  When this animation manager is destroyed, we remove the Launcher
  * reference to the runner, leaving only the weak ref from the runner.
  */
-@TargetApi(Build.VERSION_CODES.P)
 public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
 
     private static final RemoteAnimationFactory DEFAULT_FACTORY =

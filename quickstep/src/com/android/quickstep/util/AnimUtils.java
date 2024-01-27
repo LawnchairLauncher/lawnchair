@@ -16,6 +16,13 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
+import android.os.Bundle;
+import android.os.IRemoteCallback;
+
+import com.android.launcher3.util.RunnableList;
+
 /**
  * Utility class containing methods to help manage animations, interpolators, and timings.
  */
@@ -47,5 +54,17 @@ public class AnimUtils {
         return isTablet
                 ? SplitAnimationTimings.TABLET_APP_PAIR_LAUNCH
                 : SplitAnimationTimings.PHONE_APP_PAIR_LAUNCH;
+    }
+
+    /**
+     * Returns a IRemoteCallback which completes the provided list as a result
+     */
+    public static IRemoteCallback completeRunnableListCallback(RunnableList list) {
+        return new IRemoteCallback.Stub() {
+            @Override
+            public void sendResult(Bundle bundle) {
+                MAIN_EXECUTOR.execute(list::executeAllAndDestroy);
+            }
+        };
     }
 }

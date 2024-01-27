@@ -326,9 +326,6 @@ public class RestoreDbTask {
      */
     private UserHandle getUserForAncestralSerialNumber(BackupManager backupManager,
             long ancestralSerialNumber) {
-        if (!Utilities.ATLEAST_Q) {
-            return null;
-        }
         return backupManager.getUserForAncestralSerialNumber(ancestralSerialNumber);
     }
 

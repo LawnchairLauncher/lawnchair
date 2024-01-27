@@ -57,7 +57,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
@@ -119,8 +118,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import kotlin.Unit;
-
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -128,6 +125,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -970,20 +969,6 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     /**
-     * Returns ActivityOptions for overriding task transition animation.
-     */
-    private ActivityOptions makeCustomAnimation(Context context, int enterResId,
-            int exitResId, final Runnable callback, final Handler callbackHandler) {
-        return ActivityOptions.makeCustomTaskAnimation(context, enterResId, exitResId,
-                callbackHandler,
-                elapsedRealTime -> {
-                    if (callback != null) {
-                        callbackHandler.post(callback);
-                    }
-                }, null /* finishedListener */);
-    }
-
-    /**
      * Launch of the current task (both live and inactive tasks) with an animation.
      */
     @Nullable
@@ -1339,10 +1324,8 @@ public class TaskView extends FrameLayout implements Reusable {
             setPivotX((right - left) * 0.5f);
             setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
         }
-        if (Utilities.ATLEAST_Q) {
-            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
-            setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
-        }
+        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
+        setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
     }
 
     /**

@@ -20,7 +20,6 @@ import static android.content.ContentResolver.SCHEME_CONTENT;
 
 import static com.android.launcher3.util.SimpleBroadcastReceiver.getPackageFilter;
 
-import android.annotation.TargetApi;
 import android.app.RemoteAction;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -30,7 +29,6 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherApps;
 import android.database.ContentObserver;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
@@ -63,7 +61,6 @@ import java.util.Map;
 /**
  * Data model for digital wellbeing status of apps.
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public final class WellbeingModel extends BgObjectWithLooper {
     private static final String TAG = "WellbeingModel";
     private static final int[] RETRY_TIMES_MS = {5000, 15000, 30000};

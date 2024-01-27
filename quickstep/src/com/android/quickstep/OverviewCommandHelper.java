@@ -18,10 +18,8 @@ package com.android.quickstep;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.os.Build;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.view.View;
@@ -51,7 +49,6 @@ import java.util.HashMap;
 /**
  * Helper class to handle various atomic commands for switching between Overview.
  */
-@TargetApi(Build.VERSION_CODES.P)
 public class OverviewCommandHelper {
 
     public static final int TYPE_SHOW = 1;

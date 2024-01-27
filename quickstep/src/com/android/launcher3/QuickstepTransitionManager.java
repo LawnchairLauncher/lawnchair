@@ -64,6 +64,7 @@ import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATI
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
+import static com.android.quickstep.util.AnimUtils.completeRunnableListCallback;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
 
@@ -88,6 +89,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.IRemoteCallback;
 import android.os.Looper;
 import android.os.SystemProperties;
 import android.os.UserHandle;
@@ -351,6 +353,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
                 new RemoteTransition(runner.toRemoteTransition(),
                         mLauncher.getIApplicationThread(), "QuickstepLaunch"));
+        IRemoteCallback endCallback = completeRunnableListCallback(onEndCallback);
+        options.setOnAnimationAbortListener(endCallback);
+        options.setOnAnimationFinishedListener(endCallback);
         return new ActivityOptionsWrapper(options, onEndCallback);
     }
 
@@ -1663,14 +1668,20 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     ? Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK
                     : Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
 
-            anim.addListener(new AnimatorListenerAdapter() {
+            AnimatorListenerAdapter endListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     AccessibilityManagerCompat.sendTestProtocolEventToTest(
                             mLauncher, WALLPAPER_OPEN_ANIMATION_FINISHED_MESSAGE);
                 }
-            });
+            };
+
+            if (fromPredictiveBack) {
+                rectFSpringAnim.addAnimatorListener(endListener);
+            } else {
+                anim.addListener(endListener);
+            }
 
             // Only register the content animation for cancellation when state changes
             mLauncher.getStateManager().setCurrentAnimation(anim);

@@ -105,24 +105,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     /**
      * Returns the real bounds for the provided display after applying any insets normalization
      */
-    @TargetApi(Build.VERSION_CODES.R)
     public WindowBounds getRealBounds(Context displayInfoContext, CachedDisplayInfo info) {
-        if (!Utilities.ATLEAST_R) {
-            Point smallestSize = new Point();
-            Point largestSize = new Point();
-            getDisplay(displayInfoContext).getCurrentSizeRange(smallestSize, largestSize);
-
-            if (info.size.y > info.size.x) {
-                // Portrait
-                return new WindowBounds(info.size.x, info.size.y, smallestSize.x, largestSize.y,
-                        info.rotation);
-            } else {
-                // Landscape
-                return new WindowBounds(info.size.x, info.size.y, largestSize.x, smallestSize.y,
-                        info.rotation);
-            }
-        }
-
         WindowMetrics windowMetrics = displayInfoContext.getSystemService(WindowManager.class)
                 .getMaximumWindowMetrics();
         Rect insets = new Rect();
@@ -133,10 +116,9 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     /**
      * Returns an updated insets, accounting for various Launcher UI specific overrides like taskbar
      */
-    @TargetApi(Build.VERSION_CODES.R)
     public WindowInsets normalizeWindowInsets(Context context, WindowInsets oldInsets,
             Rect outInsets) {
-        if (!Utilities.ATLEAST_R || !mTaskbarDrawnInProcess) {
+        if (!mTaskbarDrawnInProcess) {
             outInsets.set(oldInsets.getSystemWindowInsetLeft(), oldInsets.getSystemWindowInsetTop(),
                     oldInsets.getSystemWindowInsetRight(), oldInsets.getSystemWindowInsetBottom());
             return oldInsets;
@@ -220,8 +202,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         }
 
         boolean isTablet = swDp >= MIN_TABLET_WIDTH;
-        boolean isTabletOrGesture = isTablet
-                || (Utilities.ATLEAST_R && isGestureNav(context));
+        boolean isTabletOrGesture = isTablet || isGestureNav(context);
 
         // Use the status bar height resources because current system API to get the status bar
         // height doesn't allow to do this for an arbitrary display, it returns value only
@@ -360,17 +341,14 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     }
 
     /**
-     *
      * Returns the display associated with the context, or DEFAULT_DISPLAY if the context isn't
      * associated with a display.
      */
     protected Display getDisplay(Context displayInfoContext) {
-        if (Utilities.ATLEAST_R) {
-            try {
-                return displayInfoContext.getDisplay();
-            } catch (UnsupportedOperationException e) {
-                // Ignore
-            }
+        try {
+            return displayInfoContext.getDisplay();
+        } catch (UnsupportedOperationException e) {
+            // Ignore
         }
         return displayInfoContext.getSystemService(DisplayManager.class).getDisplay(
                 DEFAULT_DISPLAY);

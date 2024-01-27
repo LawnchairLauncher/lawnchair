@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.view.SurfaceControl;
@@ -34,7 +32,6 @@ import com.android.quickstep.RemoteAnimationTargets.ReleaseCheck;
  *   android.view.SyncRtSurfaceTransactionApplier
  * with some Launcher specific utility methods
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class SurfaceTransactionApplier extends ReleaseCheck {
 
     private static final int MSG_UPDATE_SEQUENCE_NUMBER = 0;

@@ -35,13 +35,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
@@ -77,7 +75,6 @@ import java.util.function.Predicate;
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
  */
-@TargetApi(Build.VERSION_CODES.P)
 public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_TYPE>,
         ACTIVITY_TYPE extends StatefulActivity<STATE_TYPE>> {
 

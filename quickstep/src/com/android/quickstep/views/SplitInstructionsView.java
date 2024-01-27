@@ -120,10 +120,12 @@ public class SplitInstructionsView extends LinearLayout {
 
     private void init() {
         TextView cancelTextView = findViewById(R.id.split_instructions_text_cancel);
+        TextView instructionTextView = findViewById(R.id.split_instructions_text);
 
         if (FeatureFlags.enableSplitContextually()) {
             cancelTextView.setVisibility(VISIBLE);
             cancelTextView.setOnClickListener((v) -> exitSplitSelection());
+            instructionTextView.setText(R.string.toast_contextual_split_select_app);
         }
     }
 

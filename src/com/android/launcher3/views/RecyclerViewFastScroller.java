@@ -30,7 +30,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
@@ -40,7 +39,6 @@ import android.view.ViewConfiguration;
 import android.view.WindowInsets;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.FastScrollRecyclerView;
@@ -352,26 +350,21 @@ public class RecyclerViewFastScroller extends View {
         float r = getScrollThumbRadius();
         mThumbBounds.set(-halfW, 0, halfW, mThumbHeight);
         canvas.drawRoundRect(mThumbBounds, r, r, mThumbPaint);
-        if (Utilities.ATLEAST_Q) {
-            mThumbBounds.roundOut(SYSTEM_GESTURE_EXCLUSION_RECT.get(0));
-            // swiping very close to the thumb area (not just within it's bound)
-            // will also prevent back gesture
-            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).offset(mThumbDrawOffset.x, mThumbDrawOffset.y);
-            if (Utilities.ATLEAST_Q && mSystemGestureInsets != null) {
-                SYSTEM_GESTURE_EXCLUSION_RECT.get(0).left =
-                        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).right - mSystemGestureInsets.right;
-            }
-            setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
+        mThumbBounds.roundOut(SYSTEM_GESTURE_EXCLUSION_RECT.get(0));
+        // swiping very close to the thumb area (not just within it's bound)
+        // will also prevent back gesture
+        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).offset(mThumbDrawOffset.x, mThumbDrawOffset.y);
+        if (mSystemGestureInsets != null) {
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).left =
+                    SYSTEM_GESTURE_EXCLUSION_RECT.get(0).right - mSystemGestureInsets.right;
         }
+        setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
         canvas.restoreToCount(saveCount);
     }
 
     @Override
-    @RequiresApi(Build.VERSION_CODES.Q)
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
-            mSystemGestureInsets = insets.getSystemGestureInsets();
-        }
+        mSystemGestureInsets = insets.getSystemGestureInsets();
         return super.onApplyWindowInsets(insets);
     }
 

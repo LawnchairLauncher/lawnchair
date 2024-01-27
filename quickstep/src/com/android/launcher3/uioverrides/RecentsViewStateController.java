@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_ACTIONS;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
@@ -27,6 +28,7 @@ import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
 import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
+import static com.android.wm.shell.Flags.enableSplitContextual;
 
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
@@ -120,7 +122,9 @@ public final class RecentsViewStateController extends
      */
     private void handleSplitSelectionState(@NonNull LauncherState toState,
             @NonNull PendingAnimation builder, boolean animate) {
-        if (toState != OVERVIEW_SPLIT_SELECT) {
+        boolean goingToOverviewFromWorkspaceContextual = enableSplitContextual() &&
+                toState == OVERVIEW && mLauncher.isSplitSelectionActive();
+        if (toState != OVERVIEW_SPLIT_SELECT && !goingToOverviewFromWorkspaceContextual) {
             // Not going to split
             return;
         }
@@ -135,9 +139,11 @@ public final class RecentsViewStateController extends
 
         SplitAnimationTimings timings =
                 AnimUtils.getDeviceOverviewToSplitTimings(mLauncher.getDeviceProfile().isTablet);
-
-        mRecentsView.createSplitSelectInitAnimation(builder,
-                toState.getTransitionDuration(mLauncher, true /* isToState */));
+        if (!goingToOverviewFromWorkspaceContextual) {
+            // This animation is already done for the contextual case, don't redo it
+            mRecentsView.createSplitSelectInitAnimation(builder,
+                    toState.getTransitionDuration(mLauncher, true /* isToState */));
+        }
         // Shift tasks vertically downward to get out of placeholder view
         builder.setFloat(mRecentsView, taskViewsFloat.first,
                 toState.getSplitSelectTranslation(mLauncher),

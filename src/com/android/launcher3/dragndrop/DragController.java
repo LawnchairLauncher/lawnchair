@@ -16,8 +16,6 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.Utilities.ATLEAST_Q;
-
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -404,9 +402,7 @@ public abstract class DragController<T extends ActivityContext>
             mMotionDown.set(dragLayerPos.x,  dragLayerPos.y);
         }
 
-        if (ATLEAST_Q) {
-            mLastTouchClassification = ev.getClassification();
-        }
+        mLastTouchClassification = ev.getClassification();
         return mDragDriver != null && mDragDriver.onInterceptTouchEvent(ev);
     }
 
@@ -441,7 +437,7 @@ public abstract class DragController<T extends ActivityContext>
         mLastTouch.set(x, y);
 
         int distanceDragged = mDistanceSinceScroll;
-        if (ATLEAST_Q && mLastTouchClassification == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
+        if (mLastTouchClassification == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
             distanceDragged /= DEEP_PRESS_DISTANCE_FACTOR;
         }
         if (mIsInPreDrag && mOptions.preDragCondition != null
