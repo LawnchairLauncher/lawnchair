@@ -155,10 +155,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Giảm chiều cao"</string>
     <string name="widget_resized" msgid="9130327887929620">"Đã đổi kích thước tiện ích thành chiều rộng <xliff:g id="NUMBER_0">%1$s</xliff:g> chiều cao <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Lối tắt"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Phím tắt và thông báo"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Loại bỏ"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Đóng"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"Đã loại bỏ thông báo"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Cá nhân"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Công việc"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Hồ sơ công việc"</string>
@@ -175,6 +173,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Bộ lọc"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Không thực hiện được thao tác: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Không gian riêng tư"</string>
+    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"Riêng tư"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Cài đặt không gian riêng tư"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Khoá/mở khoá không gian riêng tư"</string>

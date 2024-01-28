@@ -155,10 +155,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ಎತ್ತರವನ್ನು ಕಡಿಮೆ ಮಾಡಿ"</string>
     <string name="widget_resized" msgid="9130327887929620">"ವಿಜೆಟ್ ಅನ್ನು <xliff:g id="NUMBER_0">%1$s</xliff:g> ಅಗಲ <xliff:g id="NUMBER_1">%2$s</xliff:g> ಎತ್ತರಕ್ಕೆ ಮರುಗಾತ್ರಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಮತ್ತು ಅಧಿಸೂಚನೆಗಳು"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ವಜಾಗೊಳಿಸಿ"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"ಮುಚ್ಚಿರಿ"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"ಅಧಿಸೂಚನೆಯನ್ನು ವಜಾಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ವೈಯಕ್ತಿಕ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ಕೆಲಸ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ಕೆಲಸದ ಪ್ರೊಫೈಲ್"</string>
@@ -175,6 +173,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ಫಿಲ್ಟರ್‌"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ವಿಫಲವಾಗಿದೆ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ಖಾಸಗಿ ಸ್ಪೇಸ್"</string>
+    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"ಖಾಸಗಿ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಅನ್ನು ಲಾಕ್/ಅನ್‌ಲಾಕ್ ಮಾಡಿ"</string>
