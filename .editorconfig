@@ -7,6 +7,10 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[*.java]
+# Don't trim spaces in AOSP code.
+trim_trailing_whitespace = false
+
 [*.{kt,kts}]
 ij_kotlin_imports_layout = *
 ij_kotlin_allow_trailing_comma = true
