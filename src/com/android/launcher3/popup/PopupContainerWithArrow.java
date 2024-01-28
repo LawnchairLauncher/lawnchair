@@ -824,6 +824,8 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                     mContainer, itemInfo,
                     new ShortcutDragPreviewProvider(sv.getIconView(), iconShift),
                     new DragOptions());
+            // Don't handle shortcuts dropping after home screen locked.
+            if (dv == null) return false;
             dv.animateShift(-iconShift.x, -iconShift.y);
 
             // TODO: support dragging from within folder without having to close it
