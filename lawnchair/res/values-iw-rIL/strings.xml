@@ -186,6 +186,7 @@
     <string name="popup_menu">תפריט Pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">הצג כפתור נעילה</string>
     <string name="show_system_settings_entry">הצג כניסה להגדרות המערכת</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">סרגל מצב</string>
     <string name="show_status_bar">הצגת שורת מצב</string>
     <string name="dark_status_bar_label">שורת מצב כהה</string>

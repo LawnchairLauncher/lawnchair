@@ -186,6 +186,7 @@
     <string name="popup_menu">Αναδυόμενο Μενού</string>
     <string name="home_screen_lock_toggle_from_home_popup">Εμφάνιση Κουμπιού Κλειδώματος</string>
     <string name="show_system_settings_entry">Εμφάνιση Καταχώρησης Ρυθμίσεων Συστήματος</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Εμφάνιση Κουμπιού Επεξεργασίας</string>
     <string name="status_bar_label">Γραμμή Κατάστασης</string>
     <string name="show_status_bar">Εμφάνιση Γραμμής Κατάστασης</string>
     <string name="dark_status_bar_label">Σκοτεινή Γραμμή Κατάστασης</string>

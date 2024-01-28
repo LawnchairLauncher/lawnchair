@@ -186,6 +186,7 @@
     <string name="popup_menu">Menuja e Pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Shfaq butonin kyçës</string>
     <string name="show_system_settings_entry">Shfaq hyrjen e opsioneve të sistemit</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Shiriti i Statusit</string>
     <string name="show_status_bar">Shfaq Shiritin e Statusit</string>
     <string name="dark_status_bar_label">Shiriti i Statusit i Zi</string>

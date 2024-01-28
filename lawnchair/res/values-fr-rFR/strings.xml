@@ -186,6 +186,7 @@
     <string name="popup_menu">Menu pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton de verrouillage</string>
     <string name="show_system_settings_entry">Afficher l\'entrée des paramètres du système</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Afficher le bouton Modifier</string>
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="dark_status_bar_label">Barre d\'état sombre</string>

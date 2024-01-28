@@ -186,6 +186,7 @@
     <string name="popup_menu">قائمة منبثقة</string>
     <string name="home_screen_lock_toggle_from_home_popup">عرض زر القُفل</string>
     <string name="show_system_settings_entry">إظهار إدخال إعدادات النظام</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة المظلم</string>
