@@ -186,6 +186,7 @@
     <string name="popup_menu">Açılır menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Kilit tuşunu göster</string>
     <string name="show_system_settings_entry">Sistem ayarları girişini göster</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Durum Çubuğu</string>
     <string name="show_status_bar">Durum Çubuğunu Göster</string>
     <string name="dark_status_bar_label">Koyu Durum Çubuğu</string>

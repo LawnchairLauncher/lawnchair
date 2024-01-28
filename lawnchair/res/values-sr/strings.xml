@@ -186,6 +186,7 @@
     <string name="popup_menu">Искачући мени</string>
     <string name="home_screen_lock_toggle_from_home_popup">Прикажи дугме за закључавање</string>
     <string name="show_system_settings_entry">Прикажи системско подешавање</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Статусна трака</string>
     <string name="show_status_bar">Прикажи статусну траку</string>
     <string name="dark_status_bar_label">Тамна статусна трака</string>

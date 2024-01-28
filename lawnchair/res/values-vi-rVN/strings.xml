@@ -186,6 +186,7 @@
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Hiển thị phím khóa</string>
     <string name="show_system_settings_entry">Hiển thị mục cài đặt hệ thống</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>

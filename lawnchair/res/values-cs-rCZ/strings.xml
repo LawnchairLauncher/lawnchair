@@ -186,6 +186,7 @@
     <string name="popup_menu">Vyskakovací nabídka</string>
     <string name="home_screen_lock_toggle_from_home_popup">Zobrazit tlačítko uzamčení</string>
     <string name="show_system_settings_entry">Zobrazit položku nastavení systému</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Stavový řádek</string>
     <string name="show_status_bar">Zobrazit stavový řádek</string>
     <string name="dark_status_bar_label">Tmavý stavový řádek</string>

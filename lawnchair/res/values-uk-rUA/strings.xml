@@ -186,6 +186,7 @@
     <string name="popup_menu">Спливаюче меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показувати кнопку блокування</string>
     <string name="show_system_settings_entry">Показувати запис про системні налаштування</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Рядок стану</string>
     <string name="show_status_bar">Показати рядок стану</string>
     <string name="dark_status_bar_label">Темний рядок стану</string>

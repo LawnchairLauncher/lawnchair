@@ -188,6 +188,7 @@ workspace_increase_max_grid_size_label</string>
     <string name="popup_menu">Pop-up-Menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Sperrbutton anzeigen</string>
     <string name="show_system_settings_entry">Systemeinstellungen anzeigen</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Zeige Bearbeiten-Schaltfläche</string>
     <string name="status_bar_label">Statusleiste</string>
     <string name="show_status_bar">Suchleiste anzeigen</string>
     <string name="dark_status_bar_label">Dunkle Statusleiste</string>
