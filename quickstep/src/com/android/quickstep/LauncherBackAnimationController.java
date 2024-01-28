@@ -215,7 +215,6 @@ public class LauncherBackAnimationController {
                 }
 
                 void onAnimationCancelled(boolean isKeyguardOccluded) {
-                    onAnimationCancelled();
                 }
 
                 public void onAnimationCancelled() {

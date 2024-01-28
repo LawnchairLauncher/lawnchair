@@ -31,7 +31,6 @@ import android.util.Log;
 
 import androidx.annotation.FloatRange;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -239,7 +238,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 }
                 return;
             } else if ((!mConfig.userControlled && animated && mConfig.targetState == state)
-                    || (mState.shouldPreserveDataStateOnReapply() && Utilities.ATLEAST_U)) {
+                    || mState.shouldPreserveDataStateOnReapply()) {
                 // We are running the same animation as requested, and/or target state should not be
                 // reset -- allow the current animation to complete instead of canceling it.
                 if (listener != null) {

@@ -515,31 +515,6 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void setSplitScreenMinimized(boolean minimized) throws RemoteException {}
-
-    @Override
-    public void notifySwipeToHomeFinished() {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.notifySwipeUpGestureStarted();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call notifySwipeUpGestureStarted", e);
-            }
-        }
-    }
-
-    @Override
-    public void notifySwipeUpGestureStarted() {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.notifySwipeToHomeFinished();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call notifySwipeToHomeFinished", e);
-            }
-        }
-    }
-
-    @Override
     public void onStatusBarTrackpadEvent(MotionEvent event)  {
         if (mSystemUiProxy != null) {
             try {

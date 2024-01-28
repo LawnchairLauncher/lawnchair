@@ -733,7 +733,7 @@ public class TouchInteractionService extends Service {
         // Note this will create a new consumer every mouse click, as after ACTION_UP
         // from the click
         // an ACTION_HOVER_ENTER will fire as well.
-        boolean isHoverActionWithoutConsumer =  isHoverEvent(action)
+        boolean isHoverActionWithoutConsumer = isHoverEvent(action)
                 && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);

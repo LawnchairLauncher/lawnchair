@@ -46,7 +46,7 @@ public abstract class SystemGestureExclusionListenerCompat {
 
                 public void onSystemGestureExclusionChanged(int displayId,
                                                             Region systemGestureExclusion) {
-                    if (LawnchairQuickstepCompat.ATLEAST_U) return;
+                    if (LawnchairQuickstepCompat.ATLEAST_T) return;
                     onSystemGestureExclusionChanged(displayId, systemGestureExclusion, null);
                 }
             };

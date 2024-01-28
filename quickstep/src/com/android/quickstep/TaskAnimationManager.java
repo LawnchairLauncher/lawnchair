@@ -54,7 +54,7 @@ import java.util.HashMap;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
     public static final boolean ENABLE_SHELL_TRANSITIONS = SystemProperties.getBoolean("persist.wm.debug.shell_transit",
-            Utilities.ATLEAST_U);
+            Utilities.ATLEAST_T);
     public static final boolean SHELL_TRANSITIONS_ROTATION = ENABLE_SHELL_TRANSITIONS
             && SystemProperties.getBoolean("persist.wm.debug.shell_transit_rotate", false);
 
@@ -279,9 +279,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
                 if (Utilities.ATLEAST_U) {
                     SystemUiProxy.INSTANCE.getNoCreate().startRecentsActivity(intent, options, mCallbacks);
+                } else {
+                    UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                            .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
                 }
             }
-            UI_HELPER_EXECUTOR.execute(() -> mCtx.startActivity(intent, options.toBundle()));
         } else {
             UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
                     .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
@@ -345,6 +347,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         if (mController != null) {
             ActiveGestureLog.INSTANCE.addLog(
                     /* event= */ "finishRunningRecentsAnimation", toHome);
+            mCallbacks.notifyAnimationCanceled();
             if (forceFinish) {
                 mController.finishController(toHome, null, false /* sendUserLeaveHint */,
                         true /* forceFinish */);
@@ -353,6 +356,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         ? mController::finishAnimationToHome
                         : mController::finishAnimationToApp);
             }
+            cleanUpRecentsAnimation(mCallbacks);
         }
     }
 

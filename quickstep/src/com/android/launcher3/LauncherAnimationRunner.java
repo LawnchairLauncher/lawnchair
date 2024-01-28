@@ -245,9 +245,7 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                 LauncherAnimationRunner.AnimationResult result);
 
         @UiThread
-        default void onAnimationCancelled(boolean isKeyguardOccluded) {
-            onAnimationCancelled();
-        }
+        default void onAnimationCancelled(boolean isKeyguardOccluded) {}
 
         /**
          * Called when the animation is cancelled. This can happen with or without

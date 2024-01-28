@@ -82,12 +82,12 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
         onAnimationStart(appTargets, new RemoteAnimationTarget[0], finishedCallback);
     }
 
-    public void onAnimationCancelled(boolean isKeyguardOccluded) {}
-
-    // Called only in S
-    public void onAnimationCancelled() {
-        onAnimationCancelled(true);
+    public void onAnimationCancelled(boolean isKeyguardOccluded) {
+        onAnimationCancelled();
     }
+
+    // Called only in S+
+    public void onAnimationCancelled() {}
 
     public IRemoteTransition toRemoteTransition() {
         return new IRemoteTransition.Stub() {
@@ -222,11 +222,19 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 }
                 // TODO(bc-unlcok): Pass correct transit type.
                 onAnimationStart(TRANSIT_OLD_NONE,
-                        apps, wallpapers, nonApps, () -> {
-                            synchronized (mFinishRunnables) {
-                                if (mFinishRunnables.remove(token) == null) return;
+                        apps, wallpapers, nonApps, new IRemoteAnimationFinishedCallback() {
+                            @Override
+                            public void onAnimationFinished() {
+                                synchronized (mFinishRunnables) {
+                                    if (mFinishRunnables.remove(token) == null) return;
+                                }
+                                animationFinishedCallback.run();
                             }
-                            animationFinishedCallback.run();
+
+                            @Override
+                            public IBinder asBinder() {
+                                return null;
+                            }
                         });
             }
 

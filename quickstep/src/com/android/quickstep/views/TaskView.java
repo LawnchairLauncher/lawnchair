@@ -939,15 +939,8 @@ public class TaskView extends FrameLayout implements Reusable {
             }
             // Indicate success once the system has indicated that the transition has
             // started
-            ActivityOptions opts = LawnchairQuickstepCompat.ATLEAST_T ? ActivityOptions.makeCustomTaskAnimation(getContext(), 0, 0,
-                    MAIN_EXECUTOR.getHandler(),
-                    elapsedRealTime -> {
-                        callback.accept(true);
-                    },
-                    elapsedRealTime -> {
-                        failureListener.onTransitionFinished();
-                    }) : makeCustomAnimation(getContext(), 0, 0,
-                    () -> callback.accept(true), MAIN_EXECUTOR.getHandler());;
+            ActivityOptions opts = makeCustomAnimation(getContext(), 0, 0,
+                    () -> callback.accept(true), MAIN_EXECUTOR.getHandler());
             opts.setLaunchDisplayId(
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (isQuickswitch) {
