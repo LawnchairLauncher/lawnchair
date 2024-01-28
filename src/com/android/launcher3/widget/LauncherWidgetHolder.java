@@ -272,9 +272,7 @@ public class LauncherWidgetHolder {
 
     private Bundle getDefaultConfigurationActivityOptions() {
         // Must allow background activity start for U.
-        return ActivityOptions.makeBasic()
-                .setPendingIntentBackgroundActivityStartMode(
-                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED)
+        return Utilities.allowBGLaunch(ActivityOptions.makeBasic())
                 .toBundle();
     }
 
@@ -296,8 +294,7 @@ public class LauncherWidgetHolder {
             return getDefaultConfigurationActivityOptions();
         ActivityOptionsWrapper activityOptionsWrapper = activity.getActivityLaunchOptions(view, (ItemInfo) tag);
         // Must allow background activity start for U.
-        activityOptionsWrapper.options.setPendingIntentBackgroundActivityStartMode(
-                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+        Utilities.allowBGLaunch(activityOptionsWrapper.options);
         Bundle bundle = activityOptionsWrapper.toBundle();
         bundle.putInt(KEY_SPLASH_SCREEN_STYLE, SPLASH_SCREEN_STYLE_EMPTY);
         return bundle;
