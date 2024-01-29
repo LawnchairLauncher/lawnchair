@@ -83,6 +83,7 @@ import com.android.wm.shell.desktopmode.IDesktopMode;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
+import com.android.wm.shell.pip.PipData;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.pip.IPipAnimationListener;
 import com.android.wm.shell.recents.IRecentTasks;
@@ -625,14 +626,19 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     @Nullable
     public Rect startSwipePipToHome(ComponentName componentName, ActivityInfo activityInfo,
-            PictureInPictureParams pictureInPictureParams, int launcherRotation,
+            PictureInPictureParams pictureInPictureParams, int launcherRotation, int hotseatBarSize,
             Rect hotseatKeepClearArea) {
         if (mPip != null) {
             try {
                 return mPip.startSwipePipToHome(componentName, activityInfo,
-                        pictureInPictureParams, launcherRotation, hotseatKeepClearArea);
+                        pictureInPictureParams, launcherRotation, new PipData(hotseatKeepClearArea));
             } catch (Throwable e) {
-                Log.w(TAG, "Failed call startSwipePipToHome", e);
+                try {
+                    return mPip.startSwipePipToHome(componentName, activityInfo,
+                            pictureInPictureParams, launcherRotation, new PipData(hotseatBarSize));
+                } catch (Throwable t) {
+                    Log.w(TAG, "Failed call startSwipePipToHome", e);
+                }
             }
         }
         return null;

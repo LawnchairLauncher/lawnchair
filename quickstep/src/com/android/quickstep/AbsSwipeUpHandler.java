@@ -1561,9 +1561,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     ? mRecentsAnimationTargets
                             .findTask(mGestureState.getTopRunningTaskId())
                     : null;
+            var taskInfo = mGestureState.getRunningTask().mAllCachedTasks.get(0);
             final ArrayList<IBinder> cookies = Utilities.ATLEAST_S && runningTaskTarget != null
-                    && runningTaskTarget.taskInfo != null
-                            ? runningTaskTarget.taskInfo.launchCookies
+                    && taskInfo != null
+                            ? taskInfo.launchCookies
                             : new ArrayList<>();
             boolean isTranslucent = runningTaskTarget != null && runningTaskTarget.isTranslucent;
             boolean hasValidLeash = runningTaskTarget != null
@@ -1573,8 +1574,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                     && hasValidLeash
                     && Utilities.ATLEAST_T
                     && runningTaskTarget.allowEnterPip
-                    && runningTaskTarget.taskInfo.pictureInPictureParams != null
-                    && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
+                    && taskInfo.pictureInPictureParams != null
+                    && taskInfo.pictureInPictureParams.isAutoEnterEnabled();
             HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(cookies, duration, isTranslucent,
                     appCanEnterPip,
                     runningTaskTarget);
@@ -1715,7 +1716,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
     private SwipePipToHomeAnimator createWindowAnimationToPip(HomeAnimationFactory homeAnimFactory,
             RemoteAnimationTarget runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
-        final ActivityManager.RunningTaskInfo taskInfo = runningTaskTarget.taskInfo;
+        final ActivityManager.RunningTaskInfo taskInfo = mGestureState.getRunningTask().mAllCachedTasks.get(0);
         final RecentsOrientedState orientationState = mRemoteTargetHandles[0].getTaskViewSimulator()
                 .getOrientationState();
         final int windowRotation = calculateWindowRotation(runningTaskTarget, orientationState);
@@ -1731,11 +1732,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
         windowToHomePositionMap.mapRect(startRect);
 
         final Rect hotseatKeepClearArea = getKeepClearAreaForHotseat();
+        if (taskInfo == null) return null;
         final Rect destinationBounds = SystemUiProxy.INSTANCE.get(mContext)
                 .startSwipePipToHome(taskInfo.topActivity,
                         taskInfo.topActivityInfo,
-                        runningTaskTarget.taskInfo.pictureInPictureParams,
+                        taskInfo.pictureInPictureParams,
                         homeRotation,
+                        mDp.hotseatBarSizePx,
                         hotseatKeepClearArea);
         if (destinationBounds == null) {
             // No destination bounds returned from SystemUI, bail early.
@@ -1759,7 +1762,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                 .setAppIconSizePx(mDp.iconSizePx)
                 .setLeash(runningTaskTarget.leash)
                 .setSourceRectHint(
-                        runningTaskTarget.taskInfo.pictureInPictureParams.getSourceRectHint())
+                        taskInfo.pictureInPictureParams.getSourceRectHint())
                 .setAppBounds(appBounds)
                 .setHomeToWindowPositionMap(homeToWindowPositionMap)
                 .setStartBounds(startRect)
@@ -2214,7 +2217,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
      * This should happen before {@link #finishRecentsControllerToHome(Runnable)}.
      */
     private void maybeFinishSwipePipToHome() {
-        if (mIsSwipingPipToHome && mSwipePipToHomeAnimators[0] != null) {
+        if (mIsSwipingPipToHome && mSwipePipToHomeAnimators[0] != null && mRecentsAnimationController != null) {
+
             mRecentsAnimationController.setFinishTaskTransaction(
                     mSwipePipToHomeAnimator.getTaskId(),
                     mSwipePipToHomeAnimator.getFinishTransaction(),
