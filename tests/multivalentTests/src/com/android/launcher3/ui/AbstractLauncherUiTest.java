@@ -370,7 +370,8 @@ public abstract class AbstractLauncherUiTest {
         Assert.assertTrue("Setup wizard is still visible", wizardDismissed);
     }
 
-    private static void verifyKeyguardInvisible() {
+    /** Asserts that keyguard is not visible */
+    public static void verifyKeyguardInvisible() {
         final boolean keyguardAlreadyVisible = sSeenKeyguard;
 
         sSeenKeyguard = sSeenKeyguard
