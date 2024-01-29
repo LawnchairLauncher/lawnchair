@@ -15,11 +15,11 @@
  */
 package com.android.launcher3.dragging;
 
-import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.PHOTOS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.STORE_APP_NAME;
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
+import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
@@ -80,18 +80,18 @@ public class TaplDragTest extends AbstractLauncherUiTest {
         // TODO: add the use case to drag an icon to an existing folder. Currently it either fails
         // on tablets or phones due to difference in resolution.
         final HomeAppIcon playStoreIcon = createShortcutIfNotExist(STORE_APP_NAME, 0, 1);
-        final HomeAppIcon gmailIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
+        final HomeAppIcon photosIcon = createShortcutInCenterIfNotExist(PHOTOS_APP_NAME);
 
-        FolderIcon folderIcon = gmailIcon.dragToIcon(playStoreIcon);
+        FolderIcon folderIcon = photosIcon.dragToIcon(playStoreIcon);
         Folder folder = folderIcon.open();
         folder.getAppIcon(STORE_APP_NAME);
-        folder.getAppIcon(GMAIL_APP_NAME);
+        folder.getAppIcon(PHOTOS_APP_NAME);
         Workspace workspace = folder.close();
 
         workspace.verifyWorkspaceAppIconIsGone(STORE_APP_NAME + " should be moved to a folder.",
                 STORE_APP_NAME);
-        workspace.verifyWorkspaceAppIconIsGone(GMAIL_APP_NAME + " should be moved to a folder.",
-                GMAIL_APP_NAME);
+        workspace.verifyWorkspaceAppIconIsGone(PHOTOS_APP_NAME + " should be moved to a folder.",
+                PHOTOS_APP_NAME);
 
         final HomeAppIcon mapIcon = createShortcutInCenterIfNotExist(MAPS_APP_NAME);
         folderIcon = mapIcon.dragToIcon(folderIcon);
