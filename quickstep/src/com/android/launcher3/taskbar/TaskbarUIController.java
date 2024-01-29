@@ -93,6 +93,7 @@ public class TaskbarUIController {
     public void onTaskbarIconLaunched(ItemInfo item) {
         // When launching from Taskbar, e.g. from Overview, set FLAG_IN_APP immediately instead of
         // waiting for onPause, to reduce potential visual noise during the app open transition.
+        if (mControllers.taskbarStashController == null) return;
         mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, true);
         mControllers.taskbarStashController.applyState();
     }
