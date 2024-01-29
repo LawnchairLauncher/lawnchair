@@ -18,6 +18,9 @@ package com.android.launcher3.uioverrides.flags;
 
 import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.ConstantItem;
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
 import com.android.launcher3.config.FeatureFlags.FlagState;
 import com.android.launcher3.config.FeatureFlags.IntFlag;
@@ -51,6 +54,15 @@ public class FlagsFactory {
      */
     public static IntFlag getIntFlag(
             int bugId, String key, int defaultValueInCode, String description) {
+        return new IntFlag(defaultValueInCode);
+    }
+
+    /**
+     * Creates a new debug integer flag and it is saved in LauncherPrefs.
+     */
+    public static IntFlag getIntFlag(
+            int bugId, String key, int defaultValueInCode, String description,
+            @Nullable ConstantItem<Integer> launcherPrefFlag) {
         return new IntFlag(defaultValueInCode);
     }
 

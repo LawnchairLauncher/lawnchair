@@ -15,16 +15,23 @@
  */
 package com.android.launcher3.uioverrides.flags;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.ConstantItem;
 import com.android.launcher3.config.FeatureFlags.IntFlag;
 
-public class IntDeviceFlag extends IntFlag {
+public class IntDebugFlag extends IntFlag {
     public final String key;
     private final int mDefaultValueInCode;
+    @Nullable
+    public final ConstantItem<Integer> launcherPrefFlag;
 
-    public IntDeviceFlag(String key, int currentValue, int defaultValueInCode) {
+    public IntDebugFlag(String key, int currentValue, int defaultValueInCode,
+            @Nullable ConstantItem<Integer> launcherPrefFlag) {
         super(currentValue);
         this.key = key;
         mDefaultValueInCode = defaultValueInCode;
+        this.launcherPrefFlag = launcherPrefFlag;
     }
 
     @Override
