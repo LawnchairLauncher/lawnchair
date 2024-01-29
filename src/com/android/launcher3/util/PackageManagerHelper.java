@@ -107,6 +107,23 @@ public class PackageManagerHelper {
     }
 
     /**
+     * Returns whether the target app is in archived state
+     */
+    @SuppressWarnings("NewApi")
+    public boolean isAppArchived(@NonNull final String packageName) {
+        final ApplicationInfo info;
+        try {
+            info = mPm.getPackageInfo(packageName,
+                    PackageManager.PackageInfoFlags.of(
+                            PackageManager.MATCH_ARCHIVED_PACKAGES)).applicationInfo;
+            return info.isArchived;
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Failed to get applicationInfo for package: " + packageName, e);
+            return false;
+        }
+    }
+
+    /**
      * Returns the application info for the provided package or null
      */
     @Nullable
