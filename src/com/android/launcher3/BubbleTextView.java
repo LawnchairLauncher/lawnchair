@@ -19,7 +19,6 @@ package com.android.launcher3;
 import static android.text.Layout.Alignment.ALIGN_NORMAL;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_NO_BADGE;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_SKIP_USER_BADGE;
@@ -556,9 +555,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     private void checkForEllipsis() {
-        if (!ENABLE_ICON_LABEL_AUTO_SCALING.get()) {
-            return;
-        }
         float width = getWidth() - getCompoundPaddingLeft() - getCompoundPaddingRight();
         if (width <= 0) {
             return;
@@ -830,7 +826,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         float currentWordWidth, runningWidth = 0;
         CharSequence currentWord;
         StringBuilder newString = new StringBuilder();
-        // TODO: Remove when ENABLE_ICON_LABEL_AUTO_SCALING feature flag is being cleaned up.
         paint.setLetterSpacing(MIN_LETTER_SPACING);
         int stringPtr = 0;
         for (int i = 0; i < breakPoints.size()+1; i++) {
