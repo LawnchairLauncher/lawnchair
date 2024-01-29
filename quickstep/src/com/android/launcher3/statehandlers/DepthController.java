@@ -37,11 +37,13 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.quickstep.util.BaseDepthController;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
 import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Controls blur and wallpaper zoom, for the Launcher surface only.
@@ -60,8 +62,12 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     private View.OnAttachStateChangeListener mOnAttachListener;
 
+    private final boolean mEnableDepth;
+
     public DepthController(Launcher l) {
         super(l);
+        var pref = PreferenceManager2.getInstance(l).getWallpaperDepthEffect();
+        mEnableDepth = PreferenceExtensionsKt.firstBlocking(pref);
     }
 
     private void onLauncherDraw() {
@@ -163,9 +169,13 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void applyDepthAndBlur() {
-        if (app.lawnchair.LawnchairApp.isAtleastT()) {
-            ensureDependencies();
-            super.applyDepthAndBlur();
+        try {
+            if (LawnchairQuickstepCompat.ATLEAST_R && mEnableDepth) {
+                ensureDependencies();
+                super.applyDepthAndBlur();
+            }
+        } catch (Throwable t) {
+            // Ignore
         }
     }
 
