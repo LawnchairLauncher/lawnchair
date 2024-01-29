@@ -20,7 +20,6 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
-import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Flags.enableCursorHoverStates;
@@ -68,7 +67,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -172,8 +170,6 @@ public class TaskView extends FrameLayout implements Reusable {
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
-
-    private static final Interpolator GRID_INTERPOLATOR = ACCELERATE_DECELERATE;
 
     /**
      * This technically can be a vanilla {@link TouchDelegate} class, however that class requires
@@ -1377,8 +1373,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public float getPersistentScale() {
         float scale = 1;
-        float gridProgress = GRID_INTERPOLATOR.getInterpolation(mGridProgress);
-        scale *= Utilities.mapRange(gridProgress, mNonGridScale, 1f);
+        scale *= Utilities.mapRange(mGridProgress, mNonGridScale, 1f);
         return scale;
     }
 
@@ -1778,8 +1773,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     private float getGridTrans(float endTranslation) {
-        float progress = GRID_INTERPOLATOR.getInterpolation(mGridProgress);
-        return Utilities.mapRange(progress, 0, endTranslation);
+        return Utilities.mapRange(mGridProgress, 0, endTranslation);
     }
 
     private float getNonGridTrans(float endTranslation) {
