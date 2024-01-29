@@ -74,6 +74,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
+import com.android.launcher3.uioverrides.QuickstepInteractionHandler
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
 import com.android.launcher3.util.ActivityOptionsWrapper
@@ -337,12 +338,24 @@ class LawnchairLauncher :
 
     override fun createAppWidgetHolder(): LauncherWidgetHolder {
         val factory = LauncherWidgetHolder.HolderFactory.newFactory(this) as LawnchairWidgetHolder.LawnchairHolderFactory
-        return factory.newInstance(
-            this,
-        ) { appWidgetId: Int ->
-            workspace.removeWidget(
-                appWidgetId,
+        return try {
+            factory.newInstance(
+                this,
+                { appWidgetId: Int ->
+                    workspace.removeWidget(
+                        appWidgetId,
+                    )
+                },
+                QuickstepInteractionHandler(this),
             )
+        } catch (t: Throwable) {
+            LauncherWidgetHolder.HolderFactory.newFactory(this).newInstance(
+                this,
+            ) { appWidgetId: Int ->
+                workspace.removeWidget(
+                    appWidgetId,
+                )
+            }
         }
     }
 

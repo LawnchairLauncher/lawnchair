@@ -4,27 +4,21 @@ import android.appwidget.AppWidgetHost
 import android.content.Context
 import android.widget.RemoteViews
 import com.android.internal.annotations.Keep
-import com.android.launcher3.config.FeatureFlags
+import com.android.launcher3.uioverrides.QuickstepWidgetHolder
 import com.android.launcher3.widget.LauncherWidgetHolder
 import java.util.function.IntConsumer
 
-class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : LauncherWidgetHolder(context, intConsumer) {
+class LawnchairWidgetHolder(
+    context: Context,
+    intConsumer: IntConsumer?,
+    interactionHandler: RemoteViews.InteractionHandler?,
+) : QuickstepWidgetHolder(context, intConsumer, interactionHandler) {
 
     @Keep
     class LawnchairHolderFactory
     @Suppress("unused")
     constructor(context: Context) :
-        HolderFactory() {
-        override fun newInstance(
-            context: Context,
-            appWidgetRemovedCallback: IntConsumer?,
-        ): LauncherWidgetHolder {
-            return try {
-                newInstance(context, appWidgetRemovedCallback, null)
-            } catch (t: Throwable) {
-                super.newInstance(context, appWidgetRemovedCallback)
-            }
-        }
+        QuickstepHolderFactory(context) {
 
         /**
          * @param context The context of the caller
@@ -32,12 +26,14 @@ class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : Launc
          * @param interactionHandler The interaction handler when the widgets are clicked
          * @return A new [LauncherWidgetHolder] instance
          */
-        fun newInstance(
+        override fun newInstance(
             context: Context,
             appWidgetRemovedCallback: IntConsumer?,
             interactionHandler: RemoteViews.InteractionHandler?,
         ): LauncherWidgetHolder {
-            return if (!FeatureFlags.ENABLE_WIDGET_HOST_IN_BACKGROUND.get()) {
+            return try {
+                LawnchairWidgetHolder(context, appWidgetRemovedCallback, interactionHandler)
+            } catch (t: Throwable) {
                 object : LauncherWidgetHolder(context, appWidgetRemovedCallback) {
                     override fun createHost(
                         context: Context,
@@ -50,8 +46,6 @@ class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : Launc
                         return host
                     }
                 }
-            } else {
-                LawnchairWidgetHolder(context, appWidgetRemovedCallback)
             }
         }
     }
