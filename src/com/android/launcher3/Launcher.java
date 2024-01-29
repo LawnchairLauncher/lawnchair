@@ -1530,6 +1530,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (appWidgetInfo == null) {
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
+            if (appWidgetInfo == null) return;
         }
 
         if (hostView == null) {
@@ -1539,6 +1540,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (appWidgetInfo.provider == null) {
             appWidgetInfo.provider = itemInfo.getTargetComponent();
+            if (appWidgetInfo.provider == null) return;
         }
         LauncherAppWidgetInfo launcherInfo;
         launcherInfo = new LauncherAppWidgetInfo(
