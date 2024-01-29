@@ -413,10 +413,6 @@ public final class FeatureFlags {
             "ENABLE_ENFORCED_ROUNDED_CORNERS", ENABLED,
             "Enforce rounded corners on all App Widgets");
 
-    public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(270393294,
-            "ENABLE_ICON_LABEL_AUTO_SCALING", ENABLED,
-            "Enables scaling/spacing for icon labels to make more characters visible");
-
     public static final BooleanFlag USE_LOCAL_ICON_OVERRIDES = getDebugFlag(270394973,
             "USE_LOCAL_ICON_OVERRIDES", ENABLED,
             "Use inbuilt monochrome icons if app doesn't provide one");
