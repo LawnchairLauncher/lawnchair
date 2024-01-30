@@ -55,6 +55,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -239,7 +240,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                 .map(s -> s.getShortcut(launcher, item, icon))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        if (FeatureFlags.showMaterialUPopup(this)) {
+        if (FeatureFlags.showMaterialUPopup(getContext())) {
             container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, launcher.getDragLayer(), false);
             container.configureForLauncher(launcher);
