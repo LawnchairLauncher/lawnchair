@@ -126,14 +126,14 @@ fun HomeScreenPreferences() {
                     label = stringResource(id = R.string.show_dot_pagination_label),
                     description = stringResource(id = R.string.show_dot_pagination_description),
                 )
-                SwitchPreference(
-                    adapter = prefs2.enableMaterialUPopUp.getAdapter(),
-                    label = stringResource(id = R.string.show_material_u_popup_label),
-                    description = stringResource(id = R.string.show_material_u_popup_description),
-                )
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.popup_menu)) {
+            SwitchPreference(
+                adapter = prefs2.enableMaterialUPopUp.getAdapter(),
+                label = stringResource(id = R.string.show_material_u_popup_label),
+                description = stringResource(id = R.string.show_material_u_popup_description),
+            )
             SwitchPreference(
                 adapter = prefs2.lockHomeScreenButtonOnPopUp.getAdapter(),
                 label = stringResource(id = R.string.home_screen_lock_toggle_from_home_popup),
