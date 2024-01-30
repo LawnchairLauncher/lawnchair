@@ -224,7 +224,7 @@ sealed class LawnchairSearchAlgorithm(
                 val timeout = maxWebSuggestionDelay.toLong()
                 val result = withTimeoutOrNull(timeout) {
                     if (prefs.searchResultStartPageSuggestion.get()) {
-                        getStartPageSuggestions(query, maxSuggestionCount)
+                        getStartPageSuggestions(query, maxSuggestionCount).map { SearchResult(SUGGESTION, it) }
                     } else {
                         emptyList()
                     }
@@ -259,7 +259,7 @@ sealed class LawnchairSearchAlgorithm(
         results.addAll(contactDeferred.await())
         results.addAll(filesDeferred.await())
         results.addAll(settingsDeferred.await())
-        results.addAll(startPageSuggestionsDeferred.await().map { SearchResult(SUGGESTION, it) })
+        results.addAll(startPageSuggestionsDeferred.await())
 
         results
     }
