@@ -379,6 +379,11 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = resourceProvider.getInt(R.dimen.config_default_people_max_result_count),
     )
 
+    val maxWebSuggestionDelay = preference(
+        key = intPreferencesKey(name = "max_web_suggestion_delay"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_max_web_suggestion_delay),
+    )
+
     val maxSettingsEntryResultCount = preference(
         key = intPreferencesKey(name = "max_settings_entry_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_settings_entry_max_result_count),

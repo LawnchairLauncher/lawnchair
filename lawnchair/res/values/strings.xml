@@ -347,8 +347,10 @@
       <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
       <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
       <string name="max_recent_result_count_title">Max History Result Count</string>
+      <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
 
-      <string name="clear_history">Clear</string>
+
+    <string name="clear_history">Clear</string>
 
 
     <!-- <string name="grid" /> -->
@@ -358,6 +360,7 @@
 
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_label">Suggestions</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Advanced Search</string>
     <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
