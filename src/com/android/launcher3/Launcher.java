@@ -522,7 +522,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.startListening();
         mAppWidgetHolder.addProviderChangeListener(() -> refreshAndBindWidgetsForPackageUser(null));
         mItemInflater = new ItemInflater<>(this, mAppWidgetHolder, getItemOnClickListener(),
-                mFocusHandler, new CellLayout(mWorkspace.getContext()));
+                mFocusHandler, new CellLayout(mWorkspace.getContext(), mWorkspace));
 
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 

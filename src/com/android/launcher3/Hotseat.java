@@ -207,6 +207,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
     public void setWorkspace(Workspace<?> w) {
         mWorkspace = w;
+        setCellLayoutContainer(w);
     }
 
     @Override

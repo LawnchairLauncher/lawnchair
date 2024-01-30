@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.dragndrop.DraggableView.DRAGGABLE_ICON;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_PREVIEW_OFFSET;
@@ -214,6 +213,7 @@ public class CellLayout extends ViewGroup {
     // Related to accessible drag and drop
     DragAndDropAccessibilityDelegate mTouchHelper;
 
+    CellLayoutContainer mCellLayoutContainer;
 
     public static final FloatProperty<CellLayout> SPRING_LOADED_PROGRESS =
             new FloatProperty<CellLayout>("spring_loaded_progress") {
@@ -228,8 +228,9 @@ public class CellLayout extends ViewGroup {
                 }
             };
 
-    public CellLayout(Context context) {
-        this(context, null);
+    public CellLayout(Context context, CellLayoutContainer container) {
+        this(context, (AttributeSet) null);
+        this.mCellLayoutContainer = container;
     }
 
     public CellLayout(Context context, AttributeSet attrs) {
@@ -314,6 +315,14 @@ public class CellLayout extends ViewGroup {
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
                 mBorderSpace);
         addView(mShortcutsAndWidgets);
+    }
+
+    public CellLayoutContainer getCellLayoutContainer() {
+        return mCellLayoutContainer;
+    }
+
+    public void setCellLayoutContainer(CellLayoutContainer cellLayoutContainer) {
+        mCellLayoutContainer = cellLayoutContainer;
     }
 
     /**
@@ -573,9 +582,7 @@ public class CellLayout extends ViewGroup {
     }
 
     protected void updateBgAlpha() {
-        if (!getWorkspace().mLauncher.isInState(EDIT_MODE)) {
-            mBackground.setAlpha((int) (mSpringLoadedProgress * 255));
-        }
+        mBackground.setAlpha((int) (mSpringLoadedProgress * 255));
     }
 
     /**
@@ -1187,7 +1194,7 @@ public class CellLayout extends ViewGroup {
         // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
         View view = dragObject.dragView.getContentView();
         if (view instanceof LauncherAppWidgetHostView) {
-            int screenId = getWorkspace().getIdForScreen(this);
+            int screenId = mCellLayoutContainer.getCellLayoutId(this);
             cellToRect(targetCell[0], targetCell[1], spanX, spanY, mTempRect);
 
             ((LauncherAppWidgetHostView) view).handleDrag(mTempRect, this, screenId);
@@ -1200,23 +1207,17 @@ public class CellLayout extends ViewGroup {
             return getContext().getString(R.string.move_to_hotseat_position,
                     Math.max(cellX, cellY) + 1);
         } else {
-            Workspace<?> workspace = getWorkspace();
             int row = cellY + 1;
-            int col = workspace.mIsRtl ? mCountX - cellX : cellX + 1;
-            int panelCount = workspace.getPanelCount();
-            int screenId = workspace.getIdForScreen(this);
-            int pageIndex = workspace.getPageIndexForScreenId(screenId);
+            int col = Utilities.isRtl(getResources()) ? mCountX - cellX : cellX + 1;
+            int panelCount = mCellLayoutContainer.getPanelCount();
+            int pageIndex = mCellLayoutContainer.getCellLayoutIndex(this);
             if (panelCount > 1) {
                 // Increment the column if the target is on the right side of a two panel home
                 col += (pageIndex % panelCount) * mCountX;
             }
             return getContext().getString(R.string.move_to_empty_cell_description, row, col,
-                    workspace.getPageDescription(pageIndex));
+                    mCellLayoutContainer.getPageDescription(pageIndex));
         }
-    }
-
-    private Workspace<?> getWorkspace() {
-        return Launcher.cast(mActivity).getWorkspace();
     }
 
     public void clearDragOutlines() {
@@ -1452,7 +1453,7 @@ public class CellLayout extends ViewGroup {
     private void commitTempPlacement(View dragView) {
         mTmpOccupied.copyTo(mOccupied);
 
-        int screenId = getWorkspace().getIdForScreen(this);
+        int screenId = mCellLayoutContainer.getCellLayoutId(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mContainerType == HOTSEAT) {
