@@ -121,11 +121,15 @@ fun HomeScreenPreferences() {
                     label = stringResource(id = R.string.home_screen_lock),
                     description = stringResource(id = R.string.home_screen_lock_description),
                 )
-
                 SwitchPreference(
                     adapter = prefs2.enableDotPagination.getAdapter(),
                     label = stringResource(id = R.string.show_dot_pagination_label),
                     description = stringResource(id = R.string.show_dot_pagination_description),
+                )
+                SwitchPreference(
+                    adapter = prefs2.enableMaterialUPopUp.getAdapter(),
+                    label = stringResource(id = R.string.show_material_u_popup_label),
+                    description = stringResource(id = R.string.show_material_u_popup_description),
                 )
             }
         }

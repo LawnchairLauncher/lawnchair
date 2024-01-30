@@ -177,7 +177,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
         mIterateChildrenTag = getContext().getString(R.string.popup_container_iterate_children);
 
-        if (!ENABLE_MATERIAL_U_POPUP.get() && mActivityContext.canUseMultipleShadesForPopup()) {
+        if (!FeatureFlags.showMaterialUPopup(this) && mActivityContext.canUseMultipleShadesForPopup()) {
             mColors = new int[] {
                     ColorTokens.PopupShadeFirst.resolveColor(context),
                     ColorTokens.PopupShadeSecond.resolveColor(context),
@@ -266,18 +266,18 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 mlp.bottomMargin = 0;
 
                 if (colors != null) {
-                    if (!ENABLE_MATERIAL_U_POPUP.get()) {
+                    if (!FeatureFlags.showMaterialUPopup(this)) {
                         backgroundColor = colors[numVisibleChild % colors.length];
                     }
 
-                    if (ENABLE_MATERIAL_U_POPUP.get() && isShortcutContainer(view)) {
+                    if (FeatureFlags.showMaterialUPopup(this) && isShortcutContainer(view)) {
                         setChildColor(view, colors[0], colorAnimator);
                         mArrowColor = colors[0];
                     }
                 }
 
                 // Arrow color matches the first child or the last child.
-                if (!ENABLE_MATERIAL_U_POPUP.get()
+                if (!FeatureFlags.showMaterialUPopup(this)
                         && (mIsAboveIcon || (numVisibleChild == 0 && viewGroup == this))) {
                     mArrowColor = backgroundColor;
                 }
@@ -591,7 +591,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
     protected void animateOpen() {
         setVisibility(View.VISIBLE);
-        mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
+        mOpenCloseAnimator = FeatureFlags.showMaterialUPopup(this)
                 ? getMaterialUOpenCloseAnimator(
                         true,
                         OPEN_DURATION_U,
@@ -691,7 +691,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         }
         mIsOpen = false;
 
-        mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
+        mOpenCloseAnimator = FeatureFlags.showMaterialUPopup(this)
                 ? getMaterialUOpenCloseAnimator(
                         false,
                         CLOSE_DURATION_U,

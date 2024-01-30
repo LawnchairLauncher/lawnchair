@@ -203,7 +203,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         }
         int deepShortcutCount = popupDataProvider.getShortcutCountForItem(item);
         final PopupContainerWithArrow<SecondaryDisplayLauncher> container;
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
+        if (FeatureFlags.showMaterialUPopup(this)) {
             container = (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, mActivity.getDragLayer(), false);
             container.populateAndShowRowsMaterialU((BubbleTextView) v, deepShortcutCount,

@@ -163,7 +163,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
+        if (FeatureFlags.showMaterialUPopup(this)) {
             container = (PopupContainerWithArrow) context.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, context.getDragLayer(), false);
             container.populateAndShowRowsMaterialU(icon, deepShortcutCount, systemShortcuts);
