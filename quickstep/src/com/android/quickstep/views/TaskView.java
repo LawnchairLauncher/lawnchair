@@ -23,6 +23,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
@@ -1750,7 +1751,13 @@ public class TaskView extends FrameLayout implements Reusable {
             expectedHeight = boxHeight + thumbnailPadding;
 
             // Scale to to fit task Rect.
-            nonGridScale = taskWidth / (float) boxWidth;
+            if (enableGridOnlyOverview()) {
+                final Rect lastComputedCarouselTaskSize =
+                        getRecentsView().getLastComputedCarouselTaskSize();
+                nonGridScale = lastComputedCarouselTaskSize.width() / (float) taskWidth;
+            } else {
+                nonGridScale = taskWidth / (float) boxWidth;
+            }
 
             // Align to top of task Rect.
             boxTranslationY = (expectedHeight - thumbnailPadding - taskHeight) / 2.0f;
