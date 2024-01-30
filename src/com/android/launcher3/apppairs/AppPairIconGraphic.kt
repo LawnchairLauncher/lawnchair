@@ -93,7 +93,7 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
     private fun applyIcons(contents: ArrayList<WorkspaceItemInfo>) {
         // App pair should always contain 2 members; if not 2, return to avoid a crash loop
         if (contents.size != 2) {
-            Log.w(TAG, "AppPair contents not 2, size: " + contents.size, Throwable())
+            Log.wtf(TAG, "AppPair contents not 2, size: " + contents.size, Throwable())
             return
         }
 
@@ -111,7 +111,6 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         appIcon1?.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
         appIcon2?.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
     }
-
 
     /** Gets this icon graphic's bounds, with respect to the parent icon's coordinate system. */
     fun getIconBounds(outBounds: Rect) {
