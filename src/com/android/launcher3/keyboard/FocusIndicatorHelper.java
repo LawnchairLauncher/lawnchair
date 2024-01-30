@@ -57,18 +57,7 @@ public abstract class FocusIndicatorHelper extends ItemFocusIndicatorHelper<View
 
         @Override
         public void viewToRect(View v, Rect outRect) {
-            if (Flags.enableFocusOutline()) {
-                // Ensure the left and top would not be negative and drawn outside of canvas
-                outRect.set(Math.max(0, v.getLeft()), Math.max(0, v.getTop()), v.getRight(),
-                        v.getBottom());
-                // Stroke is drawn with half outside and half inside the view. Inset by half
-                // stroke width to move the whole stroke inside the view and avoid other views
-                // occluding it
-                int halfStrokeWidth = (int) mPaint.getStrokeWidth() / 2;
-                outRect.inset(halfStrokeWidth, halfStrokeWidth);
-            } else {
-                outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-            }
+            outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
         }
     }
 }

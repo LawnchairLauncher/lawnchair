@@ -155,10 +155,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ఎత్తును తగ్గించు"</string>
     <string name="widget_resized" msgid="9130327887929620">"విడ్జెట్ సైజ్‌ వెడల్పు <xliff:g id="NUMBER_0">%1$s</xliff:g>కి, ఎత్తు <xliff:g id="NUMBER_1">%2$s</xliff:g>కి మార్చబడింది"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"షార్ట్‌కట్స్"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"షార్ట్‌కట్‌లు మరియు నోటిఫికేషన్‌లు"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"తీసివేయండి"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"మూసివేస్తుంది"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"నోటిఫికేషన్ తీసివేయబడింది"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"వ్యక్తిగతం"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"వర్క్"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"కార్యాలయ ప్రొఫైల్"</string>
@@ -175,6 +173,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ఫిల్టర్ చేయి"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"విఫలమైంది: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ప్రైవేట్ స్పేస్"</string>
+    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"ప్రైవేట్"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ప్రైవేట్ స్పేస్ సెట్టింగ్‌లు"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ప్రైవేట్ స్పేస్‌ను లాక్/అన్‌లాక్ చేయండి"</string>

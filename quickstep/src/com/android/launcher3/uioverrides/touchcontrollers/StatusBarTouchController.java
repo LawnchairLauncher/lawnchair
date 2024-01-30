@@ -104,7 +104,7 @@ public class StatusBarTouchController implements TouchController {
         if (!mCanIntercept) {
             return false;
         }
-        if (action == ACTION_MOVE) {
+        if (action == ACTION_MOVE && mDownEvents.contains(pid)) {
             float dy = ev.getY(idx) - mDownEvents.get(pid).y;
             float dx = ev.getX(idx) - mDownEvents.get(pid).x;
             if (mIsTrackpadReverseScroll) {
