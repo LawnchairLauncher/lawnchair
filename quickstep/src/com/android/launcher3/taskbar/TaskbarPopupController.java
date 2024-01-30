@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.graphics.Point;
