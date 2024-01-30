@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
+
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -29,8 +31,10 @@ import androidx.annotation.Nullable;
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.Flags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
@@ -219,6 +223,12 @@ public abstract class DragController<T extends ActivityContext>
         for (DragListener listener : new ArrayList<>(mListeners)) {
             listener.onDragStart(mDragObject, mOptions);
         }
+    }
+
+    protected boolean isItemPinnable() {
+        return !Flags.privateSpaceRestrictItemDrag()
+                || !(mDragObject.dragInfo instanceof ItemInfoWithIcon itemInfoWithIcon)
+                || (itemInfoWithIcon.runtimeStatusFlags & FLAG_NOT_PINNABLE) == 0;
     }
 
     public Optional<InstanceId> getLogInstanceId() {
