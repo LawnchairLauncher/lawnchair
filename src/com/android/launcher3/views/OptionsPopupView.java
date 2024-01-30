@@ -154,7 +154,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
 
     @Override
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
-        if (FeatureFlags.showMaterialUPopup(this)) {
+        if (FeatureFlags.showMaterialUPopup(getContext())) {
             assignMarginsAndBackgrounds(viewGroup,
                     mColors[0]);
         } else {

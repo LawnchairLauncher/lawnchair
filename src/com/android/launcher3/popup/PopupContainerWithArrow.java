@@ -240,7 +240,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                 .map(s -> s.getShortcut(launcher, item, icon))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        if (FeatureFlags.showMaterialUPopup(getContext())) {
+        if (FeatureFlags.showMaterialUPopup(launcher)) {
             container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, launcher.getDragLayer(), false);
             container.configureForLauncher(launcher);
@@ -505,7 +505,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             return;
         }
 
-        mSystemShortcutContainer = FeatureFlags.showMaterialUPopup(this)
+        mSystemShortcutContainer = FeatureFlags.showMaterialUPopup(getContext())
                 ? inflateAndAdd(R.layout.system_shortcut_icons_container_material_u, this)
                 : inflateAndAdd(R.layout.system_shortcut_icons_container, this, 0);
 
