@@ -240,7 +240,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                 .map(s -> s.getShortcut(launcher, item, icon))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        if (FeatureFlags.showMaterialUPopup(launcher)) {
+        if (FeatureFlags.showMaterialUPopup(icon.getContext())) {
             container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, launcher.getDragLayer(), false);
             container.configureForLauncher(launcher);
