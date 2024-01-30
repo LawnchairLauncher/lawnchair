@@ -87,7 +87,6 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
@@ -104,6 +103,7 @@ import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.BorderAnimator;
 import com.android.quickstep.util.CancellableTask;
@@ -116,6 +116,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import kotlin.Unit;
+
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -123,8 +125,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -1660,7 +1660,7 @@ public class TaskView extends FrameLayout implements Reusable {
         return (RecentsView) getParent();
     }
 
-    PagedOrientationHandler getPagedOrientationHandler() {
+    RecentsPagedOrientationHandler getPagedOrientationHandler() {
         return getRecentsView().mOrientationState.getOrientationHandler();
     }
 

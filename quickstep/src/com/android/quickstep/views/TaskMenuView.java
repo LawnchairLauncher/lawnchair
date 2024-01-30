@@ -48,10 +48,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 
@@ -215,7 +215,8 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void orientAroundTaskView(TaskIdAttributeContainer taskContainer) {
         RecentsView recentsView = mActivity.getOverviewPanel();
-        PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
+        RecentsPagedOrientationHandler orientationHandler =
+                recentsView.getPagedOrientationHandler();
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 
         // Get Position

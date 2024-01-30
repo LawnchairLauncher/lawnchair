@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.touch;
+package com.android.quickstep.orientation;
 
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_HORIZONTAL;
@@ -33,7 +33,6 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
-import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -42,26 +41,27 @@ import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
 import android.util.Pair;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.VelocityTracker;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.touch.DefaultPagedViewHandler;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import com.android.quickstep.views.IconAppChipView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PortraitPagedViewHandler implements PagedOrientationHandler {
+public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
+        RecentsPagedOrientationHandler {
 
     private final Matrix mTmpMatrix = new Matrix();
     private final RectF mTmpRectF = new RectF();
@@ -75,27 +75,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public <T> T getSecondaryValue(T x, T y) {
         return y;
     }
-
-    @Override
-    public int getPrimaryValue(int x, int y) {
-        return x;
-    }
-
-    @Override
-    public int getSecondaryValue(int x, int y) {
-        return y;
-    }
-
-    @Override
-    public float getPrimaryValue(float x, float y) {
-        return x;
-    }
-
-    @Override
-    public float getSecondaryValue(float x, float y) {
-        return y;
-    }
-
     @Override
     public boolean isLayoutNaturalToLauncher() {
         return true;
@@ -116,16 +95,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public <T> void setPrimary(T target, Int2DAction<T> action, int param) {
-        action.call(target, param, 0);
-    }
-
-    @Override
-    public <T> void setPrimary(T target, Float2DAction<T> action, float param) {
-        action.call(target, param, 0);
-    }
-
-    @Override
     public <T> void setSecondary(T target, Float2DAction<T> action, float param) {
         action.call(target, 0, param);
     }
@@ -134,21 +103,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public <T> void set(T target, Int2DAction<T> action, int primaryParam,
             int secondaryParam) {
         action.call(target, primaryParam, secondaryParam);
-    }
-
-    @Override
-    public float getPrimaryDirection(MotionEvent event, int pointerIndex) {
-        return event.getX(pointerIndex);
-    }
-
-    @Override
-    public float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId) {
-        return velocityTracker.getXVelocity(pointerId);
-    }
-
-    @Override
-    public int getMeasuredSize(View view) {
-        return view.getMeasuredWidth();
     }
 
     @Override
@@ -192,26 +146,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getPrimaryScroll(View view) {
-        return view.getScrollX();
-    }
-
-    @Override
-    public float getPrimaryScale(View view) {
-        return view.getScaleX();
-    }
-
-    @Override
-    public void setMaxScroll(AccessibilityEvent event, int maxScroll) {
-        event.setMaxScrollX(maxScroll);
-    }
-
-    @Override
-    public boolean getRecentsRtlSetting(Resources resources) {
-        return !Utilities.isRtl(resources);
-    }
-
-    @Override
     public float getDegreesRotated() {
         return 0;
     }
@@ -229,27 +163,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public void setSecondaryScale(View view, float scale) {
         view.setScaleY(scale);
-    }
-
-    @Override
-    public int getChildStart(View view) {
-        return view.getLeft();
-    }
-
-    @Override
-    public int getCenterForPage(View view, Rect insets) {
-        return (view.getPaddingTop() + view.getMeasuredHeight() + insets.top
-            - insets.bottom - view.getPaddingBottom()) / 2;
-    }
-
-    @Override
-    public int getScrollOffsetStart(View view, Rect insets) {
-        return insets.left + view.getPaddingLeft();
-    }
-
-    @Override
-    public int getScrollOffsetEnd(View view, Rect insets) {
-        return view.getWidth() - view.getPaddingRight() - insets.right;
     }
 
     public int getSecondaryTranslationDirectionFactor() {
@@ -400,20 +313,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     /* -------------------- */
-
-    @Override
-    public ChildBounds getChildBounds(View child, int childStart, int pageCenter,
-        boolean layoutChild) {
-        final int childWidth = child.getMeasuredWidth();
-        final int childRight = childStart + childWidth;
-        final int childHeight = child.getMeasuredHeight();
-        final int childTop = pageCenter - childHeight / 2;
-        if (layoutChild) {
-            child.layout(childStart, childTop, childRight, childTop + childHeight);
-        }
-        return new ChildBounds(childWidth, childHeight, childRight, childTop);
-    }
-
     @Override
     public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
         return dp.heightPx - rect.bottom;
@@ -713,7 +612,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setIconAppChipMenuParams(View iconAppChipMenuView,
+    public void setIconAppChipMenuParams(IconAppChipView iconAppChipView,
             FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin, int thumbnailTopMargin) {
         iconMenuParams.gravity = TOP | START;
         iconMenuParams.setMarginStart(iconMenuMargin);
@@ -721,10 +620,10 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         iconMenuParams.bottomMargin = 0;
         iconMenuParams.setMarginEnd(0);
 
-        iconAppChipMenuView.setPivotX(0);
-        iconAppChipMenuView.setPivotY(0);
-        iconAppChipMenuView.setTranslationY(0);
-        iconAppChipMenuView.setRotation(getDegreesRotated());
+        iconAppChipView.setPivotX(0);
+        iconAppChipView.setPivotY(0);
+        iconAppChipView.setTranslationY(0);
+        iconAppChipView.setRotation(getDegreesRotated());
     }
 
     @Override

@@ -62,6 +62,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
@@ -128,7 +129,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract int getSwipeUpDestinationAndLength(
             DeviceProfile dp, Context context, Rect outRect,
-            PagedOrientationHandler orientationHandler);
+            RecentsPagedOrientationHandler orientationHandler);
 
     /** Called when the animation to home has fully settled. */
     public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {}

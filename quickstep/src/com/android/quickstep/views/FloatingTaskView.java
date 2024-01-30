@@ -43,9 +43,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.SplitAnimationTimings;
@@ -95,7 +95,7 @@ public class FloatingTaskView extends FrameLayout {
     private final StatefulActivity mActivity;
     private final boolean mIsRtl;
     private final FullscreenDrawParams mFullscreenParams;
-    private PagedOrientationHandler mOrientationHandler;
+    private RecentsPagedOrientationHandler mOrientationHandler;
     @SplitConfigurationOptions.StagePosition
     private int mStagePosition;
     private final Rect mTmpRect = new Rect();
@@ -220,7 +220,7 @@ public class FloatingTaskView extends FrameLayout {
         mOrientationHandler.setSecondaryScale(mSplitPlaceholderView.getIconView(), childScaleY);
     }
 
-    public void updateOrientationHandler(PagedOrientationHandler orientationHandler) {
+    public void updateOrientationHandler(RecentsPagedOrientationHandler orientationHandler) {
         mOrientationHandler = orientationHandler;
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
     }
