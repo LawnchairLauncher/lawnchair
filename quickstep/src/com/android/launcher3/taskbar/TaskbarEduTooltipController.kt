@@ -171,6 +171,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         // for the original 2 edu steps) as a proxy to needing to show the separate pinning edu
         if (
             !enableTaskbarPinning() ||
+                !DisplayController.isTransientTaskbar(activityContext) ||
                 !isTooltipEnabled ||
                 tooltipStep > TOOLTIP_STEP_PINNING ||
                 tooltipStep < TOOLTIP_STEP_FEATURES
