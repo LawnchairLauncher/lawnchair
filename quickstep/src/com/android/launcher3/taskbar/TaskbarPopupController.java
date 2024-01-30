@@ -68,7 +68,7 @@ import java.util.stream.Stream;
  * Implements interfaces required to show and allow interacting with a PopupContainerWithArrow.
  * Controls the long-press menu on Taskbar and AllApps icons.
  */
-public class TaskbarPopupController implements TaskbarControllers.LoggableTaskbarController {
+public class TaskbarPopupController extends Context implements TaskbarControllers.LoggableTaskbarController {
 
     private static final SystemShortcut.Factory<BaseTaskbarContext>
             APP_INFO = SystemShortcut.AppInfo::new;
