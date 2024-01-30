@@ -30,6 +30,7 @@ import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BA
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
+import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_SPACE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_KEYGUARD;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_SMALL_SCREEN;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
@@ -79,6 +80,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Space;
 
 import androidx.annotation.Nullable;
 
@@ -207,6 +209,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             this::onComputeInsetsForSeparateWindow;
     private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
     private ImageView mRecentsButton;
+    private Space mSpace;
 
     public NavbarButtonsViewController(TaskbarActivityContext context,
             @Nullable Context navigationBarPanelContext, NearestTouchFrame navButtonsView) {
@@ -432,6 +435,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mPropertyHolders.add(new StatePropertyHolder(mA11yButton,
                 flags -> (flags & FLAG_A11Y_VISIBLE) != 0
                         && (flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0));
+
+        mSpace = new Space(mNavButtonsView.getContext());
+        mSpace.setOnClickListener(view -> navButtonController.onButtonClick(BUTTON_SPACE, view));
+        mSpace.setOnLongClickListener(view ->
+                navButtonController.onButtonLongClick(BUTTON_SPACE, view));
     }
 
     private void parseSystemUiFlags(int sysUiStateFlags) {
@@ -760,7 +768,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
                             dp, mNavButtonsView, mImeSwitcherButton,
                             mControllers.rotationButtonController.getRotationButton(),
-                            mA11yButton, res, isInKidsMode, isInSetup, isThreeButtonNav,
+                            mA11yButton, mSpace, res, isInKidsMode, isInSetup, isThreeButtonNav,
                             mContext.isPhoneMode(), mWindowManagerProxy.getRotation(mContext));
             navButtonLayoutter.layoutButtons(mContext, isA11yButtonPersistent());
             updateButtonsBackground();
