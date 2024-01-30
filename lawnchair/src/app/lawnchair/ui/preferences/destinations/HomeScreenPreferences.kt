@@ -36,6 +36,7 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -114,11 +115,19 @@ fun HomeScreenPreferences() {
                 destination = subRoute(name = HomeScreenRoutes.GRID),
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
-            SwitchPreference(
-                adapter = lockHomeScreenAdapter,
-                label = stringResource(id = R.string.home_screen_lock),
-                description = stringResource(id = R.string.home_screen_lock_description),
-            )
+            DividerColumn {
+                SwitchPreference(
+                    adapter = lockHomeScreenAdapter,
+                    label = stringResource(id = R.string.home_screen_lock),
+                    description = stringResource(id = R.string.home_screen_lock_description),
+                )
+
+                SwitchPreference(
+                    adapter = prefs2.enableDotPagination.getAdapter(),
+                    label = stringResource(id = R.string.show_dot_pagination_label),
+                    description = stringResource(id = R.string.show_dot_pagination_description),
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.popup_menu)) {
             SwitchPreference(

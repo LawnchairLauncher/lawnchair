@@ -205,6 +205,9 @@
       <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
       <string name="home_screen_unlock">Unlock Home Screen</string> <!-- used in popup menu-->
       <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace</string>
+
 
     <string name="popup_menu">Pop-up Menu</string>
       <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>

@@ -400,6 +400,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.restart() },
     )
 
+    val enableDotPagination = preference(
+        key = booleanPreferencesKey(name = "enable_dot_pagination"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_dot_pagination),
+        onSet = { reloadHelper.recreate() },
+    )
+
     val enableFeed = preference(
         key = booleanPreferencesKey(name = "enable_feed"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_feed),
