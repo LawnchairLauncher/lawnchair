@@ -731,15 +731,12 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
     /**
      * Tells SysUI to show the bubble with the provided key.
      * @param key the key of the bubble to show.
-     * @param bubbleBarOffsetX the offset of the bubble bar from the edge of the screen on the X
-     *                         axis.
-     * @param bubbleBarOffsetY the offset of the bubble bar from the edge of the screen on the Y
-     *                         axis.
+     * @param bubbleBarBounds bounds of the bubble bar in display coordinates
      */
-    public void showBubble(String key, int bubbleBarOffsetX, int bubbleBarOffsetY) {
+    public void showBubble(String key, Rect bubbleBarBounds) {
         if (mBubbles != null) {
             try {
-                mBubbles.showBubble(key, bubbleBarOffsetX, bubbleBarOffsetY);
+                mBubbles.showBubble(key, bubbleBarBounds);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call showBubble");
             }
