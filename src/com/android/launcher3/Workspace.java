@@ -143,7 +143,7 @@ import java.util.stream.Collectors;
  * @param <T> Class that extends View and PageIndicator
  */
 public class Workspace<T extends View & PageIndicator> extends PagedView<T>
-        implements DropTarget, DragSource, View.OnTouchListener,
+        implements DropTarget, DragSource, View.OnTouchListener, CellLayoutContainer,
         DragController.DragListener, Insettable, StateHandler<LauncherState>,
         WorkspaceLayoutManager, LauncherBindableItemsContainer, LauncherOverlayCallbacks {
 
@@ -511,11 +511,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return !FOLDABLE_SINGLE_PAGE.get() && mLauncher.mDeviceProfile.isTwoPanels;
     }
 
-    @Override
-    public int getPanelCount() {
-        return isTwoPanelEnabled() ? 2 : super.getPanelCount();
-    }
-
     public void deferRemoveExtraEmptyScreen() {
         mDeferRemoveExtraEmptyScreen = true;
     }
@@ -683,6 +678,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                     R.layout.workspace_screen, this, false /* attachToRoot */);
         }
+        newScreen.setCellLayoutContainer(this);
 
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
@@ -949,7 +945,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return mWorkspaceScreens.get(screenId);
     }
 
-    public int getIdForScreen(CellLayout layout) {
+    @Override
+    public int getCellLayoutId(CellLayout layout) {
         int index = mWorkspaceScreens.indexOfValue(layout);
         if (index != -1) {
             return mWorkspaceScreens.keyAt(index);
@@ -959,6 +956,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public int getPageIndexForScreenId(int screenId) {
         return indexOfChild(mWorkspaceScreens.get(screenId));
+    }
+
+    @Override
+    public int getCellLayoutIndex(CellLayout cellLayout) {
+        return indexOfChild(mWorkspaceScreens.get(getCellLayoutId(cellLayout)));
+    }
+
+    @Override
+    public int getPanelCount() {
+        return isTwoPanelEnabled() ? 2 : super.getPanelCount();
     }
 
     public IntSet getCurrentPageScreenIds() {
@@ -1001,7 +1008,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (!isTwoPanelEnabled()) {
             return null;
         }
-        int screenId = getIdForScreen(cellLayout);
+        int screenId = getCellLayoutId(cellLayout);
         if (screenId == -1) {
             return null;
         }
@@ -1826,7 +1833,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
-        int screenId = getIdForScreen(dropTargetLayout);
+        int screenId = getCellLayoutId(dropTargetLayout);
         if (Workspace.EXTRA_EMPTY_SCREEN_IDS.contains(screenId)) {
             commitExtraEmptyScreens();
         }
@@ -1909,7 +1916,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         if (v == null || hasntMoved || !mCreateUserFolderOnDrop) return false;
         mCreateUserFolderOnDrop = false;
-        final int screenId = getIdForScreen(target);
+        final int screenId = getCellLayoutId(target);
 
         boolean aboveShortcut = (v.getTag() instanceof WorkspaceItemInfo);
         boolean willBecomeShortcut = (newView.getTag() instanceof WorkspaceItemInfo);
@@ -2010,7 +2017,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                         LauncherSettings.Favorites.CONTAINER_HOTSEAT :
                         LauncherSettings.Favorites.CONTAINER_DESKTOP;
                 int screenId = (mTargetCell[0] < 0) ?
-                        mDragInfo.screenId : getIdForScreen(dropTargetLayout);
+                        mDragInfo.screenId : getCellLayoutId(dropTargetLayout);
                 int spanX = mDragInfo != null ? mDragInfo.spanX : 1;
                 int spanY = mDragInfo != null ? mDragInfo.spanY : 1;
                 // First we find the cell nearest to point at which the item is
@@ -2766,7 +2773,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         final int container = mLauncher.isHotseatLayout(cellLayout)
                 ? LauncherSettings.Favorites.CONTAINER_HOTSEAT
                 : LauncherSettings.Favorites.CONTAINER_DESKTOP;
-        final int screenId = getIdForScreen(cellLayout);
+        final int screenId = getCellLayoutId(cellLayout);
         if (!mLauncher.isHotseatLayout(cellLayout)
                 && screenId != getScreenIdForPageIndex(mCurrentPage)
                 && !mLauncher.isInState(SPRING_LOADED)
@@ -3480,14 +3487,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     @Override
     protected String getCurrentPageDescription() {
-        int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
-        return getPageDescription(page);
+        int pageIndex = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
+        return getPageDescription(pageIndex);
     }
 
     /**
      * @param page page index.
      * @return Description of the page at the given page index.
      */
+    @Override
     public String getPageDescription(int page) {
         int nScreens = getChildCount();
         int extraScreenId = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);

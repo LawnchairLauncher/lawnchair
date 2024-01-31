@@ -21,14 +21,14 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_MS;
 import static com.android.launcher3.LauncherPrefs.PRIVATE_SPACE_APPS;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_DELAY;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_END_SCALE_PERCENT;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_ITERATIONS;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_SCALE_EXPONENT;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_START_SCALE_PERCENT;
+import static com.android.launcher3.config.FeatureFlags.LPNH_SLOP_PERCENTAGE;
+import static com.android.launcher3.config.FeatureFlags.LPNH_TIMEOUT_MS;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_HIGHLIGHT_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
@@ -50,6 +50,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,10 +89,13 @@ public class DeveloperOptionsUI {
 
     private static final String ACTION_PLUGIN_SETTINGS =
             "com.android.systemui.action.PLUGIN_SETTINGS";
+    private static final String TAG = "DeveloperOptionsUI";
     private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
 
     private final PreferenceFragmentCompat mFragment;
     private final PreferenceScreen mPreferenceScreen;
+
+    private final FlagTogglerPrefUi mFlagTogglerPrefUi;
 
     private PreferenceCategory mPluginsCategory;
 
@@ -107,8 +111,9 @@ public class DeveloperOptionsUI {
         parent.addView(topBar, parent.indexOfChild(listView));
         initSearch(topBar.findViewById(R.id.filter_box));
 
-        new FlagTogglerPrefUi(mFragment.requireActivity(), topBar.findViewById(R.id.flag_apply_btn))
-                .applyTo(flags);
+        mFlagTogglerPrefUi = new FlagTogglerPrefUi(mFragment.requireActivity(),
+                topBar.findViewById(R.id.flag_apply_btn));
+        mFlagTogglerPrefUi.applyTo(flags);
 
         loadPluginPrefs();
         maybeAddSandboxCategory();
@@ -350,23 +355,27 @@ public class DeveloperOptionsUI {
     private void addCustomLpnhCategory() {
         PreferenceCategory category = newCategory("Long Press Nav Handle Config");
         if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
-            category.addPreference(createSeekBarPreference("Slop multiplier (applied to edge slop, "
+            category.addPreference(createSeekBarPreference(
+                    "Slop multiplier (applied to edge slop, "
                             + "which is generally already 50% higher than touch slop)",
-                    25, 200, 100, LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE));
-            category.addPreference(createSeekBarPreference("Trigger milliseconds",
-                    100, 500, 1, LONG_PRESS_NAV_HANDLE_TIMEOUT_MS));
+                    25, 200, 100, LPNH_SLOP_PERCENTAGE));
+            category.addPreference(createSeekBarPreference("LPNH timeout",
+                    100, 500, 1, LPNH_TIMEOUT_MS));
         }
         if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get()) {
-            category.addPreference(createSeekBarPreference("Haptic hint start scale",
-                    0, 100, 100, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT));
+            category.addPreference(
+                    createSeekBarPreference("Haptic hint start scale",
+                            0, 100, 100, LPNH_HAPTIC_HINT_START_SCALE_PERCENT));
             category.addPreference(createSeekBarPreference("Haptic hint end scale",
-                    0, 100, 100, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT));
-            category.addPreference(createSeekBarPreference("Haptic hint scale exponent",
-                    1, 5, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT));
-            category.addPreference(createSeekBarPreference("Haptic hint iterations (12 ms each)",
-                    0, 200, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS));
+                    0, 100, 100, LPNH_HAPTIC_HINT_END_SCALE_PERCENT));
+            category.addPreference(
+                    createSeekBarPreference("Haptic hint scale exponent",
+                            1, 5, 1, LPNH_HAPTIC_HINT_SCALE_EXPONENT));
+            category.addPreference(
+                    createSeekBarPreference("Haptic hint iterations (12 ms each)",
+                            0, 200, 1, LPNH_HAPTIC_HINT_ITERATIONS));
             category.addPreference(createSeekBarPreference("Haptic hint delay (ms)",
-                    0, 400, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY));
+                    0, 400, 1, LPNH_HAPTIC_HINT_DELAY));
         }
     }
 
@@ -374,6 +383,29 @@ public class DeveloperOptionsUI {
         PreferenceCategory category = newCategory("Apps in Private Space Config");
         category.addPreference(createSeekBarPreference(
                 "Number of Apps to put in private region", 0, 100, 1, PRIVATE_SPACE_APPS));
+    }
+
+    private SeekBarPreference createSeekBarPreference(String title, int min,
+            int max, int scale, FeatureFlags.IntFlag flag) {
+        if (!(flag instanceof IntDebugFlag)) {
+            Log.e(TAG, "Cannot create seekbar preference with IntFlag. Use a launcher preference "
+                    + "flag or pref-backed IntDebugFlag instead");
+            return null;
+        }
+        IntDebugFlag debugflag = (IntDebugFlag) flag;
+        if (debugflag.launcherPrefFlag == null) {
+            Log.e(TAG, "Cannot create seekbar preference with IntDebugFlag. Use a launcher "
+                    + "preference flag or pref-backed IntDebugFlag instead");
+            return null;
+        }
+        SeekBarPreference seekBarPref = createSeekBarPreference(title, min, max, scale,
+                debugflag.launcherPrefFlag);
+        int value = flag.get();
+        seekBarPref.setValue(value);
+        // For some reason the initial value is not triggering the summary update, so call manually.
+        seekBarPref.setSummary(String.valueOf(scale == 1 ? value
+                : value / (float) scale));
+        return seekBarPref;
     }
 
     /**
@@ -401,6 +433,7 @@ public class DeveloperOptionsUI {
             LauncherPrefs.get(getContext()).put(launcherPref, newValue);
             preference.setSummary(String.valueOf(scale == 1 ? newValue
                     : (int) newValue / (float) scale));
+            mFlagTogglerPrefUi.updateMenu();
             return true;
         });
         int value = LauncherPrefs.get(getContext()).get(launcherPref);

@@ -349,7 +349,7 @@ public class TaplTwoPanelWorkspaceTest extends AbstractLauncherUiTest {
         assertEquals("Existing page count does NOT match.", pageIds.length, pageCount);
         for (int i = 0; i < pageCount; i++) {
             CellLayout page = (CellLayout) launcher.getWorkspace().getPageAt(i);
-            int pageId = launcher.getWorkspace().getIdForScreen(page);
+            int pageId = launcher.getWorkspace().getCellLayoutId(page);
             assertEquals("The page's id at index " + i + " does NOT match.", pageId,
                     pageIds[i]);
         }

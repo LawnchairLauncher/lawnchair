@@ -5,18 +5,22 @@ import static android.view.accessibility.AccessibilityNodeInfo.ACTION_ACCESSIBIL
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 
+import android.animation.AnimatorSet;
 import android.appwidget.AppWidgetProviderInfo;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ButtonDropTarget;
@@ -396,10 +400,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
 
-                mContext.bindItems(
-                        Collections.singletonList(info),
-                        /* forceAnimateIcons= */ true,
-                        /* focusFirstItemForAccessibility= */ accessibility);
+                bindItem(item, accessibility);
                 announceConfirmation(R.string.item_added_to_workspace);
             } else if (item instanceof PendingAddItemInfo) {
                 PendingAddItemInfo info = (PendingAddItemInfo) item;
@@ -412,7 +413,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                 mContext.getModelWriter().addItemToDatabase(info,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
-                mContext.bindItems(Collections.singletonList(info), true, accessibility);
+                bindItem(info, accessibility);
             } else if (item instanceof FolderInfo fi) {
                 mContext.getModelWriter().addItemToDatabase(fi,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId, coordinates[0],
@@ -420,11 +421,26 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                 fi.contents.forEach(member -> {
                     mContext.getModelWriter().addItemToDatabase(member, fi.id, -1, -1, -1);
                 });
-                mContext.bindItems(Collections.singletonList(fi), true, accessibility);
+                bindItem(fi, accessibility);
             }
         }));
         return true;
     }
+
+    private void bindItem(ItemInfo item, boolean focusForAccessibility) {
+        View view = mContext.getItemInflater().inflateItem(item, mContext.getModelWriter());
+        if (view == null) {
+            return;
+        }
+        AnimatorSet anim = null;
+        if (focusForAccessibility) {
+            anim = new AnimatorSet();
+            anim.addListener(forEndCallback(
+                    () -> view.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)));
+        }
+        mContext.bindItems(Collections.singletonList(Pair.create(item, view)), anim);
+    }
+
     /**
      * Functionality to move the item {@link ItemInfo} to the workspace
      * @param item item to be moved

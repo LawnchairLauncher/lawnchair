@@ -29,6 +29,7 @@ import android.view.RemoteAnimationTarget;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.TaskViewSimulator;
@@ -68,13 +69,16 @@ public class RemoteTargetGluer {
      */
     public RemoteTargetGluer(Context context, BaseActivityInterface sizingStrategy) {
         if (isDesktopModeSupported()) {
-            // TODO(279931899): binder call, only for prototyping. Creating the gluer should be
-            //  postponed so we can create it when we have the remote animation targets ready.
-            int desktopTasks = SystemUiProxy.INSTANCE.get(context).getVisibleDesktopTaskCount(
-                    context.getDisplayId());
-            if (desktopTasks > 0) {
-                init(context, sizingStrategy, desktopTasks, true /* forDesktop */);
-                return;
+            DesktopVisibilityController desktopVisibilityController =
+                    LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+            if (desktopVisibilityController != null) {
+                int visibleTasksCount = desktopVisibilityController.getVisibleFreeformTasksCount();
+                if (visibleTasksCount > 0) {
+                    // Allocate +1 to account for a new task added to the desktop mode
+                    int numHandles = visibleTasksCount + 1;
+                    init(context, sizingStrategy, numHandles, true /* forDesktop */);
+                    return;
+                }
             }
         }
 
@@ -135,18 +139,7 @@ public class RemoteTargetGluer {
      * the left/top task, index 1 right/bottom.
      */
     public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets) {
-        // Resize the mRemoteTargetHandles array since we started assuming split screen, but
-        // targets.apps is the ultimate source of truth here
-        long appCount = Arrays.stream(targets.apps)
-                .filter(app -> app.mode == targets.targetMode)
-                .count();
-        Log.d(TAG, "appCount: " + appCount + " handleLength: " + mRemoteTargetHandles.length);
-        if (appCount < mRemoteTargetHandles.length) {
-            Log.d(TAG, "resizing handles");
-            RemoteTargetHandle[] newHandles = new RemoteTargetHandle[(int) appCount];
-            System.arraycopy(mRemoteTargetHandles, 0/*src*/, newHandles, 0/*dst*/, (int) appCount);
-            mRemoteTargetHandles = newHandles;
-        }
+        resizeRemoteTargetHandles(targets);
 
         // If we are in a true split screen case (2 apps running on screen), either:
         //     a) mSplitBounds was already set (from the clicked GroupedTaskView)
@@ -228,6 +221,8 @@ public class RemoteTargetGluer {
      * transform params per app in {@code targets.apps} list.
      */
     public RemoteTargetHandle[] assignTargetsForDesktop(RemoteAnimationTargets targets) {
+        resizeRemoteTargetHandles(targets);
+
         for (int i = 0; i < mRemoteTargetHandles.length; i++) {
             RemoteAnimationTarget primaryTaskTarget = targets.apps[i];
             mRemoteTargetHandles[i].mTransformParams.setTargetSet(
@@ -235,6 +230,23 @@ public class RemoteTargetGluer {
             mRemoteTargetHandles[i].mTaskViewSimulator.setPreview(primaryTaskTarget, null);
         }
         return mRemoteTargetHandles;
+    }
+
+    /**
+     * Resize the `mRemoteTargetHandles` array since we assumed initial size, but
+     * `targets.apps` is the ultimate source of truth here
+     */
+    private void resizeRemoteTargetHandles(RemoteAnimationTargets targets) {
+        long appCount = Arrays.stream(targets.apps)
+                .filter(app -> app.mode == targets.targetMode)
+                .count();
+        Log.d(TAG, "appCount: " + appCount + " handleLength: " + mRemoteTargetHandles.length);
+        if (appCount < mRemoteTargetHandles.length) {
+            Log.d(TAG, "resizing handles");
+            RemoteTargetHandle[] newHandles = new RemoteTargetHandle[(int) appCount];
+            System.arraycopy(mRemoteTargetHandles, 0/*src*/, newHandles, 0/*dst*/, (int) appCount);
+            mRemoteTargetHandles = newHandles;
+        }
     }
 
     private Rect getStartBounds(RemoteAnimationTarget target) {

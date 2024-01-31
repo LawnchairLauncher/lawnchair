@@ -66,7 +66,7 @@
                 <include layout="@layout/widgets_search_bar" />
             </FrameLayout>
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/suggestions_header"
@@ -74,7 +74,7 @@
                 android:orientation="horizontal"
                 android:background="?attr/widgetPickerPrimarySurfaceColor"
                 launcher:layout_sticky="true">
-            </LinearLayout>
+            </FrameLayout>
 
             <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
                 android:id="@+id/tabs"

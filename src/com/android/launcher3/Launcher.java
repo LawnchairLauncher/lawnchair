@@ -99,7 +99,6 @@ import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 import static com.android.launcher3.util.SettingsCache.TOUCHPAD_NATURAL_SCROLLING;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -132,6 +131,7 @@ import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
@@ -264,7 +264,6 @@ import com.android.wm.shell.Flags;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -522,7 +521,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.startListening();
         mAppWidgetHolder.addProviderChangeListener(() -> refreshAndBindWidgetsForPackageUser(null));
         mItemInflater = new ItemInflater<>(this, mAppWidgetHolder, getItemOnClickListener(),
-                mFocusHandler, new CellLayout(mWorkspace.getContext()));
+                mFocusHandler, new CellLayout(mWorkspace.getContext(), mWorkspace));
 
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
@@ -2125,30 +2124,23 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
-        bindItems(items, forceAnimateIcons, /* focusFirstItemForAccessibility= */ false);
+        bindItems(items.stream().map(i -> Pair.create(
+                i, getItemInflater().inflateItem(i, getModelWriter()))).toList(),
+                forceAnimateIcons ? new AnimatorSet() : null);
     }
 
-
     /**
-     * Bind the items start-end from the list.
+     * Bind all the items in the map, ignoring any null views
      *
-     * Implementation of the method from LauncherModel.Callbacks.
-     *
-     * @param focusFirstItemForAccessibility true iff the first item to be added to the workspace
-     *                                       should be focused for accessibility.
+     * @param boundAnim if non-null, uses it to create and play the bounce animation for added views
      */
-    public void bindItems(
-            final List<ItemInfo> items,
-            final boolean forceAnimateIcons,
-            final boolean focusFirstItemForAccessibility) {
+    public void bindItems(List<Pair<ItemInfo, View>> shortcuts, @Nullable AnimatorSet boundAnim) {
         // Get the list of added items and intersect them with the set of items here
-        final Collection<Animator> bounceAnims = new ArrayList<>();
         Workspace<?> workspace = mWorkspace;
         int newItemsScreenId = -1;
-        int end = items.size();
-        View newView = null;
-        for (int i = 0; i < end; i++) {
-            final ItemInfo item = items.get(i);
+        int index = 0;
+        for (Pair<ItemInfo, View> e : shortcuts) {
+            final ItemInfo item = e.first;
 
             // Remove colliding items.
             CellPos presenterPos = getCellPosMapper().mapModelToPresenter(item);
@@ -2167,42 +2159,26 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
             }
 
-            final View view = mItemInflater.inflateItem(item, getModelWriter());
+            final View view = e.second;
             if (view == null) {
                 continue;
             }
             workspace.addInScreenFromBind(view, item);
-            if (forceAnimateIcons) {
+            if (boundAnim != null) {
                 // Animate all the applications up now
                 view.setAlpha(0f);
                 view.setScaleX(0f);
                 view.setScaleY(0f);
-                bounceAnims.add(createNewAppBounceAnimation(view, i));
+                boundAnim.play(createNewAppBounceAnimation(view, index++));
                 newItemsScreenId = presenterPos.screenId;
-            }
-
-            if (newView == null) {
-                newView = view;
             }
         }
 
-        View viewToFocus = newView;
         // Animate to the correct page
-        if (forceAnimateIcons && newItemsScreenId > -1) {
-            AnimatorSet anim = new AnimatorSet();
-            anim.playTogether(bounceAnims);
-            if (focusFirstItemForAccessibility && viewToFocus != null) {
-                anim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        viewToFocus.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
-                    }
-                });
-            }
-
+        if (boundAnim != null && newItemsScreenId > -1) {
             int currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
             final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
-            final Runnable startBounceAnimRunnable = anim::start;
+            final Runnable startBounceAnimRunnable = boundAnim::start;
 
             if (canAnimatePageChange() && newItemsScreenId != currentScreenId) {
                 // We post the animation slightly delayed to prevent slowdowns
@@ -2215,8 +2191,6 @@ public class Launcher extends StatefulActivity<LauncherState>
             } else {
                 mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
             }
-        } else if (focusFirstItemForAccessibility && viewToFocus != null) {
-            viewToFocus.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
         }
         workspace.requestLayout();
     }

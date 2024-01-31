@@ -205,7 +205,10 @@ public class BubbleBarView extends FrameLayout {
         mRelativePivotX = onLeft ? 0f : 1f;
     }
 
-    private boolean isOnLeft() {
+    /**
+     * @return <code>true</code> when bar is pinned to the left edge of the screen
+     */
+    public boolean isOnLeft() {
         return getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
@@ -509,7 +512,12 @@ public class BubbleBarView extends FrameLayout {
         return mIsBarExpanded;
     }
 
-    private float expandedWidth() {
+    /**
+     * Get width of the bubble bar as if it would be expanded.
+     *
+     * @return width of the bubble bar in its expanded state, regardless of current width
+     */
+    public float expandedWidth() {
         final int childCount = getChildCount();
         final int horizontalPadding = getPaddingStart() + getPaddingEnd();
         return childCount * (mIconSize + mIconSpacing) + horizontalPadding;

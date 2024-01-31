@@ -17,11 +17,17 @@
 package com.android.launcher3.config;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_MS;
 import static com.android.launcher3.config.FeatureFlags.FlagState.DISABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getDebugFlag;
-import static com.android.launcher3.uioverrides.flags.FlagsFactory.getIntFlag;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFlag;
 import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
 
@@ -31,6 +37,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Flags;
+import com.android.launcher3.uioverrides.flags.FlagsFactory;
 
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -93,6 +100,12 @@ public final class FeatureFlags {
             "ENABLE_DISMISS_PREDICTION_UNDO", DISABLED,
             "Show an 'Undo' snackbar when users dismiss a predicted hotseat item");
 
+    public static final BooleanFlag MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE = getDebugFlag(
+            251502424, "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED,
+            "Marks LauncherPref data as (and allows it to) available while the device is"
+                    + " locked. Enabling this causes a 1-time movement of certain SharedPreferences"
+                    + " data. Improves startup latency.");
+
     public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(270395171,
             "CONTINUOUS_VIEW_TREE_CAPTURE", ENABLED, "Capture View tree every frame");
 
@@ -129,12 +142,14 @@ public final class FeatureFlags {
                     "Shrinks navbar when long pressing if ANIMATE_LPNH is enabled");
 
     public static final IntFlag LPNH_SLOP_PERCENTAGE =
-            getIntFlag(301680992, "LPNH_SLOP_PERCENTAGE", 100,
-                    "Controls touch slop percentage for lpnh");
+            FlagsFactory.getIntFlag(301680992, "LPNH_SLOP_PERCENTAGE", 100,
+                    "Controls touch slop percentage for lpnh",
+                    LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE);
 
     public static final IntFlag LPNH_TIMEOUT_MS =
-            getIntFlag(301680992, "LPNH_TIMEOUT_MS", ViewConfiguration.getLongPressTimeout(),
-                    "Controls lpnh timeout in milliseconds");
+            FlagsFactory.getIntFlag(301680992, "LPNH_TIMEOUT_MS",
+                    ViewConfiguration.getLongPressTimeout(),
+                    "Controls lpnh timeout in milliseconds", LONG_PRESS_NAV_HANDLE_TIMEOUT_MS);
 
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = getReleaseFlag(
             270394468, "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", ENABLED,
@@ -280,28 +295,35 @@ public final class FeatureFlags {
                     "Enables haptic hint at end of long pressing on the bottom bar nav handle.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_START_SCALE_PERCENT =
-            getIntFlag(309972570, "LPNH_HAPTIC_HINT_START_SCALE_PERCENT", 0,
-            "Haptic hint start scale.");
+            FlagsFactory.getIntFlag(309972570,
+                    "LPNH_HAPTIC_HINT_START_SCALE_PERCENT", 0,
+                    "Haptic hint start scale.",
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT);
 
     public static final IntFlag LPNH_HAPTIC_HINT_END_SCALE_PERCENT =
-            getIntFlag(309972570, "LPNH_HAPTIC_HINT_END_SCALE_PERCENT", 100,
-            "Haptic hint end scale.");
+            FlagsFactory.getIntFlag(309972570,
+                    "LPNH_HAPTIC_HINT_END_SCALE_PERCENT", 100,
+                    "Haptic hint end scale.", LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT);
 
     public static final IntFlag LPNH_HAPTIC_HINT_SCALE_EXPONENT =
-            getIntFlag(309972570, "LPNH_HAPTIC_HINT_SCALE_EXPONENT", 1,
-            "Haptic hint scale exponent.");
+            FlagsFactory.getIntFlag(309972570,
+                    "LPNH_HAPTIC_HINT_SCALE_EXPONENT", 1,
+                    "Haptic hint scale exponent.",
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT);
 
     public static final IntFlag LPNH_HAPTIC_HINT_ITERATIONS =
-            getIntFlag(309972570, "LPNH_HAPTIC_HINT_ITERATIONS", 50,
-            "Haptic hint number of iterations.");
+            FlagsFactory.getIntFlag(309972570, "LPNH_HAPTIC_HINT_ITERATIONS",
+                    50,
+                    "Haptic hint number of iterations.",
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS);
 
     public static final BooleanFlag ENABLE_LPNH_DEEP_PRESS =
             getReleaseFlag(310952290, "ENABLE_LPNH_DEEP_PRESS", ENABLED,
                     "Long press of nav handle is instantly triggered if deep press is detected.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_DELAY =
-            getIntFlag(309972570, "LPNH_HAPTIC_HINT_DELAY", 0,
-                    "Delay before haptic hint starts.");
+            FlagsFactory.getIntFlag(309972570, "LPNH_HAPTIC_HINT_DELAY", 0,
+                    "Delay before haptic hint starts.", LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY);
 
     // TODO(Block 17): Clean up flags
     // Aconfig migration complete for ENABLE_TASKBAR_PINNING.
@@ -313,12 +335,6 @@ public final class FeatureFlags {
     public static boolean enableTaskbarPinning() {
         return ENABLE_TASKBAR_PINNING.get() || Flags.enableTaskbarPinning();
     }
-
-    public static final BooleanFlag MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE = getDebugFlag(
-            251502424, "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED,
-            "Marks LauncherPref data as (and allows it to) available while the device is"
-                    + " locked. Enabling this causes a 1-time movement of certain SharedPreferences"
-                    + " data. Improves startup latency.");
 
     // Aconfig migration complete for ENABLE_APP_PAIRS.
     public static final BooleanFlag ENABLE_APP_PAIRS = getDebugFlag(274189428,
@@ -412,10 +428,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = getReleaseFlag(270393258,
             "ENABLE_ENFORCED_ROUNDED_CORNERS", ENABLED,
             "Enforce rounded corners on all App Widgets");
-
-    public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(270393294,
-            "ENABLE_ICON_LABEL_AUTO_SCALING", ENABLED,
-            "Enables scaling/spacing for icon labels to make more characters visible");
 
     public static final BooleanFlag USE_LOCAL_ICON_OVERRIDES = getDebugFlag(270394973,
             "USE_LOCAL_ICON_OVERRIDES", ENABLED,
