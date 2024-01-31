@@ -50,8 +50,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.lang.annotation.Retention;
@@ -321,7 +321,7 @@ public final class DigitalWellBeingToast {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         layoutParams.bottomMargin = ((ViewGroup.MarginLayoutParams)
                 mTaskView.getThumbnail().getLayoutParams()).bottomMargin;
-        PagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();
+        RecentsPagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();
         Pair<Float, Float> translations = orientationHandler
                 .getDwbLayoutTranslations(mTaskView.getMeasuredWidth(),
                         mTaskView.getMeasuredHeight(), mSplitBounds, deviceProfile,

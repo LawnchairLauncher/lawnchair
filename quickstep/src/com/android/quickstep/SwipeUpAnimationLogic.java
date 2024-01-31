@@ -37,6 +37,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RectFSpringAnim.DefaultSpringConfig;
@@ -151,7 +152,7 @@ public abstract class SwipeUpAnimationLogic implements
     @UiThread
     public abstract void onCurrentShiftUpdated();
 
-    protected PagedOrientationHandler getOrientationHandler() {
+    protected RecentsPagedOrientationHandler getOrientationHandler() {
         // OrientationHandler should be independent of remote target, can directly take one
         return mRemoteTargetHandles[0].getTaskViewSimulator()
                 .getOrientationState().getOrientationHandler();

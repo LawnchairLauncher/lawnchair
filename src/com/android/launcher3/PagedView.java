@@ -118,7 +118,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private float mTotalMotion;
     // Used in special cases where the fling checks can be relaxed for an intentional gesture
     private boolean mAllowEasyFling;
-    protected PagedOrientationHandler mOrientationHandler = PagedOrientationHandler.PORTRAIT;
+    private PagedOrientationHandler mOrientationHandler =
+            PagedOrientationHandler.DEFAULT;
 
     private final ArrayList<Runnable> mOnPageScrollsInitializedCallbacks = new ArrayList<>();
 
@@ -229,6 +230,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     public View getPageAt(int index) {
         return getChildAt(index);
+    }
+
+    protected PagedOrientationHandler getPagedOrientationHandler() {
+        return mOrientationHandler;
+    }
+
+    protected void setOrientationHandler(PagedOrientationHandler orientationHandler) {
+        this.mOrientationHandler = orientationHandler;
     }
 
     /**

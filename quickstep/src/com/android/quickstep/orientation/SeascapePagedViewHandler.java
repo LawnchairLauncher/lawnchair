@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.touch;
+package com.android.quickstep.orientation;
 
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_VERTICAL;
@@ -42,10 +42,12 @@ import android.widget.FrameLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.views.IconAppChipView;
 
 import java.util.Collections;
 import java.util.List;
@@ -234,9 +236,9 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public void setIconAppChipMenuParams(View iconAppChipMenuView,
+    public void setIconAppChipMenuParams(IconAppChipView iconAppChipView,
             FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin, int thumbnailTopMargin) {
-        boolean isRtl = iconAppChipMenuView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        boolean isRtl = iconAppChipView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         iconMenuParams.gravity = (isRtl ? TOP : BOTTOM) | (isRtl ? END : START);
         iconMenuParams.setMarginStart(0);
         iconMenuParams.topMargin = isRtl ? iconMenuMargin : 0;
@@ -244,12 +246,12 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         iconMenuParams.setMarginEnd(isRtl ? thumbnailTopMargin : 0);
 
         // Use half menu height to place the pivot within the X/Y center of icon in the menu.
-        float iconCenter = iconAppChipMenuView.getHeight() / 2f;
-        iconAppChipMenuView.setPivotX(isRtl ? iconMenuParams.width / 2f : iconCenter);
-        iconAppChipMenuView.setPivotY(
+        float iconCenter = iconAppChipView.getHeight() / 2f;
+        iconAppChipView.setPivotX(isRtl ? iconMenuParams.width / 2f : iconCenter);
+        iconAppChipView.setPivotY(
                 isRtl ? iconMenuParams.width / 2f : iconCenter - iconMenuMargin);
-        iconAppChipMenuView.setTranslationY(0);
-        iconAppChipMenuView.setRotation(getDegreesRotated());
+        iconAppChipView.setTranslationY(0);
+        iconAppChipView.setRotation(getDegreesRotated());
     }
 
     @Override

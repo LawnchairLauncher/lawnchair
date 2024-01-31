@@ -45,7 +45,7 @@ import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.views.ClearAllButton;
@@ -130,7 +130,7 @@ public final class RecentsViewStateController extends
         }
 
         // Create transition animations to split select
-        PagedOrientationHandler orientationHandler =
+        RecentsPagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
         Pair<FloatProperty, FloatProperty> taskViewsFloat =
                 orientationHandler.getSplitSelectTaskOffset(
