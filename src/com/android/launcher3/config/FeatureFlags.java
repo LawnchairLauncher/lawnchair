@@ -70,10 +70,13 @@ public final class FeatureFlags {
                 PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
                 return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableSmartspace());
         }
-
         public static boolean showDotPagination(Context context) {
                 PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
                 return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableDotPagination());
+        }
+        public static boolean showMaterialUPopup(Context context) {
+                PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+                return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableMaterialUPopUp());
         }
         /**
          * Feature flag to handle define config changes dynamically instead of killing the process.

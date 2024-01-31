@@ -406,6 +406,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.recreate() },
     )
 
+    val enableMaterialUPopUp = preference(
+        key = booleanPreferencesKey(name = "enable_material_u_popup"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_material_u_popup),
+        onSet = { reloadHelper.recreate() },
+    )
+
     val enableFeed = preference(
         key = booleanPreferencesKey(name = "enable_feed"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_feed),
