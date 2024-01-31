@@ -140,3 +140,10 @@ flag {
     description: "Tie unfold animation with state animation"
     bug: "297057373"
 }
+
+flag {
+  name: "enable_categorized_widget_suggestions"
+  namespace: "launcher"
+  description: "Enables widget suggestions in widget picker to be displayed in categories"
+  bug: "318410881"
+}
