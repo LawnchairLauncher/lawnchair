@@ -28,6 +28,7 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
@@ -35,6 +36,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.dragndrop.SimpleDragLayer;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.widget.BaseWidgetSheet;
@@ -43,9 +45,13 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /** An Activity that can host Launcher's widget picker. */
 public class WidgetPickerActivity extends BaseActivity {
+    private static final String TAG = "WidgetPickerActivity";
+    private static final boolean DEBUG = false;
+
     /**
      * Name of the extra that indicates that a widget being dragged.
      *
@@ -54,9 +60,18 @@ public class WidgetPickerActivity extends BaseActivity {
      */
     private static final String EXTRA_IS_PENDING_WIDGET_DRAG = "is_pending_widget_drag";
 
+    // Intent extras that specify the desired widget width and height. If these are not specified in
+    // the intent, then widgets will not be filtered for size.
+    private static final String EXTRA_DESIRED_WIDGET_WIDTH = "desired_widget_width";
+    private static final String EXTRA_DESIRED_WIDGET_HEIGHT = "desired_widget_height";
+
+
     private SimpleDragLayer<WidgetPickerActivity> mDragLayer;
     private WidgetsModel mModel;
     private final PopupDataProvider mPopupDataProvider = new PopupDataProvider(i -> {});
+
+    private int mDesiredWidgetWidth;
+    private int mDesiredWidgetHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +96,13 @@ public class WidgetPickerActivity extends BaseActivity {
         BaseWidgetSheet widgetSheet = WidgetsFullSheet.show(this, true);
         widgetSheet.disableNavBarScrim(true);
         widgetSheet.addOnCloseListener(this::finish);
+
+        // A value of 0 for either size means that no filtering will occur in that dimension. If
+        // both values are 0, then no size filtering will occur.
+        mDesiredWidgetWidth =
+                getIntent().getIntExtra(EXTRA_DESIRED_WIDGET_WIDTH, 0);
+        mDesiredWidgetHeight =
+                getIntent().getIntExtra(EXTRA_DESIRED_WIDGET_HEIGHT, 0);
 
         refreshAndBindWidgets();
     }
@@ -160,9 +182,108 @@ public class WidgetPickerActivity extends BaseActivity {
             final ArrayList<WidgetsListBaseEntry> widgets =
                     mModel.getFilteredWidgetsListForPicker(
                             app.getContext(),
-                            /*widgetItemFilter=*/ item -> item.widgetInfo != null
+                            /*widgetItemFilter=*/ widget -> {
+                                final WidgetAcceptabilityVerdict verdict =
+                                        isWidgetAcceptable(widget);
+                                verdict.maybeLogVerdict();
+                                return verdict.isAcceptable;
+                            }
                     );
             MAIN_EXECUTOR.execute(() -> mPopupDataProvider.setAllWidgets(widgets));
         });
+    }
+
+    private WidgetAcceptabilityVerdict isWidgetAcceptable(WidgetItem widget) {
+        final AppWidgetProviderInfo info = widget.widgetInfo;
+        if (info == null) {
+            return rejectWidget(widget, "shortcut");
+        }
+
+        if (mDesiredWidgetWidth == 0 && mDesiredWidgetHeight == 0) {
+            // Accept the widget if the desired dimensions are unspecified.
+            return acceptWidget(widget);
+        }
+
+        final boolean isHorizontallyResizable =
+                (info.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
+        if (mDesiredWidgetWidth > 0 && isHorizontallyResizable) {
+            if (info.maxResizeWidth > 0 && info.maxResizeWidth < mDesiredWidgetWidth) {
+                return rejectWidget(
+                        widget,
+                        String.format(
+                                Locale.ENGLISH,
+                                "maxResizeWidth[%d] < mDesiredWidgetWidth[%d]",
+                                info.maxResizeWidth,
+                                mDesiredWidgetWidth));
+            }
+
+            final int minWidth = info.minResizeWidth > 0 ? info.minResizeWidth : info.minWidth;
+            if (minWidth > mDesiredWidgetWidth) {
+                return rejectWidget(
+                        widget,
+                        String.format(
+                                Locale.ENGLISH,
+                                "minWidth[%d] > mDesiredWidgetWidth[%d]",
+                                minWidth,
+                                mDesiredWidgetWidth));
+            }
+        }
+
+        final boolean isVerticallyResizable =
+                (info.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
+        if (mDesiredWidgetHeight > 0 && isVerticallyResizable) {
+            if (info.maxResizeHeight > 0 && info.maxResizeHeight < mDesiredWidgetHeight) {
+                return rejectWidget(
+                        widget,
+                        String.format(
+                                Locale.ENGLISH,
+                                "maxResizeHeight[%d] < mDesiredWidgetHeight[%d]",
+                                info.maxResizeHeight,
+                                mDesiredWidgetHeight));
+            }
+
+            final int minHeight = info.minResizeHeight > 0 ? info.minResizeHeight : info.minHeight;
+            if (minHeight > mDesiredWidgetHeight) {
+                return rejectWidget(
+                        widget,
+                        String.format(
+                                Locale.ENGLISH,
+                                "minHeight[%d] > mDesiredWidgetHeight[%d]",
+                                minHeight,
+                                mDesiredWidgetHeight));
+            }
+        }
+
+        if (!isHorizontallyResizable
+                && !isVerticallyResizable
+                && (info.minWidth < mDesiredWidgetWidth || info.minHeight < mDesiredWidgetHeight)) {
+            return rejectWidget(widget, "too small and not resizeable");
+        }
+
+        return acceptWidget(widget);
+    }
+
+    private static WidgetAcceptabilityVerdict rejectWidget(
+            WidgetItem widget, String rejectionReason) {
+        return new WidgetAcceptabilityVerdict(false, widget.label, rejectionReason);
+    }
+
+    private static WidgetAcceptabilityVerdict acceptWidget(WidgetItem widget) {
+        return new WidgetAcceptabilityVerdict(true, widget.label, "");
+    }
+
+    private record WidgetAcceptabilityVerdict(
+            boolean isAcceptable, String widgetLabel, String reason) {
+        void maybeLogVerdict() {
+            // Only log a verdict if a reason is specified.
+            if (DEBUG && !reason.isEmpty()) {
+                Log.i(TAG, String.format(
+                        Locale.ENGLISH,
+                        "%s: %s because %s",
+                        widgetLabel,
+                        isAcceptable ? "accepted" : "rejected",
+                        reason));
+            }
+        }
     }
 }
