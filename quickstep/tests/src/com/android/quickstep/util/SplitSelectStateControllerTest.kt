@@ -27,6 +27,7 @@ import android.os.UserHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.LauncherState
 import com.android.launcher3.logging.StatsLogManager
+import com.android.launcher3.logging.StatsLogManager.StatsLogger
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
@@ -45,6 +46,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.any
+import org.mockito.Mockito.`when`
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -56,13 +59,14 @@ class SplitSelectStateControllerTest {
     private val systemUiProxy: SystemUiProxy = mock()
     private val depthController: DepthController = mock()
     private val statsLogManager: StatsLogManager = mock()
+    private val statsLogger: StatsLogger = mock()
     private val stateManager: StateManager<LauncherState> = mock()
     private val handler: Handler = mock()
     private val context: StatefulActivity<*> = mock()
     private val recentsModel: RecentsModel = mock()
     private val pendingIntent: PendingIntent = mock()
 
-    lateinit var splitSelectStateController: SplitSelectStateController
+    private lateinit var splitSelectStateController: SplitSelectStateController
 
     private val primaryUserHandle = UserHandle(ActivityManager.RunningTaskInfo().userId)
     private val nonPrimaryUserHandle = UserHandle(ActivityManager.RunningTaskInfo().userId + 10)
@@ -74,6 +78,9 @@ class SplitSelectStateControllerTest {
 
     @Before
     fun setup() {
+        `when`(statsLogManager.logger()).thenReturn(statsLogger)
+        `when`(statsLogger.withInstanceId(any())).thenReturn(statsLogger)
+        `when`(statsLogger.withItemInfo(any())).thenReturn(statsLogger)
         splitSelectStateController =
             SplitSelectStateController(
                 context,
@@ -593,9 +600,10 @@ class SplitSelectStateControllerTest {
     @Test
     fun secondPendingIntentSet() {
         val itemInfo = ItemInfo()
+        val itemInfo2 = ItemInfo()
         whenever(pendingIntent.creatorUserHandle).thenReturn(primaryUserHandle)
         splitSelectStateController.setInitialTaskSelect(null, 0, itemInfo, null, 1)
-        splitSelectStateController.setSecondTask(pendingIntent)
+        splitSelectStateController.setSecondTask(pendingIntent, itemInfo2)
         assertTrue(splitSelectStateController.isBothSplitAppsConfirmed)
     }
 

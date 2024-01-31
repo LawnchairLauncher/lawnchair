@@ -46,6 +46,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.config.FeatureFlags
+import com.android.launcher3.logging.StatsLogManager.EventEnum
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.statemanager.StatefulActivity
@@ -213,17 +214,21 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     }
 
     /** Does not play any animation if user is not currently in split selection state. */
-    fun playPlaceholderDismissAnim(launcher: StatefulActivity<*>) {
+    fun playPlaceholderDismissAnim(launcher: StatefulActivity<*>, splitDismissEvent: EventEnum) {
         if (!splitSelectStateController.isSplitSelectActive) {
             return
         }
 
-        val anim = createPlaceholderDismissAnim(launcher)
+        val anim = createPlaceholderDismissAnim(launcher, splitDismissEvent)
         anim.start()
     }
 
-    /** Returns [AnimatorSet] which slides initial split placeholder view offscreen. */
-    fun createPlaceholderDismissAnim(launcher: StatefulActivity<*>) : AnimatorSet {
+    /**
+     * Returns [AnimatorSet] which slides initial split placeholder view offscreen and logs an event
+     * for why split is being dismissed
+     */
+    fun createPlaceholderDismissAnim(launcher: StatefulActivity<*>,
+                                     splitDismissEvent: EventEnum) : AnimatorSet {
         val animatorSet = AnimatorSet()
         val recentsView : RecentsView<*, *> = launcher.getOverviewPanel()
         val floatingTask: FloatingTaskView = splitSelectStateController.firstFloatingTaskView
@@ -260,6 +265,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                         splitSelectStateController.splitInstructionsView)
             }
         })
+        splitSelectStateController.logExitReason(splitDismissEvent)
         return animatorSet
     }
 

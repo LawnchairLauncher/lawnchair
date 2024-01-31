@@ -260,7 +260,8 @@ public class TaskbarUIController {
                                     taskAttributes.getThumbnailView(),
                                     taskAttributes.getThumbnailView().getThumbnail(),
                                     null /* intent */,
-                                    null /* user */);
+                                    null /* user */,
+                                    info);
                             return;
                         }
                     }
@@ -273,7 +274,8 @@ public class TaskbarUIController {
                             startingView,
                             null /* thumbnail */,
                             intent,
-                            info.user);
+                            info.user,
+                            info);
                 }
         );
     }

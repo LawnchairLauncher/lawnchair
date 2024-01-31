@@ -77,6 +77,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_EXIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONSTOP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RECONFIGURED;
@@ -1580,7 +1581,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             }
 
             if (FeatureFlags.enableSplitContextually()) {
-                handleSplitAnimationGoingToHome();
+                handleSplitAnimationGoingToHome(LAUNCHER_SPLIT_SELECTION_EXIT_HOME);
             }
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
             handleGestureContract(intent);
@@ -1596,7 +1597,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /** Handle animating away split placeholder view when user taps on home button */
-    protected void handleSplitAnimationGoingToHome() {
+    protected void handleSplitAnimationGoingToHome(EventEnum splitDismissReason) {
         // Overridden
     }
 
@@ -2667,7 +2668,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /** Call to dismiss the intermediary split selection state. */
-    public void dismissSplitSelection() {
+    public void dismissSplitSelection(StatsLogManager.LauncherEvent splitDismissEvent) {
         // Overridden; move this into ActivityContext if necessary for Taskbar
     }
 

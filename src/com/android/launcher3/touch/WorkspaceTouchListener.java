@@ -24,6 +24,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
 
 import android.graphics.PointF;
@@ -207,7 +208,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                 mLauncher.getStatsLogManager().logger().log(LAUNCHER_WORKSPACE_LONGPRESS);
                 mLauncher.showDefaultOptions(mTouchDownPoint.x, mTouchDownPoint.y);
                 if (FeatureFlags.enableSplitContextually() && mLauncher.isSplitSelectionActive()) {
-                    mLauncher.dismissSplitSelection();
+                    mLauncher.dismissSplitSelection(LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED);
                 }
             } else {
                 cancelLongPress();
