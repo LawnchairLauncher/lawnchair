@@ -149,7 +149,20 @@ public class ItemClickHandler {
     private static void onClickAppPairIcon(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         AppPairIcon appPairIcon = (AppPairIcon) v;
-        launcher.launchAppPair(appPairIcon);
+        if (appPairIcon.getInfo().isDisabled()) {
+            WorkspaceItemInfo app1 = appPairIcon.getInfo().contents.get(0);
+            WorkspaceItemInfo app2 = appPairIcon.getInfo().contents.get(1);
+            // Show the user why the app pair is disabled.
+            if (app1.isDisabled() && !handleDisabledItemClicked(app1, launcher)) {
+                // If handleDisabledItemClicked() did not handle the error message, we initiate an
+                // app launch so Framework can tell the user why the app is suspended.
+                onClickAppShortcut(v, app1, launcher);
+            } else if (app2.isDisabled() && !handleDisabledItemClicked(app2, launcher)) {
+                onClickAppShortcut(v, app2, launcher);
+            }
+        } else {
+            launcher.launchAppPair(appPairIcon);
+        }
     }
 
     /**
