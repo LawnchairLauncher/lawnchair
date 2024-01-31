@@ -1137,9 +1137,8 @@ public class TaskView extends FrameLayout implements Reusable {
         DeviceProfile dp = mActivity.getDeviceProfile();
         if (enableOverviewIconMenu() && iconView instanceof IconAppChipView) {
             ((IconAppChipView) iconView).revealAnim(/* isRevealing= */ true);
-            return TaskMenuView.showForTask(menuContainer, () -> {
-                ((IconAppChipView) iconView).revealAnim(/* isRevealing= */ false);
-            });
+            return TaskMenuView.showForTask(menuContainer,
+                    () -> ((IconAppChipView) iconView).revealAnim(/* isRevealing= */ false));
         } else if (dp.isTablet) {
             int alignedOptionIndex = 0;
             if (getRecentsView().isOnGridBottomRow(menuContainer.getTaskView()) && dp.isLandscape) {
