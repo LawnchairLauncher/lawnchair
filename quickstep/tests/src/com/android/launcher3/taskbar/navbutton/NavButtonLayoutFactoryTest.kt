@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import androidx.test.runner.AndroidJUnit4
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
@@ -38,6 +39,7 @@ class NavButtonLayoutFactoryTest {
     private val mockImeSwitcher: ImageView = mock()
     private val mockRotationButton: RotationButton = mock()
     private val mockA11yButton: ImageView = mock()
+    private val mockSpace: Space = mock()
 
     private var surfaceRotation = Surface.ROTATION_0
 
@@ -201,7 +203,8 @@ class NavButtonLayoutFactoryTest {
             surfaceRotation = surfaceRotation,
             imeSwitcher = mockImeSwitcher,
             rotationButton = mockRotationButton,
-            a11yButton = mockA11yButton
+            a11yButton = mockA11yButton,
+            space = mockSpace,
         )
     }
 }

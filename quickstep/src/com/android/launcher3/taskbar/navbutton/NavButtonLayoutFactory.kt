@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
@@ -60,6 +61,7 @@ class NavButtonLayoutFactory {
                 imeSwitcher: ImageView?,
                 rotationButton: RotationButton?,
                 a11yButton: ImageView?,
+                space: Space,
                 resources: Resources,
                 isKidsMode: Boolean,
                 isInSetup: Boolean,
@@ -86,7 +88,8 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 rotationButton,
-                                a11yButton
+                                a11yButton,
+                                space
                         )
                     } else if (surfaceRotation == ROTATION_90) {
                         navButtonsView.setIsVertical(true)
@@ -97,7 +100,8 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 rotationButton,
-                                a11yButton
+                                a11yButton,
+                                space
                         )
                     } else {
                         navButtonsView.setIsVertical(true)
@@ -108,7 +112,8 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 rotationButton,
-                                a11yButton
+                                a11yButton,
+                                space
                         )
                     }
                 }
@@ -120,7 +125,8 @@ class NavButtonLayoutFactory {
                             startContextualContainer,
                             imeSwitcher,
                             rotationButton,
-                            a11yButton
+                            a11yButton,
+                            space
                     )
                 }
                 deviceProfile.isTaskbarPresent -> {
@@ -133,7 +139,8 @@ class NavButtonLayoutFactory {
                                     startContextualContainer,
                                     imeSwitcher,
                                     rotationButton,
-                                    a11yButton
+                                    a11yButton,
+                                    space
                             )
                         }
                         isKidsMode -> {
@@ -144,7 +151,8 @@ class NavButtonLayoutFactory {
                                     startContextualContainer,
                                     imeSwitcher,
                                     rotationButton,
-                                    a11yButton
+                                    a11yButton,
+                                    space
                             )
                         }
                         else ->
@@ -155,7 +163,8 @@ class NavButtonLayoutFactory {
                                     startContextualContainer,
                                     imeSwitcher,
                                     rotationButton,
-                                    a11yButton
+                                    a11yButton,
+                                    space
                             )
                     }
                 }

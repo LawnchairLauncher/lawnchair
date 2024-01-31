@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
@@ -46,7 +47,8 @@ abstract class AbstractNavButtonLayoutter(
         protected val startContextualContainer: ViewGroup,
         protected val imeSwitcher: ImageView?,
         protected val rotationButton: RotationButton?,
-        protected val a11yButton: ImageView?
+        protected val a11yButton: ImageView?,
+        protected val space: Space
 ) : NavButtonLayoutter {
     protected val homeButton: ImageView? = navButtonContainer.findViewById(R.id.home)
     protected val recentsButton: ImageView? = navButtonContainer.findViewById(R.id.recent_apps)

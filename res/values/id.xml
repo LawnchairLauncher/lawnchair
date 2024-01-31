@@ -32,6 +32,7 @@
     <item type="id" name="ime_switcher" />
     <item type="id" name="accessibility_button" />
     <item type="id" name="rotate_suggestion" />
+    <item type="id" name="space" />
     <!--  /Do not change, must be kept in sync with sysui navbar button IDs for tests!  -->
 
     <item type="id" name="quick_settings_button" />
