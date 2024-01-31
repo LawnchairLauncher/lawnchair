@@ -639,7 +639,7 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
 
         iconAppChipView.setPivotX(0);
         iconAppChipView.setPivotY(0);
-        iconAppChipView.setTranslationY(0);
+        iconAppChipView.setSplitTranslationY(0);
         iconAppChipView.setRotation(getDegreesRotated());
     }
 
@@ -655,6 +655,8 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
                 : new FrameLayout.LayoutParams(primaryIconParams);
 
         if (enableOverviewIconMenu()) {
+            IconAppChipView primaryAppChipView = (IconAppChipView) primaryIconView;
+            IconAppChipView secondaryAppChipView = (IconAppChipView) secondaryIconView;
             primaryIconParams.gravity = TOP | START;
             secondaryIconParams.gravity = TOP | START;
             secondaryIconParams.topMargin = primaryIconParams.topMargin;
@@ -662,16 +664,16 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
             if (deviceProfile.isLeftRightSplit) {
                 if (isRtl) {
                     int secondarySnapshotWidth = groupedTaskViewWidth - primarySnapshotWidth;
-                    primaryIconView.setTranslationX(-secondarySnapshotWidth);
+                    primaryAppChipView.setSplitTranslationX(-secondarySnapshotWidth);
                 } else {
-                    secondaryIconView.setTranslationX(primarySnapshotWidth);
+                    secondaryAppChipView.setSplitTranslationX(primarySnapshotWidth);
                 }
             } else {
-                primaryIconView.setTranslationX(0);
-                secondaryIconView.setTranslationX(0);
+                primaryAppChipView.setSplitTranslationX(0);
+                secondaryAppChipView.setSplitTranslationX(0);
                 int dividerThickness = Math.min(splitConfig.visualDividerBounds.width(),
                         splitConfig.visualDividerBounds.height());
-                secondaryIconView.setTranslationY(
+                secondaryAppChipView.setSplitTranslationY(
                         primarySnapshotHeight + (deviceProfile.isTablet ? 0 : dividerThickness));
             }
         } else if (deviceProfile.isLeftRightSplit) {
