@@ -44,7 +44,9 @@ public class PortraitLandscapeRunner implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 try {
+                    // we expect to begin unlocked...
                     AbstractLauncherUiTest.verifyKeyguardInvisible();
+
                     mTest.mDevice.pressHome();
                     mTest.waitForLauncherCondition("Launcher activity wasn't created",
                             launcher -> launcher != null);
@@ -67,6 +69,9 @@ public class PortraitLandscapeRunner implements TestRule {
                         }
                     });
                     mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
+
+                    // and end unlocked...
+                    AbstractLauncherUiTest.verifyKeyguardInvisible();
                 }
             }
 
