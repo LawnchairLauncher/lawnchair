@@ -27,6 +27,7 @@ import static com.android.wm.shell.common.split.SplitScreenConstants.isPersisten
 import android.app.ActivityTaskManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -58,6 +59,8 @@ import java.util.Arrays;
  * ratio.
  */
 public class AppPairsController {
+    private static final String TAG = "AppPairsController";
+
     // Used for encoding and decoding the "rank" attribute
     private static final int BITMASK_SIZE = 16;
     private static final int BITMASK_FOR_SNAP_POSITION = (1 << BITMASK_SIZE) - 1;
@@ -89,12 +92,22 @@ public class AppPairsController {
 
         @PersistentSnapPosition int snapPosition = gtv.getSnapPosition();
         if (!isPersistentSnapPosition(snapPosition)) {
-            throw new RuntimeException("tried to save an app pair with illegal snapPosition");
+            // if we received an illegal snap position, log an error and do not create the app pair.
+            Log.wtf(TAG, "tried to save an app pair with illegal snapPosition " + snapPosition);
+            return;
         }
 
         app1.rank = encodeRank(SPLIT_POSITION_TOP_OR_LEFT, snapPosition);
         app2.rank = encodeRank(SPLIT_POSITION_BOTTOM_OR_RIGHT, snapPosition);
         FolderInfo newAppPair = FolderInfo.createAppPair(app1, app2);
+
+        if (newAppPair.contents.size() != 2) {
+            // if app pair doesn't have exactly 2 members, log an error and do not create the app
+            // pair.
+            Log.wtf(TAG,
+                    "tried to save an app pair with " + newAppPair.contents.size() + " members");
+            return;
+        }
 
         IconCache iconCache = LauncherAppState.getInstance(mContext).getIconCache();
         MODEL_EXECUTOR.execute(() -> {

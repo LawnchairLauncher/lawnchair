@@ -19,6 +19,7 @@ package com.android.launcher3.apppairs;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,8 @@ import java.util.Comparator;
  * member apps are set into these rectangles.
  */
 public class AppPairIcon extends FrameLayout implements DraggableView, Reorderable {
+    private static final String TAG = "AppPairIcon";
+
     // A view that holds the app pair icon graphic.
     private AppPairIconGraphic mIconGraphic;
     // A view that holds the app pair's title.
@@ -96,8 +99,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         icon.mAppPairName.setText(appPairInfo.title);
 
         // Set up accessibility
-        icon.setContentDescription(icon.getAccessibilityTitle(
-                appPairInfo.contents.get(0).title, appPairInfo.contents.get(1).title));
+        icon.setContentDescription(icon.getAccessibilityTitle(appPairInfo));
         icon.setAccessibilityDelegate(activity.getAccessibilityDelegate());
 
         return icon;
@@ -106,7 +108,14 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
     /**
      * Returns a formatted accessibility title for app pairs.
      */
-    public String getAccessibilityTitle(CharSequence app1, CharSequence app2) {
+    public String getAccessibilityTitle(FolderInfo appPairInfo) {
+        if (appPairInfo.contents.size() != 2) {
+            Log.wtf(TAG, "AppPair contents not 2, size: " + appPairInfo.contents.size());
+            return "";
+        }
+
+        CharSequence app1 = appPairInfo.contents.get(0).title;
+        CharSequence app2 = appPairInfo.contents.get(1).title;
         return getContext().getString(R.string.app_pair_name_format, app1, app2);
     }
 
