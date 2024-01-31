@@ -72,6 +72,7 @@ class SetupNavLayoutter(
         }
         if (a11yButton != null) {
             endContextualContainer.addView(a11yButton)
+            a11yButton.layoutParams = getParamsToCenterView()
         }
         if (rotationButton != null) {
             endContextualContainer.addView(rotationButton.currentView)

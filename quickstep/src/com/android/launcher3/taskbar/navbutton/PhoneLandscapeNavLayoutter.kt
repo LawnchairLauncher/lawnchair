@@ -132,6 +132,7 @@ open class PhoneLandscapeNavLayoutter(
         }
         if (a11yButton != null) {
             startContextualContainer.addView(a11yButton)
+            a11yButton.layoutParams = getParamsToCenterView()
         }
         if (rotationButton != null) {
             startContextualContainer.addView(rotationButton.currentView)
