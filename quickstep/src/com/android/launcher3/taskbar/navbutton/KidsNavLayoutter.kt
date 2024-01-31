@@ -39,7 +39,7 @@ class KidsNavLayoutter(
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
         a11yButton: ImageView?,
-        space: Space,
+        space: Space?
 ) :
     AbstractNavButtonLayoutter(
             resources,

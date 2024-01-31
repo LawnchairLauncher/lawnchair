@@ -61,7 +61,7 @@ class NavButtonLayoutFactory {
                 imeSwitcher: ImageView?,
                 rotationButton: RotationButton?,
                 a11yButton: ImageView?,
-                space: Space,
+                space: Space?,
                 resources: Resources,
                 isKidsMode: Boolean,
                 isInSetup: Boolean,
