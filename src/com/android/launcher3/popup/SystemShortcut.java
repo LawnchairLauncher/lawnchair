@@ -22,9 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Flags;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.SecondaryDropTarget;
 import com.android.launcher3.Utilities;
@@ -49,9 +47,10 @@ import java.util.List;
  * onClickListener that depends on the item that the shortcut services.
  *
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
- * @param <T>
+ *
+ * @param <T> extends {@link ActivityContext}
  */
-public abstract class SystemShortcut<T extends Context & ActivityContext> extends ItemInfo
+public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
         implements View.OnClickListener {
 
     private final int mIconResId;
@@ -100,24 +99,25 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         return mAccessibilityActionId == action;
     }
 
-    public interface Factory<T extends Context & ActivityContext> {
+    public interface Factory<T extends ActivityContext> {
 
-        @Nullable SystemShortcut<T> getShortcut(T activity, ItemInfo itemInfo, View originalView);
+        @Nullable
+        SystemShortcut<T> getShortcut(T context, ItemInfo itemInfo, @NonNull View originalView);
     }
 
-    public static final Factory<Launcher> WIDGETS = (launcher, itemInfo, originalView) -> {
+    public static final Factory<ActivityContext> WIDGETS = (context, itemInfo, originalView) -> {
         if (itemInfo.getTargetComponent() == null) return null;
         final List<WidgetItem> widgets =
-                launcher.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(
+                context.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(
                         itemInfo.getTargetComponent().getPackageName(), itemInfo.user));
         if (widgets.isEmpty()) {
             return null;
         }
-        return new Widgets(launcher, itemInfo, originalView);
+        return new Widgets(context, itemInfo, originalView);
     };
 
-    public static class Widgets extends SystemShortcut<Launcher> {
-        public Widgets(Launcher target, ItemInfo itemInfo, View originalView) {
+    public static class Widgets<T extends ActivityContext> extends SystemShortcut<T> {
+        public Widgets(T target, ItemInfo itemInfo, @NonNull View originalView) {
             super(R.drawable.ic_widget, R.string.widget_button_text, target, itemInfo,
                     originalView);
         }
@@ -134,14 +134,14 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         }
     }
 
-    public static final Factory<BaseDraggingActivity> APP_INFO = AppInfo::new;
+    public static final Factory<ActivityContext> APP_INFO = AppInfo::new;
 
-    public static class AppInfo<T extends Context & ActivityContext> extends SystemShortcut<T> {
+    public static class AppInfo<T extends ActivityContext> extends SystemShortcut<T> {
 
         @Nullable
         private SplitAccessibilityInfo mSplitA11yInfo;
 
-        public AppInfo(T target, ItemInfo itemInfo, View originalView) {
+        public AppInfo(T target, ItemInfo itemInfo, @NonNull View originalView) {
             super(R.drawable.ic_info_no_shadow, R.string.app_info_drop_target_label, target,
                     itemInfo, originalView);
         }
@@ -180,7 +180,7 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         public void onClick(View view) {
             dismissTaskMenuView(mTarget);
             Rect sourceBounds = Utilities.getViewBounds(view);
-            new PackageManagerHelper(mTarget).startDetailsActivityForInfo(
+            new PackageManagerHelper(view.getContext()).startDetailsActivityForInfo(
                     mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
             mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP);
@@ -200,8 +200,11 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         }
     }
 
-    public static final Factory<Launcher> PRIVATE_PROFILE_INSTALL =
-            (launcher, itemInfo, originalView) -> {
+    public static final Factory<ActivityContext> PRIVATE_PROFILE_INSTALL =
+            (context, itemInfo, originalView) -> {
+                if (originalView == null) {
+                    return null;
+                }
                 if (itemInfo.getTargetComponent() == null
                         || !(itemInfo instanceof com.android.launcher3.model.data.AppInfo)
                         || !itemInfo.getContainerInfo().hasAllAppsContainer()
@@ -210,7 +213,7 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
                 }
 
                 PrivateProfileManager privateProfileManager =
-                        launcher.getAppsView().getPrivateProfileManager();
+                        context.getAppsView().getPrivateProfileManager();
                 if (privateProfileManager == null || !privateProfileManager.isEnabled()) {
                     return null;
                 }
@@ -221,30 +224,28 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
                 }
                 // Do not show shortcut if an app is already installed to the space
                 ComponentName targetComponent = itemInfo.getTargetComponent();
-                if (launcher.getAppsView()
-                                .getAppsStore()
-                                .getApp(new ComponentKey(targetComponent, privateProfileUser))
-                        != null) {
+                if (context.getAppsView().getAppsStore().getApp(
+                        new ComponentKey(targetComponent, privateProfileUser)) != null) {
                     return null;
                 }
 
                 // Do not show shortcut for settings
                 String[] packagesToSkip =
-                        launcher.getResources()
+                        originalView.getContext().getResources()
                                 .getStringArray(R.array.skip_private_profile_shortcut_packages);
                 if (Arrays.asList(packagesToSkip).contains(targetComponent.getPackageName())) {
                     return null;
                 }
 
-                return new InstallToPrivateProfile(
-                        launcher, itemInfo, originalView, privateProfileUser);
+                return new InstallToPrivateProfile<>(
+                        context, itemInfo, originalView, privateProfileUser);
             };
 
-    static class InstallToPrivateProfile extends SystemShortcut<Launcher> {
+    static class InstallToPrivateProfile<T extends ActivityContext> extends SystemShortcut<T> {
         UserHandle mSpaceUser;
 
-        InstallToPrivateProfile(
-                Launcher target, ItemInfo itemInfo, View originalView, UserHandle spaceUser) {
+        InstallToPrivateProfile(T target, ItemInfo itemInfo, @NonNull View originalView,
+                UserHandle spaceUser) {
             // TODO(b/302666597): update icon once available
             super(
                     R.drawable.ic_install_to_private,
@@ -271,8 +272,11 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         }
     }
 
-    public static final Factory<BaseDraggingActivity> INSTALL =
+    public static final Factory<ActivityContext> INSTALL =
             (activity, itemInfo, originalView) -> {
+                if (originalView == null) {
+                    return null;
+                }
                 boolean supportsWebUI = (itemInfo instanceof WorkspaceItemInfo)
                         && ((WorkspaceItemInfo) itemInfo).hasStatusFlag(
                         WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI);
@@ -280,18 +284,19 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
                 if (itemInfo instanceof com.android.launcher3.model.data.AppInfo) {
                     com.android.launcher3.model.data.AppInfo
                             appInfo = (com.android.launcher3.model.data.AppInfo) itemInfo;
-                    isInstantApp = InstantAppResolver.newInstance(activity).isInstantApp(appInfo);
+                    isInstantApp = InstantAppResolver.newInstance(
+                            originalView.getContext()).isInstantApp(appInfo);
                 }
                 boolean enabled = supportsWebUI || isInstantApp;
                 if (!enabled) {
                     return null;
                 }
                 return new Install(activity, itemInfo, originalView);
-    };
+            };
 
-    public static class Install extends SystemShortcut<BaseDraggingActivity> {
+    public static class Install<T extends ActivityContext> extends SystemShortcut<T> {
 
-        public Install(BaseDraggingActivity target, ItemInfo itemInfo, View originalView) {
+        public Install(T target, ItemInfo itemInfo, @NonNull View originalView) {
             super(R.drawable.ic_install_no_shadow, R.string.install_drop_target_label,
                     target, itemInfo, originalView);
         }
@@ -306,16 +311,16 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         }
     }
 
-    public static final Factory<Launcher> DONT_SUGGEST_APP = (activity, itemInfo, originalView) -> {
-        if (!itemInfo.isPredictedItem()) {
-            return null;
-        }
-        return new DontSuggestApp(activity, itemInfo, originalView);
-    };
+    public static final Factory<ActivityContext> DONT_SUGGEST_APP =
+            (activity, itemInfo, originalView) -> {
+                if (!itemInfo.isPredictedItem()) {
+                    return null;
+                }
+                return new DontSuggestApp<>(activity, itemInfo, originalView);
+            };
 
-    private static class DontSuggestApp extends SystemShortcut<Launcher> {
-        DontSuggestApp(Launcher target, ItemInfo itemInfo,
-                View originalView) {
+    private static class DontSuggestApp<T extends ActivityContext> extends SystemShortcut<T> {
+        DontSuggestApp(T target, ItemInfo itemInfo, View originalView) {
             super(R.drawable.ic_block_no_shadow, R.string.dismiss_prediction_label, target,
                     itemInfo, originalView);
         }
@@ -329,36 +334,36 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         }
     }
 
-    public static final Factory<Launcher> UNINSTALL_APP = (activity, itemInfo, originalView) -> {
-        if (!Flags.enablePrivateSpace()) {
-            return null;
-        }
-        if (!UserCache.getInstance(activity.getApplicationContext()).getUserInfo(
-                itemInfo.user).isPrivate()) {
-            // If app is not Private Space app.
-            return null;
-        }
-        ComponentName cn = SecondaryDropTarget.getUninstallTarget(activity.getApplicationContext(),
-                itemInfo);
-        if (cn == null) {
-            // If component name is null, don't show uninstall shortcut.
-            // System apps will have component name as null.
-            return null;
-        }
-        return new UninstallApp(activity, itemInfo, originalView, cn);
-    };
+    public static final Factory<ActivityContext> UNINSTALL_APP =
+            (activityContext, itemInfo, originalView) -> {
+                if (originalView == null) {
+                    return null;
+                }
+                if (!Flags.enablePrivateSpace()) {
+                    return null;
+                }
+                if (!UserCache.INSTANCE.get(originalView.getContext()).getUserInfo(
+                        itemInfo.user).isPrivate()) {
+                    // If app is not Private Space app.
+                    return null;
+                }
+                ComponentName cn = SecondaryDropTarget.getUninstallTarget(originalView.getContext(),
+                        itemInfo);
+                if (cn == null) {
+                    // If component name is null, don't show uninstall shortcut.
+                    // System apps will have component name as null.
+                    return null;
+                }
+                return new UninstallApp(activityContext, itemInfo, originalView, cn);
+            };
 
-    private static class UninstallApp extends SystemShortcut<Launcher> {
-        private static final String TAG = "UninstallApp";
-        Context mContext;
-        @NonNull
-        ComponentName mComponentName;
+    private static class UninstallApp<T extends ActivityContext> extends SystemShortcut<T> {
+        @NonNull ComponentName mComponentName;
 
-        UninstallApp(Launcher target, ItemInfo itemInfo, View originalView,
+        UninstallApp(T target, ItemInfo itemInfo, @NonNull View originalView,
                 @NonNull ComponentName cn) {
             super(R.drawable.ic_uninstall_no_shadow, R.string.uninstall_drop_target_label, target,
                     itemInfo, originalView);
-            mContext = target.getApplicationContext();
             mComponentName = cn;
 
         }
@@ -366,7 +371,7 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         @Override
         public void onClick(View view) {
             dismissTaskMenuView(mTarget);
-            SecondaryDropTarget.performUninstall(mContext, mComponentName, mItemInfo);
+            SecondaryDropTarget.performUninstall(view.getContext(), mComponentName, mItemInfo);
             mTarget.getStatsLogManager()
                     .logger()
                     .withItemInfo(mItemInfo)
@@ -374,8 +379,8 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         }
     }
 
-    public static <T extends Context & ActivityContext> void dismissTaskMenuView(T activity) {
+    public static <T extends ActivityContext> void dismissTaskMenuView(T activity) {
         AbstractFloatingView.closeOpenViews(activity, true,
-            AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
+                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }
