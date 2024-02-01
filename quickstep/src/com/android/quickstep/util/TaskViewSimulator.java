@@ -51,6 +51,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
@@ -70,7 +71,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final float[] mTempPoint = new float[2];
 
     private final Context mContext;
-    private final BaseActivityInterface mSizeStrategy;
+    private final BaseContainerInterface mSizeStrategy;
 
     @NonNull
     private RecentsOrientedState mOrientationState;
@@ -122,7 +123,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private int mTaskRectTranslationX;
     private int mTaskRectTranslationY;
 
-    public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
+    public TaskViewSimulator(Context context, BaseContainerInterface sizeStrategy) {
         mContext = context;
         mSizeStrategy = sizeStrategy;
 

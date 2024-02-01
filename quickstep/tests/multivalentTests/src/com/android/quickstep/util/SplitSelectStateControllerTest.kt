@@ -37,6 +37,7 @@ import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.SystemUiProxy
 import com.android.quickstep.util.SplitSelectStateController.SplitFromDesktopController
+import com.android.quickstep.views.RecentsViewContainer
 import com.android.systemui.shared.recents.model.Task
 import com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50
 import java.util.function.Consumer
@@ -63,7 +64,7 @@ class SplitSelectStateControllerTest {
     private val statsLogger: StatsLogger = mock()
     private val stateManager: StateManager<LauncherState> = mock()
     private val handler: Handler = mock()
-    private val context: StatefulActivity<*> = mock()
+    private val context: RecentsViewContainer = mock()
     private val recentsModel: RecentsModel = mock()
     private val pendingIntent: PendingIntent = mock()
     private val splitFromDesktopController: SplitFromDesktopController = mock()

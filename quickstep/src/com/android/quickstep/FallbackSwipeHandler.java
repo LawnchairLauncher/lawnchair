@@ -223,7 +223,7 @@ public class FallbackSwipeHandler extends
         public AnimatorPlaybackController createActivityAnimationToHome() {
             // copied from {@link LauncherSwipeHandlerV2.LauncherHomeAnimationFactory}
             long accuracy = 2 * Math.max(mDp.widthPx, mDp.heightPx);
-            return mActivity.getStateManager().createAnimationToNewWorkspace(
+            return mContainer.getStateManager().createAnimationToNewWorkspace(
                     RecentsState.HOME, accuracy, StateAnimationConfig.SKIP_ALL_ANIMATIONS);
         }
     }

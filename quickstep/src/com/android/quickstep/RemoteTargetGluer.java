@@ -57,7 +57,7 @@ public class RemoteTargetGluer {
     /**
      * Use this constructor if remote targets are split-screen independent
      */
-    public RemoteTargetGluer(Context context, BaseActivityInterface sizingStrategy,
+    public RemoteTargetGluer(Context context, BaseContainerInterface sizingStrategy,
             RemoteAnimationTargets targets, boolean forDesktop) {
         init(context, sizingStrategy, targets.apps.length, forDesktop);
     }
@@ -66,7 +66,7 @@ public class RemoteTargetGluer {
      * Use this constructor if you want the number of handles created to match the number of active
      * running tasks
      */
-    public RemoteTargetGluer(Context context, BaseActivityInterface sizingStrategy) {
+    public RemoteTargetGluer(Context context, BaseContainerInterface sizingStrategy) {
         DesktopVisibilityController desktopVisibilityController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         if (desktopVisibilityController != null) {
@@ -84,13 +84,13 @@ public class RemoteTargetGluer {
         init(context, sizingStrategy, DEFAULT_NUM_HANDLES, false /* forDesktop */);
     }
 
-    private void init(Context context, BaseActivityInterface sizingStrategy, int numHandles,
+    private void init(Context context, BaseContainerInterface sizingStrategy, int numHandles,
             boolean forDesktop) {
         mRemoteTargetHandles = createHandles(context, sizingStrategy, numHandles, forDesktop);
     }
 
     private RemoteTargetHandle[] createHandles(Context context,
-            BaseActivityInterface sizingStrategy, int numHandles, boolean forDesktop) {
+            BaseContainerInterface sizingStrategy, int numHandles, boolean forDesktop) {
         RemoteTargetHandle[] handles = new RemoteTargetHandle[numHandles];
         for (int i = 0; i < numHandles; i++) {
             TaskViewSimulator tvs = new TaskViewSimulator(context, sizingStrategy);

@@ -36,6 +36,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
@@ -67,7 +68,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, FallbackActivityInterface.INSTANCE);
-        mActivity.getStateManager().addStateListener(this);
+        mContainer.getStateManager().addStateListener(this);
     }
 
     @Override
@@ -80,13 +81,18 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     protected void handleStartHome(boolean animated) {
-        mActivity.startHome();
-        AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
+        mContainer.startHome();
+        AbstractFloatingView.closeAllOpenViews(mContainer, mContainer.isStarted());
     }
 
     @Override
     protected boolean canStartHomeSafely() {
-        return mActivity.canStartHomeSafely();
+        return mContainer.canStartHomeSafely();
+    }
+
+    @Override
+    public StateManager<RecentsState> getStateManager() {
+        return mContainer.getStateManager();
     }
 
     /**
@@ -210,10 +216,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     public void setModalStateEnabled(int taskId, boolean animate) {
         if (taskId != INVALID_TASK_ID) {
             setSelectedTask(taskId);
-            mActivity.getStateManager().goToState(RecentsState.MODAL_TASK, animate);
+            mContainer.getStateManager().goToState(RecentsState.MODAL_TASK, animate);
         } else {
-            if (mActivity.isInState(RecentsState.MODAL_TASK)) {
-                mActivity.getStateManager().goToState(DEFAULT, animate);
+            if (mContainer.isInState(RecentsState.MODAL_TASK)) {
+                mContainer.getStateManager().goToState(DEFAULT, animate);
             }
         }
     }
@@ -223,13 +229,13 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             @SplitConfigurationOptions.StagePosition int stagePosition,
             StatsLogManager.EventEnum splitEvent) {
         super.initiateSplitSelect(taskView, stagePosition, splitEvent);
-        mActivity.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
+        mContainer.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
     }
 
     @Override
     public void onStateTransitionStart(RecentsState toState) {
         setOverviewStateEnabled(true);
-        setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
+        setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mContainer.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.isFullScreen());
         if (toState == MODAL_TASK) {
             setOverviewSelectEnabled(true);
@@ -280,7 +286,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     public void setOverviewStateEnabled(boolean enabled) {
         super.setOverviewStateEnabled(enabled);
         if (enabled) {
-            RecentsState state = mActivity.getStateManager().getState();
+            RecentsState state = mContainer.getStateManager().getState();
             setDisallowScrollToClearAll(!state.hasClearAllButton());
         }
     }
@@ -289,18 +295,18 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     public boolean onTouchEvent(MotionEvent ev) {
         boolean result = super.onTouchEvent(ev);
         // Do not let touch escape to siblings below this view.
-        return result || mActivity.getStateManager().getState().overviewUi();
+        return result || mContainer.getStateManager().getState().overviewUi();
     }
 
     @Override
     public void initiateSplitSelect(SplitSelectSource splitSelectSource) {
         super.initiateSplitSelect(splitSelectSource);
-        mActivity.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
+        mContainer.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
     }
 
     @Override
     protected boolean canLaunchFullscreenTask() {
-        return !mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+        return !mContainer.isInState(OVERVIEW_SPLIT_SELECT);
     }
 
     /** Returns if app pairs are supported in this launcher. */

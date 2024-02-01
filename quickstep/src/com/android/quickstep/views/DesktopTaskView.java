@@ -118,7 +118,7 @@ public class DesktopTaskView extends TaskView {
         mBackgroundView = findViewById(R.id.background);
 
         int topMarginPx =
-                mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+                mContainer.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
         FrameLayout.LayoutParams params = (LayoutParams) mBackgroundView.getLayoutParams();
         params.topMargin = topMarginPx;
         mBackgroundView.setLayoutParams(params);
@@ -303,7 +303,7 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     protected void setThumbnailOrientation(RecentsOrientedState orientationState) {
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
         int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
 
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
@@ -420,7 +420,7 @@ public class DesktopTaskView extends TaskView {
 
         setMeasuredDimension(containerWidth, containerHeight);
 
-        int thumbnailTopMarginPx = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        int thumbnailTopMarginPx = mContainer.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
         containerHeight -= thumbnailTopMarginPx;
 
         int thumbnails = mSnapshotViewMap.size();
@@ -428,8 +428,8 @@ public class DesktopTaskView extends TaskView {
             return;
         }
 
-        int windowWidth = mActivity.getDeviceProfile().widthPx;
-        int windowHeight = mActivity.getDeviceProfile().heightPx;
+        int windowWidth = mContainer.getDeviceProfile().widthPx;
+        int windowHeight = mContainer.getDeviceProfile().heightPx;
 
         float scaleWidth = containerWidth / (float) windowWidth;
         float scaleHeight = containerHeight / (float) windowHeight;
