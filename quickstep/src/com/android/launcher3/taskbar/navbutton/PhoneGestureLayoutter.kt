@@ -20,6 +20,7 @@ import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.systemui.shared.rotation.RotationButton
 
@@ -31,7 +32,8 @@ class PhoneGestureLayoutter(
         startContextualContainer: ViewGroup,
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
-        a11yButton: ImageView?
+        a11yButton: ImageView?,
+        space: Space,
 ) :
         AbstractNavButtonLayoutter(
                 resources,
@@ -40,7 +42,8 @@ class PhoneGestureLayoutter(
                 startContextualContainer,
                 imeSwitcher,
                 rotationButton,
-                a11yButton
+                a11yButton,
+                space
         ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {

@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,10 @@ public class NearestTouchFrame extends FrameLayout {
     private final List<View> mClickableChildren = new ArrayList<>();
     private final List<View> mAttachedChildren = new ArrayList<>();
     private final boolean mIsActive;
+    private final int[] mTmpInt = new int[2];
 
+    // Offset (as the base) to translate window cords to view cords.
+    private final int[] mWindowOffset = new int[2];
     private boolean mIsVertical;
     private View mTouchingChild;
     private final Map<View, Rect> mTouchableRegions = new HashMap<>();
@@ -52,8 +56,11 @@ public class NearestTouchFrame extends FrameLayout {
      */
     private final Comparator<View> mChildRegionComparator =
             (view1, view2) -> {
-                int startingCoordView1 = mIsVertical ? view1.getTop() : view1.getLeft();
-                int startingCoordView2 = mIsVertical ? view2.getTop() : view2.getLeft();
+                int leftTopIndex = mIsVertical ? 1 : 0;
+                view1.getLocationInWindow(mTmpInt);
+                int startingCoordView1 = mTmpInt[leftTopIndex] - mWindowOffset[leftTopIndex];
+                view2.getLocationInWindow(mTmpInt);
+                int startingCoordView2 = mTmpInt[leftTopIndex] - mWindowOffset[leftTopIndex];
 
                 return startingCoordView1 - startingCoordView2;
             };
@@ -74,6 +81,7 @@ public class NearestTouchFrame extends FrameLayout {
         mAttachedChildren.clear();
         mTouchableRegions.clear();
         addClickableChildren(this);
+        getLocationInWindow(mWindowOffset);
         cacheClosestChildLocations();
     }
 
@@ -147,8 +155,9 @@ public class NearestTouchFrame extends FrameLayout {
     }
 
     private Rect getChildsBounds(View child) {
-        int left = child.getLeft();
-        int top = child.getTop();
+        child.getLocationInWindow(mTmpInt);
+        int left = mTmpInt[0] - mWindowOffset[0];
+        int top = mTmpInt[1] - mWindowOffset[1];
         int right = left + child.getWidth();
         int bottom = top + child.getHeight();
         return new Rect(left, top, right, bottom);
@@ -194,6 +203,7 @@ public class NearestTouchFrame extends FrameLayout {
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "NearestTouchFrame:");
 
+        pw.println(String.format("%s\tmWindowOffset=%s", prefix, Arrays.toString(mWindowOffset)));
         pw.println(String.format("%s\tmIsVertical=%s", prefix, mIsVertical));
         pw.println(String.format("%s\tmTouchingChild=%s", prefix, mTouchingChild));
         pw.println(String.format("%s\tmTouchableRegions=%s", prefix,

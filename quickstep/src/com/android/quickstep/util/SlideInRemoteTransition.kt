@@ -28,7 +28,7 @@ import android.window.IRemoteTransitionFinishedCallback
 import android.window.TransitionInfo
 import com.android.launcher3.anim.AnimatorListeners.forEndCallback
 import com.android.launcher3.util.Executors
-import com.android.wm.shell.util.TransitionUtil
+import com.android.wm.shell.shared.TransitionUtil
 
 /** Remote animation which slides the opening targets in and the closing targets out */
 class SlideInRemoteTransition(

@@ -112,7 +112,6 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         appIcon2?.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
     }
 
-
     /** Gets this icon graphic's bounds, with respect to the parent icon's coordinate system. */
     fun getIconBounds(outBounds: Rect) {
         outBounds.set(0, 0, backgroundSize.toInt(), backgroundSize.toInt())
@@ -138,15 +137,8 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         // Draw background
         appPairBackground.draw(canvas)
 
-        // Make sure icons are loaded
-        if (
-            appIcon1 == null ||
-                appIcon2 == null ||
-                appIcon1 is PlaceHolderIconDrawable ||
-                appIcon2 is PlaceHolderIconDrawable
-        ) {
-            applyIcons(parentIcon.info.contents)
-        }
+        // Make sure icons are loaded and fresh
+        applyIcons(parentIcon.info.contents)
 
         // Draw first icon
         canvas.save()

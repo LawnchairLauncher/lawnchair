@@ -19,9 +19,11 @@ package com.android.launcher3.taskbar.navbutton
 import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.systemui.shared.rotation.RotationButton
@@ -34,6 +36,7 @@ class PhonePortraitNavLayoutter(
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
         a11yButton: ImageView?,
+        space: Space
 ) :
     AbstractNavButtonLayoutter(
             resources,
@@ -42,7 +45,8 @@ class PhonePortraitNavLayoutter(
             startContextualContainer,
             imeSwitcher,
             rotationButton,
-            a11yButton
+            a11yButton,
+            space
     ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
@@ -110,15 +114,19 @@ class PhonePortraitNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
+        repositionContextualContainer(startContextualContainer, contextualButtonWidth.toInt(),
+                roundedCornerContentMargin + contentPadding, 0, Gravity.START)
         repositionContextualContainer(endContextualContainer, contextualButtonWidth.toInt(), 0,
                 roundedCornerContentMargin + contentPadding, Gravity.END)
 
+        startContextualContainer.addView(space, MATCH_PARENT, MATCH_PARENT)
         if (imeSwitcher != null) {
             endContextualContainer.addView(imeSwitcher)
             imeSwitcher.layoutParams = getParamsToCenterView()
         }
         if (a11yButton != null) {
             endContextualContainer.addView(a11yButton)
+            a11yButton.layoutParams = getParamsToCenterView()
         }
         if (rotationButton != null) {
             endContextualContainer.addView(rotationButton.currentView)

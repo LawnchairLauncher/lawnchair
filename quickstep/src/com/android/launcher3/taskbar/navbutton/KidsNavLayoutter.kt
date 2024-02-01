@@ -25,6 +25,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
@@ -37,7 +38,8 @@ class KidsNavLayoutter(
         startContextualContainer: ViewGroup,
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
-        a11yButton: ImageView?
+        a11yButton: ImageView?,
+        space: Space,
 ) :
     AbstractNavButtonLayoutter(
             resources,
@@ -46,7 +48,8 @@ class KidsNavLayoutter(
             startContextualContainer,
             imeSwitcher,
             rotationButton,
-            a11yButton
+            a11yButton,
+            space
     ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
@@ -114,6 +117,7 @@ class KidsNavLayoutter(
         }
         if (a11yButton != null) {
             endContextualContainer.addView(a11yButton)
+            a11yButton.layoutParams = getParamsToCenterView()
         }
         if (rotationButton != null) {
             endContextualContainer.addView(rotationButton.currentView)

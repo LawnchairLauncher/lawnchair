@@ -194,6 +194,11 @@
 
     <string-array name="filtered_components" ></string-array>
 
+    <!-- Widget component names to be included in weather category of widget suggestions. -->
+    <string-array name="weather_recommendations"></string-array>
+    <!-- Widget component names to be included in fitness category of widget suggestions. -->
+    <string-array name="fitness_recommendations"></string-array>
+
     <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
     <string name="color_generator_class" translatable="false"/>
 
@@ -251,6 +256,9 @@
 
     <!--  Used for custom widgets  -->
     <array name="custom_widget_providers"/>
+
+    <!--  Used for determining category of a widget presented in widget recommendations. -->
+    <string name="widget_recommendation_category_provider_class" translatable="false"></string>
 
     <!-- Embed parameters -->
     <dimen name="activity_split_ratio"  format="float">0.5</dimen>

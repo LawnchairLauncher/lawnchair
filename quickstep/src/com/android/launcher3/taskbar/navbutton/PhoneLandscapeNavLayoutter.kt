@@ -19,9 +19,11 @@ package com.android.launcher3.taskbar.navbutton
 import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.systemui.shared.rotation.RotationButton
@@ -34,6 +36,7 @@ open class PhoneLandscapeNavLayoutter(
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
         a11yButton: ImageView?,
+        space: Space,
 ) :
     AbstractNavButtonLayoutter(
             resources,
@@ -42,7 +45,8 @@ open class PhoneLandscapeNavLayoutter(
             startContextualContainer,
             imeSwitcher,
             rotationButton,
-            a11yButton
+            a11yButton,
+            space
     ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
@@ -60,7 +64,7 @@ open class PhoneLandscapeNavLayoutter(
         val navButtonContainerHeight = contentWidth - contextualButtonHeight * 2
 
         val navContainerParams = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, navButtonContainerHeight.toInt())
+                MATCH_PARENT, navButtonContainerHeight.toInt())
         navContainerParams.apply {
             topMargin =
                     (contextualButtonHeight + contentPadding + roundedCornerContentMargin).toInt()
@@ -125,6 +129,8 @@ open class PhoneLandscapeNavLayoutter(
         val contentPadding = resources.getDimensionPixelSize(R.dimen.taskbar_phone_content_padding)
         repositionContextualContainer(startContextualContainer, buttonSize,
                 roundedCornerContentMargin + contentPadding, 0, Gravity.TOP)
+        repositionContextualContainer(endContextualContainer, buttonSize,
+                0, roundedCornerContentMargin + contentPadding, Gravity.BOTTOM)
 
         if (imeSwitcher != null) {
             startContextualContainer.addView(imeSwitcher)
@@ -132,18 +138,19 @@ open class PhoneLandscapeNavLayoutter(
         }
         if (a11yButton != null) {
             startContextualContainer.addView(a11yButton)
+            a11yButton.layoutParams = getParamsToCenterView()
         }
         if (rotationButton != null) {
             startContextualContainer.addView(rotationButton.currentView)
             rotationButton.currentView.layoutParams = getParamsToCenterView()
         }
+        endContextualContainer.addView(space, MATCH_PARENT, MATCH_PARENT)
     }
 
     override fun repositionContextualContainer(contextualContainer: ViewGroup, buttonSize: Int,
                                                barAxisMarginTop: Int, barAxisMarginBottom: Int,
                                                gravity: Int) {
-        val contextualContainerParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, buttonSize)
+        val contextualContainerParams = FrameLayout.LayoutParams(MATCH_PARENT, buttonSize)
         contextualContainerParams.apply {
             marginStart = 0
             marginEnd = 0
