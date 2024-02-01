@@ -21,7 +21,9 @@ import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.LayoutDirection;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ import android.widget.FrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.views.ActivityContext;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -91,6 +94,7 @@ public class BubbleBarView extends FrameLayout {
     private boolean mIsBarExpanded = false;
     // The currently selected bubble view.
     private BubbleView mSelectedBubbleView;
+    private BubbleBarLocation mBubbleBarLocation = BubbleBarLocation.DEFAULT;
     // The click listener when the bubble bar is collapsed.
     private View.OnClickListener mOnClickListener;
 
@@ -113,6 +117,8 @@ public class BubbleBarView extends FrameLayout {
 
     @Nullable
     private BubbleView mDraggedBubbleView;
+
+    private int mPreviousLayoutDirection = LayoutDirection.UNDEFINED;
 
     public BubbleBarView(Context context) {
         this(context, null);
@@ -199,17 +205,42 @@ public class BubbleBarView extends FrameLayout {
 
     @Override
     public void onRtlPropertiesChanged(int layoutDirection) {
-        // TODO(b/313661121): set this based on bubble bar position and not LTR or RTL
-        boolean onLeft = layoutDirection == LAYOUT_DIRECTION_RTL;
+        if (mBubbleBarLocation == BubbleBarLocation.DEFAULT
+                && mPreviousLayoutDirection != layoutDirection) {
+            Log.d(TAG, "BubbleBar RTL properties changed, new layoutDirection=" + layoutDirection
+                    + " previous layoutDirection=" + mPreviousLayoutDirection);
+            mPreviousLayoutDirection = layoutDirection;
+            onBubbleBarLocationChanged();
+        }
+    }
+
+    private void onBubbleBarLocationChanged() {
+        final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
         mBubbleBarBackground.setAnchorLeft(onLeft);
         mRelativePivotX = onLeft ? 0f : 1f;
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        if (layoutParams instanceof LayoutParams lp) {
+            lp.gravity = Gravity.BOTTOM | (onLeft ? Gravity.LEFT : Gravity.RIGHT);
+            setLayoutParams(lp);
+        }
+        invalidate();
     }
 
     /**
-     * @return <code>true</code> when bar is pinned to the left edge of the screen
+     * @return current {@link BubbleBarLocation}
      */
-    public boolean isOnLeft() {
-        return getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+    public BubbleBarLocation getBubbleBarLocation() {
+        return mBubbleBarLocation;
+    }
+
+    /**
+     * Update {@link BubbleBarLocation}
+     */
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        if (bubbleBarLocation != mBubbleBarLocation) {
+            mBubbleBarLocation = bubbleBarLocation;
+            onBubbleBarLocationChanged();
+        }
     }
 
     /**
@@ -290,7 +321,7 @@ public class BubbleBarView extends FrameLayout {
         int bubbleCount = getChildCount();
         final float ty = (mBubbleBarBounds.height() - mIconSize) / 2f;
         final boolean animate = getVisibility() == VISIBLE;
-        final boolean onLeft = isOnLeft();
+        final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
         for (int i = 0; i < bubbleCount; i++) {
             BubbleView bv = (BubbleView) getChildAt(i);
             bv.setTranslationY(ty);
@@ -453,7 +484,7 @@ public class BubbleBarView extends FrameLayout {
     private float arrowPositionForSelectedWhenExpanded() {
         final int index = indexOfChild(mSelectedBubbleView);
         final int bubblePosition;
-        if (isOnLeft()) {
+        if (mBubbleBarLocation.isOnLeft(isLayoutRtl())) {
             // Bubble positions are reversed. First bubble is on the right.
             bubblePosition = getChildCount() - index - 1;
         } else {
@@ -465,7 +496,7 @@ public class BubbleBarView extends FrameLayout {
     private float arrowPositionForSelectedWhenCollapsed() {
         final int index = indexOfChild(mSelectedBubbleView);
         final int bubblePosition;
-        if (isOnLeft()) {
+        if (mBubbleBarLocation.isOnLeft(isLayoutRtl())) {
             // Bubble positions are reversed. First bubble may be shifted, if there are more
             // bubbles than the current bubble and overflow.
             bubblePosition = index == 0 && getChildCount() > 2 ? 1 : 0;

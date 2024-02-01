@@ -37,6 +37,7 @@ import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.SystemUiProxy;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 
 import java.util.List;
 import java.util.Objects;
@@ -166,6 +167,20 @@ public class BubbleBarViewController {
     /** Whether the bubble bar has bubbles. */
     public boolean hasBubbles() {
         return mBubbleBarController.getSelectedBubbleKey() != null;
+    }
+
+    /**
+     * @return current {@link BubbleBarLocation}
+     */
+    public BubbleBarLocation getBubbleBarLocation() {
+        return mBarView.getBubbleBarLocation();
+    }
+
+    /**
+     * Update bar {@link BubbleBarLocation}
+     */
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        mBarView.setBubbleBarLocation(bubbleBarLocation);
     }
 
     /**

@@ -73,6 +73,7 @@ import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.quickstep.SystemUiProxy;
 import com.android.wm.shell.Flags;
 import com.android.wm.shell.bubbles.IBubblesListener;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 import com.android.wm.shell.common.bubbles.BubbleBarUpdate;
 import com.android.wm.shell.common.bubbles.BubbleInfo;
 import com.android.wm.shell.common.bubbles.RemovedBubble;
@@ -161,6 +162,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         String selectedBubbleKey;
         String suppressedBubbleKey;
         String unsuppressedBubbleKey;
+        BubbleBarLocation bubbleBarLocation;
         List<RemovedBubble> removedBubbles;
         List<String> bubbleKeysInOrder;
 
@@ -176,6 +178,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             selectedBubbleKey = update.selectedBubbleKey;
             suppressedBubbleKey = update.suppressedBubbleKey;
             unsuppressedBubbleKey = update.unsupressedBubbleKey;
+            bubbleBarLocation = update.bubbleBarLocation;
             removedBubbles = update.removedBubbles;
             bubbleKeysInOrder = update.bubbleKeysInOrder;
         }
@@ -400,6 +403,12 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 Log.w(TAG, "expansion was changed but is the same");
             }
         }
+        if (update.bubbleBarLocation != null) {
+            if (update.bubbleBarLocation != mBubbleBarViewController.getBubbleBarLocation()) {
+                mBubbleBarViewController.setBubbleBarLocation(update.bubbleBarLocation);
+                mBubbleStashController.setBubbleBarLocation(update.bubbleBarLocation);
+            }
+        }
     }
 
     /** Tells WMShell to show the currently selected bubble. */
@@ -593,7 +602,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         Rect location = new Rect();
         // currentBarBounds is only useful for distance from left or right edge.
         // It contains the current bounds, calculate the expanded bounds.
-        if (mBarView.isOnLeft()) {
+        if (mBarView.getBubbleBarLocation().isOnLeft(mBarView.isLayoutRtl())) {
             location.left = currentBarBounds.left;
             location.right = (int) (currentBarBounds.left + mBarView.expandedWidth());
         } else {
