@@ -39,6 +39,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_MOVE;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_UP;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.RECENTS_ANIMATION_START_PENDING;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER;
@@ -697,7 +698,7 @@ public class TouchInteractionService extends Service {
     private void onInputEvent(InputEvent ev) {
         if (!(ev instanceof MotionEvent)) {
             ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
-                    .append("Cannot process input event, received unknown event ")
+                    .append("Cannot process input event: received unknown event ")
                     .append(ev.toString()));
             return;
         }
@@ -710,22 +711,32 @@ public class TouchInteractionService extends Service {
         if (!isUserUnlocked || (mDeviceState.isButtonNavMode()
                 && !isTrackpadMotionEvent(event))) {
             ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
-                    .append("Cannot process input event, ")
+                    .append("Cannot process input event: ")
                     .append(!isUserUnlocked
                             ? "user is locked"
                             : "using 3-button nav and event is not a trackpad event"));
             return;
         }
 
-        SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
-
         final int action = event.getActionMasked();
         // Note this will create a new consumer every mouse click, as after ACTION_UP from the click
         // an ACTION_HOVER_ENTER will fire as well.
         boolean isHoverActionWithoutConsumer = enableCursorHoverStates()
                 && isHoverActionWithoutConsumer(event);
+        if (mTaskAnimationManager.isRecentsAnimationStartPending()
+                && (action == ACTION_DOWN || isHoverActionWithoutConsumer)) {
+            ActiveGestureLog.INSTANCE.addLog(
+                    new CompoundString("TIS.onInputEvent: ")
+                            .append("Cannot process input event: a recents animation has been ")
+                            .append("requested, but hasn't started."),
+                    RECENTS_ANIMATION_START_PENDING);
+            return;
+        }
+
+        SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
+
         CompoundString reasonString = action == ACTION_DOWN
-                ? new CompoundString("onMotionEvent: ") : CompoundString.NO_OP;
+                ? new CompoundString("TIS.onMotionEvent: ") : CompoundString.NO_OP;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
