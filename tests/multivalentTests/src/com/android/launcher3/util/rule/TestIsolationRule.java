@@ -44,11 +44,15 @@ public class TestIsolationRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                base.evaluate();
-                // Make sure that Launcher workspace looks correct.
+                // Reset activity stop count.
+                mLauncher.getAndResetActivityStopCount();
 
+                base.evaluate();
+
+                // Make sure that Launcher workspace looks correct.
                 UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressHome();
                 AbstractLauncherUiTest.checkDetectedLeaks(mLauncher, mRequireOneActiveActivity);
+                mLauncher.assertNoUnexpectedStops();
             }
         };
     }
