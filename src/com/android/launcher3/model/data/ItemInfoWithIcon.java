@@ -16,14 +16,13 @@
 
 package com.android.launcher3.model.data;
 
-import static com.android.launcher3.Flags.enableSupportForArchiving;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapInfo.DrawableCreationFlags;
 import com.android.launcher3.icons.FastBitmapDrawable;
@@ -158,7 +157,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     /**
      * Returns true if the app corresponding to the item is archived. */
     public boolean isArchived() {
-        if (!enableSupportForArchiving()) {
+        if (!Utilities.enableSupportForArchiving()) {
             return false;
         }
         return (runtimeStatusFlags & FLAG_ARCHIVED) != 0;
