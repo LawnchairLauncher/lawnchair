@@ -56,7 +56,7 @@
     <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
-    <dimen name="resize_frame_margin">22dp</dimen>
+    <dimen name="resize_frame_margin">23dp</dimen>
     <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">24dp</dimen>
 
     <!-- App widget reconfigure button -->
