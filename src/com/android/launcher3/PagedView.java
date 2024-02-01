@@ -637,6 +637,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mMinFlingVelocity = res.getDimensionPixelSize(R.dimen.min_fling_velocity);
         mMinSnapVelocity = res.getDimensionPixelSize(R.dimen.min_page_snap_velocity);
         mPageSnapAnimationDuration = res.getInteger(R.integer.config_pageSnapAnimationDuration);
+        onVelocityValuesUpdated();
+    }
+
+    protected void onVelocityValuesUpdated() {
+        // Overridden in RecentsView
     }
 
     @Override
@@ -1582,7 +1587,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
-        if (!shouldHandleRequestChildFocus()) {
+        if (!shouldHandleRequestChildFocus(child)) {
             return;
         }
         // In case the device is controlled by a controller, mCurrentPage isn't updated properly
@@ -1598,7 +1603,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 
-    protected boolean shouldHandleRequestChildFocus() {
+    protected boolean shouldHandleRequestChildFocus(View child) {
         return true;
     }
 
@@ -1652,7 +1657,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void snapToDestination() {
-        snapToPage(getDestinationPage(), mPageSnapAnimationDuration);
+        snapToPage(getDestinationPage(), getSnapAnimationDuration());
     }
 
     // We want the duration of the page snap animation to be influenced by the distance that
@@ -1676,7 +1681,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (Math.abs(velocity) < mMinFlingVelocity) {
             // If the velocity is low enough, then treat this more as an automatic page advance
             // as opposed to an apparent physical response to flinging
-            return snapToPage(whichPage, mPageSnapAnimationDuration);
+            return snapToPage(whichPage, getSnapAnimationDuration());
         }
 
         // Here we compute a "distance" that will be used in the computation of the overall
@@ -1698,12 +1703,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return snapToPage(whichPage, delta, duration);
     }
 
+    protected int getSnapAnimationDuration() {
+        return mPageSnapAnimationDuration;
+    }
+
     public boolean snapToPage(int whichPage) {
-        return snapToPage(whichPage, mPageSnapAnimationDuration);
+        return snapToPage(whichPage, getSnapAnimationDuration());
     }
 
     public boolean snapToPageImmediately(int whichPage) {
-        return snapToPage(whichPage, mPageSnapAnimationDuration, true);
+        return snapToPage(whichPage, getSnapAnimationDuration(), true);
     }
 
     public boolean snapToPage(int whichPage, int duration) {

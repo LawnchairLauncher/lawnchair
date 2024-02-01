@@ -178,7 +178,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract <T extends RecentsView> T getVisibleRecentsView();
 
     @UiThread
-    public abstract boolean switchToRecentsIfVisible(Runnable onCompleteCallback);
+    public abstract boolean switchToRecentsIfVisible(Animator.AnimatorListener animatorListener);
 
     public abstract Rect getOverviewWindowBounds(
             Rect homeBounds, RemoteAnimationTarget target);
@@ -520,7 +520,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             // Since we are changing the start position of the UI, reapply the state, at the end
             controller.setEndAction(() -> mActivity.getStateManager().goToState(
                     controller.getInterpolatedProgress() > 0.5 ? mTargetState : mBackgroundState,
-                    false));
+                    /* animated= */ false));
 
             RecentsView recentsView = mActivity.getOverviewPanel();
             AnimatorControllerWithResistance controllerWithResistance =
