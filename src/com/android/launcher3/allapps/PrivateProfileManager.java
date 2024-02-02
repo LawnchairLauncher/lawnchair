@@ -60,9 +60,10 @@ import java.util.function.Predicate;
  */
 public class PrivateProfileManager extends UserProfileManager {
 
-    private static final String SAFETY_CENTER_INTENT = Intent.ACTION_SAFETY_CENTER;
-    private static final String PS_SETTINGS_FRAGMENT_KEY = ":settings:fragment_args_key";
-    private static final String PS_SETTINGS_FRAGMENT_VALUE = "AndroidPrivateSpace_personal";
+    // TODO (b/324573634): Fix the intent string.
+    public static final Intent PRIVATE_SPACE_INTENT = new
+            Intent("com.android.settings.action.PRIVATE_SPACE_SETUP_FLOW");
+
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private Set<String> mPreInstalledSystemPackages = new HashSet<>();
@@ -158,16 +159,21 @@ public class PrivateProfileManager extends UserProfileManager {
         }
     }
 
-    /** Opens the Private Space Settings Entry Point. */
+    /** Opens the Private Space Settings Page. */
     public void openPrivateSpaceSettings() {
-        Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
-        psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
-        mAllApps.getContext().startActivity(psSettingsIntent);
+        if (mPrivateSpaceSettingsAvailable) {
+            mAllApps.getContext().startActivity(PRIVATE_SPACE_INTENT);
+        }
     }
 
-    /** Whether Private Space Settings Entry Point is available on the device. */
+    /** Returns whether or not Private Space Settings Page is available. */
     public boolean isPrivateSpaceSettingsAvailable() {
         return mPrivateSpaceSettingsAvailable;
+    }
+
+    /** Sets whether Private Space Settings Page is available. */
+    public boolean setPrivateSpaceSettingsAvailable(boolean value) {
+        return mPrivateSpaceSettingsAvailable = value;
     }
 
     /** Initializes binder call based properties in non-main thread.
@@ -183,19 +189,14 @@ public class PrivateProfileManager extends UserProfileManager {
         Preconditions.assertNonUiThread();
         setPreInstalledSystemPackages();
         setAppInstallerIntent();
-        setPrivateSpaceSettingsAvailable();
+        initializePrivateSpaceSettingsState();
     }
 
-    private void setPrivateSpaceSettingsAvailable() {
-        if (mPrivateSpaceSettingsAvailable) {
-            return;
-        }
+    private void initializePrivateSpaceSettingsState() {
         Preconditions.assertNonUiThread();
-        Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
-        psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
         ResolveInfo resolveInfo = mAllApps.getContext().getPackageManager()
-                .resolveActivity(psSettingsIntent, PackageManager.MATCH_SYSTEM_ONLY);
-        mPrivateSpaceSettingsAvailable = resolveInfo != null;
+                .resolveActivity(PRIVATE_SPACE_INTENT, PackageManager.MATCH_SYSTEM_ONLY);
+        setPrivateSpaceSettingsAvailable(resolveInfo != null);
     }
 
     private void setPreInstalledSystemPackages() {

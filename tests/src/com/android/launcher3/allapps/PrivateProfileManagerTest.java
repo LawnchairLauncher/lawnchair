@@ -76,9 +76,6 @@ public class PrivateProfileManagerTest {
             new UserIconInfo(MAIN_HANDLE, UserIconInfo.TYPE_MAIN);
     private static final UserIconInfo PRIVATE_ICON_INFO =
             new UserIconInfo(PRIVATE_HANDLE, UserIconInfo.TYPE_PRIVATE);
-    private static final String SAFETY_CENTER_INTENT = Intent.ACTION_SAFETY_CENTER;
-    private static final String PS_SETTINGS_FRAGMENT_KEY = ":settings:fragment_args_key";
-    private static final String PS_SETTINGS_FRAGMENT_VALUE = "AndroidPrivateSpace_personal";
 
     private PrivateProfileManager mPrivateProfileManager;
     @Mock
@@ -180,9 +177,9 @@ public class PrivateProfileManagerTest {
 
     @Test
     public void openPrivateSpaceSettings_triggersSecurityAndPrivacyIntent() {
-        Intent expectedIntent = new Intent(SAFETY_CENTER_INTENT);
-        expectedIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
+        Intent expectedIntent = PrivateProfileManager.PRIVATE_SPACE_INTENT;
         ArgumentCaptor<Intent> acIntent = ArgumentCaptor.forClass(Intent.class);
+        mPrivateProfileManager.setPrivateSpaceSettingsAvailable(true);
 
         mPrivateProfileManager.openPrivateSpaceSettings();
 
@@ -190,9 +187,6 @@ public class PrivateProfileManagerTest {
         Intent actualIntent = acIntent.getValue();
         assertEquals("Intent Action is different", expectedIntent.getAction(),
                 actualIntent.getAction());
-        assertEquals("Settings Fragment is incorrect in Intent",
-                expectedIntent.getStringExtra(PS_SETTINGS_FRAGMENT_KEY),
-                actualIntent.getStringExtra(PS_SETTINGS_FRAGMENT_KEY));
     }
 
     private static void awaitTasksCompleted() throws Exception {
