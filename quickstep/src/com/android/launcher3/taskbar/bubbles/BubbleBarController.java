@@ -71,6 +71,7 @@ import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.quickstep.SystemUiProxy;
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.bubbles.IBubblesListener;
 import com.android.wm.shell.common.bubbles.BubbleBarUpdate;
 import com.android.wm.shell.common.bubbles.BubbleInfo;
@@ -101,8 +102,8 @@ public class BubbleBarController extends IBubblesListener.Stub {
      *
      * @see #onTaskbarRecreated()
      */
-    private static boolean sBubbleBarEnabled =
-            SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
+    private static boolean sBubbleBarEnabled = Flags.enableBubbleBar()
+            || SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
 
     /** Whether showing bubbles in the launcher bubble bar is enabled. */
     public static boolean isBubbleBarEnabled() {
@@ -111,8 +112,10 @@ public class BubbleBarController extends IBubblesListener.Stub {
 
     /** Re-reads the value of the flag from SystemProperties when taskbar is recreated. */
     public static void onTaskbarRecreated() {
-        sBubbleBarEnabled = SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
+        sBubbleBarEnabled = Flags.enableBubbleBar()
+                || SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
     }
+
     private static final int MASK_HIDE_BUBBLE_BAR = SYSUI_STATE_BOUNCER_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
