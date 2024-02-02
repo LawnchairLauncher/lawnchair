@@ -24,6 +24,7 @@ import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Outline;
 import android.graphics.Rect;
@@ -69,6 +70,8 @@ public class TaskMenuView extends AbstractFloatingView {
     private TextView mTaskName;
     @Nullable
     private AnimatorSet mOpenCloseAnimator;
+    @Nullable
+    private ValueAnimator mRevealAnimator;
     @Nullable private Runnable mOnClosingStartCallback;
     private TaskView mTaskView;
     private TaskIdAttributeContainer mTaskContainer;
@@ -290,13 +293,18 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void animateOpenOrClosed(boolean closing) {
         if (mOpenCloseAnimator != null && mOpenCloseAnimator.isRunning()) {
-            mOpenCloseAnimator.end();
+            mOpenCloseAnimator.cancel();
         }
         mOpenCloseAnimator = new AnimatorSet();
-
-        final Animator revealAnimator = createOpenCloseOutlineProvider()
-                .createRevealAnimator(this, closing);
-        revealAnimator.setInterpolator(enableOverviewIconMenu() ? Interpolators.EMPHASIZED
+        // If we're opening, we just start from the beginning as a new `TaskMenuView` is created
+        // each time we do the open animation so there will never be a partial value here.
+        float revealAnimationStartProgress = 0f;
+        if (closing && mRevealAnimator != null) {
+            revealAnimationStartProgress = 1f - mRevealAnimator.getAnimatedFraction();
+        }
+        mRevealAnimator = createOpenCloseOutlineProvider()
+                .createRevealAnimator(this, closing, revealAnimationStartProgress);
+        mRevealAnimator.setInterpolator(enableOverviewIconMenu() ? Interpolators.EMPHASIZED
                 : Interpolators.DECELERATE);
 
         if (enableOverviewIconMenu()) {
@@ -349,7 +357,7 @@ public class TaskMenuView extends AbstractFloatingView {
             mOpenCloseAnimator.playTogether(translationXAnim, menuTranslationXAnim);
         }
 
-        mOpenCloseAnimator.playTogether(revealAnimator,
+        mOpenCloseAnimator.playTogether(mRevealAnimator,
                 ObjectAnimator.ofFloat(
                         mTaskContainer.getThumbnailView(), DIM_ALPHA,
                         closing ? 0 : TaskView.MAX_PAGE_SCRIM_ALPHA),
@@ -378,6 +386,7 @@ public class TaskMenuView extends AbstractFloatingView {
         mIsOpen = false;
         resetOverviewIconMenu();
         mActivity.getDragLayer().removeView(this);
+        mRevealAnimator = null;
     }
 
     private void resetOverviewIconMenu() {
