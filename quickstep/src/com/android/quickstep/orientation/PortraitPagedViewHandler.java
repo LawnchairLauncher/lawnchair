@@ -34,6 +34,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -530,25 +531,16 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
         float dividerScale = splitBoundsConfig.appsStackedVertically
                 ? splitBoundsConfig.dividerHeightPercent
                 : splitBoundsConfig.dividerWidthPercent;
-        int primarySnapshotHeight;
-        int primarySnapshotWidth;
-        int secondarySnapshotHeight;
-        int secondarySnapshotWidth;
-        float taskPercent = splitBoundsConfig.appsStackedVertically ?
-                splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
+        Pair<Point, Point> taskViewSizes =
+                getGroupedTaskViewSizes(dp, splitBoundsConfig, parentWidth, parentHeight);
         if (dp.isLeftRightSplit) {
             int scaledDividerBar = Math.round(parentWidth * dividerScale);
-            primarySnapshotHeight = totalThumbnailHeight;
-            primarySnapshotWidth = Math.round(parentWidth * taskPercent);
-
-            secondarySnapshotHeight = totalThumbnailHeight;
-            secondarySnapshotWidth = parentWidth - primarySnapshotWidth - scaledDividerBar;
             if (isRtl) {
-                int translationX = secondarySnapshotWidth + scaledDividerBar;
+                int translationX = taskViewSizes.second.x + scaledDividerBar;
                 primarySnapshot.setTranslationX(-translationX);
                 secondarySnapshot.setTranslationX(0);
             } else {
-                int translationX = primarySnapshotWidth + scaledDividerBar;
+                int translationX = taskViewSizes.first.x + scaledDividerBar;
                 secondarySnapshot.setTranslationX(translationX);
                 primarySnapshot.setTranslationX(0);
             }
@@ -557,18 +549,8 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
             // Reset unused translations
             primarySnapshot.setTranslationY(0);
         } else {
-            int taskbarHeight = dp.isTransientTaskbar ? 0 : dp.taskbarHeight;
-            float scale = (float) totalThumbnailHeight / (dp.availableHeightPx - taskbarHeight);
-            float topTaskHeight = dp.availableHeightPx * taskPercent;
             float finalDividerHeight = Math.round(totalThumbnailHeight * dividerScale);
-            float scaledTopTaskHeight = topTaskHeight * scale;
-            primarySnapshotWidth = parentWidth;
-            primarySnapshotHeight = Math.round(scaledTopTaskHeight);
-
-            secondarySnapshotWidth = parentWidth;
-            secondarySnapshotHeight = Math.round(totalThumbnailHeight - primarySnapshotHeight
-                    - finalDividerHeight);
-            float translationY = primarySnapshotHeight + spaceAboveSnapshot + finalDividerHeight;
+            float translationY = taskViewSizes.first.y + spaceAboveSnapshot + finalDividerHeight;
             secondarySnapshot.setTranslationY(translationY);
 
             FrameLayout.LayoutParams primaryParams =
@@ -584,16 +566,58 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
             primarySnapshot.setTranslationX(0);
         }
         primarySnapshot.measure(
-                View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY));
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.first.x, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.first.y, View.MeasureSpec.EXACTLY));
         secondarySnapshot.measure(
-                View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.second.x, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.second.y,
                         View.MeasureSpec.EXACTLY));
         primarySnapshot.setScaleX(1);
         secondarySnapshot.setScaleX(1);
         primarySnapshot.setScaleY(1);
         secondarySnapshot.setScaleY(1);
+    }
+
+    @Override
+    public Pair<Point, Point> getGroupedTaskViewSizes(
+            DeviceProfile dp,
+            SplitBounds splitBoundsConfig,
+            int parentWidth,
+            int parentHeight) {
+        int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
+        int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
+        float dividerScale = splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.dividerHeightPercent
+                : splitBoundsConfig.dividerWidthPercent;
+        float taskPercent = splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.topTaskPercent
+                : splitBoundsConfig.leftTaskPercent;
+
+        Point firstTaskViewSize = new Point();
+        Point secondTaskViewSize = new Point();
+
+        if (dp.isLeftRightSplit) {
+            int scaledDividerBar = Math.round(parentWidth * dividerScale);
+            firstTaskViewSize.x = Math.round(parentWidth * taskPercent);
+            firstTaskViewSize.y = totalThumbnailHeight;
+
+            secondTaskViewSize.x = parentWidth - firstTaskViewSize.x - scaledDividerBar;
+            secondTaskViewSize.y = totalThumbnailHeight;
+        } else {
+            int taskbarHeight = dp.isTransientTaskbar ? 0 : dp.taskbarHeight;
+            float scale = (float) totalThumbnailHeight / (dp.availableHeightPx - taskbarHeight);
+            float topTaskHeight = dp.availableHeightPx * taskPercent;
+            float finalDividerHeight = Math.round(totalThumbnailHeight * dividerScale);
+            float scaledTopTaskHeight = topTaskHeight * scale;
+            firstTaskViewSize.x = parentWidth;
+            firstTaskViewSize.y = Math.round(scaledTopTaskHeight);
+
+            secondTaskViewSize.x = parentWidth;
+            secondTaskViewSize.y = Math.round(totalThumbnailHeight - firstTaskViewSize.y
+                    - finalDividerHeight);
+        }
+
+        return new Pair<>(firstTaskViewSize, secondTaskViewSize);
     }
 
     @Override

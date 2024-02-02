@@ -7,11 +7,14 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.quickstep.util.SplitScreenUtils.convertLauncherSplitBoundsToShell;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import androidx.annotation.NonNull;
@@ -37,10 +40,11 @@ import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 
+import kotlin.Unit;
+
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import kotlin.Unit;
 
 /**
  * TaskView that contains and shows thumbnails for not one, BUT TWO(!!) tasks
@@ -374,18 +378,7 @@ public class GroupedTaskView extends TaskView {
         }
         if (!enableOverviewIconMenu()) {
             updateIconPlacement();
-            return;
         }
-
-        if (getRecentsView() == null) {
-            return;
-        }
-
-        int iconMargins = getResources().getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_start_margin) * 2;
-        ((IconAppChipView) mIconView).setMaxWidth(mSnapshotView.getMeasuredWidth() - iconMargins);
-        ((IconAppChipView) mIconView2).setMaxWidth(mSnapshotView2.getMeasuredWidth() - iconMargins);
-        setOrientationState(getRecentsView().getPagedViewOrientedState());
     }
 
     @Override
@@ -395,8 +388,25 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void setOrientationState(RecentsOrientedState orientationState) {
-        super.setOrientationState(orientationState);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        if (enableOverviewIconMenu() && mSplitBoundsConfig != null) {
+            ViewGroup.LayoutParams layoutParams = getLayoutParams();
+            Pair<Point, Point> groupedTaskViewSizes =
+                    orientationState.getOrientationHandler().getGroupedTaskViewSizes(
+                            deviceProfile,
+                            mSplitBoundsConfig,
+                            layoutParams.width,
+                            layoutParams.height
+                    );
+            int iconMargins = getResources().getDimensionPixelSize(
+                    R.dimen.task_thumbnail_icon_menu_start_margin) * 2;
+            ((IconAppChipView) mIconView).setMaxWidth(groupedTaskViewSizes.first.x - iconMargins);
+            ((IconAppChipView) mIconView2).setMaxWidth(groupedTaskViewSizes.second.x - iconMargins);
+        }
+        // setMaxWidth() needs to be called before mIconView.setIconOrientation which is called in
+        // the super below.
+        super.setOrientationState(orientationState);
+
         boolean isGridTask = deviceProfile.isTablet && !isFocusedTask();
         mIconView2.setIconOrientation(orientationState, isGridTask);
         updateIconPlacement();
@@ -412,10 +422,27 @@ public class GroupedTaskView extends TaskView {
         int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
 
-        getPagedOrientationHandler().setSplitIconParams(mIconView.asView(), mIconView2.asView(),
-                taskIconHeight, mSnapshotView.getMeasuredWidth(), mSnapshotView.getMeasuredHeight(),
-                getMeasuredHeight(), getMeasuredWidth(), isRtl, deviceProfile,
-                mSplitBoundsConfig);
+        if (enableOverviewIconMenu()) {
+            ViewGroup.LayoutParams layoutParams = getLayoutParams();
+            Pair<Point, Point> groupedTaskViewSizes =
+                    getPagedOrientationHandler()
+                            .getGroupedTaskViewSizes(
+                                    deviceProfile,
+                                    mSplitBoundsConfig,
+                                    layoutParams.width,
+                                    layoutParams.height
+                            );
+
+            getPagedOrientationHandler().setSplitIconParams(mIconView.asView(), mIconView2.asView(),
+                    taskIconHeight, groupedTaskViewSizes.first.x, groupedTaskViewSizes.first.y,
+                    getLayoutParams().height, getLayoutParams().width, isRtl, deviceProfile,
+                    mSplitBoundsConfig);
+        } else {
+            getPagedOrientationHandler().setSplitIconParams(mIconView.asView(), mIconView2.asView(),
+                    taskIconHeight, mSnapshotView.getMeasuredWidth(),
+                    mSnapshotView.getMeasuredHeight(), getMeasuredHeight(), getMeasuredWidth(),
+                    isRtl, deviceProfile, mSplitBoundsConfig);
+        }
     }
 
     private void updateSecondaryDwbPlacement() {
