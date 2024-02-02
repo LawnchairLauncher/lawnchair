@@ -161,11 +161,12 @@ public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest {
 
         public int getWidgetId() throws InterruptedException {
             Intent intent = blockingGetExtraIntent();
-            assertNotNull(intent);
-            assertEquals(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE, intent.getAction());
+            assertNotNull("Null EXTRA_INTENT", intent);
+            assertEquals("Intent action is not ACTION_APPWIDGET_CONFIGURE",
+                    AppWidgetManager.ACTION_APPWIDGET_CONFIGURE, intent.getAction());
             int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     LauncherAppWidgetInfo.NO_ID);
-            assertNotSame(widgetId, LauncherAppWidgetInfo.NO_ID);
+            assertNotSame("Widget id is NO_ID", widgetId, LauncherAppWidgetInfo.NO_ID);
             return widgetId;
         }
     }
