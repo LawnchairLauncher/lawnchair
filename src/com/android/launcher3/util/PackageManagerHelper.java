@@ -16,6 +16,8 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.Flags.enableSupportForArchiving;
+
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -112,8 +114,7 @@ public class PackageManagerHelper {
             @NonNull final UserHandle user, final int flags) {
         try {
             ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
-            return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                    ? null : info;
+            return !isPackageInstalledOrArchived(info) || !info.enabled ? null : info;
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
@@ -252,5 +253,12 @@ public class PackageManagerHelper {
             return (int) (100 * info.getLoadingProgress());
         }
         return 100;
+    }
+
+    /** Returns true in case app is installed on the device or in archived state. */
+    @SuppressWarnings("NewApi")
+    private boolean isPackageInstalledOrArchived(ApplicationInfo info) {
+        return (info.flags & ApplicationInfo.FLAG_INSTALLED) != 0 || (
+                enableSupportForArchiving() && info.isArchived);
     }
 }
