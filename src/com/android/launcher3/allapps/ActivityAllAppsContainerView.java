@@ -1156,13 +1156,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
         applyAdapterSideAndBottomPaddings(grid);
 
+        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         // Ignore left/right insets on tablet because we are already centered in-screen.
-        if (grid.isPhone) {
-            MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+        if (grid.isTablet) {
+            mlp.leftMargin = mlp.rightMargin = 0;
+        } else {
             mlp.leftMargin = insets.left;
             mlp.rightMargin = insets.right;
-            setLayoutParams(mlp);
         }
+        setLayoutParams(mlp);
 
         if (!grid.isVerticalBarLayout() || FeatureFlags.enableResponsiveWorkspace()) {
             int topPadding = grid.allAppsPadding.top;

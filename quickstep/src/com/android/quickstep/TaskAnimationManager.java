@@ -66,6 +66,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     private Runnable mLiveTileCleanUpHandler;
     private Context mCtx;
 
+    private boolean mRecentsAnimationStartPending = false;
+
     private final TaskStackChangeListener mLiveTileRestartListener = new TaskStackChangeListener() {
         @Override
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
@@ -100,6 +102,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 .startRecentsActivity(intent, 0, null, null, null));
     }
 
+    public boolean isRecentsAnimationStartPending() {
+        return mRecentsAnimationStartPending;
+    }
+
     /**
      * Starts a new recents animation for the activity with the given {@param intent}.
      */
@@ -109,6 +115,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         ActiveGestureLog.INSTANCE.addLog(
                 /* event= */ "startRecentsAnimation",
                 /* gestureEvent= */ START_RECENTS_ANIMATION);
+        mRecentsAnimationStartPending = true;
         // Notify if recents animation is still running
         if (mController != null) {
             String msg = "New recents animation started before old animation completed";
@@ -138,6 +145,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             @Override
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
+                mRecentsAnimationStartPending = false;
                 if (mCallbacks == null) {
                     // It's possible for the recents animation to have finished and be cleaned up
                     // by the time we process the start callback, and in that case, just we can skip
@@ -178,11 +186,13 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
             @Override
             public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
+                mRecentsAnimationStartPending = false;
                 cleanUpRecentsAnimation(newCallbacks);
             }
 
             @Override
             public void onRecentsAnimationFinished(RecentsAnimationController controller) {
+                mRecentsAnimationStartPending = false;
                 cleanUpRecentsAnimation(newCallbacks);
             }
 

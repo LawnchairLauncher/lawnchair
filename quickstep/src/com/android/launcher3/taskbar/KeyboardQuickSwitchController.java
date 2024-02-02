@@ -22,6 +22,7 @@ import android.content.pm.ActivityInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
@@ -47,7 +48,8 @@ import java.util.stream.Collectors;
 public final class KeyboardQuickSwitchController implements
         TaskbarControllers.LoggableTaskbarController {
 
-    static final int MAX_TASKS = 6;
+    @VisibleForTesting
+    public static final int MAX_TASKS = 6;
 
     @NonNull private final ControllerCallbacks mControllerCallbacks = new ControllerCallbacks();
 

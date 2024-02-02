@@ -34,7 +34,7 @@ class PhoneSeascapeNavLayoutter(
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
         a11yButton: ImageView?,
-        space: Space,
+        space: Space?
 ) :
         PhoneLandscapeNavLayoutter(
                 resources,

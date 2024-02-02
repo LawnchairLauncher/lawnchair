@@ -62,6 +62,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
@@ -128,7 +129,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract int getSwipeUpDestinationAndLength(
             DeviceProfile dp, Context context, Rect outRect,
-            PagedOrientationHandler orientationHandler);
+            RecentsPagedOrientationHandler orientationHandler);
 
     /** Called when the animation to home has fully settled. */
     public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {}
@@ -177,7 +178,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract <T extends RecentsView> T getVisibleRecentsView();
 
     @UiThread
-    public abstract boolean switchToRecentsIfVisible(Runnable onCompleteCallback);
+    public abstract boolean switchToRecentsIfVisible(Animator.AnimatorListener animatorListener);
 
     public abstract Rect getOverviewWindowBounds(
             Rect homeBounds, RemoteAnimationTarget target);
@@ -519,7 +520,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             // Since we are changing the start position of the UI, reapply the state, at the end
             controller.setEndAction(() -> mActivity.getStateManager().goToState(
                     controller.getInterpolatedProgress() > 0.5 ? mTargetState : mBackgroundState,
-                    false));
+                    /* animated= */ false));
 
             RecentsView recentsView = mActivity.getOverviewPanel();
             AnimatorControllerWithResistance controllerWithResistance =

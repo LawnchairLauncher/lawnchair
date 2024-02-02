@@ -14,8 +14,8 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.RecentsView;
@@ -56,7 +56,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 }
                 Rect focusedTaskRect = new Rect();
                 LauncherActivityInterface.INSTANCE.calculateTaskSize(mContext, mDeviceProfile,
-                        focusedTaskRect, PagedOrientationHandler.PORTRAIT);
+                        focusedTaskRect, RecentsPagedOrientationHandler.PORTRAIT);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, focusedTaskRect.height());
                 return response;
             }
@@ -67,7 +67,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 }
                 Rect gridTaskRect = new Rect();
                 LauncherActivityInterface.INSTANCE.calculateGridTaskSize(mContext, mDeviceProfile,
-                        gridTaskRect, PagedOrientationHandler.PORTRAIT);
+                        gridTaskRect, RecentsPagedOrientationHandler.PORTRAIT);
                 response.putParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD, gridTaskRect);
                 return response;
             }

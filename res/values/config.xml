@@ -43,6 +43,9 @@
     <!-- The duration of the PagedView page snap animation -->
     <integer name="config_pageSnapAnimationDuration">750</integer>
 
+    <!-- The duration of the PagedView page snap animation -->
+    <integer name="config_keyboardTaskFocusSnapAnimationDuration">750</integer>
+
     <!-- View tag key used to store SpringAnimation data. -->
     <item type="id" name="spring_animation_tag" />
 

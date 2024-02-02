@@ -39,9 +39,9 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.RecentsOrientedState;
 
 /**
@@ -211,7 +211,8 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
 
     @Override
     public void setIconOrientation(RecentsOrientedState orientationState, boolean isGridTask) {
-        PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
+        RecentsPagedOrientationHandler orientationHandler =
+                orientationState.getOrientationHandler();
         boolean isRtl = isLayoutRtl();
         DeviceProfile deviceProfile =
                 ActivityContext.lookupContext(getContext()).getDeviceProfile();

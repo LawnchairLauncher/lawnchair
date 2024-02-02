@@ -36,7 +36,7 @@ open class PhoneLandscapeNavLayoutter(
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
         a11yButton: ImageView?,
-        space: Space,
+        space: Space?
 ) :
     AbstractNavButtonLayoutter(
             resources,

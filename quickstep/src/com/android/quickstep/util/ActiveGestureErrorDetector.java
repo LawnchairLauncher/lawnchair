@@ -39,7 +39,7 @@ public class ActiveGestureErrorDetector {
         SET_ON_PAGE_TRANSITION_END_CALLBACK, CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
         SCROLLER_ANIMATION_ABORTED, TASK_APPEARED, EXPECTING_TASK_APPEARED,
         FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED, RECENT_TASKS_MISSING,
-        INVALID_VELOCITY_ON_SWIPE_UP,
+        INVALID_VELOCITY_ON_SWIPE_UP, RECENTS_ANIMATION_START_PENDING,
 
         /**
          * These GestureEvents are specifically associated to state flags that get set in
@@ -272,6 +272,14 @@ public class ActiveGestureErrorDetector {
                     break;
                 case START_RECENTS_ANIMATION:
                     lastStartRecentAnimationEventEntryTime = eventEntry.getTime();
+                    break;
+                case RECENTS_ANIMATION_START_PENDING:
+                    errorDetected |= printErrorIfTrue(
+                            true,
+                            prefix,
+                            /* errorMessage= */ "new gesture attempted while a requested recents"
+                                    + " animation is still pending.",
+                            writer);
                     break;
                 case EXPECTING_TASK_APPEARED:
                 case MOTION_DOWN:

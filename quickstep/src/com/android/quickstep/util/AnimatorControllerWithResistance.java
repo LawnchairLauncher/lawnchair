@@ -43,7 +43,7 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AllAppsSwipeController;
-import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -200,7 +200,7 @@ public class AnimatorControllerWithResistance {
     public static <SCALE, TRANSLATION> PendingAnimation createRecentsResistanceAnim(
             RecentsParams<SCALE, TRANSLATION> params) {
         Rect startRect = new Rect();
-        PagedOrientationHandler orientationHandler = params.recentsOrientedState
+        RecentsPagedOrientationHandler orientationHandler = params.recentsOrientedState
                 .getOrientationHandler();
         params.recentsOrientedState.getActivityInterface()
                 .calculateTaskSize(params.context, params.dp, startRect, orientationHandler);

@@ -30,8 +30,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.RecentsOrientedState;
 
 /**
@@ -173,7 +173,8 @@ public class IconView extends View implements TaskViewIcon {
 
     @Override
     public void setIconOrientation(RecentsOrientedState orientationState, boolean isGridTask) {
-        PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
+        RecentsPagedOrientationHandler orientationHandler =
+                orientationState.getOrientationHandler();
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         DeviceProfile deviceProfile =
                 ActivityContext.lookupContext(getContext()).getDeviceProfile();

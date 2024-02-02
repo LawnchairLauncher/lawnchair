@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.touch;
+package com.android.quickstep.orientation;
 
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_VERTICAL;
@@ -54,16 +54,18 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.views.IconAppChipView;
 
 import java.util.Collections;
 import java.util.List;
 
-public class LandscapePagedViewHandler implements PagedOrientationHandler {
+public class LandscapePagedViewHandler implements RecentsPagedOrientationHandler {
 
     @Override
     public <T> T getPrimaryValue(T x, T y) {
@@ -398,7 +400,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public ChildBounds getChildBounds(View child, int childStart, int pageCenter,
-        boolean layoutChild) {
+            boolean layoutChild) {
         final int childHeight = child.getMeasuredHeight();
         final int childBottom = childStart + childHeight;
         final int childWidth = child.getMeasuredWidth();
@@ -574,21 +576,21 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setIconAppChipMenuParams(View iconAppChipMenuView,
+    public void setIconAppChipMenuParams(IconAppChipView iconAppChipView,
             FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin, int thumbnailTopMargin) {
-        boolean isRtl = iconAppChipMenuView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        boolean isRtl = iconAppChipView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         iconMenuParams.gravity = (isRtl ? START : END) | (isRtl ? BOTTOM : TOP);
         iconMenuParams.setMarginStart(isRtl ? iconMenuMargin : 0);
         iconMenuParams.topMargin = iconMenuMargin;
         iconMenuParams.bottomMargin = isRtl ? iconMenuMargin : 0;
         iconMenuParams.setMarginEnd(iconMenuMargin);
 
-        iconAppChipMenuView.setPivotX(isRtl ? iconMenuParams.width - (iconMenuParams.height / 2f)
+        iconAppChipView.setPivotX(isRtl ? iconMenuParams.width - (iconMenuParams.height / 2f)
                 : iconMenuParams.width / 2f);
-        iconAppChipMenuView.setPivotY(
+        iconAppChipView.setPivotY(
                 isRtl ? (iconMenuParams.height / 2f) : iconMenuParams.width / 2f);
-        iconAppChipMenuView.setTranslationY(0);
-        iconAppChipMenuView.setRotation(getDegreesRotated());
+        iconAppChipView.setTranslationY(0);
+        iconAppChipView.setRotation(getDegreesRotated());
     }
 
     @Override

@@ -147,3 +147,10 @@ flag {
   description: "Enables widget suggestions in widget picker to be displayed in categories"
   bug: "318410881"
 }
+
+flag {
+    name: "use_activity_overlay"
+    namespace: "launcher"
+    description: "Use an activity for home screen overlay"
+    bug: "273828110"
+}

@@ -22,6 +22,7 @@ import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_PRIVATE_SPACE_INSTALL_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -109,7 +110,7 @@ public class PrivateProfileManager extends UserProfileManager {
         itemInfo.bitmap = bitmapInfo;
         itemInfo.contentDescription = context.getResources().getString(
                 com.android.launcher3.R.string.ps_add_button_content_description);
-        itemInfo.runtimeStatusFlags |= FLAG_PRIVATE_SPACE_INSTALL_APP;
+        itemInfo.runtimeStatusFlags |= FLAG_PRIVATE_SPACE_INSTALL_APP | FLAG_NOT_PINNABLE;
 
         BaseAllAppsAdapter.AdapterItem item = new BaseAllAppsAdapter.AdapterItem(VIEW_TYPE_ICON);
         item.itemInfo = itemInfo;
