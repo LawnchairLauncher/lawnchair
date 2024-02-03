@@ -219,7 +219,9 @@ public class WidgetPickerActivity extends BaseActivity {
         final boolean isHorizontallyResizable =
                 (info.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
         if (mDesiredWidgetWidth > 0 && isHorizontallyResizable) {
-            if (info.maxResizeWidth > 0 && info.maxResizeWidth < mDesiredWidgetWidth) {
+            if (info.maxResizeWidth > 0
+                    && info.maxResizeWidth >= info.minWidth
+                    && info.maxResizeWidth < mDesiredWidgetWidth) {
                 return rejectWidget(
                         widget,
                         "maxResizeWidth[%d] < mDesiredWidgetWidth[%d]",
@@ -227,12 +229,13 @@ public class WidgetPickerActivity extends BaseActivity {
                         mDesiredWidgetWidth);
             }
 
-            final int minWidth = info.minResizeWidth > 0 ? info.minResizeWidth : info.minWidth;
+            final int minWidth = Math.min(info.minResizeWidth, info.minWidth);
             if (minWidth > mDesiredWidgetWidth) {
                 return rejectWidget(
                         widget,
-                        "minWidth[%d] > mDesiredWidgetWidth[%d]",
-                        minWidth,
+                        "min(minWidth[%d], minResizeWidth[%d]) > mDesiredWidgetWidth[%d]",
+                        info.minWidth,
+                        info.minResizeWidth,
                         mDesiredWidgetWidth);
             }
         }
@@ -240,7 +243,9 @@ public class WidgetPickerActivity extends BaseActivity {
         final boolean isVerticallyResizable =
                 (info.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
         if (mDesiredWidgetHeight > 0 && isVerticallyResizable) {
-            if (info.maxResizeHeight > 0 && info.maxResizeHeight < mDesiredWidgetHeight) {
+            if (info.maxResizeHeight > 0
+                    && info.maxResizeHeight >= info.minHeight
+                    && info.maxResizeHeight < mDesiredWidgetHeight) {
                 return rejectWidget(
                         widget,
                         "maxResizeHeight[%d] < mDesiredWidgetHeight[%d]",
@@ -248,20 +253,19 @@ public class WidgetPickerActivity extends BaseActivity {
                         mDesiredWidgetHeight);
             }
 
-            final int minHeight = info.minResizeHeight > 0 ? info.minResizeHeight : info.minHeight;
+            final int minHeight = Math.min(info.minResizeHeight, info.minHeight);
             if (minHeight > mDesiredWidgetHeight) {
                 return rejectWidget(
                         widget,
-                        "minHeight[%d] > mDesiredWidgetHeight[%d]",
-                        minHeight,
+                        "min(minHeight[%d], minResizeHeight[%d]) > mDesiredWidgetHeight[%d]",
+                        info.minHeight,
+                        info.minResizeHeight,
                         mDesiredWidgetHeight);
             }
         }
 
-        if (!isHorizontallyResizable
-                && !isVerticallyResizable
-                && (info.minWidth < mDesiredWidgetWidth || info.minHeight < mDesiredWidgetHeight)) {
-            return rejectWidget(widget, "too small and not resizeable");
+        if (!isHorizontallyResizable || !isVerticallyResizable) {
+            return rejectWidget(widget, "not resizeable");
         }
 
         return acceptWidget(widget);
@@ -271,12 +275,15 @@ public class WidgetPickerActivity extends BaseActivity {
             WidgetItem widget, String rejectionReason, Object... args) {
         return new WidgetAcceptabilityVerdict(
                 false,
-                widget.label,
+                widget.widgetInfo != null
+                        ? widget.widgetInfo.provider.flattenToShortString()
+                        : widget.label,
                 String.format(Locale.ENGLISH, rejectionReason, args));
     }
 
     private static WidgetAcceptabilityVerdict acceptWidget(WidgetItem widget) {
-        return new WidgetAcceptabilityVerdict(true, widget.label, "");
+        return new WidgetAcceptabilityVerdict(
+                true, widget.widgetInfo.provider.flattenToShortString(), "");
     }
 
     private record WidgetAcceptabilityVerdict(
