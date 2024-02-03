@@ -35,6 +35,7 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -150,7 +151,16 @@ public class SplitWithKeyboardShortcutController {
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    controller.finish(true /* toRecents */, null /* onFinishComplete */,
+                    controller.finish(
+                            true /* toRecents */,
+                            () -> {
+                                LauncherTaskbarUIController controller =
+                                        mLauncher.getTaskbarUIController();
+                                if (controller != null) {
+                                    controller.updateTaskbarLauncherStateGoingHome();
+                                }
+
+                            },
                             false /* sendUserLeaveHint */);
                 }
 
