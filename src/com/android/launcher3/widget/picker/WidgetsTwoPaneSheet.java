@@ -303,6 +303,12 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     }
 
     @Override
+    protected int getWidgetListHorizontalMargin() {
+        return getResources().getDimensionPixelSize(
+                R.dimen.widget_list_left_pane_horizontal_margin);
+    }
+
+    @Override
     protected boolean isTwoPane() {
         return true;
     }

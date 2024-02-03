@@ -72,12 +72,19 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContentHorizontalMargin = getResources().getDimensionPixelSize(
-                R.dimen.widget_list_horizontal_margin);
+        mContentHorizontalMargin = getWidgetListHorizontalMargin();
         mWidgetCellHorizontalPadding = getResources().getDimensionPixelSize(
                 R.dimen.widget_cell_horizontal_padding);
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getNavBarScrimColor(mActivityContext));
+    }
+
+    /**
+     * Returns the margins to be applied to the left and right of the widget apps list.
+     */
+    protected int getWidgetListHorizontalMargin() {
+        return getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
     }
 
     protected int getScrimColor(Context context) {
@@ -142,8 +149,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        @Px int contentHorizontalMargin = getResources().getDimensionPixelSize(
-                R.dimen.widget_list_horizontal_margin);
+        @Px int contentHorizontalMargin = getWidgetListHorizontalMargin();
         if (contentHorizontalMargin != mContentHorizontalMargin) {
             onContentHorizontalMarginChanged(contentHorizontalMargin);
             mContentHorizontalMargin = contentHorizontalMargin;

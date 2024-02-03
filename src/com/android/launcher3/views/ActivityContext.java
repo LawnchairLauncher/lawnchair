@@ -155,6 +155,19 @@ public interface ActivityContext {
     }
 
     /**
+     * Handle user tapping on unsupported target when in split selection mode.
+     * See {@link #isSplitSelectionActive()}
+     *
+     * @return {@code true} if this method will handle the incorrect target selection,
+     *         {@code false} if it could not be handled or if not possible to handle based on
+     *         current split state
+     */
+    default boolean handleIncorrectSplitTargetSelection() {
+        // Overridden
+        return false;
+    }
+
+    /**
      * The root view to support drag-and-drop and popup support.
      */
     BaseDragLayer getDragLayer();

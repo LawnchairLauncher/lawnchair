@@ -800,6 +800,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             return;
         }
 
+        int size = getIconsInReadingOrder().size();
+        if (size <= 1) {
+            Log.d(TAG, "Couldn't animate folder closed because there's " + size + " icons");
+            closeComplete(false);
+            post(this::announceAccessibilityChanges);
+            return;
+        }
+
         mContent.completePendingPageChanges();
         mContent.snapToPageImmediately(mContent.getDestinationPage());
 

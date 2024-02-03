@@ -150,6 +150,12 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }, this::getCurrentActivity);
             }
 
+            case TestProtocol.REQUEST_CELL_LAYOUT_BOARDER_HEIGHT: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.cellLayoutBorderSpacePx.y);
+                return response;
+            }
+
             case TestProtocol.REQUEST_SYSTEM_GESTURE_REGION: {
                 return getUIProperty(Bundle::putParcelable, activity -> {
                     WindowInsetsCompat insets = WindowInsetsCompat.toWindowInsetsCompat(

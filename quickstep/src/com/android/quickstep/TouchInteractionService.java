@@ -24,6 +24,7 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.Flags.useActivityOverlay;
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
 import static com.android.launcher3.LauncherPrefs.backedUpItem;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
@@ -1159,6 +1160,14 @@ public class TouchInteractionService extends Service {
         boolean launcherResumedThroughShellTransition =
                 gestureState.getActivityInterface().isResumed()
                         && !previousGestureState.isRecentsAnimationRunning();
+        // If a task fragment within Launcher is resumed
+        boolean launcherChildActivityResumed = useActivityOverlay()
+                && runningTask != null
+                && runningTask.isHomeTask()
+                && mOverviewComponentObserver.isHomeAndOverviewSame()
+                && !launcherResumedThroughShellTransition
+                && !previousGestureState.isRecentsAnimationRunning();
+
         if (gestureState.getActivityInterface().isInLiveTileMode()) {
             return createOverviewInputConsumer(
                     previousGestureState,
@@ -1185,9 +1194,11 @@ public class TouchInteractionService extends Service {
                                             ? "launcher resumed through a shell transition"
                                             : "forceOverviewInputConsumer == true"))
                             .append(", trying to use overview input consumer"));
-        } else if (mDeviceState.isGestureBlockedTask(runningTask)) {
+        } else if (mDeviceState.isGestureBlockedTask(runningTask) || launcherChildActivityResumed) {
             return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
-                    .append("is gesture-blocked task, trying to use default input consumer"));
+                    .append(launcherChildActivityResumed
+                            ? "is launcher child-task, trying to use default input consumer"
+                            : "is gesture-blocked task, trying to use default input consumer"));
         } else {
             reasonString.append(SUBSTRING_PREFIX)
                     .append("using OtherActivityInputConsumer");

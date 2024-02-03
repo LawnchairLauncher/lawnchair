@@ -66,7 +66,7 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     }
 
     public CellLayoutBoard(int width, int height) {
-        mWidget = new char[width + 1][height + 1];
+        mWidget = new char[width][height];
         this.mWidth = width;
         this.mHeight = height;
         for (int x = 0; x < mWidget.length; x++) {
@@ -371,8 +371,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         s.append("\n");
         maxX = Math.min(maxX, mWidget.length);
         maxY = Math.min(maxY, mWidget[0].length);
-        for (int y = 0; y <= maxY; y++) {
-            for (int x = 0; x <= maxX; x++) {
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX; x++) {
                 s.append(mWidget[x][y]);
             }
             s.append('\n');

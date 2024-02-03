@@ -56,7 +56,7 @@
     <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
-    <dimen name="resize_frame_margin">22dp</dimen>
+    <dimen name="resize_frame_margin">23dp</dimen>
     <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">24dp</dimen>
 
     <!-- App widget reconfigure button -->
@@ -196,6 +196,8 @@
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
     <dimen name="widget_list_horizontal_margin">16dp</dimen>
+    <!-- Margin applied to the recycler view with search bar & the list of widget apps below it. -->
+    <dimen name="widget_list_left_pane_horizontal_margin">0dp</dimen>
     <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>

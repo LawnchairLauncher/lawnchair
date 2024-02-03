@@ -62,5 +62,6 @@ public class TaplAllAppsIconsWorkingTest extends AbstractLauncherUiTest {
         } finally {
             allApps.unfreeze();
         }
+        mLauncher.goHome();
     }
 }

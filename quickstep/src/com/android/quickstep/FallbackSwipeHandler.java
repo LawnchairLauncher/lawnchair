@@ -371,8 +371,8 @@ public class FallbackSwipeHandler extends
                     if (mSpringAnim != null) {
                         mSpringAnim.onTargetPositionChanged();
                     }
-                    mOnFinishCallback = data.getParcelable(EXTRA_ON_FINISH_CALLBACK);
                 }
+                mOnFinishCallback = data.getParcelable(EXTRA_ON_FINISH_CALLBACK);
                 maybeSendEndMessage();
             } catch (Exception e) {
                 // Ignore
