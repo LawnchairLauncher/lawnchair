@@ -411,6 +411,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     private final SettingsCache.OnChangeListener mNaturalScrollingChangedListener =
             enabled -> mIsNaturalScrollingEnabled = enabled;
 
+    private int mActivityStopCount; // Used only by tests
+
     public static Launcher getLauncher(Context context) {
         return fromContext(context);
     }
@@ -1052,8 +1054,16 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.setActivityStarted(false);
         NotificationListener.removeNotificationsChangedListener(getPopupDataProvider());
         FloatingIconView.resetIconLoadResult();
+        ++mActivityStopCount;
         AccessibilityManagerCompat.sendTestProtocolEventToTest(
                 this, LAUNCHER_ACTIVITY_STOPPED_MESSAGE);
+    }
+
+    /** Return activity stop count and reset it. Used only by tests. */
+    public int getAndResetActivityStopCount() {
+        final int activityStopCount = mActivityStopCount;
+        mActivityStopCount = 0;
+        return activityStopCount;
     }
 
     @Override

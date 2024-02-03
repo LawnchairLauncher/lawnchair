@@ -182,7 +182,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 .stream()
                 .anyMatch(user -> mUserCache.getUserInfo(user).isWork());
         mWorkWidgetsFilter = entry -> mHasWorkProfile
-                && mUserCache.getUserInfo(entry.mPkgItem.user).isWork();
+                && mUserCache.getUserInfo(entry.mPkgItem.user).isWork()
+                && !mUserManagerState.isUserQuiet(entry.mPkgItem.user);
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));

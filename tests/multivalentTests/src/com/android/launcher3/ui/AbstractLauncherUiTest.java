@@ -599,6 +599,9 @@ public abstract class AbstractLauncherUiTest {
         Wait.atMost("Launcher activity didn't stop",
                 () -> !launcherInstrumentation.isLauncherActivityStarted(),
                 DEFAULT_ACTIVITY_TIMEOUT, launcherInstrumentation);
+
+        // Reset activity stop count.
+        launcherInstrumentation.getAndResetActivityStopCount();
     }
 
     public static ActivityInfo resolveSystemAppInfo(String category) {

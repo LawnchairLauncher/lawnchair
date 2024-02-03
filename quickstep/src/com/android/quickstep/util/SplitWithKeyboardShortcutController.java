@@ -153,7 +153,17 @@ public class SplitWithKeyboardShortcutController {
                     controller.finish(true /* toRecents */, null /* onFinishComplete */,
                             false /* sendUserLeaveHint */);
                 }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    mLauncher.getDragLayer().removeView(floatingTaskView);
+                    mController.getSplitAnimationController()
+                            .removeSplitInstructionsView(mLauncher);
+                    mController.resetState();
+                }
             });
+            anim.add(mController.getSplitAnimationController()
+                    .getShowSplitInstructionsAnim(mLauncher).buildAnim());
             anim.buildAnim().start();
         }
     };
