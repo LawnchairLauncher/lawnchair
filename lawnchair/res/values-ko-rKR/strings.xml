@@ -186,6 +186,7 @@
     <string name="popup_menu">팝업 메뉴</string>
     <string name="home_screen_lock_toggle_from_home_popup">잠금 버튼 표시</string>
     <string name="show_system_settings_entry">시스템 설정 항목 표시</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">상태표시줄</string>
     <string name="show_status_bar">상태 표시줄 표시</string>
     <string name="dark_status_bar_label">어두운 상태표시줄</string>

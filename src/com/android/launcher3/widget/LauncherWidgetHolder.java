@@ -19,6 +19,7 @@ import static android.app.Activity.RESULT_CANCELED;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.app.ActivityOptions;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -44,6 +45,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
@@ -62,8 +64,7 @@ public class LauncherWidgetHolder {
     protected static final int FLAG_STATE_IS_NORMAL = 1 << 1;
     protected static final int FLAG_ACTIVITY_STARTED = 1 << 2;
     protected static final int FLAG_ACTIVITY_RESUMED = 1 << 3;
-    private static final int FLAGS_SHOULD_LISTEN =
-            FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED | FLAG_ACTIVITY_RESUMED;
+    private static final int FLAGS_SHOULD_LISTEN = FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED | FLAG_ACTIVITY_RESUMED;
 
     @NonNull
     private final Context mContext;
@@ -269,33 +270,42 @@ public class LauncherWidgetHolder {
                 () -> activity.onActivityResult(requestCode, RESULT_CANCELED, null));
     }
 
+    private Bundle getDefaultConfigurationActivityOptions() {
+        // Must allow background activity start for U.
+        return Utilities.allowBGLaunch(ActivityOptions.makeBasic())
+                .toBundle();
+    }
+
     /**
-     * Returns an {@link android.app.ActivityOptions} bundle from the {code activity} for launching
-     * the configuration of the {@code widgetId} app widget, or null of options cannot be produced.
+     * Returns an {@link android.app.ActivityOptions} bundle from the {code
+     * activity} for launching
+     * the configuration of the {@code widgetId} app widget, or default
+     * configuration options
+     * if they cannot be produced.
      */
-    @Nullable
+    @NonNull
     protected Bundle getConfigurationActivityOptions(@NonNull BaseDraggingActivity activity,
             int widgetId) {
         LauncherAppWidgetHostView view = mViews.get(widgetId);
-        if (view == null) {
-            return activity.makeDefaultActivityOptions(
-                    -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */).toBundle();
-        }
+        if (view == null)
+            return getDefaultConfigurationActivityOptions();
         Object tag = view.getTag();
-        if (!(tag instanceof ItemInfo)) {
-            return activity.makeDefaultActivityOptions(
-                    -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */).toBundle();
-        }
-        Bundle bundle = activity.getActivityLaunchOptions(view, (ItemInfo) tag).toBundle();
+        if (!(tag instanceof ItemInfo))
+            return getDefaultConfigurationActivityOptions();
+        ActivityOptionsWrapper activityOptionsWrapper = activity.getActivityLaunchOptions(view, (ItemInfo) tag);
+        // Must allow background activity start for U.
+        Utilities.allowBGLaunch(activityOptionsWrapper.options);
+        Bundle bundle = activityOptionsWrapper.toBundle();
         bundle.putInt(KEY_SPLASH_SCREEN_STYLE, SPLASH_SCREEN_STYLE_EMPTY);
         return bundle;
     }
 
     /**
      * Starts the binding flow for the widget
-     * @param activity The activity for which to bind the widget
+     * 
+     * @param activity    The activity for which to bind the widget
      * @param appWidgetId The ID of the widget
-     * @param info The {@link AppWidgetProviderInfo} of the widget
+     * @param info        The {@link AppWidgetProviderInfo} of the widget
      * @param requestCode The request code
      */
     public void startBindFlow(@NonNull BaseActivity activity,
@@ -354,9 +364,10 @@ public class LauncherWidgetHolder {
 
     /**
      * Create a view for the specified app widget
-     * @param context The activity context for which the view is created
+     * 
+     * @param context     The activity context for which the view is created
      * @param appWidgetId The ID of the widget
-     * @param appWidget The {@link LauncherAppWidgetProviderInfo} of the widget
+     * @param appWidget   The {@link LauncherAppWidgetProviderInfo} of the widget
      * @return A view for the widget
      */
     @NonNull
@@ -368,11 +379,13 @@ public class LauncherWidgetHolder {
             CustomWidgetManager.INSTANCE.get(context).onViewCreated(lahv);
             return lahv;
         } else if ((mFlags & FLAG_LISTENING) == 0) {
-            // Since the launcher hasn't started listening to widget updates, we can't simply call
+            // Since the launcher hasn't started listening to widget updates, we can't
+            // simply call
             // super.createView here because the later will make a binder call to retrieve
             // RemoteViews from system process.
-            // TODO: have launcher always listens to widget updates in background so that this
-            //  check can be removed altogether.
+            // TODO: have launcher always listens to widget updates in background so that
+            // this
+            // check can be removed altogether.
             if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
                 final RemoteViews cachedRemoteViews = getCachedRemoteViews(appWidgetId);
                 if (cachedRemoteViews != null) {
@@ -386,7 +399,8 @@ public class LauncherWidgetHolder {
                     return view;
                 }
             }
-            // If cache misses or not enabled, a placeholder for the widget will be returned.
+            // If cache misses or not enabled, a placeholder for the widget will be
+            // returned.
             DeferredAppWidgetHostView view = new DeferredAppWidgetHostView(context);
             view.setAppWidget(appWidgetId, appWidget);
             mViews.put(appWidgetId, view);
@@ -399,7 +413,8 @@ public class LauncherWidgetHolder {
                     throw new RuntimeException(e);
                 }
 
-                // If the exception was thrown while fetching the remote views, let the view stay.
+                // If the exception was thrown while fetching the remote views, let the view
+                // stay.
                 // This will ensure that if the widget posts a valid update later, the view
                 // will update.
                 LauncherAppWidgetHostView view = mViews.get(appWidgetId);
@@ -425,9 +440,10 @@ public class LauncherWidgetHolder {
 
     /**
      * Called to return a proper view when creating a view
-     * @param context The context for which the widget view is created
+     * 
+     * @param context     The context for which the widget view is created
      * @param appWidgetId The ID of the added widget
-     * @param appWidget The provider info of the added widget
+     * @param appWidget   The provider info of the added widget
      * @return A view for the specified app widget
      */
     @NonNull
@@ -438,12 +454,14 @@ public class LauncherWidgetHolder {
             view = getPendingView(appWidgetId);
             removePendingView(appWidgetId);
         } else if (mDeferredViews.get(appWidgetId) != null) {
-            // In case the widget view is deferred, we will simply return the deferred view as
-            // opposed to instantiate a new instance of LauncherAppWidgetHostView since launcher
+            // In case the widget view is deferred, we will simply return the deferred view
+            // as
+            // opposed to instantiate a new instance of LauncherAppWidgetHostView since
+            // launcher
             // already added the former to the workspace.
             view = mDeferredViews.get(appWidgetId);
         } else {
-            view = new LawnchairAppWidgetHostView (context);
+            view = new LawnchairAppWidgetHostView(context);
         }
         mViews.put(appWidgetId, view);
         return view;
@@ -470,7 +488,8 @@ public class LauncherWidgetHolder {
     }
 
     /**
-     * Sets or unsets a flag the can change whether the widget host should be in the listening
+     * Sets or unsets a flag the can change whether the widget host should be in the
+     * listening
      * state.
      */
     private void setShouldListenFlag(int flag, boolean on) {

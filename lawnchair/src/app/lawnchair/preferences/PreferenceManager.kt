@@ -73,8 +73,9 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val fontBody = FontPref("pref_fontBody", fontCache.uiText, recreate)
     val fontBodyMedium = FontPref("pref_fontBodyMedium", fontCache.uiTextMedium, recreate)
 
-    val deviceSearch = BoolPref("device_search", true, recreate)
-    val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", true)
+    // TODO REMOVE
+    val deviceSearch = BoolPref("device_search", false, recreate)
+    val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", false)
     val searchResultPeople = BoolPref("pref_searchResultPeople", false, recreate)
     val searchResultPixelTips = BoolPref("pref_searchResultPixelTips", false)
     val searchResultSettings = BoolPref("pref_searchResultSettings", false)

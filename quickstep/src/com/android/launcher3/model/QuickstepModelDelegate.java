@@ -86,6 +86,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Model delegate which loads prediction items
@@ -183,6 +184,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
         });
     }
 
+    @CallSuper
     @Override
     @WorkerThread
     public void bindAllModelExtras(@NonNull BgDataModel.Callbacks[] callbacks) {
@@ -258,8 +260,9 @@ public class QuickstepModelDelegate extends ModelDelegate {
      * atom.
      */
     protected void registerSnapshotLoggingCallback() {
-        if (mStatsManager == null) {
+        if (mStatsManager == null || !LawnchairQuickstepCompat.ATLEAST_R) {
             Log.d(TAG, "Failed to get StatsManager");
+            return;
         }
 
         try {
@@ -329,7 +332,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
         super.destroy();
         mActive = false;
         StatsLogCompatManager.LOGS_CONSUMER.remove(mAppEventProducer);
-        if (mIsPrimaryInstance) {
+        if (mIsPrimaryInstance && LawnchairQuickstepCompat.ATLEAST_R) {
             mStatsManager.clearPullAtomCallback(SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT);
         }
         destroyPredictors();

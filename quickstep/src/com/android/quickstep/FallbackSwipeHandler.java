@@ -30,6 +30,7 @@ import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSaf
 
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -71,12 +72,15 @@ import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Consumer;
+
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Handles the navigation gestures when a 3rd party launcher is the default home activity.
@@ -160,8 +164,9 @@ public class FallbackSwipeHandler extends
             @Nullable RemoteAnimationTarget runningTaskTarget) {
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());
-        if (gestureContractAnimationFactory != null && runningTaskTarget != null) {
-            gestureContractAnimationFactory.addGestureContract(intent, runningTaskTarget.taskInfo);
+        var runningTask = TopTaskTracker.INSTANCE.get(mContext).getCachedTopTask(true);
+        if (gestureContractAnimationFactory != null && runningTaskTarget != null && runningTask.getTaskId() == runningTaskTarget.taskId) {
+            gestureContractAnimationFactory.addGestureContract(intent, runningTask.mAllCachedTasks.get(0));
         }
         startHomeIntentSafely(mContext, intent, options.toBundle());
     }

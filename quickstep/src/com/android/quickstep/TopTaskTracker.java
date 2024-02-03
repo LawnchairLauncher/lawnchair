@@ -51,6 +51,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * This class tracked the top-most task and  some 'approximate' task history to allow faster
@@ -81,11 +84,14 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
 
     @Override
     public void onTaskRemoved(int taskId) {
+        if (!LawnchairQuickstepCompat.ATLEAST_T) return;
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskId);
     }
 
     @Override
     public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
+        if (!LawnchairQuickstepCompat.ATLEAST_T) return;
+
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskInfo.taskId);
         mOrderedTaskList.addFirst(taskInfo);
 
@@ -180,6 +186,14 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
      */
     @UiThread
     public CachedTaskInfo getCachedTopTask(boolean filterOnlyVisibleRecents) {
+        if (!LawnchairQuickstepCompat.ATLEAST_U) {
+            RunningTaskInfo task = TraceHelper.allowIpcs("getCachedTopTask.false", () ->
+                    ActivityManagerWrapper.getInstance().getRunningTask(
+                            false /* filterOnlyVisibleRecents */));
+            ArrayList<RunningTaskInfo> taskList = new ArrayList<>();
+            Collections.addAll(taskList, task);
+            return new CachedTaskInfo(taskList);
+        }
         if (filterOnlyVisibleRecents) {
             // Since we only know about the top most task, any filtering may not be applied on the
             // cache. The second to top task may change while the top task is still the same.
@@ -240,7 +254,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
             List<RunningTaskInfo> visibleNonExcludedTasks = mAllCachedTasks.stream()
                     .filter(t -> t.isVisible
                             && (t.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0)
-                    .toList();
+                    .collect(Collectors.toList());
             return visibleNonExcludedTasks.isEmpty() ? null
                     : new CachedTaskInfo(visibleNonExcludedTasks);
         }

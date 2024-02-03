@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.RemoteAnimationTarget;
+import android.window.RemoteTransition;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -53,7 +54,7 @@ import java.util.HashMap;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
     public static final boolean ENABLE_SHELL_TRANSITIONS = SystemProperties.getBoolean("persist.wm.debug.shell_transit",
-            true);
+            Utilities.ATLEAST_T);
     public static final boolean SHELL_TRANSITIONS_ROTATION = ENABLE_SHELL_TRANSITIONS
             && SystemProperties.getBoolean("persist.wm.debug.shell_transit_rotate", false);
 
@@ -274,9 +275,14 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             if (!homeIsOnTop) {
                 options.setTransientLaunch();
             }
-            if (app.lawnchair.LawnchairApp.isAtleastT()) {
+            if (Utilities.ATLEAST_S) {
                 options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
-                SystemUiProxy.INSTANCE.getNoCreate().startRecentsActivity(intent, options, mCallbacks);
+                if (Utilities.ATLEAST_U) {
+                    SystemUiProxy.INSTANCE.getNoCreate().startRecentsActivity(intent, options, mCallbacks);
+                } else {
+                    UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                            .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
+                }
             }
         } else {
             UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
@@ -341,6 +347,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         if (mController != null) {
             ActiveGestureLog.INSTANCE.addLog(
                     /* event= */ "finishRunningRecentsAnimation", toHome);
+            mCallbacks.notifyAnimationCanceled();
             if (forceFinish) {
                 mController.finishController(toHome, null, false /* sendUserLeaveHint */,
                         true /* forceFinish */);
@@ -349,6 +356,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         ? mController::finishAnimationToHome
                         : mController::finishAnimationToApp);
             }
+            cleanUpRecentsAnimation(mCallbacks);
         }
     }
 

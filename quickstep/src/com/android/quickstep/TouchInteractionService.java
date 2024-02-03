@@ -88,6 +88,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -148,6 +149,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -206,12 +208,16 @@ public class TouchInteractionService extends Service {
             IDragAndDrop dragAndDrop = IDragAndDrop.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_DRAG_AND_DROP));
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
-                SystemUiProxy.INSTANCE.get(tis).setProxy(proxy, pip,
-                        bubbles, splitscreen, onehanded, shellTransitions, startingWindow,
-                        recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
-                        unfoldTransition, dragAndDrop);
-                tis.initInputMonitor("TISBinder#onInitialize()");
-                tis.preloadOverview(true /* fromInit */);
+                try {
+                    SystemUiProxy.INSTANCE.get(tis).setProxy(proxy, pip,
+                            bubbles, splitscreen, onehanded, shellTransitions, startingWindow,
+                            recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
+                            unfoldTransition, dragAndDrop);
+                    tis.initInputMonitor("TISBinder#onInitialize()");
+                    tis.preloadOverview(true /* fromInit */);
+                } catch (Throwable t) {
+                    // Ignore
+                }
             }));
             sIsInitialized = true;
         }
@@ -219,7 +225,7 @@ public class TouchInteractionService extends Service {
         @BinderThread
         @Override
         public void onTaskbarToggled() {
-            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get())
+            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get() || !LawnchairQuickstepCompat.ATLEAST_S)
                 return;
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
                 TaskbarActivityContext activityContext = tis.mTaskbarManager.getCurrentActivityContext();
@@ -394,7 +400,7 @@ public class TouchInteractionService extends Service {
         @Nullable
         public TaskbarManager getTaskbarManager() {
             TouchInteractionService tis = mTis.get();
-            if (tis == null)
+            if (tis == null || !LawnchairQuickstepCompat.ATLEAST_S)
                 return null;
             return tis.mTaskbarManager;
         }
@@ -489,14 +495,16 @@ public class TouchInteractionService extends Service {
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
-        mTaskbarManager = new TaskbarManager(this);
+        mTaskbarManager = LawnchairQuickstepCompat.ATLEAST_S ? new TaskbarManager(this) : null;
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         BootAwarePreloader.start(this);
 
         // Call runOnUserUnlocked() before any other callbacks to ensure everything is
         // initialized.
         LockedUserState.get(this).runOnUserUnlocked(this::onUserUnlocked);
-        LockedUserState.get(this).runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
+        if (LawnchairQuickstepCompat.ATLEAST_S) {
+            LockedUserState.get(this).runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
+        }
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         sConnected = true;
     }
@@ -520,7 +528,16 @@ public class TouchInteractionService extends Service {
             return;
         }
 
-        mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
+        if (LawnchairQuickstepCompat.ATLEAST_S) {
+            mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
+        } else {
+            if (!SystemUiProxy.INSTANCE.get(this).isActive()) {
+                return;
+            }
+            Bundle bundle = SystemUiProxy.INSTANCE.get(this).monitorGestureInput("swipe-up",
+                    mDeviceState.getDisplayId());
+            mInputMonitorCompat = InputMonitorCompat.fromBundle(bundle, "extra_input_monitor");
+        }
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
 
@@ -542,8 +559,10 @@ public class TouchInteractionService extends Service {
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this,
                 mOverviewComponentObserver, mTaskAnimationManager);
-        mResetGestureInputConsumer = new ResetGestureInputConsumer(
-                mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
+        if (LawnchairQuickstepCompat.ATLEAST_S && mTaskbarManager != null) {
+            mResetGestureInputConsumer = new ResetGestureInputConsumer(
+                    mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
+        }
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
         onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
@@ -585,15 +604,17 @@ public class TouchInteractionService extends Service {
     private void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
         AccessibilityManager am = getSystemService(AccessibilityManager.class);
 
-        if (isHomeAndOverviewSame) {
-            am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-        } else {
-            am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+        if (LawnchairQuickstepCompat.ATLEAST_R) {
+            if (isHomeAndOverviewSame) {
+                am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            } else {
+                am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            }
         }
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
                 .getCreatedActivity();
-        if (newOverviewActivity != null) {
+        if (newOverviewActivity != null && mTaskbarManager != null) {
             mTaskbarManager.setActivity(newOverviewActivity);
         }
         mTISBinder.onOverviewTargetChange();
@@ -604,7 +625,7 @@ public class TouchInteractionService extends Service {
                 .setAction(INTENT_ACTION_ALL_APPS_TOGGLE);
         final PendingIntent actionPendingIntent;
 
-        if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
+        if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get() && mTaskbarManager != null) {
             actionPendingIntent = new PendingIntent(new IIntentSender.Stub() {
                 @Override
                 public void send(int code, Intent intent, String resolvedType,
@@ -634,7 +655,9 @@ public class TouchInteractionService extends Service {
             int systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
-            mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
+            if (mTaskbarManager != null) {
+                mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
+            }
 
             int isShadeExpandedFlag = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
             boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
@@ -671,10 +694,14 @@ public class TouchInteractionService extends Service {
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).clearProxy();
 
-        getSystemService(AccessibilityManager.class)
-                .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+        if (LawnchairQuickstepCompat.ATLEAST_R) {
+            getSystemService(AccessibilityManager.class)
+                    .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+        }
 
-        mTaskbarManager.destroy();
+        if (mTaskbarManager != null) {
+            mTaskbarManager.destroy();
+        }
         sConnected = false;
         super.onDestroy();
     }
@@ -706,7 +733,7 @@ public class TouchInteractionService extends Service {
         // Note this will create a new consumer every mouse click, as after ACTION_UP
         // from the click
         // an ACTION_HOVER_ENTER will fire as well.
-        boolean isHoverActionWithoutConsumer = event.isHoverEvent()
+        boolean isHoverActionWithoutConsumer = isHoverEvent(action)
                 && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
@@ -801,9 +828,15 @@ public class TouchInteractionService extends Service {
         traceToken.close();
     }
 
+    private boolean isHoverEvent(int action) {
+        return action == MotionEvent.ACTION_HOVER_ENTER
+                || action == MotionEvent.ACTION_HOVER_MOVE
+                || action == MotionEvent.ACTION_HOVER_EXIT;
+    }
+
     // Talkback generates hover events on touch, which we do not want to consume.
     private boolean isCursorHoverEvent(MotionEvent event) {
-        return event.isHoverEvent() && event.getSource() == InputDevice.SOURCE_MOUSE;
+        return isHoverEvent(event.getActionMasked()) && event.getSource() == InputDevice.SOURCE_MOUSE;
     }
 
     private InputConsumer tryCreateAssistantInputConsumer(
@@ -925,7 +958,7 @@ public class TouchInteractionService extends Service {
 
             // If Taskbar is present, we listen for swipe or cursor hover events to unstash
             // it.
-            TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
+            TaskbarActivityContext tac = mTaskbarManager != null ? mTaskbarManager.getCurrentActivityContext() : null;
             if (tac != null && !(base instanceof AssistantInputConsumer)) {
                 // Present always on large screen or on small screen w/ flag
                 DeviceProfile dp = tac.getDeviceProfile();

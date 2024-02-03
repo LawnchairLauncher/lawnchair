@@ -164,6 +164,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.icons.shape.IconShapeManager;
 import app.lawnchair.theme.color.ColorTokens;
 
@@ -282,9 +283,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             };
 
-            mStartingWindowListener.setTransitionManager(this);
-            SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(
-                    mStartingWindowListener);
+            if (Utilities.ATLEAST_T) {
+                mStartingWindowListener.setTransitionManager(this);
+                SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(
+                        mStartingWindowListener);
+            }
         }
 
         mOpeningXInterpolator = AnimationUtils.loadInterpolator(context, R.interpolator.app_open_x);
@@ -333,10 +336,12 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         long statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
                 - STATUS_BAR_TRANSITION_PRE_DELAY;
-        ActivityOptions options = ActivityOptions.makeRemoteAnimation(
+        ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
-                new RemoteTransition(runner.toRemoteTransition(),
-                        mLauncher.getIApplicationThread(), "QuickstepLaunch"));
+                LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(runner.toRemoteTransition(),
+                        mLauncher.getIApplicationThread(), "QuickstepLaunch"),
+                "Lawnchair");
+
         return new ActivityOptionsWrapper(options, onEndCallback);
     }
 
@@ -457,7 +462,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (target == null)
             return new Rect(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx);
         final Rect bounds = new Rect(target.screenSpaceBounds);
-        if (target.localBounds != null) {
+        if (Utilities.ATLEAST_R && target.localBounds != null) {
             bounds.set(target.localBounds);
         } else {
             bounds.offsetTo(target.position.x, target.position.y);
@@ -864,7 +869,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         } else {
                             tmpPos.set(target.position.x, target.position.y);
                         }
-                        final Rect crop = new Rect(target.screenSpaceBounds);
+                        final Rect crop = new Rect(Utilities.ATLEAST_R ? target.screenSpaceBounds : target.sourceContainerBounds);
                         crop.offsetTo(0, 0);
 
                         if ((rotationChange % 2) == 1) {
@@ -1107,9 +1112,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteAnimations() {
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
-            return;
-        }
+        if (SEPARATE_RECENTS_ACTIVITY.get() || !Utilities.ATLEAST_S) return;
         if (hasControlRemoteAppTransitionPermission()) {
             RemoteAnimationDefinition definition = new RemoteAnimationDefinition();
             addRemoteAnimations(definition);
@@ -1147,17 +1150,16 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteTransitions() {
-        if (ENABLE_SHELL_TRANSITIONS && Utilities.ATLEAST_U) {
+        if (ENABLE_SHELL_TRANSITIONS && LawnchairQuickstepCompat.ATLEAST_U) {
             SystemUiProxy.INSTANCE.get(mLauncher).shareTransactionQueue();
         }
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
-        if (!Utilities.ATLEAST_S)
-            return;
+        if (!LawnchairQuickstepCompat.ATLEAST_T) return;
         if (hasControlRemoteAppTransitionPermission()) {
             mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
-            mLauncherOpenTransition = new RemoteTransition(
+            mLauncherOpenTransition = LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */).toRemoteTransition(),
                     mLauncher.getIApplicationThread(), "QuickstepLaunchHome");
@@ -1184,8 +1186,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public void onActivityDestroyed() {
         unregisterRemoteAnimations();
         unregisterRemoteTransitions();
-        mStartingWindowListener.setTransitionManager(null);
-        SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
+        if (Utilities.ATLEAST_T) {
+            mStartingWindowListener.setTransitionManager(null);
+            SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
+        }
     }
 
     private void unregisterRemoteAnimations() {
@@ -1193,8 +1197,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             return;
         }
         if (hasControlRemoteAppTransitionPermission()) {
-            mLauncher.unregisterRemoteAnimations();
-
+            if (Utilities.ATLEAST_R) {
+                mLauncher.unregisterRemoteAnimations();
+            }
             // Also clear strong references to the runners registered with the remote
             // animation
             // definition so we don't have to wait for the system gc
@@ -1212,8 +1217,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             return;
         }
         if (hasControlRemoteAppTransitionPermission()) {
-            if (mLauncherOpenTransition == null)
-                return;
+            if (mLauncherOpenTransition == null) return;
             SystemUiProxy.INSTANCE.get(mLauncher).unregisterRemoteTransition(
                     mLauncherOpenTransition);
             mLauncherOpenTransition = null;
@@ -1227,6 +1231,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     private boolean launcherIsATargetWithMode(RemoteAnimationTarget[] targets, int mode) {
         for (RemoteAnimationTarget target : targets) {
+            if (!Utilities.ATLEAST_S) {
+                return target.mode == mode && target.taskId == mLauncher.getTaskId();
+            }
             if (target.mode == mode && target.taskInfo != null
             // Compare component name instead of task-id because transitions will promote
             // the target up to the root task while getTaskId returns the leaf.
@@ -1277,7 +1284,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     RemoteAnimationTarget target = appTargets[i];
                     transaction.forSurface(target.leash)
                             .setAlpha(1f)
-                            .setWindowCrop(target.screenSpaceBounds)
+                            .setWindowCrop(Utilities.ATLEAST_R ? target.screenSpaceBounds : target.sourceContainerBounds)
                             .setCornerRadius(cornerRadius);
                 }
                 surfaceApplier.scheduleApply(transaction);
@@ -1304,6 +1311,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * app targets
      */
     private @Nullable View findLauncherView(RemoteAnimationTarget[] appTargets) {
+        if (!Utilities.ATLEAST_S) return null;
         for (RemoteAnimationTarget appTarget : appTargets) {
             if (appTarget.mode == MODE_CLOSING) {
                 View launcherView = findLauncherView(appTarget);
@@ -2018,7 +2026,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 RemoteAnimationTarget target = mAppTargets[i];
                 SurfaceProperties builder = transaction.forSurface(target.leash);
 
-                if (target.localBounds != null) {
+                if (Utilities.ATLEAST_R && target.localBounds != null) {
                     mTmpPos.set(target.localBounds.left, target.localBounds.top);
                 } else {
                     mTmpPos.set(target.position.x, target.position.y);

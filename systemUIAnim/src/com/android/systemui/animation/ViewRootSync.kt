@@ -1,5 +1,6 @@
 package com.android.systemui.animation
 
+import android.os.Build
 import android.view.View
 import android.window.SurfaceSyncGroup
 
@@ -28,11 +29,13 @@ object ViewRootSync {
             return
         }
 
-        val syncGroup = SurfaceSyncGroup("SysUIAnimation")
-        syncGroup.addSyncCompleteCallback(view.context.mainExecutor) { then() }
-        syncGroup.add(view.rootSurfaceControl, null /* runnable */)
-        syncGroup.add(otherView.rootSurfaceControl, null /* runnable */)
-        syncGroup.markSyncReady()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            val syncGroup = SurfaceSyncGroup("SysUIAnimation")
+            syncGroup.addSyncCompleteCallback(view.context.mainExecutor) { then() }
+            syncGroup.add(view.rootSurfaceControl, null /* runnable */)
+            syncGroup.add(otherView.rootSurfaceControl, null /* runnable */)
+            syncGroup.markSyncReady()
+        }
     }
 
     /** A Java-friendly API for [synchronizeNextDraw]. */

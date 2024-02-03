@@ -36,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
@@ -167,6 +167,7 @@ sealed class LawnchairSearchAlgorithm(
     private var maxFilesCount = 3
     private var maxSettingsEntryCount = 5
     private var maxRecentResultCount = 2
+    private var maxWebSuggestionDelay = 200
     val coroutineScope = CoroutineScope(context = Dispatchers.IO)
     val pref2 = PreferenceManager2.getInstance(context)
 
@@ -186,41 +187,52 @@ sealed class LawnchairSearchAlgorithm(
         pref2.maxRecentResultCount.onEach(launchIn = coroutineScope) {
             maxRecentResultCount = it
         }
+        pref2.maxWebSuggestionDelay.onEach(launchIn = coroutineScope) {
+            maxWebSuggestionDelay = it
+        }
     }
 
     protected suspend fun performDeviceWideSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> = withContext(Dispatchers.IO) {
         val results = ArrayList<SearchResult>()
 
-        if (prefs.searchResultPeople.get()) {
-            if (requestContactPermissionGranted(context, prefs)) {
-                val contactResults = findContactsByName(context, query, maxPeopleCount)
-                results.addAll(contactResults.map { SearchResult(CONTACT, it) })
+        val contactDeferred = async {
+            if (prefs.searchResultPeople.get() && requestContactPermissionGranted(context, prefs)) {
+                findContactsByName(context, query, maxPeopleCount)
+                    .map { SearchResult(CONTACT, it) }
+            } else {
+                emptyList()
             }
         }
 
-        if (prefs.searchResultFiles.get()) {
-            if (checkAndRequestFilesPermission(context, prefs)) {
-                val fileResults = queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount).toList()
-                results.addAll(fileResults.map { SearchResult(FILES, it) })
+        val filesDeferred = async {
+            if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(context, prefs)) {
+                queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount)
+                    .toList()
+                    .map { SearchResult(FILES, it) }
+            } else {
+                emptyList()
             }
         }
 
-        if (prefs.searchResultSettingsEntry.get()) {
-            val settingResult = findSettingsByNameAndAction(query, maxSettingsEntryCount)
-            results.addAll(settingResult.map { SearchResult(SETTING, it) })
+        val settingsDeferred = async {
+            findSettingsByNameAndAction(query, maxSettingsEntryCount)
+                .map { SearchResult(SETTING, it) }
         }
 
-        if (prefs.searchResultStartPageSuggestion.get()) {
-            val startPageSuggestions = async {
-                try {
-                    withTimeout(3000) {
-                        getStartPageSuggestions(query, maxSuggestionCount)
+        val startPageSuggestionsDeferred = async {
+            try {
+                val timeout = maxWebSuggestionDelay.toLong()
+                val result = withTimeoutOrNull(timeout) {
+                    if (prefs.searchResultStartPageSuggestion.get()) {
+                        getStartPageSuggestions(query, maxSuggestionCount).map { SearchResult(SUGGESTION, it) }
+                    } else {
+                        emptyList()
                     }
-                } catch (e: TimeoutCancellationException) {
-                    emptyList()
                 }
+                result ?: emptyList()
+            } catch (e: TimeoutCancellationException) {
+                emptyList()
             }
-            results.addAll(startPageSuggestions.await().map { SearchResult(SUGGESTION, it) })
         }
 
         if (prefs.searchResulRecentSuggestion.get()) {
@@ -243,6 +255,11 @@ sealed class LawnchairSearchAlgorithm(
                 },
             )
         }
+
+        results.addAll(contactDeferred.await())
+        results.addAll(filesDeferred.await())
+        results.addAll(settingsDeferred.await())
+        results.addAll(startPageSuggestionsDeferred.await())
 
         results
     }

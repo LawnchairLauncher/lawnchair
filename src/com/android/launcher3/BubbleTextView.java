@@ -63,6 +63,7 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
@@ -398,7 +399,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         boolean useTheme = shouldUseTheme();
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
         mDotParams.appColor = iconDrawable.getIconColor();
-        mDotParams.color = ColorTokens.DotColor.resolveColor(getContext());
+        mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
         setIcon(iconDrawable);
         applyLabel(info);
     }
@@ -411,13 +412,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     /**
-     * Only if actual text can be displayed in two line, the {@code true} value will
-     * be effective.
+     *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+        return  (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
                 || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
-                        && mDisplay == DISPLAY_SEARCH_RESULT);
+                && mDisplay == DISPLAY_SEARCH_RESULT);
     }
 
     @UiThread

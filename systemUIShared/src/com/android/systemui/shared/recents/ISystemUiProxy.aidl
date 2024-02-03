@@ -62,6 +62,16 @@ interface ISystemUiProxy {
     oneway void onAssistantGestureCompletion(float velocity) = 18;
 
     /**
+    * Get the secondary split screen app's rectangle when not minimized.
+    */
+    Rect getNonMinimizedSplitScreenSecondaryBounds() = 7;
+
+    /**
+    * Creates a new gesture monitor
+    */
+    Bundle monitorGestureInput(String name, int displayId) = 14;
+
+    /**
      * Start the assistant.
      */
     oneway void startAssistant(in Bundle bundle) = 13;
@@ -89,6 +99,15 @@ interface ISystemUiProxy {
      * Ends the system screen pinning.
      */
     oneway void stopScreenPinning() = 17;
+
+    /**
+     * Handle the provided image as if it was a screenshot.
+     *
+     * Deprecated, use handleImageBundleAsScreenshot with image bundle and UserTask
+     * @deprecated
+     */
+     void handleImageAsScreenshot(in Bitmap screenImage, in Rect locationInScreen,
+                  in Insets visibleInsets, int taskId) = 21;
 
     /**
      * Notifies that quickstep will switch to a new task
@@ -133,6 +152,12 @@ interface ISystemUiProxy {
      * Handle the screenshot request.
      */
     oneway void takeScreenshot(in ScreenshotRequest request) = 51;
+
+    /**
+     * Handle the provided image as if it was a screenshot.
+     */
+    void handleImageBundleAsScreenshot(in Bundle screenImageBundle, in Rect locationInScreen,
+                  in Insets visibleInsets, in Task.TaskKey task) = 26;
 
     /**
      * Dispatches trackpad status bar motion event to the notification shade. Currently these events

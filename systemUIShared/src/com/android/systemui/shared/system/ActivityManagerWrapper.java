@@ -23,7 +23,6 @@ import static android.app.ActivityTaskManager.getService;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Activity;
-import android.app.ActivityClient;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
@@ -44,9 +43,7 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Display;
 import android.view.IRecentsAnimationController;
-import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
 
@@ -54,8 +51,14 @@ import com.android.internal.app.IVoiceInteractionManagerService;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
+import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
 public class ActivityManagerWrapper {
 
@@ -70,7 +73,7 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
+    private final ActivityTaskManager mAtm = LawnchairQuickstepCompat.ATLEAST_S ? ActivityTaskManager.getInstance() : null;
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
@@ -103,19 +106,21 @@ public class ActivityManagerWrapper {
      */
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(1, filterOnlyVisibleRecents);
-        if (tasks.isEmpty()) {
-            return null;
-        }
-        return tasks.get(0);
+        return LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTask(filterOnlyVisibleRecents);
     }
 
     /**
      * @see #getRunningTasks(boolean , int)
      */
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        return getRunningTasks(filterOnlyVisibleRecents, Display.INVALID_DISPLAY);
+        return LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+    }
+
+    /**
+     * @return a list of the recents tasks.
+     */
+    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
+        return LawnchairQuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
     }
 
     /**
@@ -130,10 +135,11 @@ public class ActivityManagerWrapper {
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents,
             int displayId) {
         // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks =
+        List<ActivityManager.RunningTaskInfo> tasks = mAtm != null ?
                 mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST,
-                        filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId);
-        return tasks.toArray(new RunningTaskInfo[tasks.size()]);
+                        filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId) : new ArrayList<>();
+        return LawnchairQuickstepCompat.ATLEAST_U ? tasks.toArray(new RunningTaskInfo[tasks.size()])
+                : LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
     }
 
     /**
@@ -141,13 +147,16 @@ public class ActivityManagerWrapper {
      *         The snapshot will be triggered if no cached {@link TaskSnapshot} exists.
      */
     public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        TaskSnapshot snapshot = null;
-        try {
-            snapshot = getService().getTaskSnapshot(taskId, isLowResolution,
-                    true /* takeSnapshotIfNeeded */);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to retrieve task snapshot", e);
+        if (!LawnchairQuickstepCompat.ATLEAST_S){
+            ActivityManagerCompatVR compat = ((ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat());
+            ActivityManagerCompatVR.ThumbnailData data = compat.getTaskThumbnail(taskId, isLowResolution);
+            if (data != null) {
+                return new ThumbnailData(data);
+            } else {
+                return new ThumbnailData();
+            }
         }
+        TaskSnapshot snapshot = LawnchairQuickstepCompat.getActivityManagerCompat().getTaskSnapshot(taskId, isLowResolution, true);
         if (snapshot != null) {
             return new ThumbnailData(snapshot);
         } else {
@@ -163,12 +172,7 @@ public class ActivityManagerWrapper {
      *                     want us to find the home task for you.
      */
     public void invalidateHomeTaskSnapshot(@Nullable final Activity homeActivity) {
-        try {
-            ActivityClient.getInstance().invalidateHomeTaskSnapshot(
-                    homeActivity == null ? null : homeActivity.getActivityToken());
-        } catch (Throwable e) {
-            Log.w(TAG, "Failed to invalidate home snapshot", e);
-        }
+        LawnchairQuickstepCompat.getActivityManagerCompat().invalidateHomeTaskSnapshot(homeActivity);
     }
 
     /**
@@ -194,13 +198,13 @@ public class ActivityManagerWrapper {
     public boolean startRecentsActivity(
             Intent intent, long eventTime, RecentsAnimationListener animationHandler) {
         try {
-            IRecentsAnimationRunner runner = null;
+            RecentsAnimationRunnerCompat runner = null;
             if (animationHandler != null) {
-                runner = new IRecentsAnimationRunner.Stub() {
+                runner = new RecentsAnimationRunnerCompat() {
                     @Override
                     public void onAnimationStart(IRecentsAnimationController controller,
-                            RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                            Rect homeContentInsets, Rect minimizedHomeBounds) {
+                        RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+                        Rect homeContentInsets, Rect minimizedHomeBounds) {
                         final RecentsAnimationControllerCompat controllerCompat =
                                 new RecentsAnimationControllerCompat(controller);
                         animationHandler.onAnimationStart(controllerCompat, apps,
@@ -213,13 +217,41 @@ public class ActivityManagerWrapper {
                                 ThumbnailData.wrap(taskIds, taskSnapshots));
                     }
 
+
+                    /**
+                     * compat for android 12/11/10
+                     */
+                    public void onAnimationCanceled(Object taskSnapshot) {
+                        if (LawnchairQuickstepCompat.ATLEAST_S) {
+                            animationHandler.onAnimationCanceled(
+                                    ThumbnailData.wrap(new int[]{0}, new TaskSnapshot[]{(TaskSnapshot) taskSnapshot}));
+                        } else if (LawnchairQuickstepCompat.ATLEAST_R) {
+                            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat();
+                            ActivityManagerCompatVR.ThumbnailData data = compat.convertTaskSnapshotToThumbnailData(taskSnapshot);
+                            HashMap<Integer, ThumbnailData> thumbnailDatas = new HashMap<>();
+                            if (data != null) {
+                                thumbnailDatas.put(0, new ThumbnailData(data));
+                            }
+                            animationHandler.onAnimationCanceled(thumbnailDatas);
+                        } else {
+                            animationHandler.onAnimationCanceled(new HashMap<>());
+                        }
+                    }
+
+                    /**
+                     * compat for android 12/11
+                     */
+                    public void onTaskAppeared(RemoteAnimationTarget app) {
+                        animationHandler.onTasksAppeared(new RemoteAnimationTarget[]{app});
+                    }
+
                     @Override
                     public void onTasksAppeared(RemoteAnimationTarget[] apps) {
                         animationHandler.onTasksAppeared(apps);
                     }
                 };
             }
-            getService().startRecentsActivity(intent, eventTime, runner);
+            LawnchairQuickstepCompat.getActivityManagerCompat().startRecentsActivity(intent, eventTime, runner);
             return true;
         } catch (Exception e) {
             return false;

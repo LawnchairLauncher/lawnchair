@@ -24,7 +24,6 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.RectF
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.RemoteException
@@ -523,6 +522,10 @@ class ActivityLaunchAnimator(
             }
         }
 
+        fun onAnimationCancelled(isKeyguardOccluded: Boolean) {
+            onAnimationCancelled()
+        }
+
         @BinderThread
         override fun onAnimationCancelled() {
             val delegate = delegate
@@ -686,11 +689,12 @@ class ActivityLaunchAnimator(
             // instead of recomputing isExpandingFullyAbove here.
             val isExpandingFullyAbove =
                 launchAnimator.isExpandingFullyAbove(controller.launchContainer, endState)
+            val windowCornerRadius = getWindowCornerRadius()
             val endRadius =
                 if (isExpandingFullyAbove) {
                     // Most of the time, expanding fully above the root view means expanding in full
                     // screen.
-                    ScreenDecorationsUtils.getWindowCornerRadius(context)
+                    windowCornerRadius
                 } else {
                     // This usually means we are in split screen mode, so 2 out of 4 corners will
                     // have
@@ -756,6 +760,15 @@ class ActivityLaunchAnimator(
                     fadeOutWindowBackgroundLayer = !controller.isBelowAnimatingWindow,
                     drawHole = !controller.isBelowAnimatingWindow,
                 )
+        }
+
+        private fun getWindowCornerRadius() : Float {
+            return try {
+                ScreenDecorationsUtils.getWindowCornerRadius(context)
+            } catch (t: Throwable) {
+                0f
+            }
+            
         }
 
         private fun applyStateToWindow(

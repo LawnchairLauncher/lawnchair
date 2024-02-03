@@ -39,7 +39,6 @@ import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.colorSelectionGraph(route: String) {
@@ -58,7 +57,7 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
             ColorSelection(
                 label = stringResource(id = model.labelRes),
                 preference = model.prefObject,
-                dynamicEntries = model.dynamicEntries.toPersistentList(),
+                dynamicEntries = model.dynamicEntries,
             )
         }
     }

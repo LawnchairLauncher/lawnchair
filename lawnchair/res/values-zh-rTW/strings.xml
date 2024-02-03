@@ -186,6 +186,7 @@
     <string name="popup_menu">彈出式選單</string>
     <string name="home_screen_lock_toggle_from_home_popup">顯示鎖定桌面按鈕</string>
     <string name="show_system_settings_entry">顯示系統設定</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">顯示狀態列</string>
     <string name="dark_status_bar_label">深色狀態列</string>

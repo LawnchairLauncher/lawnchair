@@ -275,6 +275,7 @@ public abstract class ButtonDropTarget extends TextView
             mDropTargetHandler.onDropAnimationComplete();
         };
 
+
         dragLayer.animateView(d.dragView, to, scale, 0.1f, 0.1f,
                 DRAG_VIEW_DROP_DURATION,
                 Interpolators.DECELERATE_2, onAnimationEndRunnable,

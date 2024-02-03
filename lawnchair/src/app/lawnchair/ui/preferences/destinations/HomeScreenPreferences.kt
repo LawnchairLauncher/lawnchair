@@ -36,6 +36,7 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -44,7 +45,6 @@ import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 object HomeScreenRoutes {
@@ -115,13 +115,25 @@ fun HomeScreenPreferences() {
                 destination = subRoute(name = HomeScreenRoutes.GRID),
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
-            SwitchPreference(
-                adapter = lockHomeScreenAdapter,
-                label = stringResource(id = R.string.home_screen_lock),
-                description = stringResource(id = R.string.home_screen_lock_description),
-            )
+            DividerColumn {
+                SwitchPreference(
+                    adapter = lockHomeScreenAdapter,
+                    label = stringResource(id = R.string.home_screen_lock),
+                    description = stringResource(id = R.string.home_screen_lock_description),
+                )
+                SwitchPreference(
+                    adapter = prefs2.enableDotPagination.getAdapter(),
+                    label = stringResource(id = R.string.show_dot_pagination_label),
+                    description = stringResource(id = R.string.show_dot_pagination_description),
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.popup_menu)) {
+            SwitchPreference(
+                adapter = prefs2.enableMaterialUPopUp.getAdapter(),
+                label = stringResource(id = R.string.show_material_u_popup_label),
+                description = stringResource(id = R.string.show_material_u_popup_description),
+            )
             SwitchPreference(
                 adapter = prefs2.lockHomeScreenButtonOnPopUp.getAdapter(),
                 label = stringResource(id = R.string.home_screen_lock_toggle_from_home_popup),
@@ -129,6 +141,11 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 adapter = prefs2.showSystemSettingsEntryOnPopUp.getAdapter(),
                 label = stringResource(id = R.string.show_system_settings_entry),
+            )
+            SwitchPreference(
+                adapter = prefs2.editHomeScreenButtonOnPopUp.getAdapter(),
+                label = stringResource(id = R.string.home_screen_edit_toggle_from_home_popup),
+                enabled = lockHomeScreenAdapter.state.value.not(),
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
@@ -195,7 +212,7 @@ fun HomeScreenPreferences() {
 fun HomeScreenTextColorPreference() {
     ListPreference(
         adapter = preferenceManager2().workspaceTextColor.getAdapter(),
-        entries = ColorMode.entries().toPersistentList(),
+        entries = ColorMode.entries(),
         label = stringResource(id = R.string.home_screen_text_color),
     )
 }

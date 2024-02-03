@@ -186,6 +186,7 @@
     <string name="popup_menu">弹出菜单</string>
     <string name="home_screen_lock_toggle_from_home_popup">显示锁定桌面按钮</string>
     <string name="show_system_settings_entry">显示系统设置项目</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">状态栏</string>
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>

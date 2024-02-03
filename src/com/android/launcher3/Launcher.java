@@ -1400,7 +1400,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mDropTargetBar.setup(mDragController);
         mAllAppsController.setupViews(mScrimView, mAppsView);
 
-        if (SHOW_DOT_PAGINATION.get()) {
+        if (FeatureFlags.showDotPagination(this)) {
             mWorkspace.getPageIndicator().setShouldAutoHide(true);
             mWorkspace.getPageIndicator().setPaintColor(
                     Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
@@ -1411,7 +1411,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        if (SHOW_DOT_PAGINATION.get() && WorkspacePageIndicator.class.getName().equals(name)) {
+        if (FeatureFlags.showDotPagination(this) && WorkspacePageIndicator.class.getName().equals(name)) {
             return LayoutInflater.from(context).inflate(R.layout.page_indicator_dots,
                     (ViewGroup) parent, false);
         }
@@ -1530,6 +1530,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (appWidgetInfo == null) {
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
+            if (appWidgetInfo == null) return;
         }
 
         if (hostView == null) {
@@ -1539,6 +1540,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (appWidgetInfo.provider == null) {
             appWidgetInfo.provider = itemInfo.getTargetComponent();
+            if (appWidgetInfo.provider == null) return;
         }
         LauncherAppWidgetInfo launcherInfo;
         launcherInfo = new LauncherAppWidgetInfo(

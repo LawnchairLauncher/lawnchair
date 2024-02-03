@@ -39,7 +39,9 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
     init {
         val enableFeed = PreferenceManager2.getInstance(mLauncher).enableFeed.firstBlocking()
         mClient = LauncherClient(
-            mLauncher, this, StaticInteger((if (enableFeed) 1 else 0) or 2 or 4 or 8),
+            mLauncher,
+            this,
+            StaticInteger((if (enableFeed) 1 else 0) or 2 or 4 or 8),
         )
     }
 

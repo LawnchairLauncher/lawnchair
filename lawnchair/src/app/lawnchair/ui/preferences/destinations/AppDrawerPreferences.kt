@@ -200,19 +200,28 @@ fun AppDrawerPreferences() {
         }
 
         ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
-            PreferenceGroup {
+            PreferenceGroup(heading = stringResource(id = R.string.pref_suggestion_label)) {
                 DividerColumn {
                     SwitchPreference(
                         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
                         label = stringResource(id = R.string.pref_suggestion_title),
                     )
                     ExpandAndShrink(visible = prefs.searchResultStartPageSuggestion.getAdapter().state.value) {
-                        SliderPreference(
-                            label = stringResource(id = R.string.max_suggestion_result_count_title),
-                            adapter = prefs2.maxSuggestionResultCount.getAdapter(),
-                            step = 1,
-                            valueRange = 3..10,
-                        )
+                        DividerColumn {
+                            SliderPreference(
+                                label = stringResource(id = R.string.max_suggestion_result_count_title),
+                                adapter = prefs2.maxSuggestionResultCount.getAdapter(),
+                                step = 1,
+                                valueRange = 3..10,
+                            )
+                            SliderPreference(
+                                label = stringResource(id = R.string.max_web_suggestion_delay),
+                                adapter = prefs2.maxWebSuggestionDelay.getAdapter(),
+                                step = 100,
+                                valueRange = 200..5000,
+                                showUnit = "ms",
+                            )
+                        }
                     }
                     SwitchPreference(
                         adapter = prefs.searchResulRecentSuggestion.getAdapter(),

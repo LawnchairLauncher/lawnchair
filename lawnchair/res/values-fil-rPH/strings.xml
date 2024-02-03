@@ -186,6 +186,7 @@
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Ipakita ang Lock Button</string>
     <string name="show_system_settings_entry">I-show ang System Setting Entry</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">Ipakita ang Search Bar</string>
     <string name="dark_status_bar_label">Madilim na Status Bar</string>

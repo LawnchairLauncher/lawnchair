@@ -51,6 +51,7 @@ fun SliderPreference(
     valueRange: ClosedRange<Int>,
     step: Int,
     showAsPercentage: Boolean = false,
+    showUnit: String = "",
 ) {
     val transformedAdapter = rememberTransformAdapter(
         adapter = adapter,
@@ -65,6 +66,7 @@ fun SliderPreference(
         valueRange = start..endInclusive,
         step = step.toFloat(),
         showAsPercentage = showAsPercentage,
+        showUnit = showUnit,
     )
 }
 
@@ -75,6 +77,7 @@ fun SliderPreference(
     valueRange: ClosedFloatingPointRange<Float>,
     step: Float,
     showAsPercentage: Boolean = false,
+    showUnit: String = "",
 ) {
     var adapterValue by adapter
     var sliderValue by remember { mutableFloatStateOf(adapterValue) }
@@ -105,9 +108,9 @@ fun SliderPreference(
                             stringResource(
                                 id = R.string.n_percent,
                                 (value * 100).roundToInt(),
-                            )
+                            ) + " $showUnit"
                         } else {
-                            value.roundToInt().toString()
+                            value.roundToInt().toString() + " $showUnit"
                         },
                     )
                 }

@@ -186,6 +186,7 @@
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Vergrendelingsknop Tonen</string>
     <string name="show_system_settings_entry">Toon Systeeminstellingeninvoer</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="dark_status_bar_label">Donkere Status Balk</string>
@@ -242,7 +243,7 @@
     <string name="smartspace_mode_google_search">Google Zoeken</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Dock-Bar aktivieren</string>
     <string name="hotseat_mode_label">Zoekbalkwidget</string>
     <string name="hotseat_mode_disabled">Uitgeschakeld</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -251,7 +252,7 @@
     <string name="corner_radius_label">Hoek radius</string>
     <string name="apply_accent_color_label">Pas accentkleur toe</string>
     <string name="search_provider">Zoek Provider</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">Unterer Einzug</string>
     <string name="grid">Raster</string>
     <string name="dock_icons">Dock iconen</string>
     <!-- SearchProviderPreferences -->
@@ -269,16 +270,16 @@
     <string name="hidden_apps_label">Verborgen apps</string>
     <string name="show_enable_smart_hide">Weergeven wanneer volledige naam wordt getypt</string>
     <string name="hide_hidden_apps_search">Verberg in zoekresultaten</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Bulk-App-Downloads</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Massenladen und Anzeigen von Symbolen, anstatt Symbole einzeln zu laden und anzuzeigen</string>
     <string name="pref_category_search">Zoek</string>
     <string name="show_app_search_bar">Zoekbalk weergeven</string>
     <string name="pref_search_auto_show_keyboard">Toetsenbord Automatisch Weergeven</string>
     <string name="fuzzy_search_title">Fuzzy zoeken</string>
     <string name="fuzzy_search_desc">Geschatte overeenkomst voor app zoekopdrachten.</string>
     <string name="max_search_result_count_title">Max aantal zoekresultaten</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_people_result_count_title">Max Anzahl von Benutzerergebnissen</string>
+    <string name="max_file_result_count_title">Max. Anzahl von Dateiergebnissen</string>
     <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max aantal zoekresultaten</string>

@@ -12,7 +12,7 @@ pluginManagement {
 
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
-    id "com.gradle.enterprise" version "3.16.1"
+    id "com.gradle.enterprise" version "3.16.2"
 }
 
 gradleEnterprise {
@@ -58,7 +58,12 @@ include ':systemUILog'
 include ':systemUIAnim'
 include ':systemUnFold'
 include ':systemUIViewCapture'
+
 include ':compatLib'
-include ':compatLibVR'
-include ':compatLibVS'
+include ':compatLib:compatLibVQ'
+include ':compatLib:compatLibVR'
+include ':compatLib:compatLibVS'
+include ':compatLib:compatLibVT'
+include ':compatLib:compatLibVU'
+
 include ':baseline-profile'

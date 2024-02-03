@@ -10,6 +10,7 @@ import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import app.lawnchair.search.data.SearchResultActionCallBack
 import com.android.app.search.LayoutType
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.AllAppsGridAdapter
@@ -68,9 +69,10 @@ class LawnchairSearchAdapterProvider(
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
 
+        val grid: DeviceProfile = mLauncher.deviceProfile
         if (viewType != SEARCH_RESULT_ICON) {
             val layoutParams = ViewGroup.MarginLayoutParams(view.layoutParams)
-            val horizontalMargin = 48
+            val horizontalMargin = grid.allAppsLeftRightMargin
             layoutParams.leftMargin = horizontalMargin
             layoutParams.rightMargin = horizontalMargin
             view.layoutParams = layoutParams

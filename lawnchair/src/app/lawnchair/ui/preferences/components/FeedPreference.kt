@@ -19,7 +19,7 @@ import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 
 data class ProviderInfo(
     val name: String,
@@ -49,14 +49,14 @@ fun getEntries(context: Context) = getProviders(context).map {
         },
         label = { it.name },
     )
-}
+}.toPersistentList()
 
 @Composable
 fun FeedPreference() {
     val context = LocalContext.current
     val adapter = preferenceManager().feedProvider.getAdapter()
     val preferredPackage = adapter.state.value
-    val entries = remember { getEntries(context).toImmutableList() }
+    val entries = remember { getEntries(context) }
     val resolvedPackage = remember(preferredPackage) {
         FeedBridge.getInstance(context).resolveBridge(preferredPackage)?.packageName ?: "com.google.android.googlequicksearchbox"
     }

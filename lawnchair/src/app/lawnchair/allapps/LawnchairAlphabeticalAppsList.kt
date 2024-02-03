@@ -1,6 +1,7 @@
 package app.lawnchair.allapps
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
@@ -21,12 +22,16 @@ class LawnchairAlphabeticalAppsList<T>(
     where T : Context, T : ActivityContext {
 
     private var hiddenApps: Set<String> = setOf()
+    private val prefs = PreferenceManager2.getInstance(context)
 
     init {
-        val prefs = PreferenceManager2.getInstance(context)
-        prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
-            hiddenApps = it
-            onAppsUpdated()
+        try {
+            prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
+                hiddenApps = it
+                onAppsUpdated()
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed initialize ignore: ", t)
         }
     }
 

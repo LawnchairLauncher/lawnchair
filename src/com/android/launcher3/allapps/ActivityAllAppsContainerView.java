@@ -100,6 +100,7 @@ import java.util.stream.Stream;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
  * All apps container view with search support for use in a dragging activity.
@@ -107,7 +108,7 @@ import app.lawnchair.font.FontManager;
  * @param <T> Type of context inflating all apps.
  */
 public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
-        extends SpringRelativeLayout implements DragSource, Insettable,
+        extends StretchRecyclerViewContainer implements DragSource, Insettable,
         OnDeviceProfileChangeListener, PersonalWorkSlidingTabStrip.OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
 
@@ -127,7 +128,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
     protected static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
-    private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 300;
+    // As of this writing, search transition does not seem to work properly, so set duration to 0.
+    private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 0;
     // Render the header protection at all times to debug clipping issues.
     private static final boolean DEBUG_HEADER_PROTECTION = false;
     /** Context of an activity or window that is inflating this container. */
@@ -1495,7 +1497,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         final Rect mPadding = new Rect();
         AllAppsRecyclerView mRecyclerView;
 
-        AdapterHolder(int type, LawnchairAlphabeticalAppsList<T> appsList) {
+        AdapterHolder(int type, AlphabeticalAppsList<T> appsList) {
             mType = type;
             mAppsList = appsList;
             mAdapter = createAdapter(mAppsList);

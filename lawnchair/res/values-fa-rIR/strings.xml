@@ -186,6 +186,7 @@
     <string name="popup_menu">منو Pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">نمایش دکمه قفل</string>
     <string name="show_system_settings_entry">نمایش ورودی تنظیمات سیستم</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">نوار وضعیت</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
     <string name="dark_status_bar_label">نوار وضعیت تاریک</string>

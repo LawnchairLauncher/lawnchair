@@ -52,6 +52,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.RunnableList;
@@ -177,7 +178,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
         mIterateChildrenTag = getContext().getString(R.string.popup_container_iterate_children);
 
-        if (!ENABLE_MATERIAL_U_POPUP.get() && mActivityContext.canUseMultipleShadesForPopup()) {
+        if (!FeatureFlags.showMaterialUPopup(getContext()) && mActivityContext.canUseMultipleShadesForPopup()) {
             mColors = new int[] {
                     ColorTokens.PopupShadeFirst.resolveColor(context),
                     ColorTokens.PopupShadeSecond.resolveColor(context),
@@ -266,18 +267,18 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 mlp.bottomMargin = 0;
 
                 if (colors != null) {
-                    if (!ENABLE_MATERIAL_U_POPUP.get()) {
+                    if (!FeatureFlags.showMaterialUPopup(getContext())) {
                         backgroundColor = colors[numVisibleChild % colors.length];
                     }
 
-                    if (ENABLE_MATERIAL_U_POPUP.get() && isShortcutContainer(view)) {
+                    if (FeatureFlags.showMaterialUPopup(getContext()) && isShortcutContainer(view)) {
                         setChildColor(view, colors[0], colorAnimator);
                         mArrowColor = colors[0];
                     }
                 }
 
                 // Arrow color matches the first child or the last child.
-                if (!ENABLE_MATERIAL_U_POPUP.get()
+                if (!FeatureFlags.showMaterialUPopup(getContext())
                         && (mIsAboveIcon || (numVisibleChild == 0 && viewGroup == this))) {
                     mArrowColor = backgroundColor;
                 }
@@ -591,7 +592,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
     protected void animateOpen() {
         setVisibility(View.VISIBLE);
-        mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
+        mOpenCloseAnimator = FeatureFlags.showMaterialUPopup(getContext())
                 ? getMaterialUOpenCloseAnimator(
                         true,
                         OPEN_DURATION_U,
@@ -691,7 +692,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         }
         mIsOpen = false;
 
-        mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
+        mOpenCloseAnimator = FeatureFlags.showMaterialUPopup(getContext())
                 ? getMaterialUOpenCloseAnimator(
                         false,
                         CLOSE_DURATION_U,

@@ -49,6 +49,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -153,7 +154,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
 
     @Override
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
+        if (FeatureFlags.showMaterialUPopup(getContext())) {
             assignMarginsAndBackgrounds(viewGroup,
                     mColors[0]);
         } else {
@@ -206,6 +207,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
                 .firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
         boolean showSystemSettings = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getShowSystemSettingsEntryOnPopUp());
+        boolean showEditMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEditHomeScreenButtonOnPopUp());
 
         ArrayList<OptionItem> options = new ArrayList<>();
         if (showLockToggle) {
@@ -235,7 +237,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
                     LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                     OptionsPopupView::onWidgetsClicked));
         }
-        if (MULTI_SELECT_EDIT_MODE.get()) {
+        if (!lockHomeScreen && showEditMode) {
             options.add(new OptionItem(launcher,
                     R.string.edit_home_screen,
                     R.drawable.enter_home_gardening_icon,

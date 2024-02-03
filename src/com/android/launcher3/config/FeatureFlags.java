@@ -70,6 +70,14 @@ public final class FeatureFlags {
                 PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
                 return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableSmartspace());
         }
+        public static boolean showDotPagination(Context context) {
+                PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+                return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableDotPagination());
+        }
+        public static boolean showMaterialUPopup(Context context) {
+                PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+                return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableMaterialUPopUp());
+        }
         /**
          * Feature flag to handle define config changes dynamically instead of killing the process.
          * <p>
@@ -207,7 +215,7 @@ public final class FeatureFlags {
                 "INJECT_FALLBACK_APP_CORPUS_RESULTS", DISABLED,
                 "Inject fallback app corpus result when AiAi fails to return it.");
         public static final BooleanFlag ENABLE_LONG_PRESS_NAV_HANDLE =
-                getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", TEAMFOOD,
+                getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE_MPR", TEAMFOOD,
                         "Enables long pressing on the bottom bar nav handle to trigger events.");
         // TODO(Block 17): Clean up flags
         public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,

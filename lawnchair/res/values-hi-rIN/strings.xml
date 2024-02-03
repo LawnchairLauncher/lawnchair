@@ -186,6 +186,7 @@
     <string name="popup_menu">पॉपअप मेनू</string>
     <string name="home_screen_lock_toggle_from_home_popup">लॉक बटन दिखाएं</string>
     <string name="show_system_settings_entry">सिस्टम सेटिंग्स की प्रविष्टि दिखाएं</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">स्टेटस बार</string>
     <string name="show_status_bar">स्टेट्स बार दिखाएँ</string>
     <string name="dark_status_bar_label">गहरा स्टेट्स बार</string>

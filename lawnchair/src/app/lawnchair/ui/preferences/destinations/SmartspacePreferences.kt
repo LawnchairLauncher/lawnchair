@@ -133,12 +133,12 @@ fun SmartspaceProviderPreference(
                 label = { stringResource(id = mode.nameResourceId) },
                 enabled = mode.isAvailable(context = context),
             )
-        }
+        }.toPersistentList()
     }
 
     ListPreference(
         adapter = adapter,
-        entries = entries.toPersistentList(),
+        entries = entries,
         label = stringResource(id = R.string.smartspace_mode_label),
         endWidget = endWidget,
     )
@@ -241,14 +241,14 @@ fun SmartspaceCalendarPreference() {
     val entries = remember {
         SmartspaceCalendar.values().map { calendar ->
             ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
-        }
+        }.toPersistentList()
     }
 
     val adapter = preferenceManager2().smartspaceCalendar.getAdapter()
 
     ListPreference(
         adapter = adapter,
-        entries = entries.toPersistentList(),
+        entries = entries,
         label = stringResource(id = R.string.smartspace_calendar),
     )
 }

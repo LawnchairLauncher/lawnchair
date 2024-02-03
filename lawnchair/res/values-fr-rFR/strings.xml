@@ -186,6 +186,7 @@
     <string name="popup_menu">Menu pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton de verrouillage</string>
     <string name="show_system_settings_entry">Afficher l\'entrée des paramètres du système</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Afficher le bouton Modifier</string>
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="dark_status_bar_label">Barre d\'état sombre</string>
@@ -251,7 +252,7 @@
     <string name="corner_radius_label">Courbure des coins</string>
     <string name="apply_accent_color_label">Appliquer la couleur d\'accentuation</string>
     <string name="search_provider">Fournisseur de recherche</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">Retrait inférieur</string>
     <string name="grid">Grille</string>
     <string name="dock_icons">Icônes dans la zone d\'ancrage</string>
     <!-- SearchProviderPreferences -->
@@ -286,7 +287,7 @@
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colonnes du tiroir d\'applications</string>
     <string name="row_height_label">Hauteur de la rangée</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="app_drawer_indent_label">Retrait horizontal</string>
     <string name="perform_wide_search_title">Recherche d\'appareil</string>
     <string name="perform_wide_search_file">Fichiers</string>
     <string name="pref_suggestion_title">Suggestions Web (via <xliff:g id="startpage">Page de démarrage</xliff:g>)</string>

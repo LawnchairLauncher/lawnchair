@@ -186,6 +186,7 @@
     <string name="popup_menu">Ponnahdusikkuna</string>
     <string name="home_screen_lock_toggle_from_home_popup">Näytä lukituspainike</string>
     <string name="show_system_settings_entry">Näytä järjestelmäasetusten merkintä</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Tilapalkki</string>
     <string name="show_status_bar">Näytä tilapalkki</string>
     <string name="dark_status_bar_label">Tumma Tilapalkki</string>

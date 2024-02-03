@@ -47,6 +47,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 
 import app.lawnchair.theme.color.ColorTokens;
@@ -72,7 +73,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private static final int PAGE_INDICATOR_ALPHA = 255;
     private static final int DOT_ALPHA = 128;
     private static final float DOT_ALPHA_FRACTION = 0.5f;
-    private static final int DOT_GAP_FACTOR = SHOW_DOT_PAGINATION.get() ? 4 : 3;
+    private final int DOT_GAP_FACTOR = FeatureFlags.showDotPagination(getContext()) ? 4 : 3;
     private static final int VISIBLE_ALPHA = 255;
     private static final int INVISIBLE_ALPHA = 0;
     private Paint mPaginationPaint;
@@ -155,7 +156,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         mPaginationPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaginationPaint.setStyle(Style.FILL);
         mPaginationPaint.setColor(ColorTokens.FolderPaginationColor.resolveColor(context));
-        mDotRadius = (SHOW_DOT_PAGINATION.get()
+        mDotRadius = (FeatureFlags.showDotPagination(context)
                 ? getResources().getDimension(R.dimen.page_indicator_dot_size_v2)
                 : getResources().getDimension(R.dimen.page_indicator_dot_size))
                 / 2;
@@ -166,7 +167,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
-        if (SHOW_DOT_PAGINATION.get() && currentScroll == 0 && totalScroll == 0) {
+        if (FeatureFlags.showDotPagination(getContext()) && currentScroll == 0 && totalScroll == 0) {
             CURRENT_POSITION.set(this, (float) mActivePage);
             return;
         }
@@ -219,7 +220,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setShouldAutoHide(boolean shouldAutoHide) {
-        mShouldAutoHide = shouldAutoHide && SHOW_DOT_PAGINATION.get();
+        mShouldAutoHide = shouldAutoHide && FeatureFlags.showDotPagination(getContext());
         if (shouldAutoHide && mPaginationPaint.getAlpha() > INVISIBLE_ALPHA) {
             hideAfterDelay();
         } else if (!shouldAutoHide) {
@@ -425,7 +426,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
             int alpha = mPaginationPaint.getAlpha();
 
             // Here we draw the dots
-            mPaginationPaint.setAlpha(SHOW_DOT_PAGINATION.get()
+            mPaginationPaint.setAlpha(FeatureFlags.showDotPagination(getContext())
                     ? ((int) (alpha * DOT_ALPHA_FRACTION))
                     : DOT_ALPHA);
             for (int i = 0; i < mNumPages; i++) {
@@ -434,7 +435,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
             }
 
             // Here we draw the current page indicator
-            mPaginationPaint.setAlpha(SHOW_DOT_PAGINATION.get() ? alpha : PAGE_INDICATOR_ALPHA);
+            mPaginationPaint.setAlpha(FeatureFlags.showDotPagination(getContext()) ? alpha : PAGE_INDICATOR_ALPHA);
             canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mPaginationPaint);
         }
     }
@@ -502,7 +503,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         @Override
         public void onAnimationEnd(Animator animation) {
             if (!mCancelled) {
-                if (mShouldAutoHide && SHOW_DOT_PAGINATION.get()) {
+                if (mShouldAutoHide && FeatureFlags.showDotPagination(getContext())) {
                     hideAfterDelay();
                 }
                 mAnimator = null;

@@ -122,6 +122,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 /**
  * A task in the Recents view.
  */
@@ -830,6 +832,7 @@ public class TaskView extends FrameLayout implements Reusable {
      *         second app. {@code false} otherwise
      */
     protected boolean confirmSecondSplitSelectApp() {
+        if (!LawnchairQuickstepCompat.ATLEAST_T) return false;
         int index = getLastSelectedChildTaskIndex();
         TaskIdAttributeContainer container = mTaskIdAttributeContainer[index];
         if (container != null) {
@@ -936,20 +939,18 @@ public class TaskView extends FrameLayout implements Reusable {
             }
             // Indicate success once the system has indicated that the transition has
             // started
-            ActivityOptions opts = ActivityOptions.makeCustomTaskAnimation(getContext(), 0, 0,
-                    MAIN_EXECUTOR.getHandler(),
-                    elapsedRealTime -> {
-                        callback.accept(true);
-                    },
-                    elapsedRealTime -> {
-                        failureListener.onTransitionFinished();
-                    });
+            ActivityOptions opts = makeCustomAnimation(getContext(), 0, 0,
+                    () -> callback.accept(true), MAIN_EXECUTOR.getHandler());
             opts.setLaunchDisplayId(
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (isQuickswitch) {
                 opts.setFreezeRecentTasksReordering();
             }
-            opts.setDisableStartingWindow(mSnapshotView.shouldShowSplashView());
+            try {
+                opts.setDisableStartingWindow(mSnapshotView.shouldShowSplashView());
+            } catch (Throwable t) {
+                // ignore
+            }
             Task.TaskKey key = mTask.key;
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (!ActivityManagerWrapper.getInstance().startActivityFromRecents(key, opts)) {
@@ -972,6 +973,9 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     private ActivityOptions makeCustomAnimation(Context context, int enterResId,
             int exitResId, final Runnable callback, final Handler callbackHandler) {
+        if (!LawnchairQuickstepCompat.ATLEAST_T) {
+            return LawnchairQuickstepCompat.getActivityOptionsCompat().makeCustomAnimation(context, enterResId, exitResId, callback, callbackHandler);
+        }
         return ActivityOptions.makeCustomTaskAnimation(context, enterResId, exitResId,
                 callbackHandler,
                 elapsedRealTime -> {
@@ -1403,6 +1407,12 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     private void applyScale() {
+        /* This is now only for grid mode on tablets. Unconditionally calling this breaks
+         * our overview scrolling animation. Block this method, otherwise we have to
+         * introduce a multivalue scale fusion class to handle this. */
+        if (!mActivity.getDeviceProfile().isTablet)
+            return;
+
         float scale = 1;
         scale *= getPersistentScale();
         scale *= mDismissScale;

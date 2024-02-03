@@ -186,6 +186,7 @@
     <string name="popup_menu">Felugró menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Zárolási gomb megjelenítése</string>
     <string name="show_system_settings_entry">Rendszerbeállítások elem megjelenítése</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
     <string name="status_bar_label">Állapotsor</string>
     <string name="show_status_bar">Állapotsor megjelenítése</string>
     <string name="dark_status_bar_label">Sötét állapotsor</string>

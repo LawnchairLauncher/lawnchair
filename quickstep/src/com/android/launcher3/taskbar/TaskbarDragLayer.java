@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 
 import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -131,14 +132,18 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnComputeInternalInsetsListener(mTaskbarInsetsComputer);
-        mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
-                .startCapture(getRootView(), ".Taskbar");
+        if (Utilities.ATLEAST_U) {
+            mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
+                    .startCapture(getRootView(), ".Taskbar");
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mViewCaptureCloseable.close();
+        if (Utilities.ATLEAST_U) {
+            mViewCaptureCloseable.close();
+        }
         onDestroy(true);
     }
 

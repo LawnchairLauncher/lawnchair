@@ -795,9 +795,9 @@ public class DeviceProfile {
     private void updateHotseatSizes(int hotseatIconSizePx) {
         // Ensure there is enough space for folder icons, which have a slightly larger
         // radius.
-        hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx);
+        hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 2;
 
-        var space = Math.abs(hotseatCellHeightPx / 2) - 10;
+        var space = Math.abs(hotseatCellHeightPx / 2) - 16;
 
         hotseatBarBottomSpacePx *= PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getHotseatBottomFactor());
@@ -1213,10 +1213,12 @@ public class DeviceProfile {
      * width.
      */
     private int calculateHotseatBorderSpace(float hotseatWidthPx, int numExtraBorder) {
-
+        int numBorders = (numShownHotseatIcons - 1 + numExtraBorder);
+        if (numBorders <= 0)
+            return 0;
         float hotseatIconsTotalPx = iconSizePx * numShownHotseatIcons;
         int hotseatBorderSpacePx =  (int) (hotseatWidthPx - hotseatIconsTotalPx)
-                / (numShownHotseatIcons - 1 + numExtraBorder);
+                / numBorders;
         return Math.min(hotseatBorderSpacePx, mMaxHotseatIconSpacePx);
     }
 
@@ -1321,8 +1323,7 @@ public class DeviceProfile {
     private void setupAllAppsStyle(Context context) {
         TypedArray allAppsStyle = context.obtainStyledAttributes(
                 inv.allAppsStyle != INVALID_RESOURCE_HANDLE ? inv.allAppsStyle
-                        : R.style.AllAppsStyleDefault,
-                R.styleable.AllAppsStyle);
+                        : R.style.AllAppsStyleDefault, R.styleable.AllAppsStyle);
 
         allAppsLeftRightPadding = allAppsStyle.getDimensionPixelSize(
                 R.styleable.AllAppsStyle_horizontalPadding, 0);

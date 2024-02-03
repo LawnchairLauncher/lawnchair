@@ -214,7 +214,9 @@ public class LauncherBackAnimationController {
                     mAnimationFinishedCallback = finishedCallback;
                 }
 
-                @Override
+                void onAnimationCancelled(boolean isKeyguardOccluded) {
+                }
+
                 public void onAnimationCancelled() {
                 }
             };

@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -20,8 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
-import androidx.core.view.WindowCompat
-import app.lawnchair.ui.preferences.components.layout.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.unsafeLazy
 import kotlin.coroutines.resume
@@ -36,13 +35,12 @@ class BlankActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        enableEdgeToEdge()
         if (!intent.hasExtra("dialogTitle")) {
             startTargetActivity()
             return
         }
         setContent {
-            SystemUi()
             LawnchairTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

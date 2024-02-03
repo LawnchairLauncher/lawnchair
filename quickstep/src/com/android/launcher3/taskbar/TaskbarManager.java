@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static android.content.Context.RECEIVER_NOT_EXPORTED;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
@@ -54,6 +55,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
@@ -71,6 +73,8 @@ import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
 import java.util.StringJoiner;
+
+import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Class to manage taskbar lifecycle
@@ -154,60 +158,69 @@ public class TaskbarManager {
         }
     };
 
-    private final ActivityLifecycleCallbacksAdapter mLifecycleCallbacks = new ActivityLifecycleCallbacksAdapter() {
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            if (mActivity != activity)
-                return;
-            if (mActivity != null) {
-                mActivity.removeOnDeviceProfileChangeListener(
-                        mDebugActivityDeviceProfileChanged);
-                Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                        "unregistering activity lifecycle callbacks from "
-                                + "onActivityDestroyed.");
-                mActivity.unregisterActivityLifecycleCallbacks(this);
-            }
-            mActivity = null;
-            debugWhyTaskbarNotDestroyed("clearActivity");
-            if (mTaskbarActivityContext != null) {
-                mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
-            }
-            mUnfoldProgressProvider.setSourceProvider(null);
-        }
-    };
+    private final ActivityLifecycleCallbacksAdapter mLifecycleCallbacks =
+            new ActivityLifecycleCallbacksAdapter() {
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    if (mActivity != activity) return;
+                    if (mActivity != null) {
+                        mActivity.removeOnDeviceProfileChangeListener(
+                                mDebugActivityDeviceProfileChanged);
+                        Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                                "unregistering activity lifecycle callbacks from "
+                                        + "onActivityDestroyed.");
+                        mActivity.unregisterActivityLifecycleCallbacks(this);
+                    }
+                    mActivity = null;
+                    debugWhyTaskbarNotDestroyed("clearActivity");
+                    if (mTaskbarActivityContext != null) {
+                        mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
+                    }
+                    mUnfoldProgressProvider.setSourceProvider(null);
+                }
+            };
 
-    UnfoldTransitionProgressProvider.TransitionProgressListener mUnfoldTransitionProgressListener = new UnfoldTransitionProgressProvider.TransitionProgressListener() {
-        @Override
-        public void onTransitionStarted() {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition started getting called.");
-        }
+    UnfoldTransitionProgressProvider.TransitionProgressListener mUnfoldTransitionProgressListener =
+            new UnfoldTransitionProgressProvider.TransitionProgressListener() {
+                @Override
+                public void onTransitionStarted() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition started getting called.");
+                }
 
-        @Override
-        public void onTransitionProgress(float progress) {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition progress : " + progress);
-        }
+                @Override
+                public void onTransitionProgress(float progress) {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition progress : " + progress);
+                }
 
-        @Override
-        public void onTransitionFinishing() {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition finishing getting called.");
+                @Override
+                public void onTransitionFinishing() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition finishing getting called.");
 
-        }
+                }
 
-        @Override
-        public void onTransitionFinished() {
-            Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                    "fold/unfold transition finished getting called.");
+                @Override
+                public void onTransitionFinished() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition finished getting called.");
 
-        }
-    };
+                }
+            };
 
     @SuppressLint("WrongConstant")
     public TaskbarManager(TouchInteractionService service) {
-        Display display = service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-        mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
+        Display display =
+                service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
+        mContext = (LawnchairQuickstepCompat.ATLEAST_T) ?
+                service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null) :
+                (LawnchairQuickstepCompat.ATLEAST_S) ?
+                        service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null) :
+                        (LawnchairQuickstepCompat.ATLEAST_R) ?
+                                service.createWindowContext(TYPE_APPLICATION_OVERLAY, null) :
+                                service;
+
         mNavButtonController = new TaskbarNavButtonController(service,
                 SystemUiProxy.INSTANCE.get(mContext), new Handler(),
                 AssistUtils.newInstance(mContext));
@@ -216,8 +229,10 @@ public class TaskbarManager {
 
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
-                Trace.instantForTrack(Trace.TRACE_TAG_APP, "TaskbarManager",
-                        "onConfigurationChanged: " + newConfig);
+                if (LawnchairQuickstepCompat.ATLEAST_T) {
+                    Trace.instantForTrack(Trace.TRACE_TAG_APP, "TaskbarManager",
+                            "onConfigurationChanged: " + newConfig);
+                }
                 debugWhyTaskbarNotDestroyed(
                         "TaskbarManager#mComponentCallbacks.onConfigurationChanged: " + newConfig);
                 DeviceProfile dp = mUserUnlocked

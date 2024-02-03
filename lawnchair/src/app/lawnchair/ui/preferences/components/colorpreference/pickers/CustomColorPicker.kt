@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -332,6 +333,7 @@ private fun HsvColorPicker(
             onValueChange = { newValue -> updateColor(newBrightness = newValue) },
         )
 
+        val latestOnSelectedColorChange by rememberUpdatedState(onSelectedColorChange)
         LaunchedEffect(key1 = selectedColor) {
             if (selectedColor ==
                 hsvValuesToIntColor(hue, saturation, brightness)
@@ -345,7 +347,7 @@ private fun HsvColorPicker(
                 brightness = it[2]
             }
 
-            onSelectedColorChange()
+            latestOnSelectedColorChange()
         }
     }
 }
@@ -406,11 +408,12 @@ private fun RgbColorPicker(
             onValueChange = { newValue -> updateColor(newBlue = newValue.toInt()) },
         )
 
+        val latestOnSelectedColorChange by rememberUpdatedState(onSelectedColorChange)
         LaunchedEffect(key1 = selectedColor) {
             red = selectedColor.red
             green = selectedColor.green
             blue = selectedColor.blue
-            onSelectedColorChange()
+            latestOnSelectedColorChange()
         }
     }
 }

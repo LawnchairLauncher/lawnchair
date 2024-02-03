@@ -3,19 +3,19 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.2.1"
-    id 'com.android.library' version "8.2.1" apply false
-    id 'com.android.test' version '8.2.1' apply false
-    id 'androidx.baselineprofile' version '1.2.2'
-    id 'org.jetbrains.kotlin.android' version "1.9.21"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.21"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.21"
-    id "com.google.devtools.ksp" version "1.9.21-1.0.16"
+    id 'com.android.application' version "8.2.2"
+    id 'com.android.library' version "8.2.2" apply false
+    id 'com.android.test' version '8.2.2' apply false
+    id 'androidx.baselineprofile' version '1.2.3'
+    id 'org.jetbrains.kotlin.android' version "1.9.22"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.22"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.22"
+    id "com.google.devtools.ksp" version "1.9.22-1.0.17"
     id 'com.google.protobuf' version "0.9.4"
-    id 'app.cash.licensee' version "1.8.0"
+    id 'app.cash.licensee' version "1.9.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'org.gradle.android.cache-fix' version '3.0'
-    id 'com.diffplug.spotless' version '6.23.3'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 allprojects {
@@ -41,7 +41,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '3.25.1'
+        def protocVersion = '3.25.2'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -65,7 +65,7 @@ allprojects {
 
     plugins.withType(JavaBasePlugin).configureEach {
         java {
-            toolchain.languageVersion = JavaLanguageVersion.of(17)
+            toolchain.languageVersion = JavaLanguageVersion.of(21)
         }
     }
 
@@ -92,6 +92,9 @@ allprojects {
                     libraries.from(files(frameworkJar))
                 }
             }
+            dependencies {
+                compileOnly files(frameworkJar)
+            }
         }
 
         compileOnlyCommonJars = {
@@ -99,7 +102,13 @@ allprojects {
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
                 compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
+
+                compileOnly projects.compatLib
+                compileOnly projects.compatLib.compatLibVQ
+                compileOnly projects.compatLib.compatLibVR
+                compileOnly projects.compatLib.compatLibVS
+                compileOnly projects.compatLib.compatLibVT
+                compileOnly projects.compatLib.compatLibVU
             }
         }
     }
@@ -119,7 +128,7 @@ final def releaseName = "Beta 1"
 final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
-final def quickstepMinSdk = "34"
+final def quickstepMinSdk = "29"
 final def quickstepMaxSdk = "34"
 
 android {
@@ -168,7 +177,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.7"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -320,6 +329,14 @@ dependencies {
     withQuickstepImplementation projects.systemUIPluginCore
     withQuickstepCompileOnly projects.systemUICommon
 
+    // QuickSwitch Compat
+    withQuickstepImplementation projects.compatLib
+    withQuickstepImplementation projects.compatLib.compatLibVQ
+    withQuickstepImplementation projects.compatLib.compatLibVR
+    withQuickstepImplementation projects.compatLib.compatLibVS
+    withQuickstepImplementation projects.compatLib.compatLibVT
+    withQuickstepImplementation projects.compatLib.compatLibVU
+
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-14.jar')
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
@@ -340,7 +357,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2023.10.01")
+    implementation platform("androidx.compose:compose-bom:2024.01.00")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -352,17 +369,16 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.8.2"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
     implementation "androidx.navigation:navigation-compose:2.7.6"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
-    def accompanistVersion = '0.32.0'
+    def accompanistVersion = '0.34.0'
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
     implementation "com.google.android.material:material:1.11.0"
-    implementation "io.github.fornewid:material-motion-compose-core:1.0.7"
+    implementation "io.github.fornewid:material-motion-compose-core:1.2.0"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.5.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
@@ -399,10 +415,14 @@ ksp {
 }
 
 spotless {
+    java {
+        target("compatLib/**/src/**/*.java")
+        googleJavaFormat().aosp()
+    }
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.3.8",
+            "io.nlopez.compose.rules:ktlint:0.3.11",
         ]).editorConfigOverride([
             "ktlint_compose_modifier-missing-check": "disabled",
             "ktlint_compose_compositionlocal-allowlist": "disabled",

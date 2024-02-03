@@ -32,6 +32,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -163,7 +164,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
+        if (FeatureFlags.showMaterialUPopup(icon.getContext())) {
             container = (PopupContainerWithArrow) context.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, context.getDragLayer(), false);
             container.populateAndShowRowsMaterialU(icon, deepShortcutCount, systemShortcuts);
