@@ -415,6 +415,8 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                         screenId, coordinates[0], coordinates[1]);
                 bindItem(info, accessibility);
             } else if (item instanceof FolderInfo fi) {
+                Workspace<?> workspace = mContext.getWorkspace();
+                workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
                 mContext.getModelWriter().addItemToDatabase(fi,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId, coordinates[0],
                         coordinates[1]);
