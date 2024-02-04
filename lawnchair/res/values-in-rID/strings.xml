@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Susunan Layar beranda dikunci.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Menu Pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci</string>
     <string name="show_system_settings_entry">Tampilkan Entri Pengaturan Sistem</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Jumlah Hasil Saran Maksimal</string>
     <string name="max_settings_entry_result_count_title">Jumlah Hasil Entri Pengaturan Maksimal</string>
     <string name="max_recent_result_count_title">Jumlah Hasil Histori Maksimal</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Bersihkan</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Penelusuran Perangkat</string>
     <string name="perform_wide_search_file">File</string>
+    <string name="pref_suggestion_label">Saran</string>
     <string name="pref_suggestion_title">Saran web (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Penelusuran Lanjutan</string>
     <string name="perform_wide_search_description">Telusuri kontak, file, dan pengaturan Anda di pencarian laci aplikasi.</string>

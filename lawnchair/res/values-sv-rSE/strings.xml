@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Lås upp startskärm</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Startskärmen är låst.</string>
+    <string name="show_dot_pagination_label">Visa prickpaginering</string>
+    <string name="show_dot_pagination_description">Aktivera visning av prickpaginering på arbetsytan.</string>
+    <string name="show_material_u_popup_label">Visa Material U-meny</string>
+    <string name="show_material_u_popup_description">Aktivera studsig och något tätare meny.</string>
     <string name="popup_menu">Snabbmeny</string>
     <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
     <string name="show_system_settings_entry">Visa systeminställningar</string>
@@ -228,7 +232,7 @@
     <string name="smartspace_time_24_hour_format">24-timmarsformat</string>
     <string name="smartspace_weather">Väder</string>
     <string name="smartspace_battery_status">Batteristatus</string>
-    <string name="smartspace_now_playing">Spelas nu</string>
+    <string name="smartspace_now_playing">Nu spelas</string>
     <string name="smartspace_requires_setup">Tryck för att konfigurera</string>
     <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
     <string name="smartspace_media_info_separator">" — "</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Max antal förslagsresultat</string>
     <string name="max_settings_entry_result_count_title">Max antal inställningsresultat</string>
     <string name="max_recent_result_count_title">Max antal historikresultat</string>
+    <string name="max_web_suggestion_delay">Max fördröjning av webbförslag</string>
     <string name="clear_history">Rensa</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumner i applådan</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Vågrätt avstånd</string>
     <string name="perform_wide_search_title">Enhetssökning</string>
     <string name="perform_wide_search_file">Filer</string>
+    <string name="pref_suggestion_label">Förslag</string>
     <string name="pref_suggestion_title">Webbförslag (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Avancerad sökning</string>
     <string name="perform_wide_search_description">Sök bland dina kontakter, filer och inställningar vid applådesökning.</string>
