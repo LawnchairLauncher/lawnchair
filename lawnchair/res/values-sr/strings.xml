@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Откључај почетни екран</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Почетни екран је закључан.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Искачући мени</string>
     <string name="home_screen_lock_toggle_from_home_popup">Прикажи дугме за закључавање</string>
     <string name="show_system_settings_entry">Прикажи системско подешавање</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Максималан број резултата предлога</string>
     <string name="max_settings_entry_result_count_title">Максималан број резултата подешавања</string>
     <string name="max_recent_result_count_title">Максималан број резултата историје</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Обриши</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Број колона на листи апликација</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Хоризонтални размак</string>
     <string name="perform_wide_search_title">Претрага уређаја</string>
     <string name="perform_wide_search_file">Фајлови</string>
+    <string name="pref_suggestion_label">Predlozi</string>
     <string name="pref_suggestion_title">Веб-предлози (помоћу услуге <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Напредна претрага</string>
     <string name="perform_wide_search_description">Претражујте контакте, фајлове и подешавања на листи апликација.</string>

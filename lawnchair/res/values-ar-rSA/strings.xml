@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">فتح الشاشة الرئيسية</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">قائمة منبثقة</string>
     <string name="home_screen_lock_toggle_from_home_popup">عرض زر القُفل</string>
     <string name="show_system_settings_entry">إظهار إدخال إعدادات النظام</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">مسح</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">بحث الجهاز</string>
     <string name="perform_wide_search_file">ملفات</string>
+    <string name="pref_suggestion_label">اقتراحات</string>
     <string name="pref_suggestion_title">اقتراحات الويب(عبر <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">بحث متقدم</string>
     <string name="perform_wide_search_description">البحث في جهات اتصالك، ملفاتك و إعداداتك في بحث درج التطبيقات.</string>

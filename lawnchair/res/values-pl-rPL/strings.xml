@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Odblokuj ekran główny</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Ekran główny jest zablokowany.</string>
+    <string name="show_dot_pagination_label">Pokaż numerowanie stron kropkami</string>
+    <string name="show_dot_pagination_description">Włącza wyświetlanie numerowania stron za pomocą kropek w obszarze roboczym.</string>
+    <string name="show_material_u_popup_label">Pokaż wyskakujące okno (Material U)</string>
+    <string name="show_material_u_popup_description">Włącz elastyczne i lekko skonsolidowane wyskakujące okienko.</string>
     <string name="popup_menu">Wyskakujące menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Pokaż przycisk blokady</string>
     <string name="show_system_settings_entry">Pokaż Wpis Ustawień Systemu</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Maks. liczba wyników wyszukiwania</string>
     <string name="max_settings_entry_result_count_title">Maksymalna liczba wpisów ustawień</string>
     <string name="max_recent_result_count_title">Maks. liczba wyników historii</string>
+    <string name="max_web_suggestion_delay">Maksymalne opóźnienie sugestii w sieci</string>
     <string name="clear_history">Wyczyść</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumny szuflady aplikacji</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Odstęp poziomy</string>
     <string name="perform_wide_search_title">Szukaj w urządzeniu</string>
     <string name="perform_wide_search_file">Pliki</string>
+    <string name="pref_suggestion_label">Sugestie</string>
     <string name="pref_suggestion_title">Propozycje sieciowe (poprzez <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Wyszukiwanie zaawansowane</string>
     <string name="perform_wide_search_description">Przeszukaj kontakty, pliki i ustawienia w szufladzie aplikacji.</string>

@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Разблокировать домашний экран</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Главный экран заблокирован.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показать кнопку блокировки</string>
     <string name="show_system_settings_entry">Показать запись системных настроек</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Макс. количество результатов предложения</string>
     <string name="max_settings_entry_result_count_title">Макс. количество результатов записи</string>
     <string name="max_recent_result_count_title">Макс. количество результатов истории</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Очистить</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Горизонтальный отступ</string>
     <string name="perform_wide_search_title">Поиск устройств</string>
     <string name="perform_wide_search_file">Файл</string>
+    <string name="pref_suggestion_label">Рекомендации</string>
     <string name="pref_suggestion_title">Веб-подсказки (через стартовую страницу <xliff:g id="startpage"></xliff:g>)</string>
     <string name="pref_advance_search_category">Расширенный поиск</string>
     <string name="perform_wide_search_description">Поиск контактов, файлов и настроек в меню приложений.</string>

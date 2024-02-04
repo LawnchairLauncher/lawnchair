@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Déverrouiller l\'écran d\'accueil</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">L\'écran d\'accueil est verrouillé.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Menu pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton de verrouillage</string>
     <string name="show_system_settings_entry">Afficher l\'entrée des paramètres du système</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Nombre maximum de résultats suggéré</string>
     <string name="max_settings_entry_result_count_title">Nombre maximal de résultats des paramètres d\'entrée</string>
     <string name="max_recent_result_count_title">Nombre maximum de résultats de l\'historique</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Effacer</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colonnes du tiroir d\'applications</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Retrait horizontal</string>
     <string name="perform_wide_search_title">Recherche d\'appareil</string>
     <string name="perform_wide_search_file">Fichiers</string>
+    <string name="pref_suggestion_label">Suggestions</string>
     <string name="pref_suggestion_title">Suggestions Web (via <xliff:g id="startpage">Page de démarrage</xliff:g>)</string>
     <string name="pref_advance_search_category">Recherche Avancée</string>
     <string name="perform_wide_search_description">Rechercher vos contacts, fichiers et paramètres dans la recherche du tiroir des applications.</string>

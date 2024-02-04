@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Desbloquear Ecrã Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">O Ecrã Inicial está bloqueado.</string>
+    <string name="show_dot_pagination_label">Mostrar paginação de pontos</string>
+    <string name="show_dot_pagination_description">Ativar a exibição de paginação de pontos na área de trabalho.</string>
+    <string name="show_material_u_popup_label">Mostrar Material U Popup</string>
+    <string name="show_material_u_popup_description">Habilitar saltos e popups ligeiramente consolidados.</string>
     <string name="popup_menu">Menu Flutuante</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio</string>
     <string name="show_system_settings_entry">Mostrar Entrada de Definições de Sistema</string>
@@ -283,13 +287,15 @@
     <string name="max_suggestion_result_count_title">Contagem Máxima de Resultados de Sugestões</string>
     <string name="max_settings_entry_result_count_title">Contagem Máxima de Resultados de Entrada de Definições</string>
     <string name="max_recent_result_count_title">Contagem Máxima de Resultados de Histórico</string>
+    <string name="max_web_suggestion_delay">Máximo Atraso para Sugestões Web</string>
     <string name="clear_history">Limpar</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colunas da Gaveta de Aplicações</string>
     <string name="row_height_label">Altura da Linha</string>
     <string name="app_drawer_indent_label">Preenchimento Horizontal</string>
-    <string name="perform_wide_search_title">Pesquisa de Dispositivo</string>
+    <string name="perform_wide_search_title">Pesquisa no dispositivo</string>
     <string name="perform_wide_search_file">Ficheiros</string>
+    <string name="pref_suggestion_label">Sugestões</string>
     <string name="pref_suggestion_title">Sugestões Web (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Pesquisa Avançada</string>
     <string name="perform_wide_search_description">Pesquise os seus contactos, ficheiros e definições na pesquisa da gaveta de aplicações.</string>

@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Atrakinti Pagrindinį Ekraną</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Pagrindinis Ekranas yra užrakintas.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Pop-up Menių</string>
     <string name="home_screen_lock_toggle_from_home_popup">Rodyti ūžrakto mygtuką</string>
     <string name="show_system_settings_entry">Rodyti Sistemos Nustatymų eilutę</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Programų Lentynos Stulpeliai</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_label">Pasiūlymai</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Advanced Search</string>
     <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>

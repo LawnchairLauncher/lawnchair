@@ -48,8 +48,8 @@
     <string name="font_picker_description">部分文字可能無法套用。</string>
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
-    <string name="workspace_increase_max_grid_size_label">解除主畫面網格限制</string>
-    <string name="workspace_increase_max_grid_size_description">將主畫面網格最多 10 x 10 的限制提升至 20 x 20。</string>
+    <string name="workspace_increase_max_grid_size_label">增加主畫面網格數量上限</string>
+    <string name="workspace_increase_max_grid_size_description">提高主畫面網格最多 10 x 10 的限制至 20 x 20。</string>
     <string name="always_reload_icons_label">一律重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="transparent_background_icons">圖示套用主題色與透明背景</string>
@@ -183,10 +183,14 @@
     <string name="home_screen_unlock">解鎖主螢幕</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">主畫面已鎖定。</string>
+    <string name="show_dot_pagination_label">顯示圓點頁面指示器</string>
+    <string name="show_dot_pagination_description">在工作資料夾顯示頁面指示器。</string>
+    <string name="show_material_u_popup_label">使用 Material You 風格彈出視窗</string>
+    <string name="show_material_u_popup_description">使用更活潑有趣的彈出視窗樣式。</string>
     <string name="popup_menu">彈出式選單</string>
     <string name="home_screen_lock_toggle_from_home_popup">顯示鎖定桌面按鈕</string>
     <string name="show_system_settings_entry">顯示系統設定</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">顯示編輯桌面按鈕</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">顯示狀態列</string>
     <string name="dark_status_bar_label">深色狀態列</string>
@@ -269,7 +273,7 @@
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">隱藏的應用程式</string>
     <string name="show_enable_smart_hide">輸入全名時顯示</string>
-    <string name="hide_hidden_apps_search">於搜尋結果中隱藏</string>
+    <string name="hide_hidden_apps_search">在搜尋結果中隱藏</string>
     <string name="pref_all_apps_bulk_icon_loading_title">批次處理應用程式</string>
     <string name="pref_all_apps_bulk_icon_loading_description">同時載入並顯示所有應用程式</string>
     <string name="pref_category_search">搜尋</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">建議搜尋結果數量上限</string>
     <string name="max_settings_entry_result_count_title">設定搜尋結果數量上限</string>
     <string name="max_recent_result_count_title">瀏覽紀錄搜尋結果數量上限</string>
+    <string name="max_web_suggestion_delay">網頁搜尋結果數量上限</string>
     <string name="clear_history">清除</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">「所有應用程式」列數</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">水平填充</string>
     <string name="perform_wide_search_title">裝置搜尋</string>
     <string name="perform_wide_search_file">檔案</string>
+    <string name="pref_suggestion_label">建議</string>
     <string name="pref_suggestion_title">網頁建議（由 <xliff:g id="startpage">Startpage</xliff:g> 提供）</string>
     <string name="pref_advance_search_category">進階搜尋</string>
     <string name="perform_wide_search_description">在所有應用程式畫面搜尋聯絡人、檔案和設定。</string>
@@ -395,7 +401,7 @@
     <string name="bugreport_group_summary">%d 則新回報</string>
     <string name="bugreport_group_summary_multiple">多則新回報。</string>
     <!-- Search ig -->
-    <string name="show_search_result_types">於搜尋結果中顯示</string>
+    <string name="show_search_result_types">在搜尋結果中顯示</string>
     <string name="search_pref_result_people_title">聯絡人</string>
     <string name="search_pref_result_shortcuts_title">應用程式捷徑</string>
     <string name="search_pref_result_tips_title">Pixel 使用提示</string>

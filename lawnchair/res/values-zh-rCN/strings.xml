@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">解锁主屏幕布局</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">主屏幕已锁定。</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="home_screen_lock_toggle_from_home_popup">显示锁定桌面按钮</string>
     <string name="show_system_settings_entry">显示系统设置项目</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">最大建议结果数</string>
     <string name="max_settings_entry_result_count_title">最大设置条目结果数</string>
     <string name="max_recent_result_count_title">最大历史记录数</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">清除</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">应用抽屉列数</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">水平填充</string>
     <string name="perform_wide_search_title">设备搜索</string>
     <string name="perform_wide_search_file">文件</string>
+    <string name="pref_suggestion_label">建议</string>
     <string name="pref_suggestion_title">网页建议 (通过 <xliff:g id="startpage">启动页</xliff:g>)</string>
     <string name="pref_advance_search_category">高级搜索</string>
     <string name="perform_wide_search_description">在应用抽屉搜索中搜索您的联系人、文件和设置。</string>

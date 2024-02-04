@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Desbloquear Tela Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">A Tela Inicial está bloqueada.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Menu Flutuante</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio</string>
     <string name="show_system_settings_entry">Mostrar Entrada para Configurações do Sistema</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Contagem máxima de resultados de sugestões</string>
     <string name="max_settings_entry_result_count_title">Contagem máxima de resultados de entradas de configurações</string>
     <string name="max_recent_result_count_title">Contagem máxima de resultados do histórico</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Limpar</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colunas na Gaveta de Aplicativos</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Preenchimento Horizontal</string>
     <string name="perform_wide_search_title">Pesquisa de dispositivos</string>
     <string name="perform_wide_search_file">Arquivos</string>
+    <string name="pref_suggestion_label">Sugestões</string>
     <string name="pref_suggestion_title">Sugestões da web (via <xliff:g id="startpage">Página inicial</xliff:g>)</string>
     <string name="pref_advance_search_category">Pesquisa Avançada</string>
     <string name="perform_wide_search_description">Pesquise seus contatos, arquivos e configurações na busca da gaveta de aplicativos.</string>

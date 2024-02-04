@@ -185,6 +185,10 @@ workspace_increase_max_grid_size_label</string>
     <string name="home_screen_unlock">Startbildschirm entsperren</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Startbildschirm ist gesperrt.</string>
+    <string name="show_dot_pagination_label">Seitenübergangs-Punkte anzeigen</string>
+    <string name="show_dot_pagination_description">Seitenübergangs-Punkte auf dem Startbildschirm aktivieren.</string>
+    <string name="show_material_u_popup_label">Material-You-Popup anzeigen</string>
+    <string name="show_material_u_popup_description">Hüpfendes und etwas kompakteres Popup aktivieren.</string>
     <string name="popup_menu">Pop-up-Menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Sperrbutton anzeigen</string>
     <string name="show_system_settings_entry">Systemeinstellungen anzeigen</string>
@@ -285,6 +289,7 @@ workspace_increase_max_grid_size_label</string>
     <string name="max_suggestion_result_count_title">Max. Anzahl Vorschläge</string>
     <string name="max_settings_entry_result_count_title">Max. Anzahl Einstellungen-Ergebnisse</string>
     <string name="max_recent_result_count_title">Max. Anzahl Verlaufs-Ergebnisse</string>
+    <string name="max_web_suggestion_delay">Max. Webvorschlagsverzögerung</string>
     <string name="clear_history">Leeren</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Spalten der App-Übersicht</string>
@@ -292,6 +297,7 @@ workspace_increase_max_grid_size_label</string>
     <string name="app_drawer_indent_label">Seitlicher Abstand</string>
     <string name="perform_wide_search_title">Geräte-Suche</string>
     <string name="perform_wide_search_file">Dateien</string>
+    <string name="pref_suggestion_label">Vorschläge</string>
     <string name="pref_suggestion_title">Internet-Ergebnisse (von <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Erweiterte Suche</string>
     <string name="perform_wide_search_description">Durchsuche Deine Kontakte, Dateien und Einstellungen im Suchfeld der App-Übersicht.</string>

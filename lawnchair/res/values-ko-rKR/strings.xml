@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">홈 화면 잠금해제</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">홈 화면이 잠겼습니다</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">팝업 메뉴</string>
     <string name="home_screen_lock_toggle_from_home_popup">잠금 버튼 표시</string>
     <string name="show_system_settings_entry">시스템 설정 항목 표시</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">최대 제안 결과 수</string>
     <string name="max_settings_entry_result_count_title">최대 설정 항목 결과 수</string>
     <string name="max_recent_result_count_title">최대 기록 결과 수</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">기록 삭제</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">앱 서랍 아이콘 가로 배치 수</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">가로 패딩</string>
     <string name="perform_wide_search_title">장치 검색</string>
     <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_label">제안</string>
     <string name="pref_suggestion_title">웹 제안(<xliff:g id="startpage">Startpage</xliff:g>를 통해)</string>
     <string name="pref_advance_search_category">고급 검색</string>
     <string name="perform_wide_search_description">앱 서랍 검색에서 연락처, 파일, 설정을 검색</string>
