@@ -398,8 +398,11 @@ public class GroupedTaskView extends TaskView {
                             layoutParams.width,
                             layoutParams.height
                     );
-            int iconMargins = getResources().getDimensionPixelSize(
-                    R.dimen.task_thumbnail_icon_menu_start_margin) * 2;
+            int iconViewMarginStart = getResources().getDimensionPixelSize(
+                    R.dimen.task_thumbnail_icon_menu_expanded_top_start_margin);
+            int iconViewBackgroundMarginStart = getResources().getDimensionPixelSize(
+                    R.dimen.task_thumbnail_icon_menu_background_margin_top_start);
+            int iconMargins = (iconViewMarginStart + iconViewBackgroundMarginStart) * 2;
             ((IconAppChipView) mIconView).setMaxWidth(groupedTaskViewSizes.first.x - iconMargins);
             ((IconAppChipView) mIconView2).setMaxWidth(groupedTaskViewSizes.second.x - iconMargins);
         }

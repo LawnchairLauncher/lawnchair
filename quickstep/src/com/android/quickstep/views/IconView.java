@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.Flags.enableOverviewIconMenu;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -196,10 +194,8 @@ public class IconView extends View implements TaskViewIcon {
         setLayoutParams(iconParams);
 
         setRotation(orientationHandler.getDegreesRotated());
-        int iconDrawableSize = enableOverviewIconMenu()
-                ? deviceProfile.overviewTaskIconAppChipMenuDrawableSizePx
-                : isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
-                        : deviceProfile.overviewTaskIconDrawableSizePx;
+        int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
+                : deviceProfile.overviewTaskIconDrawableSizePx;
         setDrawableSize(iconDrawableSize, iconDrawableSize);
     }
 
