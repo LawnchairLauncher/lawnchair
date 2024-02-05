@@ -154,6 +154,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mSquaredTouchSlop = mDeviceState.getSquaredTouchSlop();
 
         mPassedPilferInputSlop = mPassedWindowMoveSlop = continuingPreviousGesture;
+        mStartDisplacement = continuingPreviousGesture ? 0 : -mTouchSlop;
         mDisableHorizontalSwipe = !mPassedPilferInputSlop && disableHorizontalSwipe;
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
     }
@@ -280,7 +281,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (mGestureState.isTrackpadGesture() || Math.abs(displacement)
                                 > mTouchSlop) {
                             mPassedWindowMoveSlop = true;
-                            mStartDisplacement = Math.min(displacement, -mTouchSlop);
+                            mStartDisplacement = -mTouchSlop;
                         }
                     }
                 }
@@ -336,7 +337,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         }
                         if (!mPassedWindowMoveSlop) {
                             mPassedWindowMoveSlop = true;
-                            mStartDisplacement = Math.min(displacement, -mTouchSlop);
+                            mStartDisplacement = -mTouchSlop;
                         }
                         notifyGestureStarted(isLikelyToStartNewTask);
                     }
