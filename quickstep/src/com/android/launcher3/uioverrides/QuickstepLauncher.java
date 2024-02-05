@@ -36,7 +36,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
-import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
@@ -677,7 +676,7 @@ public class QuickstepLauncher extends Launcher {
                     splitSelectSource.alreadyRunningTaskId = taskWasFound
                             ? foundTask.key.id
                             : INVALID_TASK_ID;
-                    if (enableSplitContextually()) {
+                    if (FeatureFlags.enableSplitContextually()) {
                         startSplitToHome(splitSelectSource);
                     } else {
                         recentsView.initiateSplitSelect(splitSelectSource);
@@ -762,7 +761,7 @@ public class QuickstepLauncher extends Launcher {
 
         super.onPause();
 
-        if (enableSplitContextually()) {
+        if (FeatureFlags.enableSplitContextually()) {
             // If Launcher pauses before both split apps are selected, exit split screen.
             if (!mSplitSelectStateController.isBothSplitAppsConfirmed() &&
                     !mSplitSelectStateController.isLaunchingFirstAppFullscreen()) {
@@ -1351,15 +1350,6 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public boolean hasBubbles() {
         return (mTaskbarUIController != null && mTaskbarUIController.hasBubbles());
-    }
-
-    @Override
-    public boolean handleIncorrectSplitTargetSelection() {
-        if (enableSplitContextually() && !mSplitSelectStateController.isSplitSelectActive()) {
-            return false;
-        }
-        mSplitSelectStateController.getSplitInstructionsView().goBoing();
-        return true;
     }
 
     private static final class LauncherTaskViewController extends
