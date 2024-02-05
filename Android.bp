@@ -108,6 +108,7 @@ android_library {
     ],
     srcs: [
         "tests/multivalentTests/tapl/**/*.java",
+        "tests/multivalentTests/tapl/**/*.kt",
     ],
     resource_dirs: [],
     manifest: "tests/multivalentTests/tapl/AndroidManifest.xml",

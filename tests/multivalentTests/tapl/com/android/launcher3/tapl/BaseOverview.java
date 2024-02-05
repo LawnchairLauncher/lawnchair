@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
  * Common overview panel for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
+    protected static final String TASK_RES_ID = "task";
 
     private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
@@ -281,10 +282,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
         // The widest, and most top-right task should be the current task
         UiObject2 currentTask = Collections.max(taskViews,
-                Comparator.comparingInt((UiObject2 t) -> t.getParent().getVisibleBounds().width())
-                        .thenComparingInt((UiObject2 t) -> t.getParent().getVisibleCenter().x)
+                Comparator.comparingInt((UiObject2 t) -> t.getVisibleBounds().width())
+                        .thenComparingInt((UiObject2 t) -> t.getVisibleCenter().x)
                         .thenComparing(Comparator.comparing(
-                                (UiObject2 t) -> t.getParent().getVisibleCenter().y).reversed()));
+                                (UiObject2 t) -> t.getVisibleCenter().y).reversed()));
         return new OverviewTask(mLauncher, currentTask, this);
     }
 
@@ -329,9 +330,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 "want to get overview tasks")) {
             verifyActiveContainer();
             return mLauncher.getDevice().findObjects(
-                    mLauncher.getOverviewObjectSelector("snapshot"));
+                    mLauncher.getOverviewObjectSelector(TASK_RES_ID));
         }
     }
+
 
     int getTaskCount() {
         return getTasks().size();
