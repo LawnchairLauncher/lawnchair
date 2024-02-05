@@ -1720,12 +1720,11 @@ public class TaskView extends FrameLayout implements Reusable {
         int expectedWidth;
         int expectedHeight;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
+        final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
+        final int taskWidth = lastComputedTaskSize.width();
+        final int taskHeight = lastComputedTaskSize.height();
         if (deviceProfile.isTablet) {
-            final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
-            final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
-            final int taskWidth = lastComputedTaskSize.width();
-            final int taskHeight = lastComputedTaskSize.height();
-
             int boxWidth;
             int boxHeight;
             boolean isFocusedTask = isFocusedTask();
@@ -1758,8 +1757,10 @@ public class TaskView extends FrameLayout implements Reusable {
         } else {
             nonGridScale = 1f;
             boxTranslationY = 0f;
-            expectedWidth = ViewGroup.LayoutParams.MATCH_PARENT;
-            expectedHeight = ViewGroup.LayoutParams.MATCH_PARENT;
+            expectedWidth = enableOverviewIconMenu() ? taskWidth : LayoutParams.MATCH_PARENT;
+            expectedHeight = enableOverviewIconMenu()
+                    ? taskHeight + thumbnailPadding
+                    : LayoutParams.MATCH_PARENT;
         }
 
         setNonGridScale(nonGridScale);
