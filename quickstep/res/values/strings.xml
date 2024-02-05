@@ -267,7 +267,7 @@
     <string name="taskbar_edu_features">Do more with the Taskbar</string>
     <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
     <string name="taskbar_edu_pinning_title">Always show the Taskbar</string>
-    <!-- Text in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <!-- Text in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 150] -->
     <string name="taskbar_edu_pinning_standalone">To always show the Taskbar on the bottom of your screen, touch &amp; hold the divider</string>
     <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_close">Close</string>
