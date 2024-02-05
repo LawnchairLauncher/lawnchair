@@ -362,10 +362,10 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
                 WindowManagerProxy wmProxy,
                 Map<CachedDisplayInfo, List<WindowBounds>> perDisplayBoundsCache) {
             CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(displayInfoContext);
-            normalizedDisplayInfo = displayInfo.normalize();
+            normalizedDisplayInfo = displayInfo.normalize(wmProxy);
             rotation = displayInfo.rotation;
             currentSize = displayInfo.size;
-            cutout = displayInfo.cutout;
+            cutout = WindowManagerProxy.getSafeInsets(displayInfo.cutout);
 
             Configuration config = displayInfoContext.getResources().getConfiguration();
             fontScale = config.fontScale;

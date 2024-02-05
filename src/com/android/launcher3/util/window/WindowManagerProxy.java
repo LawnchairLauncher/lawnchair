@@ -95,7 +95,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      */
     public ArrayMap<CachedDisplayInfo, List<WindowBounds>> estimateInternalDisplayBounds(
             Context displayInfoContext) {
-        CachedDisplayInfo info = getDisplayInfo(displayInfoContext).normalize();
+        CachedDisplayInfo info = getDisplayInfo(displayInfoContext).normalize(this);
         List<WindowBounds> bounds = estimateWindowBounds(displayInfoContext, info);
         ArrayMap<CachedDisplayInfo, List<WindowBounds>> result = new ArrayMap<>();
         result.put(info, bounds);
@@ -186,10 +186,9 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      * Returns a list of possible WindowBounds for the display keyed on the 4 surface rotations
      */
     protected List<WindowBounds> estimateWindowBounds(Context context,
-            CachedDisplayInfo displayInfo) {
+            final CachedDisplayInfo displayInfo) {
         int densityDpi = context.getResources().getConfiguration().densityDpi;
-        int rotation = displayInfo.rotation;
-        Rect safeCutout = displayInfo.cutout;
+        final int rotation = displayInfo.rotation;
 
         int minSize = Math.min(displayInfo.size.x, displayInfo.size.y);
         int swDp = (int) dpiFromPx(minSize, densityDpi);
@@ -247,8 +246,9 @@ public class WindowManagerProxy implements ResourceBasedOverride {
                 statusBarHeight = statusBarHeightLandscape;
             }
 
-            Rect insets = new Rect(safeCutout);
-            rotateRect(insets, rotationChange);
+            DisplayCutout rotatedCutout = rotateCutout(
+                    displayInfo.cutout, displayInfo.size.x, displayInfo.size.y, rotation, i);
+            Rect insets = getSafeInsets(rotatedCutout);
             insets.top = Math.max(insets.top, statusBarHeight);
             insets.bottom = Math.max(insets.bottom, navBarHeight);
 
@@ -298,8 +298,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
             Point size = new Point();
             Display display = getDisplay(displayInfoContext);
             display.getRealSize(size);
-            Rect cutoutRect = new Rect();
-            return new CachedDisplayInfo(size, rotation, cutoutRect);
+            return new CachedDisplayInfo(size, rotation);
         }
     }
 
@@ -309,13 +308,8 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     @TargetApi(Build.VERSION_CODES.S)
     protected CachedDisplayInfo getDisplayInfo(WindowMetrics windowMetrics, int rotation) {
         Point size = new Point(windowMetrics.getBounds().right, windowMetrics.getBounds().bottom);
-        Rect cutoutRect = new Rect();
-        DisplayCutout cutout = windowMetrics.getWindowInsets().getDisplayCutout();
-        if (cutout != null) {
-            cutoutRect.set(cutout.getSafeInsetLeft(), cutout.getSafeInsetTop(),
-                    cutout.getSafeInsetRight(), cutout.getSafeInsetBottom());
-        }
-        return new CachedDisplayInfo(size, rotation, cutoutRect);
+        return new CachedDisplayInfo(size, rotation,
+                windowMetrics.getWindowInsets().getDisplayCutout());
     }
 
     /**
@@ -355,6 +349,16 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     }
 
     /**
+     * Returns a DisplayCutout which represents a rotated version of the original
+     */
+    protected DisplayCutout rotateCutout(DisplayCutout original, int startWidth, int startHeight,
+            int fromRotation, int toRotation) {
+        Rect safeCutout = getSafeInsets(original);
+        rotateRect(safeCutout, deltaRotation(fromRotation, toRotation));
+        return new DisplayCutout(Insets.of(safeCutout), null, null, null, null);
+    }
+
+    /**
      * Returns the current navigation mode from resource.
      */
     public NavigationMode getNavigationMode(Context context) {
@@ -372,5 +376,13 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         }
         return Utilities.ATLEAST_S ? NavigationMode.NO_BUTTON :
                 NavigationMode.THREE_BUTTONS;
+    }
+
+    /**
+     * @see DisplayCutout#getSafeInsets
+     */
+    public static Rect getSafeInsets(DisplayCutout cutout) {
+        return new Rect(cutout.getSafeInsetLeft(), cutout.getSafeInsetTop(),
+                cutout.getSafeInsetRight(), cutout.getSafeInsetBottom());
     }
 }

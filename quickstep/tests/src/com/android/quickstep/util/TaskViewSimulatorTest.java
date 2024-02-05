@@ -163,8 +163,7 @@ public class TaskViewSimulatorTest {
                 helper.sandboxContext.allow(SystemUiProxy.INSTANCE);
                 int rotation = mDisplaySize.x > mDisplaySize.y
                         ? Surface.ROTATION_90 : Surface.ROTATION_0;
-                CachedDisplayInfo cdi =
-                        new CachedDisplayInfo(mDisplaySize, rotation, new Rect());
+                CachedDisplayInfo cdi = new CachedDisplayInfo(mDisplaySize, rotation);
                 WindowBounds wm = new WindowBounds(
                         new Rect(0, 0, mDisplaySize.x, mDisplaySize.y),
                         mDisplayInsets);
@@ -186,7 +185,7 @@ public class TaskViewSimulatorTest {
 
                 ArrayMap<CachedDisplayInfo, List<WindowBounds>> perDisplayBoundsCache =
                         new ArrayMap<>();
-                perDisplayBoundsCache.put(cdi.normalize(), allBounds);
+                perDisplayBoundsCache.put(cdi.normalize(wmProxy), allBounds);
 
                 Configuration configuration = new Configuration();
                 configuration.densityDpi = mDensityDpi;

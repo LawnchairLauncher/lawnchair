@@ -60,8 +60,8 @@ abstract class AbstractDeviceProfileTest {
     private val windowManagerProxy: WindowManagerProxy = mock()
     private val launcherPrefs: LauncherPrefs = mock()
     private val allowLeftRightSplitInPortrait: Boolean = initAllowLeftRightSplitInPortrait()
-    fun initAllowLeftRightSplitInPortrait() : Boolean {
-        val res = Resources.getSystem();
+    fun initAllowLeftRightSplitInPortrait(): Boolean {
+        val res = Resources.getSystem()
         val resId = res.getIdentifier("config_leftRightSplitInPortrait", "bool", "android")
         return Flags.enableLeftRightSplitInPortrait() && resId > 0 && res.getBoolean(resId)
     }
@@ -124,8 +124,7 @@ abstract class AbstractDeviceProfileTest {
     ) {
         val (naturalX, naturalY) = deviceSpec.naturalSize
         val windowsBounds = phoneWindowsBounds(deviceSpec, isGestureMode, naturalX, naturalY)
-        val displayInfo =
-            CachedDisplayInfo(Point(naturalX, naturalY), Surface.ROTATION_0, Rect(0, 0, 0, 0))
+        val displayInfo = CachedDisplayInfo(Point(naturalX, naturalY), Surface.ROTATION_0)
         val perDisplayBoundsCache = mapOf(displayInfo to windowsBounds)
 
         initializeCommonVars(
@@ -144,8 +143,7 @@ abstract class AbstractDeviceProfileTest {
     ) {
         val (naturalX, naturalY) = deviceSpec.naturalSize
         val windowsBounds = tabletWindowsBounds(deviceSpec, naturalX, naturalY)
-        val displayInfo =
-            CachedDisplayInfo(Point(naturalX, naturalY), Surface.ROTATION_0, Rect(0, 0, 0, 0))
+        val displayInfo = CachedDisplayInfo(Point(naturalX, naturalY), Surface.ROTATION_0)
         val perDisplayBoundsCache = mapOf(displayInfo to windowsBounds)
 
         initializeCommonVars(
@@ -168,21 +166,13 @@ abstract class AbstractDeviceProfileTest {
         val unfoldedWindowsBounds =
             tabletWindowsBounds(deviceSpecUnfolded, unfoldedNaturalX, unfoldedNaturalY)
         val unfoldedDisplayInfo =
-            CachedDisplayInfo(
-                Point(unfoldedNaturalX, unfoldedNaturalY),
-                Surface.ROTATION_0,
-                Rect(0, 0, 0, 0)
-            )
+            CachedDisplayInfo(Point(unfoldedNaturalX, unfoldedNaturalY), Surface.ROTATION_0)
 
         val (foldedNaturalX, foldedNaturalY) = deviceSpecFolded.naturalSize
         val foldedWindowsBounds =
             phoneWindowsBounds(deviceSpecFolded, isGestureMode, foldedNaturalX, foldedNaturalY)
         val foldedDisplayInfo =
-            CachedDisplayInfo(
-                Point(foldedNaturalX, foldedNaturalY),
-                Surface.ROTATION_0,
-                Rect(0, 0, 0, 0)
-            )
+            CachedDisplayInfo(Point(foldedNaturalX, foldedNaturalY), Surface.ROTATION_0)
 
         val perDisplayBoundsCache =
             mapOf(
@@ -325,12 +315,16 @@ abstract class AbstractDeviceProfileTest {
         // TODO(b/315230497): We don't currently have device-specific device profile dumps, so just
         //  update the result before we do the comparison
         if (allowLeftRightSplitInPortrait) {
-            val isLeftRightSplitInPortrait = when {
-                allowLeftRightSplitInPortrait && dp.isTablet -> !dp.isLandscape
-                else -> dp.isLandscape
-            }
-            expected = expected.replace(Regex("isLeftRightSplit:\\w+"),
-                    "isLeftRightSplit:$isLeftRightSplitInPortrait")
+            val isLeftRightSplitInPortrait =
+                when {
+                    allowLeftRightSplitInPortrait && dp.isTablet -> !dp.isLandscape
+                    else -> dp.isLandscape
+                }
+            expected =
+                expected.replace(
+                    Regex("isLeftRightSplit:\\w+"),
+                    "isLeftRightSplit:$isLeftRightSplitInPortrait"
+                )
         }
 
         Truth.assertThat(dump).isEqualTo(expected)
