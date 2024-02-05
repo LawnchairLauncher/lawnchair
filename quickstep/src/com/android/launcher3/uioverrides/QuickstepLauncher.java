@@ -1351,7 +1351,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public boolean handleIncorrectSplitTargetSelection() {
-        if (enableSplitContextually() && !mSplitSelectStateController.isSplitSelectActive()) {
+        if (!enableSplitContextually() || !mSplitSelectStateController.isSplitSelectActive()) {
             return false;
         }
         mSplitSelectStateController.getSplitInstructionsView().goBoing();
