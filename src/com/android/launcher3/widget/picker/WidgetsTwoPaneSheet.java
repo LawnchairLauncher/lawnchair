@@ -20,6 +20,7 @@ import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -58,11 +59,13 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     private FrameLayout mSuggestedWidgetsContainer;
     private WidgetsListHeader mSuggestedWidgetsHeader;
+    private PackageUserKey mSuggestedWidgetsPackageUserKey;
     private LinearLayout mRightPane;
 
     private ScrollView mRightPaneScrollView;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
     private int mActivePage = -1;
+    private PackageUserKey mSelectedHeader;
 
     private final ViewOutlineProvider mViewOutlineProviderRightPane = new ViewOutlineProvider() {
         @Override
@@ -124,6 +127,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         mFastScroller.setVisibility(GONE);
     }
 
+    /** Overrides onConfigurationChanged method from WidgetsFullSheet. Needed for b/319150904 */
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {}
 
@@ -147,6 +151,23 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             }
             layoutParams.weight = layoutParams.width == 0 ? 0.33F : 0;
             leftPane.setLayoutParams(layoutParams);
+            requestApplyInsets();
+            if (mSelectedHeader != null) {
+                if (mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey)) {
+                    mSuggestedWidgetsHeader.callOnClick();
+                } else {
+                    getHeaderChangeListener().onHeaderChanged(mSelectedHeader);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onWidgetsBound() {
+        super.onWidgetsBound();
+        if (!mHasRecommendedWidgets && mSelectedHeader == null) {
+            mAdapters.get(mActivePage).mWidgetsListAdapter.selectFirstHeaderEntry();
+            mAdapters.get(mActivePage).mWidgetsRecyclerView.scrollToTop();
         }
     }
 
@@ -195,6 +216,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             mRightPane.removeAllViews();
             mRightPane.addView(mRecommendedWidgetsTable);
             mRightPaneScrollView.setScrollY(0);
+            mSuggestedWidgetsPackageUserKey = PackageUserKey.fromPackageItemInfo(packageItemInfo);
+            mSelectedHeader = mSuggestedWidgetsPackageUserKey;
         });
         mSuggestedWidgetsContainer.addView(mSuggestedWidgetsHeader);
     }
@@ -273,6 +296,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         return new HeaderChangeListener() {
             @Override
             public void onHeaderChanged(@NonNull PackageUserKey selectedHeader) {
+                mSelectedHeader = selectedHeader;
                 WidgetsListContentEntry contentEntry = mActivityContext.getPopupDataProvider()
                         .getSelectedAppWidgets(selectedHeader);
 
@@ -300,6 +324,18 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 mRightPaneScrollView.setScrollY(0);
             }
         };
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        super.setInsets(insets);
+        FrameLayout rightPaneContainer = mContent.findViewById(R.id.right_pane_container);
+        rightPaneContainer.setPadding(
+                rightPaneContainer.getPaddingLeft(),
+                rightPaneContainer.getPaddingTop(),
+                rightPaneContainer.getPaddingRight(),
+                mBottomPadding);
+        requestLayout();
     }
 
     @Override
