@@ -95,8 +95,7 @@ class DisplayControllerTest {
         whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(false)
 
         // Mock WindowManagerProxy
-        val displayInfo =
-            CachedDisplayInfo(Point(width, height), Surface.ROTATION_0, Rect(0, 0, 0, 0))
+        val displayInfo = CachedDisplayInfo(Point(width, height), Surface.ROTATION_0)
         whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)
         whenever(windowManagerProxy.estimateInternalDisplayBounds(any()))
             .thenAnswer(
@@ -135,8 +134,7 @@ class DisplayControllerTest {
     @Test
     @UiThreadTest
     fun testRotation() {
-        val displayInfo =
-            CachedDisplayInfo(Point(height, width), Surface.ROTATION_90, Rect(0, 0, 0, 0))
+        val displayInfo = CachedDisplayInfo(Point(height, width), Surface.ROTATION_90)
         whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)
         whenever(display.rotation).thenReturn(displayInfo.rotation)
         val configuration =
