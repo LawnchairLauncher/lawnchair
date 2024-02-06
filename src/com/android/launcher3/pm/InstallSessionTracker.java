@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.pm;
 
-import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.pm.InstallSessionHelper.getUserHandle;
 import static com.android.launcher3.pm.PackageInstallInfo.STATUS_FAILED;
 import static com.android.launcher3.pm.PackageInstallInfo.STATUS_INSTALLED;
@@ -32,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.lang.ref.WeakReference;
@@ -80,7 +80,8 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
 
         helper.tryQueuePromiseAppIcon(sessionInfo);
 
-        if (enableSupportForArchiving() && sessionInfo != null && sessionInfo.isUnarchival()) {
+        if (Utilities.enableSupportForArchiving() && sessionInfo != null
+                && sessionInfo.isUnarchival()) {
             // For archived apps, icon could already be present on the workspace. To make sure
             // the icon state is updated, we send a change event.
             callback.onPackageStateChanged(PackageInstallInfo.fromInstallingState(sessionInfo));

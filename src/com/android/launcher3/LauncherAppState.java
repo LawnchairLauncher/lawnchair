@@ -109,7 +109,8 @@ public class LauncherAppState implements SafeCloseable {
         launcherApps.registerCallback(callbacks);
         mOnTerminateCallback.add(() ->
                 mContext.getSystemService(LauncherApps.class).unregisterCallback(callbacks));
-        if (Flags.enableSupportForArchiving()) {
+
+        if (Utilities.enableSupportForArchiving()) {
             ArchiveCompatibilityParams params = new ArchiveCompatibilityParams();
             params.setEnableUnarchivalConfirmation(false);
             launcherApps.setArchiveCompatibility(params);
