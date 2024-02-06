@@ -157,7 +157,7 @@ import com.android.quickstep.util.TaskRestartedDuringLaunchListener;
 import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.animation.ActivityLaunchAnimator;
+import com.android.systemui.animation.ActivityTransitionAnimator;
 import com.android.systemui.animation.DelegateLaunchAnimatorController;
 import com.android.systemui.animation.LaunchableView;
 import com.android.systemui.animation.RemoteAnimationDelegate;
@@ -1838,8 +1838,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             // The CUJ is logged by the click handler, so we don't log it inside the animation
             // library.
-            ActivityLaunchAnimator.Controller controllerDelegate =
-                    ActivityLaunchAnimator.Controller.fromView(viewToUse, null /* cujType */);
+            ActivityTransitionAnimator.Controller controllerDelegate =
+                    ActivityTransitionAnimator.Controller.fromView(viewToUse, null /* cujType */);
 
             if (controllerDelegate == null) {
                 return null;
@@ -1847,7 +1847,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             // This wrapper allows us to override the default value, telling the controller that the
             // current window is below the animating window.
-            ActivityLaunchAnimator.Controller controller =
+            ActivityTransitionAnimator.Controller controller =
                     new DelegateLaunchAnimatorController(controllerDelegate) {
                         @Override
                         public boolean isBelowAnimatingWindow() {
@@ -1855,7 +1855,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         }
                     };
 
-            ActivityLaunchAnimator.Callback callback = task -> {
+            ActivityTransitionAnimator.Callback callback = task -> {
                 final int backgroundColor =
                         startingWindowListener.mBackgroundColor == Color.TRANSPARENT
                                 ? launcher.getScrimView().getBackgroundColor()
@@ -1863,15 +1863,17 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 return ColorUtils.setAlphaComponent(backgroundColor, 255);
             };
 
-            ActivityLaunchAnimator.Listener listener = new ActivityLaunchAnimator.Listener() {
-                @Override
-                public void onLaunchAnimationEnd() {
-                    onEndCallback.executeAllAndDestroy();
-                }
-            };
+            ActivityTransitionAnimator.Listener listener =
+                    new ActivityTransitionAnimator.Listener() {
+                        @Override
+                        public void onTransitionAnimationEnd() {
+                            onEndCallback.executeAllAndDestroy();
+                        }
+                    };
 
             return new ContainerAnimationRunner(
-                    new ActivityLaunchAnimator.AnimationDelegate(controller, callback, listener));
+                    new ActivityTransitionAnimator.AnimationDelegate(
+                            controller, callback, listener));
         }
 
         /**
