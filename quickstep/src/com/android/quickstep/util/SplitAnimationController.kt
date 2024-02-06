@@ -391,14 +391,6 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 "trying to launch an app pair icon, but encountered an unexpected null"
             }
 
-            // If launching an app pair from Taskbar inside of an app context, use fade-in animation
-            // TODO (b/316485863): Replace with desired app pair launch animation
-            if (launchingIconView.context is TaskbarActivityContext) {
-                composeFadeInSplitLaunchAnimator(
-                    initialTaskId, secondTaskId, info, t, finishCallback)
-                return
-            }
-
             composeIconSplitLaunchAnimator(launchingIconView, info, t, finishCallback)
         } else {
             // Fallback case: simple fade-in animation
@@ -483,6 +475,10 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      * We want to animate the Root (grandparent) so that it affects both apps and the divider.
      * To do this, we find one of the nodes with WINDOWING_MODE_MULTI_WINDOW (one of the
      * left-side ones, for simplicity) and traverse the tree until we find the grandparent.
+     *
+     * This function is only called when we are animating the app pair in from scratch. It is NOT
+     * called when we are animating in from an existing visible TaskView tile or an app that is
+     * already on screen.
      */
     @VisibleForTesting
     fun composeIconSplitLaunchAnimator(
@@ -491,6 +487,14 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         t: Transaction,
         finishCallback: Runnable
     ) {
+        // If launching an app pair from Taskbar inside of an app context (no access to Launcher),
+        // use the scale-up animation
+        if (launchingIconView.context is TaskbarActivityContext) {
+            composeScaleUpLaunchAnimation(transitionInfo, t, finishCallback)
+            return
+        }
+
+        // Else we are in Launcher and can launch with the full icon stretch-and-split animation.
         val launcher = Launcher.getLauncher(launchingIconView.context)
         val dp = launcher.deviceProfile
 
@@ -640,6 +644,91 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     safeRemoveViewFromDragLayer(launcher, floatingView)
+                    finishCallback.run()
+                }
+            }
+        )
+
+        launchAnimation.play(progressUpdater)
+        launchAnimation.start()
+    }
+
+    /**
+     * This is a scale-up-and-fade-in animation (34% to 100%) for launching an app in Overview when
+     * there is no visible associated tile to expand from.
+     */
+    @VisibleForTesting
+    fun composeScaleUpLaunchAnimation(
+        transitionInfo: TransitionInfo,
+        t: Transaction,
+        finishCallback: Runnable
+    ) {
+        val launchAnimation = AnimatorSet()
+        val progressUpdater = ValueAnimator.ofFloat(0f, 1f)
+        progressUpdater.setDuration(QuickstepTransitionManager.APP_LAUNCH_DURATION)
+        progressUpdater.interpolator = Interpolators.EMPHASIZED
+
+        var rootCandidate: Change? = null
+
+        for (change in transitionInfo.changes) {
+            val taskInfo: RunningTaskInfo = change.taskInfo ?: continue
+
+            // TODO (b/316490565): Replace this logic when SplitBounds is available to
+            //  startAnimation() and we can know the precise taskIds of launching tasks.
+            // Find a change that has WINDOWING_MODE_MULTI_WINDOW.
+            if (
+                taskInfo.windowingMode == WINDOWING_MODE_MULTI_WINDOW &&
+                    (change.mode == TRANSIT_OPEN || change.mode == TRANSIT_TO_FRONT)
+            ) {
+                // Found one!
+                rootCandidate = change
+                break
+            }
+        }
+
+        // If we could not find a proper root candidate, something went wrong.
+        check(rootCandidate != null) { "Could not find a split root candidate" }
+
+        // Recurse up the tree until parent is null, then we've found our root.
+        var parentToken: WindowContainerToken? = rootCandidate.parent
+        while (parentToken != null) {
+            rootCandidate = transitionInfo.getChange(parentToken) ?: break
+            parentToken = rootCandidate.parent
+        }
+
+        // Make sure nothing weird happened, like getChange() returning null.
+        check(rootCandidate != null) { "Failed to find a root leash" }
+
+        // Starting position is a 34% size tile centered in the middle of the screen.
+        // Ending position is the full device screen.
+        val screenBounds = rootCandidate.endAbsBounds
+        val startingScale = 0.34f
+        val startX =
+            screenBounds.left +
+                ((screenBounds.right - screenBounds.left) * ((1 - startingScale) / 2f))
+        val startY =
+            screenBounds.top +
+                ((screenBounds.bottom - screenBounds.top) * ((1 - startingScale) / 2f))
+        val endX = screenBounds.left
+        val endY = screenBounds.top
+
+        progressUpdater.addUpdateListener { valueAnimator: ValueAnimator ->
+            val progress = valueAnimator.animatedFraction
+
+            val x = startX + ((endX - startX) * progress)
+            val y = startY + ((endY - startY) * progress)
+            val scale = startingScale + ((1 - startingScale) * progress)
+
+            t.setPosition(rootCandidate.leash, x, y)
+            t.setScale(rootCandidate.leash, scale, scale)
+            t.setAlpha(rootCandidate.leash, progress)
+            t.apply()
+        }
+
+        // When animation ends,  run finishCallback
+        progressUpdater.addListener(
+            object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
                     finishCallback.run()
                 }
             }
