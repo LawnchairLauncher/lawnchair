@@ -27,6 +27,7 @@ import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.widget.picker.WidgetRecommendationCategory;
 import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
@@ -41,6 +42,16 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public AppWidgetHostView boundWidget;
     public Bundle bindOptions = null;
     public int sourceContainer;
+
+    public WidgetRecommendationCategory recommendationCategory = null;
+
+    public PendingAddWidgetInfo(
+            LauncherAppWidgetProviderInfo i,
+            int container,
+            WidgetRecommendationCategory recommendationCategory) {
+        this(i, container);
+        this.recommendationCategory = recommendationCategory;
+    }
 
     public PendingAddWidgetInfo(LauncherAppWidgetProviderInfo i, int container) {
         if (i.isCustomWidget()) {

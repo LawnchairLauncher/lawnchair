@@ -15,9 +15,11 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 
 import android.app.prediction.AppTarget;
+import android.content.Context;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.picker.WidgetRecommendationCategoryProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,9 +96,21 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
             servicePredictedItems.addAll(localFilteredWidgets);
         }
 
-        List<ItemInfo> items = servicePredictedItems.stream()
-                .map(it -> new PendingAddWidgetInfo(it.widgetInfo, CONTAINER_WIDGETS_PREDICTION))
-                .collect(Collectors.toList());
+        List<ItemInfo> items;
+        if (enableCategorizedWidgetSuggestions()) {
+            Context context = appState.getContext();
+            WidgetRecommendationCategoryProvider categoryProvider =
+                    WidgetRecommendationCategoryProvider.newInstance(context);
+            items = servicePredictedItems.stream()
+                    .map(it -> new PendingAddWidgetInfo(it.widgetInfo, CONTAINER_WIDGETS_PREDICTION,
+                            categoryProvider.getWidgetRecommendationCategory(context, it)))
+                    .collect(Collectors.toList());
+        } else {
+            items = servicePredictedItems.stream()
+                    .map(it -> new PendingAddWidgetInfo(it.widgetInfo,
+                            CONTAINER_WIDGETS_PREDICTION)).collect(
+                            Collectors.toList());
+        }
         FixedContainerItems fixedContainerItems =
                 new FixedContainerItems(mPredictorState.containerId, items);
 
