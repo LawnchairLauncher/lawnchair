@@ -36,6 +36,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -533,31 +534,49 @@ public class LandscapePagedViewHandler implements RecentsPagedOrientationHandler
         int dividerBar = Math.round(totalThumbnailHeight * (splitBoundsConfig.appsStackedVertically
                 ? splitBoundsConfig.dividerHeightPercent
                 : splitBoundsConfig.dividerWidthPercent));
-        int primarySnapshotHeight;
-        int primarySnapshotWidth;
-        int secondarySnapshotHeight;
-        int secondarySnapshotWidth;
 
-        float taskPercent = splitBoundsConfig.appsStackedVertically ?
-                splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
-        primarySnapshotWidth = parentWidth;
-        primarySnapshotHeight = (int) (totalThumbnailHeight * (taskPercent));
+        Pair<Point, Point> taskViewSizes =
+                getGroupedTaskViewSizes(dp, splitBoundsConfig, parentWidth, parentHeight);
 
-        secondarySnapshotWidth = parentWidth;
-        secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
-
-        int translationY = primarySnapshotHeight + spaceAboveSnapshot + dividerBar;
+        int translationY = taskViewSizes.first.y + spaceAboveSnapshot + dividerBar;
         primarySnapshot.setTranslationY(spaceAboveSnapshot);
         secondarySnapshot.setTranslationY(translationY - spaceAboveSnapshot);
 
         primarySnapshot.measure(
-                View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY)
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.first.x, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.first.y, View.MeasureSpec.EXACTLY)
         );
         secondarySnapshot.measure(
-                View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight, View.MeasureSpec.EXACTLY)
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.second.x, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(taskViewSizes.second.y, View.MeasureSpec.EXACTLY)
         );
+    }
+
+    @Override
+    public Pair<Point, Point> getGroupedTaskViewSizes(
+            DeviceProfile dp,
+            SplitBounds splitBoundsConfig,
+            int parentWidth,
+            int parentHeight) {
+        int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
+        int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
+        int dividerBar = Math.round(totalThumbnailHeight * (splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.dividerHeightPercent
+                : splitBoundsConfig.dividerWidthPercent));
+        float taskPercent = splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.topTaskPercent
+                : splitBoundsConfig.leftTaskPercent;
+
+        Point firstTaskViewSize = new Point(
+                parentWidth,
+                (int) (totalThumbnailHeight * taskPercent)
+        );
+        Point secondTaskViewSize = new Point(
+                parentWidth,
+                totalThumbnailHeight - firstTaskViewSize.y - dividerBar
+        );
+
+        return new Pair<>(firstTaskViewSize, secondTaskViewSize);
     }
 
     @Override

@@ -17,6 +17,7 @@
 package com.android.quickstep.orientation;
 
 
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -134,6 +135,15 @@ public interface RecentsPagedOrientationHandler extends PagedOrientationHandler 
     void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
             int parentWidth, int parentHeight,
             SplitBounds splitBoundsConfig, DeviceProfile dp, boolean isRtl);
+
+    /**
+     * Creates two Points representing the dimensions of the two tasks in a GroupedTaskView
+     *
+     * @return first -> primary task snapshot, second -> secondary task snapshot.
+     * x -> width, y -> height
+     */
+    Pair<Point, Point> getGroupedTaskViewSizes(DeviceProfile dp, SplitBounds splitBoundsConfig,
+            int parentWidth, int parentHeight);
 
     // Overview TaskMenuView methods
     void setTaskIconParams(FrameLayout.LayoutParams iconParams,

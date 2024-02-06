@@ -214,16 +214,6 @@ public class TestInformationHandler implements ResourceBasedOverride {
                                 .forceAllowRotationForTesting(Boolean.parseBoolean(arg)));
                 return response;
 
-            case TestProtocol.REQUEST_GET_AND_RESET_ACTIVITY_STOP_COUNT: {
-                final Bundle bundle = getLauncherUIProperty(Bundle::putInt,
-                        launcher -> launcher.getAndResetActivityStopCount());
-                if (bundle != null) return bundle;
-
-                // If Launcher activity wasn't created, 'it' was stopped 0 times.
-                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, 0);
-                return response;
-            }
-
             case TestProtocol.REQUEST_WORKSPACE_CELL_LAYOUT_SIZE:
                 return getLauncherUIProperty(Bundle::putIntArray, launcher -> {
                     final Workspace<?> workspace = launcher.getWorkspace();

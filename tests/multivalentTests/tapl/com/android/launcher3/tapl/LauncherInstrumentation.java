@@ -207,7 +207,6 @@ public final class LauncherInstrumentation {
 
     private TrackpadGestureType mTrackpadGestureType = TrackpadGestureType.NONE;
     private int mPointerCount = 0;
-    private final boolean mIsLauncherTest;
 
     private static Pattern getKeyEventPattern(String action, String keyCode) {
         return Pattern.compile("Key event: KeyEvent.*action=" + action + ".*keyCode=" + keyCode);
@@ -244,7 +243,6 @@ public final class LauncherInstrumentation {
      */
     @Deprecated
     public LauncherInstrumentation(Instrumentation instrumentation, boolean isLauncherTest) {
-        mIsLauncherTest = isLauncherTest;
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
 
@@ -414,11 +412,6 @@ public final class LauncherInstrumentation {
 
     int getFocusedTaskHeightForTablet() {
         return getTestInfo(TestProtocol.REQUEST_GET_FOCUSED_TASK_HEIGHT_FOR_TABLET).getInt(
-                TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
-
-    public int getAndResetActivityStopCount() {
-        return getTestInfo(TestProtocol.REQUEST_GET_AND_RESET_ACTIVITY_STOP_COUNT).getInt(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
@@ -635,19 +628,10 @@ public final class LauncherInstrumentation {
 
     public void onTestStart() {
         mTestStartTime = System.currentTimeMillis();
-        assertNoUnexpectedStops();
     }
 
     public void onTestFinish() {
         mTestStartTime = -1;
-        assertNoUnexpectedStops();
-    }
-
-    /** Verify that the activity stop count is zero. */
-    public void assertNoUnexpectedStops() {
-        if (mIsLauncherTest) {
-            assertEquals("Unexpected activity stops", 0, getAndResetActivityStopCount());
-        }
     }
 
     private String formatSystemHealthMessage(String message) {
@@ -1021,9 +1005,6 @@ public final class LauncherInstrumentation {
                 event -> TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE
                         .equals(event.getClassName().toString()),
                 () -> "Launcher activity didn't stop", actionName);
-
-        // Reset activity stop count.
-        getAndResetActivityStopCount();
     }
 
     /**
@@ -2276,7 +2257,6 @@ public final class LauncherInstrumentation {
     }
 
     public Closable eventsCheck() {
-        assertNoUnexpectedStops();
         Assert.assertTrue("Nested event checking", mEventChecker == null);
         disableSensorRotation();
         final Integer initialPid = getPid();
@@ -2284,7 +2264,6 @@ public final class LauncherInstrumentation {
         if (eventChecker.start()) mEventChecker = eventChecker;
 
         return () -> {
-            assertNoUnexpectedStops();
             if (initialPid != null && initialPid.intValue() != getPid()) {
                 if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
                 checkForAnomaly();

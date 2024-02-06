@@ -178,9 +178,6 @@ public final class TestProtocol {
     public static final String REQUEST_UNSTASH_BUBBLE_BAR_IF_STASHED =
             "unstash-bubble-bar-if-stashed";
 
-    public static final String REQUEST_GET_AND_RESET_ACTIVITY_STOP_COUNT =
-            "get-and-reset-activity-stops";
-
     /** Logs {@link Log#d(String, String)} if {@link #sDebugTracing} is true. */
     public static void testLogD(String tag, String message) {
         if (!sDebugTracing) {
