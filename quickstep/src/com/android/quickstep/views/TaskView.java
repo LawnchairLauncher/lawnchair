@@ -632,7 +632,7 @@ public class TaskView extends FrameLayout implements Reusable {
             return;
         }
         mModalness = modalness;
-        mIconView.setContentAlpha(1 - modalness);
+        mIconView.setModalAlpha(1 - modalness);
         mDigitalWellBeingToast.updateBannerOffset(modalness);
     }
 
