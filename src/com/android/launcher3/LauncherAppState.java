@@ -34,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.LauncherApps;
+import android.content.pm.LauncherApps.ArchiveCompatibilityParams;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -109,8 +110,9 @@ public class LauncherAppState implements SafeCloseable {
         mOnTerminateCallback.add(() ->
                 mContext.getSystemService(LauncherApps.class).unregisterCallback(callbacks));
         if (Flags.enableSupportForArchiving()) {
-            launcherApps.setArchiveCompatibilityOptions(/* enableIconOverlay= */ true,
-                    /* enableUnarchivalConfirmation= */ false);
+            ArchiveCompatibilityParams params = new ArchiveCompatibilityParams();
+            params.setEnableUnarchivalConfirmation(false);
+            launcherApps.setArchiveCompatibility(params);
         }
 
         SimpleBroadcastReceiver modelChangeReceiver =
