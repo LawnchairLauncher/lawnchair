@@ -22,6 +22,8 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.tapl.KeyboardQuickSwitch;
+import com.android.launcher3.tapl.LaunchedAppState;
+import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.taskbar.KeyboardQuickSwitchController;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 
@@ -36,6 +38,7 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     private enum TestSurface {
         HOME(true),
         LAUNCHED_APP(false),
+        TASKBAR_ALL_APPS(false),
         HOME_ALL_APPS(true),
         WIDGETS(true);
 
@@ -82,6 +85,11 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     }
 
     @Test
+    public void testDismiss_fromTaskbarAllApps() {
+        runTest(TestSurface.TASKBAR_ALL_APPS, TestCase.DISMISS);
+    }
+
+    @Test
     public void testDismiss_fromHomeAllApps() {
         runTest(TestSurface.HOME_ALL_APPS, TestCase.DISMISS);
     }
@@ -99,6 +107,11 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     @Test
     public void testLaunchLastTask_fromApp() {
         runTest(TestSurface.LAUNCHED_APP, TestCase.LAUNCH_LAST_APP);
+    }
+
+    @Test
+    public void testLaunchLastTask_fromTaskbarAllApps() {
+        runTest(TestSurface.TASKBAR_ALL_APPS, TestCase.LAUNCH_LAST_APP);
     }
 
     @Test
@@ -122,6 +135,11 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     }
 
     @Test
+    public void testLaunchSelectedTask_fromTaskbarAllApps() {
+        runTest(TestSurface.TASKBAR_ALL_APPS, TestCase.LAUNCH_SELECTED_APP);
+    }
+
+    @Test
     public void testLaunchSelectedTask_fromHomeAllApps() {
         runTest(TestSurface.HOME_ALL_APPS, TestCase.LAUNCH_SELECTED_APP);
     }
@@ -139,6 +157,11 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     @Test
     public void testLaunchOverviewTask_fromApp() {
         runTest(TestSurface.LAUNCHED_APP, TestCase.LAUNCH_OVERVIEW);
+    }
+
+    @Test
+    public void testLaunchOverviewTask_fromTaskbarAllApps() {
+        runTest(TestSurface.TASKBAR_ALL_APPS, TestCase.LAUNCH_OVERVIEW);
     }
 
     @Test
@@ -164,6 +187,12 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
             case LAUNCHED_APP:
                 mLauncher.setIgnoreTaskbarVisibility(true);
                 kqs = mLauncher.getLaunchedAppState().showQuickSwitchView();
+                break;
+            case TASKBAR_ALL_APPS:
+                LaunchedAppState launchedApp = mLauncher.getLaunchedAppState();
+                Taskbar taskbar = mLauncher.isTransientTaskbar()
+                        ? launchedApp.swipeUpToUnstashTaskbar() : launchedApp.getTaskbar();
+                kqs = taskbar.openAllApps().showQuickSwitchView();
                 break;
             case HOME_ALL_APPS:
                 kqs = mLauncher.goHome().switchToAllApps().showQuickSwitchView();
