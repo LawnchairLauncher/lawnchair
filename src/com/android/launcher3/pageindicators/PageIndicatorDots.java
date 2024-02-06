@@ -365,6 +365,13 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     @Override
     public void setMarkersCount(int numMarkers) {
         mNumPages = numMarkers;
+
+        // If the last page gets removed we want to go to the previous page.
+        if (mNumPages == mActivePage) {
+            mActivePage--;
+            CURRENT_POSITION.set(this, (float) mActivePage);
+        }
+
         requestLayout();
     }
 
