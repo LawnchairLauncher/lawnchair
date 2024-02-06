@@ -158,7 +158,7 @@ import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.animation.ActivityTransitionAnimator;
-import com.android.systemui.animation.DelegateLaunchAnimatorController;
+import com.android.systemui.animation.DelegateTransitionAnimatorController;
 import com.android.systemui.animation.LaunchableView;
 import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.BlurUtils;
@@ -1848,7 +1848,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             // This wrapper allows us to override the default value, telling the controller that the
             // current window is below the animating window.
             ActivityTransitionAnimator.Controller controller =
-                    new DelegateLaunchAnimatorController(controllerDelegate) {
+                    new DelegateTransitionAnimatorController(controllerDelegate) {
                         @Override
                         public boolean isBelowAnimatingWindow() {
                             return true;
