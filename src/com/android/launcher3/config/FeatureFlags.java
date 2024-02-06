@@ -199,11 +199,6 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_REMOVAL", DISABLED, "Enable SmartSpace removal for "
             + "home screen");
 
-    // TODO(Block 10): Clean up flags
-    public static final BooleanFlag ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION = getDebugFlag(270614790,
-            "ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION", DISABLED,
-            "Enables predictive back animation from all apps and widgets to home");
-
     // TODO(Block 11): Clean up flags
     public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(270395274,
             "FOLDABLE_SINGLE_PAGE", DISABLED, "Use a single page for the workspace");

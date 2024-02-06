@@ -35,9 +35,9 @@ import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
@@ -394,7 +394,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 READ_DEVICE_CONFIG_PERMISSION);
         // Debug if we need to goHome to prevent wrong previous state b/315525621
         mLauncher.goHome();
-        assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
+        assumeFalse(Flags.enablePredictiveBackGesture());
         mLauncher.getWorkspace().switchToAllApps().pressBackToWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
 
