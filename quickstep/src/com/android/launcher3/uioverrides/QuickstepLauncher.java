@@ -734,6 +734,10 @@ public class QuickstepLauncher extends Launcher {
         return mSplitSelectStateController.isSplitSelectActive();
     }
 
+    public boolean areBothSplitAppsConfirmed() {
+        return mSplitSelectStateController.isBothSplitAppsConfirmed();
+    }
+
     @Override
     public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
         if (mTaskbarUIController != null) {
