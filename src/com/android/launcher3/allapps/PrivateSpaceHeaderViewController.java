@@ -55,6 +55,9 @@ public class PrivateSpaceHeaderViewController {
         assert quietModeButton != null;
         addQuietModeButton(quietModeButton);
 
+        //Trigger lock/unlock action from header.
+        addHeaderOnClickListener(parent);
+
         //Add image and action for private space settings button
         ImageButton settingsButton = parent.findViewById(R.id.ps_settings_button);
         assert settingsButton != null;
@@ -71,24 +74,33 @@ public class PrivateSpaceHeaderViewController {
             case STATE_ENABLED -> {
                 quietModeButton.setVisibility(View.VISIBLE);
                 quietModeButton.setImageResource(R.drawable.bg_ps_lock_button);
-                quietModeButton.setOnClickListener(
-                        view -> {
-                            mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_LOCK_TAP);
-                            mPrivateProfileManager.lockPrivateProfile();
-                        });
+                quietModeButton.setOnClickListener(view -> lockAction());
             }
             case STATE_DISABLED -> {
                 quietModeButton.setVisibility(View.VISIBLE);
                 quietModeButton.setImageResource(R.drawable.bg_ps_unlock_button);
-                quietModeButton.setOnClickListener(
-                        view -> {
-                            mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
-                            mPrivateProfileManager.unlockPrivateProfile((this::
-                                    onPrivateProfileUnlocked));
-                        });
+                quietModeButton.setOnClickListener(view -> unLockAction());
             }
             default -> quietModeButton.setVisibility(View.GONE);
         }
+    }
+
+    private void addHeaderOnClickListener(RelativeLayout header) {
+        if (mPrivateProfileManager.getCurrentState() == STATE_DISABLED) {
+            header.setOnClickListener(view -> unLockAction());
+        } else {
+            header.setOnClickListener(null);
+        }
+    }
+
+    private void unLockAction() {
+        mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
+        mPrivateProfileManager.unlockPrivateProfile((this::onPrivateProfileUnlocked));
+    }
+
+    private void lockAction() {
+        mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_LOCK_TAP);
+        mPrivateProfileManager.lockPrivateProfile();
     }
 
     private void addPrivateSpaceSettingsButton(ImageButton settingsButton) {
