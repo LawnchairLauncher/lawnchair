@@ -433,7 +433,9 @@ class WorkspaceItemProcessor(
                     !c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) &&
                         !isSafeMode &&
                         (si == null) &&
-                        (lapi == null)
+                        (lapi == null) &&
+                        !(Flags.enableSupportForArchiving() &&
+                            pmHelper.isAppArchived(component.packageName))
                 ) {
                     // Restore never started
                     c.markDeleted(

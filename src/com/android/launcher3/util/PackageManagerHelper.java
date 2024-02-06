@@ -16,6 +16,9 @@
 
 package com.android.launcher3.util;
 
+
+import static android.content.pm.PackageManager.MATCH_ARCHIVED_PACKAGES;
+
 import static com.android.launcher3.Flags.enableSupportForArchiving;
 
 import android.content.ActivityNotFoundException;
@@ -104,6 +107,22 @@ public class PackageManagerHelper {
             @NonNull final UserHandle user) {
         final ApplicationInfo info = getApplicationInfo(packageName, user, 0);
         return info != null;
+    }
+
+    /**
+     * Returns whether the target app is in archived state
+     */
+    @SuppressWarnings("NewApi")
+    public boolean isAppArchived(@NonNull final String packageName) {
+        final ApplicationInfo info;
+        try {
+            info = mPm.getPackageInfo(packageName,
+                    PackageManager.PackageInfoFlags.of(MATCH_ARCHIVED_PACKAGES)).applicationInfo;
+            return info.isArchived;
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Failed to get applicationInfo for package: " + packageName, e);
+            return false;
+        }
     }
 
     /**
