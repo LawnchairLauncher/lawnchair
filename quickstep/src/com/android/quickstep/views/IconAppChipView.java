@@ -52,9 +52,10 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     private static final int MENU_BACKGROUND_REVEAL_DURATION = 417;
     private static final int MENU_BACKGROUND_HIDE_DURATION = 333;
 
-    private static final int NUM_ALPHA_CHANNELS = 2;
+    private static final int NUM_ALPHA_CHANNELS = 3;
     private static final int INDEX_CONTENT_ALPHA = 0;
     private static final int INDEX_COLOR_FILTER_ALPHA = 1;
+    private static final int INDEX_MODAL_ALPHA = 2;
 
     private final MultiValueAlpha mMultiValueAlpha;
 
@@ -304,6 +305,11 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     @Override
     public void setContentAlpha(float alpha) {
         mMultiValueAlpha.get(INDEX_CONTENT_ALPHA).setValue(alpha);
+    }
+
+    @Override
+    public void setModalAlpha(float alpha) {
+        mMultiValueAlpha.get(INDEX_MODAL_ALPHA).setValue(alpha);
     }
 
     @Override

@@ -69,6 +69,7 @@ public final class RecentsViewStateController extends
         super.setState(state);
         if (state.overviewUi) {
             mRecentsView.updateEmptyMessage();
+        } else {
             mRecentsView.resetTaskVisuals();
         }
         setAlphas(PropertySetter.NO_ANIM_PROPERTY_SETTER, new StateAnimationConfig(), state);
