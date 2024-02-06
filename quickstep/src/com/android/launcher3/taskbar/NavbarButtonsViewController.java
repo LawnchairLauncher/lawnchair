@@ -780,9 +780,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             handleSetupUi();
 
             // Hide back button in SUW if keyboard is showing (IME draws its own back).
-            mPropertyHolders.add(new StatePropertyHolder(
-                    mBackButtonAlpha.get(ALPHA_INDEX_SUW),
-                    flags -> (flags & FLAG_IME_VISIBLE) == 0));
+            if (mIsImeRenderingNavButtons) {
+                mPropertyHolders.add(new StatePropertyHolder(
+                        mBackButtonAlpha.get(ALPHA_INDEX_SUW),
+                        flags -> (flags & FLAG_IME_VISIBLE) == 0));
+            }
         } else if (isInKidsMode) {
             int iconSize = res.getDimensionPixelSize(
                     R.dimen.taskbar_icon_size_kids);
