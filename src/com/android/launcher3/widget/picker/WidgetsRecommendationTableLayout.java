@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 
 import android.content.Context;
@@ -104,8 +105,13 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         for (int i = 0; i < data.mRecommendationTable.size(); i++) {
             List<WidgetItem> widgetItems = data.mRecommendationTable.get(i);
             TableRow tableRow = new TableRow(getContext());
-            tableRow.setGravity(Gravity.TOP);
-
+            if (enableCategorizedWidgetSuggestions()) {
+                // Vertically center align items, so that even if they don't fill bounds, they can
+                // look organized when placed together in a row.
+                tableRow.setGravity(Gravity.CENTER_VERTICAL);
+            } else {
+                tableRow.setGravity(Gravity.TOP);
+            }
             for (WidgetItem widgetItem : widgetItems) {
                 WidgetCell widgetCell = addItemCell(tableRow);
                 widgetCell.applyFromCellItem(widgetItem, data.mPreviewScale);

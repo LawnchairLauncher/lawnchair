@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 
 import android.content.Context;
@@ -308,15 +309,25 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 if (mSuggestedWidgetsHeader != null) {
                     mSuggestedWidgetsHeader.setExpanded(false);
                 }
+
+                WidgetsListContentEntry contentEntryToBind;
+                if (enableCategorizedWidgetSuggestions()) {
+                    // Setting max span size enables row to understand how to fit more than one item
+                    // in a row.
+                    contentEntryToBind = contentEntry.withMaxSpanSize(mMaxSpanPerRow);
+                } else {
+                    contentEntryToBind = contentEntry;
+                }
+
                 WidgetsRowViewHolder widgetsRowViewHolder =
                         mWidgetsListTableViewHolderBinder.newViewHolder(mRightPane);
                 mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                        contentEntry,
+                        contentEntryToBind,
                         ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                         Collections.EMPTY_LIST);
                 widgetsRowViewHolder.mDataCallback = data -> {
                     mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                            contentEntry,
+                            contentEntryToBind,
                             ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                             Collections.singletonList(data));
                 };

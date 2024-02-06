@@ -162,7 +162,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Nullable PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
-    @Px private int mMaxSpanPerRow;
+    @Px protected int mMaxSpanPerRow;
     protected DeviceProfile mDeviceProfile;
 
     protected TextView mNoWidgetsView;
