@@ -582,6 +582,7 @@
 
     <declare-styleable name="WidgetsListRowHeader">
         <attr name="appIconSize" format="dimension" />
+        <attr name="collapsable" format="boolean" />
     </declare-styleable>
 
     <attr name="materialColorOnSecondaryFixedVariant" format="color" />
