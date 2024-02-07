@@ -46,6 +46,7 @@ import android.view.WindowInsetsController;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.window.BackEvent;
 
@@ -66,7 +67,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.UserManagerState;
-import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -77,7 +77,6 @@ import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
-import com.android.launcher3.widget.util.WidgetsTableUtils;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
@@ -168,7 +167,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     protected TextView mNoWidgetsView;
     protected StickyHeaderLayout mSearchScrollView;
-    protected WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
+    protected WidgetRecommendationsView mWidgetRecommendationsView;
+    protected LinearLayout mWidgetRecommendationsContainer;
     protected View mTabBar;
     protected View mSearchBarContainer;
     protected WidgetsSearchBar mSearchBar;
@@ -222,9 +222,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         setupViews();
 
-        mRecommendedWidgetsTable = mSearchScrollView.findViewById(R.id.recommended_widget_table);
-        mRecommendedWidgetsTable.setWidgetCellLongClickListener(this);
-        mRecommendedWidgetsTable.setWidgetCellOnClickListener(this);
+        mWidgetRecommendationsContainer = mSearchScrollView.findViewById(
+                R.id.widget_recommendations_container);
+        mWidgetRecommendationsView = mSearchScrollView.findViewById(
+                R.id.widget_recommendations_view);
+        mWidgetRecommendationsView.initParentViews(mWidgetRecommendationsContainer);
+        mWidgetRecommendationsView.setWidgetCellLongClickListener(this);
+        mWidgetRecommendationsView.setWidgetCellOnClickListener(this);
+
         mHeaderTitle = mSearchScrollView.findViewById(R.id.title);
 
         onRecommendedWidgetsBound();
@@ -552,7 +557,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
         mIsInSearchMode = isInSearchMode;
         if (isInSearchMode) {
-            mRecommendedWidgetsTable.setVisibility(GONE);
+            mWidgetRecommendationsContainer.setVisibility(GONE);
             if (mHasWorkProfile) {
                 mViewPager.setVisibility(GONE);
                 mTabBar.setVisibility(GONE);
@@ -581,40 +586,44 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) {
             return;
         }
-        List<WidgetItem> recommendedWidgets =
-                mActivityContext.getPopupDataProvider().getRecommendedWidgets();
-        mHasRecommendedWidgets = recommendedWidgets.size() > 0;
-        if (mHasRecommendedWidgets) {
-            float noWidgetsViewHeight = 0;
-            if (mIsNoWidgetsViewNeeded) {
-                // Make sure recommended section leaves enough space for noWidgetsView.
-                Rect noWidgetsViewTextBounds = new Rect();
-                mNoWidgetsView.getPaint()
-                        .getTextBounds(mNoWidgetsView.getText().toString(), /* start= */ 0,
-                                mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
-                noWidgetsViewHeight = noWidgetsViewTextBounds.height();
-            }
-            if (!isTwoPane()) {
-                doMeasure(
-                        makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
-                                MeasureSpec.EXACTLY),
-                        makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
-                                MeasureSpec.EXACTLY));
-            }
-            float maxTableHeight = getMaxTableHeight(noWidgetsViewHeight);
 
-            List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
-                    WidgetsTableUtils.groupWidgetItemsUsingRowPxWithoutReordering(
-                            recommendedWidgets,
-                            mActivityContext,
-                            mActivityContext.getDeviceProfile(),
-                            mMaxSpanPerRow,
-                            mWidgetCellHorizontalPadding);
-            mRecommendedWidgetsTable.setRecommendedWidgets(
-                    recommendedWidgetsInTable, maxTableHeight);
+        if (enableCategorizedWidgetSuggestions()) {
+            mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
+                    mActivityContext.getPopupDataProvider().getCategorizedRecommendedWidgets(),
+                    /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
+                    /* availableWidth= */ mMaxSpanPerRow,
+                    /* cellPadding= */ mWidgetCellHorizontalPadding
+            );
         } else {
-            mRecommendedWidgetsTable.setVisibility(GONE);
+            mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
+                    mActivityContext.getPopupDataProvider().getRecommendedWidgets(),
+                    /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
+                    /* availableWidth= */ mMaxSpanPerRow,
+                    /* cellPadding= */ mWidgetCellHorizontalPadding
+            );
         }
+        mWidgetRecommendationsContainer.setVisibility(mHasRecommendedWidgets ? VISIBLE : GONE);
+    }
+
+    @Px
+    private float getMaxAvailableHeightForRecommendations() {
+        float noWidgetsViewHeight = 0;
+        if (mIsNoWidgetsViewNeeded) {
+            // Make sure recommended section leaves enough space for noWidgetsView.
+            Rect noWidgetsViewTextBounds = new Rect();
+            mNoWidgetsView.getPaint()
+                    .getTextBounds(mNoWidgetsView.getText().toString(), /* start= */ 0,
+                            mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
+            noWidgetsViewHeight = noWidgetsViewTextBounds.height();
+        }
+        if (!isTwoPane()) {
+            doMeasure(
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
+                            MeasureSpec.EXACTLY),
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
+                            MeasureSpec.EXACTLY));
+        }
+        return getMaxTableHeight(noWidgetsViewHeight);
     }
 
     /** b/209579563: "Widgets" header should be focused first. */
@@ -623,7 +632,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return mHeaderTitle;
     }
 
-    protected float getMaxTableHeight(float noWidgetsViewHeight) {
+    @Px
+    protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
         return (mContent.getMeasuredHeight()
                 - mTabsHeight - getHeaderViewHeight()
                 - noWidgetsViewHeight)
@@ -870,9 +880,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Nullable private View getViewToShowEducationTip() {
-        if (mRecommendedWidgetsTable.getVisibility() == VISIBLE
-                && mRecommendedWidgetsTable.getChildCount() > 0) {
-            return ((ViewGroup) mRecommendedWidgetsTable.getChildAt(0)).getChildAt(0);
+        if (mWidgetRecommendationsContainer.getVisibility() == VISIBLE) {
+            return mWidgetRecommendationsView.getViewForEducationTip();
         }
 
         AdapterHolder adapterHolder = mAdapters.get(mIsInSearchMode

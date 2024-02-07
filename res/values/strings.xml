@@ -71,7 +71,7 @@
     <!-- Widget suggestions header title in the full widgets picker for large screen devices
     in landscape mode. [CHAR_LIMIT=50] -->
     <string name="suggested_widgets_header_title">Suggestions</string>
-    <string name="productivity_widget_recommendation_category_label">Boost your day</string>
+    <string name="productivity_widget_recommendation_category_label">Your Daily Essentials</string>
     <string name="news_widget_recommendation_category_label">News For You</string>
     <string name="social_and_entertainment_widget_recommendation_category_label">Your Chill Zone</string>
     <string name="fitness_widget_recommendation_category_label">Reach Your Fitness Goals</string>

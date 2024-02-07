@@ -110,9 +110,15 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         mWidgetsListTableViewHolderBinder =
                 new WidgetsListTableViewHolderBinder(mActivityContext, layoutInflater, this, this);
-        mRecommendedWidgetsTable = mContent.findViewById(R.id.recommended_widget_table);
-        mRecommendedWidgetsTable.setWidgetCellLongClickListener(this);
-        mRecommendedWidgetsTable.setWidgetCellOnClickListener(this);
+
+        mWidgetRecommendationsContainer = mContent.findViewById(
+                R.id.widget_recommendations_container);
+        mWidgetRecommendationsView = mContent.findViewById(
+                R.id.widget_recommendations_view);
+        mWidgetRecommendationsView.initParentViews(mWidgetRecommendationsContainer);
+        mWidgetRecommendationsView.setWidgetCellLongClickListener(this);
+        mWidgetRecommendationsView.setWidgetCellOnClickListener(this);
+
         mHeaderTitle = mContent.findViewById(R.id.title);
         mRightPane = mContent.findViewById(R.id.right_pane);
         mRightPane.setOutlineProvider(mViewOutlineProviderRightPane);
@@ -214,7 +220,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             mSuggestedWidgetsHeader.setExpanded(true);
             resetExpandedHeaders();
             mRightPane.removeAllViews();
-            mRightPane.addView(mRecommendedWidgetsTable);
+            mRightPane.addView(mWidgetRecommendationsContainer);
             mRightPaneScrollView.setScrollY(0);
             mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
             mSuggestedWidgetsPackageUserKey = PackageUserKey.fromPackageItemInfo(packageItemInfo);
@@ -225,7 +231,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     }
 
     @Override
-    protected float getMaxTableHeight(float noWidgetsViewHeight) {
+    @Px
+    protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
         return Float.MAX_VALUE;
     }
 

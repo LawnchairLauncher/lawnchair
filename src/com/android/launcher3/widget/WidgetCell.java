@@ -367,6 +367,16 @@ public class WidgetCell extends LinearLayout {
         }
     }
 
+    /**
+     * Shows or hides the long description displayed below each widget.
+     *
+     * @param show a flag that shows the long description of the widget if {@code true}, hides it if
+     *             {@code false}.
+     */
+    public void showDescription(boolean show) {
+        mWidgetDescription.setVisibility(show ? VISIBLE : GONE);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         super.onTouchEvent(ev);
