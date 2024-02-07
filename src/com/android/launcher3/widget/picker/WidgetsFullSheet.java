@@ -17,6 +17,7 @@ package com.android.launcher3.widget.picker;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
@@ -699,7 +700,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private static int getWidgetSheetId(BaseActivity activity) {
         boolean isTwoPane = (activity.getDeviceProfile().isTablet
-                && activity.getDeviceProfile().isLandscape
+                // Enables two pane picker for tablets in all orientations when the
+                // enableCategorizedWidgetSuggestions flag is on.
+                && (activity.getDeviceProfile().isLandscape || enableCategorizedWidgetSuggestions())
                 && !activity.getDeviceProfile().isTwoPanels)
                 // Enables two pane picker for unfolded foldables if the flag is on.
                 || (activity.getDeviceProfile().isTwoPanels && enableUnfoldedTwoPanePicker());
@@ -813,26 +816,38 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void onDeviceProfileChanged(DeviceProfile dp) {
         super.onDeviceProfileChanged(dp);
 
-        if (mDeviceProfile.isLandscape != dp.isLandscape && dp.isTablet && !dp.isTwoPanels) {
-            handleClose(false);
-            show(BaseActivity.fromContext(getContext()), false);
-        } else if (!isTwoPane()) {
-            reset();
-            resetExpandedHeaders();
-        }
-
-        // When folding/unfolding the foldables, we need to switch between the regular widget picker
-        // and the two pane picker, so we rebuild the picker with the correct layout.
-        if (mDeviceProfile.isTwoPanels != dp.isTwoPanels && enableUnfoldedTwoPanePicker()) {
+        if (shouldRecreateLayout(/*oldDp=*/ mDeviceProfile, /*newDp=*/ dp)) {
             SparseArray<Parcelable> widgetsState = new SparseArray<>();
             saveHierarchyState(widgetsState);
             handleClose(false);
             WidgetsFullSheet sheet = show(BaseActivity.fromContext(getContext()), false);
             sheet.restoreHierarchyState(widgetsState);
             sheet.restorePreviousAdapterHolderType(getCurrentAdapterHolderType());
+        } else if (!isTwoPane()) {
+            reset();
+            resetExpandedHeaders();
         }
 
         mDeviceProfile = dp;
+    }
+
+    /**
+     * Indicates if layout should be re-created on device profile change - so that a different
+     * layout can be displayed.
+     */
+    private static boolean shouldRecreateLayout(DeviceProfile oldDp, DeviceProfile newDp) {
+        // When folding/unfolding the foldables, we need to switch between the regular widget picker
+        // and the two pane picker, so we rebuild the picker with the correct layout.
+        boolean isFoldUnFold =
+                oldDp.isTwoPanels != newDp.isTwoPanels && enableUnfoldedTwoPanePicker();
+        // In tablets, on orientation change we switch between single and two pane picker unless the
+        // categorized suggestions flag was on. With the categorized suggestions feature, we use a
+        // two pane picker across all orientations.
+        boolean useDifferentLayoutOnOrientationChange =
+                (!enableCategorizedWidgetSuggestions() && (newDp.isTablet && !newDp.isTwoPanels
+                        && oldDp.isLandscape != newDp.isLandscape));
+
+        return isFoldUnFold || useDifferentLayoutOnOrientationChange;
     }
 
     @Override
