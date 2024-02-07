@@ -93,11 +93,14 @@ public class AllAppsStore<T extends Context & ActivityContext> {
      * Sets the current set of apps and sets mapping for {@link PackageUserKey} to Uid for
      * the current set of apps.
      *
-     * <p> Note that shouldPreinflate param should be set to {@code false} for taskbar, because this
-     * method is too late to preinflate all apps, as user will open all apps in the same frame.
+     * <p> Note that shouldPreinflate param should be set to {@code false} for taskbar, because
+     * this method is too late to preinflate all apps, as user will open all apps in the frame
+     *
+     * <p>Param: apps are required to be sorted using the comparator COMPONENT_KEY_COMPARATOR
+     * in order to enable binary search on the mApps store
      */
     public void setApps(@Nullable AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map,
-            boolean shouldPreinflate)  {
+            boolean shouldPreinflate) {
         mApps = apps == null ? EMPTY_ARRAY : apps;
         mModelFlags = flags;
         notifyUpdate();
