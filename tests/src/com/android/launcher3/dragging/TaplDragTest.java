@@ -16,8 +16,8 @@
 package com.android.launcher3.dragging;
 
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
-import static com.android.launcher3.util.TestConstants.AppNames.PHOTOS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.PHOTOS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.STORE_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
@@ -44,7 +44,6 @@ import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -58,12 +57,6 @@ import org.junit.Test;
  *    * Can drag an icon on the Workspace to other positions of the Workspace.
  */
 public class TaplDragTest extends AbstractLauncherUiTest {
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     /**
      * Adds two icons to the Workspace and combines them into a folder, then makes sure the icons

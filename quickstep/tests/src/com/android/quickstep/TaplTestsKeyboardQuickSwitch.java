@@ -25,7 +25,6 @@ import com.android.launcher3.tapl.KeyboardQuickSwitch;
 import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.taskbar.KeyboardQuickSwitchController;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
 
 import org.junit.Assume;
 import org.junit.Test;
@@ -69,7 +68,6 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     public void setUp() throws Exception {
         Assume.assumeTrue(mLauncher.isTablet());
         super.setUp();
-        AbstractLauncherUiTest.initialize(this);
         startAppFast(CALCULATOR_APP_PACKAGE);
         startTestActivity(2);
     }

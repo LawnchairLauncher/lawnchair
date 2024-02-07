@@ -35,7 +35,6 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -46,15 +45,6 @@ public class TaplOpenCloseAllAppsTest extends AbstractLauncherUiTest {
 
     public static final String READ_DEVICE_CONFIG_PERMISSION =
             "android.permission.READ_DEVICE_CONFIG";
-
-    /**
-     * Calls static method initialize
-     */
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     /**
      * Make sure we can go home after pressing the context menu on an Icon on the AllApps.
