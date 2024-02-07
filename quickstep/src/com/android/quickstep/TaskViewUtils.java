@@ -641,6 +641,18 @@ public final class TaskViewUtils {
                         });
                     });
                 }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    recentsView.onTaskLaunchedInLiveTileModeCancelled();
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    recentsView.setTaskLaunchCancelledRunnable(null);
+                }
             };
         } else {
             AnimatorPlaybackController controller =

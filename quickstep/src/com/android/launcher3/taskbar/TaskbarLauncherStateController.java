@@ -304,6 +304,10 @@ public class TaskbarLauncherStateController {
         callbacks.addListener(mTaskBarRecentsAnimationListener);
         ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(() ->
                 mTaskBarRecentsAnimationListener.endGestureStateOverride(true));
+
+        ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchCancelledRunnable(() -> {
+            updateStateForUserFinishedToApp(false /* finishedToApp */);
+        });
         return animatorSet;
     }
 
@@ -770,19 +774,27 @@ public class TaskbarLauncherStateController {
             mTaskBarRecentsAnimationListener = null;
             ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(null);
 
-            // Update the visible state immediately to ensure a seamless handoff
-            boolean launcherVisible = !finishedToApp;
-            updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, false);
-            updateStateForFlag(FLAG_VISIBLE, launcherVisible);
-            applyState();
-
-            TaskbarStashController controller = mControllers.taskbarStashController;
-            if (DEBUG) {
-                Log.d(TAG, "endGestureStateOverride - FLAG_IN_APP: " + finishedToApp);
-            }
-            controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
-            controller.applyState();
+            updateStateForUserFinishedToApp(finishedToApp);
         }
+    }
+
+    /**
+     * Updates the visible state immediately to ensure a seamless handoff.
+     * @param finishedToApp True iff user is in an app.
+     */
+    private void updateStateForUserFinishedToApp(boolean finishedToApp) {
+        // Update the visible state immediately to ensure a seamless handoff
+        boolean launcherVisible = !finishedToApp;
+        updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, false);
+        updateStateForFlag(FLAG_VISIBLE, launcherVisible);
+        applyState();
+
+        TaskbarStashController controller = mControllers.taskbarStashController;
+        if (DEBUG) {
+            Log.d(TAG, "endGestureStateOverride - FLAG_IN_APP: " + finishedToApp);
+        }
+        controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
+        controller.applyState();
     }
 
     private static String getStateString(int flags) {
