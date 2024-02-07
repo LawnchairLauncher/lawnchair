@@ -202,7 +202,7 @@ class WorkspaceItemProcessor(
                             }
                         }
                     }
-                    pmHelper.isAppOnSdcard(targetPkg!!, c.user) -> {
+                    pmHelper.isAppOnSdcard(targetPkg, c.user) -> {
                         // Package is present but not available.
                         disabledState =
                             disabledState or WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE
@@ -278,7 +278,7 @@ class WorkspaceItemProcessor(
                 info = c.loadSimpleWorkspaceItem()
 
                 // Shortcuts are only available on the primary profile
-                if (!TextUtils.isEmpty(targetPkg) && pmHelper.isAppSuspended(targetPkg!!, c.user)) {
+                if (!TextUtils.isEmpty(targetPkg) && pmHelper.isAppSuspended(targetPkg, c.user)) {
                     disabledState = disabledState or ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED
                 }
                 info.options = c.options
@@ -333,13 +333,12 @@ class WorkspaceItemProcessor(
                         info.runtimeStatusFlags and
                             ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE.inv()
                 } else if (
-                    activityInfo ==
-                        null // For archived apps, include progress info in case there is
-                    // a pending install session post restart of device.
-                    ||
+                    activityInfo == null ||
                         (Utilities.enableSupportForArchiving() &&
                             activityInfo.applicationInfo.isArchived)
                 ) {
+                    // For archived apps, include progress info in case there is
+                    // a pending install session post restart of device.
                     val installProgress = (si.getProgress() * 100).toInt()
                     info.setProgressLevel(installProgress, PackageInstallInfo.STATUS_INSTALLING)
                 }
