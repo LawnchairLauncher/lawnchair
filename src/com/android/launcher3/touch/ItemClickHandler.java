@@ -40,6 +40,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -352,18 +353,18 @@ public class ItemClickHandler {
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher) {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");
-        Intent intent;
-        if (item instanceof ItemInfoWithIcon
-                && (((ItemInfoWithIcon) item).runtimeStatusFlags
-                & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-            ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
-            intent = ApiWrapper.getAppMarketActivityIntent(launcher,
-                    appInfo.getTargetComponent().getPackageName(), Process.myUserHandle());
-        } else {
-            intent = item.getIntent();
-            if (item instanceof AppInfo
-                    && (((ItemInfoWithIcon) item).runtimeStatusFlags
+        Intent intent = item.getIntent();
+        if (item instanceof ItemInfoWithIcon itemInfoWithIcon) {
+            if ((itemInfoWithIcon.runtimeStatusFlags
+                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                intent = ApiWrapper.getAppMarketActivityIntent(launcher,
+                        itemInfoWithIcon.getTargetComponent().getPackageName(),
+                        Process.myUserHandle());
+            } else if ((itemInfoWithIcon.runtimeStatusFlags
                     & ItemInfoWithIcon.FLAG_PRIVATE_SPACE_INSTALL_APP) != 0) {
+                intent = ApiWrapper.getAppMarketActivityIntent(launcher,
+                        BuildConfig.APPLICATION_ID,
+                        launcher.getAppsView().getPrivateProfileManager().getProfileUser());
                 launcher.getStatsLogManager().logger().log(
                         LAUNCHER_PRIVATE_SPACE_INSTALL_APP_BUTTON_TAP);
             }
