@@ -253,6 +253,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return mTaskbarLauncherStateController.createAnimToLauncher(toState, callbacks, duration);
     }
 
+    public void updateTaskbarLauncherStateGoingHome() {
+        mTaskbarLauncherStateController.updateStateForFlag(FLAG_VISIBLE, true);
+        mTaskbarLauncherStateController.applyState();
+    }
+
     public boolean isDraggingItem() {
         return mControllers.taskbarDragController.isDragging();
     }
