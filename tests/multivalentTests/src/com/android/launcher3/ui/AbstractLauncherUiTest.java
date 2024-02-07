@@ -192,6 +192,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected AbstractLauncherUiTest() {
         mLauncher.enableCheckEventsForSuccessfulGestures();
+        mLauncher.setAnomalyChecker(AbstractLauncherUiTest::verifyKeyguardInvisible);
         try {
             mDevice.setOrientationNatural();
         } catch (RemoteException e) {

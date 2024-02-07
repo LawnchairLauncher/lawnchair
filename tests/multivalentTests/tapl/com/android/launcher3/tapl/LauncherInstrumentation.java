@@ -204,6 +204,9 @@ public final class LauncherInstrumentation {
 
     private LogEventChecker mEventChecker;
 
+    // UI anomaly checker provided by the test.
+    private Runnable mTestAnomalyChecker;
+
     private boolean mCheckEventsForSuccessfulGestures = false;
     private Runnable mOnLauncherCrashed;
 
@@ -573,8 +576,31 @@ public final class LauncherInstrumentation {
         checkForAnomaly(false, false);
     }
 
+    /**
+     * Allows the test to provide a pluggable anomaly checker. It’s supposed to throw an exception
+     * if the check fails. The test may provide its own anomaly checker, for example, if it wants to
+     * check for an anomaly that’s recognized by the standard TAPL anomaly checker, but wants a
+     * custom error message, such as adding information whether the keyguard is seen for the first
+     * time during the shard execution.
+     */
+    public void setAnomalyChecker(Runnable anomalyChecker) {
+        mTestAnomalyChecker = anomalyChecker;
+    }
+
+    /**
+     * Verifies that there are no visible UI anomalies. An "anomaly" is a state of UI that should
+     * never happen during the text execution. Anomaly is something different from just “regular”
+     * unexpected state of the Launcher such as when we see Workspace after swiping up to All Apps.
+     * Workspace is a normal state. We can contrast this with an anomaly, when, for example, we see
+     * a lock screen. Launcher tests can never bring the lock screen, so the very presence of the
+     * lock screen is an indication that something went very wrong, and perhaps is caused by reasons
+     * outside of the Launcher and its tests, perhaps, by a crash in System UI. Diagnosing anomalies
+     * helps to understand faster whether the problem is in the Launcher or its tests, or outside.
+     */
     public void checkForAnomaly(
             boolean ignoreNavmodeChangeStates, boolean ignoreOnlySystemUiViews) {
+        if (mTestAnomalyChecker != null) mTestAnomalyChecker.run();
+
         final String systemAnomalyMessage =
                 getSystemAnomalyMessage(ignoreNavmodeChangeStates, ignoreOnlySystemUiViews);
         if (systemAnomalyMessage != null) {
