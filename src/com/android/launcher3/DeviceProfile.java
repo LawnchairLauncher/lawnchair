@@ -1010,7 +1010,7 @@ public class DeviceProfile {
      * Returns the amount of extra (or unused) vertical space.
      */
     private int updateAvailableDimensions(Resources res) {
-        iconCenterVertically = mIsScalableGrid || mIsResponsiveGrid;
+        iconCenterVertically = (mIsScalableGrid || mIsResponsiveGrid) && isVerticalBarLayout();
 
         if (mIsResponsiveGrid) {
             iconSizePx = mResponsiveWorkspaceCellSpec.getIconSize();
@@ -1738,15 +1738,8 @@ public class DeviceProfile {
             // The hotseat icons will be placed in the middle of the hotseat cells.
             // Changing the hotseatCellHeightPx is not affecting hotseat icon positions
             // in vertical bar layout.
-            // Workspace icons are moved up by a small factor. The variable diffOverlapFactor
-            // is set to account for that difference.
-            float diffOverlapFactor = mIsResponsiveGrid ? 0
-                    : iconSizePx * (ICON_OVERLAP_FACTOR - 1) / 2;
-
-            int paddingTop = Math.max((int) (mInsets.top + cellLayoutPaddingPx.top
-                    - diffOverlapFactor), 0);
-            int paddingBottom = Math.max((int) (mInsets.bottom + cellLayoutPaddingPx.bottom
-                    + diffOverlapFactor), 0);
+            int paddingTop = Math.max((int) (mInsets.top + cellLayoutPaddingPx.top), 0);
+            int paddingBottom = Math.max((int) (mInsets.bottom + cellLayoutPaddingPx.bottom), 0);
 
             if (isSeascape()) {
                 hotseatBarPadding.set(mInsets.left + mHotseatBarEdgePaddingPx, paddingTop,
