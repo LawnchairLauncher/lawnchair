@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.util.TestUtil.expectFail;
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

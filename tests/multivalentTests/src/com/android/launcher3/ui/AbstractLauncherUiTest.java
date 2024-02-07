@@ -83,6 +83,7 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -223,14 +224,9 @@ public abstract class AbstractLauncherUiTest {
     public SetFlagsRule mSetFlagsRule = new SetFlagsRule(DEVICE_DEFAULT);
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
-        initialize(test, false);
-    }
-
-    public static void initialize(
-            AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
-        test.reinitializeLauncherData(clearWorkspace);
+        test.reinitializeLauncherData();
         test.mDevice.pressHome();
-        test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
+        test.waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
         test.waitForState("Launcher internal state didn't switch to Home",
                 () -> LauncherState.NORMAL);
         test.waitForResumed("Launcher internal state is still Background");
@@ -310,6 +306,8 @@ public abstract class AbstractLauncherUiTest {
         }
 
         onTestStart();
+
+        initialize(this);
     }
 
     /** Method that should be called when a test starts. */

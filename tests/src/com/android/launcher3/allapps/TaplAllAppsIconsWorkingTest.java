@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
