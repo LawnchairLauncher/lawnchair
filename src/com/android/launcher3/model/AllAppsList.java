@@ -16,7 +16,6 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ARCHIVED;
@@ -34,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AppFilter;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.Callbacks;
@@ -330,7 +330,7 @@ public class AllAppsList {
                             PackageManagerHelper.getLoadingProgress(info),
                             PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                     applicationInfo.intent = launchIntent;
-                    if (enableSupportForArchiving()) {
+                    if (Utilities.enableSupportForArchiving()) {
                         // In case an app is archived, the respective item flag corresponding to
                         // archiving should also be applied during package updates
                         if (info.getActivityInfo().isArchived) {

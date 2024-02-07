@@ -1677,7 +1677,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             };
 
-            if (fromPredictiveBack) {
+            if (fromPredictiveBack && rectFSpringAnim != null) {
                 rectFSpringAnim.addAnimatorListener(endListener);
             } else {
                 anim.addListener(endListener);

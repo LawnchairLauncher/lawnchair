@@ -830,4 +830,10 @@ public final class Utilities {
                 // No-Op
         }
     }
+
+    /** Encapsulates two flag checks into a single one. */
+    public static boolean enableSupportForArchiving() {
+        return Flags.enableSupportForArchiving()
+                || getSystemProperty("pm.archiving.enabled", "false").equals("true");
+    }
 }

@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 
+import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
@@ -40,6 +41,7 @@ import com.android.wm.shell.Flags;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -103,10 +105,18 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
                 .getSplitScreenMenuItem()
                 .click();
 
-        mLauncher.getLaunchedAppState()
-                .getTaskbar()
-                .getAppIcon(CALCULATOR_APP_NAME)
-                .launchIntoSplitScreen();
+        if (enableSplitContextually()) {
+            // We're staying in all apps, use same instance
+            mLauncher.getAllApps()
+                    .getAppIcon(CALCULATOR_APP_NAME)
+                    .launch(CALCULATOR_APP_PACKAGE);
+        } else {
+            // We're in overview, use taskbar instance
+            mLauncher.getLaunchedAppState()
+                    .getTaskbar()
+                    .getAppIcon(CALCULATOR_APP_NAME)
+                    .launchIntoSplitScreen();
+        }
     }
 
     @Test

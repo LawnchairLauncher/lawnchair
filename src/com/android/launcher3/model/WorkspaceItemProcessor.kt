@@ -26,7 +26,6 @@ import android.graphics.Point
 import android.text.TextUtils
 import android.util.Log
 import android.util.LongSparseArray
-import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
@@ -323,7 +322,7 @@ class WorkspaceItemProcessor(
             }
             if (
                 (c.restoreFlag != 0 ||
-                    Flags.enableSupportForArchiving() &&
+                    Utilities.enableSupportForArchiving() &&
                         activityInfo != null &&
                         activityInfo.applicationInfo.isArchived) && !TextUtils.isEmpty(targetPkg)
             ) {
@@ -338,7 +337,7 @@ class WorkspaceItemProcessor(
                         null // For archived apps, include progress info in case there is
                     // a pending install session post restart of device.
                     ||
-                        (Flags.enableSupportForArchiving() &&
+                        (Utilities.enableSupportForArchiving() &&
                             activityInfo.applicationInfo.isArchived)
                 ) {
                     val installProgress = (si.getProgress() * 100).toInt()

@@ -115,7 +115,7 @@ class FloatingAppPairBackground(
     }
 
     override fun draw(canvas: Canvas) {
-        if (launcher.deviceProfile.isLandscape) {
+        if (launcher.deviceProfile.isLeftRightSplit) {
             drawLeftRightSplit(canvas)
         } else {
             drawTopBottomSplit(canvas)

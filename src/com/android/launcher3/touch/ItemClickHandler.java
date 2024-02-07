@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.touch;
 
-import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
@@ -331,7 +330,7 @@ public class ItemClickHandler {
 
         // Check for abandoned promise
         if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()
-                && (!enableSupportForArchiving() || !shortcut.isArchived())) {
+                && (!Utilities.enableSupportForArchiving() || !shortcut.isArchived())) {
             String packageName = shortcut.getIntent().getComponent() != null
                     ? shortcut.getIntent().getComponent().getPackageName()
                     : shortcut.getIntent().getPackage();

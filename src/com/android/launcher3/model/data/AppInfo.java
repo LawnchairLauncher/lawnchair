@@ -16,7 +16,6 @@
 
 package com.android.launcher3.model.data;
 
-import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 
 import android.content.ComponentName;
@@ -179,7 +178,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         if (PackageManagerHelper.isAppSuspended(appInfo)) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
         }
-        if (enableSupportForArchiving() && lai.getActivityInfo().isArchived) {
+        if (Utilities.enableSupportForArchiving() && lai.getActivityInfo().isArchived) {
             info.runtimeStatusFlags |= FLAG_ARCHIVED;
         }
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
