@@ -18,6 +18,8 @@ package com.android.launcher3.testing;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
+import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.Activity;
@@ -207,6 +209,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                                 + resources.getDimensionPixelSize(R.dimen.pre_drag_view_scale));
                 return response;
             }
+
+            case TestProtocol.REQUEST_GET_SPLIT_SELECTION_ACTIVE:
+                response.putBoolean(TEST_INFO_RESPONSE_FIELD, enableSplitContextually()
+                        && Launcher.ACTIVITY_TRACKER.getCreatedActivity().isSplitSelectionActive());
+                return response;
 
             case TestProtocol.REQUEST_ENABLE_ROTATION:
                 MAIN_EXECUTOR.submit(() ->

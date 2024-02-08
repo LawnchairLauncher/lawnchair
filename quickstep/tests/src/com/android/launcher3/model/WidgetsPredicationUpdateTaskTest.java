@@ -26,6 +26,8 @@ import static com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -36,11 +38,14 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.os.UserHandle;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.text.TextUtils;
 
+import androidx.test.core.content.pm.ApplicationInfoBuilder;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.util.LauncherLayoutBuilder;
@@ -50,6 +55,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -60,6 +66,9 @@ import java.util.stream.Collectors;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public final class WidgetsPredicationUpdateTaskTest {
+
+    @Rule
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     private AppWidgetProviderInfo mApp1Provider1;
     private AppWidgetProviderInfo mApp1Provider2;
@@ -75,6 +84,7 @@ public final class WidgetsPredicationUpdateTaskTest {
 
     @Before
     public void setup() throws Exception {
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_CATEGORIZED_WIDGET_SUGGESTIONS);
         mModelHelper = new LauncherModelHelper();
 
         mUserHandle = myUserHandle();
@@ -93,6 +103,12 @@ public final class WidgetsPredicationUpdateTaskTest {
         allWidgets = Arrays.asList(mApp1Provider1, mApp1Provider2, mApp2Provider1,
                 mApp4Provider1, mApp4Provider2, mApp5Provider1);
 
+        doAnswer(i -> {
+            String pkg = i.getArgument(0);
+            return ApplicationInfoBuilder.newBuilder().setPackageName(pkg).setName(
+                    "App " + pkg).build();
+        }).when(mModelHelper.sandboxContext.getPackageManager())
+                .getApplicationInfo(anyString(), anyInt());
         AppWidgetManager manager = mModelHelper.sandboxContext.spyService(AppWidgetManager.class);
         doReturn(allWidgets).when(manager).getInstalledProviders();
         doReturn(allWidgets).when(manager).getInstalledProvidersForProfile(eq(myUserHandle()));
@@ -140,12 +156,16 @@ public final class WidgetsPredicationUpdateTaskTest {
             // 1. app5/provider1 & app4/provider1 have already been added to workspace. They are
             //    excluded from the result.
             // 2. app3 doesn't have a widget.
-            // 3. only 1 widget is picked from app1 because we only want to promote one widget per app.
+            // 3. only 1 widget is picked from app1 because we only want to promote one widget
+            // per app.
             List<PendingAddWidgetInfo> recommendedWidgets = mCallback.mRecommendedWidgets.items
                     .stream()
                     .map(itemInfo -> (PendingAddWidgetInfo) itemInfo)
                     .collect(Collectors.toList());
             assertThat(recommendedWidgets).hasSize(2);
+            recommendedWidgets.forEach(pendingAddWidgetInfo ->
+                    assertThat(pendingAddWidgetInfo.recommendationCategory).isNotNull()
+            );
             assertWidgetInfo(recommendedWidgets.get(0).info, mApp2Provider1);
             assertWidgetInfo(recommendedWidgets.get(1).info, mApp1Provider1);
         });
@@ -179,6 +199,9 @@ public final class WidgetsPredicationUpdateTaskTest {
                     .map(itemInfo -> (PendingAddWidgetInfo) itemInfo)
                     .collect(Collectors.toList());
             assertThat(recommendedWidgets).hasSize(2);
+            recommendedWidgets.forEach(pendingAddWidgetInfo ->
+                    assertThat(pendingAddWidgetInfo.recommendationCategory).isNotNull()
+            );
             // Another widget from the same package
             assertWidgetInfo(recommendedWidgets.get(0).info, mApp4Provider2);
             assertWidgetInfo(recommendedWidgets.get(1).info, mApp1Provider1);
@@ -192,7 +215,7 @@ public final class WidgetsPredicationUpdateTaskTest {
     }
 
     private WidgetsPredictionUpdateTask newWidgetsPredicationTask(List<AppTarget> appTargets) {
-       return new WidgetsPredictionUpdateTask(
+        return new WidgetsPredictionUpdateTask(
                 new PredictorState(CONTAINER_WIDGETS_PREDICTION, "test_widgets_prediction"),
                 appTargets);
     }

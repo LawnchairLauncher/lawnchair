@@ -61,6 +61,7 @@ import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SP
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
+import static com.android.launcher3.Flags.enablePredictiveBackGesture;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -645,7 +646,7 @@ public class QuickstepLauncher extends Launcher {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Utilities.ATLEAST_U && FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+        if (Utilities.ATLEAST_U && enablePredictiveBackGesture()) {
             getApplicationInfo().setEnableOnBackInvokedCallback(true);
         }
         if (savedInstanceState != null) {
@@ -833,7 +834,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected void registerBackDispatcher() {
-        if (!FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+        if (!enablePredictiveBackGesture()) {
             super.registerBackDispatcher();
             return;
         }

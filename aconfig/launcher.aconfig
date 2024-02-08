@@ -92,6 +92,13 @@ flag {
 }
 
 flag {
+    name: "enable_predictive_back_gesture"
+    namespace: "launcher"
+    description: "Enable predictive back gesture on Launcher (including all apps and widget picker)."
+    bug: "238475505"
+}
+
+flag {
     name: "enable_shortcut_dont_suggest_app"
     namespace: "launcher"
     description: "Enables don't suggest app shortcut for suggested apps"

@@ -31,8 +31,10 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
+import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.picker.WidgetRecommendationCategory;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -216,6 +219,32 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                                 recommendedWidget.user)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    /** Returns the recommended widgets mapped by their category. */
+    public Map<WidgetRecommendationCategory, List<WidgetItem>> getCategorizedRecommendedWidgets() {
+        Map<ComponentKey, WidgetItem> allWidgetItems = mAllWidgets.stream()
+                .filter(entry -> entry instanceof WidgetsListContentEntry)
+                .flatMap(entry -> entry.mWidgets.stream())
+                .distinct()
+                .collect(Collectors.toMap(
+                        widget -> new ComponentKey(widget.componentName, widget.user),
+                        Function.identity()
+                ));
+        return mRecommendedWidgets.stream()
+                .filter(itemInfo -> itemInfo instanceof PendingAddWidgetInfo)
+                .collect(Collectors.groupingBy(
+                        it -> ((PendingAddWidgetInfo) it).recommendationCategory,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> list.stream()
+                                        .map(it -> allWidgetItems.get(
+                                                new ComponentKey(it.getTargetComponent(),
+                                                        it.user)))
+                                        .filter(Objects::nonNull)
+                                        .collect(Collectors.toList())
+                        )
+                ));
     }
 
     public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {

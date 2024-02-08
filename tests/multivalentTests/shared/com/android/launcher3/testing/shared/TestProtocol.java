@@ -150,6 +150,7 @@ public final class TestProtocol {
     public static final String REQUEST_GET_OVERVIEW_PAGE_SPACING = "get-overview-page-spacing";
     public static final String REQUEST_GET_OVERVIEW_CURRENT_PAGE_INDEX =
             "get-overview-current-page-index";
+    public static final String REQUEST_GET_SPLIT_SELECTION_ACTIVE = "get-split-selection-active";
     public static final String REQUEST_ENABLE_ROTATION = "enable_rotation";
     public static final String REQUEST_ENABLE_SUGGESTION = "enable-suggestion";
     public static final String REQUEST_MODEL_QUEUE_CLEARED = "model-queue-cleared";

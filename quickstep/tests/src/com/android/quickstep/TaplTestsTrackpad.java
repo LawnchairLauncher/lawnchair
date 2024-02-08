@@ -28,7 +28,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.Flags;
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
@@ -77,7 +77,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @NavigationModeSwitch(mode = ZERO_BUTTON)
     public void pressBack() throws Exception {
         assumeTrue(mLauncher.isTablet());
-        assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
+        assumeFalse(Flags.enablePredictiveBackGesture());
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
 
         try {

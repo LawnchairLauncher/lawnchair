@@ -109,7 +109,7 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
             // We're staying in all apps, use same instance
             mLauncher.getAllApps()
                     .getAppIcon(CALCULATOR_APP_NAME)
-                    .launch(CALCULATOR_APP_PACKAGE);
+                    .launchIntoSplitScreen();
         } else {
             // We're in overview, use taskbar instance
             mLauncher.getLaunchedAppState()

@@ -31,8 +31,6 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -53,12 +51,12 @@ public class StatusBarTouchController implements TouchController {
 
     private final Launcher mLauncher;
     private final SystemUiProxy mSystemUiProxy;
-    @VisibleForTesting final float mTouchSlop;
+    private final float mTouchSlop;
     private int mLastAction;
     private final SparseArray<PointF> mDownEvents;
 
     /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
-    @VisibleForTesting boolean mCanIntercept;
+    private boolean mCanIntercept;
 
     private boolean mIsTrackpadReverseScroll;
 
@@ -87,9 +85,9 @@ public class StatusBarTouchController implements TouchController {
 
     @Override
     public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        final int action = ev.getActionMasked();
-        final int idx = ev.getActionIndex();
-        final int pid = ev.getPointerId(idx);
+        int action = ev.getActionMasked();
+        int idx = ev.getActionIndex();
+        int pid = ev.getPointerId(idx);
         if (action == ACTION_DOWN) {
             mCanIntercept = canInterceptTouch(ev);
             if (!mCanIntercept) {
@@ -137,6 +135,7 @@ public class StatusBarTouchController implements TouchController {
                     .log(LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN);
             setWindowSlippery(false);
             mIsTrackpadReverseScroll = false;
+            return true;
         }
         return true;
     }
@@ -150,8 +149,7 @@ public class StatusBarTouchController implements TouchController {
      * Touches can slide out of the window but they cannot necessarily slide
      * back in (unless the other window with touch focus permits it).
      */
-    @VisibleForTesting
-    void setWindowSlippery(boolean enable) {
+    private void setWindowSlippery(boolean enable) {
         Window w = mLauncher.getWindow();
         WindowManager.LayoutParams wlp = w.getAttributes();
         if (enable) {

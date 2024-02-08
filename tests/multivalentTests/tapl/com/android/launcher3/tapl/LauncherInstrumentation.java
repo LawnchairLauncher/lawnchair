@@ -28,7 +28,9 @@ import static android.view.MotionEvent.AXIS_GESTURE_SWIPE_FINGER_COUNT;
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_GET_SPLIT_SELECTION_ACTIVE;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS;
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -878,7 +880,6 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
-                    waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
                     waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
 
                     if (is3PLauncher() && isTablet() && !isTransientTaskbar()) {
@@ -886,6 +887,12 @@ public final class LauncherInstrumentation {
                     } else {
                         waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
                     }
+
+                    boolean splitSelectionActive = getTestInfo(REQUEST_GET_SPLIT_SELECTION_ACTIVE)
+                            .getBoolean(TEST_INFO_RESPONSE_FIELD);
+                    if (!splitSelectionActive) {
+                        waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+                    } // do nothing, we expect that view
 
                     return waitForLauncherObject(APPS_RES_ID);
                 }

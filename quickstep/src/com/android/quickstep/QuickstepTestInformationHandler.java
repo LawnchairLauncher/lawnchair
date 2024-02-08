@@ -16,12 +16,15 @@ import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
+import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.RecentsView;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,6 +40,30 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     public Bundle call(String method, String arg, @Nullable Bundle extras) {
         final Bundle response = new Bundle();
         switch (method) {
+            case TestProtocol.REQUEST_RECENT_TASKS_LIST: {
+                ArrayList<String> taskBaseIntentComponents = new ArrayList<>();
+                CountDownLatch latch = new CountDownLatch(1);
+                RecentsModel.INSTANCE.get(mContext).getTasks((taskGroups) -> {
+                    for (GroupTask group : taskGroups) {
+                        taskBaseIntentComponents.add(
+                                group.task1.key.baseIntent.getComponent().flattenToString());
+                        if (group.task2 != null) {
+                            taskBaseIntentComponents.add(
+                                    group.task2.key.baseIntent.getComponent().flattenToString());
+                        }
+                    }
+                    latch.countDown();
+                });
+                try {
+                    latch.await(2, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                response.putStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        taskBaseIntentComponents);
+                return response;
+            }
+
             case TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT: {
                 final float swipeHeight =
                         LayoutUtils.getDefaultSwipeHeight(mContext, mDeviceProfile);
