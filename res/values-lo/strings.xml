@@ -40,6 +40,12 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ເພີ່ມໃສ່ໂຮມສະກຣີນ"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"ເພີ່ມວິດເຈັດ <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ໃສ່ໂຮມສະກຣີນແລ້ວ"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ການແນະນຳ"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"ເຮັດໃຫ້ເປັນມື້ທີ່ມີປະສິດທິພາບ"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"ຂ່າວສຳລັບທ່ານ"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ພື້ນທີ່ພັກຜ່ອນຂອງທ່ານ"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"ບັນລຸເປົ້າໝາຍການອອກກຳລັງກາຍຂອງທ່ານ"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"ຮູ້ສະພາບອາກາດລ່ວງໜ້າ"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"ທ່ານອາດຈະມັກ"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ວິດເຈັດ}other{# ວິດເຈັດ}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ທາງລັດ}other{# ທາງລັດ}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -173,8 +179,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ກັ່ນຕອງ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ບໍ່ສຳເລັດ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ພື້ນທີ່ສ່ວນຕົວ"</string>
-    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="611902414159280263">"ລັອກ ແລະ ເຊື່ອງແອັບສ່ວນຕົວໄວ້"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ສ່ວນຕົວ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ການຕັ້ງຄ່າພື້ນທີ່ສ່ວນຕົວ"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ລັອກ/ປົດລັອກພື້ນທີ່ສ່ວນຕົວ"</string>

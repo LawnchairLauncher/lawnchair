@@ -40,6 +40,12 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"হোম স্ক্রিনে যোগ করুন"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> উইজেট হোম স্ক্রিনে যোগ করা হয়েছে"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"সাজেশন"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"আপনার দিন আরও ভালো করুন"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"আপনার জন্য খবর"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"আপনার চিল জোন"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"আপনার ফিটনেস সংক্রান্ত লক্ষ্যে পৌঁছান"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"আবহাওয়া সম্পর্কে আগেই খবর পান"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"আপনার এগুলিও পছন্দ হতে পারে"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{#টি উইজেট}one{#টি উইজেট}other{#টি উইজেট}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{#টি শর্টকাট}one{#টি শর্টকাট}other{#টি শর্টকাট}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -173,8 +179,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টার"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"কাজটি করা যায়নি: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ব্যক্তিগত স্পেস"</string>
-    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="611902414159280263">"ব্যক্তিগত অ্যাপ লক করে লুকিয়ে রাখুন"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ব্যক্তিগত"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ব্যক্তিগত স্পেসের সেটিংস"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ব্যক্তিগত স্পেস লক/আনলক করুন"</string>
