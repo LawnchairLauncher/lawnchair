@@ -95,6 +95,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ဖန်သားပြင်ဓာတ်ပုံ"</string>
     <string name="action_split" msgid="2098009717623550676">"ခွဲထုတ်ရန်"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"မျက်နှာပြင် ခွဲ၍ပြသရန် အက်ပ်နောက်တစ်ခုကို တို့ပါ"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"မျက်နှာပြင် ခွဲ၍ပြသခြင်းသုံးရန် နောက်အက်ပ်တစ်ခုရွေးပါ"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"မလုပ်တော့"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း ရွေးချယ်မှုမှ ထွက်ရန်"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"မျက်နှာပြင်ခွဲ၍ပြသခြင်းသုံးရန် နောက်အက်ပ်တစ်ခုရွေးပါ"</string>
@@ -111,10 +112,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ပုံမှန်အစီအစဉ်ပေါ် အခြေခံ၍ အက်ပ်အကြံပြုချက်များကို ရယူပါ"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Taskbar ပင်ထိုးရန် ခွဲခြားမျဉ်းကို ဖိနှိပ်ပါ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Taskbar ဖြင့် ပိုမိုလုပ်ဆောင်နိုင်ခြင်း"</string>
-    <!-- no translation found for taskbar_edu_pinning_title (210102174154211712) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_pinning_standalone (2636919474366410467) -->
-    <skip />
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Taskbar ကို အမြဲပြပါ"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Taskbar ကို စခရင်အောက်ခြေတွင် အမြဲပြရန် ခွဲခြားမျဉ်းကို တို့ထိ၍ ဖိထားပါ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ပိတ်ရန်"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ပြီးပြီ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ပင်မစာမျက်နှာ"</string>
