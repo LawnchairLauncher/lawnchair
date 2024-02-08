@@ -215,3 +215,10 @@ flag {
     description: "Enables the Home gesture animation"
     bug: "308801666"
 }
+
+flag {
+    name: "enable_widget_tap_to_add"
+    namespace: "launcher"
+    description: "Enables an add button in the widget picker"
+    bug: "323886237"
+}

@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 
 import static android.appwidget.AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN;
 
+import static com.android.launcher3.Flags.enableWidgetTapToAdd;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.fromProviderInfo;
 import static com.android.launcher3.widget.util.WidgetSizes.getWidgetItemSizePx;
@@ -36,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -77,6 +79,7 @@ public class WidgetCell extends LinearLayout {
     private static final boolean DEBUG = false;
 
     private static final int FADE_IN_DURATION_MS = 90;
+    private static final int ADD_BUTTON_FADE_DURATION_MS = 300;
 
     /**
      * The requested scale of the preview container. It can be lower than this as well.
@@ -89,6 +92,8 @@ public class WidgetCell extends LinearLayout {
     private TextView mWidgetName;
     private TextView mWidgetDims;
     private TextView mWidgetDescription;
+    private Button mWidgetAddButton;
+    private LinearLayout mWidgetTextContainer;
 
     private WidgetItem mItem;
     private Size mWidgetSize;
@@ -141,6 +146,11 @@ public class WidgetCell extends LinearLayout {
         mWidgetName = findViewById(R.id.widget_name);
         mWidgetDims = findViewById(R.id.widget_dims);
         mWidgetDescription = findViewById(R.id.widget_description);
+        mWidgetTextContainer = findViewById(R.id.widget_text_container);
+        mWidgetAddButton = findViewById(R.id.widget_add_button);
+        if (enableWidgetTapToAdd()) {
+            mWidgetAddButton.setVisibility(INVISIBLE);
+        }
     }
 
     public void setRemoteViewsPreview(RemoteViews view) {
@@ -180,6 +190,10 @@ public class WidgetCell extends LinearLayout {
         mWidgetDescription.setVisibility(GONE);
         showDescription(true);
         showDimensions(true);
+
+        if (enableWidgetTapToAdd()) {
+            hideAddButton(/* animate= */ false);
+        }
 
         if (mActiveRequest != null) {
             mActiveRequest.cancel();
@@ -223,17 +237,21 @@ public class WidgetCell extends LinearLayout {
         initPreviewContainerSizeAndScale();
 
         mWidgetName.setText(mItem.label);
-        mWidgetName.setContentDescription(
-                context.getString(R.string.widget_preview_context_description, mItem.label));
         mWidgetDims.setText(context.getString(R.string.widget_dims_format,
                 mItem.spanX, mItem.spanY));
-        mWidgetDims.setContentDescription(context.getString(
-                R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
         if (!TextUtils.isEmpty(mItem.description)) {
             mWidgetDescription.setText(mItem.description);
             mWidgetDescription.setVisibility(VISIBLE);
         } else {
             mWidgetDescription.setVisibility(GONE);
+        }
+
+        // Setting the content description on the WidgetCell itself ensures that it remains
+        // screen reader focusable when the add button is showing and the text is hidden.
+        setContentDescription(createContentDescription(context));
+        if (mWidgetAddButton != null) {
+            mWidgetAddButton.setContentDescription(context.getString(
+                    R.string.widget_add_button_content_description, mItem.label));
         }
 
         if (item.activityInfo != null) {
@@ -283,6 +301,16 @@ public class WidgetCell extends LinearLayout {
         float scaleX = (float) mPreviewContainerSize.getWidth() / mWidgetSize.getWidth();
         float scaleY = (float) mPreviewContainerSize.getHeight() / mWidgetSize.getHeight();
         mPreviewContainerScale = Math.min(scaleX, scaleY);
+    }
+
+    private String createContentDescription(Context context) {
+        String contentDescription =
+                context.getString(R.string.widget_preview_name_and_dims_content_description,
+                        mItem.label, mItem.spanX, mItem.spanY);
+        if (!TextUtils.isEmpty(mItem.description)) {
+            contentDescription += " " + mItem.description;
+        }
+        return contentDescription;
     }
 
     private void setAppWidgetHostViewPreview(
@@ -516,5 +544,56 @@ public class WidgetCell extends LinearLayout {
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
         }
+    }
+
+    /**
+     * Show tap to add button.
+     * @param callback Callback to be set on the button.
+     */
+    public void showAddButton(View.OnClickListener callback) {
+        mWidgetAddButton.setAlpha(0F);
+        mWidgetAddButton.setVisibility(VISIBLE);
+        mWidgetAddButton.setOnClickListener(callback);
+        mWidgetAddButton.animate().cancel();
+        mWidgetAddButton.animate()
+                .alpha(1F)
+                .setDuration(ADD_BUTTON_FADE_DURATION_MS);
+
+        mWidgetTextContainer.animate().cancel();
+        mWidgetTextContainer.animate()
+                .alpha(0F)
+                .setDuration(ADD_BUTTON_FADE_DURATION_MS)
+                .withEndAction(() -> {
+                    mWidgetTextContainer.setVisibility(INVISIBLE);
+                });
+    }
+
+    /**
+     * Hide tap to add button.
+     */
+    public void hideAddButton(boolean animate) {
+        mWidgetAddButton.setOnClickListener(null);
+        mWidgetAddButton.animate().cancel();
+        mWidgetTextContainer.animate().cancel();
+
+        if (!animate) {
+            mWidgetAddButton.setVisibility(INVISIBLE);
+            mWidgetTextContainer.setVisibility(VISIBLE);
+            mWidgetTextContainer.setAlpha(1F);
+            return;
+        }
+
+        mWidgetAddButton.animate()
+                .alpha(0F)
+                .setDuration(ADD_BUTTON_FADE_DURATION_MS)
+                .withEndAction(() -> {
+                    mWidgetAddButton.setVisibility(INVISIBLE);
+                });
+
+        mWidgetTextContainer.setAlpha(0F);
+        mWidgetTextContainer.setVisibility(VISIBLE);
+        mWidgetTextContainer.animate()
+                .alpha(1F)
+                .setDuration(ADD_BUTTON_FADE_DURATION_MS);
     }
 }

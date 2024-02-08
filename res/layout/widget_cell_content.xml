@@ -45,40 +45,70 @@
             android:layout_margin="@dimen/profile_badge_margin"/>
     </com.android.launcher3.widget.WidgetCellPreview>
 
-    <!-- The name of the widget. -->
-    <TextView
-        android:id="@+id/widget_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:fadingEdge="horizontal"
-        android:gravity="center_horizontal|center_vertical"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:textColor="?android:attr/textColorPrimary"
-        android:drawablePadding="@dimen/widget_cell_app_icon_padding"
-        android:textSize="@dimen/widget_cell_font_size" />
-
-    <!-- The original dimensions of the widget -->
-    <TextView
-        android:id="@+id/widget_dims"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="@dimen/widget_cell_font_size"
-        android:alpha="0.7" />
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/widget_text_container"
+            android:orientation="vertical">
+            <!-- The name of the widget. -->
+        <TextView
+            android:id="@+id/widget_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:textColor="?android:attr/textColorPrimary"
+            android:drawablePadding="@dimen/widget_cell_app_icon_padding"
+            android:textSize="@dimen/widget_cell_font_size" />
 
-    <TextView
-        android:id="@+id/widget_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="@dimen/widget_cell_font_size"
-        android:textColor="?android:attr/textColorSecondary"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:fadingEdge="horizontal"
-        android:alpha="0.7" />
+            <!-- The original dimensions of the widget -->
+            <TextView
+                android:id="@+id/widget_dims"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="@dimen/widget_cell_font_size"
+                android:alpha="0.7" />
 
+            <TextView
+                android:id="@+id/widget_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/widget_cell_font_size"
+                android:textColor="?android:attr/textColorSecondary"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:fadingEdge="horizontal"
+                android:alpha="0.7" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/widget_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/widget_cell_add_button_height"
+            android:layout_gravity="center"
+            android:minWidth="0dp"
+            android:paddingTop="@dimen/widget_cell_add_button_vertical_padding"
+            android:paddingBottom="@dimen/widget_cell_add_button_vertical_padding"
+            android:paddingStart="@dimen/widget_cell_add_button_start_padding"
+            android:paddingEnd="@dimen/widget_cell_add_button_end_padding"
+            android:text="@string/widget_add_button_label"
+            android:textColor="?attr/widgetPickerAddButtonTextColor"
+            android:textSize="@dimen/widget_cell_font_size"
+            android:gravity="center"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/ic_plus"
+            android:drawablePadding="8dp"
+            android:drawableTint="?attr/widgetPickerAddButtonTextColor"
+            android:background="@drawable/widget_cell_add_button_background" />
+    </FrameLayout>
 </merge>
