@@ -491,6 +491,7 @@ public class TouchInteractionService extends Service {
         mDeviceState = new RecentsAnimationDeviceState(this, true);
         mTaskbarManager = new TaskbarManager(this);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
+        mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         BootAwarePreloader.start(this);
 
         // Call runOnUserUnlocked() before any other callbacks to ensure everything is initialized.
@@ -538,13 +539,13 @@ public class TouchInteractionService extends Service {
 
     @UiThread
     public void onUserUnlocked() {
+        Log.d(TAG, "onUserUnlocked: userId=" + getUserId());
         mTaskAnimationManager = new TaskAnimationManager(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this,
                 mOverviewComponentObserver, mTaskAnimationManager);
         mResetGestureInputConsumer = new ResetGestureInputConsumer(
                 mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
-        mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
         onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
         onAssistantVisibilityChanged();
