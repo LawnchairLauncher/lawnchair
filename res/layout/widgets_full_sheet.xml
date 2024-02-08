@@ -45,7 +45,7 @@
             android:visibility="gone"
             android:textSize="18sp"
             android:layout_below="@id/search_and_recommendations_container"
-            tools:text="No widgets available" />
+            tools:text="@string/no_widgets_available" />
 
         <!-- Fast scroller popup -->
         <TextView
