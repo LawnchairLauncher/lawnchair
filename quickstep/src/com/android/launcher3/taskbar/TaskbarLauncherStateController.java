@@ -209,22 +209,22 @@ public class TaskbarLauncherStateController {
             }
         }
 
-        @Override
-        public void onStateTransitionComplete(LauncherState finalState) {
-            mLauncherState = finalState;
-            updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
-            // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
-            // taskbar on top of transparent activity.
-            if (finalState == LauncherState.NORMAL && mLauncher.hasBeenResumed()) {
-                updateStateForFlag(FLAG_RESUMED, true);
-            }
-            applyState();
-            boolean disallowLongClick = finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
-            com.android.launcher3.taskbar.Utilities.setOverviewDragState(
-                    mControllers, finalState.disallowTaskbarGlobalDrag(),
-                    disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
-        }
-    };
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    mLauncherState = finalState;
+                    updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
+                    // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
+                    // taskbar on top of transparent activity.
+                    if (finalState == LauncherState.NORMAL && mLauncher.isResumed()) {
+                        updateStateForFlag(FLAG_RESUMED, true);
+                    }
+                    applyState();
+                    boolean disallowLongClick = finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
+                    com.android.launcher3.taskbar.Utilities.setOverviewDragState(
+                            mControllers, finalState.disallowTaskbarGlobalDrag(),
+                            disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
+                }
+            };
 
     /**
      * Initializes the controller instance, and applies the initial state

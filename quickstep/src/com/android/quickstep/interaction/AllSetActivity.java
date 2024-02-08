@@ -270,9 +270,9 @@ public class AllSetActivity extends Activity {
 
     private void onTISConnected(TISBinder binder) {
         setSetupUIVisible(isResumed());
-        binder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
-        binder.setOverviewTargetChangeListener(binder::preloadOverviewForSUWAllSet);
-        binder.preloadOverviewForSUWAllSet();
+        mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
+        mBinder.setOverviewTargetChangeListener(mBinder::preloadOverviewForSUWAllSet);
+        mBinder.preloadOverviewForSUWAllSet();
         TaskbarManager taskbarManager = binder.getTaskbarManager();
         if (taskbarManager != null) {
             mLauncherStartAnim = taskbarManager.createLauncherStartFromSuwAnim(MAX_SWIPE_DURATION);

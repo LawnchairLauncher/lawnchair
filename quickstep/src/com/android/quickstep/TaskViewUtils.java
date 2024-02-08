@@ -494,11 +494,13 @@ public final class TaskViewUtils {
                 }
             }
             if (taskId == initialTaskId) {
-                splitRoot1 = change.getParent() == null ? change : transitionInfo.getChange(change.getParent());
+                splitRoot1 = change.getParent() == null ? change :
+                        transitionInfo.getChange(change.getParent());
                 openingTargets.add(splitRoot1.getLeash());
             }
             if (taskId == secondTaskId) {
-                splitRoot2 = change.getParent() == null ? change : transitionInfo.getChange(change.getParent());
+                splitRoot2 = change.getParent() == null ? change :
+                        transitionInfo.getChange(change.getParent());
                 openingTargets.add(splitRoot2.getLeash());
             }
         }
