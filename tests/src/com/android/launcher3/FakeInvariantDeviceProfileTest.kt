@@ -18,6 +18,10 @@ package com.android.launcher3
 import android.content.Context
 import android.graphics.PointF
 import android.graphics.Rect
+import android.platform.test.rule.AllowedDevices
+import android.platform.test.rule.DeviceProduct
+import android.platform.test.rule.IgnoreLimit
+import android.platform.test.rule.LimitDevicesRule
 import android.util.SparseArray
 import androidx.test.core.app.ApplicationProvider
 import com.android.launcher3.DeviceProfile.DEFAULT_DIMENSION_PROVIDER
@@ -27,6 +31,7 @@ import com.android.launcher3.util.WindowBounds
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.junit.Before
+import org.junit.Rule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -37,6 +42,8 @@ import org.mockito.kotlin.whenever
  *
  * For an implementation that creates InvariantDeviceProfile, use [AbstractDeviceProfileTest]
  */
+@AllowedDevices(allowed = [DeviceProduct.CF_PHONE])
+@IgnoreLimit(ignoreLimit = BuildConfig.IS_STUDIO_BUILD)
 abstract class FakeInvariantDeviceProfileTest {
 
     protected var context: Context? = null
@@ -48,6 +55,8 @@ abstract class FakeInvariantDeviceProfileTest {
     protected var useTwoPanels: Boolean = false
     protected var isGestureMode: Boolean = true
     protected var isTransientTaskbar: Boolean = true
+
+    @Rule @JvmField val limitDevicesRule = LimitDevicesRule()
 
     @Before
     fun setUp() {
