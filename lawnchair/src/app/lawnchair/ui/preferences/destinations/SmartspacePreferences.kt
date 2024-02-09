@@ -65,7 +65,6 @@ fun SmartspacePreferences(
     val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
     val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
     val smartspaceModeAdapter = preferenceManager2.smartspaceMode.getAdapter()
-    val smartspaceModeSelectionAdapter = preferenceManager2.smartspaceModeSelection.getAdapter()
     val selectedMode = smartspaceModeAdapter.state.value
     val modeIsLawnchair = selectedMode == LawnchairSmartspace
 
@@ -76,7 +75,7 @@ fun SmartspacePreferences(
                     adapter = smartspaceAdapter,
                     label = stringResource(id = R.string.smartspace_widget_toggle_label),
                 )
-                ExpandAndShrink(visible = smartspaceAdapter.state.value && smartspaceModeSelectionAdapter.state.value) {
+                ExpandAndShrink(visible = smartspaceAdapter.state.value) {
                     SmartspaceProviderPreference(
                         adapter = smartspaceModeAdapter,
                         endWidget = when (selectedMode) {
