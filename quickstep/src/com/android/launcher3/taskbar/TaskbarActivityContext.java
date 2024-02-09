@@ -72,6 +72,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -415,6 +417,28 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public boolean isPhoneGestureNavMode() {
         return isPhoneMode() && !isThreeButtonNav();
+    }
+
+    /**
+     * Returns if software keyboard is docked or input toolbar is placed at the taskbar area
+     */
+    public boolean isImeDocked() {
+        View dragLayer = getDragLayer();
+        WindowInsets insets = dragLayer.getRootWindowInsets();
+        if (insets == null) {
+            return false;
+        }
+
+        WindowInsetsCompat insetsCompat =
+                WindowInsetsCompat.toWindowInsetsCompat(insets, dragLayer.getRootView());
+
+        if (insetsCompat.isVisible(WindowInsetsCompat.Type.ime())) {
+            Insets imeInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.ime());
+            return imeInsets.bottom >= getResources().getDimensionPixelSize(
+                    R.dimen.floating_ime_inset_height);
+        } else {
+            return false;
+        }
     }
 
     /**

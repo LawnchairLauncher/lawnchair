@@ -30,9 +30,12 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
@@ -108,6 +111,18 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mControllerCallbacks = callbacks;
         mBackgroundRenderer.updateStashedHandleWidth(mActivity, getResources());
         recreateControllers();
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        if (insets != null) {
+            WindowInsetsCompat insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, this);
+            Insets imeInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.ime());
+            if (imeInsets != null) {
+                mControllerCallbacks.onImeInsetChanged();
+            }
+        }
+        return insets;
     }
 
     @Override

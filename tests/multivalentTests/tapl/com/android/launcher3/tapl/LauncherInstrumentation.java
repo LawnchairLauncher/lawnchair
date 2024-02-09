@@ -2241,6 +2241,11 @@ public final class LauncherInstrumentation {
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    public boolean isImeDocked() {
+        return getTestInfo(TestProtocol.REQUEST_TASKBAR_IME_DOCKED).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     /** Enables transient taskbar for testing purposes only. */
     public void enableTransientTaskbar(boolean enable) {
         getTestInfo(enable
