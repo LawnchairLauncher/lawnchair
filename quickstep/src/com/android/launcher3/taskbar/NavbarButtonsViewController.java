@@ -940,8 +940,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     }
 
     /**
-     * Called whenever a new ui controller is set, and should update anything that
-     * depends on the
+     * Called whenever a new ui controller is set, and should update anything that depends on the
      * ui controller.
      */
     public void onUiControllerChanged() {

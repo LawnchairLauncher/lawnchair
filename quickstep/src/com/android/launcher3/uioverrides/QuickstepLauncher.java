@@ -330,12 +330,13 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
-        // Only pause is taskbar controller is not present until the transition (if it
-        // exists) ends
+        // Only pause is taskbar controller is not present until the transition (if it exists) ends
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
         RunnableList result = super.startActivitySafely(v, intent, item);
         if (result == null) {
-            mHotseatPredictionController.setPauseUIUpdate(false);
+            if (getTaskbarUIController() == null) {
+                mHotseatPredictionController.setPauseUIUpdate(false);
+            }
         } else {
             result.add(() -> mHotseatPredictionController.setPauseUIUpdate(false));
         }
@@ -450,7 +451,10 @@ public class QuickstepLauncher extends Launcher {
     public void onDestroy() {
         mAppTransitionManager.onActivityDestroyed();
         if (mUnfoldTransitionProgressProvider != null) {
-            SystemUiProxy.INSTANCE.get(this).setUnfoldAnimationListener(null);
+            if (FeatureFlags.RECEIVE_UNFOLD_EVENTS_FROM_SYSUI.get()) {
+                SystemUiProxy.INSTANCE.get(this).setUnfoldAnimationListener(null);
+            }
+
             mUnfoldTransitionProgressProvider.destroy();
         }
         mTISBindHelper.onDestroy();
