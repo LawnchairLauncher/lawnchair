@@ -187,8 +187,9 @@
     <!-- <string name="general_label" /> -->
       <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
       <!-- <string name="gesture_double_tap" /> -->
-      <string name="minus_one_enable">Feed</string>
+      <string name="minus_one_enable">Show Feed</string>
       <string name="minus_one_unavailable">No feed installed.</string>
+      <string name="minus_one">Feed</string>
       <string name="feed_provider">Feed Provider</string>
       <string name="feed_default">Default</string>
 

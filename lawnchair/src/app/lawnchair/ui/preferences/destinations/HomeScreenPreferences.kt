@@ -77,6 +77,9 @@ fun HomeScreenPreferences() {
                 adapter = prefs2.doubleTapGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_double_tap),
             )
+            HomeScreenTextColorPreference()
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.minus_one)) {
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             val enableFeedAdapter = prefs2.enableFeed.getAdapter()
             SwitchPreference(
@@ -88,7 +91,6 @@ fun HomeScreenPreferences() {
             ExpandAndShrink(visible = feedAvailable && enableFeedAdapter.state.value) {
                 FeedPreference()
             }
-            HomeScreenTextColorPreference()
         }
         PreferenceGroup(heading = stringResource(id = R.string.wallpaper)) {
             SwitchPreference(
