@@ -59,7 +59,6 @@
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="transparent_background_icons">Transparent Themed Icons</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
 
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
