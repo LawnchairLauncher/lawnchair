@@ -1636,9 +1636,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mDragController.addDragListener(
                     new AccessibleDragListenerAdapter(this, WorkspaceAccessibilityHelper::new) {
                         @Override
-                        protected void enableAccessibleDrag(boolean enable) {
-                            super.enableAccessibleDrag(enable);
+                        protected void enableAccessibleDrag(boolean enable,
+                                @Nullable DragObject dragObject) {
+                            super.enableAccessibleDrag(enable, dragObject);
                             setEnableForLayout(mLauncher.getHotseat(), enable);
+                            if (enable && dragObject != null
+                                    && dragObject.dragInfo instanceof LauncherAppWidgetInfo) {
+                                mLauncher.getHotseat().setImportantForAccessibility(
+                                        IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                            }
                         }
                     });
         }
