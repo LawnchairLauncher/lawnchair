@@ -44,48 +44,38 @@
     <dimen name="overview_task_margin">16dp</dimen>
     <!--  The horizontal space between tasks  -->
     <dimen name="overview_page_spacing">16dp</dimen>
-    <!--  The min width of the thumbnail icon menu for non-split tasks  -->
-    <dimen name="task_thumbnail_icon_menu_min_width">156dp</dimen>
-    <!--  The max width of the thumbnail icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_max_width">216dp</dimen>
-    <!--  The width of the thumbnail icon menu background  -->
-    <dimen name="task_thumbnail_icon_menu_background_min_width">120dp</dimen>
-    <!--  The width of the icon menu text  -->
-    <dimen name="task_thumbnail_icon_menu_text_width">86dp</dimen>
-    <!--  The max width of the icon menu text  -->
-    <dimen name="task_thumbnail_icon_menu_text_max_width">118dp</dimen>
+    <!--  The collapsed max width of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_collapsed_max_width">86dp</dimen>
+    <!--  The expanded max width of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_expanded_max_width">118dp</dimen>
     <!--  The size of the icon menu text  -->
     <dimen name="task_thumbnail_icon_menu_text_size">14sp</dimen>
-    <!--  The max width of the thumbnail icon menu background  -->
-    <dimen name="task_thumbnail_icon_menu_background_max_width">164dp</dimen>
-    <!--  The height of the thumbnail icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_min_height">36dp</dimen>
-    <!--  The corner radius of the thumbnail icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_corner_radius">28dp</dimen>
-    <!--  The width of the thumbnail icon menu backgorund's corners when collapsed  -->
-    <dimen name="task_thumbnail_icon_menu_corner_width">36dp</dimen>
-    <!--  The max height of the thumbnail icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_max_height">52dp</dimen>
-    <!--  The size of the icon menu arrow  -->
-    <dimen name="task_thumbnail_icon_menu_arrow_size">24dp</dimen>
-    <!--  The size of the icon menu arrow drawable  -->
-    <dimen name="task_thumbnail_icon_menu_arrow_drawable_size">16dp</dimen>
-    <!--  The margin at the start of the task icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_start_margin">12dp</dimen>
-    <!--  The margin at the top of the task icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_top_margin">12dp</dimen>
+    <!--  The width of the thumbnail icon menu when collapsed (for non-split tasks)  -->
+    <dimen name="task_thumbnail_icon_menu_collapsed_width">156dp</dimen>
+    <!--  The width of the thumbnail icon menu when expanded -->
+    <dimen name="task_thumbnail_icon_menu_expanded_width">216dp</dimen>
+    <!--  The height of the thumbnail icon menu when collapsed  -->
+    <dimen name="task_thumbnail_icon_menu_collapsed_height">36dp</dimen>
+    <!--  The height of the thumbnail icon menu when expanded -->
+    <dimen name="task_thumbnail_icon_menu_expanded_height">52dp</dimen>
+    <!--  The margin at the top/start of the task icon menu when expanded  -->
+    <dimen name="task_thumbnail_icon_menu_expanded_top_start_margin">4dp</dimen>
+    <!--  The margin at the start of the background when collapsed  -->
+    <dimen name="task_thumbnail_icon_menu_background_margin_top_start">8dp</dimen>
+    <!--  The margin between the app name + app icon and app name + arrow icon when collapsed  -->
+    <dimen name="task_thumbnail_icon_menu_app_name_margin_horizontal_collapsed">8dp</dimen>
     <!--  The gap at the top of the task icon menu when expanded  -->
-    <dimen name="task_thumbnail_icon_menu_expanded_gap">6dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_expanded_gap">2dp</dimen>
     <!--  The margin at the start of the task icon view in the icon menu  -->
     <dimen name="task_thumbnail_icon_view_start_margin">6dp</dimen>
     <!--  The space around the task icon arrow within the icon menu  -->
     <dimen name="task_thumbnail_icon_menu_arrow_margin">8dp</dimen>
-    <!--  The max space around the task icon within the icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_touch_max_margin">8dp</dimen>
-    <!--  The icon size for the icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_drawable_size">24dp</dimen>
-    <!--  The icon size for the icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_drawable_max_size">32dp</dimen>
+    <!--  The size for the icon menu arrow -->
+    <dimen name="task_thumbnail_icon_menu_arrow_size">24dp</dimen>
+    <!--  The collapsed size for the icon menu icon -->
+    <dimen name="task_thumbnail_icon_menu_app_icon_collapsed_size">24dp</dimen>
+    <!--  The expanded icon size for the icon menu -->
+    <dimen name="task_thumbnail_icon_menu_app_icon_expanded_size">32dp</dimen>
     <!--  The size of the icon menu's icon touch target  -->
     <dimen name="task_thumbnail_icon_menu_drawable_touch_size">44dp</dimen>
     <dimen name="task_thumbnail_icon_menu_elevation">4dp</dimen>

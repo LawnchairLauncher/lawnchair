@@ -17,45 +17,41 @@
 <com.android.quickstep.views.IconAppChipView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/task_thumbnail_icon_menu_expanded_width"
+    android:layout_height="@dimen/task_thumbnail_icon_menu_expanded_height"
+    android:clipToOutline="true"
     android:focusable="false"
     android:importantForAccessibility="no"
     android:autoMirrored="true"
-    android:background="@drawable/icon_menu_elevation_background"
-    android:elevation="@dimen/task_thumbnail_icon_menu_elevation" >
+    android:elevation="@dimen/task_thumbnail_icon_menu_elevation"
+    android:background="?androidprv:attr/materialColorSurfaceBright">
 
-    <ImageView
-        android:id="@+id/icon_view_background_corners_start"
-        android:layout_width="@dimen/task_thumbnail_icon_menu_corner_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_min_height"
-        android:src="@drawable/icon_menu_background_corners"
-        android:importantForAccessibility="no" />
-    <ImageView
-        android:id="@+id/icon_view_background"
-        android:layout_width="@dimen/task_thumbnail_icon_menu_background_min_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_min_height"
-        android:src="@drawable/icon_menu_background"
-        android:importantForAccessibility="no" />
-    <ImageView
-        android:id="@+id/icon_view_background_corners_end"
-        android:layout_width="@dimen/task_thumbnail_icon_menu_corner_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_min_height"
-        android:src="@drawable/icon_menu_background_corners"
-        android:importantForAccessibility="no" />
+    <!-- ignoring warning because the user of the anchor is a Rect where RTL is not needed -->
+    <!-- This anchor's bounds is in the expected location after rotations and translations are
+    applied to the parent. The same is not true of the parent so an anchor is used. -->
+    <!-- marginTop is applied in java to get the gap between chip and menu -->
+    <View
+        android:id="@+id/icon_view_menu_anchor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="left|top"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        tools:ignore="RtlHardcoded" />
 
     <com.android.quickstep.views.IconView
         android:id="@+id/icon_view"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
         android:focusable="false"
         android:importantForAccessibility="no" />
 
     <TextView
         android:id="@+id/icon_text_collapsed"
-        android:layout_width="@dimen/task_thumbnail_icon_menu_text_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_drawable_size"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_text_collapsed_max_width"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
         android:gravity="start|center_vertical"
         android:maxLines="1"
         android:ellipsize="end"
@@ -65,8 +61,8 @@
 
     <TextView
         android:id="@+id/icon_text_expanded"
-        android:layout_width="@dimen/task_thumbnail_icon_menu_text_max_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_drawable_size"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_text_expanded_max_width"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
         android:gravity="start|center_vertical"
         android:maxLines="1"
         android:ellipsize="end"

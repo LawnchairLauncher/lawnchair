@@ -94,9 +94,6 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public float getTaskMenuX(float x, View thumbnailView,
             DeviceProfile deviceProfile, float taskInsetMargin, View taskViewIcon) {
-        if (enableOverviewIconMenu()) {
-            return x + (taskViewIcon.getHeight() * 2);
-        }
         return x + taskInsetMargin;
     }
 
@@ -104,9 +101,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
             View taskMenuView, float taskInsetMargin, View taskViewIcon) {
         if (enableOverviewIconMenu()) {
-            return y + taskViewIcon.getWidth() + (
-                    thumbnailView.getLayoutDirection() == LAYOUT_DIRECTION_RTL ? taskInsetMargin
-                            / 2f : -taskViewIcon.getHeight());
+            return y;
         }
         BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
         int taskMenuWidth = lp.width;
@@ -222,18 +217,16 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams,
             int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
-        iconParams.rightMargin = 0;
-        iconParams.bottomMargin = 0;
-        if (enableOverviewIconMenu()) {
-            iconParams.setMarginStart(taskIconMargin);
-            iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
-            iconParams.leftMargin = 0;
-            iconParams.topMargin = 0;
-        } else {
-            iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
-            iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
-            iconParams.topMargin = thumbnailTopMargin / 2;
-        }
+        iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
+        iconParams.setMargins(-taskIconHeight - taskIconMargin / 2, thumbnailTopMargin / 2, 0, 0);
+    }
+
+    @Override
+    public void setIconAppChipChildrenParams(FrameLayout.LayoutParams iconParams,
+            int chipChildMarginStart) {
+        iconParams.setMargins(0, 0, 0, 0);
+        iconParams.setMarginStart(chipChildMarginStart);
+        iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
     }
 
     @Override
