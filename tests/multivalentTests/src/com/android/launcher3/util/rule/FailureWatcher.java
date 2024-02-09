@@ -125,8 +125,6 @@ public class FailureWatcher extends TestWatcher {
             Log.e(TAG, "Failed to save accessibility hierarchy", ex);
         }
 
-        dumpCommand("logcat -d -s TestRunner", diagFile(description, "FilteredLogcat", "txt"));
-
         // Dump bugreport
         if (!sSavedBugreport) {
             dumpCommand("bugreportz -s", diagFile(description, "Bugreport", "zip"));

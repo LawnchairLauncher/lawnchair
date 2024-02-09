@@ -230,7 +230,7 @@ public class TaplDragTest extends AbstractLauncherUiTest {
                 allApps.unfreeze();
             }
             // Reset the workspace for the next shortcut creation.
-            initialize(this, true);
+            reinitializeLauncherData(true);
             endTime = SystemClock.uptimeMillis();
             elapsedTime = endTime - startTime;
             Log.d("testDragAppIconToWorkspaceCellTime",

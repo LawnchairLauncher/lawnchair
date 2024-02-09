@@ -173,6 +173,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected WidgetsSearchBar mSearchBar;
     protected TextView mHeaderTitle;
     protected RecyclerViewFastScroller mFastScroller;
+    protected int mBottomPadding;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -370,21 +371,31 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        int bottomPadding = Math.max(insets.bottom, mNavBarScrimHeight);
-        setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, bottomPadding);
-        setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, bottomPadding);
+        mBottomPadding = Math.max(insets.bottom, mNavBarScrimHeight);
+        setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, mBottomPadding);
+        setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, mBottomPadding);
         if (mHasWorkProfile) {
-            setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, bottomPadding);
+            setBottomPadding(mAdapters.get(AdapterHolder.WORK)
+                    .mWidgetsRecyclerView, mBottomPadding);
         }
-        ((MarginLayoutParams) mNoWidgetsView.getLayoutParams()).bottomMargin = bottomPadding;
+        ((MarginLayoutParams) mNoWidgetsView.getLayoutParams()).bottomMargin = mBottomPadding;
 
-        if (bottomPadding > 0) {
+        if (mBottomPadding > 0) {
             setupNavBarColor();
         } else {
             clearNavBarColor();
         }
 
         requestLayout();
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        WindowInsets w = super.onApplyWindowInsets(insets);
+        if (mInsets.bottom != mNavBarScrimHeight) {
+            setInsets(mInsets);
+        }
+        return w;
     }
 
     private void setBottomPadding(RecyclerView recyclerView, int bottomPadding) {
@@ -791,8 +802,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mDeviceProfile.isLandscape != dp.isLandscape && dp.isTablet && !dp.isTwoPanels) {
             handleClose(false);
             show(BaseActivity.fromContext(getContext()), false);
-        } else {
+        } else if (!isTwoPane()) {
             reset();
+            resetExpandedHeaders();
         }
 
         // When folding/unfolding the foldables, we need to switch between the regular widget picker
