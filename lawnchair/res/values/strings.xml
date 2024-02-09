@@ -289,7 +289,7 @@
 
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Search Bar Widget</string>
       <string name="hotseat_mode_disabled">Disabled</string>
       <string name="hotseat_mode_lawnchair">Lawnchair</string>

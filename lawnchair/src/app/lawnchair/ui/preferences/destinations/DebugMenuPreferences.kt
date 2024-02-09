@@ -13,6 +13,7 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.FontPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
+import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.TextPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -38,45 +39,54 @@ fun DebugMenuPreferences() {
     val textFlags = remember { prefs2.textFlags }
     val fontFlags = remember { prefs.fontFlags }
     val context = LocalContext.current
+
+    val enableDebug = prefs.enableDebugMenu.getAdapter()
+
     PreferenceLayout(label = "Debug Menu") {
-        PreferenceGroup {
-            ClickablePreference(
-                label = "Feature Flags",
-                onClick = {
-                    Intent(context, SettingsActivity::class.java)
-                        .putExtra(":settings:fragment", DeveloperOptionsFragment::class.java.name)
-                        .also { context.startActivity(it) }
-                },
-            )
-            ClickablePreference(
-                label = "Crash Launcher",
-                onClick = { throw RuntimeException("User triggered crash") },
-            )
-        }
-        PreferenceGroup(heading = "Debug Flags") {
-            flags2.forEach {
-                SwitchPreference(
-                    adapter = it.getAdapter(),
-                    label = it.key.name,
+        MainSwitchPreference(adapter = enableDebug, label = "Show Debug Menu") {
+            PreferenceGroup {
+                ClickablePreference(
+                    label = "Feature Flags",
+                    onClick = {
+                        Intent(context, SettingsActivity::class.java)
+                            .putExtra(
+                                ":settings:fragment",
+                                DeveloperOptionsFragment::class.java.name,
+                            )
+                            .also { context.startActivity(it) }
+                    },
+                )
+                ClickablePreference(
+                    label = "Crash Launcher",
+                    onClick = { throw RuntimeException("User triggered crash") },
                 )
             }
-            flags.forEach {
-                SwitchPreference(
-                    adapter = it.getAdapter(),
-                    label = it.key,
-                )
-            }
-            textFlags.forEach {
-                TextPreference(
-                    adapter = it.getAdapter(),
-                    label = it.key.name,
-                )
-            }
-            fontFlags.forEach {
-                FontPreference(
-                    fontPref = it,
-                    label = it.key,
-                )
+
+            PreferenceGroup(heading = "Debug Flags") {
+                flags2.forEach {
+                    SwitchPreference(
+                        adapter = it.getAdapter(),
+                        label = it.key.name,
+                    )
+                }
+                flags.forEach {
+                    SwitchPreference(
+                        adapter = it.getAdapter(),
+                        label = it.key,
+                    )
+                }
+                textFlags.forEach {
+                    TextPreference(
+                        adapter = it.getAdapter(),
+                        label = it.key.name,
+                    )
+                }
+                fontFlags.forEach {
+                    FontPreference(
+                        fontPref = it,
+                        label = it.key,
+                    )
+                }
             }
         }
     }
