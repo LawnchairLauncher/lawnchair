@@ -36,16 +36,17 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
     private lateinit var clearAllAction: Button
     private lateinit var lockedAction: Button
     val launcher: Launcher? = if (context.isDefaultLauncher()) Launcher.getLauncher(context) else null
+    private var rv: RecentsView<Launcher, *>? = null
 
     private val lockedTaskStateLister = object : StateManager.StateListener<LauncherState> {
-        override fun onStateTransitionStart(toState: LauncherState) {}
+        override fun onStateTransitionStart(toState: LauncherState) {
+            rv = launcher?.getOverviewPanel()
+        }
 
         override fun onStateTransitionComplete(finalState: LauncherState) {
-            // TODO
-            if (finalState.overviewUi && context.isDefaultLauncher() && launcher != null) {
-                val rv: RecentsView<Launcher, *> = launcher.getOverviewPanel()
-                rv.addOnScrollChangedListener {
-                    val task = rv.getCurrentPageTaskView()?.task
+            if (finalState.overviewUi && context.isDefaultLauncher()) {
+                rv?.addOnScrollChangedListener {
+                    val task = rv?.getCurrentPageTaskView()?.task
                     task?.let { updateLockedActionState(it) }
                 }
             }
@@ -64,10 +65,10 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
 
         shareAction.setOnClickListener { mCallbacks?.onShare() }
         lensAction.setOnClickListener { mCallbacks?.onLens() }
-        if (context.isDefaultLauncher() && launcher != null) {
+        if (context.isDefaultLauncher()) {
             lockedAction.setOnClickListener {
-                val rv: RecentsView<Launcher, *> = launcher.getOverviewPanel()
-                val task = rv.getCurrentPageTaskView()?.task
+                rv = launcher?.getOverviewPanel()
+                val task = rv?.getCurrentPageTaskView()?.task
                 if (task != null) {
                     mCallbacks?.onLocked(context, task)
                     updateLockedActionState(task)
@@ -139,15 +140,16 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
 
     override fun removeOnAttachStateChangeListener(listener: OnAttachStateChangeListener?) {
         super.removeOnAttachStateChangeListener(listener)
-        if (context.isDefaultLauncher() && launcher != null && prefs.recentsActionLocked.get()) {
-            launcher.stateManager?.removeStateListener(lockedTaskStateLister)
+        if (context.isDefaultLauncher() && prefs.recentsActionLocked.get()) {
+            launcher?.stateManager?.removeStateListener(lockedTaskStateLister)
         }
     }
 
+    @Synchronized
     override fun addOnAttachStateChangeListener(listener: OnAttachStateChangeListener?) {
         super.addOnAttachStateChangeListener(listener)
-        if (context.isDefaultLauncher() && launcher != null && prefs.recentsActionLocked.get()) {
-            launcher.stateManager?.addStateListener(lockedTaskStateLister)
+        if (context.isDefaultLauncher() && prefs.recentsActionLocked.get()) {
+            launcher?.stateManager?.addStateListener(lockedTaskStateLister)
         }
     }
 }
