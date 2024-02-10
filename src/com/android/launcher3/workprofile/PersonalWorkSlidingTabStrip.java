@@ -18,6 +18,7 @@ package com.android.launcher3.workprofile;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.content.res.TypedArray;
+import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -54,6 +55,17 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        FontManager fontManager = FontManager.INSTANCE.get(getContext());
+        for (int i = 0; i < getChildCount(); i++) {
+            Button tab = (Button) getChildAt(i);
+            tab.setAllCaps(false);
+            RippleDrawable background = (RippleDrawable) tab.getBackground();
+            background.setDrawableByLayerId(android.R.id.mask, DrawableTokens.AllAppsTabsMaskDrawable.resolve(getContext()));
+            tab.setBackground(DrawableTokens.AllAppsTabsBackground.resolve(getContext()));
+            tab.setTextColor(ColorStateListTokens.AllAppsTabText.resolve(getContext()));
+            fontManager.setCustomFont(tab, R.id.font_body_medium);
+        }
     }
 
     /**
