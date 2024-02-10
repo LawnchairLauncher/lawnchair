@@ -17,26 +17,15 @@
 package app.lawnchair.ui.preferences.components.layout
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,52 +42,25 @@ fun TopBar(
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
-    val containerColor: Color = MaterialTheme.colorScheme.surface
-    val scrolledContainerColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.0.dp)
-
-    fun containerColor(colorTransitionFraction: Float): Color {
-        return lerp(
-            containerColor,
-            scrolledContainerColor,
-            FastOutLinearInEasing.transform(colorTransitionFraction),
-        )
-    }
-
-    val backgroundColor = containerColor(scrollBehavior?.state?.overlappedFraction ?: 0f)
-
-    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = Color.Transparent,
-        scrolledContainerColor = Color.Transparent,
-    )
-
-    Surface(
-        color = backgroundColor,
-    ) {
-        LargeTopAppBar(
-            modifier = Modifier
-                .statusBarsPadding()
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            title = {
-                Text(
-                    text = label,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+    LargeTopAppBar(
+        title = {
+            Text(
+                text = label,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        actions = actions,
+        navigationIcon = {
+            if (backArrowVisible) {
+                ClickableIcon(
+                    imageVector = backIcon(),
+                    onClick = { backDispatcher?.onBackPressed() },
                 )
-            },
-            actions = actions,
-            navigationIcon = {
-                if (backArrowVisible) {
-                    ClickableIcon(
-                        imageVector = backIcon(),
-                        onClick = { backDispatcher?.onBackPressed() },
-                    )
-                }
-            },
-            scrollBehavior = scrollBehavior,
-            colors = foregroundColors,
-        )
-    }
+            }
+        },
+        scrollBehavior = scrollBehavior,
+    )
 }
 
 @Composable
