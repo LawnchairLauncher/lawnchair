@@ -159,6 +159,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     /**
      * @see #goToState(STATE_TYPE, boolean, AnimatorListener)
      */
+    public void goToState(STATE_TYPE state, AnimatorListener listener) {
+        goToState(state, shouldAnimateStateChange(), listener);
+    }
+
+    /**
+     * @see #goToState(STATE_TYPE, boolean, AnimatorListener)
+     */
     public void goToState(STATE_TYPE state, boolean animated) {
         goToState(state, animated, 0, null);
     }
@@ -168,7 +175,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      *
      * @param animated false if the state should change immediately without any animation,
      *                true otherwise
-     * @paras onCompleteRunnable any action to perform at the end of the transition, of null.
+     * @param listener any action to perform at the end of the transition, or null.
      */
     public void goToState(STATE_TYPE state, boolean animated, AnimatorListener listener) {
         goToState(state, animated, 0, listener);
