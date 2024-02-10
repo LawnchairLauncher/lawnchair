@@ -320,8 +320,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mDragController.addDragListener(new AccessibleDragListenerAdapter(
                         mContent, FolderAccessibilityHelper::new) {
                     @Override
-                    protected void enableAccessibleDrag(boolean enable) {
-                        super.enableAccessibleDrag(enable);
+                    protected void enableAccessibleDrag(boolean enable,
+                            @Nullable DragObject dragObject) {
+                        super.enableAccessibleDrag(enable, dragObject);
                         mFooter.setImportantForAccessibility(enable
                                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);

@@ -146,8 +146,15 @@ public interface RecentsPagedOrientationHandler extends PagedOrientationHandler 
             int parentWidth, int parentHeight);
 
     // Overview TaskMenuView methods
+    /** Sets layout params on a task's app icon. Only use this when app chip is disabled. */
     void setTaskIconParams(FrameLayout.LayoutParams iconParams,
             int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl);
+
+    /**
+     * Sets layout params on the children of an app chip. Only use this when app chip is enabled.
+     */
+    void setIconAppChipChildrenParams(
+            FrameLayout.LayoutParams iconParams, int chipChildMarginStart);
 
     void setIconAppChipMenuParams(IconAppChipView iconAppChipView,
             FrameLayout.LayoutParams iconMenuParams,

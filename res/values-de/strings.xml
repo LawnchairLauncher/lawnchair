@@ -40,6 +40,12 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Zum Startbildschirm hinzufügen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>-Widget zum Startbildschirm hinzugefügt"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Vorschläge"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"Deine Alltagshelfer"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Neuigkeiten für dich"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Zum Entspannen"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Erreiche deine Fitnessziele"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Dem Wetter einen Schritt voraus"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Das könnte dir auch gefallen"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# Widget}other{# Widgets}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# Verknüpfung}other{# Verknüpfungen}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -172,9 +178,8 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Nicht mehr pausieren"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Fehler: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Privater Bereich"</string>
-    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
-    <skip />
+    <string name="private_space_label" msgid="2359721649407947001">"Privates Profil"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"Hier kannst du deine privaten Apps verstecken und sperren"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privat"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Einstellungen für privaten Bereich"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Privaten Bereich sperren/entsperren"</string>

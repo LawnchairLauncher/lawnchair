@@ -40,6 +40,12 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Добавяне към началния екран"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Приспособлението <xliff:g id="WIDGET_NAME">%1$s</xliff:g> е добавено към началния екран"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Предложения"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"Подобрете ежедневието си"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Новини за вас"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Зоната ви за разпускане"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Постигнете фитнес целите си"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Бъдете една крачка напред с прогнозата за времето"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Може също да харесате"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# приспособление}other{# приспособления}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# пряк път}other{# преки пътя}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -173,8 +179,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтър"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Неуспешно: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Лично пространство"</string>
-    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="611902414159280263">"Заключване и скриване на частните приложения"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Лично"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Настройки за личното пространство"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Заключване/отключване на личното пространство"</string>

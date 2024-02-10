@@ -222,8 +222,7 @@ public class TaskbarLauncherStateController {
     public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
         // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
         // taskbar on top of transparent activity.
-        if (!FeatureFlags.enableHomeTransitionListener()
-                && (finalState == LauncherState.NORMAL)
+        if ((finalState == LauncherState.NORMAL)
                 && mLauncher.hasBeenResumed()) {
             updateStateForFlag(FLAG_VISIBLE, true);
             applyState();

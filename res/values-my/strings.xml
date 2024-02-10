@@ -40,6 +40,12 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ပင်မစာမျက်နှာတွင် ထည့်ရန်"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်ကို ပင်မစာမျက်နှာတွင် ထည့်လိုက်ပြီ"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"အကြံပြုချက်"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"သင့်နေ့ကို မွမ်းမံရန်"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"သင့်အတွက် သတင်းများ"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"သင်အနားယူသောနေရာ"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"သင့်ကြံ့ခိုင်ရေးပန်းတိုင်ဆီ သွားရန်"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"မိုးလေဝသကို ကြိုတင်ကာကွယ်ရန်"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"သင်နှစ်သက်နိုင်သောအရာများ"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ဝိဂျက် # ခု}other{ဝိဂျက် # ခု}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{ဖြတ်လမ်းလင့်ခ် # ခု}other{ဖြတ်လမ်းလင့်ခ် # ခု}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>၊ <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -173,8 +179,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"စစ်ထုတ်ရန်"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"မအောင်မြင်ပါ− <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"သီးသန့်ချတ်ခန်း"</string>
-    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="611902414159280263">"သီးသန့်အက်ပ်များကို လော့ခ်ချပြီး ဖျောက်ထားပါ"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"သီးသန့်"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"သီးသန့်ချတ်ခန်း ဆက်တင်များ"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"သီးသန့်ချတ်ခန်း လော့ခ်ချ/ဖွင့်ရန်"</string>
