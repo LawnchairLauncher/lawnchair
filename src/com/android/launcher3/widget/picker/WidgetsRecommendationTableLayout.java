@@ -29,6 +29,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -39,6 +40,8 @@ import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /** A {@link TableLayout} for showing recommended widgets. */
 public final class WidgetsRecommendationTableLayout extends TableLayout {
@@ -75,6 +78,14 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
     /** Sets a {@link android.view.View.OnClickListener} for all widget cells in this table. */
     public void setWidgetCellOnClickListener(OnClickListener widgetCellOnClickListener) {
         mWidgetCellOnClickListener = widgetCellOnClickListener;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        var mContent = ViewCompat.requireViewById(this, R.id.recommended_widget_table);
+        mContent.setBackground(DrawableTokens.WidgetsRecommendationBackground.resolve(getContext()));
     }
 
     /**

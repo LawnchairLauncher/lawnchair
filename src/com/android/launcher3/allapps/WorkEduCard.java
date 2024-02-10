@@ -87,7 +87,7 @@ public class WorkEduCard extends FrameLayout implements
         TextView title = findViewById(R.id.work_apps_paused_title);
         title.setText(R.string.work_profile_edu_work_apps);
         title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
-        findViewById(R.id.wrapper).setBackgroundColor(ColorTokens.Surface.resolveColor(getContext()));
+        findViewById(R.id.wrapper).setBackground(DrawableTokens.WorkCard.resolve(getContext()));
     }
 
     @Override
