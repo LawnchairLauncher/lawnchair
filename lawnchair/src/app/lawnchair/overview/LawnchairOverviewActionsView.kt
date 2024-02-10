@@ -96,11 +96,11 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
         if (prefs.recentsActionLens.get() && isLensAvailable()) {
             buttons.add(lensAction)
         }
-        if (prefs.recentsActionClearAll.get()) {
-            buttons.add(clearAllAction)
-        }
         if (prefs.recentsActionLocked.get()) {
             buttons.add(lockedAction)
+        }
+        if (prefs.recentsActionClearAll.get()) {
+            buttons.add(clearAllAction)
         }
         container.removeAllViews()
         container.addView(createSpace())
