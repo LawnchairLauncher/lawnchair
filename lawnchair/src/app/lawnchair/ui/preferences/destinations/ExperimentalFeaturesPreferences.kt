@@ -43,10 +43,6 @@ fun ExperimentalFeaturesPreferences() {
                 description = stringResource(id = R.string.always_reload_icons_description),
             )
             SwitchPreference(
-                adapter = prefs2.smartspaceModeSelection.getAdapter(),
-                label = stringResource(id = R.string.smartspace_mode_selection),
-            )
-            SwitchPreference(
                 adapter = prefs.performWideSearchExperimental.getAdapter(),
                 label = stringResource(id = R.string.perform_wide_search_title),
                 description = stringResource(id = R.string.perform_wide_search_description),
