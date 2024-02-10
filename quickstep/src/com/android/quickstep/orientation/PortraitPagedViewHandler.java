@@ -21,7 +21,6 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 import static android.view.Gravity.END;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
-import static android.view.View.LAYOUT_DIRECTION_RTL;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -182,12 +181,7 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
     @Override
     public float getTaskMenuX(float x, View thumbnailView,
             DeviceProfile deviceProfile, float taskInsetMargin, View taskViewIcon) {
-        if (enableOverviewIconMenu()) {
-            if (thumbnailView.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
-                return x + taskInsetMargin - taskViewIcon.getHeight() - (taskInsetMargin / 2f);
-            }
-            return x + taskInsetMargin;
-        } else if (deviceProfile.isLandscape) {
+        if (deviceProfile.isLandscape) {
             return x + taskInsetMargin
                     + (thumbnailView.getMeasuredWidth() - thumbnailView.getMeasuredHeight()) / 2f;
         } else {
@@ -198,9 +192,6 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
     @Override
     public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
             View taskMenuView, float taskInsetMargin, View taskViewIcon) {
-        if (enableOverviewIconMenu()) {
-            return y;
-        }
         return y + taskInsetMargin;
     }
 
@@ -209,7 +200,7 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
             @StagePosition int stagePosition) {
         if (enableOverviewIconMenu()) {
             return thumbnailView.getResources().getDimensionPixelSize(
-                    R.dimen.task_thumbnail_icon_menu_max_width);
+                    R.dimen.task_thumbnail_icon_menu_expanded_width);
         }
         int padding = thumbnailView.getResources()
                 .getDimensionPixelSize(R.dimen.task_menu_edge_padding);
@@ -623,16 +614,18 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
     @Override
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
             int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
-        if (enableOverviewIconMenu()) {
-            iconParams.setMarginStart(taskIconMargin);
-            iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
-            iconParams.topMargin = 0;
-            return;
-        }
         iconParams.gravity = TOP | CENTER_HORIZONTAL;
         // Reset margins, since they may have been set on rotation
         iconParams.leftMargin = iconParams.rightMargin = 0;
         iconParams.topMargin = iconParams.bottomMargin = 0;
+    }
+
+    @Override
+    public void setIconAppChipChildrenParams(FrameLayout.LayoutParams iconParams,
+            int chipChildMarginStart) {
+        iconParams.setMarginStart(chipChildMarginStart);
+        iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
+        iconParams.topMargin = 0;
     }
 
     @Override

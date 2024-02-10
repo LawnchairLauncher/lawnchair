@@ -281,7 +281,7 @@ class SplitAnimationControllerTest {
         whenever(mockAppPairIcon.context).thenReturn(mockTaskbarActivityContext)
         doNothing()
             .whenever(spySplitAnimationController)
-            .composeFadeInSplitLaunchAnimator(any(), any(), any(), any(), any())
+            .composeScaleUpLaunchAnimation(any(), any(), any())
 
         spySplitAnimationController.playSplitLaunchAnimation(
             null /* launchingTaskView */,
@@ -298,8 +298,7 @@ class SplitAnimationControllerTest {
             {} /* finishCallback */
         )
 
-        verify(spySplitAnimationController)
-            .composeFadeInSplitLaunchAnimator(any(), any(), any(), any(), any())
+        verify(spySplitAnimationController).composeScaleUpLaunchAnimation(any(), any(), any())
     }
 
     @Test

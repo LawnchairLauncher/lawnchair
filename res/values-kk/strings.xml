@@ -40,6 +40,18 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Негізгі экранға қосу"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> виджеті негізгі экранға енгізілді."</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Ұсыныстар"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (3939186477156514997) -->
+    <skip />
+    <!-- no translation found for news_widget_recommendation_category_label (3908242346768119070) -->
+    <skip />
+    <!-- no translation found for social_and_entertainment_widget_recommendation_category_label (2923840997302308191) -->
+    <skip />
+    <!-- no translation found for fitness_widget_recommendation_category_label (2657652999128882431) -->
+    <skip />
+    <!-- no translation found for weather_widget_recommendation_category_label (6712678763480668598) -->
+    <skip />
+    <!-- no translation found for others_widget_recommendation_category_label (897876078077284733) -->
+    <skip />
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# виджет}other{# виджет}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# таңбаша}other{# таңбаша}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>

@@ -260,7 +260,6 @@ public class DeviceProfile {
     public int overviewTaskIconSizePx;
     public int overviewTaskIconDrawableSizePx;
     public int overviewTaskIconDrawableSizeGridPx;
-    public int overviewTaskIconAppChipMenuDrawableSizePx;
     public int overviewTaskThumbnailTopMarginPx;
     public final int overviewActionsHeight;
     public final int overviewActionsTopMarginPx;
@@ -686,8 +685,6 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size);
         overviewTaskIconDrawableSizeGridPx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
-        overviewTaskIconAppChipMenuDrawableSizePx = res.getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_drawable_size);
         overviewTaskThumbnailTopMarginPx =
                 enableOverviewIconMenu() ? 0 : overviewTaskIconSizePx + overviewTaskMarginPx;
         // Don't add margin with floating search bar to minimize risk of overlapping.
@@ -2156,8 +2153,6 @@ public class DeviceProfile {
                 overviewTaskIconDrawableSizePx));
         writer.println(prefix + pxToDpStr("overviewTaskIconDrawableSizeGridPx",
                 overviewTaskIconDrawableSizeGridPx));
-        writer.println(prefix + pxToDpStr("overviewTaskIconAppChipMenuDrawableSizePx",
-                overviewTaskIconAppChipMenuDrawableSizePx));
         writer.println(prefix + pxToDpStr("overviewTaskThumbnailTopMarginPx",
                 overviewTaskThumbnailTopMarginPx));
         writer.println(prefix + pxToDpStr("overviewActionsTopMarginPx",

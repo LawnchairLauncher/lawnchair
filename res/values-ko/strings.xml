@@ -40,6 +40,12 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"홈 화면에 추가"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> 위젯이 홈 화면에 추가됨"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"추천"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"생산성 향상"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"추천 뉴스"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"휴식 공간"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"피트니스 목표 달성"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"사전에 날씨 확인"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"좋아할 만한 항목"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{위젯 #개}other{위젯 #개}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{바로가기 #개}other{바로가기 #개}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -173,8 +179,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"필터"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"실패: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"비공개 스페이스"</string>
-    <!-- no translation found for private_space_secondary_label (611902414159280263) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="611902414159280263">"비공개 앱을 잠그고 숨겨진 상태로 유지"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"비공개"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"비공개 스페이스 설정"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"비공개 스페이스 잠금/잠금 해제"</string>
