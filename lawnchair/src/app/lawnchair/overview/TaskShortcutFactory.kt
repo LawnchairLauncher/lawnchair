@@ -1,15 +1,19 @@
 package app.lawnchair.overview
 
+import android.app.ActivityManagerNative
 import android.app.ActivityOptions
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.os.RemoteException
+import android.os.UserHandle
 import android.util.Log
 import android.view.Display
 import android.view.View
 import android.view.WindowManagerGlobal
+import android.widget.Toast
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.compatlib.eleven.WindowManagerCompatVR
 import com.android.launcher3.BaseDraggingActivity
@@ -151,6 +155,52 @@ object TaskShortcutFactory {
                         (displayId == -1 || displayId == Display.DEFAULT_DISPLAY)
                     )
             }
+        }
+    }
+
+    class KillSystemShortcut(
+        activity: BaseDraggingActivity,
+        taskContainer: TaskIdAttributeContainer,
+    ) : SystemShortcut<BaseDraggingActivity>(
+        R.drawable.ic_close,
+        R.string.task_menu_force_stop,
+        activity,
+        taskContainer.itemInfo,
+        taskContainer.taskView,
+    ) {
+        private val mTaskView: TaskView = taskContainer.taskView
+        private val mActivity: BaseDraggingActivity = activity
+        override fun onClick(view: View) {
+            val iam = ActivityManagerNative.getDefault()
+            val task = mTaskView.task
+            if (task != null) {
+                try {
+                    iam.forceStopPackage(task.key.packageName, UserHandle.USER_CURRENT)
+                    val appKilled = Toast.makeText(
+                        mActivity,
+                        R.string.task_menu_force_stop,
+                        Toast.LENGTH_SHORT,
+                    )
+                    appKilled.show()
+                    val rv: RecentsView<LawnchairLauncher, *> = mActivity.getOverviewPanel()
+                    rv.dismissTask(mTaskView, true, true)
+                } catch (e: RemoteException) {
+                    Log.e("KillSystemShortcut", "onClick: ", e.cause)
+                }
+            }
+            dismissTaskMenuView(mActivity)
+        }
+    }
+
+    @JvmField
+    var killApp: TaskShortcutFactory = object : TaskShortcutFactory {
+        override fun getShortcuts(
+            activity: BaseDraggingActivity,
+            taskContainer: TaskIdAttributeContainer,
+        ): List<SystemShortcut<*>> {
+            return listOf(
+                KillSystemShortcut(activity, taskContainer),
+            )
         }
     }
 }

@@ -47,6 +47,11 @@ fun ExperimentalFeaturesPreferences() {
                 label = stringResource(id = R.string.perform_wide_search_title),
                 description = stringResource(id = R.string.perform_wide_search_description),
             )
+            SwitchPreference(
+                adapter = prefs.recentsActionLocked.getAdapter(),
+                label = stringResource(id = R.string.recents_lock_unlock),
+                description = stringResource(id = R.string.recents_lock_unlock_description),
+            )
         }
     }
 }
