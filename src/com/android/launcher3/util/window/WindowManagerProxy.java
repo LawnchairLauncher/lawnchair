@@ -17,6 +17,7 @@ package com.android.launcher3.util.window;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static com.android.launcher3.Utilities.dpToPx;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT;
@@ -48,6 +49,9 @@ import android.view.Surface;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -130,11 +134,11 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         Resources systemRes = context.getResources();
         Configuration config = systemRes.getConfiguration();
 
-        boolean isTablet = config.smallestScreenWidthDp > MIN_TABLET_WIDTH;
+        boolean isLargeScreen = config.smallestScreenWidthDp > MIN_TABLET_WIDTH;
         boolean isGesture = isGestureNav(context);
         boolean isPortrait = config.screenHeightDp > config.screenWidthDp;
 
-        int bottomNav = isTablet
+        int bottomNav = isLargeScreen
                 ? 0
                 : (isPortrait
                         ? getDimenByName(systemRes, NAVBAR_HEIGHT)
@@ -165,12 +169,80 @@ public class WindowManagerProxy implements ResourceBasedOverride {
             insetsBuilder.setInsets(WindowInsets.Type.tappableElement(), newTappableInsets);
         }
 
+        applyDisplayCutoutBottomInsetOverrideOnLargeScreen(
+                context, isLargeScreen, dpToPx(config.screenWidthDp), oldInsets, insetsBuilder);
+
         WindowInsets result = insetsBuilder.build();
         Insets systemWindowInsets = result.getInsetsIgnoringVisibility(
                 WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
         outInsets.set(systemWindowInsets.left, systemWindowInsets.top, systemWindowInsets.right,
                 systemWindowInsets.bottom);
         return result;
+    }
+
+    /**
+     * For large screen, when display cutout is at bottom left/right corner of screen, override
+     * display cutout's bottom inset to 0, because launcher allows drawing content over that area.
+     */
+    private static void applyDisplayCutoutBottomInsetOverrideOnLargeScreen(
+            @NonNull Context context,
+            boolean isLargeScreen,
+            int screenWidthPx,
+            @NonNull WindowInsets windowInsets,
+            @NonNull WindowInsets.Builder insetsBuilder) {
+        if (!isLargeScreen || !Utilities.ATLEAST_S) {
+            return;
+        }
+
+        final DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+        if (displayCutout == null) {
+            return;
+        }
+
+        if (!areBottomDisplayCutoutsSmallAndAtCorners(
+                displayCutout.getBoundingRectBottom(), screenWidthPx, context.getResources())) {
+            return;
+        }
+
+        Insets oldDisplayCutoutInset = windowInsets.getInsets(WindowInsets.Type.displayCutout());
+        Insets newDisplayCutoutInset = Insets.of(
+                oldDisplayCutoutInset.left,
+                oldDisplayCutoutInset.top,
+                oldDisplayCutoutInset.right,
+                0);
+        insetsBuilder.setInsetsIgnoringVisibility(
+                WindowInsets.Type.displayCutout(), newDisplayCutoutInset);
+    }
+
+    /**
+     * @see doc at {@link #areBottomDisplayCutoutsSmallAndAtCorners(Rect, int, int)}
+     */
+    private static boolean areBottomDisplayCutoutsSmallAndAtCorners(
+            @NonNull Rect cutoutRectBottom, int screenWidthPx, @NonNull Resources res) {
+        return areBottomDisplayCutoutsSmallAndAtCorners(cutoutRectBottom, screenWidthPx,
+                res.getDimensionPixelSize(R.dimen.max_width_and_height_of_small_display_cutout));
+    }
+
+    /**
+     * Return true if bottom display cutouts are at bottom left/right corners, AND has width or
+     * height <= maxWidthAndHeightOfSmallCutoutPx. Note that display cutout rect and screenWidthPx
+     * passed to this method should be in the SAME screen rotation.
+     *
+     * @param cutoutRectBottom bottom display cutout rect, this is based on current screen rotation
+     * @param screenWidthPx screen width in px based on current screen rotation
+     * @param maxWidthAndHeightOfSmallCutoutPx maximum width and height pixels of cutout.
+     */
+    @VisibleForTesting
+    static boolean areBottomDisplayCutoutsSmallAndAtCorners(
+            @NonNull Rect cutoutRectBottom, int screenWidthPx,
+            int maxWidthAndHeightOfSmallCutoutPx) {
+        // Empty cutoutRectBottom means there is no display cutout at the bottom. We should ignore
+        // it by returning false.
+        if (cutoutRectBottom.isEmpty()) {
+            return false;
+        }
+        return (cutoutRectBottom.right <= maxWidthAndHeightOfSmallCutoutPx)
+                || cutoutRectBottom.left >= (screenWidthPx - maxWidthAndHeightOfSmallCutoutPx);
     }
 
     protected int getStatusBarHeight(Context context, boolean isPortrait, int statusBarInset) {
@@ -249,6 +321,12 @@ public class WindowManagerProxy implements ResourceBasedOverride {
             DisplayCutout rotatedCutout = rotateCutout(
                     displayInfo.cutout, displayInfo.size.x, displayInfo.size.y, rotation, i);
             Rect insets = getSafeInsets(rotatedCutout);
+            if (areBottomDisplayCutoutsSmallAndAtCorners(
+                    rotatedCutout.getBoundingRectBottom(),
+                    bounds.width(),
+                    context.getResources())) {
+                insets.bottom = 0;
+            }
             insets.top = Math.max(insets.top, statusBarHeight);
             insets.bottom = Math.max(insets.bottom, navBarHeight);
 
