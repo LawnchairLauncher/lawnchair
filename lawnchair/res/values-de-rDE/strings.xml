@@ -56,7 +56,6 @@ workspace_increase_max_grid_size_label</string>
     <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
     <string name="transparent_background_icons">Transparente Symboldesigns</string>
     <string name="transparent_background_icons_description">Transparenten Hintergrund für Symboldesigns verwenden</string>
-    <string name="smartspace_mode_selection">Auf einen Blick Anbieterauswahl</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
     <string name="home_screen_rotaton_description">Wenn Gerät gedreht wird.</string>
@@ -169,8 +168,9 @@ workspace_increase_max_grid_size_label</string>
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Neue Apps zum Startbildschirm hinzufügen</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Feed anzeigen</string>
     <string name="minus_one_unavailable">Feed ist nicht verfügbar.</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed-Provider</string>
     <string name="feed_default">Standard</string>
     <string name="wallpaper">Hintergrund</string>
@@ -249,7 +249,7 @@ workspace_increase_max_grid_size_label</string>
     <string name="smartspace_mode_google_search">Google-Suche</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Dock aktivieren</string>
+    <string name="show_hotseat_title">Dock anzeigen</string>
     <string name="hotseat_mode_label">Suchleisten-Widget</string>
     <string name="hotseat_mode_disabled">Deaktiviert</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -348,6 +348,7 @@ workspace_increase_max_grid_size_label</string>
     <string name="action_share">Teilen</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Alle löschen</string>
+    <string name="task_menu_force_stop">Schließen erzwingen</string>
     <string name="window_corner_radius_label">Radius der Bildschirmecken</string>
     <string name="override_window_corner_radius_label">Benutzerdefinierter Radius der Bildschirmecken</string>
     <string name="window_corner_radius_description">Wenn du nach oben wischst, um die zuletzt verwendeten Apps zu öffnen, folgt die aktuelle App deinem Finger und verkleinert sich zu einer Karte. Verwende diesen Regler, um den Eckenradius der Karte anzupassen, wenn sie fast im Vollbildmodus ist, sodass er mit den Ecken deines Bildschirms übereinstimmt.</string>
@@ -445,4 +446,8 @@ workspace_increase_max_grid_size_label</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Systemeinstellungen</string>
+    <string name="action_unlock">Entsperren</string>
+    <string name="action_lock">Anpinnen</string>
+    <string name="recents_lock_unlock">Anpinnen/Lösen</string>
+    <string name="recents_lock_unlock_description">Verhindert, dass die gewählte App durch \"Alle Apps löschen\" entfernt wird</string>
 </resources>

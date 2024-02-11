@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Evită utilizarea pictogramelor stocate în cache din pachetele de pictograme</string>
     <string name="transparent_background_icons">Pictograme cu aspect transparent</string>
     <string name="transparent_background_icons_description">Utilizează fundal transparent pe pictograme tematice</string>
-    <string name="smartspace_mode_selection">Selecțiunea furnizorului At a Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotația ecranului de pornire</string>
     <string name="home_screen_rotaton_description">Când dispozitivul este rotit.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Adaugă aplicații noi pe ecranul principal</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Flux</string>
+    <string name="minus_one_enable">Afișare Flux</string>
     <string name="minus_one_unavailable">Fluxul nu este instalat.</string>
+    <string name="minus_one">Flux</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Prestabilit</string>
     <string name="wallpaper">Fundal</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Căutare Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Widget Bară de Căutare</string>
     <string name="hotseat_mode_disabled">Dezactivat</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -347,6 +347,7 @@
     <string name="action_share">Distribuie</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Șterge tot</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Raza colțurilor ecranului</string>
     <string name="override_window_corner_radius_label">Raza colțurilor ecranului personalizată</string>
     <string name="window_corner_radius_description">Când glisezi în sus pentru a porni Recente, aplicația prezentă îți urmărește degetul, micșorându-se într-un card. Utilizează acest glisor pentru a ajusta raza colțurilor cardului când este aproape în ecran complet pentru ca aceasta să se potrivească colțurilor ecranului tău.</string>
@@ -444,4 +445,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Setări de sistem</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

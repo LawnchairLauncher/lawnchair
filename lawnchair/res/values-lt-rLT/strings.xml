@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Vengti talpyklose esančias piktogramas iš piktogramų paketų</string>
     <string name="transparent_background_icons">Permatomos Teminės Piktogramos</string>
     <string name="transparent_background_icons_description">Naudoti permatoma foną temintoms piktogramoms</string>
-    <string name="smartspace_mode_selection">„At a Glance“ Teikėjo pasirinkimas</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Namu Ekrano Sukimas</string>
     <string name="home_screen_rotaton_description">Kai įrenginys yra pasuktas.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Pridėkite Naujas Programas į Namu Ekrana</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Srautas</string>
+    <string name="minus_one_enable">Show Feed</string>
     <string name="minus_one_unavailable">Srautas neįdiegtas.</string>
+    <string name="minus_one">Srautas</string>
     <string name="feed_provider">\"Feed\" Tekėjas</string>
     <string name="feed_default">Numatytas</string>
     <string name="wallpaper">Ekrano Fonas</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Paieška</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Įjungti Užduočių juostą</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Paieškos Juostos Valdiklis</string>
     <string name="hotseat_mode_disabled">Išjungta</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -348,6 +348,7 @@
     <string name="action_share">Dalintis</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Išvalyti visus</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Ekrano Kampo Spindulys</string>
     <string name="override_window_corner_radius_label">Pasirenkamas Ekrano Kampo Spindulys</string>
     <string name="window_corner_radius_description">Kai braukdami aukštyn atidarote „Vėliausius“, dabartinė programėlė seka jūsų pirštą ir susitraukia į kortelę. Šiuo slankikliu reguliuokite kortelės kampų spindulį, kai ji yra beveik per visą ekraną, kad ji atitiktų jūsų ekrano kampus.</string>
@@ -445,4 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">System Settings</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

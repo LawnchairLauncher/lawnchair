@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">आइकन पैक से कैश्ड आइकन का उपयोग करने से बचें</string>
     <string name="transparent_background_icons">पारदर्शी थीम पर आधारित आइकन</string>
     <string name="transparent_background_icons_description">थीम्ड आइकन की पृष्ठभूमि पारदर्शी रखें</string>
-    <string name="smartspace_mode_selection">ऐट अ ग्लैन्स प्रदाता चयन</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
     <string name="home_screen_rotaton_description">जब फोन घुमाया जाता है।</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">होम स्क्रीन पर नए ऐप्स जोड़ें</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">ख़बर</string>
+    <string name="minus_one_enable">फ़ीड दिखाएं</string>
     <string name="minus_one_unavailable">कोई फ़ीड स्थापित नहीं है।</string>
+    <string name="minus_one">ख़बर</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Default</string>
     <string name="wallpaper">वॉलपेपर</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">गूगल खोज</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">सर्च बार विजेट</string>
     <string name="hotseat_mode_disabled">अक्षम करें</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">शेयर करें</string>
     <string name="action_lens">लैंस</string>
     <string name="recents_clear_all">सभी हटाएं</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">स्क्रीन के किनारों का दायरा</string>
     <string name="override_window_corner_radius_label">स्वानुसार स्क्रीन के किनारों का दायरा</string>
     <string name="window_corner_radius_description">जब आप रिसेंटस स्क्रीन खोलने के लिए ऊपर स्वाइप करते हैं तब चालू ऐप आपकी ऊंगली के हिसाब से छोटा होते हुए कार्ड में बदल जाता है। इस स्लाइडर का उपयोग करके आप उस कार्ड के किनारों को अपने फोन के किनारों के समान कर सकते हैं।</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">सिस्टम सेटिंग्स</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

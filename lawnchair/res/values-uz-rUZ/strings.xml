@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="transparent_background_icons">Transparent Themed Icons</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Asosiy ekranni aylantirish</string>
     <string name="home_screen_rotaton_description">Qurilma aylantirilganda.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Asosiy ekranga yangi ilovalar qo‘shish</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Tasmani ko‘rsatish</string>
     <string name="minus_one_unavailable">Tasma o‘rnatilmagan.</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Default</string>
     <string name="wallpaper">Wallpaper</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Search Bar Widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">Share</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Clear All</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">System Settings</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
     <string name="transparent_background_icons">ไอคอนธีมโปร่งใส</string>
     <string name="transparent_background_icons_description">ใช้พื้นหลังโปร่งใสบนไอคอนที่มีธีม</string>
-    <string name="smartspace_mode_selection">การเลือกผู้ให้บริการข้อมูลโดยย่อ</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
     <string name="home_screen_rotaton_description">เมื่อโทรศัพท์หมุน</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">เพิ่มไอคอนแอปในหน้าจอหลัก</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">ฟีดข่าวสาร</string>
+    <string name="minus_one_enable">Show Feed</string>
     <string name="minus_one_unavailable">ยังไม่ได้ติดตั้ง Feed</string>
+    <string name="minus_one">ฟีดข่าวสาร</string>
     <string name="feed_provider">ผู้ให้บริการข่าว</string>
     <string name="feed_default">ค่าเริ่มต้น</string>
     <string name="wallpaper">ภาพพื้นหลัง</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">แถบค้นหาของ Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">\@ObsessedYaoi18</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">วิดเจ็ตแถบค้นหา</string>
     <string name="hotseat_mode_disabled">ปิด</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -345,6 +345,7 @@
     <string name="action_share">แชร์</string>
     <string name="action_lens">เลนส์</string>
     <string name="recents_clear_all">ล้างทั้งหมด</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">หน้าจอขอบมน</string>
     <string name="override_window_corner_radius_label">ปรับแต่งขอบมนของหน้าจอ</string>
     <string name="window_corner_radius_description">เมื่อคุณปัดขึ้นเพื่อเปิดแอพล่าสุด แอพปัจจุบันจะตามนิ้วของคุณโดยย่อเป็นการ์ด ใช้แถบเลื่อนนี้เพื่อปรับรัศมีมุมของการ์ดเมื่อเกือบเต็มหน้าจอ เพื่อให้พอดีกับมุมของหน้าจอของคุณ</string>
@@ -442,4 +443,8 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">ตั้งค่าระบบ</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

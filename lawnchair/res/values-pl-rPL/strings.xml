@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Dotknij tej karty, aby ustawić Lawnchair jako domyślny launcher.</string>
+    <string name="set_default_launcher_tip">Toca esta tarjeta para establecer Lawnchair como tu lanzador predeterminado.</string>
     <string name="settings">Ustawienia</string>
     <string name="general_label">Ogólne</string>
     <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>
@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Unikaj korzystania z buforowanych ikon z pakietów ikon</string>
     <string name="transparent_background_icons">Przezroczyste ikony</string>
     <string name="transparent_background_icons_description">Użyj przezroczystego tła na ikonach motywu</string>
-    <string name="smartspace_mode_selection">Przy wyborze dostawcy</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
     <string name="home_screen_rotaton_description">Po obróceniu urządzenia.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Dodaj nowe aplikacje do ekranu głównego</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Kanał</string>
+    <string name="minus_one_enable">Pokaż aktualności \"Feed\"</string>
     <string name="minus_one_unavailable">Aplikacja aktualności \"Feed\" niezainstalowana.</string>
+    <string name="minus_one">Kanał</string>
     <string name="feed_provider">Dostawca kanałów</string>
     <string name="feed_default">Domyślnie</string>
     <string name="wallpaper">Tapeta</string>
@@ -185,7 +185,7 @@
     <string name="home_screen_locked">Ekran główny jest zablokowany.</string>
     <string name="show_dot_pagination_label">Pokaż numerowanie stron kropkami</string>
     <string name="show_dot_pagination_description">Włącza wyświetlanie numerowania stron za pomocą kropek w obszarze roboczym.</string>
-    <string name="show_material_u_popup_label">Pokaż wyskakujące okno (Material U)</string>
+    <string name="show_material_u_popup_label">Pokaż wyskakujące okno</string>
     <string name="show_material_u_popup_description">Włącz elastyczne i lekko skonsolidowane wyskakujące okienko.</string>
     <string name="popup_menu">Wyskakujące menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Pokaż przycisk blokady</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Szukaj w Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Włącz docka</string>
+    <string name="show_hotseat_title">Pokaż dolny panel</string>
     <string name="hotseat_mode_label">Widżet paska wyszukiwania</string>
     <string name="hotseat_mode_disabled">Wyłączono</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -348,6 +348,7 @@
     <string name="action_share">Udostępnij</string>
     <string name="action_lens">Obiektyw</string>
     <string name="recents_clear_all">Wyczyść wszystko</string>
+    <string name="task_menu_force_stop">Wymuś zamknięcie</string>
     <string name="window_corner_radius_label">Promień narożnika ekranu</string>
     <string name="override_window_corner_radius_label">Własny promień narożnika ekranu</string>
     <string name="window_corner_radius_description">Gdy przeciągniesz w górę, aby otworzyć menu Ulubione, bieżąca aplikacja podąży za Twoim palcem, kurcząc się kartę. Użyj tego suwaka, aby dostosować promień narożnika karty, gdy jest ona prawie pełnoekranowa, tak aby dopasować ją do rogów ekranu.</string>
@@ -445,4 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s i %s</string>
     <string name="system_settings">Ustawienia systemowe</string>
+    <string name="action_unlock">Odblokuj</string>
+    <string name="action_lock">Zablokuj</string>
+    <string name="recents_lock_unlock">Zablokuj/Odblokuj</string>
+    <string name="recents_lock_unlock_description">Zapobiegaj wyczyszczeniu wybranej aplikacji podczas używania opcji \"Wyczyść wszystko\"</string>
 </resources>

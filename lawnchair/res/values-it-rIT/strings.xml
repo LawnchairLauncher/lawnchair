@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache dai pacchetti d\'icone</string>
     <string name="transparent_background_icons">Icone a tema trasparente</string>
     <string name="transparent_background_icons_description">Usa sfondo trasparente nelle icone a tema</string>
-    <string name="smartspace_mode_selection">Selezione del Provider per At a Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotazione schermata home</string>
     <string name="home_screen_rotaton_description">Quando il dispositivo viene ruotato.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Aggiungi le nuove applicazioni alla schermata home</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Mostra la feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Predefinito</string>
     <string name="wallpaper">Sfondo</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Ricerca Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Widget barra di ricerca</string>
     <string name="hotseat_mode_disabled">Disabilitato</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">Condividi</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Cancella tutto</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Raggio di curvatura dell\'angolo</string>
     <string name="override_window_corner_radius_label">Raggio di curvatura dell\'angolo personalizzato</string>
     <string name="window_corner_radius_description">Quando scorri verso l\'alto per aprire le app recenti, l\'applicazione corrente segue il dito, restringendosi in una scheda. Utilizza questo cursore per regolare il raggio d\'angolo della carta quando è quasi a schermo intero in modo che corrisponda agli angoli dello schermo.</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Impostazioni di sistema</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="transparent_background_icons">圖示套用主題色與透明背景</string>
     <string name="transparent_background_icons_description">在套用主題色的圖示上使用透明背景</string>
-    <string name="smartspace_mode_selection">資訊一覽服務來源選擇</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
     <string name="home_screen_rotaton_description">當手機旋轉時</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">顯示動態消息</string>
     <string name="minus_one_unavailable">尚未安裝資訊頁提供服務。</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">資訊頁內容</string>
     <string name="feed_default">預設</string>
     <string name="wallpaper">桌布</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google 搜尋</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">啟用底欄</string>
+    <string name="show_hotseat_title">顯示底欄</string>
     <string name="hotseat_mode_label">搜尋列小工具</string>
     <string name="hotseat_mode_disabled">停用</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -345,6 +345,7 @@
     <string name="action_share">分享</string>
     <string name="action_lens">智慧鏡頭</string>
     <string name="recents_clear_all">全部清除</string>
+    <string name="task_menu_force_stop">強制關閉</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
@@ -442,4 +443,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">系統設定</string>
+    <string name="action_unlock">解除鎖定</string>
+    <string name="action_lock">鎖定</string>
+    <string name="recents_lock_unlock">鎖定／解除鎖定</string>
+    <string name="recents_lock_unlock_description">使用「全部清除」時忽略選取的應用程式</string>
 </resources>

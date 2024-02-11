@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
     <string name="transparent_background_icons">Ícones Temáticos Transparentes</string>
     <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
-    <string name="smartspace_mode_selection">Seleção do Fornecedor de Resumo \"At a Glance\"</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação de Ecrã Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo é rodado.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Adicionar Novas Apps ao Ecrã Inicial</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Nenhum feed instalado.</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Predefinido</string>
     <string name="wallpaper">Papel de Parede</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Pesquisa do Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Mostrar Doca</string>
     <string name="hotseat_mode_label">Widget de Barra de Pesquisa</string>
     <string name="hotseat_mode_disabled">Desativado</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">Partilhar</string>
     <string name="action_lens">Lente</string>
     <string name="recents_clear_all">Limpar Tudo</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Raio dos Cantos do Ecrã</string>
     <string name="override_window_corner_radius_label">Raio dos Cantos do Ecrã Personalizado</string>
     <string name="window_corner_radius_description">Quando deslizar para cima para abrir as aplicações Recentes, a aplicação atual segue o seu dedo, diminuindo num cartão. Utilize este controlo deslizante para ajustar o raio de curvatura do cartão quando este estiver quase em ecrã cheio, de modo a que corresponda aos cantos do seu ecrã.</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Definições de Sistema</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>
