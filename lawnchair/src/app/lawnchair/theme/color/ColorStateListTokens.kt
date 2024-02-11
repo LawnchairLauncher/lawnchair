@@ -11,7 +11,7 @@ object ColorStateListTokens {
             intArrayOf(),
         )
         val colors = intArrayOf(
-            ColorTokens.TextColorPrimary.resolveColor(context, scheme, uiColorMode),
+            ColorTokens.TextColorPrimaryInverse.resolveColor(context, scheme, uiColorMode),
             ColorTokens.TextColorSecondary.resolveColor(context, scheme, uiColorMode),
         )
         ColorStateList(states, colors)
