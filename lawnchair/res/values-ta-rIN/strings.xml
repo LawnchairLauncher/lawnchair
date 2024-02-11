@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
     <string name="transparent_background_icons">Transparent Themed Icons</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotaton_description">கருவி சுழற்றப்படும் போது.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளை சேர்</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">செய்தியோடை</string>
+    <string name="minus_one_enable">Show Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="minus_one">செய்தியோடை</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">இயல்புநிலை</string>
     <string name="wallpaper">சுவர்த்தாள்</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Search Bar Widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">பகிர்</string>
     <string name="action_lens">வில்லை</string>
     <string name="recents_clear_all">அனைத்தயுந்துடை</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">திரை மூலை ஆரம்</string>
     <string name="override_window_corner_radius_label">தனிப்பயன் திரை மூலை ஆரம்</string>
     <string name="window_corner_radius_description">அண்மையவையைத் திறக்க மேலே தேய்த்தால், தற்போதைய செயலி உம் விரலைப் பின்தொடர்ந்து அட்டையாகச் சுருக்கும். அட்டையின் மூலை ஆரம் உம் திரை மூலையை அது கிட்டத்தட்ட முழுதிரையிலிருக்கும்போது பொருந்துமாறு அனுசரிக்க இச்சறுக்கியைப் பயன்படுத்து.</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">System Settings</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">הימנע משימוש בסמלים ממטמון מחבילות סמלים</string>
     <string name="transparent_background_icons">סמלי נושא שקופים</string>
     <string name="transparent_background_icons_description">השתמש ברקע שקוף עבור סמלי סגנון</string>
-    <string name="smartspace_mode_selection">בחירת ספק ל\"מבט מהיר\"</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">סיבוב מסך הבית</string>
     <string name="home_screen_rotaton_description">כאשר המכשיר מסובב.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">הוספת יישומים חדשים למסך הבית</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">פיד</string>
+    <string name="minus_one_enable">הצגת ההזנה</string>
     <string name="minus_one_unavailable">ההזנה אינה מותקנת.</string>
+    <string name="minus_one">פיד</string>
     <string name="feed_provider">ספק הזנה</string>
     <string name="feed_default">ברירת מחדל</string>
     <string name="wallpaper">רקע</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">חיפוש בגוגל</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">אפשר מעגן (Dock)</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">ווידג\'ט שורת חיפוש</string>
     <string name="hotseat_mode_disabled">השבת</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -348,6 +348,7 @@
     <string name="action_share">שיתוף</string>
     <string name="action_lens">עדשה</string>
     <string name="recents_clear_all">ניקוי הכל</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">רדיוס פינות מסך</string>
     <string name="override_window_corner_radius_label">רדיוס פינות מסך מותאם</string>
     <string name="window_corner_radius_description">כשאתה מחליק מעלה לפתיחת \"אחרונים\", היישום הנוכחי עוקב אחרי האצבע שלך, ומצטמצם לכרטיס. השתמש בסמן כדי להתאים לפי בחירתך את רדיוס עיגול הפינות של הכרטיס כשהוא כמעט על מסך מלא כך שזה יתאים לפינות המסך שלך.</string>
@@ -445,4 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s ו%s</string>
     <string name="system_settings">הגדרות מערכת</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

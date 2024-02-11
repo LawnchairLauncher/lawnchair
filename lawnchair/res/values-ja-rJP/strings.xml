@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
     <string name="transparent_background_icons">透明なテーマアイコン</string>
     <string name="transparent_background_icons_description">テーマアイコンの背景を透明にします</string>
-    <string name="smartspace_mode_selection">At a Glance のプロバイダー選択</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
     <string name="home_screen_rotaton_description">デバイスを回転させた時</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">ホーム画面に新しいアプリを追加</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">フィード</string>
+    <string name="minus_one_enable">フィードを表示</string>
     <string name="minus_one_unavailable">フィードがインストールされていません</string>
+    <string name="minus_one">フィード</string>
     <string name="feed_provider">フィードプロバイダー</string>
     <string name="feed_default">デフォルト</string>
     <string name="wallpaper">壁紙</string>
@@ -190,7 +190,7 @@
     <string name="popup_menu">ポップアップメニュー</string>
     <string name="home_screen_lock_toggle_from_home_popup">ロックボタンを表示</string>
     <string name="show_system_settings_entry">システム設定項目を表示</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">編集ボタンを表示</string>
     <string name="status_bar_label">ステータスバー</string>
     <string name="show_status_bar">ステータスバーを表示</string>
     <string name="dark_status_bar_label">暗いステータスバー</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google 検索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">ドックの有効化</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">検索バーウィジェット</string>
     <string name="hotseat_mode_disabled">無効</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -345,6 +345,7 @@
     <string name="action_share">共有する</string>
     <string name="action_lens">レンズ</string>
     <string name="recents_clear_all">すべてクリア</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">画面角の丸み</string>
     <string name="override_window_corner_radius_label">カスタムした画面角の丸み</string>
     <string name="window_corner_radius_description">上にスワイプして 履歴 を開くと、アプリが指に追従して縮小され、カードで表示されます。画面の角に合うように、カードの角の丸みを調整できます。</string>
@@ -442,4 +443,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">システム設定</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

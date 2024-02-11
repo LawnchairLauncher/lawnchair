@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Уникати використання кешованих іконок з наборів іконок</string>
     <string name="transparent_background_icons">Прозорі теми іконок</string>
     <string name="transparent_background_icons_description">Використовувати прозорий фон на тематичних іконках</string>
-    <string name="smartspace_mode_selection">Вибрати постачальника At a Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Обертання Головного Екрану</string>
     <string name="home_screen_rotaton_description">При обертанні пристрою.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Додавання Нових Програм на Головний Екран</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Стрічка подій</string>
+    <string name="minus_one_enable">Показати Стрічку</string>
     <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="minus_one">Стрічка подій</string>
     <string name="feed_provider">Постачальник каналів</string>
     <string name="feed_default">За замовчуванням</string>
     <string name="wallpaper">Шпалери</string>
@@ -185,12 +185,12 @@
     <string name="home_screen_locked">Домашній екран заблоковано.</string>
     <string name="show_dot_pagination_label">Show dot pagination</string>
     <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
-    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
+    <string name="show_material_u_popup_label">Показувати cпливаюче меню Material You</string>
+    <string name="show_material_u_popup_description">Показувати cпливаюче мені Material You.</string>
     <string name="popup_menu">Спливаюче меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показувати кнопку блокування</string>
     <string name="show_system_settings_entry">Показувати запис про системні налаштування</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Показувати кнопку \"Редагувати\"</string>
     <string name="status_bar_label">Рядок стану</string>
     <string name="show_status_bar">Показати рядок стану</string>
     <string name="dark_status_bar_label">Темний рядок стану</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Пошук Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Увімкнути док-бар</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Віджет панелі пошуку</string>
     <string name="hotseat_mode_disabled">Вимкнено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -256,7 +256,7 @@
     <string name="corner_radius_label">Закруглення кутів</string>
     <string name="apply_accent_color_label">Застосувати колір акценту</string>
     <string name="search_provider">Пошукова система</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">Нижній відступ</string>
     <string name="grid">Решітка</string>
     <string name="dock_icons">Значки док-панелі</string>
     <!-- SearchProviderPreferences -->
@@ -287,12 +287,12 @@
     <string name="max_suggestion_result_count_title">Кількість результатів макс. пропозиції</string>
     <string name="max_settings_entry_result_count_title">Максимальна кількість результатів запису в параметрах</string>
     <string name="max_recent_result_count_title">Максимальна Кількість результатів історії</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
+    <string name="max_web_suggestion_delay">Макс. затримка Інтернет-пропозицій</string>
     <string name="clear_history">Очистити</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Кількість стовпців меню додатків</string>
     <string name="row_height_label">Висота рядка</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="app_drawer_indent_label">Горизонтальний відступ</string>
     <string name="perform_wide_search_title">Пошук пристрою</string>
     <string name="perform_wide_search_file">Файли</string>
     <string name="pref_suggestion_label">Пропозиції</string>
@@ -348,6 +348,7 @@
     <string name="action_share">Поділитись</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Очистити все</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Радіус кута екрану</string>
     <string name="override_window_corner_radius_label">Користувацький радіус кута екрана</string>
     <string name="window_corner_radius_description">Проведіть пальцем угору, щоб відкрити Нещодавні, поточний додаток слідує за вашим пальцем, стихаючи на картці. Використовуйте цей повзунок, щоб налаштувати радіус кута карти, коли він майже повноекранний режим, так щоб він співпадав з кутами вашого екрану.</string>
@@ -445,4 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Системні налаштування</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <string name="transparent_background_icons">Iconos temáticos transparentes</string>
     <string name="transparent_background_icons_description">Usar fondo transparente en iconos temáticos</string>
-    <string name="smartspace_mode_selection">Selección de proveedores de Un vistazo</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">Recurso de distribución</string>
     <string name="feed_default">Predeterminado</string>
     <string name="wallpaper">Fondo de Pantalla</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Búsqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Habilitar Dock</string>
+    <string name="show_hotseat_title">Mostrar Dock</string>
     <string name="hotseat_mode_label">Widget de barra de búsqueda</string>
     <string name="hotseat_mode_disabled">Deshabilitado</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">Compartir</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Borrar todo</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Radio de esquina de la pantalla</string>
     <string name="override_window_corner_radius_label">Radio de esquina de la pantalla personalizado</string>
     <string name="window_corner_radius_description">Cuando deslizas hacia abajo para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Ajustes del sistema</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

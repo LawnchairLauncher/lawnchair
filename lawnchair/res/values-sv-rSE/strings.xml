@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="transparent_background_icons">Transparenta tematiserade ikoner</string>
     <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
-    <string name="smartspace_mode_selection">Val av snabböversiktsleverantör</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotation av startskärmen</string>
     <string name="home_screen_rotaton_description">När enheten roteras.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Flöde</string>
+    <string name="minus_one_enable">Visa Flöde</string>
     <string name="minus_one_unavailable">Inget flöde är installerat.</string>
+    <string name="minus_one">Flöde</string>
     <string name="feed_provider">Flödesleverantör</string>
     <string name="feed_default">Förvald</string>
     <string name="wallpaper">Bakgrundsbild</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Sök</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Aktivera favoritfält</string>
+    <string name="show_hotseat_title">Visa favoritfält</string>
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">Dela</string>
     <string name="action_lens">Lins</string>
     <string name="recents_clear_all">Rensa alla</string>
+    <string name="task_menu_force_stop">Tvångsavsluta</string>
     <string name="window_corner_radius_label">Skärmhörnsradie</string>
     <string name="override_window_corner_radius_label">Anpassad skärmhörnsradie</string>
     <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den motsvarar hörnen på din skärm.</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Systeminställningar</string>
+    <string name="action_unlock">Lås upp</string>
+    <string name="action_lock">Lås</string>
+    <string name="recents_lock_unlock">Lås/lås upp</string>
+    <string name="recents_lock_unlock_description">Förhindrar att vald app rensas bort när \"Rensa alla\" används</string>
 </resources>

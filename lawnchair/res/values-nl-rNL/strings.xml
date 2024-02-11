@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Vermijd het gebruik van gecachte pictogrammen van pictogrampakketten</string>
     <string name="transparent_background_icons">Transparante thematische iconen</string>
     <string name="transparent_background_icons_description">Gebruik transparante achtergrond bij gethematiseerde pictogrammen</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selectie</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startscherm rotatie</string>
     <string name="home_screen_rotaton_description">Wanneer het apparaat is gedraaid.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Toon feed</string>
     <string name="minus_one_unavailable">Geen feed geïnstalleerd.</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Standaard</string>
     <string name="wallpaper">Achtergrond</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Zoeken</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Dock-Bar aktivieren</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Zoekbalkwidget</string>
     <string name="hotseat_mode_disabled">Uitgeschakeld</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -346,6 +346,7 @@
     <string name="action_share">Delen</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Alles verwijderen</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Scherm hoek radius</string>
     <string name="override_window_corner_radius_label">Aangepaste scherm hoek radius</string>
     <string name="window_corner_radius_description">Als je veegt om de recente apps te openen volgt de huidige app je vinger, deze vormt zich in een kaart. Gebruik deze schuifregelaar om de hoek straal van de kaart aan te passen wanneer het bijna volledig scherm is, zodat het overeenkomt met de hoeken van uw scherm.</string>
@@ -443,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Systeeminstellingen</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>
