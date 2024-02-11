@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Evita utilitzar icones a la memòria cau dels paquets d\'icones</string>
     <string name="transparent_background_icons">Icones temàtiques transparents</string>
     <string name="transparent_background_icons_description">Utilitza un fons transparent a les icones temàtiques</string>
-    <string name="smartspace_mode_selection">Selecció del proveïdor D\'una ullada</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>
     <string name="home_screen_rotaton_description">Quan es gira el dispositiu.</string>
@@ -167,10 +166,11 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Afegeix les apps noves a la Pantalla d\'inici</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Canal de notícies</string>
+    <string name="minus_one_enable">Mostra el Feed</string>
     <string name="minus_one_unavailable">No hi ha cap Feed instal·lat.</string>
-    <string name="feed_provider">Feed Provider</string>
-    <string name="feed_default">Default</string>
+    <string name="minus_one">Canal de notícies</string>
+    <string name="feed_provider">Proveïdor de feed</string>
+    <string name="feed_default">Predeterminat</string>
     <string name="wallpaper">Fons de pantalla</string>
     <string name="wallpaper_scrolling_label">Desplaçament de fons de pantalla</string>
     <string name="wallpaper_depth_effect_label">Efecte de profunditat del fons de pantalla</string>
@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Desbloquejar Pantalla Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">La pantalla principal està bloquejada.</string>
+    <string name="show_dot_pagination_label">Mostrar punt de paginació</string>
+    <string name="show_dot_pagination_description">Activar mostrar paginació amb un punt en la zona de treball.</string>
+    <string name="show_material_u_popup_label">Mostrar Popup de Material U</string>
+    <string name="show_material_u_popup_description">Activar finestra emergent lleugerament consolidada i elàstica.</string>
     <string name="popup_menu">Menú emergent</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botó de bloqueig</string>
     <string name="show_system_settings_entry">Mostrar entrada de la configuració del sistema</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Busqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Activar Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Widget de Barra de buscar</string>
     <string name="hotseat_mode_disabled">Desactivat</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -252,7 +256,7 @@
     <string name="corner_radius_label">Radi de cantonada</string>
     <string name="apply_accent_color_label">Aplica el color d\'èmfasi</string>
     <string name="search_provider">Proveïdor del cercador</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">Farcit inferior</string>
     <string name="grid">Graella</string>
     <string name="dock_icons">Icones del Dock</string>
     <!-- SearchProviderPreferences -->
@@ -283,13 +287,15 @@
     <string name="max_suggestion_result_count_title">Màxim Nombre De Persones</string>
     <string name="max_settings_entry_result_count_title">Màxim Nombre d\'Entrades de Configuració</string>
     <string name="max_recent_result_count_title">Màxim Nombre de Resultats de l\'Historial</string>
+    <string name="max_web_suggestion_delay">Màxim retard per a suggeriment Web</string>
     <string name="clear_history">Netejar</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Columnes del calaix d\'aplicacions</string>
     <string name="row_height_label">Alçada de fila</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="app_drawer_indent_label">Farcit Horitzontal</string>
     <string name="perform_wide_search_title">Recerca del dispositiu</string>
     <string name="perform_wide_search_file">Arxius</string>
+    <string name="pref_suggestion_label">Suggeriments</string>
     <string name="pref_suggestion_title">Suggerències web (via: <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Cerca avançada</string>
     <string name="perform_wide_search_description">Buscar els teus contactes, arxius i configuracions en el cercador del calaix d\'aplicacions.</string>
@@ -340,6 +346,7 @@
     <string name="action_share">Comparteix</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Esborrar tot</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Radi de cantonada de la pantalla</string>
     <string name="override_window_corner_radius_label">Radi de cantonada de pantalla personalitzat</string>
     <string name="window_corner_radius_description">Quan llisques adalt per a obrir Recents, la aplicació actual segueix el teu dit, reduint-se a una tarjeta. Utilitza aquest control lliscant per a ajustar el radi de la cantonada de la tarjeta quan estigui prop de la pantalla completa, de manera que coincideixi amb la teua pantalla.</string>
@@ -437,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Configuració del sistema</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

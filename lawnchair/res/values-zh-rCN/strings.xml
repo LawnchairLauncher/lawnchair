@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
     <string name="transparent_background_icons">透明的主题图标</string>
     <string name="transparent_background_icons_description">在主题图标上使用透明背景</string>
-    <string name="smartspace_mode_selection">资讯一览提供者选择</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">向主屏幕添加新应用</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">订阅内容</string>
+    <string name="minus_one_enable">显示订阅</string>
     <string name="minus_one_unavailable">未安装订阅源。</string>
+    <string name="minus_one">订阅内容</string>
     <string name="feed_provider">Feed 提供商</string>
     <string name="feed_default">默认</string>
     <string name="wallpaper">壁纸</string>
@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">解锁主屏幕布局</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">主屏幕已锁定。</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="home_screen_lock_toggle_from_home_popup">显示锁定桌面按钮</string>
     <string name="show_system_settings_entry">显示系统设置项目</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google 搜索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">启用 Dock 栏</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">搜索栏小部件</string>
     <string name="hotseat_mode_disabled">已禁用</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">最大建议结果数</string>
     <string name="max_settings_entry_result_count_title">最大设置条目结果数</string>
     <string name="max_recent_result_count_title">最大历史记录数</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">清除</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">应用抽屉列数</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">水平填充</string>
     <string name="perform_wide_search_title">设备搜索</string>
     <string name="perform_wide_search_file">文件</string>
+    <string name="pref_suggestion_label">建议</string>
     <string name="pref_suggestion_title">网页建议 (通过 <xliff:g id="startpage">启动页</xliff:g>)</string>
     <string name="pref_advance_search_category">高级搜索</string>
     <string name="perform_wide_search_description">在应用抽屉搜索中搜索您的联系人、文件和设置。</string>
@@ -339,6 +345,7 @@
     <string name="action_share">分享</string>
     <string name="action_lens">智能镜头</string>
     <string name="recents_clear_all">全部清除</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">屏幕圆角半径</string>
     <string name="override_window_corner_radius_label">自定义屏幕圆角半径</string>
     <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前应用程序显示会跟随您的手指移动。 使用滑块以调整卡片的圆角半径，使它接近全屏，贴合您屏幕的边缘。</string>
@@ -436,4 +443,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">系统设置</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

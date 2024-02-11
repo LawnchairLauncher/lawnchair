@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="transparent_background_icons">Transparenta tematiserade ikoner</string>
     <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
-    <string name="smartspace_mode_selection">Val av snabböversiktsleverantör</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotation av startskärmen</string>
     <string name="home_screen_rotaton_description">När enheten roteras.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Flöde</string>
+    <string name="minus_one_enable">Visa Flöde</string>
     <string name="minus_one_unavailable">Inget flöde är installerat.</string>
+    <string name="minus_one">Flöde</string>
     <string name="feed_provider">Flödesleverantör</string>
     <string name="feed_default">Förvald</string>
     <string name="wallpaper">Bakgrundsbild</string>
@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Lås upp startskärm</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Startskärmen är låst.</string>
+    <string name="show_dot_pagination_label">Visa prickpaginering</string>
+    <string name="show_dot_pagination_description">Aktivera visning av prickpaginering på arbetsytan.</string>
+    <string name="show_material_u_popup_label">Visa Material U-meny</string>
+    <string name="show_material_u_popup_description">Aktivera studsig och något tätare meny.</string>
     <string name="popup_menu">Snabbmeny</string>
     <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
     <string name="show_system_settings_entry">Visa systeminställningar</string>
@@ -228,7 +232,7 @@
     <string name="smartspace_time_24_hour_format">24-timmarsformat</string>
     <string name="smartspace_weather">Väder</string>
     <string name="smartspace_battery_status">Batteristatus</string>
-    <string name="smartspace_now_playing">Spelas nu</string>
+    <string name="smartspace_now_playing">Nu spelas</string>
     <string name="smartspace_requires_setup">Tryck för att konfigurera</string>
     <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
     <string name="smartspace_media_info_separator">" — "</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Sök</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Aktivera favoritfält</string>
+    <string name="show_hotseat_title">Visa favoritfält</string>
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Max antal förslagsresultat</string>
     <string name="max_settings_entry_result_count_title">Max antal inställningsresultat</string>
     <string name="max_recent_result_count_title">Max antal historikresultat</string>
+    <string name="max_web_suggestion_delay">Max fördröjning av webbförslag</string>
     <string name="clear_history">Rensa</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumner i applådan</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Vågrätt avstånd</string>
     <string name="perform_wide_search_title">Enhetssökning</string>
     <string name="perform_wide_search_file">Filer</string>
+    <string name="pref_suggestion_label">Förslag</string>
     <string name="pref_suggestion_title">Webbförslag (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Avancerad sökning</string>
     <string name="perform_wide_search_description">Sök bland dina kontakter, filer och inställningar vid applådesökning.</string>
@@ -340,6 +346,7 @@
     <string name="action_share">Dela</string>
     <string name="action_lens">Lins</string>
     <string name="recents_clear_all">Rensa alla</string>
+    <string name="task_menu_force_stop">Tvångsavsluta</string>
     <string name="window_corner_radius_label">Skärmhörnsradie</string>
     <string name="override_window_corner_radius_label">Anpassad skärmhörnsradie</string>
     <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den motsvarar hörnen på din skärm.</string>
@@ -437,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Systeminställningar</string>
+    <string name="action_unlock">Lås upp</string>
+    <string name="action_lock">Lås</string>
+    <string name="recents_lock_unlock">Lås/lås upp</string>
+    <string name="recents_lock_unlock_description">Förhindrar att vald app rensas bort när \"Rensa alla\" används</string>
 </resources>

@@ -67,7 +67,7 @@ object ColorTokens {
 
     @JvmField val AllAppsScrimColor = ColorBackground
 
-    @JvmField val AllAppsTabBackgroundSelected = DayNightColorToken(Accent1_100, Accent2_100)
+    @JvmField val AllAppsTabBackgroundSelected = DayNightColorToken(Accent1_500, Accent2_500)
 
     @JvmField val FocusHighlight = DayNightColorToken(Neutral1_0, Neutral1_700)
 
@@ -118,6 +118,8 @@ object ColorTokens {
     @JvmField val WidgetsPickerScrim = DayNightColorToken(Neutral1_200, Neutral1_900).setAlpha(0.8f)
 
     @JvmField val WorkspaceAccentColor = DarkTextColorToken(Accent1_100, Accent2_600)
+
+    @JvmField val WidgetListRowColor = DayNightColorToken(Neutral1_10, Neutral2_800)
 
     val SwitchThumbOn = Accent1_100
     val SwitchThumbOff = DayNightColorToken(Neutral2_300, Neutral1_400)

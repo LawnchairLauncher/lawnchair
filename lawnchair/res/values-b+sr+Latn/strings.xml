@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Izbegavaj korišćenje keširanih ikona iz paketa ikona</string>
     <string name="transparent_background_icons">117788</string>
     <string name="transparent_background_icons_description">Koristi prozirnu pozadinu na tematskim ikonama</string>
-    <string name="smartspace_mode_selection">Izbor dobavljača za „Kratak pregled”</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotacija početnog ekrana</string>
     <string name="home_screen_rotaton_description">Kada se uređaj rotira.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početni ekran</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Fid</string>
+    <string name="minus_one_enable">Prikaži vesti</string>
     <string name="minus_one_unavailable">Fid nije instaliran.</string>
+    <string name="minus_one">Fid</string>
     <string name="feed_provider">Dobavljač fida</string>
     <string name="feed_default">Podrazumevano</string>
     <string name="wallpaper">Pozadina</string>
@@ -183,10 +183,14 @@
     <string name="home_screen_unlock">Otključaj početni ekran</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Početni ekran je zaključan.</string>
+    <string name="show_dot_pagination_label">Numerisanje stranica pomoću tačaka</string>
+    <string name="show_dot_pagination_description">Prikazuje tačke za navigaciju po radnom prostoru.</string>
+    <string name="show_material_u_popup_label">Prikaži iskačući prozor u stilu dizajna Material You</string>
+    <string name="show_material_u_popup_description">Omogućava fleksibilniji i malo kompaktniji iskačući prozor.</string>
     <string name="popup_menu">Iskačući meni</string>
     <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje</string>
     <string name="show_system_settings_entry">Prikaži sistemsko podešavanje</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Prikaži dugme „Uredi”</string>
     <string name="status_bar_label">Statusna traka</string>
     <string name="show_status_bar">Prikaži statusnu traku</string>
     <string name="dark_status_bar_label">Tamna statusna traka</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google pretraga</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Omogući dok</string>
+    <string name="show_hotseat_title">Prikaži dok</string>
     <string name="hotseat_mode_label">Vidžet trake za pretragu</string>
     <string name="hotseat_mode_disabled">Onemogućeno</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Maksimalan broj rezultata predloga</string>
     <string name="max_settings_entry_result_count_title">Maksimalan broj rezultata podešavanja</string>
     <string name="max_recent_result_count_title">Maksimalan broj rezultata istorije</string>
+    <string name="max_web_suggestion_delay">Maksimalno kašnjenje veb-predloga</string>
     <string name="clear_history">Obriši</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Horizontalni razmak</string>
     <string name="perform_wide_search_title">Pretraga uređaja</string>
     <string name="perform_wide_search_file">Fajlovi</string>
+    <string name="pref_suggestion_label">Predlozi</string>
     <string name="pref_suggestion_title">Veb-predlozi (pomoću usluge <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Napredna pretraga</string>
     <string name="perform_wide_search_description">Pretražujte kontakte, fajlove i podešavanja na listi aplikacija.</string>
@@ -341,6 +347,7 @@
     <string name="action_share">Deli</string>
     <string name="action_lens">Objektiv</string>
     <string name="recents_clear_all">Obriši sve</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Radijus ugla ekrana</string>
     <string name="override_window_corner_radius_label">Prilagođeni radijus ugla ekrana</string>
     <string name="window_corner_radius_description">Kada prevučete nagore i otvorite Nedavno, trenutna aplikacija će pratiti vaš prst i smanjiti se u karticu. Pomoću ovog klizača podesite radijus ugla kartice kada je skoro u režimu celog ekrana kako bi odgovarala uglovima ekrana.</string>
@@ -438,4 +445,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s i %s</string>
     <string name="system_settings">Podešavanja sistema</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

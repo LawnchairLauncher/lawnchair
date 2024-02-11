@@ -224,6 +224,7 @@ import app.lawnchair.LawnchairApp;
 import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.OverScrollerCompat;
+import app.lawnchair.util.RecentHelper;
 
 /**
  * A list of recent tasks.
@@ -4229,8 +4230,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (isSuccess) {
                 // Remove all the task views now
                 finishRecentsAnimation(true /* toRecents */, false /* shouldPip */, () -> {
-                    UI_HELPER_EXECUTOR.getHandler().post(
-                            ActivityManagerWrapper.getInstance()::removeAllRecentTasks);
+                    RecentHelper.INSTANCE.clearAllTaskStacks(mContext);
                     removeTasksViewsAndClearAllButton();
                     startHome();
                 });

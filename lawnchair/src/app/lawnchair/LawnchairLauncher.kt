@@ -290,7 +290,7 @@ class LawnchairLauncher :
     }
 
     override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> =
-        Stream.concat(super.getSupportedShortcuts(), Stream.of(LawnchairShortcut.CUSTOMIZE))
+        Stream.concat(super.getSupportedShortcuts(), Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE))
 
     override fun updateTheme() {
         if (themeProvider.colorScheme != colorScheme) {

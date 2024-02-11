@@ -16,6 +16,8 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
@@ -154,5 +156,10 @@ public class IconPalette {
             }
         }
         return ColorUtils.LABToColor(low, a, b);
+    }
+
+    public static int getMutedColor(int color, float whiteScrimAlpha) {
+        int whiteScrim = setColorAlphaBound(Color.WHITE, (int) (255 * whiteScrimAlpha));
+        return ColorUtils.compositeColors(whiteScrim, color);
     }
 }

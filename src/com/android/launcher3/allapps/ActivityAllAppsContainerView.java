@@ -47,7 +47,6 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -100,6 +99,7 @@ import java.util.stream.Stream;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
@@ -208,10 +208,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mActivityContext = ActivityContext.lookupContext(context);
         mAllAppsStore = new AllAppsStore<>(mActivityContext);
 
-        mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+        mScrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
-        mHeaderProtectionColor = Themes.getAttrColor(context, R.attr.allappsHeaderProtectionColor);
+        mHeaderProtectionColor = ColorTokens.AllAppsHeaderProtectionColor.resolveColor(context);
 
         mWorkManager = new WorkProfileManager(
                 mActivityContext.getSystemService(UserManager.class),
@@ -302,9 +302,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 0,
                 0 // Bottom left
         };
-        final TypedValue value = new TypedValue();
-        getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, value, true);
-        mBottomSheetBackgroundColor = value.data;
+        mBottomSheetBackgroundColor =
+                Themes.getAttrColor(getContext(), R.attr.materialColorSurfaceDim);
         updateBackgroundVisibility(mActivityContext.getDeviceProfile());
         mSearchUiManager.initializeSearch(this);
     }

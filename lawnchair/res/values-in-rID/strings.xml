@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Hindari menggunakan ikon yang telah di cache dari paket ikon</string>
     <string name="transparent_background_icons">Ikon Bertema Transparan</string>
     <string name="transparent_background_icons_description">Gunakan latar belakang transparan pada ikon bertema</string>
-    <string name="smartspace_mode_selection">Seleksi Provider At a Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
     <string name="home_screen_rotaton_description">Ketika perangkat diputar.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Tambahkan Aplikasi Baru ke Layar Beranda</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Umpan</string>
+    <string name="minus_one_enable">Tampilkan Umpan</string>
     <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
+    <string name="minus_one">Umpan</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Default</string>
     <string name="wallpaper">Wallpaper</string>
@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Susunan Layar beranda dikunci.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Menu Pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci</string>
     <string name="show_system_settings_entry">Tampilkan Entri Pengaturan Sistem</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Pencarian Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Widget Bar Pencarian</string>
     <string name="hotseat_mode_disabled">Dimatikan</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Jumlah Hasil Saran Maksimal</string>
     <string name="max_settings_entry_result_count_title">Jumlah Hasil Entri Pengaturan Maksimal</string>
     <string name="max_recent_result_count_title">Jumlah Hasil Histori Maksimal</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Bersihkan</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Penelusuran Perangkat</string>
     <string name="perform_wide_search_file">File</string>
+    <string name="pref_suggestion_label">Saran</string>
     <string name="pref_suggestion_title">Saran web (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Penelusuran Lanjutan</string>
     <string name="perform_wide_search_description">Telusuri kontak, file, dan pengaturan Anda di pencarian laci aplikasi.</string>
@@ -339,6 +345,7 @@
     <string name="action_share">Bagikan</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Hapus Semua</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Tampilan Radius Sudut</string>
     <string name="override_window_corner_radius_label">Radius Sudut Layar Kustom</string>
     <string name="window_corner_radius_description">Ketika Anda menggesek ke atas untuk membuka Aplikasi Terkini, aplikasi saat ini mengikuti jari Anda, menyusut menjadi kartu. Gunakan penggeser ini untuk menyesuaikan radius sudut kartu saat hampir layar penuh sehingga cocok dengan sudut layar Anda.</string>
@@ -436,4 +443,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Pengaturan Sistem</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

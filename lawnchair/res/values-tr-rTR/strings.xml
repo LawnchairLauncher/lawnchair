@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Ön belleklenmiş ikonları kullanmaktan kaçın</string>
     <string name="transparent_background_icons">Saydam temalı ikonlar</string>
     <string name="transparent_background_icons_description">Temalı ikonlarda saydam arkaplan kullan</string>
-    <string name="smartspace_mode_selection">Bir Bakışta Sağlayıcı seçimi</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
     <string name="home_screen_rotaton_description">Cihaz döndürüldüğü zaman.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ana Ekrana Yeni Uygulamalar Ekleyin</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Akış</string>
+    <string name="minus_one_enable">Akışı göster</string>
     <string name="minus_one_unavailable">Akış mevcut değil</string>
+    <string name="minus_one">Akış</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Varsayılan</string>
     <string name="wallpaper">Duvar Kağıdı</string>
@@ -183,6 +183,10 @@
     <string name="home_screen_unlock">Ana Ekranın Kilidini Aç</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Ana Ekran kilitli.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Açılır menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Kilit tuşunu göster</string>
     <string name="show_system_settings_entry">Sistem ayarları girişini göster</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Arama</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Arama Kutusu Widget\'ı</string>
     <string name="hotseat_mode_disabled">Devre dışı</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">Clear</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Uygulama Çekmecesi Sütunları</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_label">Öneriler</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Advanced Search</string>
     <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
@@ -340,6 +346,7 @@
     <string name="action_share">Paylaş</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Hepsini Temizle</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Ekran Köşe Yarıçapı</string>
     <string name="override_window_corner_radius_label">Özel Köşe Yarıçapı</string>
     <string name="window_corner_radius_description">Son Kullanılanları açmak için yukarı kaydırınca mevcut uygulama parmağınızı takip edip bir kart haline küçülür. Bu kart neredeyse tam ekranken kartın köşesinin yarıçapının ekranınızın köşesiyle uyuşması için bu kaydırıcıyı kullanın.</string>
@@ -437,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Sistem ayarları</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

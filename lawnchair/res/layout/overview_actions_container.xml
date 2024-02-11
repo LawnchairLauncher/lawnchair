@@ -107,6 +107,22 @@
             android:layout_height="1dp"
             android:layout_weight="1"
             android:visibility="gone" />
+
+        <app.lawnchair.views.CustomButton
+            style="@style/OverviewActionButton"
+            android:id="@+id/action_locked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_lock"
+            android:drawableStart="@drawable/ic_locked_recents"
+            android:visibility="gone" />
+
+        <Space
+            android:id="@+id/locked_space"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:visibility="gone" />
     </LinearLayout>
 
 </app.lawnchair.overview.LawnchairOverviewActionsView>

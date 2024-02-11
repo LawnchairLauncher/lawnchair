@@ -40,6 +40,7 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v3
         with:
+          cache-encryption-key: Da25KUVSE5jbGds2zXmfXw==
           gradle-home-cache-cleanup: true
       - name: Write sign info
         if: github.repository_owner == 'LawnchairLauncher'

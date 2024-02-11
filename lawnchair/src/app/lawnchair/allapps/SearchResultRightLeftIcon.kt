@@ -16,12 +16,14 @@ import app.lawnchair.util.AppInfo
 import app.lawnchair.util.AppInfoHelper
 import app.lawnchair.util.ImageViewWrapper
 import com.android.app.search.LayoutType
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 
 class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
     LinearLayout(context, attrs), SearchResultView {
 
     private val launcher = context.launcher
+    private var grid: DeviceProfile = launcher.deviceProfile
     private lateinit var title: TextView
     private lateinit var avatar: SearchResultIcon
     private lateinit var call: ImageView
@@ -66,7 +68,7 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             LayoutParams.MATCH_PARENT,
             heightRes,
         )
-        val horizontalMargin = 48
+        val horizontalMargin = grid.allAppsLeftRightMargin
         layoutParams.leftMargin = horizontalMargin
         layoutParams.rightMargin = horizontalMargin
         this.layoutParams = layoutParams

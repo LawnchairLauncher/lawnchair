@@ -76,8 +76,54 @@ object DrawableTokens {
         .setColor(ColorTokens.Surface)
 
     @JvmField
+    val WidgetsListBackground = NewDrawable { context, scheme, uiColorMode ->
+        val list = StateListDrawable()
+        list.setEnterFadeDuration(100)
+
+        val unselected = AppCompatResources.getDrawable(
+            context,
+            R.drawable.bg_widgets_header,
+        )
+        unselected?.setTint(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
+
+        val selected = AppCompatResources.getDrawable(
+            context,
+            R.drawable.bg_widgets_header,
+        )
+        selected?.setTint(ColorTokens.WidgetListRowColor.resolveColor(context, scheme, uiColorMode))
+
+        list.addState(intArrayOf(-android.R.attr.state_selected), unselected)
+        list.addState(intArrayOf(android.R.attr.state_selected), selected)
+
+        list
+    }
+
+    @JvmField
+    val WidgetsContentBackground = NewDrawable { context, scheme, uiColorMode ->
+        val list = StateListDrawable()
+        list.setEnterFadeDuration(100)
+
+        val unselected = AppCompatResources.getDrawable(
+            context,
+            R.drawable.bg_widgets_content,
+        )
+        unselected?.setTint(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
+
+        val selected = AppCompatResources.getDrawable(
+            context,
+            R.drawable.bg_widgets_content,
+        )
+        selected?.setTint(ColorTokens.WidgetListRowColor.resolveColor(context, scheme, uiColorMode))
+
+        list.addState(intArrayOf(-android.R.attr.state_selected), unselected)
+        list.addState(intArrayOf(android.R.attr.state_selected), selected)
+
+        list
+    }
+
+    @JvmField
     val WidgetsRecommendationBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.widgets_surface_background)
-        .setColor(ColorTokens.Surface)
+        .setColor(ColorTokens.WidgetListRowColor)
 
     @JvmField
     val WidgetResizeFrame = ResourceDrawableToken<GradientDrawable>(R.drawable.widget_resize_frame)
@@ -107,6 +153,16 @@ object DrawableTokens {
     }
 
     @JvmField
+    val AllAppsTabsMaskDrawable = NewDrawable { context, scheme, uiColorMode ->
+        val mask = GradientDrawable()
+        val radius = context.resources.getDimension(R.dimen.all_apps_header_pill_corner_radius)
+        mask.cornerRadius = radius
+        mask.setColor(ColorTokens.FocusHighlight.resolveColor(context, scheme, uiColorMode))
+
+        mask
+    }
+
+    @JvmField
     val WorkAppsToggleBackground = NewDrawable { context, scheme, uiColorMode ->
         val list = StateListDrawable()
 
@@ -127,6 +183,7 @@ object DrawableTokens {
         list
     }
 
-    @JvmField val WorkCard = ResourceDrawableToken<GradientDrawable>(R.drawable.work_card)
+    @JvmField
+    val WorkCard = ResourceDrawableToken<GradientDrawable>(R.drawable.work_card)
         .setColor(ColorTokens.Surface)
 }

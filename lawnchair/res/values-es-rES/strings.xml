@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <string name="transparent_background_icons">Iconos temáticos transparentes</string>
     <string name="transparent_background_icons_description">Usar fondo transparente en iconos temáticos</string>
-    <string name="smartspace_mode_selection">Selección de proveedores de Un vistazo</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
@@ -167,9 +166,10 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
-    <string name="feed_provider">Feed Provider</string>
+    <string name="minus_one">Feed</string>
+    <string name="feed_provider">Recurso de distribución</string>
     <string name="feed_default">Predeterminado</string>
     <string name="wallpaper">Fondo de Pantalla</string>
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
@@ -183,10 +183,14 @@
     <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">La pantalla de inicio está bloqueada.</string>
+    <string name="show_dot_pagination_label">Mostrar paginación de puntos</string>
+    <string name="show_dot_pagination_description">Habilitar la visualización de la paginación de puntos en el área de trabajo.</string>
+    <string name="show_material_u_popup_label">Mostrar emergente Material U</string>
+    <string name="show_material_u_popup_description">Habilitar emergente con rebote y ligeramente consolidado.</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo</string>
     <string name="show_system_settings_entry">Mostrar atajo a la configuración del sistema</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Mostrar botón de edición</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
     <string name="dark_status_bar_label">Barra de Estado Oscura</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Búsqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Enable Dock</string>
+    <string name="show_hotseat_title">Mostrar Dock</string>
     <string name="hotseat_mode_label">Widget de barra de búsqueda</string>
     <string name="hotseat_mode_disabled">Deshabilitado</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -252,7 +256,7 @@
     <string name="corner_radius_label">Radio de esquina</string>
     <string name="apply_accent_color_label">Aplicar acento de color</string>
     <string name="search_provider">Proveedor de Búsqueda</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">Relleno inferior</string>
     <string name="grid">Cuadrícula</string>
     <string name="dock_icons">Iconos del Dock</string>
     <!-- SearchProviderPreferences -->
@@ -270,8 +274,8 @@
     <string name="hidden_apps_label">Aplicaciones ocultas</string>
     <string name="show_enable_smart_hide">Mostrar cuando se escribe el nombre completo</string>
     <string name="hide_hidden_apps_search">Ocultar en los resultados de búsqueda</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Cargar aplicaciones en conjunto</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Cargar y mostrar iconos en conjunto en lugar de cargar y mostrar iconos individualmente</string>
     <string name="pref_category_search">Buscar</string>
     <string name="show_app_search_bar">Mostrar Barra de Búsqueda</string>
     <string name="pref_search_auto_show_keyboard">Mostrar teclado automáticamente</string>
@@ -283,13 +287,15 @@
     <string name="max_suggestion_result_count_title">Número máximo de Sugerencias en la búsqueda</string>
     <string name="max_settings_entry_result_count_title">Número máximo de Ajustes encontrado</string>
     <string name="max_recent_result_count_title">Número máximo de historial encontrado</string>
+    <string name="max_web_suggestion_delay">Retraso máximo de sugerencias web</string>
     <string name="clear_history">Borrar</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Columnas del cajón de aplicaciones</string>
     <string name="row_height_label">Altura de fila</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="app_drawer_indent_label">Relleno horizontal</string>
     <string name="perform_wide_search_title">Buscar en el Dispositivo</string>
     <string name="perform_wide_search_file">Archivos</string>
+    <string name="pref_suggestion_label">Sugerencias</string>
     <string name="pref_suggestion_title">Sugerencias web (a través de <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Búsqueda Avanzada</string>
     <string name="perform_wide_search_description">Busca tus contactos, archivos y ajustes en la búsqueda del cajón de aplicaciones.</string>
@@ -340,6 +346,7 @@
     <string name="action_share">Compartir</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Borrar todo</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Radio de esquina de la pantalla</string>
     <string name="override_window_corner_radius_label">Radio de esquina de la pantalla personalizado</string>
     <string name="window_corner_radius_description">Cuando deslizas hacia abajo para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
@@ -437,4 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Ajustes del sistema</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>
