@@ -109,7 +109,7 @@ private val product = listOf(
         socialUrl = "https://github.com/msfjarvis",
     ),
     TeamMember(
-        name = "John Andrew Camu",
+        name = "John Andrew Camu (MrSluffy)",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/36076410",
         socialUrl = "https://github.com/MrSluffy",
