@@ -631,11 +631,11 @@ public class SystemUiProxy implements ISystemUiProxy {
         if (mPip != null) {
             try {
                 return mPip.startSwipePipToHome(componentName, activityInfo,
-                        pictureInPictureParams, launcherRotation, new PipData(hotseatKeepClearArea));
+                        pictureInPictureParams, launcherRotation, new PipData(hotseatBarSize));
             } catch (Throwable e) {
                 try {
                     return mPip.startSwipePipToHome(componentName, activityInfo,
-                            pictureInPictureParams, launcherRotation, new PipData(hotseatBarSize));
+                            pictureInPictureParams, launcherRotation, new PipData(hotseatKeepClearArea));
                 } catch (Throwable t) {
                     Log.w(TAG, "Failed call startSwipePipToHome", e);
                 }

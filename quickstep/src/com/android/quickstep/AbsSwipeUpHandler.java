@@ -1598,6 +1598,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
                             mRecentsAnimationController.screenshotTask(taskId));
                 });
 
+                if (mSwipePipToHomeAnimator == null) return;
+
                 // let SystemUi reparent the overlay leash as soon as possible
                 SystemUiProxy.INSTANCE.get(mContext).stopSwipePipToHome(
                         mSwipePipToHomeAnimator.getTaskId(),
