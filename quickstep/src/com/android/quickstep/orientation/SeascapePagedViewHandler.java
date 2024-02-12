@@ -244,7 +244,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         iconAppChipView.setPivotX(isRtl ? iconMenuParams.width / 2f : iconCenter);
         iconAppChipView.setPivotY(
                 isRtl ? iconMenuParams.width / 2f : iconCenter - iconMenuMargin);
-        iconAppChipView.setTranslationY(0);
+        iconAppChipView.setSplitTranslationY(0);
         iconAppChipView.setRotation(getDegreesRotated());
     }
 
@@ -281,12 +281,15 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         primaryIconView.setTranslationX(0);
         secondaryIconView.setTranslationX(0);
         if (enableOverviewIconMenu()) {
+            IconAppChipView primaryAppChipView = (IconAppChipView) primaryIconView;
+            IconAppChipView secondaryAppChipView = (IconAppChipView) secondaryIconView;
             if (isRtl) {
-                primaryIconView.setTranslationY(groupedTaskViewHeight - primarySnapshotHeight);
-                secondaryIconView.setTranslationY(0);
+                primaryAppChipView.setSplitTranslationY(
+                        groupedTaskViewHeight - primarySnapshotHeight);
+                secondaryAppChipView.setSplitTranslationY(0);
             } else {
-                secondaryIconView.setTranslationY(-primarySnapshotHeight);
-                primaryIconView.setTranslationY(0);
+                secondaryAppChipView.setSplitTranslationY(-primarySnapshotHeight);
+                primaryAppChipView.setSplitTranslationY(0);
             }
         } else if (splitConfig.initiatedFromSeascape) {
             // if the split was initiated from seascape,

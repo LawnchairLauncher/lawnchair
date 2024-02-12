@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.Flags.enableOverviewIconMenu;
+import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
@@ -78,8 +79,6 @@ public class TaskMenuView extends AbstractFloatingView {
     private LinearLayout mOptionLayout;
     private float mMenuTranslationYBeforeOpen;
     private float mMenuTranslationXBeforeOpen;
-    private float mIconViewTranslationYBeforeOpen;
-    private float mIconViewTranslationXBeforeOpen;
 
     public TaskMenuView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -277,8 +276,6 @@ public class TaskMenuView extends AbstractFloatingView {
     private void animateOpen() {
         mMenuTranslationYBeforeOpen = getTranslationY();
         mMenuTranslationXBeforeOpen = getTranslationX();
-        mIconViewTranslationYBeforeOpen = getIconView().getTranslationY();
-        mIconViewTranslationXBeforeOpen = getIconView().getTranslationX();
         animateOpenOrClosed(false);
         mIsOpen = true;
     }
@@ -323,10 +320,10 @@ public class TaskMenuView extends AbstractFloatingView {
                             : mMenuTranslationYBeforeOpen + additionalTranslationY);
             translationYAnim.setInterpolator(EMPHASIZED);
 
+            IconAppChipView iconAppChip = (IconAppChipView) mTaskContainer.getIconView().asView();
             ObjectAnimator menuTranslationYAnim = ObjectAnimator.ofFloat(
-                    getIconView(), TRANSLATION_Y,
-                    closing ? mIconViewTranslationYBeforeOpen
-                            : mIconViewTranslationYBeforeOpen + additionalTranslationY);
+                    iconAppChip.getMenuTranslationY(),
+                    MULTI_PROPERTY_VALUE, closing ? 0 : additionalTranslationY);
             menuTranslationYAnim.setInterpolator(EMPHASIZED);
 
             mOpenCloseAnimator.playTogether(translationYAnim, menuTranslationYAnim);
@@ -344,10 +341,10 @@ public class TaskMenuView extends AbstractFloatingView {
                             : mMenuTranslationXBeforeOpen - additionalTranslationX);
             translationXAnim.setInterpolator(EMPHASIZED);
 
+            IconAppChipView iconAppChip = (IconAppChipView) mTaskContainer.getIconView().asView();
             ObjectAnimator menuTranslationXAnim = ObjectAnimator.ofFloat(
-                    getIconView(), TRANSLATION_X,
-                    closing ? mIconViewTranslationXBeforeOpen
-                            : mIconViewTranslationXBeforeOpen - additionalTranslationX);
+                    iconAppChip.getMenuTranslationX(),
+                    MULTI_PROPERTY_VALUE, closing ? 0 : -additionalTranslationX);
             menuTranslationXAnim.setInterpolator(EMPHASIZED);
 
             mOpenCloseAnimator.playTogether(translationXAnim, menuTranslationXAnim);
@@ -387,9 +384,11 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void resetOverviewIconMenu() {
         if (enableOverviewIconMenu()) {
-            ((IconAppChipView) mTaskContainer.getIconView()).reset();
+            IconAppChipView iconAppChipView = (IconAppChipView) mTaskContainer.getIconView();
+            iconAppChipView.reset();
+            iconAppChipView.setMenuTranslationX(0);
+            iconAppChipView.setMenuTranslationY(0);
             setTranslationY(mMenuTranslationYBeforeOpen);
-            getIconView().setTranslationY(mIconViewTranslationYBeforeOpen);
         }
     }
 
