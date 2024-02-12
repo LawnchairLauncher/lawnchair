@@ -261,6 +261,23 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         }
     }
 
+    /**
+     * Calculates the taskView size for carousel during app to overview animation on tablets.
+     */
+    public final void calculateCarouselTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            PagedOrientationHandler orientedState) {
+        if (dp.isTablet && dp.isGestureMode) {
+            Resources res = context.getResources();
+            float minScale = res.getFloat(R.dimen.overview_carousel_min_scale);
+            Rect gridRect = new Rect();
+            calculateGridSize(dp, context, gridRect);
+            calculateTaskSizeInternal(context, dp, gridRect, minScale, Gravity.CENTER | Gravity.TOP,
+                    outRect);
+        } else {
+            calculateTaskSize(context, dp, outRect, orientedState);
+        }
+    }
+
     private void calculateFocusTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         Resources res = context.getResources();
         float maxScale = res.getFloat(R.dimen.overview_max_scale);
@@ -286,13 +303,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     private void calculateTaskSizeInternal(Context context, DeviceProfile dp,
-            Rect potentialTaskRect, float maxScale, int gravity, Rect outRect) {
+            Rect potentialTaskRect, float targetScale, int gravity, Rect outRect) {
         PointF taskDimension = getTaskDimension(context, dp);
 
         float scale = Math.min(
                 potentialTaskRect.width() / taskDimension.x,
                 potentialTaskRect.height() / taskDimension.y);
-        scale = Math.min(scale, maxScale);
+        scale = Math.min(scale, targetScale);
         int outWidth = Math.round(scale * taskDimension.x);
         int outHeight = Math.round(scale * taskDimension.y);
 

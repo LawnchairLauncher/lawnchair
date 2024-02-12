@@ -30,6 +30,7 @@ import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
 import static com.android.launcher3.BaseActivity.EVENT_STARTED;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.launcher3.PagedView.INVALID_PAGE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
@@ -2561,9 +2562,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         float scrollOffset = Math.abs(mRecentsView.getScrollOffset(mRecentsView.getCurrentPage()));
+        Rect carouselTaskSize = enableGridOnlyOverview()
+                ? mRecentsView.getLastComputedCarouselTaskSize()
+                : mRecentsView.getLastComputedTaskSize();
         int maxScrollOffset = mRecentsView.getPagedOrientationHandler().getPrimaryValue(
-                mRecentsView.getLastComputedTaskSize().width(),
-                mRecentsView.getLastComputedTaskSize().height());
+                carouselTaskSize.width(), carouselTaskSize.height());
         maxScrollOffset += mRecentsView.getPageSpacing();
 
         float maxScaleProgress =
