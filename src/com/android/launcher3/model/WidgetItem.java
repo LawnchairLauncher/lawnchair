@@ -19,6 +19,7 @@ import androidx.core.os.BuildCompat;
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.ComponentKey;
@@ -35,6 +36,7 @@ public class WidgetItem extends ComponentKey {
     public final LauncherAppWidgetProviderInfo widgetInfo;
     public final ShortcutConfigActivityInfo activityInfo;
 
+    public BitmapInfo bitmap = BitmapInfo.LOW_RES_INFO;
     public final String label;
     public final CharSequence description;
     public final int spanX, spanY;
