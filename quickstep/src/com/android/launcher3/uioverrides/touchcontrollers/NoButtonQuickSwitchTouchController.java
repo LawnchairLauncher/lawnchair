@@ -193,6 +193,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mMotionPauseDetector.clear();
         if (start) {
             InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS,
+                    "Home");
 
             mStartState = mLauncher.getStateManager().getState();
 
@@ -350,6 +352,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                     .dispatchOnStart();
             return;
         }
+        InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
 
         final LauncherState targetState;
         if (horizontalFling && verticalFling) {
@@ -471,6 +474,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
         if (targetState == QUICK_SWITCH_FROM_HOME) {
             InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
+        } else if (targetState == OVERVIEW) {
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
         }
 
         mLauncher.getStateManager().goToState(targetState, false, forEndCallback(this::clearState));
