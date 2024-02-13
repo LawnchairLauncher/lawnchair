@@ -16,7 +16,10 @@
 
 package com.android.launcher3.taskbar;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.quickstep.util.TISBindHelper;
 
 /**
  * A data source which integrates with a Launcher instance, used specifically for a
@@ -49,5 +52,11 @@ public class DesktopTaskbarUIController extends TaskbarUIController {
     @Override
     public boolean supportsVisualStashing() {
         return false;
+    }
+
+    @Nullable
+    @Override
+    protected TISBindHelper getTISBindHelper() {
+        return mLauncher.getTISBindHelper();
     }
 }

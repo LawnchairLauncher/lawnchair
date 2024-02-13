@@ -1485,6 +1485,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         btv.post(() -> mControllers.taskbarPopupController.showForIcon(btv));
     }
 
+    public void launchKeyboardFocusedTask() {
+        mControllers.uiController.launchKeyboardFocusedTask();
+    }
+
     public boolean isInApp() {
         return mControllers.taskbarStashController.isInApp();
     }

@@ -147,7 +147,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         KeyboardQuickSwitchTaskView taskView = (KeyboardQuickSwitchTaskView) layoutInflater.inflate(
                 R.layout.keyboard_quick_switch_taskview, mContent, false);
         taskView.setId(View.generateViewId());
-        taskView.setOnClickListener(v -> mViewCallbacks.launchTappedTask(index));
+        taskView.setOnClickListener(v -> mViewCallbacks.launchTaskAt(index));
 
         LayoutParams lp = new LayoutParams(width, mTaskViewHeight);
         // Create a left-to-right ordering of views (or right-to-left in RTL locales)
@@ -186,7 +186,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         KeyboardQuickSwitchTaskView overviewButton =
                 (KeyboardQuickSwitchTaskView) layoutInflater.inflate(
                         R.layout.keyboard_quick_switch_overview, this, false);
-        overviewButton.setOnClickListener(v -> mViewCallbacks.launchTappedTask(MAX_TASKS));
+        overviewButton.setOnClickListener(v -> mViewCallbacks.launchTaskAt(MAX_TASKS));
 
         overviewButton.<TextView>findViewById(R.id.text).setText(overflowString);
 
