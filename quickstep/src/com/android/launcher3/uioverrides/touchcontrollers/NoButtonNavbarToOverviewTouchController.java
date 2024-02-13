@@ -38,6 +38,7 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
@@ -53,6 +54,7 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import java.util.function.Consumer;
 
@@ -148,6 +150,8 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         mMotionPauseDetector.clear();
 
         if (handlingOverviewAnim()) {
+            InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS,
+                    "Home");
             mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
         }
 
@@ -182,6 +186,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         if (mStartedOverview) {
             goToOverviewOrHomeOnDragEnd(velocity);
         } else {
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
             super.onDragEnd(velocity);
         }
 
@@ -237,6 +242,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     private void maybeSwipeInteractionToOverviewComplete() {
         if (mReachedOverview && !mDetector.isDraggingState()) {
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
             onSwipeInteractionCompleted(OVERVIEW);
         }
     }
@@ -280,6 +286,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         if (goToHomeInsteadOfOverview) {
             new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(NORMAL), null)
                     .animateWithVelocity(velocity);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
         }
         if (mReachedOverview) {
             float distanceDp = dpiFromPx(Math.max(

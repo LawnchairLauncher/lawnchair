@@ -459,6 +459,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Nullable
     protected RemoteTargetHandle[] mRemoteTargetHandles;
+    protected final Rect mLastComputedCarouselTaskSize = new Rect();
     protected final Rect mLastComputedTaskSize = new Rect();
     protected final Rect mLastComputedGridSize = new Rect();
     protected final Rect mLastComputedGridTaskSize = new Rect();
@@ -2108,6 +2109,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSizeStrategy.calculateDesktopTaskSize(mActivity, mActivity.getDeviceProfile(),
                     mLastComputedDesktopTaskSize);
         }
+        if (enableGridOnlyOverview()) {
+            mSizeStrategy.calculateCarouselTaskSize(mActivity, dp, mLastComputedCarouselTaskSize,
+                    getPagedOrientationHandler());
+        }
 
         mTaskGridVerticalDiff = mLastComputedGridTaskSize.top - mLastComputedTaskSize.top;
         mTopBottomRowHeightDiff =
@@ -2137,9 +2142,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         float accumulatedTranslationX = 0;
-        float translateXToMiddle = enableGridOnlyOverview() && mActivity.getDeviceProfile().isTablet
-                ? mActivity.getDeviceProfile().widthPx / 2 - mLastComputedGridTaskSize.centerX()
-                : 0;
+        float translateXToMiddle = 0;
+        if (enableGridOnlyOverview() && mActivity.getDeviceProfile().isTablet) {
+            translateXToMiddle = mIsRtl
+                    ? mLastComputedCarouselTaskSize.right - mLastComputedTaskSize.right
+                    : mLastComputedCarouselTaskSize.left - mLastComputedTaskSize.left;
+        }
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = requireTaskViewAt(i);
             taskView.updateTaskSize();
@@ -2204,6 +2212,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /** Gets the last computed desktop task size */
     public Rect getLastComputedDesktopTaskSize() {
         return mLastComputedDesktopTaskSize;
+    }
+
+    public Rect getLastComputedCarouselTaskSize() {
+        return mLastComputedCarouselTaskSize;
     }
 
     /** Gets the task size for modal state. */
@@ -2675,6 +2687,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     tvs.taskSecondaryTranslation.value = runningTaskSecondaryGridTranslation;
                 } else {
                     animatorSet.play(ObjectAnimator.ofFloat(this, RECENTS_GRID_PROGRESS, 1));
+                    animatorSet.play(tvs.carouselScale.animateToValue(1));
+                    animatorSet.play(tvs.carouselPrimaryTranslation.animateToValue(0));
+                    animatorSet.play(tvs.carouselSecondaryTranslation.animateToValue(0));
                     animatorSet.play(tvs.taskPrimaryTranslation.animateToValue(
                             runningTaskPrimaryGridTranslation));
                     animatorSet.play(tvs.taskSecondaryTranslation.animateToValue(
@@ -4411,12 +4426,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mTempPointF.set(mLastComputedTaskSize.centerX(), mLastComputedTaskSize.bottom);
             }
         } else {
-            mTempRect.set(mLastComputedTaskSize);
             // Only update pivot when it is tablet and not in grid yet, so the pivot is correct
             // for non-current tasks when swiping up to overview
             if (enableGridOnlyOverview() && mActivity.getDeviceProfile().isTablet
                     && !mOverviewGridEnabled) {
-                mTempRect.offset(mActivity.getDeviceProfile().widthPx / 2 - mTempRect.centerX(), 0);
+                mTempRect.set(mLastComputedCarouselTaskSize);
+            } else {
+                mTempRect.set(mLastComputedTaskSize);
             }
             getPagedViewOrientedState().getFullScreenScaleAndPivot(mTempRect,
                     mActivity.getDeviceProfile(), mTempPointF);
@@ -5117,7 +5133,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Returns the scale up required on the view, so that it coves the screen completely
      */
     public float getMaxScaleForFullScreen() {
-        getTaskSize(mTempRect);
+        if (enableGridOnlyOverview() && mActivity.getDeviceProfile().isTablet
+                && !mOverviewGridEnabled) {
+            mTempRect.set(mLastComputedCarouselTaskSize);
+        } else {
+            mTempRect.set(mLastComputedTaskSize);
+        }
         return getPagedViewOrientedState().getFullScreenScaleAndPivot(
                 mTempRect, mActivity.getDeviceProfile(), mTempPointF);
     }
@@ -5545,7 +5566,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = requireTaskViewAt(i);
             float scrollDiff = taskView.getScrollAdjustment(showAsGrid);
-            int pageScroll = newPageScrolls[i] + (int) scrollDiff;
+            int pageScroll = newPageScrolls[i] + Math.round(scrollDiff);
             if ((mIsRtl && pageScroll < lastTaskScroll)
                     || (!mIsRtl && pageScroll > lastTaskScroll)) {
                 pageScroll = lastTaskScroll;

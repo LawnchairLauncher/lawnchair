@@ -109,6 +109,13 @@ public class AnimatedFloat {
     public void cancelAnimation() {
         if (mValueAnimator != null) {
             mValueAnimator.cancel();
+            // Clears the property values, so further ObjectAnimator#setCurrentFraction from e.g.
+            // AnimatorPlaybackController calls would do nothing. The null check is necessary to
+            // avoid mValueAnimator being set to null in onAnimationEnd.
+            if (mValueAnimator != null) {
+                mValueAnimator.setValues();
+                mValueAnimator = null;
+            }
         }
     }
 

@@ -23,6 +23,7 @@ import static android.view.WindowInsets.Type.statusBars;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -50,7 +51,6 @@ import java.util.Locale;
 /** An Activity that can host Launcher's widget picker. */
 public class WidgetPickerActivity extends BaseActivity {
     private static final String TAG = "WidgetPickerActivity";
-    private static final boolean DEBUG = false;
 
     /**
      * Name of the extra that indicates that a widget being dragged.
@@ -65,13 +65,13 @@ public class WidgetPickerActivity extends BaseActivity {
     private static final String EXTRA_DESIRED_WIDGET_WIDTH = "desired_widget_width";
     private static final String EXTRA_DESIRED_WIDGET_HEIGHT = "desired_widget_height";
 
-
     private SimpleDragLayer<WidgetPickerActivity> mDragLayer;
     private WidgetsModel mModel;
     private final PopupDataProvider mPopupDataProvider = new PopupDataProvider(i -> {});
 
     private int mDesiredWidgetWidth;
     private int mDesiredWidgetHeight;
+    private int mWidgetCategoryFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +103,10 @@ public class WidgetPickerActivity extends BaseActivity {
                 getIntent().getIntExtra(EXTRA_DESIRED_WIDGET_WIDTH, 0);
         mDesiredWidgetHeight =
                 getIntent().getIntExtra(EXTRA_DESIRED_WIDGET_HEIGHT, 0);
+
+        // Defaults to '0' to indicate that there isn't a category filter.
+        mWidgetCategoryFilter =
+                getIntent().getIntExtra(AppWidgetManager.EXTRA_CATEGORY_FILTER, 0);
 
         refreshAndBindWidgets();
     }
@@ -199,6 +203,14 @@ public class WidgetPickerActivity extends BaseActivity {
             return rejectWidget(widget, "shortcut");
         }
 
+        if (mWidgetCategoryFilter > 0 && (info.widgetCategory & mWidgetCategoryFilter) == 0) {
+            return rejectWidget(
+                    widget,
+                    "doesn't match category filter [filter=%d, widget=%d]",
+                    mWidgetCategoryFilter,
+                    info.widgetCategory);
+        }
+
         if (mDesiredWidgetWidth == 0 && mDesiredWidgetHeight == 0) {
             // Accept the widget if the desired dimensions are unspecified.
             return acceptWidget(widget);
@@ -210,22 +222,18 @@ public class WidgetPickerActivity extends BaseActivity {
             if (info.maxResizeWidth > 0 && info.maxResizeWidth < mDesiredWidgetWidth) {
                 return rejectWidget(
                         widget,
-                        String.format(
-                                Locale.ENGLISH,
-                                "maxResizeWidth[%d] < mDesiredWidgetWidth[%d]",
-                                info.maxResizeWidth,
-                                mDesiredWidgetWidth));
+                        "maxResizeWidth[%d] < mDesiredWidgetWidth[%d]",
+                        info.maxResizeWidth,
+                        mDesiredWidgetWidth);
             }
 
             final int minWidth = info.minResizeWidth > 0 ? info.minResizeWidth : info.minWidth;
             if (minWidth > mDesiredWidgetWidth) {
                 return rejectWidget(
                         widget,
-                        String.format(
-                                Locale.ENGLISH,
-                                "minWidth[%d] > mDesiredWidgetWidth[%d]",
-                                minWidth,
-                                mDesiredWidgetWidth));
+                        "minWidth[%d] > mDesiredWidgetWidth[%d]",
+                        minWidth,
+                        mDesiredWidgetWidth);
             }
         }
 
@@ -235,22 +243,18 @@ public class WidgetPickerActivity extends BaseActivity {
             if (info.maxResizeHeight > 0 && info.maxResizeHeight < mDesiredWidgetHeight) {
                 return rejectWidget(
                         widget,
-                        String.format(
-                                Locale.ENGLISH,
-                                "maxResizeHeight[%d] < mDesiredWidgetHeight[%d]",
-                                info.maxResizeHeight,
-                                mDesiredWidgetHeight));
+                        "maxResizeHeight[%d] < mDesiredWidgetHeight[%d]",
+                        info.maxResizeHeight,
+                        mDesiredWidgetHeight);
             }
 
             final int minHeight = info.minResizeHeight > 0 ? info.minResizeHeight : info.minHeight;
             if (minHeight > mDesiredWidgetHeight) {
                 return rejectWidget(
                         widget,
-                        String.format(
-                                Locale.ENGLISH,
-                                "minHeight[%d] > mDesiredWidgetHeight[%d]",
-                                minHeight,
-                                mDesiredWidgetHeight));
+                        "minHeight[%d] > mDesiredWidgetHeight[%d]",
+                        minHeight,
+                        mDesiredWidgetHeight);
             }
         }
 
@@ -264,8 +268,11 @@ public class WidgetPickerActivity extends BaseActivity {
     }
 
     private static WidgetAcceptabilityVerdict rejectWidget(
-            WidgetItem widget, String rejectionReason) {
-        return new WidgetAcceptabilityVerdict(false, widget.label, rejectionReason);
+            WidgetItem widget, String rejectionReason, Object... args) {
+        return new WidgetAcceptabilityVerdict(
+                false,
+                widget.label,
+                String.format(Locale.ENGLISH, rejectionReason, args));
     }
 
     private static WidgetAcceptabilityVerdict acceptWidget(WidgetItem widget) {
@@ -276,7 +283,7 @@ public class WidgetPickerActivity extends BaseActivity {
             boolean isAcceptable, String widgetLabel, String reason) {
         void maybeLogVerdict() {
             // Only log a verdict if a reason is specified.
-            if (DEBUG && !reason.isEmpty()) {
+            if (Log.isLoggable(TAG, Log.DEBUG) && !reason.isEmpty()) {
                 Log.i(TAG, String.format(
                         Locale.ENGLISH,
                         "%s: %s because %s",

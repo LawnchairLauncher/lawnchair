@@ -18,6 +18,8 @@ package com.android.quickstep.views;
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -42,6 +44,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -86,6 +89,67 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     private AnimatorSet mAnimator;
 
     private int mMaxWidth = Integer.MAX_VALUE;
+
+    private static final int INDEX_SPLIT_TRANSLATION = 0;
+    private static final int INDEX_MENU_TRANSLATION = 1;
+    private static final int INDEX_COUNT_TRANSLATION = 2;
+
+    private final MultiPropertyFactory<View> mViewTranslationX;
+    private final MultiPropertyFactory<View> mViewTranslationY;
+
+    /**
+     * Sets the view split x-axis translation
+     * @param translationX x-axis translation
+     */
+    public void setSplitTranslationX(float translationX) {
+        mViewTranslationX.get(INDEX_SPLIT_TRANSLATION).setValue(translationX);
+    }
+
+    /**
+     * Sets the view split y-axis translation
+     * @param translationY y-axis translation
+     */
+    public void setSplitTranslationY(float translationY) {
+        mViewTranslationY.get(INDEX_SPLIT_TRANSLATION).setValue(translationY);
+    }
+
+    /**
+     * Gets the menu x-axis translation for split task
+     */
+    public MultiPropertyFactory<View>.MultiProperty getMenuTranslationX() {
+        return mViewTranslationX.get(INDEX_MENU_TRANSLATION);
+    }
+
+    /**
+     * Translate the View on the X-axis without overriding the raw translation.
+     * This function is used for the menu split animation. It allows external animations to
+     * translate this view without affecting the value of the original translation. Thus,
+     * it is possible to restore the initial translation value.
+     *
+     * @param translationX Animated translation to be aggregated to the raw translation.
+     */
+    public void setMenuTranslationX(float translationX) {
+        mViewTranslationX.get(INDEX_MENU_TRANSLATION).setValue(translationX);
+    }
+
+    /**
+     * Gets the menu y-axis translation for split task
+     */
+    public MultiPropertyFactory<View>.MultiProperty getMenuTranslationY() {
+        return mViewTranslationY.get(INDEX_MENU_TRANSLATION);
+    }
+
+    /**
+     * Translate the View on the Y-axis without overriding the raw translation.
+     * This function is used for the menu split animation. It allows external animations to
+     * translate this view without affecting the value of the original translation. Thus,
+     * it is possible to restore the initial translation value.
+     *
+     * @param translationY Animated translation to be aggregated to the raw translation.
+     */
+    public void setMenuTranslationY(float translationY) {
+        mViewTranslationY.get(INDEX_MENU_TRANSLATION).setValue(translationY);
+    }
 
     public IconAppChipView(Context context) {
         this(context, null);
@@ -136,6 +200,13 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
                 R.dimen.task_thumbnail_icon_menu_arrow_size);
         mIconViewDrawableExpandedSize = res.getDimensionPixelSize(
                 R.dimen.task_thumbnail_icon_menu_app_icon_expanded_size);
+
+        mViewTranslationX = new MultiPropertyFactory<>(this, VIEW_TRANSLATE_X,
+                INDEX_COUNT_TRANSLATION,
+                Float::sum);
+        mViewTranslationY = new MultiPropertyFactory<>(this, VIEW_TRANSLATE_Y,
+                INDEX_COUNT_TRANSLATION,
+                Float::sum);
     }
 
     @Override
