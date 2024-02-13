@@ -185,20 +185,23 @@ public class BubbleDismissController {
         }
         mMagnetizedObject.setMagnetListener(new MagnetizedObject.MagnetListener() {
             @Override
-            public void onStuckToTarget(@NonNull MagnetizedObject.MagneticTarget target) {
+            public void onStuckToTarget(@NonNull MagnetizedObject.MagneticTarget target,
+                    @NonNull MagnetizedObject<?> draggedObject) {
                 if (mAnimator == null) return;
                 mAnimator.animateDismissCaptured();
             }
 
             @Override
             public void onUnstuckFromTarget(@NonNull MagnetizedObject.MagneticTarget target,
+                    @NonNull MagnetizedObject<?> draggedObject,
                     float velX, float velY, boolean wasFlungOut) {
                 if (mAnimator == null) return;
                 mAnimator.animateDismissReleased();
             }
 
             @Override
-            public void onReleasedInTarget(@NonNull MagnetizedObject.MagneticTarget target) {
+            public void onReleasedInTarget(@NonNull MagnetizedObject.MagneticTarget target,
+                    @NonNull MagnetizedObject<?> draggedObject) {
                 dismissMagnetizedObject();
             }
         });
