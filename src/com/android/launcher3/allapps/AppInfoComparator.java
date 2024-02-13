@@ -43,9 +43,7 @@ public class AppInfoComparator implements Comparator<AppInfo> {
     @Override
     public int compare(AppInfo a, AppInfo b) {
         // Order by the title in the current locale
-        int result = mLabelComparator.compare(
-                a.title == null ? "" : a.title.toString(),
-                b.title == null ? "" : b.title.toString());
+        int result = mLabelComparator.compare(getSortingTitle(a), getSortingTitle(b));
         if (result != 0) {
             return result;
         }
@@ -63,5 +61,15 @@ public class AppInfoComparator implements Comparator<AppInfo> {
             Long bUserSerial = mUserManager.getSerialNumberForUser(b.user);
             return aUserSerial.compareTo(bUserSerial);
         }
+    }
+
+    private String getSortingTitle(AppInfo info) {
+        if (info.appTitle != null) {
+            return info.appTitle.toString();
+        }
+        if (info.title != null) {
+            return info.title.toString();
+        }
+        return "";
     }
 }
