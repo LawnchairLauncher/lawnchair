@@ -178,7 +178,10 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         val hadWorkApps = launcher.appsView.shouldShowTabs()
         launcher.appsView.appsStore.setApps(apps, flags, packageUserKeytoUidMap)
         PopupContainerWithArrow.dismissInvalidPopup(launcher)
-        if (hadWorkApps != launcher.appsView.shouldShowTabs()) {
+        if (
+            hadWorkApps != launcher.appsView.shouldShowTabs() &&
+                launcher.stateManager.state == LauncherState.ALL_APPS
+        ) {
             launcher.stateManager.goToState(LauncherState.NORMAL)
         }
     }
