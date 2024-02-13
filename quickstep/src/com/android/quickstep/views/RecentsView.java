@@ -89,7 +89,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -441,6 +440,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static final float END_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.75f;
 
     private static final float SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE = 0.15f;
+
+    private static final float FOREGROUND_SCRIM_TINT = 0.32f;
 
     protected final RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface<STATE_TYPE, ACTIVITY_TYPE> mSizeStrategy;
@@ -5936,7 +5937,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        mTintingAnimator = ObjectAnimator.ofFloat(this, COLOR_TINT, show ? 0.5f : 0f);
+        mTintingAnimator = ObjectAnimator.ofFloat(this, COLOR_TINT,
+                show ? FOREGROUND_SCRIM_TINT : 0f);
         mTintingAnimator.setAutoCancel(true);
         mTintingAnimator.start();
     }
@@ -6183,9 +6185,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     /** Get the color used for foreground scrimming the RecentsView for sharing. */
     public static int getForegroundScrimDimColor(Context context) {
-        int baseColor = Themes.getAttrColor(context, R.attr.overviewScrimColor);
-        // The Black blending is temporary until we have the proper color token.
-        return ColorUtils.blendARGB(Color.BLACK, baseColor, 0.25f);
+        return context.getColor(R.color.overview_foreground_scrim_color);
     }
 
     /** Get the RecentsAnimationController */
