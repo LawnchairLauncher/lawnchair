@@ -218,9 +218,13 @@ public class OverviewCommandHelper {
                     return true;
                 }
             }
-            if (cmd.type == TYPE_KEYBOARD_INPUT && allowQuickSwitch) {
-                uiController.openQuickSwitchView();
-                return true;
+            if (cmd.type == TYPE_KEYBOARD_INPUT) {
+                if (allowQuickSwitch) {
+                    uiController.openQuickSwitchView();
+                    return true;
+                } else {
+                    mKeyboardTaskFocusIndex = 0;
+                }
             }
             if (cmd.type == TYPE_HOME) {
                 ActiveGestureLog.INSTANCE.addLog("OverviewCommandHelper.executeCommand(TYPE_HOME)");
