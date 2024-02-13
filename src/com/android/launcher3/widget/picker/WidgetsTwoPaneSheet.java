@@ -195,10 +195,14 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 return false;
             }
         };
-        packageItemInfo.title = getContext().getString(R.string.suggested_widgets_header_title);
+        String suggestionsHeaderTitle = getContext().getString(
+                R.string.suggested_widgets_header_title);
+        String suggestionsRightPaneTitle = getContext().getString(
+                R.string.widget_picker_right_pane_accessibility_title, suggestionsHeaderTitle);
+        packageItemInfo.title = suggestionsHeaderTitle;
         WidgetsListHeaderEntry widgetsListHeaderEntry = WidgetsListHeaderEntry.create(
                         packageItemInfo,
-                        getContext().getString(R.string.suggested_widgets_header_title),
+                        suggestionsHeaderTitle,
                         mActivityContext.getPopupDataProvider().getRecommendedWidgets())
                 .withWidgetListShown();
 
@@ -211,10 +215,12 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             mRightPane.removeAllViews();
             mRightPane.addView(mRecommendedWidgetsTable);
             mRightPaneScrollView.setScrollY(0);
+            mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
             mSuggestedWidgetsPackageUserKey = PackageUserKey.fromPackageItemInfo(packageItemInfo);
             mSelectedHeader = mSuggestedWidgetsPackageUserKey;
         });
         mSuggestedWidgetsContainer.addView(mSuggestedWidgetsHeader);
+        mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
     }
 
     @Override
@@ -317,6 +323,10 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 mRightPane.removeAllViews();
                 mRightPane.addView(widgetsRowViewHolder.itemView);
                 mRightPaneScrollView.setScrollY(0);
+                mRightPane.setAccessibilityPaneTitle(
+                        getContext().getString(
+                                R.string.widget_picker_right_pane_accessibility_title,
+                                contentEntry.mPkgItem.title));
             }
         };
     }
