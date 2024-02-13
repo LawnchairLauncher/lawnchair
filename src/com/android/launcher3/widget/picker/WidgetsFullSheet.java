@@ -20,15 +20,16 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -99,7 +100,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
     // the table can display.
     private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.75f;
-
     private final UserCache mUserCache;
     private final UserManagerState mUserManagerState = new UserManagerState();
     private final UserHandle mCurrentUser = Process.myUserHandle();
@@ -522,11 +522,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    public void enterSearchMode() {
+    public void enterSearchMode(boolean shouldLog) {
         if (mIsInSearchMode) return;
         setViewVisibilityBasedOnSearch(/*isInSearchMode= */ true);
         attachScrollbarToRecyclerView(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView);
-        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_SEARCHED);
+        if (shouldLog) {
+            mActivityContext.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_SEARCHED);
+        }
     }
 
     @Override
@@ -789,16 +791,28 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 + marginLayoutParams.topMargin;
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    private int getCurrentAdapterHolderType() {
         if (mIsInSearchMode) {
-            mSearchBar.reset();
+            return SEARCH;
+        } else if (mViewPager != null) {
+            return mViewPager.getCurrentPage();
+        } else {
+            return AdapterHolder.PRIMARY;
+        }
+    }
+
+    private void restorePreviousAdapterHolderType(int previousAdapterHolderType) {
+        if (previousAdapterHolderType == AdapterHolder.WORK && mViewPager != null) {
+            mViewPager.setCurrentPage(previousAdapterHolderType);
+        } else if (previousAdapterHolderType == AdapterHolder.SEARCH) {
+            enterSearchMode(false);
         }
     }
 
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
+        super.onDeviceProfileChanged(dp);
+
         if (mDeviceProfile.isLandscape != dp.isLandscape && dp.isTablet && !dp.isTwoPanels) {
             handleClose(false);
             show(BaseActivity.fromContext(getContext()), false);
@@ -810,8 +824,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // When folding/unfolding the foldables, we need to switch between the regular widget picker
         // and the two pane picker, so we rebuild the picker with the correct layout.
         if (mDeviceProfile.isTwoPanels != dp.isTwoPanels && enableUnfoldedTwoPanePicker()) {
+            SparseArray<Parcelable> widgetsState = new SparseArray<>();
+            saveHierarchyState(widgetsState);
             handleClose(false);
-            show(BaseActivity.fromContext(getContext()), false);
+            WidgetsFullSheet sheet = show(BaseActivity.fromContext(getContext()), false);
+            sheet.restoreHierarchyState(widgetsState);
+            sheet.restorePreviousAdapterHolderType(getCurrentAdapterHolderType());
         }
 
         mDeviceProfile = dp;

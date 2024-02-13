@@ -21,6 +21,7 @@ import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.FINAL_FRAME;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.internal.jank.InteractionJankMonitor.Configuration;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_SHOW;
@@ -572,7 +573,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             mAnimator.cancel();
         }
         mAnimator = new AnimatorSet();
-        addJankMonitorListener(mAnimator, /* appearing= */ !mIsStashed);
+        addJankMonitorListener(
+                mAnimator, /* expanding= */ !mIsStashed, /* animationType= */ animationType);
         boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
         final float stashTranslation = mActivity.isPhoneMode() || isTransientTaskbar
                 ? 0
@@ -798,14 +800,20 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         as.play(a);
     }
 
-    private void addJankMonitorListener(AnimatorSet animator, boolean expanding) {
+    private void addJankMonitorListener(
+            AnimatorSet animator, boolean expanding, @StashAnimation int animationType) {
         View v = mControllers.taskbarActivityContext.getDragLayer();
         int action = expanding ? InteractionJankMonitor.CUJ_TASKBAR_EXPAND :
                 InteractionJankMonitor.CUJ_TASKBAR_COLLAPSE;
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(@NonNull Animator animation) {
-                InteractionJankMonitor.getInstance().begin(v, action);
+                final Configuration.Builder builder =
+                        Configuration.Builder.withView(action, v);
+                if (animationType == TRANSITION_HOME_TO_APP) {
+                    builder.setTag("HOME_TO_APP");
+                }
+                InteractionJankMonitor.getInstance().begin(builder);
             }
 
             @Override

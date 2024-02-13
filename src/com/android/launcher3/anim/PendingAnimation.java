@@ -83,6 +83,20 @@ public class PendingAnimation extends AnimatedPropertySetter {
         add(anim);
     }
 
+    /**
+     * Add an {@link AnimatedFloat} to the animation.
+     * <p>
+     * Different from {@link #addFloat}, this method use animator provided by
+     * {@link AnimatedFloat#animateToValue}, which tracks the animator inside the AnimatedFloat,
+     * allowing the animation to be canceled and animate again from AnimatedFloat side.
+     */
+    public void addAnimatedFloat(AnimatedFloat target, float from, float to,
+            TimeInterpolator interpolator) {
+        Animator anim = target.animateToValue(from, to);
+        anim.setInterpolator(interpolator);
+        add(anim);
+    }
+
     /** If trace is enabled, add counter to trace animation progress. */
     public void logAnimationProgressToTrace(String counterName) {
         if (Trace.isEnabled()) {

@@ -32,8 +32,11 @@
     <dimen name="overview_minimum_next_prev_size">50dp</dimen>
 
     <!--  Overview Task Views  -->
-    <!--  The primary task thumbnail uses up to this much of the total screen height/width  -->
+    <!--  The thumbnail uses up to this much of the total screen height/width in Overview -->
     <item name="overview_max_scale" format="float" type="dimen">0.7</item>
+    <!--  The thumbnail should not go smaller than this much of the total screen height/width in
+             tablet app to Overview carousel -->
+    <item name="overview_carousel_min_scale" format="float" type="dimen">0.46</item>
     <!--  A touch target for icons, sometimes slightly larger than the icons themselves  -->
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <!--  The icon size for the focused task, placed in center of touch target  -->
