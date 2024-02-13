@@ -803,6 +803,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private void addJankMonitorListener(
             AnimatorSet animator, boolean expanding, @StashAnimation int animationType) {
         View v = mControllers.taskbarActivityContext.getDragLayer();
+        if (!v.isAttachedToWindow()) {
+            // If the task bar drag layer is not attached to window, we don't need to monitor jank
+            // (actually we can't pass in an unattached view either).
+            return;
+        }
         int action = expanding ? InteractionJankMonitor.CUJ_TASKBAR_EXPAND :
                 InteractionJankMonitor.CUJ_TASKBAR_COLLAPSE;
         animator.addListener(new AnimatorListenerAdapter() {
