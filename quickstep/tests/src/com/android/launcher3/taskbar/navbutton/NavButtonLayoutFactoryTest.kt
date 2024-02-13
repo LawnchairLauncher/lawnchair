@@ -6,7 +6,6 @@ import android.view.Surface.ROTATION_270
 import android.view.Surface.Rotation
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
@@ -14,7 +13,9 @@ import androidx.test.runner.AndroidJUnit4
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION
-import com.android.launcher3.taskbar.TaskbarManager
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_CONTEXTUAL_BUTTONS
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_NAV_BUTTONS
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_START_CONTEXTUAL_BUTTONS
 import com.android.systemui.shared.rotation.RotationButton
 import java.lang.IllegalStateException
 import org.junit.Assume.assumeTrue
@@ -52,11 +53,11 @@ class NavButtonLayoutFactoryTest {
         whenever(mockNavLayout.findViewById<View>(R.id.recent_apps)).thenReturn(mockRecentsButton)
 
         // Init top level layout
-        whenever(mockParentButtonContainer.findViewById<LinearLayout>(R.id.end_nav_buttons))
+        whenever(mockParentButtonContainer.requireViewById<LinearLayout>(ID_END_NAV_BUTTONS))
             .thenReturn(mockNavLayout)
-        whenever(mockParentButtonContainer.findViewById<ViewGroup>(R.id.end_contextual_buttons))
+        whenever(mockParentButtonContainer.requireViewById<ViewGroup>(ID_END_CONTEXTUAL_BUTTONS))
             .thenReturn(mockEndContextualLayout)
-        whenever(mockParentButtonContainer.findViewById<ViewGroup>(R.id.start_contextual_buttons))
+        whenever(mockParentButtonContainer.requireViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS))
             .thenReturn(mockStartContextualLayout)
     }
 
