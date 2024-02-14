@@ -1,5 +1,6 @@
 package com.android.launcher3.taskbar.navbutton
 
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.Surface
 import android.view.Surface.ROTATION_270
@@ -41,6 +42,7 @@ class NavButtonLayoutFactoryTest {
     private val mockRotationButton: RotationButton = mock()
     private val mockA11yButton: ImageView = mock()
     private val mockSpace: Space = mock()
+    private val mockConfiguration: Configuration = mock();
 
     private var surfaceRotation = Surface.ROTATION_0
 
@@ -59,6 +61,9 @@ class NavButtonLayoutFactoryTest {
             .thenReturn(mockEndContextualLayout)
         whenever(mockParentButtonContainer.requireViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS))
             .thenReturn(mockStartContextualLayout)
+        whenever(mockBackButton.resources).thenReturn(mockResources)
+        whenever(mockResources.configuration).thenReturn(mockConfiguration)
+        whenever(mockConfiguration.layoutDirection).thenReturn(0)
     }
 
     @Test
