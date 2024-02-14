@@ -405,6 +405,11 @@ public final class LauncherInstrumentation {
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    public boolean isTaskbarNavbarUnificationEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_ENABLE_TASKBAR_NAVBAR_UNIFICATION)
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     public boolean isTwoPanels() {
         return getTestInfo(TestProtocol.REQUEST_IS_TWO_PANELS)
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
@@ -845,7 +850,8 @@ public final class LauncherInstrumentation {
     }
 
     private String getNavigationButtonResPackage() {
-        return isTablet() ? getLauncherPackageName() : SYSTEMUI_PACKAGE;
+        return isTablet() || isTaskbarNavbarUnificationEnabled()
+                ? getLauncherPackageName() : SYSTEMUI_PACKAGE;
     }
 
     UiObject2 verifyContainerType(ContainerType containerType) {
