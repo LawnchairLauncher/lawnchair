@@ -32,6 +32,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
@@ -121,7 +122,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     boolean mAnimating = false;
 
-    private Alarm mOpenAlarm = new Alarm();
+    private Alarm mOpenAlarm = new Alarm(Looper.getMainLooper());
 
     private boolean mForceHideDot;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)

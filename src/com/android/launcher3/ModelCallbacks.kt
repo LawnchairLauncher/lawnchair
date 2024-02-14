@@ -72,6 +72,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     override fun onInitialBindComplete(
         boundPages: LIntSet,
         pendingTasks: RunnableList,
+        onCompleteSignal: RunnableList,
         workspaceItemCount: Int,
         isBindSync: Boolean
     ) {
@@ -99,7 +100,14 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
                 }
             }
         pendingExecutor = executor
-        executor.attachTo(launcher)
+
+        if (Flags.enableWorkspaceInflation()) {
+            // Finish the executor as soon as the pending inflation is completed
+            onCompleteSignal.add(executor::markCompleted)
+        } else {
+            // Pending executor is already completed, wait until first draw to run the tasks
+            executor.attachTo(launcher)
+        }
         launcher.bindComplete(workspaceItemCount, isBindSync)
     }
 
@@ -409,4 +417,6 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     }
 
     fun getIsFirstPagePinnedItemEnabled(): Boolean = isFirstPagePinnedItemEnabled
+
+    override fun getItemInflater() = launcher.itemInflater
 }
