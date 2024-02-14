@@ -18,6 +18,7 @@ package com.android.launcher3.model
 
 import android.appwidget.AppWidgetProviderInfo
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
 import android.content.pm.PackageInstaller
@@ -27,245 +28,137 @@ import android.util.LongSparseArray
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FOLDER
+import com.android.launcher3.Utilities.EMPTY_PERSON_ARRAY
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError.Companion.MISSING_INFO
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError.Companion.PROFILE_DELETED
+import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.IconRequestInfo
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.widget.WidgetInflater
+import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 class WorkspaceItemProcessorTest {
-    private var itemProcessor = createTestWorkspaceItemProcessor()
+
+    @Mock private lateinit var mockIconRequestInfo: IconRequestInfo<WorkspaceItemInfo>
+    @Mock private lateinit var mockWorkspaceInfo: WorkspaceItemInfo
+    @Mock private lateinit var mockBgDataModel: BgDataModel
+    @Mock private lateinit var mockContext: Context
+    @Mock private lateinit var mockAppState: LauncherAppState
+    @Mock private lateinit var mockIntent: Intent
+    @Mock private lateinit var mockPmHelper: PackageManagerHelper
+    @Mock private lateinit var mockLauncherApps: LauncherApps
+    @Mock private lateinit var mockCursor: LoaderCursor
+    @Mock private lateinit var mockUserManagerState: UserManagerState
+    @Mock private lateinit var mockWidgetInflater: WidgetInflater
+
+    private lateinit var userHandle: UserHandle
+    private lateinit var iconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>>
+    private lateinit var componentName: ComponentName
+    private lateinit var unlockedUsersArray: LongSparseArray<Boolean>
+    private lateinit var keyToPinnedShortcutsMap: MutableMap<ShortcutKey, ShortcutInfo>
+    private lateinit var installingPkgs: HashMap<PackageUserKey, PackageInstaller.SessionInfo>
+    private lateinit var allDeepShortcuts: MutableList<ShortcutInfo>
+
+    private lateinit var itemProcessorUnderTest: WorkspaceItemProcessor
 
     @Before
     fun setup() {
-        itemProcessor = createTestWorkspaceItemProcessor()
-    }
-
-    @Test
-    fun `When user is null then mark item deleted`() {
-        // Given
-        val mockCursor = mock<LoaderCursor>().apply { id = 1 }
-        val itemProcessor = createTestWorkspaceItemProcessor(cursor = mockCursor)
-        // When
-        itemProcessor.processItem()
-        // Then
-        verify(mockCursor).markDeleted("User has been deleted for item id=1", PROFILE_DELETED)
-    }
-
-    @Test
-    fun `When app has null intent then mark deleted`() {
-        // Given
-        val mockCursor =
-            mock<LoaderCursor>().apply {
-                user = UserHandle(0)
-                id = 1
-                itemType = ITEM_TYPE_APPLICATION
-            }
-        val itemProcessor = createTestWorkspaceItemProcessor(cursor = mockCursor)
-        // When
-        itemProcessor.processItem()
-        // Then
-        verify(mockCursor).markDeleted("Null intent for item id=1", MISSING_INFO)
-    }
-
-    @Test
-    fun `When app has null target package then mark deleted`() {
-        // Given
-        val mockCursor =
-            mock<LoaderCursor>().apply {
-                user = UserHandle(0)
-                itemType = ITEM_TYPE_APPLICATION
-                id = 1
-                whenever(parseIntent()).thenReturn(Intent())
-            }
-        val itemProcessor = createTestWorkspaceItemProcessor(cursor = mockCursor)
-        // When
-        itemProcessor.processItem()
-        // Then
-        verify(mockCursor).markDeleted("No target package for item id=1", MISSING_INFO)
-    }
-
-    @Test
-    fun `When app has empty String target package then mark deleted`() {
-        // Given
-        val mockIntent =
-            mock<Intent>().apply {
-                whenever(component).thenReturn(null)
-                whenever(`package`).thenReturn("")
-            }
-        val mockCursor =
-            mock<LoaderCursor>().apply {
-                user = UserHandle(0)
-                itemType = ITEM_TYPE_APPLICATION
-                id = 1
-                whenever(parseIntent()).thenReturn(mockIntent)
-            }
-        val itemProcessor = createTestWorkspaceItemProcessor(cursor = mockCursor)
-        // When
-        itemProcessor.processItem()
-        // Then
-        verify(mockCursor).markDeleted("No target package for item id=1", MISSING_INFO)
-    }
-
-    @Test
-    fun `When valid app then mark restored`() {
-        // Given
-        val userHandle = UserHandle(0)
-        val componentName = ComponentName("package", "class")
-        val mockIntent =
+        userHandle = UserHandle(0)
+        mockIconRequestInfo = mock<IconRequestInfo<WorkspaceItemInfo>>()
+        iconRequestInfos = mutableListOf(mockIconRequestInfo)
+        mockWorkspaceInfo = mock<WorkspaceItemInfo>()
+        mockBgDataModel = mock<BgDataModel>()
+        componentName = ComponentName("package", "class")
+        unlockedUsersArray = LongSparseArray<Boolean>(1).apply { put(101, true) }
+        mockIntent =
             mock<Intent>().apply {
                 whenever(component).thenReturn(componentName)
-                whenever(`package`).thenReturn("")
+                whenever(`package`).thenReturn("pkg")
+                whenever(getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID)).thenReturn("")
             }
-        val mockLauncherApps =
-            mock<LauncherApps>().apply {
-                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
-                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(true)
+        mockContext =
+            mock<Context>().apply {
+                whenever(packageManager).thenReturn(mock())
+                whenever(packageManager.getUserBadgedLabel(any(), any())).thenReturn("")
             }
-        val mockCursor =
-            mock<LoaderCursor>().apply {
-                user = userHandle
-                itemType = ITEM_TYPE_APPLICATION
-                id = 1
-                restoreFlag = 1
-                whenever(parseIntent()).thenReturn(mockIntent)
-                whenever(markRestored()).doAnswer { restoreFlag = 0 }
+        mockAppState =
+            mock<LauncherAppState>().apply {
+                whenever(context).thenReturn(mockContext)
+                whenever(iconCache).thenReturn(mock())
+                whenever(iconCache.getShortcutIcon(any(), any(), any())).then {}
             }
-        val itemProcessor =
-            createTestWorkspaceItemProcessor(cursor = mockCursor, launcherApps = mockLauncherApps)
-        // When
-        itemProcessor.processItem()
-        // Then
-        assertWithMessage("item restoreFlag should be set to 0")
-            .that(mockCursor.restoreFlag)
-            .isEqualTo(0)
-        // currently gets marked restored twice, although markRestore() has check for restoreFlag
-        verify(mockCursor, times(2)).markRestored()
-    }
-
-    @Test
-    fun `When fallback Activity found for app then mark restored`() {
-        // Given
-        val userHandle = UserHandle(0)
-        val componentName = ComponentName("package", "class")
-        val mockIntent =
-            mock<Intent>().apply {
-                whenever(component).thenReturn(componentName)
-                whenever(`package`).thenReturn("")
-                whenever(toUri(0)).thenReturn("")
-            }
-        val mockLauncherApps =
-            mock<LauncherApps>().apply {
-                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
-                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(false)
-            }
-        val mockPmHelper =
+        mockPmHelper =
             mock<PackageManagerHelper>().apply {
                 whenever(getAppLaunchIntent(componentName.packageName, userHandle))
                     .thenReturn(mockIntent)
             }
-        val mockCursor =
+        mockLauncherApps =
+            mock<LauncherApps>().apply {
+                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
+                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(true)
+            }
+        mockCursor =
             mock(LoaderCursor::class.java, RETURNS_DEEP_STUBS).apply {
                 user = userHandle
                 itemType = ITEM_TYPE_APPLICATION
                 id = 1
                 restoreFlag = 1
+                serialNumber = 101
                 whenever(parseIntent()).thenReturn(mockIntent)
                 whenever(markRestored()).doAnswer { restoreFlag = 0 }
                 whenever(updater().put(Favorites.INTENT, mockIntent.toUri(0)).commit())
                     .thenReturn(1)
+                whenever(getAppShortcutInfo(any(), any(), any(), any()))
+                    .thenReturn(mockWorkspaceInfo)
+                whenever(createIconRequestInfo(any(), any())).thenReturn(mockIconRequestInfo)
             }
-        val itemProcessor =
-            createTestWorkspaceItemProcessor(
-                cursor = mockCursor,
-                launcherApps = mockLauncherApps,
-                pmHelper = mockPmHelper
-            )
-        // When
-        itemProcessor.processItem()
-        // Then
-        assertWithMessage("item restoreFlag should be set to 0")
-            .that(mockCursor.restoreFlag)
-            .isEqualTo(0)
-        verify(mockCursor.updater().put(Favorites.INTENT, mockIntent.toUri(0))).commit()
-    }
-
-    @Test
-    fun `When app with disabled activity and no fallback found then mark deleted`() {
-        // Given
-        val userHandle = UserHandle(0)
-        val componentName = ComponentName("package", "class")
-        val mockIntent =
-            mock<Intent>().apply {
-                whenever(component).thenReturn(componentName)
-                whenever(`package`).thenReturn("")
-            }
-        val mockLauncherApps =
-            mock<LauncherApps>().apply {
-                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
-                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(false)
-            }
-        val mockPmHelper =
-            mock<PackageManagerHelper>().apply {
-                whenever(getAppLaunchIntent(componentName.packageName, userHandle)).thenReturn(null)
-            }
-        val mockCursor =
-            mock<LoaderCursor>().apply {
-                user = userHandle
-                itemType = ITEM_TYPE_APPLICATION
-                id = 1
-                restoreFlag = 1
-                whenever(parseIntent()).thenReturn(mockIntent)
-            }
-        val itemProcessor =
-            createTestWorkspaceItemProcessor(
-                cursor = mockCursor,
-                launcherApps = mockLauncherApps,
-                pmHelper = mockPmHelper
-            )
-        // When
-        itemProcessor.processItem()
-        // Then
-        assertWithMessage("item restoreFlag should be unchanged")
-            .that(mockCursor.restoreFlag)
-            .isEqualTo(1)
-        verify(mockCursor).markDeleted("Intent null, unable to find a launch target", MISSING_INFO)
+        mockUserManagerState = mock<UserManagerState>()
+        mockWidgetInflater = mock<WidgetInflater>()
+        keyToPinnedShortcutsMap = mutableMapOf()
+        installingPkgs = hashMapOf()
+        allDeepShortcuts = mutableListOf()
     }
 
     /**
      * Helper to create WorkspaceItemProcessor with defaults. WorkspaceItemProcessor has a lot of
      * dependencies, so this method can be used to inject concrete arguments while keeping the rest
-     * as mocks/defaults.
+     * as mocks/defaults, or to recreate it after modifying the default vars.
      */
-    private fun createTestWorkspaceItemProcessor(
-        cursor: LoaderCursor = mock(),
+    private fun createWorkspaceItemProcessorUnderTest(
+        cursor: LoaderCursor = mockCursor,
         memoryLogger: LoaderMemoryLogger? = null,
-        userManagerState: UserManagerState = mock(),
-        launcherApps: LauncherApps = mock(),
-        shortcutKeyToPinnedShortcuts: Map<ShortcutKey, ShortcutInfo> = mapOf(),
-        app: LauncherAppState = mock(),
-        bgDataModel: BgDataModel = mock(),
+        userManagerState: UserManagerState = mockUserManagerState,
+        launcherApps: LauncherApps = mockLauncherApps,
+        shortcutKeyToPinnedShortcuts: Map<ShortcutKey, ShortcutInfo> = keyToPinnedShortcutsMap,
+        app: LauncherAppState = mockAppState,
+        bgDataModel: BgDataModel = mockBgDataModel,
         widgetProvidersMap: MutableMap<ComponentKey, AppWidgetProviderInfo?> = mutableMapOf(),
-        widgetInflater: WidgetInflater = mock(),
-        pmHelper: PackageManagerHelper = mock(),
+        widgetInflater: WidgetInflater = mockWidgetInflater,
+        pmHelper: PackageManagerHelper = mockPmHelper,
         iconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>> = mutableListOf(),
         isSdCardReady: Boolean = false,
         pendingPackages: MutableSet<PackageUserKey> = mutableSetOf(),
-        unlockedUsers: LongSparseArray<Boolean> = LongSparseArray(),
+        unlockedUsers: LongSparseArray<Boolean> = unlockedUsersArray,
         installingPkgs: HashMap<PackageUserKey, PackageInstaller.SessionInfo> = hashMapOf(),
         allDeepShortcuts: MutableList<ShortcutInfo> = mutableListOf()
     ) =
@@ -287,4 +180,244 @@ class WorkspaceItemProcessorTest {
             installingPkgs = installingPkgs,
             allDeepShortcuts = allDeepShortcuts
         )
+
+    @Test
+    fun `When user is null then mark item deleted`() {
+        // Given
+        mockCursor = mock<LoaderCursor>().apply { id = 1 }
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+        // When
+        itemProcessorUnderTest.processItem()
+        // Then
+        verify(mockCursor).markDeleted("User has been deleted for item id=1", PROFILE_DELETED)
+        verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `When app has null intent then mark deleted`() {
+        // Given
+        mockCursor.apply { whenever(parseIntent()).thenReturn(null) }
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+        // When
+        itemProcessorUnderTest.processItem()
+        // Then
+        verify(mockCursor).markDeleted("Null intent for item id=1", MISSING_INFO)
+        verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `When app has null target package then mark deleted`() {
+
+        // Given
+        mockIntent.apply {
+            whenever(component).thenReturn(null)
+            whenever(`package`).thenReturn(null)
+        }
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        verify(mockCursor).markDeleted("No target package for item id=1", MISSING_INFO)
+        verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `When app has empty String target package then mark deleted`() {
+
+        // Given
+        componentName = ComponentName("", "")
+        whenever(mockIntent.component).thenReturn(componentName)
+        whenever(mockCursor.parseIntent()).thenReturn(mockIntent)
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        verify(mockCursor).markDeleted("No target package for item id=1", MISSING_INFO)
+        verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `When valid app then mark restored`() {
+
+        // Given
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertWithMessage("item restoreFlag should be set to 0")
+            .that(mockCursor.restoreFlag)
+            .isEqualTo(0)
+        // currently gets marked restored twice, although markRestore() has check for restoreFlag
+        verify(mockCursor, times(2)).markRestored()
+        assertThat(iconRequestInfos).containsExactly(mockIconRequestInfo)
+        verify(mockCursor).checkAndAddItem(mockWorkspaceInfo, mockBgDataModel, null)
+    }
+
+    @Test
+    fun `When fallback Activity found for app then mark restored`() {
+
+        // Given
+        mockLauncherApps =
+            mock<LauncherApps>().apply {
+                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
+                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(false)
+            }
+        mockPmHelper =
+            mock<PackageManagerHelper>().apply {
+                whenever(getAppLaunchIntent(componentName.packageName, userHandle))
+                    .thenReturn(mockIntent)
+            }
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertWithMessage("item restoreFlag should be set to 0")
+            .that(mockCursor.restoreFlag)
+            .isEqualTo(0)
+        verify(mockCursor.updater().put(Favorites.INTENT, mockIntent.toUri(0))).commit()
+        assertThat(iconRequestInfos).containsExactly(mockIconRequestInfo)
+        verify(mockCursor).checkAndAddItem(mockWorkspaceInfo, mockBgDataModel, null)
+    }
+
+    @Test
+    fun `When app with disabled activity and no fallback found then mark deleted`() {
+
+        // Given
+        mockLauncherApps =
+            mock<LauncherApps>().apply {
+                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
+                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(false)
+            }
+        mockPmHelper =
+            mock<PackageManagerHelper>().apply {
+                whenever(getAppLaunchIntent(componentName.packageName, userHandle)).thenReturn(null)
+            }
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertWithMessage("item restoreFlag should be unchanged")
+            .that(mockCursor.restoreFlag)
+            .isEqualTo(1)
+        verify(mockCursor).markDeleted("Intent null, unable to find a launch target", MISSING_INFO)
+        verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `When valid Pinned Deep Shortcut then mark restored`() {
+
+        // Given
+        mockCursor.itemType = ITEM_TYPE_DEEP_SHORTCUT
+        val expectedShortcutInfo =
+            mock<ShortcutInfo>().apply {
+                whenever(id).thenReturn("")
+                whenever(`package`).thenReturn("")
+                whenever(activity).thenReturn(mock())
+                whenever(longLabel).thenReturn("")
+                whenever(isEnabled).thenReturn(true)
+                whenever(disabledMessage).thenReturn("")
+                whenever(disabledReason).thenReturn(0)
+                whenever(persons).thenReturn(EMPTY_PERSON_ARRAY)
+            }
+        val shortcutKey = ShortcutKey.fromIntent(mockIntent, mockCursor.user)
+        keyToPinnedShortcutsMap[shortcutKey] = expectedShortcutInfo
+        iconRequestInfos = mutableListOf()
+        itemProcessorUnderTest =
+            createWorkspaceItemProcessorUnderTest(allDeepShortcuts = allDeepShortcuts)
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertWithMessage("item restoreFlag should be set to 0")
+            .that(mockCursor.restoreFlag)
+            .isEqualTo(0)
+        assertThat(iconRequestInfos).isEmpty()
+        assertThat(allDeepShortcuts).containsExactly(expectedShortcutInfo)
+        verify(mockCursor).markRestored()
+        verify(mockCursor).checkAndAddItem(any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `When Pinned Deep Shortcut not found then mark deleted`() {
+
+        // Given
+        mockCursor.itemType = ITEM_TYPE_DEEP_SHORTCUT
+        iconRequestInfos = mutableListOf()
+        keyToPinnedShortcutsMap = hashMapOf()
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertWithMessage("item restoreFlag should be set to 0")
+            .that(mockCursor.restoreFlag)
+            .isEqualTo(0)
+        assertThat(iconRequestInfos).isEmpty()
+        verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
+        verify(mockCursor)
+            .markDeleted(
+                "Pinned shortcut not found from request. package=pkg, user=UserHandle{0}",
+                "shortcut_not_found"
+            )
+    }
+
+    @Test
+    fun `When processing Folder then create FolderInfo and mark restored`() {
+        val actualFolderInfo = FolderInfo()
+        mockBgDataModel =
+            mock<BgDataModel>().apply { whenever(findOrMakeFolder(1)).thenReturn(actualFolderInfo) }
+        mockCursor =
+            mock<LoaderCursor>().apply {
+                user = UserHandle(0)
+                itemType = ITEM_TYPE_FOLDER
+                id = 1
+                container = 100
+                restoreFlag = 1
+                serialNumber = 101
+                whenever(applyCommonProperties(any<ItemInfo>())).then {}
+                whenever(markRestored()).doAnswer { restoreFlag = 0 }
+                whenever(getColumnIndex(Favorites.TITLE)).thenReturn(4)
+                whenever(getString(4)).thenReturn("title")
+                whenever(options).thenReturn(5)
+            }
+        val expectedFolderInfo =
+            FolderInfo().apply {
+                itemType = ITEM_TYPE_FOLDER
+                spanX = 1
+                spanY = 1
+                options = 5
+            }
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertWithMessage("item restoreFlag should be set to 0")
+            .that(mockCursor.restoreFlag)
+            .isEqualTo(0)
+        verify(mockCursor).markRestored()
+        assertThat(actualFolderInfo.id).isEqualTo(expectedFolderInfo.id)
+        assertThat(actualFolderInfo.container).isEqualTo(expectedFolderInfo.container)
+        assertThat(actualFolderInfo.itemType).isEqualTo(expectedFolderInfo.itemType)
+        assertThat(actualFolderInfo.screenId).isEqualTo(expectedFolderInfo.screenId)
+        assertThat(actualFolderInfo.cellX).isEqualTo(expectedFolderInfo.cellX)
+        assertThat(actualFolderInfo.cellY).isEqualTo(expectedFolderInfo.cellY)
+        assertThat(actualFolderInfo.spanX).isEqualTo(expectedFolderInfo.spanX)
+        assertThat(actualFolderInfo.spanY).isEqualTo(expectedFolderInfo.spanY)
+        assertThat(actualFolderInfo.options).isEqualTo(expectedFolderInfo.options)
+        verify(mockCursor).checkAndAddItem(actualFolderInfo, mockBgDataModel, null)
+    }
 }

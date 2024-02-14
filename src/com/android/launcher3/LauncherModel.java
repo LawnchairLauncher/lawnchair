@@ -441,16 +441,34 @@ public class LauncherModel implements InstallSessionTracker.Callback {
             @Override
             public void execute(@NonNull final LauncherAppState app,
                     @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
+                IconCache iconCache = app.getIconCache();
                 final IntSet removedIds = new IntSet();
+                HashSet<WorkspaceItemInfo> archivedItemsToCacheRefresh = new HashSet<>();
+                HashSet<String> archivedPackagesToCacheRefresh = new HashSet<>();
                 synchronized (dataModel) {
                     for (ItemInfo info : dataModel.itemsIdMap) {
                         if (info instanceof WorkspaceItemInfo
                                 && ((WorkspaceItemInfo) info).hasPromiseIconUi()
                                 && user.equals(info.user)
-                                && info.getIntent() != null
-                                && TextUtils.equals(packageName, info.getIntent().getPackage())) {
-                            removedIds.add(info.id);
+                                && info.getIntent() != null) {
+                            if (TextUtils.equals(packageName, info.getIntent().getPackage())) {
+                                removedIds.add(info.id);
+                            }
+                            if (((WorkspaceItemInfo) info).isArchived()) {
+                                WorkspaceItemInfo workspaceItem = (WorkspaceItemInfo) info;
+                                // Remove package cache icon for archived app in case of a session
+                                // failure.
+                                mApp.getIconCache().removeIconsForPkg(packageName, user);
+                                // Refresh icons on the workspace for archived apps.
+                                iconCache.getTitleAndIcon(workspaceItem,
+                                        workspaceItem.usingLowResIcon());
+                                archivedPackagesToCacheRefresh.add(packageName);
+                                archivedItemsToCacheRefresh.add(workspaceItem);
+                            }
                         }
+                    }
+                    if (!archivedPackagesToCacheRefresh.isEmpty()) {
+                        apps.updateIconsAndLabels(archivedPackagesToCacheRefresh, user);
                     }
                 }
 
@@ -458,6 +476,10 @@ public class LauncherModel implements InstallSessionTracker.Callback {
                     deleteAndBindComponentsRemoved(
                             ItemInfoMatcher.ofItemIds(removedIds),
                             "removed because install session failed");
+                }
+                if (!archivedItemsToCacheRefresh.isEmpty()) {
+                    bindUpdatedWorkspaceItems(archivedItemsToCacheRefresh.stream().toList());
+                    bindApplicationsIfNeeded();
                 }
             }
         });
