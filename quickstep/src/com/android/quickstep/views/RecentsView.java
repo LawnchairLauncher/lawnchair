@@ -770,6 +770,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     // keeps track of the state of the filter for tasks in recents view
     private final RecentsFilterState mFilterState = new RecentsFilterState();
 
+    private int mOffsetMidpointIndexOverride = INVALID_PAGE;
+
     public RecentsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
             BaseContainerInterface sizeStrategy) {
         super(context, attrs, defStyleAttr);
@@ -4465,15 +4467,26 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         setPivotY(mTempPointF.y);
     }
 
+    /**
+     * Sets whether we should force-override the page offset mid-point to the current task, rather
+     * than the running task, when updating page offsets.
+     */
+    public void setOffsetMidpointIndexOverride(int offsetMidpointIndexOverride) {
+        mOffsetMidpointIndexOverride = offsetMidpointIndexOverride;
+        updatePageOffsets();
+    }
+
     private void updatePageOffsets() {
         float offset = mAdjacentPageHorizontalOffset;
         float modalOffset = ACCELERATE_0_75.getInterpolation(mTaskModalness);
         int count = getChildCount();
         boolean showAsGrid = showAsGrid();
 
-        TaskView runningTask = mRunningTaskViewId == -1 || !mRunningTaskTileHidden
+        TaskView runningTask = mRunningTaskViewId == INVALID_PAGE || !mRunningTaskTileHidden
                 ? null : getRunningTaskView();
-        int midpoint = runningTask == null ? -1 : indexOfChild(runningTask);
+        int midpoint = mOffsetMidpointIndexOverride == INVALID_PAGE
+                ? (runningTask == null ? INVALID_PAGE : indexOfChild(runningTask))
+                : mOffsetMidpointIndexOverride;
         int modalMidpoint = getCurrentPage();
         boolean isModalGridWithoutFocusedTask =
                 showAsGrid && enableGridOnlyOverview() && mTaskModalness > 0;

@@ -68,11 +68,12 @@ import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.InputConsumerController;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -140,9 +141,13 @@ public class FallbackSwipeHandler extends
     }
 
     @Override
-    protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
-            long duration, boolean isTargetTranslucent, boolean appCanEnterPip,
-            RemoteAnimationTarget runningTaskTarget) {
+    protected HomeAnimationFactory createHomeAnimationFactory(
+            List<IBinder> launchCookies,
+            long duration,
+            boolean isTargetTranslucent,
+            boolean appCanEnterPip,
+            RemoteAnimationTarget runningTaskTarget,
+            @Nullable TaskView targetTaskView) {
         mAppCanEnterPip = appCanEnterPip;
         if (appCanEnterPip) {
             return new FallbackPipToHomeAnimationFactory();
@@ -380,7 +385,7 @@ public class FallbackSwipeHandler extends
         }
 
         @Override
-        public void update(RectF currentRect, float progress, float radius) {
+        public void update(RectF currentRect, float progress, float radius, int overlayAlpha) {
             if (mSurfaceControl != null) {
                 currentRect.roundOut(mTempRect);
                 Transaction t = new Transaction();
