@@ -85,7 +85,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private final TaskbarActivityContext mActivityContext;
 
     // Initialized in init.
-    private TaskbarViewController.TaskbarViewCallbacks mControllerCallbacks;
+    private TaskbarViewCallbacks mControllerCallbacks;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
@@ -258,7 +258,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return mIconTouchSize;
     }
 
-    protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
+    protected void init(TaskbarViewCallbacks callbacks) {
         // set taskbar pane title so that accessibility service know it window and focuses.
         setAccessibilityPaneTitle(getContext().getString(R.string.taskbar_a11y_title));
         mControllerCallbacks = callbacks;
@@ -267,6 +267,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         if (mAllAppsButton != null) {
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
+            mAllAppsButton.setOnLongClickListener(
+                    mControllerCallbacks.getAllAppsButtonLongClickListener());
+            mAllAppsButton.setHapticFeedbackEnabled(
+                    mControllerCallbacks.isAllAppsButtonHapticFeedbackEnabled());
         }
         if (mTaskbarDivider != null) {
             mTaskbarDivider.setOnLongClickListener(
