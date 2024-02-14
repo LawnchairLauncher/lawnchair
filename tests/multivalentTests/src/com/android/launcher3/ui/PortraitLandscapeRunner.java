@@ -14,6 +14,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 public class PortraitLandscapeRunner implements TestRule {
     private static final String TAG = "PortraitLandscapeRunner";
@@ -49,7 +50,8 @@ public class PortraitLandscapeRunner implements TestRule {
 
                     mTest.mDevice.pressHome();
                     mTest.waitForLauncherCondition("Launcher activity wasn't created",
-                            launcher -> launcher != null);
+                            launcher -> launcher != null,
+                            TimeUnit.SECONDS.toMillis(20));
 
                     mTest.executeOnLauncher(launcher ->
                             launcher.getRotationHelper().forceAllowRotationForTesting(
