@@ -67,15 +67,15 @@ public class ActiveGestureLog {
     /**
      * Adds a log to be printed at log-dump-time.
      */
-    public void addLog(String event) {
+    public void addLog(@NonNull String event) {
         addLog(event, null);
     }
 
-    public void addLog(String event, int extras) {
+    public void addLog(@NonNull String event, int extras) {
         addLog(event, extras, null);
     }
 
-    public void addLog(String event, boolean extras) {
+    public void addLog(@NonNull String event, boolean extras) {
         addLog(event, extras, null);
     }
 
@@ -85,30 +85,30 @@ public class ActiveGestureLog {
      * @param gestureEvent GestureEvent representing the event being logged.
      */
     public void addLog(
-            String event, @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
+            @NonNull String event, @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         addLog(new CompoundString(event), gestureEvent);
     }
 
     public void addLog(
-            String event,
+            @NonNull String event,
             int extras,
             @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         addLog(new CompoundString(event).append(": ").append(extras), gestureEvent);
     }
 
     public void addLog(
-            String event,
+            @NonNull String event,
             boolean extras,
             @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         addLog(new CompoundString(event).append(": ").append(extras), gestureEvent);
     }
 
-    public void addLog(CompoundString compoundString) {
+    public void addLog(@NonNull CompoundString compoundString) {
         addLog(compoundString, null);
     }
 
     public void addLog(
-            CompoundString compoundString,
+            @NonNull CompoundString compoundString,
             @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         EventLog lastEventLog = logs[(nextIndex + logs.length - 1) % logs.length];
         if (lastEventLog == null || mCurrentLogId != lastEventLog.logId) {
@@ -259,21 +259,20 @@ public class ActiveGestureLog {
 
         public CompoundString(String substring) {
             mIsNoOp = substring == null;
-            if (mIsNoOp) {
-                mSubstrings = null;
-                mArgs = null;
-                return;
+            mSubstrings = mIsNoOp ? null : new ArrayList<>();
+            mArgs = mIsNoOp ? null : new ArrayList<>();
+
+            if (!mIsNoOp) {
+                mSubstrings.add(substring);
             }
-            mSubstrings = new ArrayList<>();
-            mSubstrings.add(substring);
-            mArgs = new ArrayList<>();
         }
 
         public CompoundString append(CompoundString substring) {
-            if (mIsNoOp) {
+            if (mIsNoOp || substring.mIsNoOp) {
                 return this;
             }
             mSubstrings.addAll(substring.mSubstrings);
+            mArgs.addAll(substring.mArgs);
 
             return this;
         }
@@ -288,30 +287,53 @@ public class ActiveGestureLog {
         }
 
         public CompoundString append(int num) {
+            if (mIsNoOp) {
+                return this;
+            }
+            mArgs.add(num);
+
+            return append("%d");
+        }
+
+        public CompoundString append(long num) {
+            if (mIsNoOp) {
+                return this;
+            }
             mArgs.add(num);
 
             return append("%d");
         }
 
         public CompoundString append(float num) {
+            if (mIsNoOp) {
+                return this;
+            }
             mArgs.add(num);
 
             return append("%.2f");
         }
 
         public CompoundString append(double num) {
+            if (mIsNoOp) {
+                return this;
+            }
             mArgs.add(num);
 
             return append("%.2f");
         }
 
         public CompoundString append(boolean bool) {
+            if (mIsNoOp) {
+                return this;
+            }
             mArgs.add(bool);
 
             return append("%b");
         }
 
-        public Object[] getArgs() {
+        private Object[] getArgs() {
+            Preconditions.assertTrue(!mIsNoOp);
+
             return mArgs.toArray();
         }
 
@@ -320,7 +342,7 @@ public class ActiveGestureLog {
             return String.format(toUnformattedString(), getArgs());
         }
 
-        public String toUnformattedString() {
+        private String toUnformattedString() {
             Preconditions.assertTrue(!mIsNoOp);
 
             StringBuilder sb = new StringBuilder();
@@ -333,7 +355,7 @@ public class ActiveGestureLog {
 
         @Override
         public int hashCode() {
-            return Objects.hash(mIsNoOp, mSubstrings);
+            return Objects.hash(mIsNoOp, mSubstrings, mArgs);
         }
 
         @Override
@@ -342,7 +364,9 @@ public class ActiveGestureLog {
                 return false;
             }
             CompoundString other = (CompoundString) obj;
-            return (mIsNoOp == other.mIsNoOp) && Objects.equals(mSubstrings, other.mSubstrings);
+            return (mIsNoOp == other.mIsNoOp)
+                    && Objects.equals(mSubstrings, other.mSubstrings)
+                    && Objects.equals(mArgs, other.mArgs);
         }
     }
 }

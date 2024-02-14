@@ -203,6 +203,7 @@ android_library {
         "animationlib",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
+        "android.appwidget.flags-aconfig-java",
     ],
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,

@@ -116,6 +116,7 @@
                         android:clipToOutline="true"
                         android:paddingBottom="36dp"
                         android:background="@drawable/widgets_surface_background"
+                        android:importantForAccessibility="yes"
                         android:id="@+id/right_pane">
                         <com.android.launcher3.widget.picker.WidgetsRecommendationTableLayout
                             android:id="@+id/recommended_widget_table"

@@ -77,6 +77,8 @@
     <string name="fitness_widget_recommendation_category_label">Reach Your Fitness Goals</string>
     <string name="weather_widget_recommendation_category_label">Stay Ahead of the Weather</string>
     <string name="others_widget_recommendation_category_label">You Might Also Like</string>
+    <!-- accessibilityPaneTitle for the right pane when showing suggested widgets. -->
+    <string name="widget_picker_right_pane_accessibility_title"><xliff:g id="selected_header" example="Calendar">%1$s</xliff:g> widgets on right, search and options on left</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
          [CHAR_LIMIT=25][ICU SYNTAX] -->
     <string name="widgets_count">
