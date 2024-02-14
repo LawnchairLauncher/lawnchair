@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ඔබ ඈත දකුණු හෝ ඈත වම් දාරයේ සිට ස්වයිප් කරන බව සහතික කර ගන්න"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ඔබ දකුණු හෝ වම් දාරයේ සිට තිරයේ මැදට ස්වයිප් කර අත හරින බව සහතික කර ගන්න"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ආපසු යාමට දකුණේ සිට ස්වයිප් කරන්නේ කෙසේදැයි ඔබ දැන ගත්තේය. ඊළඟට, යෙදුම් මාරු කරන ආකාරය දැන ගන්න."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ඔබ ආපසු යාමේ ඉංගිතය සම්පූර්ණ කරන ලදි. ඊළඟට, යෙදුම් මාරු කරන ආකාරය දැන ගන්න."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ඔබ ආපසු යාමේ ඉංගිතය සම්පූර්ණ කළා"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ඔබ තිරයේ පහළට ඉතාම සමීපව ස්වයිප් නොකරන බවට සහතික කර ගන්න"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ආපසු ඉංගිතයෙහි සංවේදීතාව වෙනස් කිරීමට, සැකසීම් වෙත යන්න"</string>

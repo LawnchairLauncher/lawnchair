@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"स्क्रीन पर बिलकुल दाएं या बाएं किनारे से स्वाइप करें"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"स्क्रीन पर दाएं या बाएं किनारे से बीच तक स्वाइप करें और फिर अपनी उंगली को स्क्रीन से हटा दें"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"आपने स्क्रीन के दाएं किनारे से स्वाइप करके, पिछली स्क्रीन पर वापस जाने का तरीका सीख लिया है. अब, एक ऐप से दूसरे ऐप पर जाने का तरीका सीखें."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"आपने पीछे ले जाने वाले हाथ के जेस्चर के बारे में जान लिया है. एक ऐप से दूसरे पर जाने का तरीका जानें."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"आपने जान लिया है कि हाथ का जेस्चर इस्तेमाल करके पिछली स्क्रीन पर वापस कैसे जाएं"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"स्क्रीन पर बिलकुल नीचे तक स्वाइप न करें"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'सेटिंग\' में जाकर, पीछे जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) की संवेदनशीलता बदलें"</string>

@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"కుడి వైపు చిట్ట చివరి లేదా ఎడమ వైపు చిట్ట చివరి అంచు నుండి స్వైప్ చేస్తున్నారని నిర్ధారించుకోండి"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"మీరు కుడి లేదా ఎడమ అంచు నుండి స్క్రీన్ మధ్యలోకి స్వైప్ చేశారని నిర్ధారించుకుని, మీ వేలిని ఎత్తండి"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"వెనుకకు వెళ్లడానికి కుడి నుండి స్వైప్ ఎలానో మీకు తెలుసు. తర్వాత, యాప్‌ల మధ్య ఎలా మారాలో తెలుసుకోండి."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"మీరు తిరిగి వెనక్కు వెళ్లే సంజ్ఞను పూర్తి చేశారు. తర్వాత, యాప్‌ల మధ్య ఎలా మారాలో తెలుసుకోండి."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"మీరు పేజీ నుండి వెనుకకు వెళ్లే సంజ్ఞను పూర్తి చేశారు"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"మీరు స్క్రీన్ దిగువకు చాలా దగ్గరగా స్వైప్ చేయకుండా చూసుకోండి"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"వెనుక సంజ్ఞ సున్నితత్వం మార్చడానికి, సెట్టింగ్‌లకు వెళ్లండి"</string>

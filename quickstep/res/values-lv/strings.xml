@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Jāvelk no pašas labās vai kreisās malas."</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Jāvelk no ekrāna labās vai kreisās malas uz vidu un jāatlaiž."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Jūs esat apguvis, kā vilkt no labās malas, lai pārietu atpakaļ. Tagad mācieties pārslēgt lietotnes."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Jūs sekmīgi veicāt atgriešanās žestu. Tagad varat iemācīties, kā pārslēgt lietotnes."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Jūs sekmīgi veicāt atgriešanās žestu."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Nevelciet pārāk tuvu ekrāna apakšdaļai."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Atgriešanās žesta jutīguma līmeni varat mainīt iestatījumos."</string>

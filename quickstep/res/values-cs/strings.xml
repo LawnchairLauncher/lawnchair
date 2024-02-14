@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Přejeďte prstem z úplného pravého nebo levého okraje obrazovky"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Přejeďte prstem z pravého nebo levého okraje doprostřed obrazovky a zdvihněte prst"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Naučili jste se, jak se vrátit zpět přejetím prstem zprava. Teď se naučíte přepínat mezi aplikacemi."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Dokončili jste gesto pro přechod zpět. Teď se naučíte přepínat aplikace."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Dokončili jste gesto pro přechod zpět"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Dejte pozor, abyste prstem nepřejížděli moc blízko ke spodnímu okraji obrazovky"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Citlivost gesta pro přechod zpět můžete změnit v Nastavení"</string>

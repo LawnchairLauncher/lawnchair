@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"En sağ veya en sol kenardan kaydırdığınızdan emin olun"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Ekranın sağ veya sol kenarından ortasına doğru sürükleyip bıraktığınızdan emin olun."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Geri dönmek için sağdan kaydırmayı öğrendiniz. Sırada uygulamalar arasında geçiş yapma var."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Geri dön hareketini tamamladınız. Sırada, uygulamalar arasında geçiş yapmayı öğrenmek var."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Geri dön hareketini tamamladınız"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Ekranın alt kısmına çok yakın bir şekilde kaydırmadığınızdan emin olun"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri hareketinin hassasiyetini değiştirmek için Ayarlar\'a gidin"</string>
