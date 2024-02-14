@@ -258,7 +258,7 @@ import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.systemui.plugins.LauncherOverlayPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
-import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayTouchProxy;
 import com.android.wm.shell.Flags;
 
 import java.io.FileDescriptor;
@@ -2810,7 +2810,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     /**
      * Call this after onCreate to set or clear overlay.
      */
-    public void setLauncherOverlay(LauncherOverlay overlay) {
+    public void setLauncherOverlay(LauncherOverlayTouchProxy overlay) {
         mWorkspace.setLauncherOverlay(overlay);
     }
 
