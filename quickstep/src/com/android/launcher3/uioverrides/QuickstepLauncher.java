@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEAS
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.Flags.enablePredictiveBackGesture;
 import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.PENDING_SPLIT_SELECT_INFO;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE;
@@ -61,7 +62,6 @@ import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SP
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
-import static com.android.launcher3.Flags.enablePredictiveBackGesture;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -1103,21 +1103,11 @@ public class QuickstepLauncher extends Launcher {
         // populating workspace.
         // TODO: Find a better place for this
         WellbeingModel.INSTANCE.get(this);
-    }
 
-    @Override
-    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
-            int workspaceItemCount, boolean isBindSync) {
-        pendingTasks.add(() -> {
-            // This is added in pending task as we need to wait for views to be positioned
-            // correctly before registering them for the animation.
-            if (mLauncherUnfoldAnimationController != null) {
-                // This is needed in case items are rebound while the unfold animation is in
-                // progress.
-                mLauncherUnfoldAnimationController.updateRegisteredViewsIfNeeded();
-            }
-        });
-        super.onInitialBindComplete(boundPages, pendingTasks, workspaceItemCount, isBindSync);
+        if (mLauncherUnfoldAnimationController != null) {
+            // This is needed in case items are rebound while the unfold animation is in progress.
+            mLauncherUnfoldAnimationController.updateRegisteredViewsIfNeeded();
+        }
     }
 
     @Override
