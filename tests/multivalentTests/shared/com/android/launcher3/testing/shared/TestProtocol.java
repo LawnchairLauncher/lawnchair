@@ -169,6 +169,7 @@ public final class TestProtocol {
     public static final String ICON_MISSING = "b/282963545";
     public static final String OVERVIEW_OVER_HOME = "b/279059025";
     public static final String UIOBJECT_STALE_ELEMENT = "b/319501259";
+    public static final String ACTIVITY_NOT_RESUMED_AFTER_BACK = "b/322823209";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
