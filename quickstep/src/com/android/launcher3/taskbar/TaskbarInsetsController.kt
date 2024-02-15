@@ -24,11 +24,13 @@ import android.graphics.Region
 import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.os.Binder
 import android.os.IBinder
+import android.view.DisplayInfo
 import android.view.Gravity
 import android.view.InsetsFrameProvider
 import android.view.InsetsFrameProvider.SOURCE_DISPLAY
 import android.view.InsetsSource.FLAG_INSETS_ROUNDED_CORNER
 import android.view.InsetsSource.FLAG_SUPPRESS_SCRIM
+import android.view.Surface
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION
@@ -155,19 +157,20 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         }
 
         val gravity = windowLayoutParams.gravity
-        for (provider in windowLayoutParams.providedInsets) {
-            setProviderInsets(provider, gravity)
-        }
 
-        if (windowLayoutParams.paramsForRotation != null) {
+        // Pre-calculate insets for different providers across different rotations for this gravity
+        for (rotation in Surface.ROTATION_0..Surface.ROTATION_270) {
             // Add insets for navbar rotated params
-            for (layoutParams in windowLayoutParams.paramsForRotation) {
+            if (windowLayoutParams.paramsForRotation != null) {
+                val layoutParams = windowLayoutParams.paramsForRotation[rotation]
                 for (provider in layoutParams.providedInsets) {
-                    setProviderInsets(provider, layoutParams.gravity)
+                    setProviderInsets(provider, layoutParams.gravity, rotation)
                 }
             }
+            for (provider in windowLayoutParams.providedInsets) {
+                setProviderInsets(provider, gravity, rotation)
+            }
         }
-
         context.notifyUpdateLayoutParams()
     }
 
@@ -211,12 +214,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         )
     }
 
-    private fun setProviderInsets(provider: InsetsFrameProvider, gravity: Int) {
+    private fun setProviderInsets(provider: InsetsFrameProvider, gravity: Int, endRotation: Int) {
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         val res = context.resources
         if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
-            provider.insetsSize = getInsetsForGravity(contentHeight, gravity)
+            provider.insetsSize = getInsetsForGravityWithCutout(contentHeight, gravity, endRotation)
         } else if (provider.type == tappableElement()) {
             provider.insetsSize = getInsetsForGravity(tappableHeight, gravity)
         } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
@@ -275,6 +278,30 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     }
 
     /**
+     * Calculate the [Insets] for taskbar after a rotation, specifically for any potential cutouts
+     * in the screen that can come from the camera.
+     */
+    private fun getInsetsForGravityWithCutout(inset: Int, gravity: Int, rot: Int): Insets {
+        val display = context.display
+        // If there is no cutout, fall back to the original method of calculating insets
+        val cutout = display.cutout ?: return getInsetsForGravity(inset, gravity)
+        val rotation = display.rotation
+        val info = DisplayInfo()
+        display.getDisplayInfo(info)
+        val rotatedCutout = cutout.getRotated(info.logicalWidth, info.logicalHeight, rotation, rot)
+
+        if ((gravity and Gravity.BOTTOM) == Gravity.BOTTOM) {
+            return Insets.of(0, 0, 0, maxOf(inset, rotatedCutout.safeInsetBottom))
+        }
+
+        // TODO(b/230394142): seascape
+        val isSeascape = (gravity and Gravity.START) == Gravity.START
+        val leftInset = if (isSeascape) maxOf(inset, rotatedCutout.safeInsetLeft) else 0
+        val rightInset = if (isSeascape) 0 else maxOf(inset, rotatedCutout.safeInsetRight)
+        return Insets.of(leftInset, 0, rightInset, 0)
+    }
+
+    /**
      * @return [Insets] where the [inset] is either used as a bottom inset or right/left inset if
      *   using 3 button nav
      */
@@ -309,9 +336,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             controllers.bubbleControllers.isPresent &&
                 controllers.bubbleControllers.get().bubbleBarViewController.isBubbleBarVisible()
         var insetsIsTouchableRegion = true
-        if (context.isPhoneButtonNavMode &&
-                (!controllers.navbarButtonsViewController.isImeVisible
-                        || !controllers.navbarButtonsViewController.isImeRenderingNavButtons)) {
+        if (
+            context.isPhoneButtonNavMode &&
+                (!controllers.navbarButtonsViewController.isImeVisible ||
+                    !controllers.navbarButtonsViewController.isImeRenderingNavButtons)
+        ) {
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME)
             insetsIsTouchableRegion = false
         } else if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {

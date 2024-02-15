@@ -425,11 +425,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             if (activity == null) {
                 return null;
             }
+            RecentsView recentsView = activity.getOverviewPanel();
             STATE_TYPE state = stateFromGestureEndTarget(endTarget);
             ScrimView scrimView = activity.getScrimView();
             ObjectAnimator anim = ObjectAnimator.ofArgb(scrimView, VIEW_BACKGROUND_COLOR,
                     getOverviewScrimColorForState(activity, state));
             anim.setDuration(duration);
+            anim.setInterpolator(recentsView == null || !recentsView.isKeyboardTaskFocusPending()
+                    ? LINEAR : INSTANT);
             return anim;
         }
         return null;

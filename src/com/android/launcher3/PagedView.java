@@ -1140,7 +1140,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             mEdgeGlowLeft.onPullDistance(0f, 1f - displacement);
         }
         if (!mEdgeGlowRight.isFinished()) {
-            mEdgeGlowRight.onPullDistance(0f, displacement);
+            mEdgeGlowRight.onPullDistance(0f, displacement, ev);
         }
     }
 
@@ -1320,10 +1320,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     int consumed = 0;
                     if (delta < 0 && mEdgeGlowRight.getDistance() != 0f) {
                         consumed = Math.round(size *
-                                mEdgeGlowRight.onPullDistance(delta / size, displacement));
+                                mEdgeGlowRight.onPullDistance(delta / size, displacement, ev));
                     } else if (delta > 0 && mEdgeGlowLeft.getDistance() != 0f) {
                         consumed = Math.round(-size *
-                                mEdgeGlowLeft.onPullDistance(-delta / size, 1 - displacement));
+                                mEdgeGlowLeft.onPullDistance(-delta / size, 1 - displacement, ev));
                     }
                     delta -= consumed;
                 }
@@ -1341,14 +1341,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                         final float pulledToX = oldScroll + delta;
 
                         if (pulledToX < mMinScroll) {
-                            mEdgeGlowLeft.onPullDistance(-delta / size, 1.f - displacement);
+                            mEdgeGlowLeft.onPullDistance(-delta / size, 1.f - displacement, ev);
                             if (!mEdgeGlowRight.isFinished()) {
-                                mEdgeGlowRight.onRelease();
+                                mEdgeGlowRight.onRelease(ev);
                             }
                         } else if (pulledToX > mMaxScroll) {
-                            mEdgeGlowRight.onPullDistance(delta / size, displacement);
+                            mEdgeGlowRight.onPullDistance(delta / size, displacement, ev);
                             if (!mEdgeGlowLeft.isFinished()) {
-                                mEdgeGlowLeft.onRelease();
+                                mEdgeGlowLeft.onRelease(ev);
                             }
                         }
 
@@ -1356,7 +1356,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                             postInvalidateOnAnimation();
                         }
                     }
-
                 } else {
                     awakenScrollBars();
                 }
@@ -1456,10 +1455,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     }
                     invalidate();
                 }
+                mEdgeGlowLeft.onFlingVelocity(velocity);
+                mEdgeGlowRight.onFlingVelocity(velocity);
             }
-
-            mEdgeGlowLeft.onRelease();
-            mEdgeGlowRight.onRelease();
+            mEdgeGlowLeft.onRelease(ev);
+            mEdgeGlowRight.onRelease(ev);
             // End any intermediate reordering states
             resetTouchState();
             break;
@@ -1468,8 +1468,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             if (mIsBeingDragged) {
                 runOnPageScrollsInitialized(this::snapToDestination);
             }
-            mEdgeGlowLeft.onRelease();
-            mEdgeGlowRight.onRelease();
+            mEdgeGlowLeft.onRelease(ev);
+            mEdgeGlowRight.onRelease(ev);
             resetTouchState();
             break;
 

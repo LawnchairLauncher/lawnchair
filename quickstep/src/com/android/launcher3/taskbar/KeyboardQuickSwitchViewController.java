@@ -32,7 +32,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
-import com.android.launcher3.taskbar.overlay.TaskbarOverlayDragLayer;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.SlideInRemoteTransition;
@@ -84,9 +83,7 @@ public class KeyboardQuickSwitchViewController {
             boolean updateTasks,
             int currentFocusIndexOverride,
             boolean onDesktop) {
-        TaskbarOverlayDragLayer dragLayer = mOverlayContext.getDragLayer();
-        dragLayer.addView(mKeyboardQuickSwitchView);
-        dragLayer.runOnClickOnce(v -> closeQuickSwitchView(true));
+        mOverlayContext.getDragLayer().addView(mKeyboardQuickSwitchView);
         mOnDesktop = onDesktop;
 
         mKeyboardQuickSwitchView.applyLoadPlan(

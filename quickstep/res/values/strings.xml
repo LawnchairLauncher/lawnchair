@@ -105,6 +105,8 @@
     <string name="back_gesture_feedback_cancelled">Make sure you swipe from the right or left edge to the middle of the screen and let go</string>
     <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_with_overview_follow_up">You learned how to swipe from the right to go back. Next up, learn how to switch apps.</string>
+    <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_complete_with_follow_up">You completed the go back gesture. Next up, learn how to switch apps.</string>
     <!-- Feedback shown after completing the back gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_without_follow_up">You completed the go back gesture</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial when the gesture is within the nav bar region. [CHAR LIMIT=100] -->
