@@ -211,7 +211,8 @@ public class InstallSessionHelper {
      */
     @WorkerThread
     void tryQueuePromiseAppIcon(@Nullable final PackageInstaller.SessionInfo sessionInfo) {
-        if (SessionCommitReceiver.isEnabled(mAppContext)
+        if (sessionInfo != null
+                && SessionCommitReceiver.isEnabled(mAppContext, getUserHandle(sessionInfo))
                 && verifySessionInfo(sessionInfo)
                 && !promiseIconAddedForId(sessionInfo.getSessionId())) {
             FileLog.d(LOG, "Adding package name to install queue: "
