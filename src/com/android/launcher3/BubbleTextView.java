@@ -69,13 +69,13 @@ import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.icons.PlaceHolderIconDrawable;
-import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.search.StringMatcherUtility;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.SafeCloseable;
@@ -190,7 +190,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDisableRelayout = false;
 
-    private HandlerRunnable mIconLoadRequest;
+    private CancellableTask mIconLoadRequest;
 
     private boolean mEnableIconUpdateAnimation = false;
 

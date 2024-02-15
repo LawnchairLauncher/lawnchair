@@ -51,8 +51,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
-import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.function.Consumer;
@@ -90,7 +90,7 @@ public class WidgetCell extends LinearLayout {
 
     private final DatabaseWidgetPreviewLoader mWidgetPreviewLoader;
 
-    protected HandlerRunnable mActiveRequest;
+    protected CancellableTask mActiveRequest;
     private boolean mAnimatePreview = true;
 
     protected final ActivityContext mActivity;
