@@ -113,7 +113,7 @@ public class TaskMenuView extends AbstractFloatingView {
 
     @Override
     protected void handleClose(boolean animate) {
-        if (animate) {
+        if (animate || enableOverviewIconMenu()) {
             animateClose();
         } else {
             closeComplete();
@@ -305,6 +305,8 @@ public class TaskMenuView extends AbstractFloatingView {
                 : Interpolators.DECELERATE);
 
         if (enableOverviewIconMenu()) {
+            IconAppChipView iconAppChip = (IconAppChipView) mTaskContainer.getIconView().asView();
+
             float additionalTranslationY = 0;
             if (((RecentsView) mActivity.getOverviewPanel()).isOnGridBottomRow(mTaskView)) {
                 // Animate menu up for enough room to display full menu when task on bottom row.
@@ -320,34 +322,33 @@ public class TaskMenuView extends AbstractFloatingView {
                             : mMenuTranslationYBeforeOpen + additionalTranslationY);
             translationYAnim.setInterpolator(EMPHASIZED);
 
-            IconAppChipView iconAppChip = (IconAppChipView) mTaskContainer.getIconView().asView();
             ObjectAnimator menuTranslationYAnim = ObjectAnimator.ofFloat(
                     iconAppChip.getMenuTranslationY(),
                     MULTI_PROPERTY_VALUE, closing ? 0 : additionalTranslationY);
             menuTranslationYAnim.setInterpolator(EMPHASIZED);
 
-            mOpenCloseAnimator.playTogether(translationYAnim, menuTranslationYAnim);
-        }
-        // Animate menu and icon when split task would display off the side of the screen.
-        if (enableOverviewIconMenu() && mActivity.getDeviceProfile().isLandscape
-                && mTaskContainer.getStagePosition() == STAGE_POSITION_BOTTOM_OR_RIGHT) {
-            float additionalTranslationX = Math.max(
-                    getTranslationX() + getWidth() - (mActivity.getDeviceProfile().widthPx
-                            - getResources().getDimensionPixelSize(
-                            R.dimen.task_menu_edge_padding) * 2), 0);
+            float additionalTranslationX = 0;
+            if (mActivity.getDeviceProfile().isLandscape
+                    && mTaskContainer.getStagePosition() == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+                // Animate menu and icon when split task would display off the side of the screen.
+                additionalTranslationX = Math.max(
+                        getTranslationX() + getWidth() - (mActivity.getDeviceProfile().widthPx
+                                - getResources().getDimensionPixelSize(
+                                R.dimen.task_menu_edge_padding) * 2), 0);
+            }
 
             ObjectAnimator translationXAnim = ObjectAnimator.ofFloat(this, TRANSLATION_X,
                     closing ? mMenuTranslationXBeforeOpen
                             : mMenuTranslationXBeforeOpen - additionalTranslationX);
             translationXAnim.setInterpolator(EMPHASIZED);
 
-            IconAppChipView iconAppChip = (IconAppChipView) mTaskContainer.getIconView().asView();
             ObjectAnimator menuTranslationXAnim = ObjectAnimator.ofFloat(
                     iconAppChip.getMenuTranslationX(),
                     MULTI_PROPERTY_VALUE, closing ? 0 : -additionalTranslationX);
             menuTranslationXAnim.setInterpolator(EMPHASIZED);
 
-            mOpenCloseAnimator.playTogether(translationXAnim, menuTranslationXAnim);
+            mOpenCloseAnimator.playTogether(translationYAnim, translationXAnim,
+                    menuTranslationXAnim);
         }
 
         mOpenCloseAnimator.playTogether(mRevealAnimator,
@@ -377,19 +378,8 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void closeComplete() {
         mIsOpen = false;
-        resetOverviewIconMenu();
         mActivity.getDragLayer().removeView(this);
         mRevealAnimator = null;
-    }
-
-    private void resetOverviewIconMenu() {
-        if (enableOverviewIconMenu()) {
-            IconAppChipView iconAppChipView = (IconAppChipView) mTaskContainer.getIconView();
-            iconAppChipView.reset();
-            iconAppChipView.setMenuTranslationX(0);
-            iconAppChipView.setMenuTranslationY(0);
-            setTranslationY(mMenuTranslationYBeforeOpen);
-        }
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {

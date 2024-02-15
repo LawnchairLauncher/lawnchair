@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -121,34 +120,10 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     }
 
     /**
-     * Translate the View on the X-axis without overriding the raw translation.
-     * This function is used for the menu split animation. It allows external animations to
-     * translate this view without affecting the value of the original translation. Thus,
-     * it is possible to restore the initial translation value.
-     *
-     * @param translationX Animated translation to be aggregated to the raw translation.
-     */
-    public void setMenuTranslationX(float translationX) {
-        mViewTranslationX.get(INDEX_MENU_TRANSLATION).setValue(translationX);
-    }
-
-    /**
      * Gets the menu y-axis translation for split task
      */
     public MultiPropertyFactory<View>.MultiProperty getMenuTranslationY() {
         return mViewTranslationY.get(INDEX_MENU_TRANSLATION);
-    }
-
-    /**
-     * Translate the View on the Y-axis without overriding the raw translation.
-     * This function is used for the menu split animation. It allows external animations to
-     * translate this view without affecting the value of the original translation. Thus,
-     * it is possible to restore the initial translation value.
-     *
-     * @param translationY Animated translation to be aggregated to the raw translation.
-     */
-    public void setMenuTranslationY(float translationY) {
-        mViewTranslationY.get(INDEX_MENU_TRANSLATION).setValue(translationY);
     }
 
     public IconAppChipView(Context context) {
@@ -330,6 +305,7 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
         LayoutParams iconArrowParams = (LayoutParams) mIconArrowView.getLayoutParams();
         int arrowMarginStart = collapsedBackgroundBounds.right - mArrowMarginEnd - mArrowSize;
         orientationHandler.setIconAppChipChildrenParams(iconArrowParams, arrowMarginStart);
+        mIconArrowView.setPivotY(iconArrowParams.height / 2f);
         mIconArrowView.setLayoutParams(iconArrowParams);
 
         // This method is called twice sometimes (like when rotating split tasks). It is called
@@ -378,7 +354,6 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
         if (isRevealing) {
             boolean isRtl = isLayoutRtl();
             bringToFront();
-            ((AnimatedVectorDrawable) mIconArrowView.getDrawable()).start();
             // Clip expanded text with reveal animation so it doesn't go beyond the edge of the menu
             Animator expandedTextRevealAnim = ViewAnimationUtils.createCircularReveal(
                     mIconTextExpandedView, 0, mIconTextExpandedView.getHeight() / 2,
@@ -412,10 +387,10 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
                             textTranslationXWithRtl),
                     ObjectAnimator.ofFloat(mIconTextCollapsedView, ALPHA, 0),
                     ObjectAnimator.ofFloat(mIconTextExpandedView, ALPHA, 1),
-                    ObjectAnimator.ofFloat(mIconArrowView, TRANSLATION_X, arrowTranslationWithRtl));
+                    ObjectAnimator.ofFloat(mIconArrowView, TRANSLATION_X, arrowTranslationWithRtl),
+                    ObjectAnimator.ofFloat(mIconArrowView, SCALE_Y, -1));
             mAnimator.setDuration(MENU_BACKGROUND_REVEAL_DURATION);
         } else {
-            ((AnimatedVectorDrawable) mIconArrowView.getDrawable()).reverse();
             // Clip expanded text with reveal animation so it doesn't go beyond the edge of the menu
             Animator expandedTextClipAnim = ViewAnimationUtils.createCircularReveal(
                     mIconTextExpandedView, 0, mIconTextExpandedView.getHeight() / 2,
@@ -436,7 +411,8 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
                     ObjectAnimator.ofFloat(mIconTextExpandedView, TRANSLATION_X, 0),
                     ObjectAnimator.ofFloat(mIconTextCollapsedView, ALPHA, 1),
                     ObjectAnimator.ofFloat(mIconTextExpandedView, ALPHA, 0),
-                    ObjectAnimator.ofFloat(mIconArrowView, TRANSLATION_X, 0));
+                    ObjectAnimator.ofFloat(mIconArrowView, TRANSLATION_X, 0),
+                    ObjectAnimator.ofFloat(mIconArrowView, SCALE_Y, 1));
             mAnimator.setDuration(MENU_BACKGROUND_HIDE_DURATION);
         }
 
@@ -456,19 +432,6 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
 
     private Rect getExpandedBackgroundLtrBounds() {
         return new Rect(0, 0, mExpandedMenuDefaultWidth, mExpandedMenuDefaultHeight);
-    }
-
-    protected void reset() {
-        mBackgroundRelativeLtrLocation.set(getCollapsedBackgroundLtrBounds());
-        mIconView.setScaleX(1);
-        mIconView.setScaleY(1);
-        mIconTextCollapsedView.setTranslationX(0);
-        mIconTextExpandedView.setTranslationX(0);
-        mIconTextCollapsedView.setAlpha(1);
-        mIconTextExpandedView.setAlpha(0);
-        mIconArrowView.setTranslationX(0);
-        ((AnimatedVectorDrawable) mIconArrowView.getDrawable()).reset();
-        mAnimator = null;
     }
 
     private void cancelInProgressAnimations() {
