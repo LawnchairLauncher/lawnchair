@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Qinisekisa ukuthi uswayipha ukusuka onqenqemeni olukude ngakwesokudla noma olukude ngakwesokunxele"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Qinisekisa ukuthi uswayipha ukusuka kunqenqema olungakwesokudla noma olungakwesokunxele ukuya maphakathi nesikrini bese uyadedela."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ufunde indlela yokuswayipha kusuka kwesokudla ukuze ubuyele emuva. Ngokulandelayo, funda indlela yokushintsha ama-app."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Ukuqedile ukuthinta kokubuyela emuva. Ngokulandelayo, funda indlela yokushintsha ama-app."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Ukuqedile ukuthinta kokubuyela emuva"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Qinisekisa ukuba awuswayipheli eduze kakhulu naphansi kwesikrini"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Ukuze ushintshe ukuzwela kokuthinta emuva, iya Kumasethingi"</string>

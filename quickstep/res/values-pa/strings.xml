@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਜਾਂ ਖੱਬੇ ਪਾਸੇ ਦੇ ਬਿਲਕੁਲ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਦੇ ਹੋ"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਜਾਂ ਖੱਬੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰਦੇ ਹੋ ਅਤੇ ਛੱਡ ਦਿੰਦੇ ਹੋ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ਤੁਸੀਂ ਪਿੱਛੇ ਜਾਣ ਲਈ ਸੱਜੇ ਪਾਸੇ ਤੋਂ ਸਵਾਈਪ ਕਰਨ ਦਾ ਤਰੀਕਾ ਜਾਣਿਆ। ਅੱਗੇ, ਐਪਾਂ ਵਿਚਾਲੇ ਸਵਿੱਚ ਕਰਨ ਦਾ ਤਰੀਕਾ ਜਾਣੋ।"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ਤੁਸੀਂ \'ਵਾਪਸ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਅੱਗੇ, ਜਾਣੋ ਕਿ ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਿਵੇਂ ਕਰਨੀ ਹੈ।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ਤੁਸੀਂ \'ਵਾਪਸ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਹਿੱਸੇ ਦੇ ਬਹੁਤ ਨੇੜੇ ਸਵਾਈਪ ਨਾ ਕਰੋ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ਪਿੱਛੇ ਜਾਣ ਦੇ ਸੰਕੇਤ ਦੀ ਸੰਵੇਦਨਸ਼ੀਲਤਾ ਬਦਲਣ ਲਈ, ਸੈਟਿੰਗਾਂ \'ਤੇ ਜਾਓ"</string>

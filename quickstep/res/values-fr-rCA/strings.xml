@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite ou gauche"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite ou gauche vers le centre, puis allons-y"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Vous avez appris à balayer de la droite pour revenir en arrière. Apprenez comment changer d\'appli."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Vous avez appris le geste de retour en arrière. Maintenant, apprenez comment changer d\'application."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Vous avez appris le geste de retour en arrière"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Assurez-vous de ne pas balayer trop près du bas de l\'écran"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Modifiez la sensibilité du geste de retour dans Paramètres"</string>
