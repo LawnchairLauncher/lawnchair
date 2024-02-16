@@ -47,6 +47,7 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNF
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+import static com.android.wm.shell.Flags.enableBubblesLongPressNavHandle;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BUBBLES;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DESKTOP_MODE;
@@ -1006,6 +1007,17 @@ public class TouchInteractionService extends Service {
                             mOverviewCommandHelper);
                 }
             }
+            if (enableBubblesLongPressNavHandle()) {
+                // Create bubbles input consumer before NavHandleLongPressInputConsumer.
+                // This allows for nav handle to fall back to bubbles.
+                if (mDeviceState.isBubblesExpanded()) {
+                    reasonString = newCompoundString(reasonPrefix)
+                            .append(SUBSTRING_PREFIX)
+                            .append("bubbles expanded, trying to use default input consumer");
+                    // Bubbles can handle home gesture itself.
+                    base = getDefaultInputConsumer(reasonString);
+                }
+            }
 
             NavHandle navHandle = tac != null ? tac.getNavHandle()
                     : SystemUiProxy.INSTANCE.get(this);
@@ -1023,12 +1035,15 @@ public class TouchInteractionService extends Service {
                         mDeviceState, navHandle);
             }
 
-            if (mDeviceState.isBubblesExpanded()) {
-                reasonString = newCompoundString(reasonPrefix)
-                        .append(SUBSTRING_PREFIX)
-                        .append("bubbles expanded, trying to use default input consumer");
-                // Bubbles can handle home gesture itself.
-                base = getDefaultInputConsumer(reasonString);
+            if (!enableBubblesLongPressNavHandle()) {
+                // Continue overriding nav handle input consumer with bubbles
+                if (mDeviceState.isBubblesExpanded()) {
+                    reasonString = newCompoundString(reasonPrefix)
+                            .append(SUBSTRING_PREFIX)
+                            .append("bubbles expanded, trying to use default input consumer");
+                    // Bubbles can handle home gesture itself.
+                    base = getDefaultInputConsumer(reasonString);
+                }
             }
 
             if (mDeviceState.isSystemUiDialogShowing()) {
