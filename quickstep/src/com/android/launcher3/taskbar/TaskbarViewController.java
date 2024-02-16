@@ -26,7 +26,6 @@ import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
@@ -41,7 +40,6 @@ import android.animation.ValueAnimator;
 import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -193,7 +191,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
-        mTaskbarView.init(new TaskbarViewCallbacks());
+        mTaskbarView.init(TaskbarViewCallbacksFactory.newInstance(mActivity).create(
+                mActivity, mControllers, mTaskbarView));
         mTaskbarView.getLayoutParams().height = mActivity.isPhoneMode()
                 ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_phone_size)
                 : mActivity.getDeviceProfile().taskbarHeight;
@@ -891,66 +890,4 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mModelCallbacks.updateRunningApps();
     }
 
-    /**
-     * Callbacks for {@link TaskbarView} to interact with its controller.
-     */
-    public class TaskbarViewCallbacks {
-        private final float mSquaredTouchSlop = Utilities.squaredTouchSlop(mActivity);
-
-        private float mDownX, mDownY;
-        private boolean mCanceledStashHint;
-
-        public View.OnClickListener getIconOnClickListener() {
-            return mActivity.getItemOnClickListener();
-        }
-
-        public View.OnClickListener getAllAppsButtonClickListener() {
-            return v -> {
-                mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP);
-                mControllers.taskbarAllAppsController.toggle();
-            };
-        }
-
-        public View.OnLongClickListener getTaskbarDividerLongClickListener() {
-            return v -> {
-                mControllers.taskbarPinningController.showPinningView(v);
-                return true;
-            };
-        }
-
-        public View.OnTouchListener getTaskbarDividerRightClickListener() {
-            return (v, event) -> {
-                if (event.isFromSource(InputDevice.SOURCE_MOUSE)
-                        && event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                    mControllers.taskbarPinningController.showPinningView(v);
-                    return true;
-                }
-                return false;
-            };
-        }
-
-        public View.OnLongClickListener getIconOnLongClickListener() {
-            return mControllers.taskbarDragController::startDragOnLongClick;
-        }
-
-        /** Gets the hover listener for the provided icon view. */
-        public View.OnHoverListener getIconOnHoverListener(View icon) {
-            return new TaskbarHoverToolTipController(mActivity, mTaskbarView, icon);
-        }
-
-        /**
-         * Notifies launcher to update icon alignment.
-         */
-        public void notifyIconLayoutBoundsChanged() {
-            mControllers.uiController.onIconLayoutBoundsChanged();
-        }
-
-        /**
-         * Notifies the taskbar scrim when the visibility of taskbar changes.
-         */
-        public void notifyVisibilityChanged() {
-            mControllers.taskbarScrimViewController.onTaskbarVisibilityChanged(
-                    mTaskbarView.getVisibility());
-        }
-    }
 }

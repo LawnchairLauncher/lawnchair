@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"یقینی بنائیں کہ آپ دائیں یا بائیں کنارے سے دور سے سوائپ کریں"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"یقینی بنائیں کہ آپ دائیں یا بائیں کنارے سے اسکرین کے وسط تک سوائپ کریں اور پھر اپنی انگلی اٹھا لیں"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"آپ نے واپس جانے کے لیے دائیں کنارے سے سوائپ کرنے کا طریقہ سیکھ لیا۔ اس کے بعد ایپس سوئچ کرنے کا طریقہ جانیں۔"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"آپ نے واپس جائیں اشارے کو مکمل کر لیا۔ اس کے بعد ایپس سوئچ کرنے کا طریقہ جانیں۔"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"آپ نے واپس جائیں اشارے کو مکمل کر لیا"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے حصے سے زیادہ قریب سے سوائپ نہ کریں"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"پچھلے اشارے کی حساسیت تبدیل کرنے کے لیے ترتیبات پر جائیں"</string>

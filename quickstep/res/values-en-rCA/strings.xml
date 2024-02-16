@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Make sure you swipe from the far-right or far-left edge"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Make sure you swipe from the right or left edge to the middle of the screen and let go"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"You learned how to swipe from the right to go back. Next up, learn how to switch apps."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"You completed the go back gesture. Next up, learn how to switch apps."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"You completed the go back gesture"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Make sure you don\'t swipe too close to the bottom of the screen"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"To change the sensitivity of the back gesture, go to Settings"</string>

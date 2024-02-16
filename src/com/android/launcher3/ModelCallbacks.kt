@@ -3,7 +3,6 @@ package com.android.launcher3
 import android.annotation.TargetApi
 import android.os.Build
 import android.os.Trace
-import android.view.ViewTreeObserver.OnDrawListener
 import androidx.annotation.UiThread
 import com.android.launcher3.LauncherConstants.TraceEvents
 import com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID
@@ -18,7 +17,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.popup.PopupContainerWithArrow
 import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.Executors
 import com.android.launcher3.util.IntArray as LIntArray
 import com.android.launcher3.util.IntSet as LIntSet
 import com.android.launcher3.util.PackageUserKey
@@ -77,11 +75,15 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         workspaceItemCount: Int,
         isBindSync: Boolean
     ) {
+        if (Utilities.ATLEAST_S) {
+            Trace.endAsyncSection(
+                TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
+                TraceEvents.DISPLAY_WORKSPACE_TRACE_COOKIE
+            )
+        }
         synchronouslyBoundPages = boundPages
         pagesToBindSynchronously = LIntSet()
         clearPendingBinds()
-        val executor = ViewOnDrawExecutor(pendingTasks)
-        pendingExecutor = executor
         if (!launcher.isInState(LauncherState.ALL_APPS)) {
             launcher.appsView.appsStore.enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW)
             pendingTasks.add {
@@ -90,24 +92,15 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
                 )
             }
         }
-        executor.onLoadAnimationCompleted()
-        executor.attachTo(launcher)
-        if (Utilities.ATLEAST_S) {
-            Trace.endAsyncSection(
-                TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
-                TraceEvents.DISPLAY_WORKSPACE_TRACE_COOKIE
-            )
-        }
-        launcher.bindComplete(workspaceItemCount, isBindSync)
-        launcher.rootView.viewTreeObserver.addOnDrawListener(
-            object : OnDrawListener {
-                override fun onDraw() {
-                    Executors.MAIN_EXECUTOR.handler.postAtFrontOfQueue {
-                        launcher.rootView.getViewTreeObserver().removeOnDrawListener(this)
-                    }
+        val executor =
+            ViewOnDrawExecutor(pendingTasks) {
+                if (pendingExecutor == it) {
+                    pendingExecutor = null
                 }
             }
-        )
+        pendingExecutor = executor
+        executor.attachTo(launcher)
+        launcher.bindComplete(workspaceItemCount, isBindSync)
     }
 
     /**

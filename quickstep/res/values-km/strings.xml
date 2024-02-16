@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ត្រូវប្រាកដថា​អ្នកអូសពី​គែមខាងស្ដាំ ឬ​ខាងឆ្វេង"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ត្រូវប្រាកដថា​អ្នកអូសពី​គែមខាងស្ដាំ ឬខាងឆ្វេង​ទៅផ្នែកកណ្ដាល​នៃអេក្រង់ រួច​ដកដៃ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"អ្នកបានស្វែងយល់ពីរបៀបអូសពីខាងស្ដាំ ដើម្បីថយក្រោយ។ បន្ទាប់​ទៀត សូមស្វែងយល់​ពីរបៀប​ប្ដូរកម្មវិធី​។"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"អ្នក​បានបញ្ចប់​ចលនា​ថយក្រោយ​ហើយ។ បន្ទាប់​មកទៀត សូមស្វែងយល់​ពីរបៀប​ប្ដូរកម្មវិធី​។"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"អ្នក​បានបញ្ចប់​ចលនា​ថយក្រោយ​ហើយ"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ត្រូវប្រាកដថា​អ្នកមិនអូស​ទៅជិត​ផ្នែកខាងក្រោម​នៃអេក្រង់ពេក"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ដើម្បីប្ដូរកម្រិត​រំញោចនឹង​ចលនាថយក្រោយ សូមចូលទៅកាន់​ការកំណត់"</string>

@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Pamiętaj, aby przesuwać palcem od samej krawędzi (prawej lub lewej)"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Pamiętaj, aby przesuwać palcem od prawej lub lewej krawędzi do środka ekranu i podnieść palec"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Wiesz już, jak przesuwać palcem, aby przejść wstecz. Poćwicz teraz przełączanie aplikacji."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Gest przejścia wstecz został opanowany. Poćwicz teraz przełączanie aplikacji."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Gest przejścia wstecz został opanowany"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Pamiętaj, aby nie przesuwać palcem zbyt blisko dolnej części ekranu"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Czułość gestu cofania możesz zmienić w Ustawieniach"</string>

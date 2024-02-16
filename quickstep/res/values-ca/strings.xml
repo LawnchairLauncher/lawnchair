@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Assegura\'t de lliscar des de l\'extrem dret o esquerre de la pantalla."</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Assegura\'t de lliscar des de la vora dreta o esquerra cap al centre de la pantalla i deixar anar"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Has après a lliscar des de la dreta per tornar enrere. Ara, descobreix com pots canviar d\'aplicació."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Has completat el gest per tornar enrere. Ara, descobreix com pots canviar d\'aplicació."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Has completat el gest per tornar enrere"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Assegura\'t de no lliscar massa a prop de la part inferior de la pantalla."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Per canviar la sensibilitat del gest, ves a Configuració"</string>

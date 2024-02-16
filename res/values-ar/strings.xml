@@ -46,6 +46,8 @@
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"تحقيق أهداف اللياقة البدنية"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"معرفة حالة الطقس أولاً بأول"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"محتوى قد يعجبك أيضًا"</string>
+    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
+    <skip />
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{تطبيق مصغّر واحد}zero{# تطبيق مصغّر}two{تطبيقان مصغّران}few{# تطبيقات مصغّرة}many{# تطبيقًا مصغّرًا}other{# تطبيق مصغّر}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{اختصار واحد}zero{# اختصار}two{اختصاران}few{# اختصارات}many{# اختصارًا}other{# اختصار}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>، <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
