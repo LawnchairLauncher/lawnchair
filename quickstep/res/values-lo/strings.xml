@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາສຸດ ຫຼື ຊ້າຍສຸດ"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາ ຫຼື ຊ້າຍໄປຫາທາງກາງຂອງໜ້າຈໍແລ້ວປ່ອຍນິ້ວ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ທ່ານຮຽນຮູ້ວິທີປັດຈາກຂວາເພື່ອກັບຄືນແລ້ວ. ຕໍ່ໄປ, ມາສຶກສາວິທີສະຫຼັບແອັບ."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ທ່ານໃຊ້ທ່າທາງກັບຄືນສຳເລັດແລ້ວ. ຕໍ່ໄປ, ມາສຶກສາວິທີສະຫຼັບແອັບ."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ທ່ານໃຊ້ທ່າທາງກັບຄືນສຳເລັດແລ້ວ"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ໄດ້ປັດໃກ້ກັບທາງລຸ່ມຂອງໜ້າຈໍເກີນໄປ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ເພື່ອປ່ຽນຄວາມລະອຽດອ່ອນຂອງທ່າທາງກັບຄືນ, ໃຫ້ໄປຫາການຕັ້ງຄ່າ"</string>
