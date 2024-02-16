@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Ən sağ və ya sol kənardan sürüşdürün"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Sağ və ya sol kənardan ekranın ortasına sürüşdürüb, buraxın"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Geri qayıtmaq üçün sağdan sürüşdürmək qaydasını öyrəndiniz. Sonra tətbiqləri keçirməyi öyrənin."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Geri getmə jestini tamamladınız. Sonra tətbiqləri keçirməyi öyrənin."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Geri qayıtma jestini tamamladınız"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Barmağınızı ekranın aşağı kənarına çox yaxınlaşdırmayın"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri qayıtma jestinin həssaslığını dəyişmək üçün Ayarlara keçin"</string>

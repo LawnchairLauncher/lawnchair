@@ -237,7 +237,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ComposeInitializer;
 import com.android.launcher3.views.FloatingIconView;
@@ -2231,12 +2230,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         getModelWriter().updateItemInDatabase(info);
         return info;
-    }
-
-    public void clearPendingExecutor(ViewOnDrawExecutor executor) {
-        if (mModelCallbacks.getPendingExecutor() == executor) {
-            mModelCallbacks.setPendingExecutor(null);
-        }
     }
 
     /**

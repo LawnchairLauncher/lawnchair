@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Csúsztasson a képernyő jobb vagy bal széléről."</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Csúsztassa ujját a képernyő jobb vagy bal széléről a képernyő közepéig, majd emelje fel."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Megtanulta, hogyan léphet vissza jobbról csúsztatva. A következő az appok közötti váltás."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Teljesítette a visszalépési kézmozdulatot. Most megtanulhatja, hogyan válthat az appok között."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Teljesítette a visszalépési kézmozdulatot."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Ne csúsztasson túl közel a képernyő aljához."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"A vissza mozdulat érzékenysége a Beállításokban módosítható"</string>

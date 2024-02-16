@@ -46,6 +46,8 @@
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"ನಿಮ್ಮ ಫಿಟ್‌ನೆಸ್ ಗುರಿಗಳನ್ನು ಸಾಧಿಸಿ"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"ಹವಾಮಾನದ ಕುರಿತು ಮುಂಚೆಯೇ ಅಪ್‌ಡೇಟ್‌ ಆಗಿರಿ"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"ನಿಮಗೆ ಇವು ಕೂಡ ಇಷ್ಟವಾಗಬಹುದು"</string>
+    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
+    <skip />
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ವಿಜೆಟ್}one{# ವಿಜೆಟ್‌ಗಳು}other{# ವಿಜೆಟ್‌ಗಳು}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ಶಾರ್ಟ್‌ಕಟ್}one{# ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು}other{# ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>

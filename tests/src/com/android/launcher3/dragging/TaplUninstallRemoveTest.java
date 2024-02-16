@@ -16,6 +16,8 @@
 package com.android.launcher3.dragging;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.UIOBJECT_STALE_ELEMENT;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.TestConstants.AppNames.DUMMY_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
@@ -154,6 +156,7 @@ public class TaplUninstallRemoveTest extends AbstractLauncherUiTest {
                     0, Math.min(gridPositions.length, appNameCandidates.length));
 
             for (int i = 0; i < appNames.length; ++i) {
+                Log.d(UIOBJECT_STALE_ELEMENT, "creatingShortcut for: " + appNames[i]);
                 createShortcutIfNotExist(appNames[i], gridPositions[i]);
             }
 
@@ -166,6 +169,7 @@ public class TaplUninstallRemoveTest extends AbstractLauncherUiTest {
                     DUMMY_APP_NAME + " was expected to disappear after uninstall.", DUMMY_APP_NAME);
 
             if (!TestStabilityRule.isPresubmit()) { // b/315847371
+                Log.d(UIOBJECT_STALE_ELEMENT, "second getWorkspaceIconsPositions()");
                 Map<String, Point> finalPositions =
                         mLauncher.getWorkspace().getWorkspaceIconsPositions();
                 assertThat(finalPositions).doesNotContainKey(DUMMY_APP_NAME);

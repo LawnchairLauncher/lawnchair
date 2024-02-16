@@ -21,6 +21,7 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.UIOBJECT_STALE_ELEMENT;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -28,6 +29,7 @@ import static junit.framework.TestCase.assertTrue;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -315,8 +317,17 @@ public final class Workspace extends Home {
         return workspaceIcons.stream()
                 .collect(
                         Collectors.toMap(
-                                /* keyMapper= */ UiObject2::getText,
-                                /* valueMapper= */ UiObject2::getVisibleCenter,
+                                /* keyMapper= */ uiObject21 -> {
+                                    Log.d(UIOBJECT_STALE_ELEMENT, "keyText: " +
+                                            uiObject21.getText());
+                                    return uiObject21.getText();
+                                },
+                                /* valueMapper= */ uiObject2 -> {
+                                    Log.d(UIOBJECT_STALE_ELEMENT, uiObject2.getText() +
+                                            " dispId" + uiObject2.getDisplayId() +
+                                            " parent" + uiObject2.getParent());
+                                    return uiObject2.getVisibleCenter();
+                                },
                                 /* mergeFunction= */ (p1, p2) -> p1.x < p2.x ? p1 : p2));
     }
 

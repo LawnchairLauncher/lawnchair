@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Hãy vuốt từ mép ngoài cùng bên phải hoặc ngoài cùng bên trái"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Hãy vuốt từ mép phải hoặc mép trái tới giữa màn hình rồi nhấc ngón tay ra"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Bạn đã học được cách vuốt từ mép phải để quay lại. Tiếp theo, hãy tìm hiểu cách chuyển đổi ứng dụng."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Bạn đã thực hiện xong cử chỉ quay lại. Tiếp theo, hãy tìm hiểu cách chuyển đổi ứng dụng."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Bạn đã thực hiện xong cử chỉ quay lại"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Hãy nhớ không được vuốt quá gần phần dưới cùng của màn hình"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Để thay đổi độ nhạy của cử chỉ quay lại, hãy vào mục Cài đặt"</string>
