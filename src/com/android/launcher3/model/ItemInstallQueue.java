@@ -18,7 +18,6 @@ package com.android.launcher3.model;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 
-import static com.android.launcher3.Flags.enableSupportForArchiving;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
@@ -45,6 +44,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -300,7 +300,8 @@ public class ItemInstallQueue {
                     } else {
                         lai = laiList.get(0);
                         si.intent = makeLaunchIntent(lai);
-                        if (enableSupportForArchiving() && lai.getActivityInfo().isArchived) {
+                        if (Utilities.enableSupportForArchiving()
+                                && lai.getActivityInfo().isArchived) {
                             si.runtimeStatusFlags |= FLAG_ARCHIVED;
                         }
                     }
