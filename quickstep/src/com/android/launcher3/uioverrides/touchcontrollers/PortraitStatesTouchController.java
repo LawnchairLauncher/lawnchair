@@ -186,7 +186,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 InteractionJankMonitorWrapper.begin(
-                        mLauncher.getRootView(), Cuj.CUJ_LAUNCHER_OPEN_ALL_APPS);
+                        mLauncher.getRootView(), Cuj.CUJ_LAUNCHER_OPEN_ALL_APPS, /*tag=*/ "swipe");
                 InteractionJankMonitorWrapper.begin(
                         mLauncher.getRootView(), Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_SWIPE);
                 break;
