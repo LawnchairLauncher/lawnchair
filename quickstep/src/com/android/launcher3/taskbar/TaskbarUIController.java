@@ -358,4 +358,13 @@ public class TaskbarUIController {
 
     /** Adjusts the hotseat for the bubble bar. */
     public void adjustHotseatForBubbleBar(boolean isBubbleBarVisible) {}
+
+    /**
+     * Adjusts the taskbar based on the visibility of the launcher.
+     * @param isVisible True if launcher is visible, false otherwise.
+     */
+    public void onLauncherVisibilityChanged(boolean isVisible) {
+        mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, !isVisible);
+        mControllers.taskbarStashController.applyState();
+    }
 }
