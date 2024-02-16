@@ -120,8 +120,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *
      * Use {@link #getStashDuration()} to query duration
      */
-    private static final long TASKBAR_STASH_DURATION =
-            InsetsController.ANIMATION_DURATION_RESIZE;
+    private static final long TASKBAR_STASH_DURATION = InsetsController.ANIMATION_DURATION_RESIZE;
 
     /**
      * How long to stash/unstash transient taskbar.

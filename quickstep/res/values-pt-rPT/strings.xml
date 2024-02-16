@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Deslize rapidamente a partir da extremidade mais à direita ou mais à esquerda"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Deslize rapidamente a partir da extremidade esquerda ou direita até ao centro do ecrã e solte"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Aprendeu a deslizar a partir da direita para retroceder. A seguir, saiba como alternar entre apps."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Concluiu o gesto para retroceder. A seguir, saiba como alternar entre apps."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Concluiu o gesto para retroceder"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Garanta que não desliza rapidamente com o dedo demasiado perto da parte inferior do ecrã"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Altere a sensibilidade do gesto para voltar nas Definições."</string>

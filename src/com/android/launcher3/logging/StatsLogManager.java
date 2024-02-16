@@ -636,6 +636,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped taskbar All Apps button.")
         LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP(1057),
 
+        @UiEvent(doc = "User long pressed taskbar All Apps button.")
+        LAUNCHER_TASKBAR_ALLAPPS_BUTTON_LONG_PRESS(1607),
+
         @UiEvent(doc = "User tapped on Share app system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP(1075),
 

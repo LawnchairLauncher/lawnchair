@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Maak seker dat jy van die rand heel regs of heel links af swiep"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Maak seker dat jy van die regter- of linkerrand af na die middel van die skerm toe swiep en laat los"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Jy het geleer hoe om van regs af te swiep om terug te gaan. Nou kan jy leer hoe om tussen apps te wissel."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Jy het die \"gaan terug\"-gebaar voltooi. Nou kan jy leer hoe om tussen programme te wissel."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Jy het die Gaan Terug-gebaar voltooi"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Maak seker dat jy nie te naby aan die onderkant van die skerm swiep nie"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Gaan na Instellings om sensitiwiteit van teruggebaar te verander"</string>

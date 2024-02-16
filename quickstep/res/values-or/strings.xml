@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ଆପଣ ସ୍କ୍ରିନର ଏକଦମ୍-ଡାହାଣ ବା ବାମ ଧାରରୁ ସ୍ୱାଇପ୍ କରୁଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ଆପଣ ସ୍କ୍ରିନର ଡାହାଣ ବା ବାମ ଧାରରୁ ମଝିକୁ ସ୍ୱାଇପ କରି ଛାଡ଼ି ଦେଉଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ଆପଣ ଡାହାଣରୁ ସ୍ୱାଇପ୍ କରି ପଛକୁ କିପରି ଫେରିବେ ତାହା ଜାଣିଲେ। ତା\'ପରେ, ଆପକୁ କିପରି ସ୍ୱିଚ୍ କରିବେ ତାହା ଜାଣନ୍ତୁ।"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ଆପଣ \'ପଛକୁ ଫେରନ୍ତୁ\' ଜେଶ୍ଚର୍ ସମ୍ପୂର୍ଣ୍ଣ କରିଛନ୍ତି। ତା\'ପରେ, ଆପଗୁଡ଼ିକୁ କିପରି ସ୍ୱିଚ୍ କରିବେ ତାହା ଜାଣନ୍ତୁ।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ଆପଣ \'ପଛକୁ ଫେରନ୍ତୁ\' ଜେଶ୍ଚର ସମ୍ପୂର୍ଣ୍ଣ କରିଛନ୍ତି"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ଆପଣ ସ୍କ୍ରିନର ତଳଭାଗର ଅତି ନିକଟରୁ ସ୍ୱାଇପ କରୁନଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ପଛକୁ ଫେରିବା ଜେଶ୍ଚରର ସମ୍ବେଦନଶୀଳତା ବଦଳାଇବାକୁ ସେଟିଂସକୁ ଯାଆନ୍ତୁ"</string>

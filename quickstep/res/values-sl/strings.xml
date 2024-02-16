@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Pazite, da povlečete s skrajno desnega ali skrajno levega roba."</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Pazite, da povlečete z desnega ali levega roba do sredine zaslona in dvignete prst."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Naučili ste se, kako povlečete z desne za vrnitev. Zdaj se naučite preklapljanja med aplikacijami."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Izvedli ste potezo za pomik nazaj. Zdaj se naučite preklapljanja med aplikacijami."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Izvedli ste potezo za pomik nazaj."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Pazite, da ne povlečete preblizu dna zaslona."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Občutljivost poteze za nazaj lahko spremenite v nastavitvah."</string>

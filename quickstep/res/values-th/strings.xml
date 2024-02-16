@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ตรวจสอบว่าปัดจากขอบด้านขวาสุดหรือซ้ายสุด"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ตรวจสอบว่าปัดจากขอบด้านขวาหรือซ้ายไปตรงกลางหน้าจอ แล้วยกนิ้วขึ้น"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"คุณรู้วิธีปัดจากด้านขวาเพื่อย้อนกลับแล้ว ต่อไปดูวิธีสลับแอป"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"คุณทำท่าทางสัมผัสเพื่อย้อนกลับเสร็จแล้ว ต่อไปดูวิธีสลับแอป"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"คุณทำท่าทางสัมผัสเพื่อย้อนกลับเสร็จแล้ว"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ไม่ปัดใกล้กับด้านล่างของหน้าจอมากเกินไป"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"เปลี่ยนความไวของท่าทางสัมผัสเพื่อย้อนกลับได้ที่การตั้งค่า"</string>

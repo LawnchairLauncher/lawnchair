@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ખાતરી કરો કે તમે એકદમ દૂરની જમણી કે ડાબી કિનારીએથી સ્વાઇપ કરો છો"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ખાતરી કરો કે તમે જમણી કે ડાબી કિનારીએથી સ્ક્રીનના મધ્ય ભાગ સુધી સ્વાઇપ કરો છો અને આંગળી ઊંચકી લો છો"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"પાછળ જવા જમણેથી કેવી રીતે સ્વાઇપ કરવું એ તમે શીખી લીધું છે. હવે પછી, ઍપ સ્વિચ કરવાની રીત જાણો."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"તમે પાછા જવાનો સંકેત પૂર્ણ કર્યો છે. હવે પછી, ઍપ સ્વિચ કરવાની રીત વિશે જાણો."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"તમે પાછા જવાનો સંકેત પૂર્ણ કર્યો છે"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ખાતરી કરો કે તમારાથી સ્ક્રીનની એકદમ નીચેની કિનારીની ખૂબ નજીક સુધી સ્વાઇપ ન થઈ જાય"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"પાછા જવાના સંકેતની સંવેદિતા બદલવા માટે, સેટિંગમાં જાઓ"</string>

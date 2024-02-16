@@ -89,6 +89,7 @@
     <string name="widget_holder_factory_class" translatable="false"></string>
     <string name="taskbar_search_session_controller_class" translatable="false"></string>
     <string name="taskbar_model_callbacks_factory_class" translatable="false"></string>
+    <string name="taskbar_view_callbacks_factory_class" translatable="false"></string>
     <string name="launcher_restore_event_logger_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->

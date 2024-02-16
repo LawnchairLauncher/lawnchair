@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Трябва да плъзнете пръст от най-дясната или най-лявата част на екрана"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Трябва да плъзнете пръст от десния или левия край до средата на екрана, след което да го отпуснете"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научихте жеста за връщане с плъзгане от дясно. Сега научете как се превключва между приложения."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Изпълнихте жеста за връщане назад. В следващия урок ще научите как се превключва между приложения."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Изпълнихте жеста за връщане назад"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не плъзвайте пръста си твърде близо до долната част на екрана"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Променете чувств. на жеста за връщане назад от настройките"</string>

@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"स्क्रिनको सबैभन्दा दायाँ किनारा वा सबैभन्दा बायाँ किनाराबाट स्वाइप गर्नुहोस्"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"स्क्रिनको दायाँ वा बायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"तपाईंले स्क्रिनको दायाँ किनाराबाट स्वाइप गरेर अघिल्लो स्क्रिनमा फर्कने तरिका सिक्नुभयो। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"तपाईंले \'पछाडि जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"तपाईंले \"पछाडि जानुहोस्\" नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"स्क्रिनको फेदको धेरै नजिकसम्म स्वाइप नगर्नुहोस्"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'पछाडि\' नामक इसाराको संवेदनशीलता बदल्न सेटिङमा जानुहोस्"</string>
