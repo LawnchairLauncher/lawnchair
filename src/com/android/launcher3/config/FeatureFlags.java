@@ -31,6 +31,7 @@ import static com.android.launcher3.uioverrides.flags.FlagsFactory.getDebugFlag;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFlag;
 import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
 
+import android.content.res.Resources;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.VisibleForTesting;
@@ -222,7 +223,19 @@ public final class FeatureFlags {
             TEAMFOOD, "Sends a notification whenever launcher encounters an uncaught exception.");
 
     public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
-            enableTaskbarNavbarUnification();
+            enableTaskbarNavbarUnification() && !isPhone();
+
+    private static boolean isPhone() {
+        final boolean isPhone;
+        int foldedDeviceStatesId = Resources.getSystem().getIdentifier(
+                "config_foldedDeviceStates", "array", "android");
+        if (foldedDeviceStatesId != 0) {
+            isPhone = Resources.getSystem().getIntArray(foldedDeviceStatesId).length == 0;
+        } else {
+            isPhone = true;
+        }
+        return isPhone;
+    }
 
     // Aconfig migration complete for ENABLE_TASKBAR_NO_RECREATION.
     public static final BooleanFlag ENABLE_TASKBAR_NO_RECREATION = getDebugFlag(299193589,
