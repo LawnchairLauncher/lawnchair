@@ -173,6 +173,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mIconScaleMultiplier.updateValue(info.getProgressLevel() == 0 ? 0 : 1);
 
         setLevel(info.getProgressLevel());
+        // Set a disabled icon color if the app is suspended or if the app is pending download
+        setIsDisabled(info.isDisabled() || info.isPendingDownload());
     }
 
     @Override
