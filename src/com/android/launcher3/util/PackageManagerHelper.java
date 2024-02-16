@@ -16,8 +16,6 @@
 
 package com.android.launcher3.util;
 
-import static com.android.launcher3.Flags.enableSupportForArchiving;
-
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -276,6 +274,6 @@ public class PackageManagerHelper {
     @SuppressWarnings("NewApi")
     private boolean isPackageInstalledOrArchived(ApplicationInfo info) {
         return (info.flags & ApplicationInfo.FLAG_INSTALLED) != 0 || (
-                enableSupportForArchiving() && info.isArchived);
+                Utilities.enableSupportForArchiving() && info.isArchived);
     }
 }
