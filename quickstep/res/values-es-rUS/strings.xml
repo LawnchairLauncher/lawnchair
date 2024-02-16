@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Asegúrate de deslizar desde el extremo derecho o izquierdo"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Recuerda deslizar desde el borde izquierdo o derecho hacia el centro de la pantalla y, luego, soltar"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ya sabes deslizar el dedo desde la derecha para ir atrás. Ahora, descubre cómo cambiar de app."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Completaste el gesto \"Atrás\". A continuación, obtén información para cambiar de app."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Completaste el gesto para ir atrás"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Asegúrate de no deslizar muy cerca de la parte inferior de la pantalla"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Cambia sensibilidad de gesto \"Atrás\" en Configuración"</string>

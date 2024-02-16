@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"請務必從螢幕最右側或最左側滑動"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"請務必從螢幕右側或左側往中央滑動，然後放開手指"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"你已瞭解如何透過「由右向左滑動」手勢返回。接著，一起來瞭解如何切換應用程式。"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"你已完成「返回」手勢的教學課程。接著，一起來瞭解如何切換應用程式。"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"你已完成「返回」手勢的教學課程"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"滑動時，手的位置不要太接近螢幕底部"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"如要變更「返回」手勢的敏感度，請前往「設定」"</string>

@@ -14,6 +14,8 @@ import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
 import static com.android.launcher3.util.TestUtil.DUMMY_CLASS_NAME;
 import static com.android.launcher3.util.TestUtil.DUMMY_PACKAGE;
 import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -38,6 +40,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.util.TestUtil;
 
 import org.junit.After;
@@ -123,6 +126,7 @@ public class CacheDataUpdatedTaskTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/325283522
     public void testCacheUpdate_update_apps() {
         // Run on model executor so that no other task runs in the middle.
         runOnExecutorSync(MODEL_EXECUTOR, () -> {
