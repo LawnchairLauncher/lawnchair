@@ -227,7 +227,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
-        onSet = { reloadHelper.reloadGrid() },
+        onSet = { reloadHelper.recreate() },
     )
 
     val showHiddenAppsInSearch = preference(

@@ -90,6 +90,7 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +100,7 @@ import java.util.stream.Stream;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
@@ -192,6 +194,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private boolean mForceBottomSheetVisible;
     private int mTabsProtectionAlpha;
 
+    private final PreferenceManager2 pref2;
+
     @Nullable
     private AllAppsTransitionController mAllAppsTransitionController;
 
@@ -207,7 +211,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         super(context, attrs, defStyleAttr);
         mActivityContext = ActivityContext.lookupContext(context);
         mAllAppsStore = new AllAppsStore<>(mActivityContext);
-
+        pref2 = PreferenceManager2.getInstance(mActivityContext);
         mScrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
@@ -723,7 +727,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     void setupHeader() {
-        mHeader.setVisibility(View.VISIBLE);
+        var hideHeader = PreferenceExtensionsKt.firstBlocking(pref2.getHideAppDrawerSearchBar());
+        mHeader.setVisibility(hideHeader ? View.GONE : View.VISIBLE);
         boolean tabsHidden = !mUsingTabs;
         mHeader.setup(
                 mAH.get(AdapterHolder.MAIN).mRecyclerView,
@@ -752,6 +757,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     protected void updateHeaderScroll(int scrolledOffset) {
+        if (PreferenceExtensionsKt.firstBlocking(pref2.getHideAppDrawerSearchBar())) return;
         float prog1 = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
         int headerColor = getHeaderColor(prog1);
         int tabsAlpha = mHeader.getPeripheralProtectionHeight() == 0 ? 0
@@ -857,7 +863,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void layoutBelowSearchContainer(View v, boolean includeTabsMargin) {
-        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams) || PreferenceExtensionsKt.firstBlocking(pref2.getHideAppDrawerSearchBar())) {
             return;
         }
 
@@ -874,7 +880,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void alignParentTop(View v, boolean includeTabsMargin) {
-        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams) || PreferenceExtensionsKt.firstBlocking(pref2.getHideAppDrawerSearchBar())) {
             return;
         }
 
@@ -887,7 +893,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void removeCustomRules(View v) {
-        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams) || PreferenceExtensionsKt.firstBlocking(pref2.getHideAppDrawerSearchBar())) {
             return;
         }
 
@@ -908,7 +914,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void layoutWithoutSearchContainer(View v, boolean includeTabsMargin) {
-        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams) || PreferenceExtensionsKt.firstBlocking(pref2.getHideAppDrawerSearchBar())) {
             return;
         }
 
