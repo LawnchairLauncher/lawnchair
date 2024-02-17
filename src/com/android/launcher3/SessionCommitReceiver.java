@@ -30,6 +30,7 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.Executors;
 
 import java.util.Locale;
@@ -51,13 +52,13 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
     @WorkerThread
     private static void processIntent(Context context, Intent intent) {
-        if (!isEnabled(context)) {
+        UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
+        if (!isEnabled(context, user)) {
             // User has decided to not add icons on homescreen.
             return;
         }
 
         SessionInfo info = intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
-        UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
         if (!PackageInstaller.ACTION_SESSION_COMMITTED.equals(intent.getAction())
                 || info == null || user == null) {
             // Invalid intent.
@@ -92,7 +93,17 @@ public class SessionCommitReceiver extends BroadcastReceiver {
                 .queueItem(info.getAppPackageName(), user);
     }
 
-    public static boolean isEnabled(Context context) {
+    /**
+     * Returns whether adding Installed App Icons to home screen is allowed or not.
+     * Not allowed when:
+     * - User belongs to {@link com.android.launcher3.util.UserIconInfo.TYPE_PRIVATE} or
+     * - Home Settings preference to add App Icons on Home Screen is set as disabled
+     */
+    public static boolean isEnabled(Context context, UserHandle user) {
+        if (Flags.privateSpaceRestrictItemDrag() && user != null
+                && UserCache.getInstance(context).getUserInfo(user).isPrivate()) {
+            return false;
+        }
         return LauncherPrefs.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
     }
 }
