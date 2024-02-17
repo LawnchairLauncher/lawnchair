@@ -493,9 +493,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
     /**
-     * Reflects if Recents is currently in the middle of a gesture
+     * Reflects if Recents is currently in the middle of a gesture, and if so, which tasks are
+     * running. If a gesture is not in progress, this will be null.
      */
-    private boolean mGestureActive;
+    private @Nullable Task[] mActiveGestureRunningTasks;
 
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
     private final SparseBooleanArray mHasVisibleTaskData = new SparseBooleanArray();
@@ -1841,7 +1842,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (newRunningTaskView != null) {
                 mRunningTaskViewId = newRunningTaskView.getTaskViewId();
             } else {
-                mRunningTaskViewId = INVALID_TASK_ID;
+                if (mActiveGestureRunningTasks != null) {
+                    // This will update mRunningTaskViewId and create a stub view if necessary.
+                    // We try to avoid this because it can cause a scroll jump, but it is needed
+                    // for cases where the running task isn't included in this load plan (e.g. if
+                    // the current running task is excludedFromRecents.)
+                    showCurrentTask(mActiveGestureRunningTasks);
+                } else {
+                    mRunningTaskViewId = INVALID_TASK_ID;
+                }
             }
         }
 
@@ -1909,10 +1918,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void removeTasksViewsAndClearAllButton() {
+        // This handles an edge case where applyLoadPlan happens during a gesture when the
+        // only Task is one with excludeFromRecents, in which case we should not remove it.
+        final int stubRunningTaskIndex = isGestureActive() ? getRunningTaskIndex() : -1;
+
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
+            if (i == stubRunningTaskIndex) {
+                continue;
+            }
             removeView(requireTaskViewAt(i));
         }
-        if (indexOfChild(mClearAllButton) != -1) {
+        if (getTaskViewCount() == 0 && indexOfChild(mClearAllButton) != -1) {
             removeView(mClearAllButton);
         }
     }
@@ -2375,7 +2391,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         // Ignore thumbnail update if it's current running task during the gesture
                         // We snapshot at end of gesture, it will update then
                         int changes = dataChanges;
-                        if (taskView == getRunningTaskView() && mGestureActive) {
+                        if (taskView == getRunningTaskView() && isGestureActive()) {
                             changes &= ~TaskView.FLAG_UPDATE_THUMBNAIL;
                         }
                         taskView.onTaskListVisibilityChanged(true /* visible */, changes);
@@ -2587,7 +2603,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public void onGestureAnimationStart(
             Task[] runningTasks, RotationTouchHelper rotationTouchHelper) {
-        mGestureActive = true;
+        mActiveGestureRunningTasks = runningTasks;
         // This needs to be called before the other states are set since it can create the task view
         if (mOrientationState.setGestureActive(true)) {
             setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
@@ -2597,11 +2613,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             updateSizeAndPadding();
         }
 
-        showCurrentTask(runningTasks);
+        showCurrentTask(mActiveGestureRunningTasks);
         setEnableFreeScroll(false);
         setEnableDrawingLiveTile(false);
         setRunningTaskHidden(true);
         setTaskIconScaledDown(true);
+    }
+
+    private boolean isGestureActive() {
+        return mActiveGestureRunningTasks != null;
     }
 
     /**
@@ -2712,7 +2732,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
-        mGestureActive = false;
+        mActiveGestureRunningTasks = null;
         if (mOrientationState.setGestureActive(false)) {
             updateOrientationHandler(/* forceRecreateDragLayerControllers = */ false);
         }
