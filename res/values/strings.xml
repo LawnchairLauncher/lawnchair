@@ -46,6 +46,10 @@
     <string name="save_app_pair">Save app pair</string>
     <!-- App pair default title -->
     <string name="app_pair_default_title"><xliff:g id="app1" example="Chrome">%1$s</xliff:g> | <xliff:g id="app2" example="YouTube">%2$s</xliff:g></string>
+    <!-- Displayed when an app pair can't launch at this screen size [CHAR_LIMIT=none] -->
+    <string name="app_pair_unlaunchable_at_screen_size">This pair isn\'t supported at this screen size</string>
+    <!-- Displayed when an app pair can't launch at this screen size, but user can unfold device to restore functionality [CHAR_LIMIT=none] -->
+    <string name="app_pair_needs_unfold">Unfold your device to use this pair</string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
