@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.testing.shared.TestProtocol.ACTIVITY_NOT_RESUMED_AFTER_BACK;
+import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
@@ -308,6 +310,9 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
      * Sets the activity to appear as paused.
      */
     public void setPaused() {
+        if (sDebugTracing) {
+            Log.d(ACTIVITY_NOT_RESUMED_AFTER_BACK, "Activity setPaused: " + this, new Throwable());
+        }
         removeActivityFlags(ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_DEFERRED_RESUMED);
     }
 
@@ -315,6 +320,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
      * Sets the activity to appear as resumed.
      */
     public void setResumed() {
+        if (sDebugTracing) Log.d(ACTIVITY_NOT_RESUMED_AFTER_BACK, "Activity setResumed: " + this);
         addActivityFlags(ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_USER_ACTIVE);
         removeActivityFlags(ACTIVITY_STATE_USER_WILL_BE_ACTIVE);
     }

@@ -176,6 +176,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     /**
      * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
      */
+    @Override
     public void onLauncherVisibilityChanged(boolean isVisible) {
         onLauncherVisibilityChanged(isVisible, false /* fromInit */);
     }

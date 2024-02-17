@@ -23,6 +23,9 @@ import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.internal.jank.Cuj;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
+
 /**
  * Callbacks for {@link TaskbarView} to interact with its controller.
  */
@@ -45,6 +48,8 @@ public class TaskbarViewCallbacks {
 
     public View.OnClickListener getAllAppsButtonClickListener() {
         return v -> {
+            InteractionJankMonitorWrapper.begin(v, Cuj.CUJ_LAUNCHER_OPEN_ALL_APPS,
+                    /* tag= */ "TASKBAR_BUTTON");
             mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP);
             mControllers.taskbarAllAppsController.toggle();
         };

@@ -119,6 +119,8 @@ public final class TestProtocol {
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_HOTSEAT_ICON_NAMES = "get-hotseat-icon-names";
     public static final String REQUEST_IS_TABLET = "is-tablet";
+    public static final String REQUEST_ENABLE_TASKBAR_NAVBAR_UNIFICATION =
+            "enable-taskbar-navbar-unification";
     public static final String REQUEST_NUM_ALL_APPS_COLUMNS = "num-all-apps-columns";
     public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";
     public static final String REQUEST_CELL_LAYOUT_BOARDER_HEIGHT = "cell-layout-boarder-height";
@@ -169,6 +171,7 @@ public final class TestProtocol {
     public static final String ICON_MISSING = "b/282963545";
     public static final String OVERVIEW_OVER_HOME = "b/279059025";
     public static final String UIOBJECT_STALE_ELEMENT = "b/319501259";
+    public static final String ACTIVITY_NOT_RESUMED_AFTER_BACK = "b/322823209";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";

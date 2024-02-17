@@ -25,7 +25,6 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.platform.test.annotations.PlatinumTest;
-import android.platform.test.rule.ScreenRecordRule;
 
 import androidx.test.filters.FlakyTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -35,6 +34,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 
 import org.junit.Before;
 import org.junit.Test;
