@@ -252,6 +252,7 @@ public class FallbackRecentsTest {
     // b/143488140
     //@NavigationModeSwitch
     @Test
+    @ScreenRecordRule.ScreenRecord // b/321775748
     public void testOverview() {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));

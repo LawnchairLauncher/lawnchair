@@ -171,17 +171,19 @@ class NavButtonLayoutFactoryTest {
         assert(layoutter is PhoneSeascapeNavLayoutter)
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun noValidLayoutForPhoneGestureNav() {
+    @Test
+    fun getTaskbarPhoneGestureNavLayoutter() {
         assumeTrue(ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = false
-        getLayoutter(
-            isKidsMode = false,
-            isInSetup = false,
-            isThreeButtonNav = false,
-            phoneMode = true,
-            surfaceRotation = surfaceRotation
-        )
+        val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
+            getLayoutter(
+                isKidsMode = false,
+                isInSetup = false,
+                isThreeButtonNav = false,
+                phoneMode = true,
+                surfaceRotation = surfaceRotation
+            )
+        assert(layoutter is PhoneGestureLayoutter)
     }
 
     private fun setDeviceProfileLandscape() {
