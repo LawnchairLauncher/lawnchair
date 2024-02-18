@@ -27,6 +27,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 
 /**
@@ -42,6 +45,8 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
 
     private int savedScrollPosition = RecyclerView.NO_POSITION;
 
+    private final PreferenceManager2 pref2;
+
     public FastScrollRecyclerView(Context context) {
         this(context, null);
     }
@@ -52,6 +57,7 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
 
     public FastScrollRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        pref2 = PreferenceManager2.getInstance(context);
     }
 
     public void bindFastScrollbar(RecyclerViewFastScroller scrollbar) {
@@ -88,7 +94,8 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
      * Saved the scroll position
      */
     public void saveScrollPosition() {
-        savedScrollPosition = computeVerticalScrollOffset();
+        savedScrollPosition = PreferenceExtensionsKt.firstBlocking(pref2.getRememberPosition())
+                ? computeVerticalScrollOffset() : 0;
     }
 
     /**
