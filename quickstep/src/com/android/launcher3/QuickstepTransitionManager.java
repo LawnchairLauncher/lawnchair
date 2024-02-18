@@ -309,9 +309,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
         RunnableList onEndCallback = new RunnableList();
 
-        // Handle the case where an already visible task is launched which results in no
-        // transition
-        TaskRestartedDuringLaunchListener restartedListener = new TaskRestartedDuringLaunchListener();
+        // Handle the case where an already visible task is launched which results in no transition
+        TaskRestartedDuringLaunchListener restartedListener =
+                new TaskRestartedDuringLaunchListener();
         restartedListener.register(onEndCallback::executeAllAndDestroy);
         onEndCallback.add(restartedListener::unregister);
 
@@ -1250,7 +1250,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         for (RemoteAnimationTarget target : targets) {
             if (target.mode == MODE_CLOSING) {
                 numTargets++;
-                if (numTargets > 1 || target.windowConfiguration.getWindowingMode() == WINDOWING_MODE_MULTI_WINDOW) {
+                if (numTargets > 1 || target.windowConfiguration.getWindowingMode()
+                        == WINDOWING_MODE_MULTI_WINDOW) {
                     return true;
                 }
             }
@@ -1635,11 +1636,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         final boolean launcherIsForceInvisibleOrOpening = mLauncher.isForceInvisible()
                 || launcherIsATargetWithMode(appTargets, MODE_OPENING);
 
-        View launcherView = findLauncherView(appTargets);
-        boolean playFallBackAnimation = (launcherView == null
-                && launcherIsForceInvisibleOrOpening)
-                || mLauncher.getWorkspace().isOverlayShown()
-                || shouldPlayFallbackClosingAnimation(appTargets);
+            View launcherView = findLauncherView(appTargets);
+            boolean playFallBackAnimation = (launcherView == null
+                    && launcherIsForceInvisibleOrOpening)
+                    || mLauncher.getWorkspace().isOverlayShown()
+                    || shouldPlayFallbackClosingAnimation(appTargets);
 
         boolean playWorkspaceReveal = true;
         boolean skipAllAppsScale = false;
@@ -2094,7 +2095,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 setCrossWindowBlursEnabled(
                         CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
             }
-
             // Make sure that the starting value matches the current depth set by the main
             // controller.
             stateDepth.setValue(launcher.getDepthController().stateDepth.getValue());

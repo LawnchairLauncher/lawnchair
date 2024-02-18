@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">تجنب استخدام الأيقونات المخزنة مؤقتًا من حزم الأيقونات</string>
     <string name="transparent_background_icons">شفافيه مظهر الأيقونات</string>
     <string name="transparent_background_icons_description">استخدم خلفيه شفافه مع تغير مظهر الأيقونات</string>
-    <string name="smartspace_mode_selection">اختيار المزود في اللمحة السريعة</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسة</string>
     <string name="home_screen_rotaton_description">عندما يُدَوَّر الجهاز.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسة</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">الموجز</string>
+    <string name="minus_one_enable">اِعرض الحصاد</string>
     <string name="minus_one_unavailable">لا يوجد \"Feed\" مثبّت.</string>
+    <string name="minus_one">الموجز</string>
     <string name="feed_provider">مزود خدمة الأخبار</string>
     <string name="feed_default">الافتراضي</string>
     <string name="wallpaper">خلفية الخلفية</string>
@@ -183,10 +183,14 @@
     <string name="home_screen_unlock">فتح الشاشة الرئيسية</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة.</string>
+    <string name="show_dot_pagination_label">إظهار صفحة النقاط</string>
+    <string name="show_dot_pagination_description">تمكين إظهار ترقيم الصفحات النقطي في مساحة العمل.</string>
+    <string name="show_material_u_popup_label">إظهار المادة U المنبثقة</string>
+    <string name="show_material_u_popup_description">تمكين النافذة المنبثقة النطاطة والمدمجة قليلاً.</string>
     <string name="popup_menu">قائمة منبثقة</string>
     <string name="home_screen_lock_toggle_from_home_popup">عرض زر القُفل</string>
     <string name="show_system_settings_entry">إظهار إدخال إعدادات النظام</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">إظهار زر التحرير</string>
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة المظلم</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">بحث جوجل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">تمكين الشريط السفلي</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">واجهة شريط البحث</string>
     <string name="hotseat_mode_disabled">معطلة</string>
     <string name="hotseat_mode_lawnchair">كرسي حديقة</string>
@@ -252,7 +256,7 @@
     <string name="corner_radius_label">نصف قطر الزاوية</string>
     <string name="apply_accent_color_label">تطبيق الون المحدد</string>
     <string name="search_provider">مزود البحث</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">الحشو السفلي</string>
     <string name="grid">شبكة</string>
     <string name="dock_icons">أيقونات المرسى</string>
     <!-- SearchProviderPreferences -->
@@ -270,7 +274,7 @@
     <string name="hidden_apps_label">التطبيقات المخفية</string>
     <string name="show_enable_smart_hide">إظهار عند كتابة الاسم الكامل</string>
     <string name="hide_hidden_apps_search">إخفاء في نتائج البحث</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">تحميل التطبيقات بكميات كبيرة</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_category_search">البحث</string>
     <string name="show_app_search_bar">إظهار شريط البحث</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
     <string name="clear_history">مسح</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">Horizontal Padding</string>
     <string name="perform_wide_search_title">بحث الجهاز</string>
     <string name="perform_wide_search_file">ملفات</string>
+    <string name="pref_suggestion_label">اقتراحات</string>
     <string name="pref_suggestion_title">اقتراحات الويب(عبر <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">بحث متقدم</string>
     <string name="perform_wide_search_description">البحث في جهات اتصالك، ملفاتك و إعداداتك في بحث درج التطبيقات.</string>
@@ -344,6 +350,7 @@
     <string name="action_share">مشاركة</string>
     <string name="action_lens">عدسة</string>
     <string name="recents_clear_all">محو الكل</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">نصف قطر زاوية الشاشة</string>
     <string name="override_window_corner_radius_label">نصف قطر مخصص لزاوية الشاشة</string>
     <string name="window_corner_radius_description">عند السحب لأعلى لفتح التطبيقات الحديثة، يتبع التطبيق الحالي إصبعك، ويتقلص إلى بطاقة. استخدم شريط التمرير هذا لضبط تحدب الزاوية في البطاقة عندما تكون ملء الشاشة تقريباً بحيث تطابق تحدب زوايا الشاشة.</string>
@@ -441,4 +448,8 @@
     <string name="x_by_y">%١$d × %٢$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">إعدادات النظام</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

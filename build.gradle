@@ -12,9 +12,9 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.22"
     id "com.google.devtools.ksp" version "1.9.22-1.0.17"
     id 'com.google.protobuf' version "0.9.4"
-    id 'app.cash.licensee' version "1.9.0"
+    id 'app.cash.licensee' version "1.9.1"
     id 'dev.rikka.tools.refine' version "4.4.0"
-    id 'org.gradle.android.cache-fix' version '3.0'
+    id 'org.gradle.android.cache-fix' version '3.0.1'
     id 'com.diffplug.spotless' version '6.25.0'
 }
 
@@ -41,7 +41,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '3.25.2'
+        def protocVersion = '3.25.3'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -177,7 +177,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -351,8 +351,8 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.3.2"
     implementation "androidx.preference:preference-ktx:1.2.1"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
     implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7"
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
@@ -370,7 +370,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.8.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
-    implementation "androidx.navigation:navigation-compose:2.7.6"
+    implementation "androidx.navigation:navigation-compose:2.7.7"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     def accompanistVersion = '0.34.0'

@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -40,6 +41,10 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+
+import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * A UI represents a header of an app shown in the full widgets tray.
@@ -87,6 +92,14 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mAppIcon = findViewById(R.id.app_icon);
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
+        
+        var mContent = ViewCompat.requireViewById(this, R.id.widgets_list_header);
+        mContent.setBackground(DrawableTokens.WidgetsListBackground.resolve(getContext()));
+        
+        FontManager fontManager = FontManager.INSTANCE.get(getContext());
+        fontManager.setCustomFont(mTitle, R.id.font_body_medium);
+        fontManager.setCustomFont(mTitle, R.id.font_body);
+        
         setAccessibilityDelegate(new AccessibilityDelegate() {
 
             @Override

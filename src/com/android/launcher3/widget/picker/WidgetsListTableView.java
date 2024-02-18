@@ -21,6 +21,11 @@ import android.widget.TableLayout;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.core.view.ViewCompat;
+
+import com.android.launcher3.R;
+
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * Extension of {@link TableLayout} to support the drawable states used by
@@ -44,6 +49,14 @@ public class WidgetsListTableView extends TableLayout {
         if (state == mListDrawableState) return;
         mListDrawableState = state;
         refreshDrawableState();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        var mContent = ViewCompat.requireViewById(this, R.id.widgets_table);
+        mContent.setBackground(DrawableTokens.WidgetsContentBackground.resolve(getContext()));
     }
 
     @Override

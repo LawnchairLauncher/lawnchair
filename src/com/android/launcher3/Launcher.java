@@ -363,7 +363,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     // Main container view for the all apps screen.
     @Thunk
-    ActivityAllAppsContainerView<Launcher> mAppsView;
+    public ActivityAllAppsContainerView<Launcher> mAppsView;
     AllAppsTransitionController mAllAppsController;
 
     // Scrim view for the all apps and overview state.

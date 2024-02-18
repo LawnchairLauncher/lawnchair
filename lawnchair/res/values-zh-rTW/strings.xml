@@ -48,13 +48,12 @@
     <string name="font_picker_description">部分文字可能無法套用。</string>
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
-    <string name="workspace_increase_max_grid_size_label">解除主畫面網格限制</string>
-    <string name="workspace_increase_max_grid_size_description">將主畫面網格最多 10 x 10 的限制提升至 20 x 20。</string>
+    <string name="workspace_increase_max_grid_size_label">增加主畫面網格數量上限</string>
+    <string name="workspace_increase_max_grid_size_description">提高主畫面網格最多 10 x 10 的限制至 20 x 20。</string>
     <string name="always_reload_icons_label">一律重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="transparent_background_icons">圖示套用主題色與透明背景</string>
     <string name="transparent_background_icons_description">在套用主題色的圖示上使用透明背景</string>
-    <string name="smartspace_mode_selection">資訊一覽服務來源選擇</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
     <string name="home_screen_rotaton_description">當手機旋轉時</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">顯示動態消息</string>
     <string name="minus_one_unavailable">尚未安裝資訊頁提供服務。</string>
+    <string name="minus_one">Feed</string>
     <string name="feed_provider">資訊頁內容</string>
     <string name="feed_default">預設</string>
     <string name="wallpaper">桌布</string>
@@ -183,10 +183,14 @@
     <string name="home_screen_unlock">解鎖主螢幕</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">主畫面已鎖定。</string>
+    <string name="show_dot_pagination_label">顯示圓點頁面指示器</string>
+    <string name="show_dot_pagination_description">在工作資料夾顯示頁面指示器。</string>
+    <string name="show_material_u_popup_label">使用 Material You 風格彈出視窗</string>
+    <string name="show_material_u_popup_description">使用更活潑有趣的彈出視窗樣式。</string>
     <string name="popup_menu">彈出式選單</string>
     <string name="home_screen_lock_toggle_from_home_popup">顯示鎖定桌面按鈕</string>
     <string name="show_system_settings_entry">顯示系統設定</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">顯示編輯桌面按鈕</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">顯示狀態列</string>
     <string name="dark_status_bar_label">深色狀態列</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google 搜尋</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">啟用底欄</string>
+    <string name="show_hotseat_title">顯示底欄</string>
     <string name="hotseat_mode_label">搜尋列小工具</string>
     <string name="hotseat_mode_disabled">停用</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -269,7 +273,7 @@
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">隱藏的應用程式</string>
     <string name="show_enable_smart_hide">輸入全名時顯示</string>
-    <string name="hide_hidden_apps_search">於搜尋結果中隱藏</string>
+    <string name="hide_hidden_apps_search">在搜尋結果中隱藏</string>
     <string name="pref_all_apps_bulk_icon_loading_title">批次處理應用程式</string>
     <string name="pref_all_apps_bulk_icon_loading_description">同時載入並顯示所有應用程式</string>
     <string name="pref_category_search">搜尋</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">建議搜尋結果數量上限</string>
     <string name="max_settings_entry_result_count_title">設定搜尋結果數量上限</string>
     <string name="max_recent_result_count_title">瀏覽紀錄搜尋結果數量上限</string>
+    <string name="max_web_suggestion_delay">網頁搜尋結果數量上限</string>
     <string name="clear_history">清除</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">「所有應用程式」列數</string>
@@ -290,6 +295,7 @@
     <string name="app_drawer_indent_label">水平填充</string>
     <string name="perform_wide_search_title">裝置搜尋</string>
     <string name="perform_wide_search_file">檔案</string>
+    <string name="pref_suggestion_label">建議</string>
     <string name="pref_suggestion_title">網頁建議（由 <xliff:g id="startpage">Startpage</xliff:g> 提供）</string>
     <string name="pref_advance_search_category">進階搜尋</string>
     <string name="perform_wide_search_description">在所有應用程式畫面搜尋聯絡人、檔案和設定。</string>
@@ -339,6 +345,7 @@
     <string name="action_share">分享</string>
     <string name="action_lens">智慧鏡頭</string>
     <string name="recents_clear_all">全部清除</string>
+    <string name="task_menu_force_stop">強制關閉</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
@@ -395,7 +402,7 @@
     <string name="bugreport_group_summary">%d 則新回報</string>
     <string name="bugreport_group_summary_multiple">多則新回報。</string>
     <!-- Search ig -->
-    <string name="show_search_result_types">於搜尋結果中顯示</string>
+    <string name="show_search_result_types">在搜尋結果中顯示</string>
     <string name="search_pref_result_people_title">聯絡人</string>
     <string name="search_pref_result_shortcuts_title">應用程式捷徑</string>
     <string name="search_pref_result_tips_title">Pixel 使用提示</string>
@@ -436,4 +443,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">系統設定</string>
+    <string name="action_unlock">解除鎖定</string>
+    <string name="action_lock">鎖定</string>
+    <string name="recents_lock_unlock">鎖定／解除鎖定</string>
+    <string name="recents_lock_unlock_description">使用「全部清除」時忽略選取的應用程式</string>
 </resources>

@@ -38,6 +38,7 @@ import app.lawnchair.smartspace.model.Smartspacer
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -65,57 +66,65 @@ fun SmartspacePreferences(
     val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
     val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
     val smartspaceModeAdapter = preferenceManager2.smartspaceMode.getAdapter()
-    val smartspaceModeSelectionAdapter = preferenceManager2.smartspaceModeSelection.getAdapter()
     val selectedMode = smartspaceModeAdapter.state.value
     val modeIsLawnchair = selectedMode == LawnchairSmartspace
 
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
-        if (!fromWidget) {
-            PreferenceGroup(description = stringResource(id = R.string.smartspace_widget_toggle_description).takeIf { modeIsLawnchair }) {
-                SwitchPreference(
-                    adapter = smartspaceAdapter,
-                    label = stringResource(id = R.string.smartspace_widget_toggle_label),
-                )
-                ExpandAndShrink(visible = smartspaceAdapter.state.value && smartspaceModeSelectionAdapter.state.value) {
+        if (fromWidget) {
+            LawnchairSmartspaceSettings(smartspaceProvider)
+        } else {
+            MainSwitchPreference(
+                adapter = smartspaceAdapter,
+                label = stringResource(R.string.smartspace_widget_toggle_label),
+                description = stringResource(id = R.string.smartspace_widget_toggle_description).takeIf { modeIsLawnchair },
+            ) {
+                PreferenceGroup {
                     SmartspaceProviderPreference(
                         adapter = smartspaceModeAdapter,
                         endWidget = when (selectedMode) {
                             Smartspacer -> {
                                 { SmartspacerSettings() }
                             }
+
                             else -> null
                         },
                     )
                 }
-            }
-        }
-        Crossfade(
-            targetState = (smartspaceAdapter.state.value || fromWidget) && modeIsLawnchair,
-            label = "",
-        ) { targetState ->
-            if (targetState) {
-                Column {
-                    SmartspacePreview()
-                    PreferenceGroup(
-                        heading = stringResource(id = R.string.what_to_show),
-                        modifier = Modifier.padding(top = 8.dp),
-                    ) {
-                        smartspaceProvider.dataSources
-                            .asSequence()
-                            .filter { it.isAvailable }
-                            .forEach {
-                                key(it.providerName) {
-                                    SwitchPreference(
-                                        adapter = it.enabledPref.getAdapter(),
-                                        label = stringResource(id = it.providerName),
-                                    )
-                                }
-                            }
+
+                Crossfade(
+                    targetState = modeIsLawnchair,
+                    label = "",
+                ) { targetState ->
+                    if (targetState) {
+                        LawnchairSmartspaceSettings(smartspaceProvider)
                     }
-                    SmartspaceDateAndTimePreferences()
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun LawnchairSmartspaceSettings(smartspaceProvider: SmartspaceProvider) {
+    Column {
+        SmartspacePreview()
+        PreferenceGroup(
+            heading = stringResource(id = R.string.what_to_show),
+            modifier = Modifier.padding(top = 8.dp),
+        ) {
+            smartspaceProvider.dataSources
+                .asSequence()
+                .filter { it.isAvailable }
+                .forEach {
+                    key(it.providerName) {
+                        SwitchPreference(
+                            adapter = it.enabledPref.getAdapter(),
+                            label = stringResource(id = it.providerName),
+                        )
+                    }
+                }
+        }
+        SmartspaceDateAndTimePreferences()
     }
 }
 

@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="transparent_background_icons">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
-    <string name="smartspace_mode_selection">Выбрать поставщика для Первый Взгляд</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
     <string name="home_screen_rotaton_description">При повороте устройства.</string>
@@ -167,8 +166,9 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Добавлять новые приложения сразу на Домашний экран</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Лента Google</string>
+    <string name="minus_one_enable">Показать ленту новостей</string>
     <string name="minus_one_unavailable">Лент новостей не установлено.</string>
+    <string name="minus_one">Лента Google</string>
     <string name="feed_provider">Поставщик ленты</string>
     <string name="feed_default">По умолчанию</string>
     <string name="wallpaper">Обои</string>
@@ -183,10 +183,14 @@
     <string name="home_screen_unlock">Разблокировать домашний экран</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Главный экран заблокирован.</string>
+    <string name="show_dot_pagination_label">Показывать точечную нумерацию страниц</string>
+    <string name="show_dot_pagination_description">Включить отображение точечной нумерации страниц на домашнем экране.</string>
+    <string name="show_material_u_popup_label">Показывать всплывающее меню Material U</string>
+    <string name="show_material_u_popup_description">Включить прыгучее и лёгкое всплывающее окно.</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показать кнопку блокировки</string>
     <string name="show_system_settings_entry">Показать запись системных настроек</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Показывать кнопку редактирования</string>
     <string name="status_bar_label">Строка состояния</string>
     <string name="show_status_bar">Отображать строку состояния</string>
     <string name="dark_status_bar_label">Темная строка состояния</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Поиск Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Включить док-бар</string>
+    <string name="show_hotseat_title">Показать док-бар</string>
     <string name="hotseat_mode_label">Виджет поиска</string>
     <string name="hotseat_mode_disabled">Отключено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -283,6 +287,7 @@
     <string name="max_suggestion_result_count_title">Макс. количество результатов предложения</string>
     <string name="max_settings_entry_result_count_title">Макс. количество результатов записи</string>
     <string name="max_recent_result_count_title">Макс. количество результатов истории</string>
+    <string name="max_web_suggestion_delay">Макс. задержка предложения веб-подсказки</string>
     <string name="clear_history">Очистить</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
@@ -290,7 +295,8 @@
     <string name="app_drawer_indent_label">Горизонтальный отступ</string>
     <string name="perform_wide_search_title">Поиск устройств</string>
     <string name="perform_wide_search_file">Файл</string>
-    <string name="pref_suggestion_title">Веб-подсказки (через стартовую страницу <xliff:g id="startpage"></xliff:g>)</string>
+    <string name="pref_suggestion_label">Рекомендации</string>
+    <string name="pref_suggestion_title">Веб-подсказки (через start page <xliff:g id="startpage"></xliff:g>)</string>
     <string name="pref_advance_search_category">Расширенный поиск</string>
     <string name="perform_wide_search_description">Поиск контактов, файлов и настроек в меню приложений.</string>
     <string name="pref_recent_suggestion_title">История</string>
@@ -342,6 +348,7 @@
     <string name="action_share">Поделиться</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Очистить все</string>
+    <string name="task_menu_force_stop">Принудительно закрыть</string>
     <string name="window_corner_radius_label">Радиус скругления краёв экрана</string>
     <string name="override_window_corner_radius_label">Задать радиус скругления краёв экрана</string>
     <string name="window_corner_radius_description">Когда вы проводите вверх, чтобы открыть Недавние, текущее приложение следует за пальцем, уменьшаясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы она соответствовала углам экрана.</string>
@@ -439,4 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Системные настройки</string>
+    <string name="action_unlock">Разблокировать</string>
+    <string name="action_lock">Заблокировать</string>
+    <string name="recents_lock_unlock">Блокировка/Разблокировка</string>
+    <string name="recents_lock_unlock_description">Запретить очистку выбранного приложения при использовании \"Очистить все\"</string>
 </resources>

@@ -39,10 +39,13 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 public class FloatingHeaderView extends LinearLayout implements
         ValueAnimator.AnimatorUpdateListener, PluginListener<AllAppsRow>, Insettable,
@@ -113,6 +116,8 @@ public class FloatingHeaderView extends LinearLayout implements
     // enabled or disabled, and represent the current set of all rows.
     private FloatingHeaderRow[] mAllRows = FloatingHeaderRow.NO_ROWS;
 
+    private final PreferenceManager2 pref2;
+
     public FloatingHeaderView(@NonNull Context context) {
         this(context, null);
     }
@@ -123,6 +128,7 @@ public class FloatingHeaderView extends LinearLayout implements
                 .getDimensionPixelSize(R.dimen.all_apps_header_top_adjustment);
         mTabsAdditionalPaddingBottom = context.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_header_bottom_adjustment);
+        pref2 = PreferenceManager2.getInstance(context);
     }
 
     @Override
@@ -310,8 +316,9 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     protected void applyVerticalMove() {
+        int maxTranslation = mMaxTranslation - mCurrentRV.getSavedScrollPosition();
         int uncappedTranslationY = mTranslationY;
-        mTranslationY = Math.max(mTranslationY, -mMaxTranslation);
+        mTranslationY = Math.max(mTranslationY, -maxTranslation);
 
         if (mFloatingRowsCollapsed || uncappedTranslationY < mTranslationY - getPaddingTop()) {
             // we hide it completely if already capped (for opening search anim)
@@ -377,7 +384,9 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mHeaderCollapsed = false;
         mSnappedScrolledY = -mMaxTranslation;
-        mCurrentRV.scrollToTop();
+        if (!PreferenceExtensionsKt.firstBlocking (pref2.getRememberPosition ())) {
+            mCurrentRV.scrollToTop();
+        }
     }
 
     public boolean isExpanded() {

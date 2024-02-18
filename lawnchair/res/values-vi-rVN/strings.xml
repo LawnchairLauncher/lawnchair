@@ -54,7 +54,6 @@
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ cache từ các gói biểu tượng</string>
     <string name="transparent_background_icons">Biểu tượng theo chủ đề trong suốt</string>
     <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo chủ đề</string>
-    <string name="smartspace_mode_selection">Lựa chọn nhà cung cấp dịch vụ cho Xem nhanh</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>
     <string name="home_screen_rotaton_description">Khi thiết bị được xoay.</string>
@@ -105,7 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Gói biểu tượng</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Nguồn biểu tượng theo chủ đề</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
     <string name="themed_icon_title">Biểu tượng theo chủ đề</string>
     <string name="themed_icons_off_label">Tắt</string>
@@ -167,9 +166,10 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Bản tin</string>
+    <string name="minus_one_enable">Hiện bản tin</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin.</string>
-    <string name="feed_provider">Feed Provider</string>
+    <string name="minus_one">Bản tin</string>
+    <string name="feed_provider">Nhà cung cấp thức ăn</string>
     <string name="feed_default">Mặc định</string>
     <string name="wallpaper">Hình nền</string>
     <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
@@ -183,10 +183,14 @@
     <string name="home_screen_unlock">Mở khóa màn hình chính</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Đã khoá màn hình chính.</string>
-    <string name="popup_menu">Pop-up Menu</string>
+    <string name="show_dot_pagination_label">Hiển thị dấu chấm số trang</string>
+    <string name="show_dot_pagination_description">Bật hiển thị dấu chấm số trang trong không gian làm việc.</string>
+    <string name="show_material_u_popup_label">Hiển thị tài liệu trong cửa sổ popup</string>
+    <string name="show_material_u_popup_description">Cửa sổ popup bật nảy lên và hơi hợp nhất.</string>
+    <string name="popup_menu">Menu pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Hiển thị phím khóa</string>
     <string name="show_system_settings_entry">Hiển thị mục cài đặt hệ thống</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Hiện nút chỉnh sửa</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>
@@ -243,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Tìm kiếm</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Bật Dock</string>
+    <string name="show_hotseat_title">Show Dock</string>
     <string name="hotseat_mode_label">Tiện ích thanh tìm kiếm</string>
     <string name="hotseat_mode_disabled">Đã vô hiệu hoá</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -258,7 +262,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair có thoả thuận chia sẻ doanh thu.\n\nTìm kiếm với %1$s trợ giúp hỗ trợ Lawnchair.</string>
     <string name="app_label">Ứng dụng</string>
     <string name="website_label">Trang web</string>
     <string name="qsb_search_provider_app_required">Yêu cầu ứng dụng.</string>
@@ -270,30 +274,32 @@
     <string name="hidden_apps_label">Ứng dụng đã ẩn</string>
     <string name="show_enable_smart_hide">Hiện khi nhập đầy đủ tên</string>
     <string name="hide_hidden_apps_search">Ẩn khỏi kết quả tìm kiếm</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load hàng loạt ứng dụng</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load và hiện thị các biểu tượng hàng loạt thay vì tải và hiển thị các biểu tượng riêng lẻ</string>
     <string name="pref_category_search">Tìm kiếm</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
     <string name="max_search_result_count_title">Số lượng kết quả tìm kiếm tối đa</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="max_people_result_count_title">Số kết quả người tối đa</string>
+    <string name="max_file_result_count_title">Số kết quả tệp tối đa</string>
+    <string name="max_suggestion_result_count_title">Số kết quả đề xuất tối đa</string>
+    <string name="max_settings_entry_result_count_title">Số kết quả mục nhập cài đặt tối đa</string>
+    <string name="max_recent_result_count_title">Số lịch sử kết quả tối đa</string>
+    <string name="max_web_suggestion_delay">Độ trễ đề xuất web tối đa</string>
     <string name="clear_history">Xóa</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Số cột của trang ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="app_drawer_indent_label">Phần đệm ngang</string>
+    <string name="perform_wide_search_title">Tìm thiết bị</string>
+    <string name="perform_wide_search_file">Các tệp</string>
+    <string name="pref_suggestion_label">Gợi ý</string>
+    <string name="pref_suggestion_title">Đề xuất web ( thông qua <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Tìm kiếm nâng cao</string>
+    <string name="perform_wide_search_description">Tìm kiếm liên hệ, tệp, và cài đặt trong Tìm kiếm ở ngăn kéo ứng dụng.</string>
+    <string name="pref_recent_suggestion_title">Lịch sử</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -332,13 +338,14 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">Cài đặt này sẽ bị bỏ qua vì Lawnchair không được đặt làm nhà cung cấp gần đây.</string>
     <string name="translucent_background">Nền trong suốt</string>
     <string name="recents_actions_label">Thao tác nhanh</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Chia sẻ</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Xoá tất cả</string>
+    <string name="task_menu_force_stop">Force close</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
@@ -382,7 +389,7 @@
     <string name="label">Nhãn</string>
     <string name="hide_from_drawer">Ẩn khỏi ngăn kéo ứng dụng</string>
     <string name="suggestion_pref_screen_title">Gợi ý</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Hiển thị ứng dụng đề xuất ở phần đầu danh sách</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
     <string name="crash_report_notif_title">%1$s đã dừng</string>
@@ -404,17 +411,17 @@
     <string name="label_search">Tìm kiếm</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Mục cài đặt</string>
     <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Tìm kiếm trên <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hay trình duyệt được cài đặt.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_suggestions">Từ web</string>
+    <string name="all_apps_search_result_contacts_from_device">Từ liên lạc của bạn</string>
+    <string name="all_apps_search_result_files">Từ tệp của bạn</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Từ cài đặt của bạn</string>
+    <string name="warn_contact_permission_content">Yêu cầu quyền truy cập danh bạ</string>
+    <string name="warn_files_permission_content">Yêu cầu quyền lưu trữ</string>
+    <string name="all_apps_search_result_files_description">Phương tiện truyền thông, tài liệu, thư mục, và hơn thế nữa.</string>
     <string name="all_apps_search_result_contacts_description">Danh bạn và mục khác</string>
     <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
     <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
@@ -436,4 +443,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Cài đặt hệ thống</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

@@ -182,11 +182,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         // The only time we get onTasksAppeared() in button navigation with a
                         // 3p launcher is if the user goes to overview first, and in this case we
                         // can immediately finish the transition
-                        RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
+                        RecentsView recentsView =
+                                activityInterface.getCreatedActivity().getOverviewPanel();
                         if (recentsView != null) {
-                            Log.d(TestProtocol.INCORRECT_HOME_STATE,
-                                    "finish recents animation on "
-                                            + compat.taskInfo.description);
                             recentsView.finishRecentsAnimation(true, null);
                         }
                         return;
