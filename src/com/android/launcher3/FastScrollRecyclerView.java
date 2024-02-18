@@ -97,7 +97,6 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
     public void restoreScrollPosition() {
         if (savedScrollPosition != RecyclerView.NO_POSITION) {
             scrollToPosition(savedScrollPosition);
-            savedScrollPosition = RecyclerView.NO_POSITION;
         }
     }
 
