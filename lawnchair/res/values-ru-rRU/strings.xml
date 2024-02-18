@@ -348,7 +348,7 @@
     <string name="action_share">Поделиться</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Очистить все</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Принудительно закрыть</string>
     <string name="window_corner_radius_label">Радиус скругления краёв экрана</string>
     <string name="override_window_corner_radius_label">Задать радиус скругления краёв экрана</string>
     <string name="window_corner_radius_description">Когда вы проводите вверх, чтобы открыть Недавние, текущее приложение следует за пальцем, уменьшаясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы она соответствовала углам экрана.</string>
@@ -446,8 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Системные настройки</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Разблокировать</string>
+    <string name="action_lock">Заблокировать</string>
+    <string name="recents_lock_unlock">Блокировка/Разблокировка</string>
+    <string name="recents_lock_unlock_description">Запретить очистку выбранного приложения при использовании \"Очистить все\"</string>
 </resources>

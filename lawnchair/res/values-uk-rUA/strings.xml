@@ -183,8 +183,8 @@
     <string name="home_screen_unlock">Розблокувати домашній екран</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Домашній екран заблоковано.</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_dot_pagination_label">Показувати точкову нумерацію сторінок</string>
+    <string name="show_dot_pagination_description">Активувати точкову нумерацію сторінок на домашньому екрані.</string>
     <string name="show_material_u_popup_label">Показувати cпливаюче меню Material You</string>
     <string name="show_material_u_popup_description">Показувати cпливаюче мені Material You.</string>
     <string name="popup_menu">Спливаюче меню</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Пошук Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">Показати док-панель</string>
     <string name="hotseat_mode_label">Віджет панелі пошуку</string>
     <string name="hotseat_mode_disabled">Вимкнено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -348,7 +348,7 @@
     <string name="action_share">Поділитись</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Очистити все</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Примусово закрити</string>
     <string name="window_corner_radius_label">Радіус кута екрану</string>
     <string name="override_window_corner_radius_label">Користувацький радіус кута екрана</string>
     <string name="window_corner_radius_description">Проведіть пальцем угору, щоб відкрити Нещодавні, поточний додаток слідує за вашим пальцем, стихаючи на картці. Використовуйте цей повзунок, щоб налаштувати радіус кута карти, коли він майже повноекранний режим, так щоб він співпадав з кутами вашого екрану.</string>
@@ -446,8 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Системні налаштування</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Розблокувати</string>
+    <string name="action_lock">Заблокувати</string>
+    <string name="recents_lock_unlock">Заблокувати/Розблокувати</string>
+    <string name="recents_lock_unlock_description">Не закривати вибрані застосунки при натисканні \"Закрити всі\"</string>
 </resources>

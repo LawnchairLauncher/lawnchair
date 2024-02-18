@@ -169,7 +169,7 @@
     <string name="minus_one_enable">Toon feed</string>
     <string name="minus_one_unavailable">Geen feed geïnstalleerd.</string>
     <string name="minus_one">Feed</string>
-    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_provider">Feed Aanbieder</string>
     <string name="feed_default">Standaard</string>
     <string name="wallpaper">Achtergrond</string>
     <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
@@ -183,14 +183,14 @@
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Startscherm is vergrendeld.</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_dot_pagination_label">Toon stip-paginering</string>
+    <string name="show_dot_pagination_description">Inschakelen tonen stip-paginering in werkruimte</string>
+    <string name="show_material_u_popup_label">Toon \"Materiaal U\" Popup</string>
     <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Vergrendelingsknop Tonen</string>
     <string name="show_system_settings_entry">Toon Systeeminstellingeninvoer</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Toon bewerkingsknop</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="dark_status_bar_label">Donkere Status Balk</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Zoeken</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">Dock tonen</string>
     <string name="hotseat_mode_label">Zoekbalkwidget</string>
     <string name="hotseat_mode_disabled">Uitgeschakeld</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
