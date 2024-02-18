@@ -40,6 +40,8 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
 
     protected RecyclerViewFastScroller mScrollbar;
 
+    private int savedScrollPosition = RecyclerView.NO_POSITION;
+
     public FastScrollRecyclerView(Context context) {
         this(context, null);
     }
@@ -76,6 +78,27 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
      */
     public int getScrollbarTrackHeight() {
         return mScrollbar.getHeight() - getScrollBarTop() - getScrollBarMarginBottom();
+    }
+
+    public int getSavedScrollPosition() {
+        return savedScrollPosition;
+    }
+
+    /**
+     * Saved the scroll position
+     */
+    public void saveScrollPosition() {
+        savedScrollPosition = computeVerticalScrollOffset();
+    }
+
+    /**
+     * Restore the scroll position to the previously saved position.
+     */
+    public void restoreScrollPosition() {
+        if (savedScrollPosition != RecyclerView.NO_POSITION) {
+            scrollToPosition(savedScrollPosition);
+            savedScrollPosition = RecyclerView.NO_POSITION;
+        }
     }
 
     /**
@@ -171,6 +194,7 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
 
         if (state == SCROLL_STATE_IDLE) {
             AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+            saveScrollPosition();
         }
     }
 
@@ -187,6 +211,7 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
         if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
         }
-        scrollToPosition(0);
+        saveScrollPosition();
+        scrollToPosition(savedScrollPosition);
     }
 }

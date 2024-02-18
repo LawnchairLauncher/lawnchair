@@ -478,9 +478,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      *                   apps list.
      */
     public void reset(boolean animate, boolean exitSearch) {
-        for (int i = 0; i < mAH.size(); i++) {
-            if (mAH.get(i).mRecyclerView != null) {
-                mAH.get(i).mRecyclerView.scrollToTop();
+        if (!PreferenceExtensionsKt.firstBlocking (pref2.getRememberPosition ())) {
+            for (int i = 0; i < mAH.size(); i++) {
+                if (mAH.get(i).mRecyclerView != null) {
+                    mAH.get(i).mRecyclerView.scrollToTop();
+                }
             }
         }
         if (mTouchHandler != null) {

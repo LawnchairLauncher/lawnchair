@@ -196,6 +196,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_status_bar),
     )
 
+    val rememberPosition = preference(
+        key = booleanPreferencesKey(name = "all_apps_remember_position"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_remember_position),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showTopShadow = preference(
         key = booleanPreferencesKey(name = "show_top_shadow"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_top_shadow),
