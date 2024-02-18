@@ -91,7 +91,7 @@
     <string name="icon_shape_corner">Forma de esquina</string>
     <string name="icon_shape_corner_round">Redondo</string>
     <string name="icon_shape_corner_squircle">Suavizado</string>
-    <string name="icon_shape_corner_cut">Cortar</string>
+    <string name="icon_shape_corner_cut">Cortado</string>
     <string name="icon_shape_top_left">Superior izquierda</string>
     <string name="icon_shape_top_right">Superior derecha</string>
     <string name="icon_shape_bottom_left">Inferior izquierda</string>
@@ -346,7 +346,7 @@
     <string name="action_share">Compartir</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Borrar todo</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Forzar la detención</string>
     <string name="window_corner_radius_label">Radio de esquina de la pantalla</string>
     <string name="override_window_corner_radius_label">Radio de esquina de la pantalla personalizado</string>
     <string name="window_corner_radius_description">Cuando deslizas hacia abajo para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
@@ -444,8 +444,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Ajustes del sistema</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Desbloquear</string>
+    <string name="action_lock">Bloquear</string>
+    <string name="recents_lock_unlock">Bloquear/Desbloquear</string>
+    <string name="recents_lock_unlock_description">Evita que la app seleccionada se borre cuando se usa \"Limpiar todo\"</string>
 </resources>

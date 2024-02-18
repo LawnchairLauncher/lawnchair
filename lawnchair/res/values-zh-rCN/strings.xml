@@ -183,14 +183,14 @@
     <string name="home_screen_unlock">解锁主屏幕布局</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">主屏幕已锁定。</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_dot_pagination_label">显示点分页</string>
+    <string name="show_dot_pagination_description">在工作区中显示点分页。</string>
+    <string name="show_material_u_popup_label">使用 Material You 风格弹出窗口</string>
     <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="home_screen_lock_toggle_from_home_popup">显示锁定桌面按钮</string>
     <string name="show_system_settings_entry">显示系统设置项目</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">显示编辑按钮</string>
     <string name="status_bar_label">状态栏</string>
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google 搜索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">显示 Dock 栏</string>
     <string name="hotseat_mode_label">搜索栏小部件</string>
     <string name="hotseat_mode_disabled">已禁用</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -345,7 +345,7 @@
     <string name="action_share">分享</string>
     <string name="action_lens">智能镜头</string>
     <string name="recents_clear_all">全部清除</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">强制关闭</string>
     <string name="window_corner_radius_label">屏幕圆角半径</string>
     <string name="override_window_corner_radius_label">自定义屏幕圆角半径</string>
     <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前应用程序显示会跟随您的手指移动。 使用滑块以调整卡片的圆角半径，使它接近全屏，贴合您屏幕的边缘。</string>
@@ -443,8 +443,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">系统设置</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="action_unlock">解锁</string>
+    <string name="action_lock">锁定</string>
+    <string name="recents_lock_unlock">锁定/解锁</string>
     <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>
