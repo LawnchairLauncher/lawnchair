@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
@@ -88,6 +87,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * Displays all the provided recommendations in a single table if they fit.
      *
      * @param recommendedWidgets list of widgets to be displayed in recommendation section.
+     * @param deviceProfile      the current {@link DeviceProfile}
      * @param availableHeight    height in px that can be used to display the recommendations;
      *                           recommendations that don't fit in this height won't be shown
      * @param availableWidth     width in px that the recommendations should display in
@@ -96,12 +96,13 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * @return {@code false} if no recommendations could fit in the available space.
      */
     public boolean setRecommendations(
-            List<WidgetItem> recommendedWidgets, final @Px float availableHeight,
-            final @Px int availableWidth, final @Px int cellPadding) {
+            List<WidgetItem> recommendedWidgets, DeviceProfile deviceProfile,
+            final @Px float availableHeight, final @Px int availableWidth,
+            final @Px int cellPadding) {
         this.mAvailableHeight = availableHeight;
         removeAllViews();
 
-        maybeDisplayInTable(recommendedWidgets, availableWidth, cellPadding);
+        maybeDisplayInTable(recommendedWidgets, deviceProfile, availableWidth, cellPadding);
         updateTitleAndIndicator();
         return getChildCount() > 0;
     }
@@ -111,6 +112,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * <p>In case of a single category, no title is displayed for it.</p>
      *
      * @param recommendations a map of widget items per recommendation category
+     * @param deviceProfile   the current {@link DeviceProfile}
      * @param availableHeight height in px that can be used to display the recommendations;
      *                        recommendations that don't fit in this height won't be shown
      * @param availableWidth  width in px that the recommendations should display in
@@ -120,10 +122,12 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      */
     public boolean setRecommendations(
             Map<WidgetRecommendationCategory, List<WidgetItem>> recommendations,
+            DeviceProfile deviceProfile,
             final @Px float availableHeight, final @Px int availableWidth,
             final @Px int cellPadding) {
         this.mAvailableHeight = availableHeight;
         Context context = getContext();
+        mPageIndicator.setPauseScroll(true, deviceProfile.isTwoPanels);
         removeAllViews();
 
         int displayedCategories = 0;
@@ -133,7 +137,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
                 new TreeMap<>(recommendations).entrySet()) {
             // If none of the recommendations for the category could fit in the mAvailableHeight, we
             // don't want to add that category; and we look for the next one.
-            if (maybeDisplayInTable(entry.getValue(), availableWidth, cellPadding)) {
+            if (maybeDisplayInTable(entry.getValue(), deviceProfile, availableWidth, cellPadding)) {
                 mCategoryTitles.add(
                         context.getResources().getString(entry.getKey().categoryTitleRes));
                 displayedCategories++;
@@ -145,14 +149,21 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         }
 
         updateTitleAndIndicator();
+        mPageIndicator.setPauseScroll(false, deviceProfile.isTwoPanels);
         return getChildCount() > 0;
     }
 
     /** Displays the page title and paging indicator if there are multiple pages. */
     private void updateTitleAndIndicator() {
-        int titleAndIndicatorVisibility = getPageCount() > 1 ? View.VISIBLE : View.GONE;
+        boolean showPaginatedView = getPageCount() > 1;
+        int titleAndIndicatorVisibility = showPaginatedView ? View.VISIBLE : View.GONE;
         mRecommendationPageTitle.setVisibility(titleAndIndicatorVisibility);
         mPageIndicator.setVisibility(titleAndIndicatorVisibility);
+        if (showPaginatedView) {
+            mPageIndicator.setActiveMarker(0);
+            setCurrentPage(0);
+            mRecommendationPageTitle.setText(mCategoryTitles.get(0));
+        }
     }
 
     @Override
@@ -218,9 +229,9 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * <p>Returns false if none of the recommendations could fit.</p>
      */
     private boolean maybeDisplayInTable(List<WidgetItem> recommendedWidgets,
+            DeviceProfile deviceProfile,
             final @Px int availableWidth, final @Px int cellPadding) {
         Context context = getContext();
-        DeviceProfile deviceProfile = Launcher.getLauncher(context).getDeviceProfile();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         List<ArrayList<WidgetItem>> rows = groupWidgetItemsUsingRowPxWithoutReordering(
@@ -239,7 +250,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         recommendationsTable.setWidgetCellLongClickListener(mWidgetCellOnLongClickListener);
 
         boolean displayedAtLeastOne = recommendationsTable.setRecommendedWidgets(rows,
-                mAvailableHeight);
+                deviceProfile, mAvailableHeight);
         if (displayedAtLeastOne) {
             addView(recommendationsTable);
         }

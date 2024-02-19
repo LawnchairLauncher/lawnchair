@@ -130,7 +130,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
      */
     private float mCurrentPosition;
     private float mFinalPosition;
-    private boolean mAreScreensBinding;
+    private boolean mIsScrollPaused;
     private boolean mIsTwoPanels;
     private ObjectAnimator mAnimator;
     private @Nullable ObjectAnimator mAlphaAnimator;
@@ -172,7 +172,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         }
 
         // Skip scroll update during binding. We will update it when binding completes.
-        if (mAreScreensBinding) {
+        if (mIsScrollPaused) {
             return;
         }
 
@@ -376,15 +376,15 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     }
 
     @Override
-    public void setAreScreensBinding(boolean areScreensBinding, boolean isTwoPanels) {
+    public void setPauseScroll(boolean pause, boolean isTwoPanels) {
         mIsTwoPanels = isTwoPanels;
 
         // Reapply correct current position which was skipped during setScroll.
-        if (mAreScreensBinding && !areScreensBinding) {
+        if (mIsScrollPaused && !pause) {
             CURRENT_POSITION.set(this, (float) mActivePage);
         }
 
-        mAreScreensBinding = areScreensBinding;
+        mIsScrollPaused = pause;
     }
 
     @Override
