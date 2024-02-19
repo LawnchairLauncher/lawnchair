@@ -2456,19 +2456,21 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mTaskListChangeId = -1;
         mFocusedTaskViewId = -1;
 
-        if (mRecentsAnimationController != null) {
-            if (mEnableDrawingLiveTile) {
-                // We are still drawing the live tile, finish it now to clean up.
+        Log.d(TAG, "reset - mEnableDrawingLiveTile: " + mEnableDrawingLiveTile
+                + ", mRecentsAnimationController: " + mRecentsAnimationController);
+        if (mEnableDrawingLiveTile) {
+            if (mRecentsAnimationController != null) {
+                // We owns mRecentsAnimationController, finish it now to clean up.
                 finishRecentsAnimation(true /* toRecents */, null);
             } else {
-                mRecentsAnimationController = null;
+                // Only clean up target set if we no longer owns mRecentsAnimationController.
+                runActionOnRemoteHandles(remoteTargetHandle ->
+                        remoteTargetHandle.getTransformParams().setTargetSet(null));
             }
+            setEnableDrawingLiveTile(false);
         }
-        setEnableDrawingLiveTile(false);
-        runActionOnRemoteHandles(remoteTargetHandle -> {
-            remoteTargetHandle.getTransformParams().setTargetSet(null);
-            remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
-        });
+        runActionOnRemoteHandles(remoteTargetHandle ->
+                remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false));
         if (!FeatureFlags.enableSplitContextually()) {
             resetFromSplitSelectionState();
         }
@@ -2662,6 +2664,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void onPrepareGestureEndAnimation(
             @Nullable AnimatorSet animatorSet, GestureState.GestureEndTarget endTarget,
             TaskViewSimulator[] taskViewSimulators) {
+        Log.d(TAG, "onPrepareGestureEndAnimation - endTarget: " + endTarget);
         mCurrentGestureEndTarget = endTarget;
         boolean isOverviewEndTarget = endTarget == GestureState.GestureEndTarget.RECENTS;
         if (isOverviewEndTarget) {
@@ -2717,6 +2720,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         setEnableFreeScroll(true);
         setEnableDrawingLiveTile(mCurrentGestureEndTarget == GestureState.GestureEndTarget.RECENTS);
+        Log.d(TAG, "onGestureAnimationEnd - mEnableDrawingLiveTile: " + mEnableDrawingLiveTile);
         setRunningTaskHidden(false);
         animateUpTaskIconScale();
         animateActionsViewIn();
@@ -5318,6 +5322,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     // TODO: To be removed in a follow up CL
     public void setRecentsAnimationTargets(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets recentsAnimationTargets) {
+        Log.d(TAG, "setRecentsAnimationTargets "
+                + "- recentsAnimationController: " + recentsAnimationController
+                + ", recentsAnimationTargets: " + recentsAnimationTargets);
         mRecentsAnimationController = recentsAnimationController;
         mSplitSelectStateController.setRecentsAnimationRunning(true);
         if (recentsAnimationTargets == null || recentsAnimationTargets.apps.length == 0) {
@@ -5382,6 +5389,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public void finishRecentsAnimation(boolean toRecents, boolean shouldPip,
             @Nullable Runnable onFinishComplete) {
+        Log.d(TAG, "finishRecentsAnimation - mRecentsAnimationController: "
+                + mRecentsAnimationController);
         // TODO(b/197232424#comment#10) Move this back into onRecentsAnimationComplete(). Maybe?
         cleanupRemoteTargets();
 
@@ -5979,6 +5988,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void cleanupRemoteTargets() {
+        Log.d(TAG, "cleanupRemoteTargets");
         mRemoteTargetHandles = null;
     }
 
