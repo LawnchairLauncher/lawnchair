@@ -465,6 +465,7 @@
     <string name="ps_container_settings">Private Space Settings</string>
     <!-- Description for Private Space Lock/Unlock button -->
     <string name="ps_container_lock_unlock_button">Lock/Unlock Private Space</string>
+    <string name="ps_container_lock_title">Lock</string>
     <!-- Description for Private Space Transition button -->
     <string name="ps_container_transition">Private Space Transitioning</string>
     <!-- Title for Private Space install app icon -->
