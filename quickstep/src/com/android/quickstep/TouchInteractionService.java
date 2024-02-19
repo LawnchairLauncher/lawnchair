@@ -398,6 +398,14 @@ public class TouchInteractionService extends Service {
         }
 
         /**
+         * Sets whether a predictive back-to-home animation is in progress in the device state
+         */
+        public void setPredictiveBackToHomeInProgress(boolean isInProgress) {
+            executeForTouchInteractionService(tis ->
+                    tis.mDeviceState.setPredictiveBackToHomeInProgress(isInProgress));
+        }
+
+        /**
          * Returns the {@link OverviewCommandHelper}.
          * <p>
          * Returns {@code null} if TouchInteractionService is not connected
@@ -1170,7 +1178,8 @@ public class TouchInteractionService extends Service {
         }
 
         boolean previousGestureAnimatedToLauncher =
-                previousGestureState.isRunningAnimationToLauncher();
+                previousGestureState.isRunningAnimationToLauncher()
+                        || mDeviceState.isPredictiveBackToHomeInProgress();
         // with shell-transitions, home is resumed during recents animation, so
         // explicitly check against recents animation too.
         boolean launcherResumedThroughShellTransition =
@@ -1275,7 +1284,8 @@ public class TouchInteractionService extends Service {
 
         boolean hasWindowFocus = activity.getRootView().hasWindowFocus();
         boolean isPreviousGestureAnimatingToLauncher =
-                previousGestureState.isRunningAnimationToLauncher();
+                previousGestureState.isRunningAnimationToLauncher()
+                        || mDeviceState.isPredictiveBackToHomeInProgress();
         boolean isInLiveTileMode = gestureState.getActivityInterface().isInLiveTileMode();
         reasonString.append(SUBSTRING_PREFIX)
                 .append(hasWindowFocus
