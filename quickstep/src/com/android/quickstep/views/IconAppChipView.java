@@ -97,11 +97,25 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     private final MultiPropertyFactory<View> mViewTranslationY;
 
     /**
+     * Gets the view split x-axis translation
+     */
+    public MultiPropertyFactory<View>.MultiProperty getSplitTranslationX() {
+        return mViewTranslationX.get(INDEX_SPLIT_TRANSLATION);
+    }
+
+    /**
      * Sets the view split x-axis translation
      * @param translationX x-axis translation
      */
     public void setSplitTranslationX(float translationX) {
-        mViewTranslationX.get(INDEX_SPLIT_TRANSLATION).setValue(translationX);
+        getSplitTranslationX().setValue(translationX);
+    }
+
+    /**
+     * Gets the view split y-axis translation
+     */
+    public MultiPropertyFactory<View>.MultiProperty getSplitTranslationY() {
+        return mViewTranslationY.get(INDEX_SPLIT_TRANSLATION);
     }
 
     /**
@@ -109,7 +123,7 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
      * @param translationY y-axis translation
      */
     public void setSplitTranslationY(float translationY) {
-        mViewTranslationY.get(INDEX_SPLIT_TRANSLATION).setValue(translationY);
+        getSplitTranslationY().setValue(translationY);
     }
 
     /**
