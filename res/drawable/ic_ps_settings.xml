@@ -15,13 +15,10 @@
   -->
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/ps_button_height"
+    android:width="@dimen/ps_button_width"
     android:height="@dimen/ps_button_height"
     android:viewportWidth="40"
     android:viewportHeight="40">
-    <path
-        android:pathData="M20,0L20,0A20,20 0,0 1,40 20L40,20A20,20 0,0 1,20 40L20,40A20,20 0,0 1,0 20L0,20A20,20 0,0 1,20 0z"
-        android:fillColor="?attr/materialColorSurfaceBright"/>
     <group>
         <clip-path
             android:pathData="M10,10h20v20h-20z"/>
