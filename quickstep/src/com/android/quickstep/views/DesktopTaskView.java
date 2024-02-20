@@ -28,7 +28,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
-import android.os.SystemProperties;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -69,9 +68,6 @@ import java.util.function.Consumer;
 // TODO(b/249371338): TaskView needs to be refactored to have better support for N tasks.
 public class DesktopTaskView extends TaskView {
 
-    private static final boolean DESKTOP_MODE_SUPPORTED = SystemProperties.getBoolean(
-            "persist.wm.debug.desktop_mode_2", false);
-
     private static final String TAG = DesktopTaskView.class.getSimpleName();
 
     private static final boolean DEBUG = false;
@@ -94,13 +90,7 @@ public class DesktopTaskView extends TaskView {
 
     /** Check whether desktop windowing is enabled */
     public static boolean isDesktopModeSupported() {
-        // Check for aconfig flag first
-        if (Flags.enableDesktopWindowingMode()) {
-            return true;
-        }
-        // Fall back to sysprop flag
-        // TODO(b/304778354): remove sysprop once desktop aconfig flag supports dynamic overriding
-        return DESKTOP_MODE_SUPPORTED;
+        return Flags.enableDesktopWindowingMode();
     }
 
     public DesktopTaskView(Context context) {
