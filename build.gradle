@@ -375,7 +375,6 @@ dependencies {
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     def accompanistVersion = '0.34.0'
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
-    implementation "com.google.accompanist:accompanist-insets-ui:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
     implementation "com.google.android.material:material:1.11.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.2.0"
