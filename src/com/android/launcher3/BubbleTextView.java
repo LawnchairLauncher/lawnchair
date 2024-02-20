@@ -294,6 +294,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
         }
+        // Reset any shifty arrangements in case animation is disrupted.
+        setPivotY(0);
+        setAlpha(1);
+        setScaleY(1);
+        setTranslationY(0);
+        setVisibility(VISIBLE);
     }
 
     private void cancelDotScaleAnim() {

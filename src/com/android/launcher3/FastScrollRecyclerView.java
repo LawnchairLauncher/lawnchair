@@ -201,7 +201,6 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
         if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
         }
-        // Emphasized interpolators with 500ms duration
         smoothScrollBy(0, getAvailableScrollHeight(), Interpolators.EMPHASIZED, duration);
     }
 }

@@ -476,15 +476,22 @@
     <dimen name="ps_container_corner_radius">24dp</dimen>
     <dimen name="ps_header_height">64dp</dimen>
     <dimen name="ps_header_relative_layout_height">48dp</dimen>
-    <dimen name="ps_header_image_height">36dp</dimen>
+    <dimen name="ps_header_image_height">48dp</dimen>
     <dimen name="ps_header_text_height">24dp</dimen>
     <dimen name="ps_header_layout_margin">16dp</dimen>
     <dimen name="ps_header_settings_icon_margin_end">8dp</dimen>
     <dimen name="ps_header_text_size">16sp</dimen>
-    <dimen name="ps_button_height">36dp</dimen>
-    <dimen name="ps_button_width">36dp</dimen>
+    <dimen name="ps_button_height">40dp</dimen>
+    <dimen name="ps_button_width">40dp</dimen>
     <dimen name="ps_lock_button_width">89dp</dimen>
     <dimen name="ps_app_divider_padding">16dp</dimen>
+    <dimen name="ps_lock_corner_radius">20dp</dimen>
+    <dimen name="ps_lock_icon_size">20dp</dimen>
+    <dimen name="ps_lock_icon_margin_top">10dp</dimen>
+    <dimen name="ps_lock_icon_margin_bottom">10dp</dimen>
+    <dimen name="ps_lock_icon_text_margin_start_expanded">8dp</dimen>
+    <dimen name="ps_lock_icon_text_margin_end_expanded">6dp</dimen>
+    <dimen name="ps_lock_button_background_padding">10dp</dimen>
 
     <!-- WindowManagerProxy -->
     <dimen name="max_width_and_height_of_small_display_cutout">136px</dimen>
