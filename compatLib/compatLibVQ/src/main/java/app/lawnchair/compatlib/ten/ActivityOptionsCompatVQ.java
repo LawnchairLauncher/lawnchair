@@ -24,7 +24,7 @@ public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
                     @Override
                     public void onAnimationStarted() {
                         if (startedListener != null) {
-                            callbackHandler.post(startedListener);
+                            startedListener.run();
                         }
                     }
                 });

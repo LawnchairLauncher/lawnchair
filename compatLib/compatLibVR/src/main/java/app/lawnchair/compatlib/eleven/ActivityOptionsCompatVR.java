@@ -27,7 +27,7 @@ public class ActivityOptionsCompatVR extends ActivityOptionsCompat {
                     @Override
                     public void onAnimationStarted() {
                         if (startedListener != null) {
-                            callbackHandler.post(startedListener);
+                            startedListener.run();
                         }
                     }
                 },
@@ -35,7 +35,7 @@ public class ActivityOptionsCompatVR extends ActivityOptionsCompat {
                     @Override
                     public void onAnimationFinished() {
                         if (finishedListener != null) {
-                            callbackHandler.post(finishedListener);
+                            finishedListener.run();
                         }
                     }
                 });

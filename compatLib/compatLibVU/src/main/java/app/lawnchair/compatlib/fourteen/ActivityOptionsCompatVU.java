@@ -26,7 +26,7 @@ public class ActivityOptionsCompatVU extends ActivityOptionsCompat {
                     @Override
                     public void onAnimationStarted(long elapsedRealTime) {
                         if (startedListener != null) {
-                            callbackHandler.post(startedListener);
+                            startedListener.run();
                         }
                     }
                 },
@@ -34,7 +34,7 @@ public class ActivityOptionsCompatVU extends ActivityOptionsCompat {
                     @Override
                     public void onAnimationFinished(long elapsedRealTime) {
                         if (finishedListener != null) {
-                            callbackHandler.post(finishedListener);
+                            finishedListener.run();
                         }
                     }
                 });
