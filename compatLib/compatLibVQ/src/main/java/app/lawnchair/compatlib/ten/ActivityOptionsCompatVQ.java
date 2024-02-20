@@ -4,6 +4,8 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
 import android.view.RemoteAnimationAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 
 public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
@@ -12,9 +14,9 @@ public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
             Context context,
             int enterResId,
             int exitResId,
-            Handler callbackHandler,
-            Runnable startedListener,
-            Runnable finishedListener) {
+            @NonNull final Handler callbackHandler,
+            @Nullable final Runnable startedListener,
+            @Nullable final Runnable finishedListener) {
         return ActivityOptions.makeCustomAnimation(
                 context,
                 enterResId,
