@@ -50,7 +50,7 @@ DeviceProfile:
 	folderContentPaddingLeftRight: 0.0px (0.0dp)
 	folderTopPadding: 48.0px (24.0dp)
 	folderFooterHeight: 112.0px (56.0dp)
-	bottomSheetTopPadding: 704.0px (352.0dp)
+	bottomSheetTopPadding: 530.0px (265.0dp)
 	bottomSheetOpenDuration: 500
 	bottomSheetCloseDuration: 500
 	bottomSheetWorkspaceScale: 0.97
