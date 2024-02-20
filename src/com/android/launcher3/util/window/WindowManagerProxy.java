@@ -145,7 +145,18 @@ public class WindowManagerProxy implements ResourceBasedOverride {
                         : (isGesture
                                 ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE)
                                 : 0));
-        Insets newNavInsets = Insets.of(navInsets.left, navInsets.top, navInsets.right, bottomNav);
+        int leftNav = navInsets.left;
+        int rightNav = navInsets.right;
+        if (!isLargeScreen && !isGesture && !isPortrait) {
+            // In 3-button landscape/seascape, Launcher should always have nav insets regardless if
+            // it's initiated from fullscreen apps.
+            int navBarWidth = getDimenByName(systemRes, NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
+            switch (getRotation(context)) {
+                case Surface.ROTATION_90 -> rightNav = navBarWidth;
+                case Surface.ROTATION_270 -> leftNav = navBarWidth;
+            }
+        }
+        Insets newNavInsets = Insets.of(leftNav, navInsets.top, rightNav, bottomNav);
         insetsBuilder.setInsets(WindowInsets.Type.navigationBars(), newNavInsets);
         insetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(), newNavInsets);
 
