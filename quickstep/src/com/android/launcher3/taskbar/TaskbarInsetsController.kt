@@ -118,11 +118,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 getProvidedInsets(insetsRoundedCornerFlag)
             }
 
-        if (!context.isGestureNav) {
-            if (windowLayoutParams.paramsForRotation != null) {
-                for (layoutParams in windowLayoutParams.paramsForRotation) {
-                    layoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
-                }
+        if (windowLayoutParams.paramsForRotation != null) {
+            for (layoutParams in windowLayoutParams.paramsForRotation) {
+                layoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
             }
         }
 
@@ -156,19 +154,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             )
         }
 
-        val gravity = windowLayoutParams.gravity
-
         // Pre-calculate insets for different providers across different rotations for this gravity
         for (rotation in Surface.ROTATION_0..Surface.ROTATION_270) {
             // Add insets for navbar rotated params
-            if (windowLayoutParams.paramsForRotation != null) {
-                val layoutParams = windowLayoutParams.paramsForRotation[rotation]
-                for (provider in layoutParams.providedInsets) {
-                    setProviderInsets(provider, layoutParams.gravity, rotation)
-                }
-            }
-            for (provider in windowLayoutParams.providedInsets) {
-                setProviderInsets(provider, gravity, rotation)
+            val layoutParams = windowLayoutParams.paramsForRotation[rotation]
+            for (provider in layoutParams.providedInsets) {
+                setProviderInsets(provider, layoutParams.gravity, rotation)
             }
         }
         context.notifyUpdateLayoutParams()
