@@ -564,4 +564,9 @@
     <string name="action_lock">Lock</string>
     <string name="recents_lock_unlock">Lock/Unlock</string>
     <string name="recents_lock_unlock_description">Prevent selected app from clearing when using "Clear All"</string>
+    <string name="fontWorkspace">General</string>
+    <string name="fontHeading">Headings</string>
+    <string name="fontHeadingMedium">Headings (Medium)</string>
+    <string name="fontBody">Body</string>
+    <string name="fontBodyMedium">Body (Medium)</string>
 </resources>
