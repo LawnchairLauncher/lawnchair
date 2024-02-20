@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 
 import android.content.Context;
@@ -109,9 +110,15 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         mWidgetsListTableViewHolderBinder =
                 new WidgetsListTableViewHolderBinder(mActivityContext, layoutInflater, this, this);
-        mRecommendedWidgetsTable = mContent.findViewById(R.id.recommended_widget_table);
-        mRecommendedWidgetsTable.setWidgetCellLongClickListener(this);
-        mRecommendedWidgetsTable.setWidgetCellOnClickListener(this);
+
+        mWidgetRecommendationsContainer = mContent.findViewById(
+                R.id.widget_recommendations_container);
+        mWidgetRecommendationsView = mContent.findViewById(
+                R.id.widget_recommendations_view);
+        mWidgetRecommendationsView.initParentViews(mWidgetRecommendationsContainer);
+        mWidgetRecommendationsView.setWidgetCellLongClickListener(this);
+        mWidgetRecommendationsView.setWidgetCellOnClickListener(this);
+
         mHeaderTitle = mContent.findViewById(R.id.title);
         mRightPane = mContent.findViewById(R.id.right_pane);
         mRightPane.setOutlineProvider(mViewOutlineProviderRightPane);
@@ -213,7 +220,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             mSuggestedWidgetsHeader.setExpanded(true);
             resetExpandedHeaders();
             mRightPane.removeAllViews();
-            mRightPane.addView(mRecommendedWidgetsTable);
+            mRightPane.addView(mWidgetRecommendationsContainer);
             mRightPaneScrollView.setScrollY(0);
             mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
             mSuggestedWidgetsPackageUserKey = PackageUserKey.fromPackageItemInfo(packageItemInfo);
@@ -224,7 +231,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     }
 
     @Override
-    protected float getMaxTableHeight(float noWidgetsViewHeight) {
+    @Px
+    protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
         return Float.MAX_VALUE;
     }
 
@@ -308,15 +316,25 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 if (mSuggestedWidgetsHeader != null) {
                     mSuggestedWidgetsHeader.setExpanded(false);
                 }
+
+                WidgetsListContentEntry contentEntryToBind;
+                if (enableCategorizedWidgetSuggestions()) {
+                    // Setting max span size enables row to understand how to fit more than one item
+                    // in a row.
+                    contentEntryToBind = contentEntry.withMaxSpanSize(mMaxSpanPerRow);
+                } else {
+                    contentEntryToBind = contentEntry;
+                }
+
                 WidgetsRowViewHolder widgetsRowViewHolder =
                         mWidgetsListTableViewHolderBinder.newViewHolder(mRightPane);
                 mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                        contentEntry,
+                        contentEntryToBind,
                         ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                         Collections.EMPTY_LIST);
                 widgetsRowViewHolder.mDataCallback = data -> {
                     mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                            contentEntry,
+                            contentEntryToBind,
                             ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                             Collections.singletonList(data));
                 };

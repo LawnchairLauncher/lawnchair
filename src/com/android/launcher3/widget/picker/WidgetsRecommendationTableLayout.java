@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 
 import android.content.Context;
@@ -61,7 +62,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         super(context, attrs);
         // There are 1 row for title, 1 row for dimension and 2 rows for description.
         mWidgetsRecommendationTableVerticalPadding = 2 * getResources()
-                .getDimensionPixelSize(R.dimen.recommended_widgets_table_vertical_padding);
+                .getDimensionPixelSize(R.dimen.widget_recommendations_table_vertical_padding);
         mWidgetCellVerticalPadding = 2 * getResources()
                 .getDimensionPixelSize(R.dimen.widget_cell_vertical_padding);
         mWidgetCellTextViewsHeight = 4 * getResources().getDimension(R.dimen.widget_cell_font_size);
@@ -84,17 +85,20 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
      * <p>If the content can't fit {@code recommendationTableMaxHeight}, this view will remove a
      * last row from the {@code recommendedWidgets} until it fits or only one row left. If the only
      * row still doesn't fit, we scale down the preview image.
+     *
+     * <p>Returns {@code false} if none of the widgets could fit</p>
      */
-    public void setRecommendedWidgets(List<ArrayList<WidgetItem>> recommendedWidgets,
+    public boolean setRecommendedWidgets(List<ArrayList<WidgetItem>> recommendedWidgets,
             float recommendationTableMaxHeight) {
         mRecommendationTableMaxHeight = recommendationTableMaxHeight;
         RecommendationTableData data = fitRecommendedWidgetsToTableSpace(/* previewScale= */ 1f,
                 recommendedWidgets);
         bindData(data);
+        return !data.mRecommendationTable.isEmpty();
     }
 
     private void bindData(RecommendationTableData data) {
-        if (data.mRecommendationTable.size() == 0) {
+        if (data.mRecommendationTable.isEmpty()) {
             setVisibility(GONE);
             return;
         }
@@ -104,12 +108,20 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         for (int i = 0; i < data.mRecommendationTable.size(); i++) {
             List<WidgetItem> widgetItems = data.mRecommendationTable.get(i);
             TableRow tableRow = new TableRow(getContext());
-            tableRow.setGravity(Gravity.TOP);
-
+            if (enableCategorizedWidgetSuggestions()) {
+                // Vertically center align items, so that even if they don't fill bounds, they can
+                // look organized when placed together in a row.
+                tableRow.setGravity(Gravity.CENTER_VERTICAL);
+            } else {
+                tableRow.setGravity(Gravity.TOP);
+            }
             for (WidgetItem widgetItem : widgetItems) {
                 WidgetCell widgetCell = addItemCell(tableRow);
                 widgetCell.applyFromCellItem(widgetItem, data.mPreviewScale);
                 widgetCell.showBadge();
+                if (enableCategorizedWidgetSuggestions()) {
+                    widgetCell.showDescription(false);
+                }
             }
             addView(tableRow);
         }
