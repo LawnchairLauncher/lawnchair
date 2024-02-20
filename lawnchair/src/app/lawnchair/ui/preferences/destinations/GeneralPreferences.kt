@@ -101,9 +101,8 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.home_screen_rotation_label),
                 description = stringResource(id = R.string.home_screen_rotation_description),
             )
-
         }
-        ExpandAndShrink (prefs2.enableFontSelection.asState().value) {
+        ExpandAndShrink(prefs2.enableFontSelection.asState().value) {
             PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
                 FontPreference(
                     fontPref = prefs.fontWorkspace,

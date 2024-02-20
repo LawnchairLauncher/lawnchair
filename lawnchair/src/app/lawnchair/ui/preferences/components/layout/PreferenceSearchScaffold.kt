@@ -33,9 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,8 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import app.lawnchair.ui.theme.LawnchairTheme
@@ -122,7 +118,7 @@ private fun SearchBar(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Crossfade (value != "", label = "Close button animation") {
+                Crossfade(value != "", label = "Close button animation") {
                     if (it) {
                         ClickableIcon(
                             imageVector = Icons.Rounded.Clear,
@@ -167,7 +163,7 @@ private fun SearchTextField(
                     visualTransformation = VisualTransformation.None,
                     placeholder = placeholder,
                     border = {},
-                    contentPadding = PaddingValues(4.dp)
+                    contentPadding = PaddingValues(4.dp),
                 )
             },
             cursorBrush = SolidColor(colors.cursorColor(false).value),
