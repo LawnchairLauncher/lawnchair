@@ -13,9 +13,31 @@ public class ActivityOptionsCompatVU extends ActivityOptionsCompat {
             Context context,
             int enterResId,
             int exitResId,
-            Runnable callback,
-            Handler callbackHandler) {
-        return null;
+            Handler callbackHandler,
+            Runnable startedListener,
+            Runnable finishedListener) {
+        return ActivityOptions.makeCustomAnimation(
+                context,
+                enterResId,
+                exitResId,
+                0,
+                callbackHandler,
+                new ActivityOptions.OnAnimationStartedListener() {
+                    @Override
+                    public void onAnimationStarted(long elapsedRealTime) {
+                        if (startedListener != null) {
+                            callbackHandler.post(startedListener);
+                        }
+                    }
+                },
+                new ActivityOptions.OnAnimationFinishedListener() {
+                    @Override
+                    public void onAnimationFinished(long elapsedRealTime) {
+                        if (finishedListener != null) {
+                            callbackHandler.post(finishedListener);
+                        }
+                    }
+                });
     }
 
     @Override

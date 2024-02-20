@@ -1049,14 +1049,11 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         RunnableList callbacks = new RunnableList();
-        ActivityOptions options = LawnchairQuickstepCompat.ATLEAST_R ? ActivityOptions.makeCustomAnimation(
-                this, 0, 0, Color.TRANSPARENT,
-                Executors.MAIN_EXECUTOR.getHandler(), null,
-                elapsedRealTime -> callbacks.executeAllAndDestroy()) : ActivityOptions.makeBasic();
-        if (LawnchairQuickstepCompat.ATLEAST_T) {
-            options.setSplashScreenStyle(splashScreenStyle);
-        }
-        Utilities.allowBGLaunch(options);
+        ActivityOptions options = ActivityOptions.makeCustomAnimation(
+            this, 0, 0, Color.TRANSPARENT,
+            Executors.MAIN_EXECUTOR.getHandler(), null,
+            elapsedRealTime -> callbacks.executeAllAndDestroy());
+        options.setSplashScreenStyle(splashScreenStyle);
         return new ActivityOptionsWrapper(options, callbacks);
     }
 

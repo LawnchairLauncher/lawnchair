@@ -15,8 +15,9 @@ public class ActivityOptionsCompatVS extends ActivityOptionsCompat {
             Context context,
             int enterResId,
             int exitResId,
-            Runnable callback,
-            Handler callbackHandler) {
+            Handler callbackHandler,
+            Runnable startedListener,
+            Runnable finishedListener) {
         return ActivityOptions.makeCustomTaskAnimation(
                 context,
                 enterResId,
@@ -25,12 +26,19 @@ public class ActivityOptionsCompatVS extends ActivityOptionsCompat {
                 new ActivityOptions.OnAnimationStartedListener() {
                     @Override
                     public void onAnimationStarted() {
-                        if (callback != null) {
-                            callbackHandler.post(callback);
+                        if (startedListener != null) {
+                            callbackHandler.post(startedListener);
                         }
                     }
                 },
-                null /* finishedListener */);
+                new ActivityOptions.OnAnimationFinishedListener() {
+                    @Override
+                    public void onAnimationFinished() {
+                        if (finishedListener != null) {
+                            callbackHandler.post(finishedListener);
+                        }
+                    }
+                });
     }
 
     @Override

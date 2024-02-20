@@ -10,8 +10,9 @@ public abstract class ActivityOptionsCompat {
             Context context,
             int enterResId,
             int exitResId,
-            final Runnable callback,
-            final Handler callbackHandler);
+            final Handler callbackHandler,
+            final Runnable startedListener,
+            final Runnable finishedListener);
 
     public abstract ActivityOptions makeRemoteAnimation(
             RemoteAnimationAdapter remoteAnimationAdapter,
