@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">थीम्ड आइकन की पृष्ठभूमि पारदर्शी रखें</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
-    <string name="home_screen_rotaton_description">जब फोन घुमाया जाता है।</string>
+    <string name="home_screen_rotation_description">जब फोन घुमाया जाता है।</string>
     <string name="font_label">फोंट (प्रायोगिक)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">आइकन स्टाइल</string>

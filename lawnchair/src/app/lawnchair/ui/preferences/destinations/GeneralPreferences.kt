@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences.destinations
 
-import android.content.res.Resources
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -100,7 +99,7 @@ fun GeneralPreferences() {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
                 label = stringResource(id = R.string.home_screen_rotation_label),
-                description = stringResource(id = R.string.home_screen_rotaton_description),
+                description = stringResource(id = R.string.home_screen_rotation_description),
             )
 
         }

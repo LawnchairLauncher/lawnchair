@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Користи прозирну позадину на тематским иконама</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
-    <string name="home_screen_rotaton_description">Када се уређај ротира.</string>
+    <string name="home_screen_rotation_description">Када се уређај ротира.</string>
     <string name="font_label">Фонт (експериментално)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Стил икона</string>

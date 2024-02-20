@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">在套用主題色的圖示上使用透明背景</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
-    <string name="home_screen_rotaton_description">當手機旋轉時</string>
+    <string name="home_screen_rotation_description">當手機旋轉時</string>
     <string name="font_label">Font (Experimental)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">圖示風格</string>

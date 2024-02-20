@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Użyj przezroczystego tła na ikonach motywu</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
-    <string name="home_screen_rotaton_description">Po obróceniu urządzenia.</string>
+    <string name="home_screen_rotation_description">Po obróceniu urządzenia.</string>
     <string name="font_label">Czcionka (eksperymentalna)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Styl ikon</string>
