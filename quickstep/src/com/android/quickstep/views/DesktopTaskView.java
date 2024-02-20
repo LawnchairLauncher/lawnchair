@@ -52,7 +52,7 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.wm.shell.Flags;
+import com.android.window.flags.Flags;
 
 import kotlin.Unit;
 
@@ -71,8 +71,6 @@ public class DesktopTaskView extends TaskView {
 
     private static final boolean DESKTOP_MODE_SUPPORTED = SystemProperties.getBoolean(
             "persist.wm.debug.desktop_mode_2", false);
-
-    private static final boolean ENABLE_DESKTOP_WINDOWING = Flags.enableDesktopWindowing();
 
     private static final String TAG = DesktopTaskView.class.getSimpleName();
 
@@ -97,7 +95,7 @@ public class DesktopTaskView extends TaskView {
     /** Check whether desktop windowing is enabled */
     public static boolean isDesktopModeSupported() {
         // Check for aconfig flag first
-        if (ENABLE_DESKTOP_WINDOWING) {
+        if (Flags.enableDesktopWindowingMode()) {
             return true;
         }
         // Fall back to sysprop flag
