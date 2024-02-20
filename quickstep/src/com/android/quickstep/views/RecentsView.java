@@ -2122,6 +2122,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Force TaskView to update size from thumbnail
         updateTaskSize();
+        updatePivots();
     }
 
     /**
