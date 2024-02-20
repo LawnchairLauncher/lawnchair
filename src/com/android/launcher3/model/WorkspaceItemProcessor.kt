@@ -132,7 +132,7 @@ class WorkspaceItemProcessor(
         var allowMissingTarget = false
         var intent = c.parseIntent()
         if (intent == null) {
-            c.markDeleted("Null intent for item id=${c.id}", RestoreError.MISSING_INFO)
+            c.markDeleted("Null intent from db for item id=${c.id}", RestoreError.MISSING_INFO)
             return
         }
         var disabledState =
@@ -157,13 +157,19 @@ class WorkspaceItemProcessor(
                 c.markRestored()
             } else {
                 // Gracefully try to find a fallback activity.
+                FileLog.d(
+                    TAG,
+                    "Activity not enabled for id=${c.id}, component=$cn, user=${c.user}." +
+                        " Will attempt to find fallback Activity for targetPkg=$targetPkg."
+                )
                 intent = pmHelper.getAppLaunchIntent(targetPkg, c.user)
                 if (intent != null) {
                     c.restoreFlag = 0
                     c.updater().put(Favorites.INTENT, intent.toUri(0)).commit()
                 } else {
                     c.markDeleted(
-                        "Intent null, unable to find a launch target",
+                        "No Activities found for id=${c.id}, targetPkg=$targetPkg, component=$cn." +
+                            " Unable to create launch Intent.",
                         RestoreError.MISSING_INFO
                     )
                     return
