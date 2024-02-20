@@ -13,7 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 
+/**
+ * Creates a vertical grid of items via LazyList
+ * @todo use [LazyVerticalGrid]
+ */
 fun LazyListScope.verticalGridItems(
     modifier: Modifier = Modifier,
     count: Int,
