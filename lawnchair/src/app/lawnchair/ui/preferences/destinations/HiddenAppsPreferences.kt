@@ -65,7 +65,7 @@ fun HiddenAppsPreferences() {
     ) {
         Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->
             if (present) {
-                PreferenceLazyColumn(state = state) {
+                PreferenceLazyColumn(it, state = state) {
                     val toggleHiddenApp = { app: App ->
                         val key = app.key.toString()
                         val newSet = apps.asSequence()
@@ -93,7 +93,7 @@ fun HiddenAppsPreferences() {
                     }
                 }
             } else {
-                PreferenceLazyColumn(enabled = false) {
+                PreferenceLazyColumn(it, enabled = false) {
                     preferenceGroupItems(
                         count = 20,
                         isFirstChild = true,

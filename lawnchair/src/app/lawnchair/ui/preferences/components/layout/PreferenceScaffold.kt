@@ -19,17 +19,12 @@ package app.lawnchair.ui.preferences.components.layout
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import com.google.accompanist.insets.ui.Scaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +47,6 @@ fun PreferenceScaffold(
             )
         },
         bottomBar = bottomBar,
-        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
     ) {
         content(it)
     }

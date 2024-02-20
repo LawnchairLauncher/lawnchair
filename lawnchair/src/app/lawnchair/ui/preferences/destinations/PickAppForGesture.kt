@@ -48,7 +48,7 @@ fun PickAppForGesture() {
     ) {
         Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->
             if (present) {
-                PreferenceLazyColumn(state = state) {
+                PreferenceLazyColumn(it, state = state) {
                     preferenceGroupItems(
                         items = apps,
                         isFirstChild = true,
@@ -60,7 +60,7 @@ fun PickAppForGesture() {
                     }
                 }
             } else {
-                PreferenceLazyColumn(enabled = false) {
+                PreferenceLazyColumn(it, enabled = false) {
                     preferenceGroupItems(
                         count = 20,
                         isFirstChild = true,

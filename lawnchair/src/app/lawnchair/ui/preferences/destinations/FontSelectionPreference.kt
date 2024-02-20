@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -62,7 +61,6 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroupItem
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceSearchScaffold
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.layout.SearchTextField
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
 import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
@@ -137,19 +135,12 @@ fun FontSelection(
     }
 
     PreferenceSearchScaffold(
-        searchInput = {
-            SearchTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxSize(),
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.label_search),
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
-                    )
-                },
-                singleLine = true,
+        value = searchQuery,
+        onValueChange = { searchQuery = it },
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.label_search),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
             )
         },
         actions = {
@@ -162,8 +153,8 @@ fun FontSelection(
                 }
             }
         },
-    ) {
-        PreferenceLazyColumn {
+    ) { padding ->
+        PreferenceLazyColumn(padding) {
             if (!hasFilter) {
                 item(contentType = { ContentType.ADD_BUTTON }) {
                     PreferenceGroupItem(
