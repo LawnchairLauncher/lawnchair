@@ -25,6 +25,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import android.annotation.TargetApi;
@@ -90,7 +91,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         stateManager.goToState(NORMAL, animated);
         if (FeatureFlags.enableSplitContextually()) {
             mSplitSelectStateController.getSplitAnimationController()
-                    .playPlaceholderDismissAnim(mActivity);
+                    .playPlaceholderDismissAnim(mActivity, LAUNCHER_SPLIT_SELECTION_EXIT_HOME);
         }
         AbstractFloatingView.closeAllOpenViews(mActivity, animated);
     }
