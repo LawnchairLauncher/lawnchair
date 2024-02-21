@@ -20,7 +20,7 @@
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
 
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Set Lawnchiar as your default launcher to access shortcuts and more.</string>
     <string name="settings">Settings</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Icon Pack, Notification Dots</string>
