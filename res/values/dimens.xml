@@ -182,9 +182,8 @@
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
     <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
-
-    <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
-
+    <dimen name="widget_recommendations_table_vertical_padding">8dp</dimen>
+    <dimen name="widget_recommendations_table_horizontal_padding">16dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container without work profile -->
     <dimen name="search_and_recommended_widgets_container_bottom_margin">16dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container with work profile -->
@@ -454,7 +453,6 @@
     <dimen name="padded_rounded_button_padding">8dp</dimen>
 
     <!-- Bottom sheet related parameters -->
-    <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
     <dimen name="bottom_sheet_handle_area_height">36dp</dimen>
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>

@@ -222,6 +222,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     /** Returns the recommended widgets mapped by their category. */
+    @NonNull
     public Map<WidgetRecommendationCategory, List<WidgetItem>> getCategorizedRecommendedWidgets() {
         Map<ComponentKey, WidgetItem> allWidgetItems = mAllWidgets.stream()
                 .filter(entry -> entry instanceof WidgetsListContentEntry)
@@ -232,7 +233,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                         Function.identity()
                 ));
         return mRecommendedWidgets.stream()
-                .filter(itemInfo -> itemInfo instanceof PendingAddWidgetInfo)
+                .filter(itemInfo -> itemInfo instanceof PendingAddWidgetInfo
+                        && ((PendingAddWidgetInfo) itemInfo).recommendationCategory != null)
                 .collect(Collectors.groupingBy(
                         it -> ((PendingAddWidgetInfo) it).recommendationCategory,
                         Collectors.collectingAndThen(

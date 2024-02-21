@@ -118,13 +118,16 @@
                         android:background="@drawable/widgets_surface_background"
                         android:importantForAccessibility="yes"
                         android:id="@+id/right_pane">
-                        <com.android.launcher3.widget.picker.WidgetsRecommendationTableLayout
-                            android:id="@+id/recommended_widget_table"
+                        <!-- Shown when there are recommendations to display -->
+                        <LinearLayout
+                            android:id="@+id/widget_recommendations_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingHorizontal=
-                                "@dimen/widget_list_horizontal_margin_two_pane"
-                            android:visibility="gone" />
+                            android:background="@drawable/widgets_surface_background"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <include layout="@layout/widget_recommendations" />
+                        </LinearLayout>
                     </LinearLayout>
                 </ScrollView>
             </FrameLayout>

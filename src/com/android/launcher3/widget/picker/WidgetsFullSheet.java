@@ -17,6 +17,7 @@ package com.android.launcher3.widget.picker;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
@@ -45,6 +46,7 @@ import android.view.WindowInsetsController;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.window.BackEvent;
 
@@ -65,7 +67,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.UserManagerState;
-import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -76,7 +77,6 @@ import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
-import com.android.launcher3.widget.util.WidgetsTableUtils;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
@@ -162,12 +162,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Nullable PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
-    @Px private int mMaxSpanPerRow;
+    @Px protected int mMaxSpanPerRow;
     protected DeviceProfile mDeviceProfile;
 
     protected TextView mNoWidgetsView;
     protected StickyHeaderLayout mSearchScrollView;
-    protected WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
+    protected WidgetRecommendationsView mWidgetRecommendationsView;
+    protected LinearLayout mWidgetRecommendationsContainer;
     protected View mTabBar;
     protected View mSearchBarContainer;
     protected WidgetsSearchBar mSearchBar;
@@ -221,9 +222,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         setupViews();
 
-        mRecommendedWidgetsTable = mSearchScrollView.findViewById(R.id.recommended_widget_table);
-        mRecommendedWidgetsTable.setWidgetCellLongClickListener(this);
-        mRecommendedWidgetsTable.setWidgetCellOnClickListener(this);
+        mWidgetRecommendationsContainer = mSearchScrollView.findViewById(
+                R.id.widget_recommendations_container);
+        mWidgetRecommendationsView = mSearchScrollView.findViewById(
+                R.id.widget_recommendations_view);
+        mWidgetRecommendationsView.initParentViews(mWidgetRecommendationsContainer);
+        mWidgetRecommendationsView.setWidgetCellLongClickListener(this);
+        mWidgetRecommendationsView.setWidgetCellOnClickListener(this);
+
         mHeaderTitle = mSearchScrollView.findViewById(R.id.title);
 
         onRecommendedWidgetsBound();
@@ -551,7 +557,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
         mIsInSearchMode = isInSearchMode;
         if (isInSearchMode) {
-            mRecommendedWidgetsTable.setVisibility(GONE);
+            mWidgetRecommendationsContainer.setVisibility(GONE);
             if (mHasWorkProfile) {
                 mViewPager.setVisibility(GONE);
                 mTabBar.setVisibility(GONE);
@@ -580,40 +586,44 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) {
             return;
         }
-        List<WidgetItem> recommendedWidgets =
-                mActivityContext.getPopupDataProvider().getRecommendedWidgets();
-        mHasRecommendedWidgets = recommendedWidgets.size() > 0;
-        if (mHasRecommendedWidgets) {
-            float noWidgetsViewHeight = 0;
-            if (mIsNoWidgetsViewNeeded) {
-                // Make sure recommended section leaves enough space for noWidgetsView.
-                Rect noWidgetsViewTextBounds = new Rect();
-                mNoWidgetsView.getPaint()
-                        .getTextBounds(mNoWidgetsView.getText().toString(), /* start= */ 0,
-                                mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
-                noWidgetsViewHeight = noWidgetsViewTextBounds.height();
-            }
-            if (!isTwoPane()) {
-                doMeasure(
-                        makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
-                                MeasureSpec.EXACTLY),
-                        makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
-                                MeasureSpec.EXACTLY));
-            }
-            float maxTableHeight = getMaxTableHeight(noWidgetsViewHeight);
 
-            List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
-                    WidgetsTableUtils.groupWidgetItemsUsingRowPxWithoutReordering(
-                            recommendedWidgets,
-                            mActivityContext,
-                            mActivityContext.getDeviceProfile(),
-                            mMaxSpanPerRow,
-                            mWidgetCellHorizontalPadding);
-            mRecommendedWidgetsTable.setRecommendedWidgets(
-                    recommendedWidgetsInTable, maxTableHeight);
+        if (enableCategorizedWidgetSuggestions()) {
+            mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
+                    mActivityContext.getPopupDataProvider().getCategorizedRecommendedWidgets(),
+                    /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
+                    /* availableWidth= */ mMaxSpanPerRow,
+                    /* cellPadding= */ mWidgetCellHorizontalPadding
+            );
         } else {
-            mRecommendedWidgetsTable.setVisibility(GONE);
+            mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
+                    mActivityContext.getPopupDataProvider().getRecommendedWidgets(),
+                    /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
+                    /* availableWidth= */ mMaxSpanPerRow,
+                    /* cellPadding= */ mWidgetCellHorizontalPadding
+            );
         }
+        mWidgetRecommendationsContainer.setVisibility(mHasRecommendedWidgets ? VISIBLE : GONE);
+    }
+
+    @Px
+    private float getMaxAvailableHeightForRecommendations() {
+        float noWidgetsViewHeight = 0;
+        if (mIsNoWidgetsViewNeeded) {
+            // Make sure recommended section leaves enough space for noWidgetsView.
+            Rect noWidgetsViewTextBounds = new Rect();
+            mNoWidgetsView.getPaint()
+                    .getTextBounds(mNoWidgetsView.getText().toString(), /* start= */ 0,
+                            mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
+            noWidgetsViewHeight = noWidgetsViewTextBounds.height();
+        }
+        if (!isTwoPane()) {
+            doMeasure(
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
+                            MeasureSpec.EXACTLY),
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
+                            MeasureSpec.EXACTLY));
+        }
+        return getMaxTableHeight(noWidgetsViewHeight);
     }
 
     /** b/209579563: "Widgets" header should be focused first. */
@@ -622,7 +632,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return mHeaderTitle;
     }
 
-    protected float getMaxTableHeight(float noWidgetsViewHeight) {
+    @Px
+    protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
         return (mContent.getMeasuredHeight()
                 - mTabsHeight - getHeaderViewHeight()
                 - noWidgetsViewHeight)
@@ -699,7 +710,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private static int getWidgetSheetId(BaseActivity activity) {
         boolean isTwoPane = (activity.getDeviceProfile().isTablet
-                && activity.getDeviceProfile().isLandscape
+                // Enables two pane picker for tablets in all orientations when the
+                // enableCategorizedWidgetSuggestions flag is on.
+                && (activity.getDeviceProfile().isLandscape || enableCategorizedWidgetSuggestions())
                 && !activity.getDeviceProfile().isTwoPanels)
                 // Enables two pane picker for unfolded foldables if the flag is on.
                 || (activity.getDeviceProfile().isTwoPanels && enableUnfoldedTwoPanePicker());
@@ -813,26 +826,38 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void onDeviceProfileChanged(DeviceProfile dp) {
         super.onDeviceProfileChanged(dp);
 
-        if (mDeviceProfile.isLandscape != dp.isLandscape && dp.isTablet && !dp.isTwoPanels) {
-            handleClose(false);
-            show(BaseActivity.fromContext(getContext()), false);
-        } else if (!isTwoPane()) {
-            reset();
-            resetExpandedHeaders();
-        }
-
-        // When folding/unfolding the foldables, we need to switch between the regular widget picker
-        // and the two pane picker, so we rebuild the picker with the correct layout.
-        if (mDeviceProfile.isTwoPanels != dp.isTwoPanels && enableUnfoldedTwoPanePicker()) {
+        if (shouldRecreateLayout(/*oldDp=*/ mDeviceProfile, /*newDp=*/ dp)) {
             SparseArray<Parcelable> widgetsState = new SparseArray<>();
             saveHierarchyState(widgetsState);
             handleClose(false);
             WidgetsFullSheet sheet = show(BaseActivity.fromContext(getContext()), false);
             sheet.restoreHierarchyState(widgetsState);
             sheet.restorePreviousAdapterHolderType(getCurrentAdapterHolderType());
+        } else if (!isTwoPane()) {
+            reset();
+            resetExpandedHeaders();
         }
 
         mDeviceProfile = dp;
+    }
+
+    /**
+     * Indicates if layout should be re-created on device profile change - so that a different
+     * layout can be displayed.
+     */
+    private static boolean shouldRecreateLayout(DeviceProfile oldDp, DeviceProfile newDp) {
+        // When folding/unfolding the foldables, we need to switch between the regular widget picker
+        // and the two pane picker, so we rebuild the picker with the correct layout.
+        boolean isFoldUnFold =
+                oldDp.isTwoPanels != newDp.isTwoPanels && enableUnfoldedTwoPanePicker();
+        // In tablets, on orientation change we switch between single and two pane picker unless the
+        // categorized suggestions flag was on. With the categorized suggestions feature, we use a
+        // two pane picker across all orientations.
+        boolean useDifferentLayoutOnOrientationChange =
+                (!enableCategorizedWidgetSuggestions() && (newDp.isTablet && !newDp.isTwoPanels
+                        && oldDp.isLandscape != newDp.isLandscape));
+
+        return isFoldUnFold || useDifferentLayoutOnOrientationChange;
     }
 
     @Override
@@ -855,9 +880,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Nullable private View getViewToShowEducationTip() {
-        if (mRecommendedWidgetsTable.getVisibility() == VISIBLE
-                && mRecommendedWidgetsTable.getChildCount() > 0) {
-            return ((ViewGroup) mRecommendedWidgetsTable.getChildAt(0)).getChildAt(0);
+        if (mWidgetRecommendationsContainer.getVisibility() == VISIBLE) {
+            return mWidgetRecommendationsView.getViewForEducationTip();
         }
 
         AdapterHolder adapterHolder = mAdapters.get(mIsInSearchMode
