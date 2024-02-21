@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
@@ -46,6 +47,7 @@ import java.util.stream.Stream;
  */
 public class WidgetManagerHelper {
 
+    private static final String TAG = "WidgetManagerHelper";
     //TODO: replace this with OPTION_APPWIDGET_RESTORE_COMPLETED b/63667276
     public static final String WIDGET_OPTION_RESTORE_COMPLETED = "appWidgetRestoreCompleted";
 
@@ -60,6 +62,7 @@ public class WidgetManagerHelper {
     /**
      * @see AppWidgetManager#getAppWidgetInfo(int)
      */
+    @Nullable
     public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(
             int appWidgetId, ComponentName componentName) {
 
@@ -69,7 +72,14 @@ public class WidgetManagerHelper {
         }
 
         AppWidgetProviderInfo info = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-        return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+        if (info == null) {
+            FileLog.w(TAG,
+                    "getLauncherAppWidgetInfo: AppWidgetManager returned null AppWidgetInfo for"
+                            + " appWidgetId=" + appWidgetId
+                            + ", componentName=" + componentName);
+            return null;
+        }
+        return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
     }
 
     /**
@@ -137,9 +147,8 @@ public class WidgetManagerHelper {
     /**
      * Load RemoteViews preview for this provider if available.
      *
-     * @param info The provider info for the widget you want to preview.
+     * @param info           The provider info for the widget you want to preview.
      * @param widgetCategory The widget category for which you want to display previews.
-     *
      * @return Returns the widget preview that matches selected category, if available.
      */
     @Nullable
