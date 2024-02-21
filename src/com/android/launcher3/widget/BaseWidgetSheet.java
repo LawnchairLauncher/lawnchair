@@ -16,6 +16,7 @@
 package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_TIP_SEEN;
 
@@ -62,8 +63,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     protected final Rect mInsets = new Rect();
 
-    @Px protected int mContentHorizontalMargin;
-    @Px protected int mWidgetCellHorizontalPadding;
+    @Px
+    protected int mContentHorizontalMargin;
+    @Px
+    protected int mWidgetCellHorizontalPadding;
 
     protected int mNavBarScrimHeight;
     private final Paint mNavBarScrimPaint;
@@ -196,7 +199,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int widthUsed;
         if (deviceProfile.isTablet) {
-            widthUsed = Math.max(2 * getTabletMargin(deviceProfile),
+            widthUsed = Math.max(2 * getTabletHorizontalMargin(deviceProfile),
                     2 * (mInsets.left + mInsets.right));
         } else if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
@@ -212,7 +215,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
                 MeasureSpec.getSize(heightMeasureSpec));
     }
 
-    private int getTabletMargin(DeviceProfile deviceProfile) {
+    private int getTabletHorizontalMargin(DeviceProfile deviceProfile) {
+        // All bottom-sheets showing widgets will be full-width across all devices.
+        if (enableCategorizedWidgetSuggestions()) {
+            return 0;
+        }
         if (deviceProfile.isLandscape && !deviceProfile.isTwoPanels) {
             return getResources().getDimensionPixelSize(
                     R.dimen.widget_picker_landscape_tablet_left_right_margin);

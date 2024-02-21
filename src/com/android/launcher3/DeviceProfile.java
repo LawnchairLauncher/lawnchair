@@ -416,15 +416,18 @@ public class DeviceProfile {
         gridVisualizationPaddingY = res.getDimensionPixelSize(
                 R.dimen.grid_visualization_vertical_cell_spacing);
 
-        // Tablet portrait mode uses a single pane widget picker and extra padding may be applied on
-        // top to avoid making it look too elongated.
-        final boolean applyExtraTopPadding = isTablet
-                && !isLandscape
-                && (aspectRatio > MIN_ASPECT_RATIO_FOR_EXTRA_TOP_PADDING);
-        bottomSheetTopPadding = mInsets.top // statusbar height
-                + (applyExtraTopPadding ? res.getDimensionPixelSize(
-                R.dimen.bottom_sheet_extra_top_padding) : 0)
-                + (isTablet ? 0 : edgeMarginPx); // phones need edgeMarginPx additional padding
+        {
+            // In large screens, in portrait mode, a bottom sheet can appear too elongated, so, we
+            // apply additional padding.
+            final boolean applyExtraTopPadding = isTablet
+                    && !isLandscape
+                    && (aspectRatio > MIN_ASPECT_RATIO_FOR_EXTRA_TOP_PADDING);
+            final int derivedTopPadding = heightPx / 6;
+            bottomSheetTopPadding = mInsets.top // statusbar height
+                    + (applyExtraTopPadding ? derivedTopPadding : 0)
+                    + (isTablet ? 0 : edgeMarginPx); // phones need edgeMarginPx additional padding
+        }
+
         bottomSheetOpenDuration = res.getInteger(R.integer.config_bottomSheetOpenDuration);
         bottomSheetCloseDuration = res.getInteger(R.integer.config_bottomSheetCloseDuration);
         if (isTablet) {
