@@ -240,8 +240,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 isTargetValid = context.getSystemService(LauncherApps.class)
                                         .isActivityEnabled(cn, mUser);
                             }
-                            if (!isTargetValid && si.hasStatusFlag(
-                                    FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)) {
+                            if (!isTargetValid && (si.hasStatusFlag(
+                                    FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)
+                                    || si.isArchived())) {
                                 if (updateWorkspaceItemIntent(context, si, packageName)) {
                                     infoUpdated = true;
                                 } else if (si.hasPromiseIconUi()) {
