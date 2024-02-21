@@ -11,11 +11,11 @@ import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY2;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY3;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.launcher3.util.TestUtil.DUMMY_CLASS_NAME;
 import static com.android.launcher3.util.TestUtil.DUMMY_PACKAGE;
 import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -40,13 +40,14 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
@@ -60,6 +61,9 @@ import java.util.List;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class CacheDataUpdatedTaskTest {
+
+    @Rule(order = 0)
+    public TestRule testStabilityRule = new TestStabilityRule();
 
     @Rule
     public final CheckFlagsRule mCheckFlagsRule =
@@ -157,6 +161,7 @@ public class CacheDataUpdatedTaskTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/325283522
     public void testSessionUpdate_updates_pending_apps() {
         // Run on model executor so that no other task runs in the middle.
         runOnExecutorSync(MODEL_EXECUTOR, () -> {
