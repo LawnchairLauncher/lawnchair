@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -49,6 +50,8 @@ import app.lawnchair.ui.preferences.destinations.smartspaceGraph
 import app.lawnchair.ui.preferences.destinations.smartspaceWidgetGraph
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
 import app.lawnchair.util.ProvideLifecycleState
+import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
+import com.google.accompanist.adaptive.TwoPane
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
@@ -91,6 +94,7 @@ fun Preferences(
     val navController = rememberNavController()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val slideDistance = rememberSlideDistance()
+    val isExpandedScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
 
     Providers {
         Surface {
@@ -98,42 +102,67 @@ fun Preferences(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
             ) {
-                NavHost(
-                    navController = navController,
-                    startDestination = "/",
-                    enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
-                    exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
-                    popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
-                    popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
+                PreferencesTwoPaneNav (
+                    isExpandedScreen = isExpandedScreen
                 ) {
-
-
-
-
-//                    preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
-//                        generalGraph(route = subRoute(Routes.GENERAL))
-//                        homeScreenGraph(route = subRoute(Routes.HOME_SCREEN))
-//                        dockGraph(route = subRoute(Routes.DOCK))
-//                        appDrawerGraph(route = subRoute(Routes.APP_DRAWER))
-//                        folderGraph(route = subRoute(Routes.FOLDERS))
-//                        quickstepGraph(route = subRoute(Routes.QUICKSTEP))
-//                        aboutGraph(route = subRoute(Routes.ABOUT))
-//                        fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
-//                        colorSelectionGraph(route = subRoute(Routes.COLOR_SELECTION))
-//                        debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
-//                        selectIconGraph(route = subRoute(Routes.SELECT_ICON))
-//                        iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
-//                        experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
-//                        smartspaceGraph(route = subRoute(Routes.SMARTSPACE))
-//                        smartspaceWidgetGraph(route = subRoute(Routes.SMARTSPACE_WIDGET))
-//                        createBackupGraph(route = subRoute(Routes.CREATE_BACKUP))
-//                        restoreBackupGraph(route = subRoute(Routes.RESTORE_BACKUP))
-//                        pickAppForGestureGraph(route = subRoute(Routes.PICK_APP_FOR_GESTURE))
-//                        gesturesGraph(route = subRoute(Routes.GESTURES))
-//                    }
+                    NavHost(
+                        navController = navController,
+                        startDestination = "/",
+                        enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
+                        exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
+                        popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
+                        popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
+                    ) {
+                        preferenceGraph(
+                            route = "/",
+                            {
+                                if (isExpandedScreen) {
+                                    navController.navigate(Routes.GENERAL)
+                                } else {
+                                    PreferencesDashboard()
+                                }
+                            },
+                        )
+                        generalGraph(route = Routes.GENERAL)
+                        homeScreenGraph(route = Routes.HOME_SCREEN)
+                        dockGraph(route = Routes.DOCK)
+                        appDrawerGraph(route = Routes.APP_DRAWER)
+                        folderGraph(route = Routes.FOLDERS)
+                        quickstepGraph(route = Routes.QUICKSTEP)
+                        aboutGraph(route = Routes.ABOUT)
+                        fontSelectionGraph(route = Routes.FONT_SELECTION)
+                        colorSelectionGraph(route = Routes.COLOR_SELECTION)
+                        debugMenuGraph(route = Routes.DEBUG_MENU)
+                        selectIconGraph(route = Routes.SELECT_ICON)
+                        iconPickerGraph(route = Routes.ICON_PICKER)
+                        experimentalFeaturesGraph(route = Routes.EXPERIMENTAL_FEATURES)
+                        smartspaceGraph(route = Routes.SMARTSPACE)
+                        smartspaceWidgetGraph(route = Routes.SMARTSPACE_WIDGET)
+                        createBackupGraph(route = Routes.CREATE_BACKUP)
+                        restoreBackupGraph(route = Routes.RESTORE_BACKUP)
+                        pickAppForGestureGraph(route = Routes.PICK_APP_FOR_GESTURE)
+                        gesturesGraph(route = Routes.GESTURES)
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun PreferencesTwoPaneNav(
+    isExpandedScreen: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    if (isExpandedScreen) {
+        TwoPane(
+            first = { PreferencesDashboard() },
+            second = { content() },
+            strategy = HorizontalTwoPaneStrategy(0.3f),
+            displayFeatures = listOf(),
+        )
+    } else {
+        content()
     }
 }
 
