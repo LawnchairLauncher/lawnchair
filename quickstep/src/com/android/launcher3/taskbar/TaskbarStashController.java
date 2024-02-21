@@ -573,7 +573,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
         mAnimator = new AnimatorSet();
         addJankMonitorListener(
-                mAnimator, /* expanding= */ !mIsStashed, /* animationType= */ animationType);
+                mAnimator, /* expanding= */ !isStashed, /* animationType= */ animationType);
         boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
         final float stashTranslation = mActivity.isPhoneMode() || isTransientTaskbar
                 ? 0
