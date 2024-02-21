@@ -52,6 +52,9 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         return uc != 0 ? uc : a.componentName.compareTo(b.componentName);
     };
 
+    public static final Comparator<AppInfo> PACKAGE_KEY_COMPARATOR = Comparator.comparingInt(
+            (AppInfo a) -> a.user.hashCode()).thenComparing(ItemInfo::getTargetPackage);
+
     /**
      * The intent used to start the application.
      */

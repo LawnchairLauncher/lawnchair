@@ -20,6 +20,7 @@ package com.android.quickstep.util;
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_LAUNCH;
+import static com.android.launcher3.model.data.AppInfo.PACKAGE_KEY_COMPARATOR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -30,6 +31,7 @@ import static com.android.wm.shell.common.split.SplitScreenConstants.isPersisten
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.LauncherApps;
 import android.util.Log;
 import android.util.Pair;
@@ -42,10 +44,12 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -93,14 +97,38 @@ public class AppPairsController {
     }
 
     /**
-     * Creates a new app pair ItemInfo and adds it to the workspace
+     * Creates a new app pair ItemInfo and adds it to the workspace.
+     * <br>
+     * We create WorkspaceItemInfos to save onto the app pair in the following way:
+     * <br> 1. We verify that the ComponentKey from our Recents tile corresponds to a real
+     * launchable app in the app store.
+     * <br> 2. If it doesn't, we search for the underlying launchable app via package name, and use
+     * that instead.
+     * <br> 3. If that fails, we re-use the existing WorkspaceItemInfo by cloning it and replacing
+     * its intent with one from PackageManager.
+     * <br> 4. If everything fails, we just use the WorkspaceItemInfo as is, with its existing
+     * intent. This is not preferred, but will still work in most cases (notably it will not work
+     * well on trampoline apps).
      */
     public void saveAppPair(GroupedTaskView gtv) {
         TaskView.TaskIdAttributeContainer[] attributes = gtv.getTaskIdAttributeContainers();
-        WorkspaceItemInfo app1 = attributes[0].getItemInfo().clone();
-        WorkspaceItemInfo app2 = attributes[1].getItemInfo().clone();
-        app1.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-        app2.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        WorkspaceItemInfo recentsInfo1 = attributes[0].getItemInfo();
+        WorkspaceItemInfo recentsInfo2 = attributes[0].getItemInfo();
+        WorkspaceItemInfo app1 = lookupLaunchableItem(recentsInfo1.getComponentKey());
+        WorkspaceItemInfo app2 = lookupLaunchableItem(recentsInfo2.getComponentKey());
+
+        // If app lookup fails, use the WorkspaceItemInfo that we have, but try to override default
+        // intent with one from PackageManager.
+        if (app1 == null) {
+            Log.w(TAG, "Creating an app pair, but app lookup for " + recentsInfo1.title
+                    + " failed. Falling back to the WorkspaceItemInfo from Recents.");
+            app1 = convertRecentsItemToAppItem(recentsInfo1);
+        }
+        if (app2 == null) {
+            Log.w(TAG, "Creating an app pair, but app lookup for " + recentsInfo2.title
+                    + " failed. Falling back to the WorkspaceItemInfo from Recents.");
+            app2 = convertRecentsItemToAppItem(recentsInfo2);
+        }
 
         @PersistentSnapPosition int snapPosition = gtv.getSnapPosition();
         if (!isPersistentSnapPosition(snapPosition)) {
@@ -186,6 +214,52 @@ public class AppPairsController {
                             AppPairsController.convertRankToSnapPosition(app1.rank));
                 }
         );
+    }
+
+    /**
+     * Creates a new launchable WorkspaceItemInfo of itemType=ITEM_TYPE_APPLICATION by looking the
+     * ComponentKey up in the AllAppsStore. If no app is found, attempts a lookup by package
+     * instead. If that lookup fails, returns null.
+     */
+    @Nullable
+    private WorkspaceItemInfo lookupLaunchableItem(@Nullable ComponentKey key) {
+        if (key == null) {
+            return null;
+        }
+
+        AllAppsStore appsStore = Launcher.getLauncher(mContext).getAppsView().getAppsStore();
+
+        // Lookup by ComponentKey
+        AppInfo appInfo = appsStore.getApp(key);
+        if (appInfo == null) {
+            // Lookup by package
+            appInfo = appsStore.getApp(key, PACKAGE_KEY_COMPARATOR);
+        }
+
+        return appInfo != null ? appInfo.makeWorkspaceItem(mContext) : null;
+    }
+
+    /**
+     * Converts a WorkspaceItemInfo of itemType=ITEM_TYPE_TASK (from a Recents task) to a new
+     * WorkspaceItemInfo of itemType=ITEM_TYPE_APPLICATION.
+     */
+    private WorkspaceItemInfo convertRecentsItemToAppItem(WorkspaceItemInfo recentsItem) {
+        if (recentsItem.itemType != LauncherSettings.Favorites.ITEM_TYPE_TASK) {
+            Log.w(TAG, "Expected ItemInfo of type ITEM_TYPE_TASK, but received "
+                    + recentsItem.itemType);
+        }
+
+        WorkspaceItemInfo launchableItem = recentsItem.clone();
+        PackageManager p = mContext.getPackageManager();
+        Intent launchIntent = p.getLaunchIntentForPackage(recentsItem.getTargetPackage());
+        Log.w(TAG, "Initial intent from Recents: " + launchableItem.intent + "\n"
+                + "Intent from PackageManager: " + launchIntent);
+        if (launchIntent != null) {
+            // If lookup from PackageManager fails, just use the existing intent
+            launchableItem.intent = launchIntent;
+        }
+        launchableItem.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        return launchableItem;
     }
 
     /**
