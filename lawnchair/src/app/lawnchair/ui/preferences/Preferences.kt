@@ -102,8 +102,8 @@ fun Preferences(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
             ) {
-                PreferencesTwoPaneNav (
-                    isExpandedScreen = isExpandedScreen
+                PreferencesTwoPaneNav(
+                    isExpandedScreen = isExpandedScreen,
                 ) {
                     NavHost(
                         navController = navController,

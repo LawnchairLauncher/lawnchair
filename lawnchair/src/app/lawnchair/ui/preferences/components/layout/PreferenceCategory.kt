@@ -63,7 +63,7 @@ fun PreferenceCategory(
     description: String? = null,
 ) {
     Row(
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp),
     ) {
         PreferenceTemplate(
             modifier = Modifier
@@ -74,7 +74,7 @@ fun PreferenceCategory(
                         radius = 16.dp,
 //                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
                     ),
-                    onClick = { onNavigate() }
+                    onClick = { onNavigate() },
                 ),
             verticalPadding = 14.dp,
             title = {
@@ -104,13 +104,13 @@ fun PreferenceCategory(
 
 @PreviewLawnchair
 @Composable
-fun PreferenceCategoryPreview() {
+private fun PreferenceCategoryPreview() {
     LawnchairTheme {
         PreferenceCategory(
             label = "Example",
             description = "Example description here",
             iconResource = R.drawable.ic_general,
-            onNavigate = {}
+            onNavigate = {},
         )
     }
 }
