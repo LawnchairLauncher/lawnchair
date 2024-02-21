@@ -146,7 +146,6 @@ android {
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
-
     androidComponents {
         onVariants(selector().all()) { variant ->
             def capName = variant.name.capitalize()
@@ -317,6 +316,7 @@ dependencies {
     implementation projects.iconloaderlib
     implementation projects.searchuilib
     implementation projects.animationlib
+    implementation 'androidx.compose.material3:material3-window-size-class-android:1.2.0'
 
     // Recents lib dependency
     withQuickstepCompileOnly projects.hiddenApi
@@ -367,6 +367,7 @@ dependencies {
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material3:material3-window-size-class'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.8.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
@@ -374,6 +375,7 @@ dependencies {
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     def accompanistVersion = '0.34.0'
+    implementation "com.google.accompanist:accompanist-adaptive:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
     implementation "com.google.android.material:material:1.11.0"

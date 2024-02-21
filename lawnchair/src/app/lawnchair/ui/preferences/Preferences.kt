@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.material3.Surface
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -84,6 +85,7 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
 
 @Composable
 fun Preferences(
+    windowSizeClass: WindowSizeClass,
     interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(),
 ) {
     val navController = rememberNavController()
@@ -104,27 +106,31 @@ fun Preferences(
                     popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
                     popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
                 ) {
-                    preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
-                        generalGraph(route = subRoute(Routes.GENERAL))
-                        homeScreenGraph(route = subRoute(Routes.HOME_SCREEN))
-                        dockGraph(route = subRoute(Routes.DOCK))
-                        appDrawerGraph(route = subRoute(Routes.APP_DRAWER))
-                        folderGraph(route = subRoute(Routes.FOLDERS))
-                        quickstepGraph(route = subRoute(Routes.QUICKSTEP))
-                        aboutGraph(route = subRoute(Routes.ABOUT))
-                        fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
-                        colorSelectionGraph(route = subRoute(Routes.COLOR_SELECTION))
-                        debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
-                        selectIconGraph(route = subRoute(Routes.SELECT_ICON))
-                        iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
-                        experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
-                        smartspaceGraph(route = subRoute(Routes.SMARTSPACE))
-                        smartspaceWidgetGraph(route = subRoute(Routes.SMARTSPACE_WIDGET))
-                        createBackupGraph(route = subRoute(Routes.CREATE_BACKUP))
-                        restoreBackupGraph(route = subRoute(Routes.RESTORE_BACKUP))
-                        pickAppForGestureGraph(route = subRoute(Routes.PICK_APP_FOR_GESTURE))
-                        gesturesGraph(route = subRoute(Routes.GESTURES))
-                    }
+
+
+
+
+//                    preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
+//                        generalGraph(route = subRoute(Routes.GENERAL))
+//                        homeScreenGraph(route = subRoute(Routes.HOME_SCREEN))
+//                        dockGraph(route = subRoute(Routes.DOCK))
+//                        appDrawerGraph(route = subRoute(Routes.APP_DRAWER))
+//                        folderGraph(route = subRoute(Routes.FOLDERS))
+//                        quickstepGraph(route = subRoute(Routes.QUICKSTEP))
+//                        aboutGraph(route = subRoute(Routes.ABOUT))
+//                        fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
+//                        colorSelectionGraph(route = subRoute(Routes.COLOR_SELECTION))
+//                        debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
+//                        selectIconGraph(route = subRoute(Routes.SELECT_ICON))
+//                        iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
+//                        experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
+//                        smartspaceGraph(route = subRoute(Routes.SMARTSPACE))
+//                        smartspaceWidgetGraph(route = subRoute(Routes.SMARTSPACE_WIDGET))
+//                        createBackupGraph(route = subRoute(Routes.CREATE_BACKUP))
+//                        restoreBackupGraph(route = subRoute(Routes.RESTORE_BACKUP))
+//                        pickAppForGestureGraph(route = subRoute(Routes.PICK_APP_FOR_GESTURE))
+//                        gesturesGraph(route = subRoute(Routes.GESTURES))
+//                    }
                 }
             }
         }
