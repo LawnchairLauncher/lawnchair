@@ -213,13 +213,13 @@ fun PreferencesSetDefaultLauncherWarning() {
             description = {
                 Text(
                     text = stringResource(id = R.string.set_default_launcher_tip),
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Material3Theme.colorScheme.onSurfaceVariant,
                 )
             },
             startWidget = {
                 Icon(
                     imageVector = Icons.Rounded.TipsAndUpdates,
-                    tint = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = Material3Theme.colorScheme.onSurfaceVariant,
                     contentDescription = null,
                 )
             },
