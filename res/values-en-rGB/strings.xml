@@ -40,14 +40,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Add to home screen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget added to home screen"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Suggestions"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"Boost your day"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
+    <skip />
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"News for you"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Your chill zone"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Reach your fitness goals"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Stay ahead of the weather"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"You might also like"</string>
-    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
-    <skip />
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> widgets on right, search and options on left"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# shortcut}other{# shortcuts}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -185,6 +185,8 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Private"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Private Space Settings"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Lock/Unlock Private Space"</string>
+    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
+    <skip />
     <string name="ps_container_transition" msgid="8667331812048014412">"Private Space transitioning"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Install apps"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Install apps to private space"</string>

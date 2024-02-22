@@ -23,7 +23,7 @@
     <string name="work_folder_name" msgid="3753320833950115786">"Trabalho"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"O app não está instalado."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"O app não está disponível"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"App transferido por download desativado no modo de segurança"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"App baixado desativado no modo de segurança"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets desativados no modo de segurança"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"O atalho não está disponível"</string>
     <string name="home_screen" msgid="5629429142036709174">"Início"</string>
@@ -40,14 +40,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Adicionar à tela inicial"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> adicionado à tela inicial"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Sugestões"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"Melhore seu dia"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
+    <skip />
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Notícias para você"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Sua zona de relaxamento"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Alcance seus objetivos fitness"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Fique por dentro da previsão do tempo"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Você também pode gostar de"</string>
-    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
-    <skip />
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Widgets da <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> à direita, pesquisa e opções à esquerda"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}one{# widget}other{# widgets}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# atalho}one{# atalho}other{# atalhos}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -185,6 +185,8 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Particular"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Configurações do Espaço particular"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Bloquear/desbloquear o Espaço particular"</string>
+    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
+    <skip />
     <string name="ps_container_transition" msgid="8667331812048014412">"Espaço particular em transição"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Instalar apps"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalar apps no espaço privado"</string>

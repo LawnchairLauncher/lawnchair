@@ -40,7 +40,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Add to home screen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget added to home screen"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Suggestions"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"Boost your day"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Your Daily Essentials"</string>
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"News For You"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Your Chill Zone"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Reach Your Fitness Goals"</string>
@@ -184,6 +184,7 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Private"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Private Space Settings"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Lock/Unlock Private Space"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Lock"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Private Space Transitioning"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Install apps"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Install apps to Private Space"</string>
