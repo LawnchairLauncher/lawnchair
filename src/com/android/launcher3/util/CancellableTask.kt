@@ -17,62 +17,54 @@
 package com.android.launcher3.util
 
 import java.util.concurrent.Executor
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Future
 import java.util.function.Consumer
 import java.util.function.Supplier
 
 /** A [Runnable] that can be posted to a [Executor] that can be cancelled. */
-class ExecutorRunnable<T>
-private constructor(
+class CancellableTask<T>
+@JvmOverloads
+constructor(
     private val task: Supplier<T>,
     // Executor where consumer needs to be executed on. Typically UI executor.
     private val callbackExecutor: Executor,
     // Consumer that needs to be accepted upon completion of the task. Typically work that needs to
     // be done in UI thread after task completes.
-    private val callback: Consumer<T>
+    private val callback: Consumer<T>,
+    // Callback to be executed on callbackExecutor at the end irrespective of the task being
+    // completed or cancelled
+    private val endRunnable: Runnable = Runnable {}
 ) : Runnable {
-
-    // future of this runnable that will used for cancellation.
-    lateinit var future: Future<*>
 
     // flag to cancel the callback
     var canceled = false
+        private set
+
+    private var ended = false
 
     override fun run() {
-        val value: T = task.get()
+        if (canceled) return
+        val value = task.get()
         callbackExecutor.execute {
             if (!canceled) {
                 callback.accept(value)
             }
+            onEnd()
         }
     }
 
     /**
-     * Cancel the [ExecutorRunnable] if not scheduled. If [ExecutorRunnable] has started execution
-     * at this time, we will try to cancel the callback if not executed yet.
+     * Cancel the [CancellableTask] if not scheduled. If [CancellableTask] has started execution at
+     * this time, we will try to cancel the callback if not executed yet.
      */
-    fun cancel(interrupt: Boolean) {
-        future.cancel(interrupt)
+    fun cancel() {
         canceled = true
+        callbackExecutor.execute(this::onEnd)
     }
 
-    companion object {
-        /**
-         * Create [ExecutorRunnable] and execute it on task [Executor]. It will also save the
-         * [Future] into this [ExecutorRunnable] to be used for cancellation.
-         */
-        fun <T> createAndExecute(
-            // Executor where task will be executed, typically an Executor running on background
-            // thread.
-            taskExecutor: ExecutorService,
-            task: Supplier<T>,
-            callbackExecutor: Executor,
-            callback: Consumer<T>
-        ): ExecutorRunnable<T> {
-            val executorRunnable = ExecutorRunnable(task, callbackExecutor, callback)
-            executorRunnable.future = taskExecutor.submit(executorRunnable)
-            return executorRunnable
+    private fun onEnd() {
+        if (!ended) {
+            ended = true
+            endRunnable.run()
         }
     }
 }

@@ -29,12 +29,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Unit test for [ExecutorRunnable] */
+/** Unit test for [CancellableTask] */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class ExecutorRunnableTest {
+class CancellableTaskTest {
 
-    private lateinit var underTest: ExecutorRunnable<Int>
+    private lateinit var underTest: CancellableTask<Int>
 
     private val lock = ReentrantLock()
     private var result: Int = -1
@@ -51,8 +51,7 @@ class ExecutorRunnableTest {
 
     private fun submitJob() {
         underTest =
-            ExecutorRunnable.createAndExecute(
-                Executors.UI_HELPER_EXECUTOR,
+            CancellableTask(
                 {
                     isTaskExecuted = true
                     1
@@ -63,6 +62,7 @@ class ExecutorRunnableTest {
                     result = it + 1
                 }
             )
+        Executors.UI_HELPER_EXECUTOR.execute(underTest)
     }
 
     @Test
@@ -82,7 +82,7 @@ class ExecutorRunnableTest {
         Executors.UI_HELPER_EXECUTOR.submit { lock.lock() }
         submitJob()
 
-        underTest.cancel(false)
+        underTest.cancel()
 
         lock.unlock() // unblock task on UI_HELPER_EXECUTOR
         awaitAllExecutorCompleted()
@@ -101,7 +101,7 @@ class ExecutorRunnableTest {
         awaitExecutorCompleted(Executors.UI_HELPER_EXECUTOR)
         assertTrue("task should be executed.", isTaskExecuted)
 
-        underTest.cancel(false)
+        underTest.cancel()
 
         lock.unlock() // unblock callback on VIEW_PREINFLATION_EXECUTOR
         awaitExecutorCompleted(Executors.VIEW_PREINFLATION_EXECUTOR)
@@ -113,7 +113,7 @@ class ExecutorRunnableTest {
     fun run_and_cancelAfterCompletion_executeAll() {
         awaitAllExecutorCompleted()
 
-        underTest.cancel(false)
+        underTest.cancel()
 
         assertTrue("task should be executed", isTaskExecuted)
         assertTrue("callback should be executed", isCallbackExecuted)

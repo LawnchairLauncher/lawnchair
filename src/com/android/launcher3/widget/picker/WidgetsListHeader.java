@@ -35,9 +35,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.icons.PlaceHolderIconDrawable;
-import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 
@@ -57,7 +57,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
      * widget apps aren't collapsable.
     */
     private final boolean mIsCollapsable;
-    @Nullable private HandlerRunnable mIconLoadRequest;
+    @Nullable private CancellableTask mIconLoadRequest;
     @Nullable private Drawable mIconDrawable;
     @Nullable private WidgetsListDrawableState mListDrawableState;
     private ImageView mAppIcon;

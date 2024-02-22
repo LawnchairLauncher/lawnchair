@@ -54,7 +54,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -89,6 +88,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -107,7 +107,6 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.BorderAnimator;
-import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TaskCornerRadius;
@@ -134,8 +133,6 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
     private static final boolean DEBUG = false;
-
-    private static final RectF EMPTY_RECT_F = new RectF();
 
     public static final int FLAG_UPDATE_ICON = 1;
     public static final int FLAG_UPDATE_THUMBNAIL = FLAG_UPDATE_ICON << 1;

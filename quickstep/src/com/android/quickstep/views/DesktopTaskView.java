@@ -44,10 +44,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.icons.IconProvider;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskThumbnailCache;
-import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -62,7 +62,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-
 
 /**
  * TaskView that contains all tasks that are part of the desktop.
