@@ -19,6 +19,10 @@ package com.android.quickstep.util;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DESKTOP_MODE_SPLIT_LEFT_TOP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DESKTOP_MODE_SPLIT_RIGHT_BOTTOM;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTED_SECOND_APP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_COMPLETE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_INITIATED;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -151,6 +155,11 @@ public class SplitSelectStateController {
     private SplitInstructionsView mSplitInstructionsView;
 
     private final List<SplitSelectionListener> mSplitSelectionListeners = new ArrayList<>();
+    /**
+     * Tracks metrics from when first app is selected to split launch or cancellation. This also
+     * gets passed over to shell when attempting to invoke split.
+     */
+    private Pair<InstanceId, com.android.launcher3.logging.InstanceId> mSessionInstanceIds;
 
     private final BackPressHandler mSplitBackHandler = new BackPressHandler() {
         @Override
@@ -162,7 +171,8 @@ public class SplitSelectStateController {
         public void onBackInvoked() {
             // When exiting from split selection, leave current context to go to
             // homescreen as well
-            getSplitAnimationController().playPlaceholderDismissAnim(mContext);
+            getSplitAnimationController().playPlaceholderDismissAnim(mContext,
+                    LAUNCHER_SPLIT_SELECTION_EXIT_HOME);
             if (mActivityBackCallback != null) {
                 mActivityBackCallback.run();
             }
@@ -203,6 +213,7 @@ public class SplitSelectStateController {
             int alreadyRunningTask) {
         mSplitSelectDataHolder.setInitialTaskSelect(intent, stagePosition, itemInfo, splitEvent,
                 alreadyRunningTask);
+        createAndLogInstanceIdsForSession();
     }
 
     /**
@@ -213,6 +224,7 @@ public class SplitSelectStateController {
             @StagePosition int stagePosition, @NonNull ItemInfo itemInfo,
             StatsLogManager.EventEnum splitEvent) {
         mSplitSelectDataHolder.setInitialTaskSelect(info, stagePosition, itemInfo, splitEvent);
+        createAndLogInstanceIdsForSession();
     }
 
     /**
@@ -330,14 +342,12 @@ public class SplitSelectStateController {
      */
     public void launchSplitTasks(@PersistentSnapPosition int snapPosition,
             @Nullable Consumer<Boolean> callback) {
-        Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
-                LogUtils.getShellShareableInstanceId();
-        launchTasks(callback, false /* freezeTaskList */, snapPosition, instanceIds.first);
+        launchTasks(callback, false /* freezeTaskList */, snapPosition, mSessionInstanceIds.first);
 
         mStatsLogManager.logger()
-                .withItemInfo(mSplitSelectDataHolder.getItemInfo())
-                .withInstanceId(instanceIds.second)
-                .log(mSplitSelectDataHolder.getSplitEvent());
+                .withItemInfo(mSplitSelectDataHolder.getSecondItemInfo())
+                .withInstanceId(mSessionInstanceIds.second)
+                .log(LAUNCHER_SPLIT_SELECTED_SECOND_APP);
     }
 
     /**
@@ -364,11 +374,26 @@ public class SplitSelectStateController {
     }
 
     /**
+     * Use to log an event when user exists split selection when the second app **IS NOT** selected.
+     * This must be called before playing any exit animations since most animations will call
+     * {@link #resetState()} which removes {@link #mSessionInstanceIds}.
+     */
+    public void logExitReason(StatsLogManager.EventEnum splitExitEvent) {
+        StatsLogManager.StatsLogger logger = mStatsLogManager.logger();
+        if (mSessionInstanceIds != null) {
+            logger.withInstanceId(mSessionInstanceIds.second);
+        } else {
+            Log.w(TAG, "Missing session instanceIds");
+        }
+        logger.log(splitExitEvent);
+    }
+
+    /**
      * To be called as soon as user selects the second task (even if animations aren't complete)
      * @param task The second task that will be launched.
      */
-    public void setSecondTask(Task task) {
-        mSplitSelectDataHolder.setSecondTask(task.key.id);
+    public void setSecondTask(Task task, ItemInfo itemInfo) {
+        mSplitSelectDataHolder.setSecondTask(task.key.id, itemInfo);
     }
 
     /**
@@ -376,20 +401,20 @@ public class SplitSelectStateController {
      * @param intent The second intent that will be launched.
      * @param user The user of that intent.
      */
-    public void setSecondTask(Intent intent, UserHandle user) {
-        mSplitSelectDataHolder.setSecondTask(intent, user);
+    public void setSecondTask(Intent intent, UserHandle user, ItemInfo itemInfo) {
+        mSplitSelectDataHolder.setSecondTask(intent, user, itemInfo);
     }
 
     /**
      * To be called as soon as user selects the second app (even if animations aren't complete)
      * @param pendingIntent The second PendingIntent that will be launched.
      */
-    public void setSecondTask(PendingIntent pendingIntent) {
-        mSplitSelectDataHolder.setSecondTask(pendingIntent);
+    public void setSecondTask(PendingIntent pendingIntent, ItemInfo itemInfo) {
+        mSplitSelectDataHolder.setSecondTask(pendingIntent, itemInfo);
     }
 
     public void setSecondWidget(PendingIntent pendingIntent, Intent widgetIntent) {
-        mSplitSelectDataHolder.setSecondWidget(pendingIntent, widgetIntent);
+        mSplitSelectDataHolder.setSecondWidget(pendingIntent, widgetIntent, null /*itemInfo*/);
     }
 
     /**
@@ -578,7 +603,7 @@ public class SplitSelectStateController {
         final RemoteTransition remoteTransition = new RemoteTransition(animationRunner,
                 ActivityThread.currentActivityThread().getApplicationThread(),
                 "LaunchAppFullscreen");
-        InstanceId instanceId = LogUtils.getShellShareableInstanceId().first;
+        InstanceId instanceId = mSessionInstanceIds.first;
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             switch (launchData.getSplitLaunchType()) {
                 case SPLIT_SINGLE_TASK_FULLSCREEN -> mSystemUiProxy.startTasks(firstTaskId,
@@ -628,6 +653,26 @@ public class SplitSelectStateController {
                 new RemoteSplitLaunchAnimationRunner(firstTaskId, secondTaskId, callback);
         return new RemoteAnimationAdapter(animationRunner, 300, 150,
                 ActivityThread.currentActivityThread().getApplicationThread());
+    }
+
+    /**
+     * Will initialize {@link #mSessionInstanceIds} if null and log the first split event from
+     * {@link #mSplitSelectDataHolder}
+     */
+    private void createAndLogInstanceIdsForSession() {
+        if (mSessionInstanceIds != null) {
+            Log.w(TAG, "SessionIds should be null");
+        }
+        // Log separately the start of the session and then the first app selected
+        mSessionInstanceIds = LogUtils.getShellShareableInstanceId();
+        mStatsLogManager.logger()
+                .withInstanceId(mSessionInstanceIds.second)
+                .log(LAUNCHER_SPLIT_SELECTION_INITIATED);
+
+        mStatsLogManager.logger()
+                .withItemInfo(mSplitSelectDataHolder.getItemInfo())
+                .withInstanceId(mSessionInstanceIds.second)
+                .log(mSplitSelectDataHolder.getSplitEvent());
     }
 
     public @StagePosition int getActiveSplitStagePosition() {
@@ -804,6 +849,13 @@ public class SplitSelectStateController {
         mFirstFloatingTaskView = null;
         mSplitInstructionsView = null;
         mLaunchingFirstAppFullscreen = false;
+
+        if (mSessionInstanceIds != null) {
+            mStatsLogManager.logger()
+                    .withInstanceId(mSessionInstanceIds.second)
+                    .log(LAUNCHER_SPLIT_SELECTION_COMPLETE);
+        }
+        mSessionInstanceIds = null;
     }
 
     /**

@@ -45,6 +45,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.quickstep.views.FloatingTaskView;
@@ -134,7 +135,7 @@ public class SplitToWorkspaceController {
             return false;
         }
 
-        mController.setSecondTask(intent, user);
+        mController.setSecondTask(intent, user, (ItemInfo) tag);
 
         startWorkspaceAnimation(view, null /*bitmap*/, bitmapInfo.newIcon(mLauncher));
         return true;

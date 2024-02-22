@@ -174,10 +174,10 @@ public class AppPairsController {
 
                     @Nullable Task foundTask2 = foundTasks[1];
                     if (foundTask2 != null) {
-                        mSplitSelectStateController.setSecondTask(foundTask2);
+                        mSplitSelectStateController.setSecondTask(foundTask2, app2);
                     } else {
                         mSplitSelectStateController.setSecondTask(
-                                app2.intent, app2.user);
+                                app2.intent, app2.user, app2);
                     }
 
                     mSplitSelectStateController.setLaunchingIconView(appPairIcon);

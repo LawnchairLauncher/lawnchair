@@ -60,6 +60,7 @@ class SplitSelectDataHolderTest {
     private val sampleShortcut = Intent()
     private val sampleShortcut2 = Intent()
     private val sampleItemInfo = ItemInfo()
+    private val sampleItemInfo2 = ItemInfo()
     private val samplePackage =
         AbstractLauncherUiTest.resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR)
 
@@ -133,7 +134,7 @@ class SplitSelectDataHolderTest {
             null,
             INVALID_TASK_ID
         )
-        splitSelectDataHolder.setSecondTask(sampleTaskId)
+        splitSelectDataHolder.setSecondTask(sampleTaskId, sampleItemInfo2)
         assertTrue(splitSelectDataHolder.isBothSplitAppsConfirmed())
     }
 
@@ -145,7 +146,7 @@ class SplitSelectDataHolderTest {
             null,
             null
         )
-        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser)
+        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         assertTrue(splitSelectDataHolder.isBothSplitAppsConfirmed())
     }
 
@@ -158,7 +159,7 @@ class SplitSelectDataHolderTest {
             null,
             INVALID_TASK_ID
         )
-        splitSelectDataHolder.setSecondTask(sampleShortcut, sampleUser)
+        splitSelectDataHolder.setSecondTask(sampleShortcut, sampleUser, sampleItemInfo2)
         assertTrue(splitSelectDataHolder.isBothSplitAppsConfirmed())
     }
 
@@ -170,7 +171,7 @@ class SplitSelectDataHolderTest {
             sampleItemInfo,
             null
         )
-        splitSelectDataHolder.setSecondTask(sampleTaskId2)
+        splitSelectDataHolder.setSecondTask(sampleTaskId2, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
 
         assertEquals(launchData.splitLaunchType, SPLIT_TASK_TASK)
@@ -194,7 +195,7 @@ class SplitSelectDataHolderTest {
             sampleItemInfo,
             null
         )
-        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser)
+        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
 
         assertEquals(launchData.splitLaunchType, SPLIT_TASK_PENDINGINTENT)
@@ -218,7 +219,7 @@ class SplitSelectDataHolderTest {
             sampleItemInfo,
             null
         )
-        splitSelectDataHolder.setSecondTask(sampleShortcut, sampleUser)
+        splitSelectDataHolder.setSecondTask(sampleShortcut, sampleUser, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
 
         assertEquals(launchData.splitLaunchType, SPLIT_TASK_SHORTCUT)
@@ -243,7 +244,7 @@ class SplitSelectDataHolderTest {
             null,
             INVALID_TASK_ID
         )
-        splitSelectDataHolder.setSecondTask(sampleTaskId)
+        splitSelectDataHolder.setSecondTask(sampleTaskId, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
 
         assertEquals(launchData.splitLaunchType, SPLIT_PENDINGINTENT_TASK)
@@ -268,7 +269,7 @@ class SplitSelectDataHolderTest {
             null,
             INVALID_TASK_ID
         )
-        splitSelectDataHolder.setSecondTask(sampleTaskId)
+        splitSelectDataHolder.setSecondTask(sampleTaskId, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
 
         assertEquals(launchData.splitLaunchType, SPLIT_SHORTCUT_TASK)
@@ -293,7 +294,7 @@ class SplitSelectDataHolderTest {
             null,
             INVALID_TASK_ID
         )
-        splitSelectDataHolder.setSecondTask(sampleIntent2, sampleUser)
+        splitSelectDataHolder.setSecondTask(sampleIntent2, sampleUser, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
 
         assertEquals(launchData.splitLaunchType, SPLIT_PENDINGINTENT_PENDINGINTENT)
@@ -388,7 +389,7 @@ class SplitSelectDataHolderTest {
             null,
             null
         )
-        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser)
+        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         splitSelectDataHolder.resetState()
         assertFalse(splitSelectDataHolder.isSplitSelectActive())
     }
@@ -402,7 +403,7 @@ class SplitSelectDataHolderTest {
                 null,
                 INVALID_TASK_ID
         )
-        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser)
+        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         splitSelectDataHolder.resetState()
         assertFalse(splitSelectDataHolder.isSplitSelectActive())
     }

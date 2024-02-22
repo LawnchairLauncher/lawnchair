@@ -836,7 +836,7 @@ public class TaskView extends FrameLayout implements Reusable {
             return getRecentsView().confirmSplitSelect(this, container.getTask(),
                     container.getIconView().getDrawable(), container.getThumbnailView(),
                     container.getThumbnailView().getThumbnail(), /* intent */ null,
-                    /* user */ null);
+                    /* user */ null, container.getItemInfo());
         }
         return false;
     }

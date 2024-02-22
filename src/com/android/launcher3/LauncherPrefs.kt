@@ -349,6 +349,8 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmField
         val PRIVATE_SPACE_APPS =
             nonRestorableItem("pref_private_space_apps", 0, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
+        @JvmField val ENABLE_TWOLINE_ALLAPPS_TOGGLE =
+                backedUpItem("pref_enable_two_line_toggle", false)
         @JvmField
         val THEMED_ICONS =
             backedUpItem(Themes.KEY_THEMED_ICONS, false, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
