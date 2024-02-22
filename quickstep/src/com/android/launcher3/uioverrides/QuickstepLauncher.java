@@ -39,6 +39,8 @@ import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
@@ -596,7 +598,7 @@ public class QuickstepLauncher extends Launcher {
         list.add(getDragController());
         Consumer<AnimatorSet> splitAnimator = animatorSet ->
                 animatorSet.play(mSplitSelectStateController.getSplitAnimationController()
-                        .createPlaceholderDismissAnim(this));
+                        .createPlaceholderDismissAnim(this, LAUNCHER_SPLIT_SELECTION_EXIT_HOME));
         switch (mode) {
             case NO_BUTTON:
                 list.add(new NoButtonQuickSwitchTouchController(this));
@@ -767,8 +769,10 @@ public class QuickstepLauncher extends Launcher {
             // If Launcher pauses before both split apps are selected, exit split screen.
             if (!mSplitSelectStateController.isBothSplitAppsConfirmed() &&
                     !mSplitSelectStateController.isLaunchingFirstAppFullscreen()) {
+                mSplitSelectStateController
+                        .logExitReason(LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED);
                 mSplitSelectStateController.getSplitAnimationController()
-                        .playPlaceholderDismissAnim(this);
+                        .playPlaceholderDismissAnim(this, LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED);
             }
         }
     }
@@ -1042,17 +1046,17 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    protected void handleSplitAnimationGoingToHome() {
-        super.handleSplitAnimationGoingToHome();
+    protected void handleSplitAnimationGoingToHome(StatsLogManager.EventEnum splitDismissReason) {
+        super.handleSplitAnimationGoingToHome(splitDismissReason);
         mSplitSelectStateController.getSplitAnimationController()
-                .playPlaceholderDismissAnim(this);
+                .playPlaceholderDismissAnim(this, splitDismissReason);
     }
 
     @Override
-    public void dismissSplitSelection() {
-        super.dismissSplitSelection();
+    public void dismissSplitSelection(StatsLogManager.LauncherEvent splitDismissEvent) {
+        super.dismissSplitSelection(splitDismissEvent);
         mSplitSelectStateController.getSplitAnimationController()
-                .playPlaceholderDismissAnim(this);
+                .playPlaceholderDismissAnim(this, splitDismissEvent);
     }
 
     public <T extends OverviewActionsView> T getActionsView() {

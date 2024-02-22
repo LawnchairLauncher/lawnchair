@@ -32,7 +32,6 @@ import android.widget.TableRow;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.WidgetCell;
@@ -89,9 +88,11 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
      * <p>Returns {@code false} if none of the widgets could fit</p>
      */
     public boolean setRecommendedWidgets(List<ArrayList<WidgetItem>> recommendedWidgets,
+            DeviceProfile deviceProfile,
             float recommendationTableMaxHeight) {
         mRecommendationTableMaxHeight = recommendationTableMaxHeight;
         RecommendationTableData data = fitRecommendedWidgetsToTableSpace(/* previewScale= */ 1f,
+                deviceProfile,
                 recommendedWidgets);
         bindData(data);
         return !data.mRecommendationTable.isEmpty();
@@ -144,6 +145,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
 
     private RecommendationTableData fitRecommendedWidgetsToTableSpace(
             float previewScale,
+            DeviceProfile deviceProfile,
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable) {
         if (previewScale < MAX_DOWN_SCALE_RATIO) {
             Log.w(TAG, "Hide recommended widgets. Can't down scale previews to " + previewScale);
@@ -151,7 +153,6 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         }
         // A naive estimation of the widgets recommendation table height without inflation.
         float totalHeight = mWidgetsRecommendationTableVerticalPadding;
-        DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
         for (int i = 0; i < recommendedWidgetsInTable.size(); i++) {
             List<WidgetItem> widgetItems = recommendedWidgetsInTable.get(i);
             float rowHeight = 0;
@@ -175,12 +176,14 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
             // num of row by 1 to see if it fits.
             return fitRecommendedWidgetsToTableSpace(
                     previewScale,
+                    deviceProfile,
                     recommendedWidgetsInTable.subList(/* fromIndex= */0,
                             /* toIndex= */recommendedWidgetsInTable.size() - 1));
         }
 
         float nextPreviewScale = previewScale * DOWN_SCALE_RATIO;
-        return fitRecommendedWidgetsToTableSpace(nextPreviewScale, recommendedWidgetsInTable);
+        return fitRecommendedWidgetsToTableSpace(nextPreviewScale, deviceProfile,
+                recommendedWidgetsInTable);
     }
 
     /** Data class for the widgets recommendation table and widgets preview scaling. */

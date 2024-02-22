@@ -139,7 +139,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     private int mProgressLevel = 100;
 
-    protected ItemInfoWithIcon() { }
+    protected ItemInfoWithIcon() {
+    }
 
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);
@@ -155,7 +156,20 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     }
 
     /**
-     * Returns true if the app corresponding to the item is archived. */
+     * @return {@code true} if the app is pending download (0 progress) or if the app is archived
+     * and its install session is active
+     */
+    public boolean isPendingDownload() {
+        if (isArchived()) {
+            return this.getProgressLevel() == 0
+                    && (this.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0;
+        }
+        return getProgressLevel() == 0;
+    }
+
+    /**
+     * Returns true if the app corresponding to the item is archived.
+     */
     public boolean isArchived() {
         if (!Utilities.enableSupportForArchiving()) {
             return false;
@@ -179,7 +193,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public boolean isAppStartable() {
         return ((runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) == 0)
                 && (((runtimeStatusFlags & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0)
-                    || mProgressLevel == 100 || isArchived());
+                || mProgressLevel == 100 || isArchived());
     }
 
     /**
@@ -242,7 +256,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
 
         return targetPackage != null
                 ? ApiWrapper.getAppMarketActivityIntent(
-                        context, targetPackage, Process.myUserHandle())
+                context, targetPackage, Process.myUserHandle())
                 : null;
     }
 

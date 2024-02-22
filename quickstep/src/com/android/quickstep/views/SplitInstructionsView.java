@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
@@ -39,6 +41,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.quickstep.util.SplitSelectStateController;
 
 /**
  * A rounded rectangular component containing a single TextView.
@@ -130,8 +133,11 @@ public class SplitInstructionsView extends LinearLayout {
     }
 
     private void exitSplitSelection() {
-        ((RecentsView) mLauncher.getOverviewPanel()).getSplitSelectController()
-                .getSplitAnimationController().playPlaceholderDismissAnim(mLauncher);
+        SplitSelectStateController splitSelectController =
+                ((RecentsView) mLauncher.getOverviewPanel()).getSplitSelectController();
+
+        splitSelectController.getSplitAnimationController().playPlaceholderDismissAnim(mLauncher,
+                LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON);
         mLauncher.getStateManager().goToState(LauncherState.NORMAL);
     }
 

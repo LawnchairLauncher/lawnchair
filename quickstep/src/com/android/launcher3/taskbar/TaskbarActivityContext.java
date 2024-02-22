@@ -332,7 +332,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
             // Update icon size
             deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
-            deviceProfile.updateIconSize(1f, getResources());
+            deviceProfile.updateIconSize(1f, this);
         };
         mDeviceProfile = originDeviceProfile.toBuilder(this)
                 .withDimensionsOverride(overrideProvider).build();

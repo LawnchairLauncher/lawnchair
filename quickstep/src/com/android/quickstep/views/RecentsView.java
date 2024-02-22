@@ -149,6 +149,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -4815,7 +4816,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      *          false otherwise
      */
     public boolean confirmSplitSelect(TaskView containerTaskView, Task task, Drawable drawable,
-            View secondView, @Nullable Bitmap thumbnail, Intent intent, UserHandle user) {
+            View secondView, @Nullable Bitmap thumbnail, Intent intent, UserHandle user,
+            ItemInfo itemInfo) {
         if (canLaunchFullscreenTask()) {
             return false;
         }
@@ -4834,9 +4836,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                 + ") is not dockable / does not support splitscreen"));
                 return true;
             }
-            mSplitSelectStateController.setSecondTask(task);
+            mSplitSelectStateController.setSecondTask(task, itemInfo);
         } else {
-            mSplitSelectStateController.setSecondTask(intent, user);
+            mSplitSelectStateController.setSecondTask(intent, user, itemInfo);
         }
 
         RectF secondTaskStartingBounds = new RectF();

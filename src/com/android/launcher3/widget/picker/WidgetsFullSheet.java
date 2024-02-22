@@ -590,6 +590,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (enableCategorizedWidgetSuggestions()) {
             mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
                     mActivityContext.getPopupDataProvider().getCategorizedRecommendedWidgets(),
+                    mDeviceProfile,
                     /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
                     /* availableWidth= */ mMaxSpanPerRow,
                     /* cellPadding= */ mWidgetCellHorizontalPadding
@@ -597,6 +598,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         } else {
             mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
                     mActivityContext.getPopupDataProvider().getRecommendedWidgets(),
+                    mDeviceProfile,
                     /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
                     /* availableWidth= */ mMaxSpanPerRow,
                     /* cellPadding= */ mWidgetCellHorizontalPadding

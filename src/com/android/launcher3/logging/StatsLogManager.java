@@ -199,6 +199,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped on app info system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515),
 
+        /**
+         * @deprecated Use {@link #LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP} or
+         *             {@link #LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM}
+         */
+        @Deprecated
         @UiEvent(doc = "User tapped on split screen icon on a task menu.")
         LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP(518),
 
@@ -724,6 +729,27 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped on private space uninstall system shortcut.")
         LAUNCHER_PRIVATE_SPACE_UNINSTALL_SYSTEM_SHORTCUT_TAP(1608),
+
+        @UiEvent(doc = "User initiated split selection")
+        LAUNCHER_SPLIT_SELECTION_INITIATED(1618),
+
+        @UiEvent(doc = "User finished a split selection session")
+        LAUNCHER_SPLIT_SELECTION_COMPLETE(1619),
+
+        @UiEvent(doc = "User selected both apps for split screen")
+        LAUNCHER_SPLIT_SELECTED_SECOND_APP(1609),
+
+        @UiEvent(doc = "User exited split selection by going home via swipe, button, or state "
+                + "transition")
+        LAUNCHER_SPLIT_SELECTION_EXIT_HOME(1610),
+
+        @UiEvent(doc = "User exited split selection by tapping cancel in split instructions view")
+        LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON(1611),
+
+        @UiEvent(doc = "User exited split selection when another activity/app came to foreground"
+                + " after first app had been selected OR if user long-pressed on home. Default exit"
+                + " metric.")
+        LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED(1612),
 
         // ADD MORE
         ;

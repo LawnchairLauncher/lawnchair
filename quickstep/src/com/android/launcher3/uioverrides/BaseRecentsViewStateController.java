@@ -22,6 +22,7 @@ import static com.android.app.animation.Interpolators.FINAL_FRAME;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
@@ -111,7 +112,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         boolean exitingOverview = !FeatureFlags.enableSplitContextually() && !toState.overviewUi;
         if (mRecentsView.isSplitSelectionActive() && exitingOverview) {
             setter.add(mRecentsView.getSplitSelectController().getSplitAnimationController()
-                    .createPlaceholderDismissAnim(mLauncher));
+                    .createPlaceholderDismissAnim(mLauncher, LAUNCHER_SPLIT_SELECTION_EXIT_HOME));
             setter.setViewAlpha(
                     mRecentsView.getSplitInstructionsView(),
                     0,
