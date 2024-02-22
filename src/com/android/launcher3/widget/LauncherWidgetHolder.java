@@ -17,7 +17,9 @@ package com.android.launcher3.widget;
 
 import static android.app.Activity.RESULT_CANCELED;
 
+import static com.android.launcher3.Flags.enableWorkspaceInflation;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.fromProviderInfo;
 
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
@@ -27,6 +29,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.SparseArray;
 import android.widget.Toast;
 
@@ -310,7 +313,9 @@ public class LauncherWidgetHolder {
     }
 
     /**
-     * Create a view for the specified app widget
+     * Create a view for the specified app widget. When calling this method from a background
+     * thread, the returned view will not receive ongoing updates. The caller needs to reattach
+     * the view using {@link #attachViewToHostAndGetAttachedView} on UIThread
      *
      * @param appWidgetId The ID of the widget
      * @param appWidget   The {@link LauncherAppWidgetProviderInfo} of the widget
@@ -327,7 +332,55 @@ public class LauncherWidgetHolder {
         }
 
         LauncherAppWidgetHostView view = createViewInternal(appWidgetId, appWidget);
-        mViews.put(appWidgetId, view);
+        // Do not update mViews on a background thread call, as the holder is not thread safe.
+        if (!enableWorkspaceInflation() || Looper.myLooper() == Looper.getMainLooper()) {
+            mViews.put(appWidgetId, view);
+        }
+        return view;
+    }
+
+    /**
+     * Attaches an already inflated view to the host. If the view can't be attached, creates
+     * and attaches a new view.
+     * @return the final attached view
+     */
+    @NonNull
+    public final AppWidgetHostView attachViewToHostAndGetAttachedView(
+            @NonNull LauncherAppWidgetHostView view) {
+        if (mViews.get(view.getAppWidgetId()) != view) {
+            view = recycleExistingView(view);
+            mViews.put(view.getAppWidgetId(), view);
+        }
+        return view;
+    }
+
+    /**
+     * Recycling logic:
+     *   1) If the final view should be a pendingView
+     *          if the provided view is also a pendingView, return itself
+     *          otherwise discard provided view and return a new pending view
+     *   2) If the recycled view is a pendingView, discard it and return a new view
+     *   3) Use the same for as creating a new view, but used the provided view in the host instead
+     *      of creating a new view. This ensures that all the host callbacks are properly attached
+     *      as a result of using the same flow.
+     */
+    protected LauncherAppWidgetHostView recycleExistingView(LauncherAppWidgetHostView view) {
+        if ((mFlags & FLAG_LISTENING) == 0) {
+            if (view instanceof PendingAppWidgetHostView pv && pv.isDeferredWidget()) {
+                return view;
+            } else {
+                return new PendingAppWidgetHostView(mContext, this, view.getAppWidgetId(),
+                        fromProviderInfo(mContext, view.getAppWidgetInfo()));
+            }
+        }
+        LauncherAppWidgetHost host = (LauncherAppWidgetHost) mWidgetHost;
+        if (view instanceof ListenableHostView lhv) {
+            host.recycleViewForNextCreation(lhv);
+        }
+
+        view = createViewInternal(
+                view.getAppWidgetId(), fromProviderInfo(mContext, view.getAppWidgetInfo()));
+        host.recycleViewForNextCreation(null);
         return view;
     }
 
@@ -338,8 +391,15 @@ public class LauncherWidgetHolder {
             // Since the launcher hasn't started listening to widget updates, we can't simply call
             // host.createView here because the later will make a binder call to retrieve
             // RemoteViews from system process.
-            return new PendingAppWidgetHostView(mContext, appWidgetId, appWidget);
+            return new PendingAppWidgetHostView(mContext, this, appWidgetId, appWidget);
         } else {
+            if (enableWorkspaceInflation() && Looper.myLooper() != Looper.getMainLooper()) {
+                // Widget is being inflated a background thread, just create and
+                // return a placeholder view
+                ListenableHostView hostView = new ListenableHostView(mContext);
+                hostView.setAppWidget(appWidgetId, appWidget);
+                return hostView;
+            }
             try {
                 return (LauncherAppWidgetHostView) mWidgetHost.createView(
                         mContext, appWidgetId, appWidget);

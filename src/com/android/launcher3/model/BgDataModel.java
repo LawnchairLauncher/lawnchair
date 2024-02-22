@@ -33,6 +33,8 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
+import android.util.Pair;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,6 +56,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.ItemInflater;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -495,7 +498,15 @@ public class BgDataModel {
         default void clearPendingBinds() { }
         default void startBinding() { }
 
-        default void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) { }
+        @Nullable
+        default ItemInflater getItemInflater() {
+            return null;
+        }
+
+        default void bindItems(@NonNull List<ItemInfo> shortcuts, boolean forceAnimateIcons) { }
+        /** Alternate method to bind preinflated views */
+        default void bindInflatedItems(@NonNull List<Pair<ItemInfo, View>> items) { }
+
         default void bindScreens(IntArray orderedScreenIds) { }
         default void setIsFirstPagePinnedItemEnabled(boolean isFirstPagePinnedItemEnabled) { }
         default void finishBindingItems(IntSet pagesBoundFirst) { }
@@ -520,7 +531,9 @@ public class BgDataModel {
         default void bindSmartspaceWidget() { }
 
         /** Called when workspace has been bound. */
-        default void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
+        default void onInitialBindComplete(@NonNull IntSet boundPages,
+                @NonNull RunnableList pendingTasks,
+                @NonNull RunnableList onCompleteSignal,
                 int workspaceItemCount, boolean isBindSync) {
             pendingTasks.executeAllAndDestroy();
         }

@@ -219,6 +219,20 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         return () -> holderListener.mListeningHolders.remove(handler);
     }
 
+    /**
+     * Recycling logic:
+     * The holder doesn't maintain any states associated with the view, so if the view was
+     * initially initialized by this holder, all its state are already set in the view. We just
+     * update the RemoteViews for this view again, in case the widget sent an update during the
+     * time between inflation and recycle.
+     */
+    @Override
+    protected LauncherAppWidgetHostView recycleExistingView(LauncherAppWidgetHostView view) {
+        RemoteViews views = getHolderListener(view.getAppWidgetId()).addHolder(mUpdateHandler);
+        view.updateAppWidget(views);
+        return view;
+    }
+
     @NonNull
     @Override
     protected LauncherAppWidgetHostView createViewInternal(

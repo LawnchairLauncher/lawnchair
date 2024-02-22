@@ -16,20 +16,25 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.Flags.enableWorkspaceInflation;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.os.Process;
 import android.os.Trace;
 import android.util.Log;
+import android.util.Pair;
+import android.view.View;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -38,6 +43,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.ItemInflater;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.PackageUserKey;
@@ -279,8 +285,8 @@ public abstract class BaseLauncherBinder {
             // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
             ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
-            ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
-            ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
+            ArrayList<ItemInfo> currentAppWidgets = new ArrayList<>();
+            ArrayList<ItemInfo> otherAppWidgets = new ArrayList<>();
 
             filterCurrentWorkspaceItems(currentScreenIds, mWorkspaceItems, currentWorkspaceItems,
                     otherWorkspaceItems);
@@ -304,8 +310,8 @@ public abstract class BaseLauncherBinder {
             executeCallbacksTask(c -> c.bindScreens(mOrderedScreenIds), mUiExecutor);
 
             // Load items on the current page.
-            bindWorkspaceItems(currentWorkspaceItems, mUiExecutor);
-            bindAppWidgets(currentAppWidgets, mUiExecutor);
+            bindItemsInChunks(currentWorkspaceItems, ITEMS_CHUNK, mUiExecutor);
+            bindItemsInChunks(currentAppWidgets, 1, mUiExecutor);
             if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
                 mExtraItems.forEach(item ->
                         executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
@@ -313,8 +319,41 @@ public abstract class BaseLauncherBinder {
 
             RunnableList pendingTasks = new RunnableList();
             Executor pendingExecutor = pendingTasks::add;
-            bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
-            bindAppWidgets(otherAppWidgets, pendingExecutor);
+
+            RunnableList onCompleteSignal = new RunnableList();
+
+            if (enableWorkspaceInflation()) {
+                MODEL_EXECUTOR.execute(() ->  {
+                    setupPendingBind(otherWorkspaceItems, otherAppWidgets, currentScreenIds,
+                            pendingExecutor);
+
+                    // Wait for the async inflation to complete and then notify the completion
+                    // signal on UI thread.
+                    MAIN_EXECUTOR.execute(onCompleteSignal::executeAllAndDestroy);
+                });
+            } else {
+                setupPendingBind(
+                        otherWorkspaceItems, otherAppWidgets, currentScreenIds, pendingExecutor);
+                onCompleteSignal.executeAllAndDestroy();
+            }
+
+            executeCallbacksTask(
+                    c -> {
+                        if (!enableWorkspaceInflation()) {
+                            MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                        }
+                        c.onInitialBindComplete(currentScreenIds, pendingTasks, onCompleteSignal,
+                                workspaceItemCount, isBindSync);
+                    }, mUiExecutor);
+        }
+
+        private void setupPendingBind(
+                List<ItemInfo> otherWorkspaceItems,
+                List<ItemInfo> otherAppWidgets,
+                IntSet currentScreenIds,
+                Executor pendingExecutor) {
+            bindItemsInChunks(otherWorkspaceItems, ITEMS_CHUNK, pendingExecutor);
+            bindItemsInChunks(otherAppWidgets, 1, pendingExecutor);
 
             StringCache cacheClone = mBgDataModel.stringCache.clone();
             executeCallbacksTask(c -> c.bindStringCache(cacheClone), pendingExecutor);
@@ -326,35 +365,48 @@ public abstract class BaseLauncherBinder {
                         ItemInstallQueue.INSTANCE.get(mApp.getContext())
                                 .resumeModelPush(FLAG_LOADER_RUNNING);
                     });
-
-            executeCallbacksTask(
-                    c -> {
-                        MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                        c.onInitialBindComplete(
-                                currentScreenIds, pendingTasks, workspaceItemCount, isBindSync);
-                    }, mUiExecutor);
         }
 
-        private void bindWorkspaceItems(
-                final ArrayList<ItemInfo> workspaceItems, final Executor executor) {
+        /**
+         * Tries to inflate the items asynchronously and bind. Returns true on success or false if
+         * async-binding is not supported in this case.
+         */
+        private boolean inflateAsyncAndBind(List<ItemInfo> items, Executor executor) {
+            if (!enableWorkspaceInflation()) {
+                return false;
+            }
+            ItemInflater inflater = mCallbacks.getItemInflater();
+            if (inflater == null) {
+                return false;
+            }
+
+            if (mMyBindingId != mBgDataModel.lastBindId) {
+                Log.d(TAG, "Too many consecutive reloads, skipping obsolete view inflation");
+                return true;
+            }
+
+            ModelWriter writer = mApp.getModel()
+                    .getWriter(false /* verifyChanges */, CellPosMapper.DEFAULT, null);
+            List<Pair<ItemInfo, View>> bindItems = items.stream().map(i ->
+                    Pair.create(i, inflater.inflateItem(i, writer, null))).toList();
+            executeCallbacksTask(c -> c.bindInflatedItems(bindItems), executor);
+            return true;
+        }
+
+        private void bindItemsInChunks(List<ItemInfo> workspaceItems, int chunkCount,
+                Executor executor) {
+            if (inflateAsyncAndBind(workspaceItems, executor)) {
+                return;
+            }
+
             // Bind the workspace items
             int count = workspaceItems.size();
-            for (int i = 0; i < count; i += ITEMS_CHUNK) {
+            for (int i = 0; i < count; i += chunkCount) {
                 final int start = i;
-                final int chunkSize = (i + ITEMS_CHUNK <= count) ? ITEMS_CHUNK : (count - i);
+                final int chunkSize = (i + chunkCount <= count) ? chunkCount : (count - i);
                 executeCallbacksTask(
                         c -> c.bindItems(workspaceItems.subList(start, start + chunkSize), false),
                         executor);
-            }
-        }
-
-        private void bindAppWidgets(List<LauncherAppWidgetInfo> appWidgets, Executor executor) {
-            // Bind the widgets, one at a time
-            int count = appWidgets.size();
-            for (int i = 0; i < count; i++) {
-                final ItemInfo widget = appWidgets.get(i);
-                executeCallbacksTask(
-                        c -> c.bindItems(Collections.singletonList(widget), false), executor);
             }
         }
 
@@ -430,8 +482,11 @@ public abstract class BaseLauncherBinder {
             bindAppWidgets(appWidgets);
             executeCallbacksTask(c -> {
                 MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                c.onInitialBindComplete(
-                        mCurrentScreenIds, new RunnableList(), workspaceItemCount, isBindSync);
+
+                RunnableList onCompleteSignal = new RunnableList();
+                onCompleteSignal.executeAllAndDestroy();
+                c.onInitialBindComplete(mCurrentScreenIds, new RunnableList(), onCompleteSignal,
+                        workspaceItemCount, isBindSync);
             }, mUiExecutor);
         }
 
