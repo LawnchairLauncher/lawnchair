@@ -76,6 +76,11 @@ fun AppDrawerPreferences() {
                 description = stringResource(id = R.string.pref_all_apps_remember_position_description),
                 adapter = prefs2.rememberPosition.getAdapter(),
             )
+            SwitchPreference(
+                label = stringResource(id = R.string.pref_all_apps_show_scrollbar_title),
+                description = stringResource(id = R.string.pref_all_apps_show_scrollbar_description),
+                adapter = prefs2.showScrollbar.getAdapter(),
+            )
             SuggestionsPreference()
         }
 

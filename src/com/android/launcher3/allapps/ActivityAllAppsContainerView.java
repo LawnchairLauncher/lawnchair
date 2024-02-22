@@ -478,6 +478,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      *                   apps list.
      */
     public void reset(boolean animate, boolean exitSearch) {
+        
+        mFastScroller.setVisibility(!PreferenceExtensionsKt.firstBlocking(pref2.getShowScrollbar())? INVISIBLE : VISIBLE);
         if (!PreferenceExtensionsKt.firstBlocking (pref2.getRememberPosition ())) {
             for (int i = 0; i < mAH.size(); i++) {
                 if (mAH.get(i).mRecyclerView != null) {
