@@ -479,7 +479,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      */
     public void reset(boolean animate, boolean exitSearch) {
         
-        bool showFastScoller = PreferenceExtensionsKt.firstBlocking(pref2.getShowScrollbar());
+        boolean showFastScoller = PreferenceExtensionsKt.firstBlocking(pref2.getShowScrollbar());
         mFastScroller.setVisibility(showFastScoller ? VISIBLE : INVISIBLE);
         if (!PreferenceExtensionsKt.firstBlocking (pref2.getRememberPosition ())) {
             for (int i = 0; i < mAH.size(); i++) {
