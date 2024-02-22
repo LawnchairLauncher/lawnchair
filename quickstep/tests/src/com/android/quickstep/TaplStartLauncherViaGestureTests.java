@@ -22,7 +22,6 @@ import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUB
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
@@ -40,7 +39,6 @@ public class TaplStartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        AbstractLauncherUiTest.initialize(this);
         // b/143488140
         mLauncher.goHome();
         // Start an activity where the gestures start.

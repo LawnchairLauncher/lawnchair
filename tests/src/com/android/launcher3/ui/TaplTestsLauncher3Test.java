@@ -21,19 +21,12 @@ import static org.junit.Assert.assertNotNull;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsLauncher3Test extends AbstractLauncherUiTest {
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     @Test
     public void testDevicePressMenu() throws Exception {
