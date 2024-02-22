@@ -16,18 +16,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.RadioButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -145,12 +145,15 @@ fun FontSelection(
         },
         actions = {
             OverflowMenu {
-                DropdownMenuItem(onClick = {
-                    fontPref.set(fontPref.defaultValue)
-                    hideMenu()
-                }) {
-                    Text(text = stringResource(id = R.string.reset_font))
-                }
+                DropdownMenuItem(
+                    onClick = {
+                        fontPref.set(fontPref.defaultValue)
+                        hideMenu()
+                    },
+                    text = {
+                        Text(text = stringResource(id = R.string.reset_font))
+                    },
+                )
             }
         },
     ) { padding ->
@@ -323,15 +326,18 @@ private fun VariantDropdown(
             onDismissRequest = { showVariants = false },
         ) {
             family.sortedVariants.forEach { font ->
-                DropdownMenuItem(onClick = {
-                    adapter.onChange(font)
-                    showVariants = false
-                }) {
-                    Text(
-                        text = font.displayName,
-                        fontFamily = font.composeFontFamily,
-                    )
-                }
+                DropdownMenuItem(
+                    onClick = {
+                        adapter.onChange(font)
+                        showVariants = false
+                    },
+                    text = {
+                        Text(
+                            text = font.displayName,
+                            fontFamily = font.composeFontFamily,
+                        )
+                    },
+                )
             }
         }
     }
