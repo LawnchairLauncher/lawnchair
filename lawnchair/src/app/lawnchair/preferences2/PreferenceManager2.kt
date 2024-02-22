@@ -205,7 +205,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val showScrollbar = preference(
         key = booleanPreferencesKey(name = "all_apps_show_scrollbar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_scrollbar),
-        onSet = { reloadHelper.reloadGrid() },
+        onSet = { reloadHelper.recreate() },
     )
 
     val showTopShadow = preference(
