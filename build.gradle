@@ -316,7 +316,6 @@ dependencies {
     implementation projects.iconloaderlib
     implementation projects.searchuilib
     implementation projects.animationlib
-    implementation 'androidx.compose.material3:material3-window-size-class-android:1.2.0'
 
     // Recents lib dependency
     withQuickstepCompileOnly projects.hiddenApi
