@@ -334,6 +334,8 @@
     <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
 
+    <string name="pref_all_apps_remember_position_title">Remember Position</string>
+    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
     <string name="pref_category_search">Search</string>
     <string name="show_app_search_bar">Show Search Bar</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
