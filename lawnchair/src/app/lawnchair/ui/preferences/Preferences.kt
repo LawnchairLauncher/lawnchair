@@ -115,7 +115,7 @@ fun Preferences(
                     ) {
                         preferenceGraph(
                             route = "/",
-                            {
+                            root = {
                                 if (isExpandedScreen) {
                                     navController.navigate(Routes.GENERAL)
                                 } else {
