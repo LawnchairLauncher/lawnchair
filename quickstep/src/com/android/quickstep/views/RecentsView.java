@@ -4261,10 +4261,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView child = requireTaskViewAt(i);
             int[] childTaskIds = child.getTaskIds();
-            if (!mRunningTaskTileHidden ||
-                    (childTaskIds[0] != runningTaskId && childTaskIds[1] != runningTaskId)) {
-                child.setStableAlpha(alpha);
+            if (runningTaskId != INVALID_TASK_ID
+                    && mRunningTaskTileHidden
+                    && (childTaskIds[0] == runningTaskId || childTaskIds[1] == runningTaskId)) {
+                continue;
             }
+            child.setStableAlpha(alpha);
         }
         mClearAllButton.setContentAlpha(mContentAlpha);
         int alphaInt = Math.round(alpha * 255);
