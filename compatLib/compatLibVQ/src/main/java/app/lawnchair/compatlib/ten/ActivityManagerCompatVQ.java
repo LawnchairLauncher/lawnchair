@@ -29,29 +29,24 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
         // do nothing ,android Q not support
     }
 
-    @Nullable
+    @NonNull
     @Override
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-
         int ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
         if (filterOnlyVisibleRecents) {
             ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_RECENTS;
         }
 
         try {
-
             List<ActivityManager.RunningTaskInfo> tasks =
                     ActivityTaskManager.getService()
                             .getFilteredTasks(
                                     NUM_RECENT_ACTIVITIES_REQUEST,
                                     ignoreActivityType,
                                     WindowConfiguration.WINDOWING_MODE_PINNED);
-            if (tasks.isEmpty()) {
-                return null;
-            }
             return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
         } catch (RemoteException e) {
-            return null;
+            return new ActivityManager.RunningTaskInfo[] {};
         }
     }
 

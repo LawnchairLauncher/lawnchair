@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.ten.ActivityManagerCompatVQ;
@@ -85,7 +86,7 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
         }
     }
 
-    @Nullable
+    @NonNull
     @Override
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
         try {
@@ -93,12 +94,9 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
                     ActivityTaskManager.getService()
                             .getFilteredTasks(
                                     NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
-            if (tasks.isEmpty()) {
-                return null;
-            }
             return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
         } catch (RemoteException e) {
-            return null;
+            return new ActivityManager.RunningTaskInfo[] {};
         }
     }
 }
