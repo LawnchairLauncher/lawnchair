@@ -40,6 +40,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -138,12 +139,22 @@ public class AllAppsStore<T extends Context & ActivityContext> {
     /**
      * Returns {@link AppInfo} if any apps matches with provided {@link ComponentKey}, otherwise
      * null.
+     *
+     * Uses {@link AppInfo#COMPONENT_KEY_COMPARATOR} as a default comparator.
      */
     @Nullable
     public AppInfo getApp(ComponentKey key) {
+        return getApp(key, COMPONENT_KEY_COMPARATOR);
+    }
+
+    /**
+     * Generic version of {@link #getApp(ComponentKey)} that allows comparator to be specified.
+     */
+    @Nullable
+    public AppInfo getApp(ComponentKey key, Comparator<AppInfo> comparator) {
         mTempInfo.componentName = key.componentName;
         mTempInfo.user = key.user;
-        int index = Arrays.binarySearch(mApps, mTempInfo, COMPONENT_KEY_COMPARATOR);
+        int index = Arrays.binarySearch(mApps, mTempInfo, comparator);
         return index < 0 ? null : mApps[index];
     }
 
