@@ -17,15 +17,28 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.quickstep.util.BorderAnimator.DEFAULT_BORDER_COLOR;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
+import com.android.launcher3.R;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
+import com.android.quickstep.util.BorderAnimator;
+
+import kotlin.Unit;
 
 public class ClearAllButton extends Button {
 
@@ -71,11 +84,71 @@ public class ClearAllButton extends Button {
     private float mScrollOffsetPrimary;
 
     private int mSidePadding;
+    private int mOutlinePadding;
+    private boolean mBorderEnabled;
+    @Nullable
+    private final BorderAnimator mFocusBorderAnimator;
 
     public ClearAllButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         mActivity = StatefulActivity.fromContext(context);
+
+        if (Flags.enableFocusOutline()) {
+            TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
+                    R.styleable.ClearAllButton);
+            Resources resources = getResources();
+            mOutlinePadding = resources.getDimensionPixelSize(
+                    R.dimen.recents_clear_all_outline_padding);
+            mFocusBorderAnimator =
+                    BorderAnimator.createSimpleBorderAnimator(
+                            /* borderRadiusPx= */ resources.getDimensionPixelSize(
+                                    R.dimen.recents_clear_all_outline_radius),
+                            /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
+                                    R.dimen.keyboard_quick_switch_border_width),
+                            /* boundsBuilder= */ this::updateBorderBounds,
+                            /* targetView= */ this,
+                            /* borderColor= */ styledAttrs.getColor(
+                                    R.styleable.ClearAllButton_focusBorderColor,
+                                    DEFAULT_BORDER_COLOR));
+            styledAttrs.recycle();
+        } else {
+            mFocusBorderAnimator = null;
+        }
+    }
+
+    private Unit updateBorderBounds(@NonNull Rect bounds) {
+        bounds.set(0, 0, getWidth(), getHeight());
+        // Make the value negative to form a padding between button and outline
+        bounds.inset(-mOutlinePadding, -mOutlinePadding);
+        return Unit.INSTANCE;
+    }
+
+    @Override
+    public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if (mFocusBorderAnimator != null && mBorderEnabled) {
+            mFocusBorderAnimator.setBorderVisibility(gainFocus, /* animated= */ true);
+        }
+    }
+
+    /**
+     * Enable or disable showing border on focus change
+     */
+    public void setBorderEnabled(boolean enabled) {
+        mBorderEnabled = enabled;
+        if (mFocusBorderAnimator != null) {
+            mFocusBorderAnimator.setBorderVisibility(/* visible= */
+                    enabled && isFocused(), /* animated= */true);
+        }
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (mFocusBorderAnimator != null) {
+            mFocusBorderAnimator.drawBorder(canvas);
+        }
+        super.draw(canvas);
     }
 
     @Override

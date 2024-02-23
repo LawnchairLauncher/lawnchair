@@ -1445,6 +1445,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskView taskView = requireTaskViewAt(i);
             taskView.setBorderEnabled(enabled);
         }
+        mClearAllButton.setBorderEnabled(enabled);
     }
 
     /**
