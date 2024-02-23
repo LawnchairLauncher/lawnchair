@@ -10,15 +10,13 @@ import androidx.annotation.RequiresApi;
 import java.util.List;
 
 public abstract class ActivityManagerCompat {
-
-    public static final int NUM_RECENT_ACTIVITIES_REQUEST = 3;
+    protected static final int NUM_RECENT_ACTIVITIES_REQUEST = 3;
 
     public abstract void invalidateHomeTaskSnapshot(final Activity homeActivity);
 
     public abstract void startRecentsActivity(
             Intent intent, long eventTime, RecentsAnimationRunnerCompat runnerCompat);
 
-    /** Called only in S+ platform */
     @Nullable
     @RequiresApi(31)
     public TaskSnapshot getTaskSnapshot(

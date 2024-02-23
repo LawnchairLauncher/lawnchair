@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ActivityManagerCompatVQ extends ActivityManagerCompat {
@@ -27,7 +26,7 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
 
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
-        // do nothing ,android Q not support
+        // Do nothing, Android Q doesn't support this.
     }
 
     @NonNull
