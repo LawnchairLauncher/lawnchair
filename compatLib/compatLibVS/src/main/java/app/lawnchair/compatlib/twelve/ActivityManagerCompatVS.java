@@ -4,6 +4,8 @@ import static android.app.ActivityTaskManager.getService;
 
 import android.app.Activity;
 import android.app.ActivityClient;
+import android.app.ActivityManager;
+import android.app.ActivityTaskManager;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.RemoteException;
@@ -13,6 +15,9 @@ import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
 import androidx.annotation.Nullable;
+
+import java.util.List;
+
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
@@ -79,5 +84,12 @@ public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to cancel recents animation", e);
         }
+    }
+
+    @Override
+    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
+        List<ActivityManager.RunningTaskInfo> tasks =
+            ActivityTaskManager.getInstance().getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
+        return tasks.toArray(new ActivityManager.RunningTaskInfo[0]);
     }
 }
