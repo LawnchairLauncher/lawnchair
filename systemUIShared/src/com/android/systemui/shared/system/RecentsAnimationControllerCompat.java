@@ -44,7 +44,7 @@ public class RecentsAnimationControllerCompat {
         if (!LawnchairQuickstepCompat.ATLEAST_S) {
             ActivityManagerCompatVR compat = (ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat();
             ActivityManagerCompatVR.ThumbnailData data = compat.takeScreenshot(mAnimationController, taskId);
-            return new ThumbnailData(data);
+            return data != null ? new ThumbnailData(data) : new ThumbnailData();
         }
         try {
             final TaskSnapshot snapshot = mAnimationController.screenshotTask(taskId);

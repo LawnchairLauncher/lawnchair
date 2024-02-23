@@ -148,11 +148,7 @@ public class ActivityManagerWrapper {
             }
         }
         TaskSnapshot snapshot = LawnchairQuickstepCompat.getActivityManagerCompat().getTaskSnapshot(taskId, isLowResolution, true);
-        if (snapshot != null) {
-            return new ThumbnailData(snapshot);
-        } else {
-            return new ThumbnailData();
-        }
+        return snapshot != null ? new ThumbnailData(snapshot) : new ThumbnailData();
     }
 
     /**
