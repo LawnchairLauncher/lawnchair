@@ -40,14 +40,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"গৃহ স্ক্ৰীনত যোগ কৰক"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ৱিজেটটো গৃহ স্ক্ৰীনত যোগ দিয়া হৈছে"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"পৰামৰ্শ"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"আপোনাৰ দিনটো কাৰ্যকৰী কৰি তোলক"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
+    <skip />
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"আপোনাৰ বাবে বাতৰি"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"আপোনাৰ পচন্দৰ স্থান"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"আপোনাৰ সুস্থতাৰ লক্ষ্যত উপনীত হওক"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"বতৰৰ বিষয়ে আগতীয়াকৈ জানক"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"আপুনি হয়তো এইটোও পচন্দ কৰিব"</string>
-    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
-    <skip />
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ৱিজেট সোঁফালে, সন্ধান আৰু বিকল্পসমূহ বাওঁফালে"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# টা ৱিজেট}one{# টা ৱিজেট}other{# টা ৱিজেট}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# টা শ্বৰ্টকাট}one{# টা শ্বৰ্টকাট}other{# টা শ্বৰ্টকাট}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -185,6 +185,8 @@
     <string name="ps_container_title" msgid="4391796149519594205">"ব্যক্তিগত"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ব্যক্তিগত স্পে’চৰ ছেটিং"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ব্যক্তিগত স্পে’চ লক/আনলক কৰক"</string>
+    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
+    <skip />
     <string name="ps_container_transition" msgid="8667331812048014412">"ব্যক্তিগত স্পে’চৰ স্থানান্তৰণ"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"এপ্‌ ইনষ্টল কৰক"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"এপ্‌সমূহ প্ৰাইভেট স্পেচত ইনষ্টল কৰক"</string>
