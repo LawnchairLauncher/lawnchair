@@ -7,7 +7,6 @@ import android.window.TaskSnapshot;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-
 import java.util.List;
 
 public abstract class ActivityManagerCompat {
