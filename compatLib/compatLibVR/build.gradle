@@ -10,4 +10,5 @@ addFrameworkJar('framework-11.jar')
 
 dependencies {
     implementation projects.compatLib
+    implementation projects.compatLib.compatLibVQ
 }

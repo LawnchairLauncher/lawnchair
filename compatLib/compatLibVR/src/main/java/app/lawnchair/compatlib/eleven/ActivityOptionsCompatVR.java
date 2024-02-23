@@ -3,14 +3,11 @@ package app.lawnchair.compatlib.eleven;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
-import android.view.RemoteAnimationAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.lawnchair.compatlib.ActivityOptionsCompat;
+import app.lawnchair.compatlib.ten.ActivityOptionsCompatVQ;
 
-public class ActivityOptionsCompatVR extends ActivityOptionsCompat {
-    private static final String TAG = "ActivityOptionsCompatVR";
+public class ActivityOptionsCompatVR extends ActivityOptionsCompatVQ {
 
     @Override
     public ActivityOptions makeCustomAnimation(
@@ -41,14 +38,5 @@ public class ActivityOptionsCompatVR extends ActivityOptionsCompat {
                         }
                     }
                 });
-    }
-
-    @Override
-    public ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName) {
-        Log.e(TAG, "makeRemoteAnimation: " + debugName);
-        return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter);
     }
 }
