@@ -17,10 +17,14 @@
 package com.android.launcher3.tapl;
 
 import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+import static android.view.KeyEvent.KEYCODE_RECENT_APPS;
+import static android.view.KeyEvent.KEYCODE_TAB;
+import static android.view.KeyEvent.META_META_ON;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.UIOBJECT_STALE_ELEMENT;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -130,6 +134,40 @@ public final class Workspace extends Home {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "pressed meta key")) {
                 return new HomeAllApps(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher Overview page with the action+tab keyboard shortcut. */
+    public Overview openOverviewFromActionPlusTabKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open overview")) {
+            verifyActiveContainer();
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_TAB, META_META_ON),
+                    OVERVIEW_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed meta+tab key")) {
+                return new Overview(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher Overview page with the Recents keyboard shortcut. */
+    public Overview openOverviewFromRecentsKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open overview")) {
+            verifyActiveContainer();
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_RECENT_APPS),
+                    OVERVIEW_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed recents apps key")) {
+                return new Overview(mLauncher);
             }
         }
     }
