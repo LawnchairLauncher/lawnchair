@@ -37,7 +37,6 @@ import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,13 +50,6 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
 
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        AbstractLauncherUiTest.initialize(this);
-    }
 
     @Test
     @PortraitLandscape

@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.config.FeatureFlags
-import com.android.launcher3.util.ExecutorRunnable
+import com.android.launcher3.util.CancellableTask
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.VIEW_PREINFLATION_EXECUTOR
 import com.android.launcher3.views.ActivityContext
@@ -39,7 +39,7 @@ const val EXTRA_ICONS_COUNT = 2
 class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
 
     var hasWorkProfile = false
-    var executorRunnable: ExecutorRunnable<List<ViewHolder>>? = null
+    private var mCancellableTask: CancellableTask<List<ViewHolder>>? = null
 
     /**
      * Preinflate app icons. If all apps RV cannot be scrolled down, we don't need to preinflate.
@@ -62,14 +62,14 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
                 override fun getLayoutManager(): RecyclerView.LayoutManager? = null
             }
 
-        executorRunnable?.cancel(/* interrupt= */ false)
-        executorRunnable =
-            ExecutorRunnable.createAndExecute(
-                VIEW_PREINFLATION_EXECUTOR,
+        mCancellableTask?.cancel()
+        var task: CancellableTask<List<ViewHolder>>? = null
+        task =
+            CancellableTask(
                 {
                     val list: ArrayList<ViewHolder> = ArrayList()
                     for (i in 0 until preInflateCount) {
-                        if (Thread.interrupted()) {
+                        if (task?.canceled == true) {
                             break
                         }
                         list.add(
@@ -85,6 +85,8 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
                     }
                 }
             )
+        mCancellableTask = task
+        VIEW_PREINFLATION_EXECUTOR.submit(mCancellableTask)
     }
 
     /**
@@ -93,7 +95,7 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
      */
     override fun clear() {
         super.clear()
-        executorRunnable?.cancel(/* interrupt= */ true)
+        mCancellableTask?.cancel()
     }
 
     /**

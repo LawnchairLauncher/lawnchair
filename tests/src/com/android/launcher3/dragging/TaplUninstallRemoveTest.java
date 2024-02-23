@@ -41,7 +41,6 @@ import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -53,12 +52,6 @@ import java.util.Map;
  * Test the behaviour of uninstalling and removing apps both from AllApps, Workspace and Hotseat.
  */
 public class TaplUninstallRemoveTest extends AbstractLauncherUiTest {
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     /**
      * Deletes app both built-in and user-installed from the Workspace and makes sure it's no longer
@@ -121,6 +114,7 @@ public class TaplUninstallRemoveTest extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/326130648
     public void testUninstallFromAllApps() throws Exception {
         installDummyAppAndWaitForUIUpdate();
         try {

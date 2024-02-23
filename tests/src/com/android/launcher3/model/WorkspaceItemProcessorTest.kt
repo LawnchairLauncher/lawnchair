@@ -201,7 +201,7 @@ class WorkspaceItemProcessorTest {
         // When
         itemProcessorUnderTest.processItem()
         // Then
-        verify(mockCursor).markDeleted("Null intent for item id=1", MISSING_INFO)
+        verify(mockCursor).markDeleted("Null intent from db for item id=1", MISSING_INFO)
         verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
     }
 
@@ -309,7 +309,14 @@ class WorkspaceItemProcessorTest {
         assertWithMessage("item restoreFlag should be unchanged")
             .that(mockCursor.restoreFlag)
             .isEqualTo(1)
-        verify(mockCursor).markDeleted("Intent null, unable to find a launch target", MISSING_INFO)
+        verify(mockCursor)
+            .markDeleted(
+                "No Activities found for id=1," +
+                    " targetPkg=package," +
+                    " component=ComponentInfo{package/class}." +
+                    " Unable to create launch Intent.",
+                MISSING_INFO
+            )
         verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
     }
 

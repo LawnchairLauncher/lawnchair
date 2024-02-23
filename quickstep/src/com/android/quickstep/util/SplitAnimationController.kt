@@ -40,6 +40,7 @@ import android.window.WindowContainerToken
 import androidx.annotation.VisibleForTesting
 import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.Flags.enableOverviewIconMenu
 import com.android.launcher3.Launcher
 import com.android.launcher3.QuickstepTransitionManager
 import com.android.launcher3.Utilities
@@ -51,12 +52,14 @@ import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.statemanager.StatefulActivity
 import com.android.launcher3.taskbar.TaskbarActivityContext
+import com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.TaskViewUtils
 import com.android.quickstep.views.FloatingAppPairView
 import com.android.quickstep.views.FloatingTaskView
 import com.android.quickstep.views.GroupedTaskView
+import com.android.quickstep.views.IconAppChipView
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.SplitInstructionsView
 import com.android.quickstep.views.TaskThumbnailView
@@ -156,16 +159,36 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         val iconView: View = taskIdAttributeContainer.iconView.asView()
         builder.add(ObjectAnimator.ofFloat(thumbnail, TaskThumbnailView.SPLASH_ALPHA, 1f))
         thumbnail.setShowSplashForSplitSelection(true)
+        // With the new `IconAppChipView`, we always want to keep the chip pinned to the
+        // top left of the task / thumbnail.
+        if (enableOverviewIconMenu()) {
+            builder.add(
+                ObjectAnimator.ofFloat(
+                    (iconView as IconAppChipView).splitTranslationX,
+                    MULTI_PROPERTY_VALUE,
+                    0f
+                )
+            )
+            builder.add(
+                ObjectAnimator.ofFloat(
+                    iconView.splitTranslationY,
+                    MULTI_PROPERTY_VALUE,
+                    0f
+                )
+            )
+        }
         if (deviceProfile.isLeftRightSplit) {
             // Center view first so scaling happens uniformly, alternatively we can move pivotX to 0
             val centerThumbnailTranslationX: Float = (taskViewWidth - thumbnail.width) / 2f
-            val centerIconTranslationX: Float = (taskViewWidth - iconView.width) / 2f
             val finalScaleX: Float = taskViewWidth.toFloat() / thumbnail.width
             builder.add(ObjectAnimator.ofFloat(thumbnail,
                     TaskThumbnailView.SPLIT_SELECT_TRANSLATE_X, centerThumbnailTranslationX))
-            // icons are anchored from Gravity.END, so need to use negative translation
-            builder.add(ObjectAnimator.ofFloat(iconView, View.TRANSLATION_X,
+            if (!enableOverviewIconMenu()) {
+                // icons are anchored from Gravity.END, so need to use negative translation
+                val centerIconTranslationX: Float = (taskViewWidth - iconView.width) / 2f
+                builder.add(ObjectAnimator.ofFloat(iconView, View.TRANSLATION_X,
                     -centerIconTranslationX))
+            }
             builder.add(ObjectAnimator.ofFloat(thumbnail, View.SCALE_X, finalScaleX))
 
             // Reset other dimensions
@@ -184,7 +207,6 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             // asymmetry causes problems..
 
             // Icon defaults to center | horizontal, we add additional translation for split
-            val centerIconTranslationX = 0f
             var centerThumbnailTranslationY: Float
 
             // TODO(b/271468547), primary thumbnail has layout margin above it, so secondary
@@ -201,9 +223,10 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             builder.add(ObjectAnimator.ofFloat(thumbnail,
                     TaskThumbnailView.SPLIT_SELECT_TRANSLATE_Y, centerThumbnailTranslationY))
 
-            // icons are anchored from Gravity.END, so need to use negative translation
-            builder.add(ObjectAnimator.ofFloat(iconView, View.TRANSLATION_X,
-                    centerIconTranslationX))
+            if (!enableOverviewIconMenu())  {
+                // icons are anchored from Gravity.END, so need to use negative translation
+                builder.add(ObjectAnimator.ofFloat(iconView, View.TRANSLATION_X, 0f))
+            }
             builder.add(ObjectAnimator.ofFloat(thumbnail, View.SCALE_Y, finalScaleY))
 
             // Reset other dimensions

@@ -147,6 +147,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     @Override
+    protected boolean isEventWithinSystemGestureRegion(MotionEvent ev) {
+        final float x = ev.getX();
+        final float y = ev.getY();
+
+        return x >= mSystemGestureRegion.left && x < getWidth() - mSystemGestureRegion.right
+                && y >= mSystemGestureRegion.top;
+    }
+
+    @Override
     protected boolean canFindActiveController() {
         // Unlike super class, we want to be able to find controllers when touches occur in the
         // gesture area. For example, this allows Folder to close itself when touching the Taskbar.

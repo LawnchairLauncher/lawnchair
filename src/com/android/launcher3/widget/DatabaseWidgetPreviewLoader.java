@@ -41,9 +41,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShadowGenerator;
-import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.util.WidgetSizes;
@@ -74,12 +74,12 @@ public class DatabaseWidgetPreviewLoader {
      * @return a request id which can be used to cancel the request.
      */
     @NonNull
-    public HandlerRunnable loadPreview(
+    public CancellableTask loadPreview(
             @NonNull WidgetItem item,
             @NonNull Size previewSize,
             @NonNull Consumer<Bitmap> callback) {
         Handler handler = Executors.UI_HELPER_EXECUTOR.getHandler();
-        HandlerRunnable<Bitmap> request = new HandlerRunnable<>(handler,
+        CancellableTask<Bitmap> request = new CancellableTask<>(
                 () -> generatePreview(item, previewSize.getWidth(), previewSize.getHeight()),
                 MAIN_EXECUTOR,
                 callback);

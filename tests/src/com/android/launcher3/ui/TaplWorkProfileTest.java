@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
-import android.platform.test.rule.ScreenRecordRule;
 import android.util.Log;
 import android.view.View;
 
@@ -45,7 +44,8 @@ import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.TestUtil;
-import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
+import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 
 import org.junit.After;
 import org.junit.Before;
@@ -145,8 +145,8 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
     }
 
     // Staging; will be promoted to presubmit if stable
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
-    @ScreenRecordRule.ScreenRecord
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+    @ScreenRecord
     @Test
     public void toggleWorks() {
         assumeTrue(mWorkProfileSetupSuccessful);

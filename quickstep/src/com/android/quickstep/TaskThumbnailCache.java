@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -23,8 +24,8 @@ import android.content.res.Resources;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.TaskKeyByLastActiveTimeCache;
 import com.android.quickstep.util.TaskKeyCache;
 import com.android.quickstep.util.TaskKeyLruCache;
@@ -195,33 +196,29 @@ public class TaskThumbnailCache {
             return null;
         }
 
-        CancellableTask<ThumbnailData> request = new CancellableTask<>() {
-            @Override
-            public ThumbnailData getResultOnBg() {
-                ThumbnailData thumbnailData = ActivityManagerWrapper.getInstance().getTaskThumbnail(
-                        key.id, lowResolution);
-                if (thumbnailData.thumbnail != null) {
-                    return thumbnailData;
-                }
-                return ActivityManagerWrapper.getInstance().takeTaskThumbnail(key.id);
-            }
-
-            @Override
-            public void handleResult(ThumbnailData result) {
-                // Avoid an async timing issue that a low res entry replaces an existing high res
-                // entry in high res enabled state, so we check before putting it to cache
-                if (enableGridOnlyOverview() && result.reducedResolution
-                        && getHighResLoadingState().isEnabled()) {
-                    ThumbnailData cachedThumbnail = mCache.getAndInvalidateIfModified(key);
-                    if (cachedThumbnail != null && cachedThumbnail.thumbnail != null
-                            && !cachedThumbnail.reducedResolution) {
-                        return;
+        CancellableTask<ThumbnailData> request = new CancellableTask<>(
+                () -> {
+                    ThumbnailData thumbnailData = ActivityManagerWrapper.getInstance()
+                            .getTaskThumbnail(key.id, lowResolution);
+                    return thumbnailData.thumbnail != null ? thumbnailData
+                            : ActivityManagerWrapper.getInstance().takeTaskThumbnail(key.id);
+                },
+                MAIN_EXECUTOR,
+                result -> {
+                    // Avoid an async timing issue that a low res entry replaces an existing high
+                    // res entry in high res enabled state, so we check before putting it to cache
+                    if (enableGridOnlyOverview() && result.reducedResolution
+                            && getHighResLoadingState().isEnabled()) {
+                        ThumbnailData newCachedThumbnail = mCache.getAndInvalidateIfModified(key);
+                        if (newCachedThumbnail != null && newCachedThumbnail.thumbnail != null
+                                && !newCachedThumbnail.reducedResolution) {
+                            return;
+                        }
                     }
+                    mCache.put(key, result);
+                    callback.accept(result);
                 }
-                mCache.put(key, result);
-                callback.accept(result);
-            }
-        };
+        );
         mBgExecutor.execute(request);
         return request;
     }
