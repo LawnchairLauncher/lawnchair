@@ -31,6 +31,7 @@
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
     <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin_wide_portrait">64dp</dimen>
 
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
@@ -47,6 +48,7 @@
     <dimen name="drop_target_vertical_gap">20dp</dimen>
     <dimen name="drop_target_top_margin">32dp</dimen>
     <dimen name="drop_target_bottom_margin">16dp</dimen>
+    <dimen name="drop_target_bottom_margin_wide_portrait">32dp</dimen>
 
     <!-- App Widget resize frame -->
     <!-- Button drop target bar -->
