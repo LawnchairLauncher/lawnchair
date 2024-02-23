@@ -437,6 +437,7 @@ public class LauncherBackAnimationController {
         if (mLauncher.isDestroyed()) {
             return;
         }
+        mLauncher.setPredictiveBackToHomeInProgress(true);
         LauncherTaskbarUIController taskbarUIController = mLauncher.getTaskbarUIController();
         if (taskbarUIController != null) {
             taskbarUIController.onLauncherVisibilityChanged(true);
@@ -475,6 +476,7 @@ public class LauncherBackAnimationController {
     }
 
     private void finishAnimation() {
+        mLauncher.setPredictiveBackToHomeInProgress(false);
         mBackTarget = null;
         mLauncherTarget = null;
         mBackInProgress = false;

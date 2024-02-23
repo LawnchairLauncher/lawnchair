@@ -245,6 +245,8 @@ public class QuickstepLauncher extends Launcher {
 
     private boolean mEnableWidgetDepth;
 
+    private boolean mIsPredictiveBackToHomeInProgress;
+
     private HomeTransitionController mHomeTransitionController;
 
     @Override
@@ -514,6 +516,7 @@ public class QuickstepLauncher extends Launcher {
             mAppTransitionManager.onActivityDestroyed();
         }
         mAppTransitionManager = null;
+        mIsPredictiveBackToHomeInProgress = false;
 
         if (mUnfoldTransitionProgressProvider != null) {
             SystemUiProxy.INSTANCE.get(this).setUnfoldAnimationListener(null);
@@ -974,6 +977,7 @@ public class QuickstepLauncher extends Launcher {
         if (taskbarManager != null) {
             taskbarManager.setActivity(this);
         }
+        mTISBindHelper.setPredictiveBackToHomeInProgress(mIsPredictiveBackToHomeInProgress);
     }
 
     @Override
@@ -1276,6 +1280,14 @@ public class QuickstepLauncher extends Launcher {
      */
     public void finishSplitSelectRecovery() {
         mPendingSplitSelectInfo = null;
+    }
+
+    /**
+     * Sets flag whether a predictive back-to-home animation is in progress
+     */
+    public void setPredictiveBackToHomeInProgress(boolean isInProgress) {
+        mIsPredictiveBackToHomeInProgress = isInProgress;
+        mTISBindHelper.setPredictiveBackToHomeInProgress(isInProgress);
     }
 
     @Override
