@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.window.TaskSnapshot;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import java.util.List;
 
 public abstract class ActivityManagerCompat {
@@ -19,6 +21,7 @@ public abstract class ActivityManagerCompat {
 
     /** Called only in S+ platform */
     @Nullable
+    @RequiresApi(31)
     public TaskSnapshot getTaskSnapshot(
             int taskId, boolean isLowResolution, boolean takeSnapshotIfNeeded) {
         return null;
