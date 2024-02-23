@@ -2049,7 +2049,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         private final RemoteAnimationTarget[] mAppTargets;
         private final Matrix mMatrix = new Matrix();
         private final Point mTmpPos = new Point();
-        private final Rect mCurrentRect = new Rect();
+        private final RectF mCurrentRectF = new RectF();
         private final float mStartRadius;
         private final float mEndRadius;
         private final SurfaceTransactionApplier mSurfaceApplier;
@@ -2116,25 +2116,24 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
 
                 if (target.mode == MODE_CLOSING) {
-                    transferRectToTargetCoordinate(target, currentRectF, false, currentRectF);
-                    currentRectF.round(mCurrentRect);
+                    transferRectToTargetCoordinate(target, currentRectF, false, mCurrentRectF);
 
                     // Scale the target window to match the currentRectF.
                     final float scale;
 
                     // We need to infer the crop (we crop the window to match the currentRectF).
                     if (mWindowStartBounds.height() > mWindowStartBounds.width()) {
-                        scale = Math.min(1f, currentRectF.width() / mWindowOriginalBounds.width());
+                        scale = Math.min(1f, mCurrentRectF.width() / mWindowOriginalBounds.width());
 
-                        int unscaledHeight = (int) (mCurrentRect.height() * (1f / scale));
+                        int unscaledHeight = (int) (mCurrentRectF.height() * (1f / scale));
                         int croppedHeight = mWindowStartBounds.height() - unscaledHeight;
                         mTmpRect.set(0, 0, mWindowOriginalBounds.width(),
                                 mWindowStartBounds.height() - croppedHeight);
                     } else {
-                        scale = Math.min(1f, currentRectF.height()
+                        scale = Math.min(1f, mCurrentRectF.height()
                                 / mWindowOriginalBounds.height());
 
-                        int unscaledWidth = (int) (mCurrentRect.width() * (1f / scale));
+                        int unscaledWidth = (int) (mCurrentRectF.width() * (1f / scale));
                         int croppedWidth = mWindowStartBounds.width() - unscaledWidth;
                         mTmpRect.set(0, 0, mWindowStartBounds.width() - croppedWidth,
                                 mWindowOriginalBounds.height());
@@ -2142,7 +2141,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                     // Match size and position of currentRect.
                     mMatrix.setScale(scale, scale);
-                    mMatrix.postTranslate(mCurrentRect.left, mCurrentRect.top);
+                    mMatrix.postTranslate(mCurrentRectF.left, mCurrentRectF.top);
 
                     builder.setMatrix(mMatrix)
                             .setWindowCrop(mTmpRect)
