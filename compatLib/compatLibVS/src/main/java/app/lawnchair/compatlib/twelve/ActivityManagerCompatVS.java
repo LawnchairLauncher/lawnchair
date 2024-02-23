@@ -107,10 +107,8 @@ public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
 
     @NonNull
     @Override
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        List<ActivityManager.RunningTaskInfo> tasks =
-                ActivityTaskManager.getInstance()
-                        .getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
-        return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
+    public List<ActivityManager.RunningTaskInfo> getRunningTasks(boolean filterOnlyVisibleRecents) {
+        return ActivityTaskManager.getInstance()
+                .getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
     }
 }

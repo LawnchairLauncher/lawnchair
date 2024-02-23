@@ -110,10 +110,17 @@ public class ActivityManagerWrapper {
     }
 
     /**
-     * @see #getRunningTasks(boolean , int)
+     * We ask for {@link #NUM_RECENT_ACTIVITIES_REQUEST} activities because when in split screen,
+     * we'll get back 2 activities for each split app and one for launcher. Launcher might be more
+     * "recently" used than one of the split apps so if we only request 2 tasks, then we might miss
+     * out on one of the split apps
+     *
+     * @return an array of up to {@link #NUM_RECENT_ACTIVITIES_REQUEST} running tasks
+     * filtering only for tasks that can be visible in the recent tasks list.
      */
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        return LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+        var tasks = LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+        return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
     }
 
     /**
@@ -121,25 +128,6 @@ public class ActivityManagerWrapper {
      */
     public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
         return LawnchairQuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
-    }
-
-    /**
-     * We ask for {@link #NUM_RECENT_ACTIVITIES_REQUEST} activities because when in split screen,
-     * we'll get back 2 activities for each split app and one for launcher. Launcher might be more
-     * "recently" used than one of the split apps so if we only request 2 tasks, then we might miss
-     * out on one of the split apps
-     *
-     * @return an array of up to {@link #NUM_RECENT_ACTIVITIES_REQUEST} running tasks
-     *         filtering only for tasks that can be visible in the recent tasks list.
-     */
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents,
-            int displayId) {
-        // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks = mAtm != null ?
-                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST,
-                        filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId) : new ArrayList<>();
-        return LawnchairQuickstepCompat.ATLEAST_U ? tasks.toArray(new RunningTaskInfo[tasks.size()])
-                : LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
     }
 
     /**

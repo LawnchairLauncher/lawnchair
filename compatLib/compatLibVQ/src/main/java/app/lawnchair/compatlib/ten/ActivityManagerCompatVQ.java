@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ActivityManagerCompatVQ extends ActivityManagerCompat {
@@ -31,22 +32,20 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
 
     @NonNull
     @Override
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
+    public List<ActivityManager.RunningTaskInfo> getRunningTasks(boolean filterOnlyVisibleRecents) {
         int ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
         if (filterOnlyVisibleRecents) {
             ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_RECENTS;
         }
 
         try {
-            List<ActivityManager.RunningTaskInfo> tasks =
-                    ActivityTaskManager.getService()
-                            .getFilteredTasks(
-                                    NUM_RECENT_ACTIVITIES_REQUEST,
-                                    ignoreActivityType,
-                                    WindowConfiguration.WINDOWING_MODE_PINNED);
-            return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
+            return ActivityTaskManager.getService()
+                    .getFilteredTasks(
+                            NUM_RECENT_ACTIVITIES_REQUEST,
+                            ignoreActivityType,
+                            WindowConfiguration.WINDOWING_MODE_PINNED);
         } catch (RemoteException e) {
-            return new ActivityManager.RunningTaskInfo[] {};
+            return new ArrayList<>();
         }
     }
 

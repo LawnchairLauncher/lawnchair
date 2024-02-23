@@ -31,7 +31,7 @@ public abstract class ActivityManagerCompat {
             boolean filterOnlyVisibleRecents);
 
     @NonNull
-    public abstract ActivityManager.RunningTaskInfo[] getRunningTasks(
+    public abstract List<ActivityManager.RunningTaskInfo> getRunningTasks(
             boolean filterOnlyVisibleRecents);
 
     @NonNull

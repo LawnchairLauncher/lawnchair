@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.ten.ActivityManagerCompatVQ;
+import java.util.Collections;
 import java.util.List;
 
 public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
@@ -88,15 +89,12 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
 
     @NonNull
     @Override
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
+    public List<ActivityManager.RunningTaskInfo> getRunningTasks(boolean filterOnlyVisibleRecents) {
         try {
-            List<ActivityManager.RunningTaskInfo> tasks =
-                    ActivityTaskManager.getService()
-                            .getFilteredTasks(
-                                    NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
-            return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
+            return ActivityTaskManager.getService()
+                    .getFilteredTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
         } catch (RemoteException e) {
-            return new ActivityManager.RunningTaskInfo[] {};
+            return Collections.emptyList();
         }
     }
 }
