@@ -1,12 +1,9 @@
 package app.lawnchair.compatlib.twelve;
 
-import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 import static android.app.ActivityTaskManager.getService;
 
 import android.app.Activity;
 import android.app.ActivityClient;
-import android.app.ActivityManager;
-import android.app.ActivityTaskManager;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.RemoteException;
@@ -16,14 +13,10 @@ import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
 import androidx.annotation.Nullable;
-import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
-import java.util.List;
+import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
-public class ActivityManagerCompatVS extends ActivityManagerCompat {
-
-    private static final String TAG = "ActivityManagerCompatVS";
-    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
+public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
 
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
@@ -86,27 +79,5 @@ public class ActivityManagerCompatVS extends ActivityManagerCompat {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to cancel recents animation", e);
         }
-    }
-
-    @Override
-    public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
-        // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks = mAtm.getTasks(1, filterOnlyVisibleRecents);
-        if (tasks.isEmpty()) {
-            return null;
-        }
-        return tasks.get(0);
-    }
-
-    @Override
-    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        return mAtm.getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId);
-    }
-
-    @Override
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
-        return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
     }
 }

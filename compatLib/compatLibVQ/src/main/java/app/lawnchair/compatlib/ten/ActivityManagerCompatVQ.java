@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityManagerCompatVQ extends ActivityManagerCompat {
-    private final String TAG = getClass().getCanonicalName();
+    protected final String TAG = getClass().getCanonicalName();
 
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {

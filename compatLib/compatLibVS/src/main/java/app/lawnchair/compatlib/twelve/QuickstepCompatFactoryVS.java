@@ -7,12 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
-import app.lawnchair.compatlib.QuickstepCompatFactory;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
+import app.lawnchair.compatlib.eleven.QuickstepCompatFactoryVR;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class QuickstepCompatFactoryVS extends QuickstepCompatFactory {
+public class QuickstepCompatFactoryVS extends QuickstepCompatFactoryVR {
 
     @NonNull
     @Override

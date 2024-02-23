@@ -18,8 +18,6 @@ import java.util.List;
 
 public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
 
-    private static final String TAG = "ActivityManagerCompatVR";
-
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
         try {
