@@ -2,7 +2,6 @@ package app.lawnchair.compatlib.thirteen;
 
 import static android.app.ActivityTaskManager.getService;
 
-import android.app.ActivityTaskManager;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.RemoteException;
@@ -15,9 +14,6 @@ import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.twelve.ActivityManagerCompatVS;
 
 public class ActivityManagerCompatVT extends ActivityManagerCompatVS {
-
-    private static final String TAG = "ActivityManagerCompatVT";
-    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
 
     @Override
     public void startRecentsActivity(
