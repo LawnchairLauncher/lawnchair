@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public abstract class ActivityOptionsCompat {
+
     public abstract ActivityOptions makeCustomAnimation(
             Context context,
             int enterResId,

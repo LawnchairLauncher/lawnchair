@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 
 public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
+    protected final String TAG = getClass().getCanonicalName();
+
     @Override
     public ActivityOptions makeCustomAnimation(
             Context context,

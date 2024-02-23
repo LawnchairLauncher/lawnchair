@@ -66,8 +66,6 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
                                     controller, apps, null, homeContentInsets, minimizedHomeBounds);
                         }
 
-                        public void reportAllDrawn() {}
-
                         @Override
                         public void onAnimationCanceled(boolean deferredWithScreenshot) {
                             runnerCompat.onAnimationCanceled(deferredWithScreenshot);
@@ -76,15 +74,13 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
         }
         try {
             ActivityTaskManager.getService().startRecentsActivity(intent, null, runner);
-        } catch (RemoteException e) {
-
+        } catch (RemoteException ignored) {
         }
     }
 
     @Nullable
     @Override
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
-
         int ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
         if (filterOnlyVisibleRecents) {
             ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_RECENTS;
@@ -118,7 +114,40 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
         }
     }
 
-    public ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
+    @Nullable
+    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
+        try {
+            ActivityManager.TaskSnapshot snapshot =
+                    ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
+            return makeThumbnailData(snapshot);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to retrieve task snapshot", e);
+            return null;
+        }
+    }
+
+    @NonNull
+    public ThumbnailData takeScreenshot(
+            IRecentsAnimationController animationController, int taskId) {
+        try {
+            ActivityManager.TaskSnapshot snapshot = animationController.screenshotTask(taskId);
+            return snapshot != null ? makeThumbnailData(snapshot) : new ThumbnailData();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to screenshot task", e);
+            return new ThumbnailData();
+        }
+    }
+
+    @Nullable
+    public ThumbnailData convertTaskSnapshotToThumbnailData(Object taskSnapshot) {
+        if (taskSnapshot != null) {
+            return makeThumbnailData((ActivityManager.TaskSnapshot) taskSnapshot);
+        } else {
+            return null;
+        }
+    }
+
+    private ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
         ThumbnailData data = new ThumbnailData();
         data.thumbnail =
                 Bitmap.wrapHardwareBuffer(snapshot.getSnapshot(), snapshot.getColorSpace());
@@ -133,39 +162,6 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
         data.windowingMode = snapshot.getWindowingMode();
         data.systemUiVisibility = snapshot.getSystemUiVisibility();
         return data;
-    }
-
-    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        ActivityManager.TaskSnapshot snapshot = null;
-        try {
-            snapshot = ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to retrieve task snapshot", e);
-        }
-        if (snapshot != null) {
-            return makeThumbnailData(snapshot);
-        } else {
-            return null;
-        }
-    }
-
-    public ThumbnailData takeScreenshot(
-            IRecentsAnimationController animationController, int taskId) {
-        try {
-            ActivityManager.TaskSnapshot snapshot = animationController.screenshotTask(taskId);
-            return snapshot != null ? makeThumbnailData(snapshot) : new ThumbnailData();
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to screenshot task", e);
-            return new ThumbnailData();
-        }
-    }
-
-    public ThumbnailData convertTaskSnapshotToThumbnailData(Object taskSnapshot) {
-        if (taskSnapshot != null) {
-            return makeThumbnailData((ActivityManager.TaskSnapshot) taskSnapshot);
-        } else {
-            return null;
-        }
     }
 
     public static class ThumbnailData {

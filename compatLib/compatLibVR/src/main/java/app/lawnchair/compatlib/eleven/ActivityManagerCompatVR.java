@@ -25,7 +25,8 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
         try {
             ActivityTaskManager.getService()
-                    .invalidateHomeTaskSnapshot(homeActivity.getActivityToken());
+                    .invalidateHomeTaskSnapshot(
+                            homeActivity == null ? null : homeActivity.getActivityToken());
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to invalidate home snapshot", e);
         }

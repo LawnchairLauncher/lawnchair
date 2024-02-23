@@ -8,8 +8,6 @@ import app.lawnchair.compatlib.twelve.ActivityOptionsCompatVS;
 
 public class ActivityOptionsCompatVT extends ActivityOptionsCompatVS {
 
-    private static final String TAG = "ActivityOptionsCompatVT";
-
     @Override
     public ActivityOptions makeRemoteAnimation(
             RemoteAnimationAdapter remoteAnimationAdapter,

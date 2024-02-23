@@ -11,6 +11,7 @@ import app.lawnchair.compatlib.QuickstepCompatFactory;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
 
 public class QuickstepCompatFactoryVQ extends QuickstepCompatFactory {
+    protected final String TAG = getClass().getCanonicalName();
 
     @NonNull
     @Override

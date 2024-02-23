@@ -1,10 +1,7 @@
 package app.lawnchair.compatlib.twelve;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
-import static android.app.ActivityTaskManager.getService;
 
-import android.app.Activity;
-import android.app.ActivityClient;
 import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
 import android.content.Intent;
@@ -23,23 +20,12 @@ import java.util.List;
 
 public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
 
-    @Override
-    public void invalidateHomeTaskSnapshot(Activity homeActivity) {
-        try {
-            ActivityClient.getInstance()
-                    .invalidateHomeTaskSnapshot(
-                            homeActivity == null ? null : homeActivity.getActivityToken());
-        } catch (Throwable e) {
-            Log.w(TAG, "Failed to invalidate home snapshot", e);
-        }
-    }
-
     @Nullable
     @Override
     public TaskSnapshot getTaskSnapshot(
             int taskId, boolean isLowResolution, boolean takeSnapshotIfNeeded) {
         try {
-            return getService().getTaskSnapshot(taskId, isLowResolution);
+            return ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to getTaskSnapshot", e);
             return null;
@@ -80,7 +66,7 @@ public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
                     };
         }
         try {
-            getService().startRecentsActivity(intent, eventTime, runner);
+            ActivityTaskManager.getService().startRecentsActivity(intent, eventTime, runner);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to cancel recents animation", e);
         }
