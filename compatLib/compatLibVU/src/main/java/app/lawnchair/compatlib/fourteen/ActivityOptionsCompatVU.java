@@ -3,13 +3,11 @@ package app.lawnchair.compatlib.fourteen;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
-import android.view.RemoteAnimationAdapter;
-import android.window.RemoteTransition;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.lawnchair.compatlib.ActivityOptionsCompat;
+import app.lawnchair.compatlib.thirteen.ActivityOptionsCompatVT;
 
-public class ActivityOptionsCompatVU extends ActivityOptionsCompat {
+public class ActivityOptionsCompatVU extends ActivityOptionsCompatVT {
     @Override
     public ActivityOptions makeCustomAnimation(
             Context context,
@@ -40,14 +38,5 @@ public class ActivityOptionsCompatVU extends ActivityOptionsCompat {
                         }
                     }
                 });
-    }
-
-    @Override
-    public ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName) {
-        return ActivityOptions.makeRemoteAnimation(
-                remoteAnimationAdapter, (RemoteTransition) remoteTransition);
     }
 }
