@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
         // do nothing ,android Q not support
     }
 
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
 
@@ -85,6 +88,7 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
         }
     }
 
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
 
@@ -108,6 +112,7 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
         }
     }
 
+    @NonNull
     @Override
     public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
         try {

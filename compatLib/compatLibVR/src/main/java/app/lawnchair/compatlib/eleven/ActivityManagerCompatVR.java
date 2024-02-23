@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
+import androidx.annotation.Nullable;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.ten.ActivityManagerCompatVQ;
 import java.util.List;
@@ -68,6 +69,7 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
         }
     }
 
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
@@ -83,6 +85,7 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
         }
     }
 
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
         try {

@@ -1,5 +1,6 @@
 package app.lawnchair.compatlib.twelve;
 
+import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 import static android.app.ActivityTaskManager.getService;
 
 import android.app.Activity;
@@ -14,12 +15,11 @@ import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.util.List;
-
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
+import java.util.List;
 
 public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
 
@@ -86,10 +86,31 @@ public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
         }
     }
 
+    @Nullable
+    @Override
+    public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
+        // Note: The set of running tasks from the system is ordered by recency
+        List<ActivityManager.RunningTaskInfo> tasks =
+                ActivityTaskManager.getInstance().getTasks(1, filterOnlyVisibleRecents);
+        if (tasks.isEmpty()) {
+            return null;
+        }
+        return tasks.get(0);
+    }
+
+    @NonNull
+    @Override
+    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
+        return ActivityTaskManager.getInstance()
+                .getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId);
+    }
+
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
         List<ActivityManager.RunningTaskInfo> tasks =
-            ActivityTaskManager.getInstance().getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
+                ActivityTaskManager.getInstance()
+                        .getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
         return tasks.toArray(new ActivityManager.RunningTaskInfo[0]);
     }
 }
