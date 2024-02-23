@@ -52,6 +52,7 @@ import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
@@ -426,6 +427,12 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected void onIconLayoutBoundsChanged() {
         mTaskbarLauncherStateController.resetIconAlignment();
+    }
+
+    @Nullable
+    @Override
+    protected TISBindHelper getTISBindHelper() {
+        return mLauncher.getTISBindHelper();
     }
 
     @Override

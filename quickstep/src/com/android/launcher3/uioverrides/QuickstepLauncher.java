@@ -1360,6 +1360,11 @@ public class QuickstepLauncher extends Launcher {
         return (mTaskbarUIController != null && mTaskbarUIController.hasBubbles());
     }
 
+    @NonNull
+    public TISBindHelper getTISBindHelper() {
+        return mTISBindHelper;
+    }
+
     @Override
     public boolean handleIncorrectSplitTargetSelection() {
         if (!enableSplitContextually() || !mSplitSelectStateController.isSplitSelectActive()) {
