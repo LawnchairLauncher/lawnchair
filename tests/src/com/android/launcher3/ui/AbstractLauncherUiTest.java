@@ -98,7 +98,7 @@ import java.util.function.Supplier;
 public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
 
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
-    public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
+    public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 10;
 
     public static final long DEFAULT_UI_TIMEOUT = TestUtil.DEFAULT_UI_TIMEOUT;
     private static final String TAG = "AbstractLauncherUiTest";
@@ -548,7 +548,7 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
         public Intent blockingGetIntent() throws InterruptedException {
             Log.d(WIDGET_CONFIG_NULL_EXTRA_INTENT,
                     "AbstractLauncherUiTest.blockingGetIntent()");
-            latch.await(DEFAULT_BROADCAST_TIMEOUT_SECS, TimeUnit.SECONDS);
+            assertTrue("Timed Out", latch.await(DEFAULT_BROADCAST_TIMEOUT_SECS, TimeUnit.SECONDS));
             mTargetContext.unregisterReceiver(this);
             Log.d(WIDGET_CONFIG_NULL_EXTRA_INTENT, mIntent == null
                     ? "AbstractLauncherUiTest.onReceive(): mIntent NULL"
