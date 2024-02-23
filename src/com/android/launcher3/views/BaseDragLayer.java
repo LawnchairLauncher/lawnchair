@@ -104,7 +104,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     protected final Rect mHitRect = new Rect();
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private final RectF mSystemGestureRegion = new RectF();
+    protected final RectF mSystemGestureRegion = new RectF();
     private int mTouchDispatchState = 0;
 
     protected final T mActivity;
@@ -164,7 +164,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         return findActiveController(ev);
     }
 
-    private boolean isEventInLauncher(MotionEvent ev) {
+    protected boolean isEventWithinSystemGestureRegion(MotionEvent ev) {
         final float x = ev.getX();
         final float y = ev.getY();
 
@@ -175,7 +175,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null
-                && (isEventInLauncher(ev) || topView.canInterceptEventsInSystemGestureRegion())
+                && (isEventWithinSystemGestureRegion(ev)
+                || topView.canInterceptEventsInSystemGestureRegion())
                 && topView.onControllerInterceptTouchEvent(ev)) {
             return topView;
         }
@@ -287,7 +288,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
                 mTouchDispatchState |= TOUCH_DISPATCHING_FROM_VIEW
                         | TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS;
 
-                if (isEventInLauncher(ev)) {
+                if (isEventWithinSystemGestureRegion(ev)) {
                     mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION;
                 } else {
                     mTouchDispatchState |= TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION;

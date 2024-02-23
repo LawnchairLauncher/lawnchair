@@ -29,7 +29,6 @@ import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -40,12 +39,6 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest {
 
     private static final String CALCULATOR_APP_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     @PlatinumTest(focusArea = "launcher")
     @Test

@@ -329,7 +329,6 @@ public class CellLayout extends ViewGroup {
      * Sets or clears a delegate used for accessible drag and drop
      */
     public void setDragAndDropAccessibilityDelegate(DragAndDropAccessibilityDelegate delegate) {
-        setOnClickListener(delegate);
         ViewCompat.setAccessibilityDelegate(this, delegate);
 
         mTouchHelper = delegate;
@@ -337,7 +336,6 @@ public class CellLayout extends ViewGroup {
                 ? IMPORTANT_FOR_ACCESSIBILITY_YES : IMPORTANT_FOR_ACCESSIBILITY_NO;
         setImportantForAccessibility(accessibilityFlag);
         getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
-
         // ExploreByTouchHelper sets focusability. Clear it when the delegate is cleared.
         setFocusable(delegate != null);
         // Invalidate the accessibility hierarchy

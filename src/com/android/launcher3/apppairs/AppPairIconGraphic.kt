@@ -87,6 +87,14 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         appPairBackground = AppPairIconBackground(context, this)
         appPairBackground.setBounds(0, 0, backgroundSize.toInt(), backgroundSize.toInt())
         applyIcons(parentIcon.info.contents)
+
+        // Center the drawable area in the larger icon canvas
+        val lp: LayoutParams = layoutParams as LayoutParams
+        lp.gravity = Gravity.CENTER_HORIZONTAL
+        lp.topMargin = outerPadding.toInt()
+        lp.height = backgroundSize.toInt()
+        lp.width = backgroundSize.toInt()
+        layoutParams = lp
     }
 
     /** Sets up app pair member icons for drawing. */
@@ -125,15 +133,6 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
-
-        // Center the drawable area in the larger icon canvas
-        val lp: LayoutParams = layoutParams as LayoutParams
-        lp.gravity = Gravity.CENTER_HORIZONTAL
-        lp.topMargin = outerPadding.toInt()
-        lp.height = backgroundSize.toInt()
-        lp.width = backgroundSize.toInt()
-        layoutParams = lp
-
         // Draw background
         appPairBackground.draw(canvas)
 
