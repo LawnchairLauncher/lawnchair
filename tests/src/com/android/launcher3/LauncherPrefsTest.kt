@@ -25,6 +25,8 @@ import com.android.launcher3.LauncherPrefs.Companion.BOOT_AWARE_PREFS_KEY
 import com.google.common.truth.Truth.assertThat
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -45,6 +47,20 @@ class LauncherPrefsTest {
 
     private val context by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
     private val launcherPrefs by lazy { LauncherPrefs.get(context) }
+
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
+            moveStartupDataToDeviceProtectedStorageIsEnabled = true
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun teardown() {
+            moveStartupDataToDeviceProtectedStorageIsEnabled = false
+        }
+    }
 
     @Test
     fun has_keyMissingFromLauncherPrefs_returnsFalse() {
@@ -207,12 +223,31 @@ class LauncherPrefsTest {
     }
 
     @Test
+    fun put_bootAwareItem_updatesEncryptedStorage() {
+        val bootAwareItem =
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+
+        val encryptedPrefs: SharedPreferences =
+            context.getSharedPreferences(bootAwareItem.sharedPrefFile, Context.MODE_PRIVATE)
+        encryptedPrefs.edit().remove(bootAwareItem.sharedPrefKey).commit()
+
+        launcherPrefs.putSync(bootAwareItem.to(TEST_STRING_ITEM.defaultValue))
+        assertThat(encryptedPrefs.contains(bootAwareItem.sharedPrefKey)).isTrue()
+
+        launcherPrefs.removeSync(bootAwareItem)
+    }
+
+    @Test
     fun remove_bootAwareItem_removesFromDeviceProtectedStorage() {
         val bootAwareItem =
             LauncherPrefs.backedUpItem(
                 TEST_PREF_KEY,
                 TEST_DEFAULT_VALUE,
-                EncryptionType.DEVICE_PROTECTED
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
             )
 
         val bootAwarePrefs: SharedPreferences =
@@ -227,5 +262,91 @@ class LauncherPrefsTest {
 
         launcherPrefs.removeSync(bootAwareItem)
         assertThat(bootAwarePrefs.contains(bootAwareItem.sharedPrefKey)).isFalse()
+    }
+
+    @Test
+    fun remove_bootAwareItem_removesFromEncryptedStorage() {
+        val bootAwareItem =
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+
+        val encryptedPrefs: SharedPreferences =
+            context.getSharedPreferences(bootAwareItem.sharedPrefFile, Context.MODE_PRIVATE)
+
+        encryptedPrefs
+            .edit()
+            .putString(bootAwareItem.sharedPrefKey, bootAwareItem.defaultValue)
+            .commit()
+
+        launcherPrefs.removeSync(bootAwareItem)
+        assertThat(encryptedPrefs.contains(bootAwareItem.sharedPrefKey)).isFalse()
+    }
+
+    @Test
+    fun migrate_bootAwareItemsToDeviceProtectedStorage_worksAsIntended() {
+        val bootAwareItem =
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        launcherPrefs.removeSync(bootAwareItem)
+
+        val bootAwarePrefs: SharedPreferences =
+            context
+                .createDeviceProtectedStorageContext()
+                .getSharedPreferences(BOOT_AWARE_PREFS_KEY, Context.MODE_PRIVATE)
+
+        if (bootAwarePrefs.contains(bootAwareItem.sharedPrefKey)) {
+            bootAwarePrefs.edit().remove(bootAwareItem.sharedPrefKey).commit()
+        }
+
+        val encryptedPrefs: SharedPreferences =
+            context.getSharedPreferences(bootAwareItem.sharedPrefFile, Context.MODE_PRIVATE)
+
+        encryptedPrefs
+            .edit()
+            .putString(bootAwareItem.sharedPrefKey, bootAwareItem.defaultValue)
+            .commit()
+
+        launcherPrefs.migrateStartupDataToDeviceProtectedStorage()
+        assertThat(bootAwarePrefs.contains(bootAwareItem.sharedPrefKey)).isTrue()
+
+        launcherPrefs.removeSync(bootAwareItem)
+    }
+
+    @Test
+    fun migrate_onlyEncryptedItemsToDeviceProtectedStorage_doesNotHappen() {
+        val onlyEncryptedItem =
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY + "_",
+                TEST_DEFAULT_VALUE + "_",
+                EncryptionType.ENCRYPTED
+            )
+
+        val bootAwarePrefs: SharedPreferences =
+            context
+                .createDeviceProtectedStorageContext()
+                .getSharedPreferences(BOOT_AWARE_PREFS_KEY, Context.MODE_PRIVATE)
+
+        if (bootAwarePrefs.contains(onlyEncryptedItem.sharedPrefKey)) {
+            bootAwarePrefs.edit().remove(onlyEncryptedItem.sharedPrefKey).commit()
+        }
+
+        val encryptedPrefs: SharedPreferences =
+            context.getSharedPreferences(onlyEncryptedItem.sharedPrefFile, Context.MODE_PRIVATE)
+
+        encryptedPrefs
+            .edit()
+            .putString(onlyEncryptedItem.sharedPrefKey, onlyEncryptedItem.defaultValue)
+            .commit()
+
+        launcherPrefs.migrateStartupDataToDeviceProtectedStorage()
+        assertThat(bootAwarePrefs.contains(onlyEncryptedItem.sharedPrefKey)).isFalse()
+
+        encryptedPrefs.edit().remove(onlyEncryptedItem.sharedPrefKey).commit()
     }
 }
