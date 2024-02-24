@@ -28,8 +28,12 @@ public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
             ActivityClient.getInstance()
                     .invalidateHomeTaskSnapshot(
                             homeActivity == null ? null : homeActivity.getActivityToken());
-        } catch (Throwable e) {
-            Log.w(TAG, "Failed to invalidate home snapshot", e);
+        } catch (Throwable err) {
+            try {
+                super.invalidateHomeTaskSnapshot(homeActivity);
+            } catch (Throwable ignored) {
+                Log.w(TAG, "Failed to invalidate home snapshot", ignored);
+            }
         }
     }
 
