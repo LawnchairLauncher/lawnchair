@@ -2,6 +2,8 @@ package app.lawnchair.compatlib.twelve;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
+import android.app.Activity;
+import android.app.ActivityClient;
 import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
 import android.content.Intent;
@@ -19,6 +21,17 @@ import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 import java.util.List;
 
 public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
+
+    @Override
+    public void invalidateHomeTaskSnapshot(Activity homeActivity) {
+        try {
+            ActivityClient.getInstance()
+                    .invalidateHomeTaskSnapshot(
+                            homeActivity == null ? null : homeActivity.getActivityToken());
+        } catch (Throwable e) {
+            Log.w(TAG, "Failed to invalidate home snapshot", e);
+        }
+    }
 
     @Nullable
     @Override
