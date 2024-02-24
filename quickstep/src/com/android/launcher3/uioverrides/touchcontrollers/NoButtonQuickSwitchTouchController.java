@@ -324,12 +324,12 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     @Override
     public void onDragEnd(PointF velocity) {
+        cancelAnimations();
         boolean horizontalFling = mSwipeDetector.isFling(velocity.x);
         boolean verticalFling = mSwipeDetector.isFling(velocity.y);
         boolean noFling = !horizontalFling && !verticalFling;
         if (mMotionPauseDetector.isPaused() && noFling) {
             // Going to Overview.
-            cancelAnimations();
             InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
 
             StateAnimationConfig config = new StateAnimationConfig();
@@ -455,7 +455,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));
         mNonOverviewAnim.setEndAction(() -> onAnimationToStateCompleted(targetState));
 
-        cancelAnimations();
         xOverviewAnim.start();
         yOverviewAnim.start();
         nonOverviewAnim.start();
