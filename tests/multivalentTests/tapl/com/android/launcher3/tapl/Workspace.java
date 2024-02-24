@@ -17,10 +17,14 @@
 package com.android.launcher3.tapl;
 
 import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+import static android.view.KeyEvent.KEYCODE_RECENT_APPS;
+import static android.view.KeyEvent.KEYCODE_TAB;
+import static android.view.KeyEvent.META_META_ON;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.UIOBJECT_STALE_ELEMENT;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -130,6 +134,40 @@ public final class Workspace extends Home {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "pressed meta key")) {
                 return new HomeAllApps(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher Overview page with the action+tab keyboard shortcut. */
+    public Overview openOverviewFromActionPlusTabKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open overview")) {
+            verifyActiveContainer();
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_TAB, META_META_ON),
+                    OVERVIEW_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed meta+tab key")) {
+                return new Overview(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher Overview page with the Recents keyboard shortcut. */
+    public Overview openOverviewFromRecentsKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open overview")) {
+            verifyActiveContainer();
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_RECENT_APPS),
+                    OVERVIEW_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed recents apps key")) {
+                return new Overview(mLauncher);
             }
         }
     }
@@ -551,7 +589,8 @@ public final class Workspace extends Home {
      * This function expects the launchable is inside the workspace and there is no drop event.
      */
     static void dragIconToWorkspace(
-            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> destSupplier) {
+            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> destSupplier,
+            boolean isDraggingToFolder) {
         dragIconToWorkspace(
                 launcher,
                 launchable,
@@ -559,7 +598,8 @@ public final class Workspace extends Home {
                 /* isDecelerating= */ false,
                 () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
                 /* expectDropEvents= */ null,
-                /* startsActivity = */ false);
+                /* startsActivity = */ false,
+                isDraggingToFolder);
     }
 
     static void dragIconToWorkspace(
@@ -570,7 +610,8 @@ public final class Workspace extends Home {
             @Nullable Runnable expectDropEvents,
             boolean startsActivity) {
         dragIconToWorkspace(launcher, launchable, dest, /* isDecelerating */ true,
-                expectLongClickEvents, expectDropEvents, startsActivity);
+                expectLongClickEvents, expectDropEvents, startsActivity,
+                /* isDraggingToFolder */ false);
     }
 
     static void dragIconToWorkspace(
@@ -580,7 +621,8 @@ public final class Workspace extends Home {
             boolean isDecelerating,
             Runnable expectLongClickEvents,
             @Nullable Runnable expectDropEvents,
-            boolean startsActivity) {
+            boolean startsActivity,
+            boolean isDraggingToFolder) {
         try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
                 "want to drag icon to workspace")) {
             final long downTime = SystemClock.uptimeMillis();
@@ -607,11 +649,27 @@ public final class Workspace extends Home {
                 dragStart = screenEdge;
             }
 
-            // targetDest.x is now between 0 and displayX so we found the target page,
-            // we just have to put move the icon to the destination and drop it
-            launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, isDecelerating,
-                    downTime, SystemClock.uptimeMillis(), false,
-                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+            // targetDest.x is now between 0 and displayX so we found the target page.
+            // If not a folder, we just have to put move the icon to the destination and drop it.
+            // If it's a folder we want to drag to the folder icon and then drag to the center of
+            // that folder when it opens.
+            if (isDraggingToFolder) {
+                Point finalDragStart = dragStart;
+                Point finalTargetDest = targetDest;
+                Folder folder = executeAndWaitForFolderOpen(launcher, () -> launcher.movePointer(
+                        finalDragStart, finalTargetDest, DEFAULT_DRAG_STEPS, isDecelerating,
+                        downTime, SystemClock.uptimeMillis(), false,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER));
+
+                Rect dropBounds = folder.getDropLocationBounds();
+                dragStart = targetDest;
+                targetDest = new Point(dropBounds.centerX(), dropBounds.centerY());
+            }
+
+            launcher.movePointer(dragStart, targetDest,
+                    DEFAULT_DRAG_STEPS, isDecelerating, downTime, SystemClock.uptimeMillis(),
+                    false, LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents, startsActivity);
         }
     }
@@ -694,6 +752,16 @@ public final class Workspace extends Home {
         launcher.executeAndWaitForEvent(command,
                 event -> event.getEventType() == TYPE_VIEW_SCROLLED,
                 () -> "Page scroll didn't happen", "Scrolling page");
+    }
+
+    private static Folder executeAndWaitForFolderOpen(LauncherInstrumentation launcher,
+            Runnable command) {
+        launcher.executeAndWaitForEvent(command,
+                event -> TestProtocol.FOLDER_OPENED_MESSAGE.equals(
+                        event.getClassName().toString()),
+                () -> "Fail to open folder.",
+                "open folder");
+        return new Folder(launcher);
     }
 
     static void dragIconToHotseat(

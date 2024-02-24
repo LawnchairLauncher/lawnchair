@@ -121,7 +121,7 @@ class ItemInflater<T>(
             }
             val view =
                 if (type == WidgetInflater.TYPE_PENDING || widgetInfo == null)
-                    PendingAppWidgetHostView(context, item, widgetInfo)
+                    PendingAppWidgetHostView(context, widgetHolder, item, widgetInfo)
                 else widgetHolder.createView(item.appWidgetId, widgetInfo)
             prepareAppWidget(view, item)
             return view

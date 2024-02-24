@@ -28,6 +28,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.Flags.enableAddAppWidgetViaConfigActivityV2;
+import static com.android.launcher3.Flags.enableWorkspaceInflation;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WIDGET_TRANSITION;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
@@ -1485,8 +1486,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         CellPos presenterPos = getCellPosMapper().mapModelToPresenter(itemInfo);
         if (showPendingWidget) {
             launcherInfo.restoreStatus = LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
-            PendingAppWidgetHostView pendingAppWidgetHostView =
-                    new PendingAppWidgetHostView(this, launcherInfo, appWidgetInfo);
+            PendingAppWidgetHostView pendingAppWidgetHostView = new PendingAppWidgetHostView(
+                    this, mAppWidgetHolder, launcherInfo, appWidgetInfo);
             pendingAppWidgetHostView.setPreviewBitmap(widgetPreviewBitmap);
             hostView = pendingAppWidgetHostView;
         } else if (hostView instanceof PendingAppWidgetHostView) {
@@ -2187,9 +2188,14 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
-        bindItems(items.stream().map(i -> Pair.create(
+        bindInflatedItems(items.stream().map(i -> Pair.create(
                 i, getItemInflater().inflateItem(i, getModelWriter()))).toList(),
                 forceAnimateIcons ? new AnimatorSet() : null);
+    }
+
+    @Override
+    public void bindInflatedItems(List<Pair<ItemInfo, View>> items) {
+        bindInflatedItems(items, null);
     }
 
     /**
@@ -2197,7 +2203,8 @@ public class Launcher extends StatefulActivity<LauncherState>
      *
      * @param boundAnim if non-null, uses it to create and play the bounce animation for added views
      */
-    public void bindItems(List<Pair<ItemInfo, View>> shortcuts, @Nullable AnimatorSet boundAnim) {
+    public void bindInflatedItems(
+            List<Pair<ItemInfo, View>> shortcuts, @Nullable AnimatorSet boundAnim) {
         // Get the list of added items and intersect them with the set of items here
         Workspace<?> workspace = mWorkspace;
         int newItemsScreenId = -1;
@@ -2222,9 +2229,12 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
             }
 
-            final View view = e.second;
+            View view = e.second;
             if (view == null) {
                 continue;
+            }
+            if (enableWorkspaceInflation() && view instanceof LauncherAppWidgetHostView lv) {
+                view = getAppWidgetHolder().attachViewToHostAndGetAttachedView(lv);
             }
             workspace.addInScreenFromBind(view, item);
             if (boundAnim != null) {
@@ -2324,9 +2334,9 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
-            int workspaceItemCount, boolean isBindSync) {
-        mModelCallbacks.onInitialBindComplete(boundPages, pendingTasks, workspaceItemCount,
-                isBindSync);
+            RunnableList onCompleteSignal, int workspaceItemCount, boolean isBindSync) {
+        mModelCallbacks.onInitialBindComplete(boundPages, pendingTasks, onCompleteSignal,
+                workspaceItemCount, isBindSync);
     }
 
     /**
@@ -3057,6 +3067,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         return super.getStatsLogManager().withDefaultInstanceId(mAllAppsSessionLogId);
     }
 
+    @Override
     public ItemInflater<Launcher> getItemInflater() {
         return mItemInflater;
     }

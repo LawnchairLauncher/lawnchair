@@ -40,14 +40,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Негізгі экранға қосу"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> виджеті негізгі экранға енгізілді."</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Ұсыныстар"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"Күні бойы қуатты болыңыз"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
+    <skip />
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Сізге арналған жаңалықтар"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Жанға жайлы жер"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Денені шынықтыру бойынша қойған мақсаттарыңызға жетіңіз"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Ауа райын алдын ала біліп отырыңыз"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Сізге мыналар да ұнауы мүмкін"</string>
-    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
-    <skip />
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> виджеттері оң жақта, іздеу мен опциялар сол жақта"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# виджет}other{# виджет}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# таңбаша}other{# таңбаша}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -185,6 +185,8 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Жеке"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Жеке бөлме параметрлері"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Жеке бөлмені құлыптау/оның құлпын ашу"</string>
+    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
+    <skip />
     <string name="ps_container_transition" msgid="8667331812048014412">"Жеке бөлмеге өту"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Қолданбалар орнату"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Қолданбаларды \"Құпия кеңістікке\" орнатыңыз."</string>

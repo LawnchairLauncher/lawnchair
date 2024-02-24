@@ -549,7 +549,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         createAnimToIsStashed(
                 /* isStashed= */ false,
                 placeholderDuration,
-                TRANSITION_UNSTASH_SUW_MANUAL);
+                TRANSITION_UNSTASH_SUW_MANUAL,
+                /* jankTag= */ "SUW_MANUAL");
         animation.addListener(AnimatorListeners.forEndCallback(
                 () -> mControllers.taskbarViewController.setDeferUpdatesForSUW(false)));
         animation.play(mAnimator);
@@ -560,9 +561,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * @param isStashed whether it's a stash animation or an unstash animation
      * @param duration duration of the animation
      * @param animationType what transition type to play.
+     * @param jankTag tag to be used in jank monitor trace.
      */
     private void createAnimToIsStashed(boolean isStashed, long duration,
-            @StashAnimation int animationType) {
+            @StashAnimation int animationType, String jankTag) {
         if (animationType == TRANSITION_UNSTASH_SUW_MANUAL && isStashed) {
             // The STASH_ANIMATION_SUW_MANUAL must only be used during an unstash animation.
             Log.e(TAG, "Illegal arguments:Using TRANSITION_UNSTASH_SUW_MANUAL to stash taskbar");
@@ -573,7 +575,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
         mAnimator = new AnimatorSet();
         addJankMonitorListener(
-                mAnimator, /* expanding= */ !mIsStashed, /* animationType= */ animationType);
+                mAnimator, /* expanding= */ !isStashed, /* tag= */ jankTag);
         boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
         final float stashTranslation = mActivity.isPhoneMode() || isTransientTaskbar
                 ? 0
@@ -800,7 +802,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private void addJankMonitorListener(
-            AnimatorSet animator, boolean expanding, @StashAnimation int animationType) {
+            AnimatorSet animator, boolean expanding, String tag) {
         View v = mControllers.taskbarActivityContext.getDragLayer();
         if (!v.isAttachedToWindow()) {
             // If the task bar drag layer is not attached to window, we don't need to monitor jank
@@ -814,8 +816,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             public void onAnimationStart(@NonNull Animator animation) {
                 final Configuration.Builder builder =
                         Configuration.Builder.withView(action, v);
-                if (animationType == TRANSITION_HOME_TO_APP) {
-                    builder.setTag("HOME_TO_APP");
+                if (tag != null) {
+                    builder.setTag(tag);
                 }
                 InteractionJankMonitor.getInstance().begin(builder);
             }
@@ -1215,10 +1217,32 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 mLastStartedTransitionType = animationType;
 
                 // This sets mAnimator.
-                createAnimToIsStashed(mIsStashed, duration, animationType);
+                createAnimToIsStashed(mIsStashed, duration, animationType,
+                        computeTaskbarJankMonitorTag(changedFlags));
                 return mAnimator;
             }
             return null;
+        }
+
+        /** Calculates the tag for CUJ_TASKBAR_EXPAND and CUJ_TASKBAR_COLLAPSE jank traces.*/
+        private String computeTaskbarJankMonitorTag(int changedFlags) {
+            if (hasAnyFlag(changedFlags, FLAG_IN_APP)) {
+                // moving in or out of the app
+                if (hasAnyFlag(FLAG_IN_APP)) {
+                    return "Home to App";
+                } else {
+                    return "App to Home";
+                }
+            }
+            if (hasAnyFlag(changedFlags, FLAG_STASHED_IN_APP_AUTO)) {
+                // stash and unstash with-in the app
+                if (hasAnyFlag(FLAG_STASHED_IN_APP_AUTO)) {
+                    return "Stashed in app";
+                } else {
+                    return "Manually unstashed";
+                }
+            }
+            return "";
         }
 
         private @StashAnimation int computeTransitionType(int changedFlags) {

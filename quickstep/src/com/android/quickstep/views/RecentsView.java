@@ -2093,22 +2093,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     // Update task size and padding that are dependent on DeviceProfile and insets.
     private void updateSizeAndPadding() {
         DeviceProfile dp = mActivity.getDeviceProfile();
-        getTaskSize(mTempRect);
-        mTaskWidth = mTempRect.width();
-        mTaskHeight = mTempRect.height();
+        getTaskSize(mLastComputedTaskSize);
+        mTaskWidth = mLastComputedTaskSize.width();
+        mTaskHeight = mLastComputedTaskSize.height();
 
-        mTempRect.top -= dp.overviewTaskThumbnailTopMarginPx;
-        setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
-                dp.widthPx - mInsets.right - mTempRect.right,
-                dp.heightPx - mInsets.bottom - mTempRect.bottom);
+        setPadding(mLastComputedTaskSize.left - mInsets.left,
+                mLastComputedTaskSize.top - dp.overviewTaskThumbnailTopMarginPx - mInsets.top,
+                dp.widthPx - mInsets.right - mLastComputedTaskSize.right,
+                dp.heightPx - mInsets.bottom - mLastComputedTaskSize.bottom);
 
-        mSizeStrategy.calculateGridSize(mActivity.getDeviceProfile(), mActivity,
-                mLastComputedGridSize);
-        mSizeStrategy.calculateGridTaskSize(mActivity, mActivity.getDeviceProfile(),
-                mLastComputedGridTaskSize, getPagedOrientationHandler());
+        mSizeStrategy.calculateGridSize(dp, mActivity, mLastComputedGridSize);
+        mSizeStrategy.calculateGridTaskSize(mActivity, dp, mLastComputedGridTaskSize,
+                getPagedOrientationHandler());
         if (isDesktopModeSupported()) {
-            mSizeStrategy.calculateDesktopTaskSize(mActivity, mActivity.getDeviceProfile(),
-                    mLastComputedDesktopTaskSize);
+            mSizeStrategy.calculateDesktopTaskSize(mActivity, dp, mLastComputedDesktopTaskSize);
         }
         if (enableGridOnlyOverview()) {
             mSizeStrategy.calculateCarouselTaskSize(mActivity, dp, mLastComputedCarouselTaskSize,
@@ -2169,7 +2167,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void getTaskSize(Rect outRect) {
         mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect,
                 getPagedOrientationHandler());
-        mLastComputedTaskSize.set(outRect);
     }
 
     /**
@@ -4264,10 +4261,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView child = requireTaskViewAt(i);
             int[] childTaskIds = child.getTaskIds();
-            if (!mRunningTaskTileHidden ||
-                    (childTaskIds[0] != runningTaskId && childTaskIds[1] != runningTaskId)) {
-                child.setStableAlpha(alpha);
+            if (runningTaskId != INVALID_TASK_ID
+                    && mRunningTaskTileHidden
+                    && (childTaskIds[0] == runningTaskId || childTaskIds[1] == runningTaskId)) {
+                continue;
             }
+            child.setStableAlpha(alpha);
         }
         mClearAllButton.setContentAlpha(mContentAlpha);
         int alphaInt = Math.round(alpha * 255);
@@ -4407,9 +4406,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         updateEmptyStateUi(changed);
 
-        // Update the pivots such that when the task is scaled, it fills the full page
-        getTaskSize(mTempRect);
-        updatePivots();
         setTaskModalness(mTaskModalness);
         mLastComputedTaskStartPushOutDistance = null;
         mLastComputedTaskEndPushOutDistance = null;

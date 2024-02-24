@@ -87,8 +87,7 @@ public class TaplDragTest extends AbstractLauncherUiTest {
                 PHOTOS_APP_NAME);
 
         final HomeAppIcon mapIcon = createShortcutInCenterIfNotExist(MAPS_APP_NAME);
-        folderIcon = mapIcon.dragToIcon(folderIcon);
-        folder = folderIcon.open();
+        folder = mapIcon.dragToFolder(folderIcon);
         folder.getAppIcon(MAPS_APP_NAME);
         workspace = folder.close();
 

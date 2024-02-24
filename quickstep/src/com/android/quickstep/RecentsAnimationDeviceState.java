@@ -119,6 +119,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
     private boolean mIsSwipeToNotificationEnabled;
     private final boolean mIsOneHandedModeSupported;
     private boolean mPipIsActive;
+    private boolean mIsPredictiveBackToHomeInProgress;
 
     private int mGestureBlockingTaskId = -1;
     private @NonNull Region mExclusionRegion = GestureExclusionManager.EMPTY_REGION;
@@ -359,6 +360,20 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
     // TODO(141886704): See if we can remove this
     public int getSystemUiStateFlags() {
         return mSystemUiStateFlags;
+    }
+
+    /**
+     * Sets the flag that indicates whether a predictive back-to-home animation is in progress
+     */
+    public void setPredictiveBackToHomeInProgress(boolean isInProgress) {
+        mIsPredictiveBackToHomeInProgress = isInProgress;
+    }
+
+    /**
+     * @return whether a predictive back-to-home animation is currently in progress
+     */
+    public boolean isPredictiveBackToHomeInProgress() {
+        return mIsPredictiveBackToHomeInProgress;
     }
 
     /**
@@ -609,6 +624,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
         pw.println("  deferredGestureRegion=" + mDeferredGestureRegion.getBounds());
         pw.println("  exclusionRegion=" + mExclusionRegion.getBounds());
         pw.println("  pipIsActive=" + mPipIsActive);
+        pw.println("  predictiveBackToHomeInProgress=" + mIsPredictiveBackToHomeInProgress);
         mRotationTouchHelper.dump(pw);
     }
 }
