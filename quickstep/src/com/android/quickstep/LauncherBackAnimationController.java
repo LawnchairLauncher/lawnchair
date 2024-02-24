@@ -52,6 +52,7 @@ import android.window.BackMotionEvent;
 import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
+import com.android.app.animation.Interpolators;
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -103,7 +104,8 @@ public class LauncherBackAnimationController {
     private float mWindowScaleEndCornerRadius;
     private float mWindowScaleStartCornerRadius;
     private final Interpolator mCancelInterpolator;
-    private final Interpolator mProgressInterpolator = new DecelerateInterpolator();
+    private final Interpolator mProgressInterpolator = Interpolators.STANDARD_DECELERATE;
+    private final Interpolator mVerticalMoveInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
 
     private RemoteAnimationTarget mBackTarget;
@@ -376,7 +378,7 @@ public class LauncherBackAnimationController {
         float yDirection = rawYDelta < 0 ? -1 : 1;
         // limit yDelta interpretation to 1/2 of screen height in either direction
         float deltaYRatio = Math.min(screenHeight / 2f, Math.abs(rawYDelta)) / (screenHeight / 2f);
-        float interpolatedYRatio = mProgressInterpolator.getInterpolation(deltaYRatio);
+        float interpolatedYRatio = mVerticalMoveInterpolator.getInterpolation(deltaYRatio);
         // limit y-shift so surface never passes 8dp screen margin
         float deltaY = yDirection * interpolatedYRatio * Math.max(0f, (screenHeight - height)
                 / 2f - mWindowScaleMarginX);
@@ -437,6 +439,7 @@ public class LauncherBackAnimationController {
         if (mLauncher.isDestroyed()) {
             return;
         }
+        mLauncher.setPredictiveBackToHomeInProgress(true);
         LauncherTaskbarUIController taskbarUIController = mLauncher.getTaskbarUIController();
         if (taskbarUIController != null) {
             taskbarUIController.onLauncherVisibilityChanged(true);
@@ -475,6 +478,7 @@ public class LauncherBackAnimationController {
     }
 
     private void finishAnimation() {
+        mLauncher.setPredictiveBackToHomeInProgress(false);
         mBackTarget = null;
         mLauncherTarget = null;
         mBackInProgress = false;

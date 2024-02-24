@@ -440,7 +440,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             anim.addListener(forEndCallback(
                     () -> view.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)));
         }
-        mContext.bindItems(Collections.singletonList(Pair.create(item, view)), anim);
+        mContext.bindInflatedItems(Collections.singletonList(Pair.create(item, view)), anim);
     }
 
     /**

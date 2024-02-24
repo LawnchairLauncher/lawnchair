@@ -40,14 +40,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ホーム画面に追加"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"「<xliff:g id="WIDGET_NAME">%1$s</xliff:g>」ウィジェットをホーム画面に追加しました"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"候補"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"生産性を向上"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
+    <skip />
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"あなたへのおすすめニュース"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"休憩エリア"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"フィットネスの目標を達成"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"天気予報"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"あなたへのおすすめ"</string>
-    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
-    <skip />
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> のウィジェットは右側に、検索とオプションは左側にあります"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# 件のウィジェット}other{# 件のウィジェット}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# 件のショートカット}other{# 件のショートカット}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>、<xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -185,6 +185,8 @@
     <string name="ps_container_title" msgid="4391796149519594205">"プライベート"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"プライベート スペースの設定"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"プライベート スペースをロック / ロック解除する"</string>
+    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
+    <skip />
     <string name="ps_container_transition" msgid="8667331812048014412">"プライベート スペース移行中"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"アプリをインストールする"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"プライベート スペースにアプリをインストールします"</string>

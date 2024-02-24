@@ -40,14 +40,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Dodaj na začetni zaslon"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Pripomoček »<xliff:g id="WIDGET_NAME">%1$s</xliff:g>« je dodan na začetni zaslon."</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Predlogi"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3939186477156514997">"Dajte pospešek svojemu dnevu"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
+    <skip />
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Novice za vas"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Vaš kotiček za sprostitev"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Dosegajte cilje glede telesne pripravljenosti"</string>
     <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Bodite na tekočem z vremenom"</string>
     <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Morda vam bo všeč tudi"</string>
-    <!-- no translation found for widget_picker_right_pane_accessibility_title (1673313931455067502) -->
-    <skip />
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Pripomočki <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> na desni, iskanje in možnosti na levi"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# pripomoček}one{# pripomoček}two{# pripomočka}few{# pripomočki}other{# pripomočkov}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# bližnjica}one{# bližnjica}two{# bližnjici}few{# bližnjice}other{# bližnjic}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -185,6 +185,8 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Zasebno"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Nastavitve zasebnega prostora"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Zaklepanje/odklepanje zasebnega prostora"</string>
+    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
+    <skip />
     <string name="ps_container_transition" msgid="8667331812048014412">"Preklapljanje zasebnega prostora"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Nameščanje aplikacij"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Nameščanje aplikacij v zasebni prostor"</string>

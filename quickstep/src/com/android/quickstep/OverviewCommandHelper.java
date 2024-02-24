@@ -209,27 +209,38 @@ public class OverviewCommandHelper {
                     && dp != null
                     && (dp.isTablet || dp.isTwoPanels);
 
-            if (cmd.type == TYPE_HIDE) {
-                if (!allowQuickSwitch) {
+            switch (cmd.type) {
+                case TYPE_HIDE:
+                    if (!allowQuickSwitch) {
+                        return true;
+                    }
+                    mKeyboardTaskFocusIndex = uiController.launchFocusedTask();
+                    if (mKeyboardTaskFocusIndex == -1) {
+                        return true;
+                    }
+                    break;
+                case TYPE_KEYBOARD_INPUT:
+                    if (allowQuickSwitch) {
+                        uiController.openQuickSwitchView();
+                        return true;
+                    } else {
+                        mKeyboardTaskFocusIndex = 0;
+                        break;
+                    }
+                case TYPE_HOME:
+                    ActiveGestureLog.INSTANCE.addLog(
+                            "OverviewCommandHelper.executeCommand(TYPE_HOME)");
+                    mService.startActivity(mOverviewComponentObserver.getHomeIntent());
                     return true;
-                }
-                mKeyboardTaskFocusIndex = uiController.launchFocusedTask();
-                if (mKeyboardTaskFocusIndex == -1) {
-                    return true;
-                }
-            }
-            if (cmd.type == TYPE_KEYBOARD_INPUT) {
-                if (allowQuickSwitch) {
-                    uiController.openQuickSwitchView();
-                    return true;
-                } else {
+                case TYPE_SHOW:
+                    // When Recents is not currently visible, the command's type is TYPE_SHOW
+                    // when overview is triggered via the keyboard overview button or Action+Tab
+                    // keys (Not Alt+Tab which is KQS). The overview button on-screen in 3-button
+                    // nav is TYPE_TOGGLE.
                     mKeyboardTaskFocusIndex = 0;
-                }
-            }
-            if (cmd.type == TYPE_HOME) {
-                ActiveGestureLog.INSTANCE.addLog("OverviewCommandHelper.executeCommand(TYPE_HOME)");
-                mService.startActivity(mOverviewComponentObserver.getHomeIntent());
-                return true;
+                    break;
+                default:
+                    // continue below to handle displaying Recents.
             }
         } else {
             createdRecentsView = visibleRecentsView;
@@ -351,7 +362,8 @@ public class OverviewCommandHelper {
     private void updateRecentsViewFocus(CommandInfo cmd) {
         RecentsView recentsView =
                 mOverviewComponentObserver.getActivityInterface().getVisibleRecentsView();
-        if (recentsView == null || (cmd.type != TYPE_KEYBOARD_INPUT && cmd.type != TYPE_HIDE)) {
+        if (recentsView == null || (cmd.type != TYPE_KEYBOARD_INPUT && cmd.type != TYPE_HIDE
+                && cmd.type != TYPE_SHOW)) {
             return;
         }
         // When the overview is launched via alt tab (cmd type is TYPE_KEYBOARD_INPUT),

@@ -26,7 +26,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 /**
  * Folder Icon, an app folder in workspace.
  */
-public class FolderIcon implements FolderDragTarget {
+public class FolderIcon implements IconDragTarget {
 
     protected final UiObject2 mObject;
     protected final LauncherInstrumentation mLauncher;
@@ -60,7 +60,7 @@ public class FolderIcon implements FolderDragTarget {
 
     /** This method requires public access, however should not be called in tests. */
     @Override
-    public FolderIcon getTargetFolder(Rect bounds) {
+    public FolderIcon getTargetIcon(Rect bounds) {
         return this;
     }
 }

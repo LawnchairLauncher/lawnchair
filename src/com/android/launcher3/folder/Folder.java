@@ -40,6 +40,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Looper;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -165,10 +166,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private static final Rect sTempRect = new Rect();
     private static final int MIN_FOLDERS_FOR_HARDWARE_OPTIMIZATION = 10;
 
-    private final Alarm mReorderAlarm = new Alarm();
-    private final Alarm mOnExitAlarm = new Alarm();
-    private final Alarm mOnScrollHintAlarm = new Alarm();
-    final Alarm mScrollPauseAlarm = new Alarm();
+    private final Alarm mReorderAlarm = new Alarm(Looper.getMainLooper());
+    private final Alarm mOnExitAlarm = new Alarm(Looper.getMainLooper());
+    private final Alarm mOnScrollHintAlarm = new Alarm(Looper.getMainLooper());
+    final Alarm mScrollPauseAlarm = new Alarm(Looper.getMainLooper());
 
     final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
 

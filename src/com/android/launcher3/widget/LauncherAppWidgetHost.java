@@ -54,6 +54,9 @@ class LauncherAppWidgetHost extends AppWidgetHost {
     @Nullable
     private final IntConsumer mAppWidgetRemovedCallback;
 
+    @Nullable
+    private ListenableHostView mViewToRecycle;
+
     public LauncherAppWidgetHost(@NonNull Context context,
             @Nullable IntConsumer appWidgetRemovedCallback,
             List<ProviderChangedListener> providerChangeListeners) {
@@ -73,11 +76,21 @@ class LauncherAppWidgetHost extends AppWidgetHost {
         }
     }
 
+    /**
+     * Sets the view to be recycled for the next widget creation.
+     */
+    public void recycleViewForNextCreation(ListenableHostView viewToRecycle) {
+        mViewToRecycle = viewToRecycle;
+    }
+
     @Override
     @NonNull
     public LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        return new ListenableHostView(context);
+        ListenableHostView result =
+                mViewToRecycle != null ? mViewToRecycle : new ListenableHostView(context);
+        mViewToRecycle = null;
+        return result;
     }
 
     /**
