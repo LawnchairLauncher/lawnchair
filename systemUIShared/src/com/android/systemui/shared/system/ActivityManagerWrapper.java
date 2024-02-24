@@ -138,7 +138,7 @@ public class ActivityManagerWrapper {
      */
     @NonNull
     public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        if (!LawnchairQuickstepCompat.ATLEAST_S){
+        if (!LawnchairQuickstepCompat.ATLEAST_S) {
             ActivityManagerCompatVR compat = ((ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat());
             ActivityManagerCompatVR.ThumbnailData data = compat.getTaskThumbnail(taskId, isLowResolution);
             if (data != null) {

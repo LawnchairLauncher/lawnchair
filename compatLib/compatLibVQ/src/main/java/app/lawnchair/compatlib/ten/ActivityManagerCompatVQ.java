@@ -7,7 +7,6 @@ import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
 import android.app.WindowConfiguration;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.RemoteException;
 import android.util.Log;
@@ -112,69 +111,5 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
             Log.e(TAG, "Failed to get recent tasks", e);
             return new ArrayList<>();
         }
-    }
-
-    @Nullable
-    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        try {
-            ActivityManager.TaskSnapshot snapshot =
-                    ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
-            return makeThumbnailData(snapshot);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to retrieve task snapshot", e);
-            return null;
-        }
-    }
-
-    @NonNull
-    public ThumbnailData takeScreenshot(
-            IRecentsAnimationController animationController, int taskId) {
-        try {
-            ActivityManager.TaskSnapshot snapshot = animationController.screenshotTask(taskId);
-            return snapshot != null ? makeThumbnailData(snapshot) : new ThumbnailData();
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to screenshot task", e);
-            return new ThumbnailData();
-        }
-    }
-
-    @Nullable
-    public ThumbnailData convertTaskSnapshotToThumbnailData(Object taskSnapshot) {
-        if (taskSnapshot != null) {
-            return makeThumbnailData((ActivityManager.TaskSnapshot) taskSnapshot);
-        } else {
-            return null;
-        }
-    }
-
-    private ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
-        ThumbnailData data = new ThumbnailData();
-        data.thumbnail =
-                Bitmap.wrapHardwareBuffer(snapshot.getSnapshot(), snapshot.getColorSpace());
-        data.insets = new Rect(snapshot.getContentInsets());
-        data.orientation = snapshot.getOrientation();
-        data.reducedResolution = snapshot.isReducedResolution();
-        // TODO(b/149579527): Pass task size instead of computing scale.
-        // Assume width and height were scaled the same; compute scale only for width
-        data.scale = snapshot.getScale();
-        data.isRealSnapshot = snapshot.isRealSnapshot();
-        data.isTranslucent = snapshot.isTranslucent();
-        data.windowingMode = snapshot.getWindowingMode();
-        data.systemUiVisibility = snapshot.getSystemUiVisibility();
-        return data;
-    }
-
-    public static class ThumbnailData {
-        public Bitmap thumbnail;
-        public int orientation;
-        public int rotation;
-        public Rect insets;
-        public boolean reducedResolution;
-        public boolean isRealSnapshot;
-        public boolean isTranslucent;
-        public int windowingMode;
-        public int systemUiVisibility;
-        public float scale;
-        public long snapshotId;
     }
 }
