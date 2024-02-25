@@ -170,7 +170,7 @@
     <string name="minus_one_unavailable">피드를 이용할 수 없습니다.</string>
     <string name="minus_one">피드</string>
     <string name="feed_provider">피드 제공자</string>
-    <string name="feed_default">Default</string>
+    <string name="feed_default">기본</string>
     <string name="wallpaper">배경화면</string>
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
     <string name="wallpaper_depth_effect_label">배경 화면 깊이 효과</string>
@@ -183,14 +183,14 @@
     <string name="home_screen_unlock">홈 화면 잠금해제</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">홈 화면이 잠겼습니다</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_dot_pagination_label">도트 페이지네이션 표시</string>
+    <string name="show_dot_pagination_description">작업 공간에서 도트 페이지네이션 표시를 활성화합니다.</string>
+    <string name="show_material_u_popup_label">머티리얼 유 팝업 표시</string>
     <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">팝업 메뉴</string>
     <string name="home_screen_lock_toggle_from_home_popup">잠금 버튼 표시</string>
     <string name="show_system_settings_entry">시스템 설정 항목 표시</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">편집 버튼 표시</string>
     <string name="status_bar_label">상태표시줄</string>
     <string name="show_status_bar">상태 표시줄 표시</string>
     <string name="dark_status_bar_label">어두운 상태표시줄</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">구글 검색</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">독 표시</string>
     <string name="hotseat_mode_label">검색창 위젯</string>
     <string name="hotseat_mode_disabled">비활성화됨</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">검색 결과에서 숨기기</string>
     <string name="pref_all_apps_bulk_icon_loading_title">대량 앱 로드</string>
     <string name="pref_all_apps_bulk_icon_loading_description">아이콘을 개별적으로가 아닌 대량으로 로드하고 표시합니다</string>
+    <string name="pref_all_apps_remember_position_title">Remember Position</string>
+    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">검색</string>
     <string name="show_app_search_bar">검색 창 활성화</string>
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
@@ -338,14 +341,14 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">Lawnchair가 최근 항목 제공자로 설정되지 않았으므로 이러한 설정은 무시됩니다.</string>
     <string name="translucent_background">반투명 배경</string>
     <string name="recents_actions_label">빠른 바로가기</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">공유</string>
     <string name="action_lens">렌즈</string>
     <string name="recents_clear_all">모두 지우기</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">강제 종료</string>
     <string name="window_corner_radius_label">가장자리 둥글기</string>
     <string name="override_window_corner_radius_label">가장자리 둥글기 개인화</string>
     <string name="window_corner_radius_description">최근앱보기에서 앱 미리보기 창에대한 가장자리 모서리 둥글기에 대한 설정입니다. 화면의 둥글기에 맞게 혹은 기호에 맞춰 가장자리 둥글기를 조정하세요</string>
@@ -443,8 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">시스템 설정</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">잠금 해제</string>
+    <string name="action_lock">잠금</string>
+    <string name="recents_lock_unlock">잠금/잠금 해제</string>
+    <string name="recents_lock_unlock_description">\"모두 지우기\" 사용 시 선택한 앱이 지워지지 않도록 방지</string>
 </resources>

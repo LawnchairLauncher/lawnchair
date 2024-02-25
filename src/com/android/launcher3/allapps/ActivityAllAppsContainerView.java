@@ -261,6 +261,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * onFinishInflate -> onPostCreate
      */
     protected void initContent() {
+        boolean showFastScroller = PreferenceExtensionsKt.firstBlocking(pref2.getShowScrollbar());
+        
         mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
 
         mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN,
@@ -277,7 +279,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mSearchRecyclerView = findViewById(R.id.search_results_list_view);
         mFastScroller = findViewById(R.id.fast_scroller);
         mFastScroller.setPopupView(findViewById(R.id.fast_scroller_popup));
-
+        mFastScroller.setVisibility(showFastScroller ? VISIBLE : INVISIBLE);
         mSearchContainer = inflateSearchBar();
         if (!isSearchBarFloating()) {
             // Add the search box above everything else in this container (if the flag is
