@@ -10,9 +10,10 @@ import app.lawnchair.compatlib.thirteen.ActivityOptionsCompatVT;
 
 @RequiresApi(34)
 public class ActivityOptionsCompatVU extends ActivityOptionsCompatVT {
+    @NonNull
     @Override
     public ActivityOptions makeCustomAnimation(
-            Context context,
+            @NonNull Context context,
             int enterResId,
             int exitResId,
             @NonNull final Handler callbackHandler,

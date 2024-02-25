@@ -9,16 +9,18 @@ import androidx.annotation.Nullable;
 
 public abstract class ActivityOptionsCompat {
 
+    @NonNull
     public abstract ActivityOptions makeCustomAnimation(
-            Context context,
+            @NonNull Context context,
             int enterResId,
             int exitResId,
             @NonNull final Handler callbackHandler,
             @Nullable final Runnable startedListener,
             @Nullable final Runnable finishedListener);
 
+    @NonNull
     public abstract ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName);
+            @Nullable RemoteAnimationAdapter remoteAnimationAdapter,
+            @Nullable Object remoteTransition,
+            @Nullable String debugName);
 }

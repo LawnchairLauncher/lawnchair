@@ -13,9 +13,10 @@ import app.lawnchair.compatlib.ActivityOptionsCompat;
 public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
     protected final String TAG = getClass().getCanonicalName();
 
+    @NonNull
     @Override
     public ActivityOptions makeCustomAnimation(
-            Context context,
+            @NonNull Context context,
             int enterResId,
             int exitResId,
             @NonNull final Handler callbackHandler,
@@ -36,11 +37,12 @@ public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
                 });
     }
 
+    @NonNull
     @Override
     public ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName) {
+            @Nullable RemoteAnimationAdapter remoteAnimationAdapter,
+            @Nullable Object remoteTransition,
+            @Nullable String debugName) {
         return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter);
     }
 }

@@ -11,9 +11,10 @@ import app.lawnchair.compatlib.ten.ActivityOptionsCompatVQ;
 @RequiresApi(30)
 public class ActivityOptionsCompatVR extends ActivityOptionsCompatVQ {
 
+    @NonNull
     @Override
     public ActivityOptions makeCustomAnimation(
-            Context context,
+            @NonNull Context context,
             int enterResId,
             int exitResId,
             @NonNull final Handler callbackHandler,
