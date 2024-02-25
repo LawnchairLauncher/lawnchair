@@ -7,10 +7,10 @@ import android.view.RemoteAnimationAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public abstract class ActivityOptionsCompat {
+public interface ActivityOptionsCompat {
 
     @NonNull
-    public abstract ActivityOptions makeCustomAnimation(
+    ActivityOptions makeCustomAnimation(
             @NonNull Context context,
             int enterResId,
             int exitResId,
@@ -19,7 +19,7 @@ public abstract class ActivityOptionsCompat {
             @Nullable final Runnable finishedListener);
 
     @NonNull
-    public abstract ActivityOptions makeRemoteAnimation(
+    ActivityOptions makeRemoteAnimation(
             @Nullable RemoteAnimationAdapter remoteAnimationAdapter,
             @Nullable Object remoteTransition,
             @Nullable String debugName);

@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 
 @RequiresApi(29)
-public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
+public class ActivityOptionsCompatVQ implements ActivityOptionsCompat {
     protected final String TAG = getClass().getCanonicalName();
 
     @NonNull

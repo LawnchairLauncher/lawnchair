@@ -9,29 +9,27 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import java.util.List;
 
-public abstract class ActivityManagerCompat {
-    protected static final int NUM_RECENT_ACTIVITIES_REQUEST = 3;
+public interface ActivityManagerCompat {
+    int NUM_RECENT_ACTIVITIES_REQUEST = 3;
 
-    public abstract void invalidateHomeTaskSnapshot(final Activity homeActivity);
+    void invalidateHomeTaskSnapshot(final Activity homeActivity);
 
-    public abstract void startRecentsActivity(
+    void startRecentsActivity(
             Intent intent, long eventTime, RecentsAnimationRunnerCompat runnerCompat);
 
     @Nullable
     @RequiresApi(31)
-    public TaskSnapshot getTaskSnapshot(
+    default TaskSnapshot getTaskSnapshot(
             int taskId, boolean isLowResolution, boolean takeSnapshotIfNeeded) {
         return null;
     }
 
     @Nullable
-    public abstract ActivityManager.RunningTaskInfo getRunningTask(
-            boolean filterOnlyVisibleRecents);
+    ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents);
 
     @NonNull
-    public abstract List<ActivityManager.RunningTaskInfo> getRunningTasks(
-            boolean filterOnlyVisibleRecents);
+    List<ActivityManager.RunningTaskInfo> getRunningTasks(boolean filterOnlyVisibleRecents);
 
     @NonNull
-    public abstract List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId);
+    List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId);
 }

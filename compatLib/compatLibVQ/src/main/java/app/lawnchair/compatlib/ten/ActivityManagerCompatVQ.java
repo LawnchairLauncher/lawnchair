@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiresApi(29)
-public class ActivityManagerCompatVQ extends ActivityManagerCompat {
+public class ActivityManagerCompatVQ implements ActivityManagerCompat {
     protected final String TAG = getClass().getCanonicalName();
 
     @Override

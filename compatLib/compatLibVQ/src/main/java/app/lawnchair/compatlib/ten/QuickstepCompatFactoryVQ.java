@@ -9,7 +9,7 @@ import app.lawnchair.compatlib.QuickstepCompatFactory;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
 
 @RequiresApi(29)
-public class QuickstepCompatFactoryVQ extends QuickstepCompatFactory {
+public class QuickstepCompatFactoryVQ implements QuickstepCompatFactory {
     protected final String TAG = getClass().getCanonicalName();
 
     @NonNull
