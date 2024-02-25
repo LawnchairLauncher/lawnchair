@@ -4,9 +4,7 @@ import android.app.ActivityOptions;
 import android.util.Log;
 import android.view.RemoteAnimationAdapter;
 import android.window.RemoteTransition;
-
 import androidx.annotation.RequiresApi;
-
 import app.lawnchair.compatlib.twelve.ActivityOptionsCompatVS;
 
 @RequiresApi(33)

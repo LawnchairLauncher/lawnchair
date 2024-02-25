@@ -9,7 +9,6 @@ import android.app.WindowConfiguration;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.WindowManagerGlobal;
-
 import androidx.annotation.RequiresApi;
 
 @RequiresApi(30)

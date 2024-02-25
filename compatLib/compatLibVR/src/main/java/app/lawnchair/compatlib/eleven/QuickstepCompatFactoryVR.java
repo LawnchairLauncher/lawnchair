@@ -2,7 +2,6 @@ package app.lawnchair.compatlib.eleven;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 import app.lawnchair.compatlib.ten.QuickstepCompatFactoryVQ;

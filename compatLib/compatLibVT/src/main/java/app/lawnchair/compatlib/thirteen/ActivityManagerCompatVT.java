@@ -9,9 +9,7 @@ import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
-
 import androidx.annotation.RequiresApi;
-
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.twelve.ActivityManagerCompatVS;
 
