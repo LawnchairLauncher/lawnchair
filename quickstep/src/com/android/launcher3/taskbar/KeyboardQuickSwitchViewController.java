@@ -22,7 +22,6 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import android.animation.Animator;
 import android.app.ActivityOptions;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.window.RemoteTransition;
 
@@ -137,7 +136,6 @@ public class KeyboardQuickSwitchViewController {
         }
         // Even with a valid index, this can be null if the user tries to quick switch before the
         // views have been added in the KeyboardQuickSwitchView.
-        View taskView = mKeyboardQuickSwitchView.getTaskAt(index);
         GroupTask task = mControllerCallbacks.getTaskAt(index);
         if (task == null) {
             return Math.max(0, index);
@@ -198,11 +196,16 @@ public class KeyboardQuickSwitchViewController {
                     && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT
                     && keyCode != KeyEvent.KEYCODE_DPAD_LEFT
                     && keyCode != KeyEvent.KEYCODE_GRAVE
-                    && keyCode != KeyEvent.KEYCODE_ESCAPE) {
+                    && keyCode != KeyEvent.KEYCODE_ESCAPE
+                    && keyCode != KeyEvent.KEYCODE_ENTER) {
                 return false;
             }
             if (keyCode == KeyEvent.KEYCODE_GRAVE || keyCode == KeyEvent.KEYCODE_ESCAPE) {
                 closeQuickSwitchView(true);
+                return true;
+            }
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                launchTaskAt(mCurrentFocusIndex);
                 return true;
             }
             if (!allowTraversal) {
@@ -234,9 +237,10 @@ public class KeyboardQuickSwitchViewController {
             mCurrentFocusIndex = index;
         }
 
-        void launchTappedTask(int index) {
-            KeyboardQuickSwitchViewController.this.launchTaskAt(index);
-            closeQuickSwitchView(true);
+        void launchTaskAt(int index) {
+            mCurrentFocusIndex = Utilities.boundToRange(
+                    index, 0, mKeyboardQuickSwitchView.getChildCount() - 1);
+            mControllers.taskbarActivityContext.launchKeyboardFocusedTask();
         }
 
         void updateThumbnailInBackground(Task task, Consumer<ThumbnailData> callback) {

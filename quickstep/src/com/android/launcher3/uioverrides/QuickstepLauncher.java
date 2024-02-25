@@ -650,10 +650,13 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        // Back dispatcher is registered in {@link BaseActivity#onCreate}. For predictive back to
+        // work, we must opt-in BEFORE registering back dispatcher. So we need to call
+        // setEnableOnBackInvokedCallback() before super.onCreate()
         if (Utilities.ATLEAST_U && enablePredictiveBackGesture()) {
             getApplicationInfo().setEnableOnBackInvokedCallback(true);
         }
+        super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             mPendingSplitSelectInfo = ObjectWrapper.unwrap(
                     savedInstanceState.getIBinder(PENDING_SPLIT_SELECT_INFO));
@@ -1358,6 +1361,11 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public boolean hasBubbles() {
         return (mTaskbarUIController != null && mTaskbarUIController.hasBubbles());
+    }
+
+    @NonNull
+    public TISBindHelper getTISBindHelper() {
+        return mTISBindHelper;
     }
 
     @Override
