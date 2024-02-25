@@ -101,6 +101,7 @@ public class BubbleTextViewTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         Utilities.enableRunningInTestHarnessForTests();
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_TOGGLE);
         mContext = new ActivityContextWrapper(getApplicationContext());
         mBubbleTextView = new BubbleTextView(mContext);
         mBubbleTextView.reset();
