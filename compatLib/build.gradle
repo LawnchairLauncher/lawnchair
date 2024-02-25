@@ -4,6 +4,16 @@ plugins {
 
 android {
     namespace "app.lawnchair.compatlib"
+
+    buildFeatures {
+        aidl true
+    }
+
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/java']
+        }
+    }
 }
 
 addFrameworkJar('framework-14.jar')
