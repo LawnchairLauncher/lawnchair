@@ -21,14 +21,14 @@
     <string name="general_label">Algemeen</string>
     <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
     <string name="home_screen_label">Startscherm</string>
-    <string name="home_screen_description">Feed, Raster, Pictogrammen</string>
+    <string name="home_screen_description">Feed, Raster, Iconen</string>
     <!--
     <string name="smartspace" />
     -->
     <string name="what_to_show">Wat te tonen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Zoekbalk, iconen aantal</string>
-    <string name="app_drawer_label">App lade</string>
+    <string name="app_drawer_label">App-Overzicht</string>
     <string name="app_drawer_description">Verborgen apps, kolom aantal, iconen</string>
     <string name="folders_label">Mappen</string>
     <string name="folders_description">Aantal rijen en kolommen</string>
@@ -50,10 +50,10 @@
     <string name="smartspace_calendar_description">Laat weergeven datum toe in niet-Gregoriaanse kalendersystemen.</string>
     <string name="workspace_increase_max_grid_size_label">Verhoogde Max Startscherm Grid Grootte</string>
     <string name="workspace_increase_max_grid_size_description">Verhoog de maximale toegestane startscherm raster grootte van 10 × 10 tot 20 × 20.</string>
-    <string name="always_reload_icons_label">Altijd pictogrammen vernieuwen</string>
-    <string name="always_reload_icons_description">Vermijd het gebruik van gecachte pictogrammen van pictogrampakketten</string>
-    <string name="transparent_background_icons">Transparante thematische iconen</string>
-    <string name="transparent_background_icons_description">Gebruik transparante achtergrond bij gethematiseerde pictogrammen</string>
+    <string name="always_reload_icons_label">Altijd iconen vernieuwen</string>
+    <string name="always_reload_icons_description">Vermijd het gebruik van gecachte iconen van icoonpakketten</string>
+    <string name="transparent_background_icons">Transparante gethematiseerde iconen</string>
+    <string name="transparent_background_icons_description">Gebruik transparante achtergrond bij gethematiseerde iconen</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startscherm rotatie</string>
     <string name="home_screen_rotaton_description">Wanneer het apparaat is gedraaid.</string>
@@ -85,9 +85,9 @@
     <string name="theme_follow_wallpaper">Overeenkomen met achtergrond</string>
     <string name="accent_color">Accentkleur</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Aangepaste pictogramvorm</string>
-    <string name="custom_icon_shape_create">Maak aangepaste pictogramvorm</string>
-    <string name="custom_icon_shape_edit">Bewerk aangepaste pictogramvorm</string>
+    <string name="custom_icon_shape">Aangepaste icoonvorm</string>
+    <string name="custom_icon_shape_create">Maak aangepaste icoonvorm</string>
+    <string name="custom_icon_shape_edit">Bewerk aangepaste icoonvorm</string>
     <string name="icon_shape_corner">Hoek Vorm</string>
     <string name="icon_shape_corner_round">Rond</string>
     <string name="icon_shape_corner_squircle">Glad</string>
@@ -100,11 +100,11 @@
     <string name="clipboard">Klembord</string>
     <string name="export_to_clipboard">Exporteren naar Klembord</string>
     <string name="import_from_clipboard">Importeren van Klembord</string>
-    <string name="icon_shape_clipboard_import_error">Klembord bevat geen geldige pictogramvorm</string>
+    <string name="icon_shape_clipboard_import_error">Klembord bevat geen geldige icoonvorm</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Icoon pakket</string>
-    <string name="themed_icon_pack">Bron van gethematiseerde pictogram</string>
+    <string name="themed_icon_pack">Bron van gethematiseerde icoon</string>
     <string name="system_icons">Systeem iconen</string>
     <string name="themed_icon_title">Thema Iconen</string>
     <string name="themed_icons_off_label">Uitgeschakeld</string>
@@ -122,7 +122,7 @@
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Achthoek</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Gerond Vierkant</string>
+    <string name="icon_shape_rounded_square">Afgerond Vierkant</string>
     <string name="icon_shape_sharp_square">Scherpe Vierkant</string>
     <string name="icon_shape_square">Vierkant</string>
     <string name="icon_shape_squircle">Vierkantcirkel</string>
@@ -179,18 +179,18 @@
     <string name="layout">Lay-out</string>
     <string name="home_screen_grid">Startscherm raster</string>
     <string name="home_screen_lock">Vergrendel startscherm</string>
-    <string name="home_screen_lock_description">Voorkomt wijzigingen in de weergave van het startscherm.</string>
+    <string name="home_screen_lock_description">Voorkomt wijzigingen in de lay-out van het startscherm.</string>
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Startscherm is vergrendeld.</string>
     <string name="show_dot_pagination_label">Toon stip-paginering</string>
-    <string name="show_dot_pagination_description">Inschakelen tonen stip-paginering in werkruimte</string>
-    <string name="show_material_u_popup_label">Toon \"Materiaal U\" Popup</string>
-    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
+    <string name="show_dot_pagination_description">Inschakelen tonen stip-paginering in werkruimte.</string>
+    <string name="show_material_u_popup_label">Toon \"Material U\" Pop-up</string>
+    <string name="show_material_u_popup_description">Schakel meer opvallende pop-up in.</string>
     <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Vergrendelingsknop Tonen</string>
-    <string name="show_system_settings_entry">Toon Systeeminstellingeninvoer</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Toon bewerkingsknop</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Toon Vergrendelingsknop</string>
+    <string name="show_system_settings_entry">Toon Systeeminstellingenknop</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Toon Bewerkingsknop</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="dark_status_bar_label">Donkere Status Balk</string>
@@ -198,13 +198,13 @@
     <string name="icon_size">Icoon grootte</string>
     <string name="show_home_labels">Toon labels</string>
     <string name="label_size">Label grootte</string>
-    <string name="reset_custom_icons">Reset aangepaste pictogrammen</string>
-    <string name="reset_custom_icons_confirmation">Alle aangepaste pictogrammen worden gereset. Wilt u doorgaan?</string>
+    <string name="reset_custom_icons">Reset aangepaste iconen</string>
+    <string name="reset_custom_icons_confirmation">Alle aangepaste iconen worden gereset. Wilt u doorgaan?</string>
     <string name="home_screen_text_color">Tekstkleur</string>
     <string name="color_light">Licht</string>
     <string name="color_dark">Donker</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
-    <string name="force_rounded_widgets">Geronde Hoeken</string>
+    <string name="force_rounded_widgets">Afgeronde Hoeken</string>
     <string name="allow_widget_overlap">Overlap toestaan</string>
     <!-- HomeScreenGridPreferences -->
     <!-- <string name="home_screen_grid" /> -->
@@ -256,13 +256,13 @@
     <string name="corner_radius_label">Hoek radius</string>
     <string name="apply_accent_color_label">Pas accentkleur toe</string>
     <string name="search_provider">Zoek Provider</string>
-    <string name="hotseat_bottom_space_label">Unterer Einzug</string>
+    <string name="hotseat_bottom_space_label">Onderkant opvulling</string>
     <string name="grid">Raster</string>
     <string name="dock_icons">Dock iconen</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Apps Doorzoeken</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair heeft een overeenkomst over het delen van inkomsten.\n\nZoeken met %1$s helpt Lawnchair te ondersteunen.</string>
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
     <string name="qsb_search_provider_app_required">App vereist.</string>
@@ -275,30 +275,33 @@
     <string name="show_enable_smart_hide">Weergeven wanneer volledige naam wordt getypt</string>
     <string name="hide_hidden_apps_search">Verberg in zoekresultaten</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Bulk-App-Downloads</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Massenladen und Anzeigen von Symbolen, anstatt Symbole einzeln zu laden und anzuzeigen</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Laad en toon meerdere iconen tegelijk in plaats van één voor één</string>
+    <string name="pref_all_apps_remember_position_title">Onthoud positie</string>
+    <string name="pref_all_apps_remember_position_description">Onthoud de positie waar je was gebleven in plaats van de top</string>
+    <string name="pref_all_apps_show_scrollbar_title">Toon scrollbalk</string>
     <string name="pref_category_search">Zoek</string>
     <string name="show_app_search_bar">Zoekbalk weergeven</string>
     <string name="pref_search_auto_show_keyboard">Toetsenbord Automatisch Weergeven</string>
     <string name="fuzzy_search_title">Fuzzy zoeken</string>
     <string name="fuzzy_search_desc">Geschatte overeenkomst voor app zoekopdrachten.</string>
     <string name="max_search_result_count_title">Max aantal zoekresultaten</string>
-    <string name="max_people_result_count_title">Max Anzahl von Benutzerergebnissen</string>
-    <string name="max_file_result_count_title">Max. Anzahl von Dateiergebnissen</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max aantal zoekresultaten</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
+    <string name="max_people_result_count_title">Max aantal personen</string>
+    <string name="max_file_result_count_title">Max aantal bestanden</string>
+    <string name="max_suggestion_result_count_title">Max aantal suggesties</string>
+    <string name="max_settings_entry_result_count_title">Max aantal instellingen</string>
+    <string name="max_recent_result_count_title">Max aantal geschiedenisresultaten</string>
+    <string name="max_web_suggestion_delay">Maximale vertraging voor Web suggesties</string>
     <string name="clear_history">Verwijderen</string>
     <!-- <string name="grid" /> -->
-    <string name="app_drawer_columns">App lade kolommen</string>
+    <string name="app_drawer_columns">App-Overzicht kolommen</string>
     <string name="row_height_label">Rij hoogte</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
-    <string name="perform_wide_search_title">Device Search</string>
+    <string name="app_drawer_indent_label">Horizontale opvulling</string>
+    <string name="perform_wide_search_title">Zoeken op apparaat</string>
     <string name="perform_wide_search_file">Bestanden</string>
     <string name="pref_suggestion_label">Suggesties</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_suggestion_title">Websuggesties (via <xliff:g id="startpage">Startpagina</xliff:g>)</string>
     <string name="pref_advance_search_category">Uitgebreid zoeken</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="perform_wide_search_description">Zoek je contactpersonen, bestanden en instellingen in de app-overizcht zoekbalk.</string>
     <string name="pref_recent_suggestion_title">Geschiedenis</string>
     <!--
     <string name="icons" />
@@ -316,7 +319,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Icoon doorzichtigheid</string>
-    <string name="folder_preview_bg_color_label">Pictogram achtergrondkleur</string>
+    <string name="folder_preview_bg_color_label">Icoon achtergrondkleur</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Max. Aantal map kolommen</string>
     <string name="max_folder_rows">Max. Aantal Map Rijen</string>
@@ -332,24 +335,24 @@
     <string name="gesture_handler_open_notifications">Open meldingspaneel</string>
     <string name="gesture_handler_open_app_option">App openen</string>
     <string name="gesture_handler_open_app_config">%1$s openen</string>
-    <string name="gesture_handler_open_app_drawer">Open app-lade</string>
+    <string name="gesture_handler_open_app_drawer">Open App-Overzicht</string>
     <string name="gesture_handler_open_app_search">App zoeken openen</string>
     <string name="gesture_handler_open_search">Zoeken openen</string>
     <string name="pick_app_for_gesture">App kiezen</string>
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">Deze instellingen worden genegeerd, omdat Lawnchair niet is ingesteld als de aanbieder van Recente apps.</string>
     <string name="translucent_background">Doorschijnende achtergrond</string>
     <string name="recents_actions_label">Snelle Acties</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Delen</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Alles verwijderen</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Geforceerd sluiten</string>
     <string name="window_corner_radius_label">Scherm hoek radius</string>
     <string name="override_window_corner_radius_label">Aangepaste scherm hoek radius</string>
-    <string name="window_corner_radius_description">Als je veegt om de recente apps te openen volgt de huidige app je vinger, deze vormt zich in een kaart. Gebruik deze schuifregelaar om de hoek straal van de kaart aan te passen wanneer het bijna volledig scherm is, zodat het overeenkomt met de hoeken van uw scherm.</string>
+    <string name="window_corner_radius_description">Als je omhoog veegt om de recente apps te openen volgt de huidige app je vinger, deze vormt zich in een kaart. Gebruik deze schuifregelaar om de hoek radius van de kaart aan te passen wanneer het bijna volledig scherm is, zodat het overeenkomt met de hoeken van uw scherm.</string>
     <string name="taskbar_label">Taakbalk</string>
     <string name="enable_taskbar_experimental">Activeer taakbalk (Experimenteel)</string>
     <!-- about/About.kt -->
@@ -371,8 +374,8 @@
     <string name="icon_picker_default_category">Iconen</string>
     <string name="icon_picker_reset_to_default">Standaardwaarde herstellen</string>
     <string name="icon_pack_external_picker">Externe kiezer openen</string>
-    <string name="pick_icon_from_label">Kies pictogram uit</string>
-    <string name="icon_picker_load_failed">Kan niet meer pictogrammen laden.</string>
+    <string name="pick_icon_from_label">Kies icoon uit</string>
+    <string name="icon_picker_load_failed">Kan niet meer iconen laden.</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Zoek Apps</string>
     <string name="settings_button_text">Startscherm instellingen</string>
@@ -390,7 +393,7 @@
     <string name="label">Label</string>
     <string name="hide_from_drawer">Verbergen in App-Overzicht</string>
     <string name="suggestion_pref_screen_title">Suggesties</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Voorgestelde apps bovenaan in App-Overzicht weergeven</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair Bug Melding</string>
     <string name="crash_report_notif_title">%1$s is Gecrasht</string>
@@ -412,9 +415,9 @@
     <string name="label_search">Zoek</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Spraak Zoeken</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Instellingen</string>
     <string name="all_apps_search_market_message">Zoeken naar Meer Apps</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Zoeken met <xliff:g id="startpage">Startpagina</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Geen appwinkel of browser geïnstalleerd.</string>
     <string name="all_apps_search_result_suggestions">Van het internet</string>
     <string name="all_apps_search_result_contacts_from_device">Uit je contacten</string>
@@ -436,16 +439,16 @@
     <string name="backup_create_success">Back-up gemaakt.</string>
     <string name="backup_create_error">Back-up maken mislukt.</string>
     <string name="restore_backup">Back-up terugzetten</string>
-    <string name="restore_backup_action">Herstellen</string>
+    <string name="restore_backup_action">Terugzetten</string>
     <string name="what_to_restore">Wat terug te zetten</string>
     <string name="backup_restore_success">Back-up teruggezet.</string>
-    <string name="backup_restore_error">Back-up maken mislukt.</string>
+    <string name="backup_restore_error">Back-up terugzetten mislukt.</string>
     <string name="invalid_backup_file">Ongeldig back-upbestand.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Systeeminstellingen</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Ontgrendelen</string>
+    <string name="action_lock">Vergrendelen</string>
+    <string name="recents_lock_unlock">Vergrendelen/Ontgrendelen</string>
+    <string name="recents_lock_unlock_description">Voorkom dat geselecteerde app wordt gewist bij \"Alles wissen\"</string>
 </resources>
