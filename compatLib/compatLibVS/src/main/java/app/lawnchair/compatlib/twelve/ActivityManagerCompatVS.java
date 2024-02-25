@@ -16,10 +16,13 @@ import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 import java.util.List;
 
+@RequiresApi(31)
 public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
 
     @Override

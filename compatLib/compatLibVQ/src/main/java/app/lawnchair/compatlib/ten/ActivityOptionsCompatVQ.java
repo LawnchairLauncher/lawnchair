@@ -6,8 +6,11 @@ import android.os.Handler;
 import android.view.RemoteAnimationAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 
+@RequiresApi(29)
 public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
     protected final String TAG = getClass().getCanonicalName();
 

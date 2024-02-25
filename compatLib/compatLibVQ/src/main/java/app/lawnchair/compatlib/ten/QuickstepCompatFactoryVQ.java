@@ -5,11 +5,14 @@ import android.window.IRemoteTransition;
 import android.window.RemoteTransition;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 import app.lawnchair.compatlib.QuickstepCompatFactory;
 import app.lawnchair.compatlib.RemoteTransitionCompat;
 
+@RequiresApi(29)
 public class QuickstepCompatFactoryVQ extends QuickstepCompatFactory {
     protected final String TAG = getClass().getCanonicalName();
 

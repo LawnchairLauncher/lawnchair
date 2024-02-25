@@ -10,6 +10,9 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.WindowManagerGlobal;
 
+import androidx.annotation.RequiresApi;
+
+@RequiresApi(30)
 public class WindowManagerCompatVR {
     public static final int NAV_BAR_POS_INVALID = NAV_BAR_INVALID;
     public static final int NAV_BAR_POS_LEFT = NAV_BAR_LEFT;

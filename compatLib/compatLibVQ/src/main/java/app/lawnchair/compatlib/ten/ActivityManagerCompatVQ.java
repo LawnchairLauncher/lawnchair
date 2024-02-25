@@ -15,11 +15,14 @@ import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiresApi(29)
 public class ActivityManagerCompatVQ extends ActivityManagerCompat {
     protected final String TAG = getClass().getCanonicalName();
 
