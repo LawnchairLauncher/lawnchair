@@ -475,9 +475,21 @@ public class LoaderTask implements Runnable {
             mItemsDeleted = c.commitDeleted();
 
             processFolderItems();
+            processAppPairItems();
 
             c.commitRestoredItems();
         }
+    }
+
+    /**
+     * After all items have been processed and added to the BgDataModel, this method requests
+     * high-res icons for the items that are part of an app pair
+     */
+    private void processAppPairItems() {
+        mBgDataModel.workspaceItems.stream()
+                .filter((itemInfo -> itemInfo.itemType == ITEM_TYPE_APP_PAIR))
+                .forEach(fi -> ((FolderInfo) fi).contents.forEach(item ->
+                        mIconCache.getTitleAndIcon(item, false /*useLowResIcon*/)));
     }
 
     /**
