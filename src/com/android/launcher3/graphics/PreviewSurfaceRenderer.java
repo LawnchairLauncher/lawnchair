@@ -87,6 +87,7 @@ public class PreviewSurfaceRenderer {
     private final int mHeight;
     private String mGridName;
 
+    private final int mDisplayId;
     private final Display mDisplay;
     private final WallpaperColors mWallpaperColors;
     private final RunnableList mOnDestroyCallbacks = new RunnableList();
@@ -110,8 +111,12 @@ public class PreviewSurfaceRenderer {
         mHostToken = bundle.getBinder(KEY_HOST_TOKEN);
         mWidth = bundle.getInt(KEY_VIEW_WIDTH);
         mHeight = bundle.getInt(KEY_VIEW_HEIGHT);
+        mDisplayId = bundle.getInt(KEY_DISPLAY_ID);
         mDisplay = context.getSystemService(DisplayManager.class)
-                .getDisplay(bundle.getInt(KEY_DISPLAY_ID));
+                .getDisplay(mDisplayId);
+        if (mDisplay == null) {
+            throw new IllegalArgumentException("Display ID does not match any displays.");
+        }
 
         mSurfaceControlViewHost = MAIN_EXECUTOR.submit(() ->
                 new SurfaceControlViewHost(mContext, context.getSystemService(DisplayManager.class)
@@ -121,7 +126,7 @@ public class PreviewSurfaceRenderer {
     }
 
     public int getDisplayId() {
-        return mDisplay.getDisplayId();
+        return mDisplayId;
     }
 
     public IBinder getHostToken() {
