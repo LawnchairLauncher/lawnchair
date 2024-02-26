@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_ENABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_TRANSITION;
@@ -25,13 +26,19 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.AdditionalAnswers.answer;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Process;
+import android.os.UserHandle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -44,6 +51,7 @@ import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.R;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ActivityContextWrapper;
 
 import org.junit.Before;
@@ -52,32 +60,53 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class PrivateSpaceHeaderViewControllerTest {
 
+    private static final UserHandle MAIN_HANDLE = Process.myUserHandle();
+    private static final UserHandle PRIVATE_HANDLE = new UserHandle(11);
     private static final int CONTAINER_HEADER_ELEMENT_COUNT = 1;
     private static final int LOCK_UNLOCK_BUTTON_COUNT = 1;
     private static final int PS_SETTINGS_BUTTON_COUNT_VISIBLE = 1;
     private static final int PS_SETTINGS_BUTTON_COUNT_INVISIBLE = 0;
     private static final int PS_TRANSITION_IMAGE_COUNT = 1;
+    private static final int NUM_APP_COLS = 4;
+    private static final int NUM_PRIVATE_SPACE_APPS = 50;
+    private static final int ALL_APPS_HEIGHT = 10;
+    private static final int ALL_APPS_CELL_HEIGHT = 1;
+    private static final int PS_HEADER_HEIGHT = 1;
+    private static final int BIGGER_PS_HEADER_HEIGHT = 2;
+    private static final int SCROLL_NO_WHERE = -1;
+    private static final float HEADER_PROTECTION_HEIGHT = 1F;
 
     private Context mContext;
     private PrivateSpaceHeaderViewController mPsHeaderViewController;
     private RelativeLayout mPsHeaderLayout;
+    private AlphabeticalAppsList<?> mAlphabeticalAppsList;
     @Mock
     private PrivateProfileManager mPrivateProfileManager;
     @Mock
     private ActivityAllAppsContainerView mAllApps;
+    @Mock
+    private AllAppsStore<?> mAllAppsStore;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mContext = new ActivityContextWrapper(getApplicationContext());
+        when(mPrivateProfileManager.getItemInfoMatcher()).thenReturn(info ->
+                info != null && info.user.equals(PRIVATE_HANDLE));
         mPsHeaderViewController = new PrivateSpaceHeaderViewController(mAllApps,
                 mPrivateProfileManager);
         mPsHeaderLayout = (RelativeLayout) LayoutInflater.from(mContext).inflate(
                 R.layout.private_space_header, null);
+        mAlphabeticalAppsList = new AlphabeticalAppsList<>(mContext, mAllAppsStore,
+                null, mPrivateProfileManager);
+        mAlphabeticalAppsList.setNumAppsPerRowAllApps(NUM_APP_COLS);
     }
 
     @Test
@@ -223,6 +252,88 @@ public class PrivateSpaceHeaderViewControllerTest {
         assertEquals(PS_TRANSITION_IMAGE_COUNT, totalLockUnlockButtonView);
     }
 
+    @Test
+    public void scrollForViewToBeVisibleInContainer_withHeader() {
+        when(mAllAppsStore.getApps()).thenReturn(createAppInfoList());
+        when(mPrivateProfileManager.addPrivateSpaceHeader(any()))
+                .thenAnswer(answer(this::addPrivateSpaceHeader));
+        when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
+        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps())
+                .thenReturn(iteminfo -> iteminfo.componentName == null
+                        || !iteminfo.componentName.getPackageName()
+                        .equals("com.android.launcher3.tests.camera"));
+        when(mAllApps.getContext()).thenReturn(mContext);
+        mAlphabeticalAppsList.updateItemFilter(info -> info != null
+                && info.user.equals(MAIN_HANDLE));
+        when(mAllApps.getHeight()).thenReturn(ALL_APPS_HEIGHT);
+        when(mAllApps.getHeaderProtectionHeight()).thenReturn(HEADER_PROTECTION_HEIGHT);
+        int rows = (int) (ALL_APPS_HEIGHT - PS_HEADER_HEIGHT - HEADER_PROTECTION_HEIGHT);
+        int position = rows * NUM_APP_COLS - (NUM_APP_COLS-1) + 1;
+
+        // The number of adapterItems should be the private space apps + one main app + header.
+        assertEquals(NUM_PRIVATE_SPACE_APPS + 1 + 1,
+                mAlphabeticalAppsList.getAdapterItems().size());
+        assertEquals(position,
+                mPsHeaderViewController.scrollForViewToBeVisibleInContainer(
+                        new AllAppsRecyclerView(mContext),
+                        mAlphabeticalAppsList.getAdapterItems(),
+                        PS_HEADER_HEIGHT,
+                        ALL_APPS_CELL_HEIGHT));
+    }
+
+    @Test
+    public void scrollForViewToBeVisibleInContainer_withHeaderAndLessAppRowSpace() {
+        when(mAllAppsStore.getApps()).thenReturn(createAppInfoList());
+        when(mPrivateProfileManager.addPrivateSpaceHeader(any()))
+                .thenAnswer(answer(this::addPrivateSpaceHeader));
+        when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
+        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps())
+                .thenReturn(iteminfo -> iteminfo.componentName == null
+                        || !iteminfo.componentName.getPackageName()
+                        .equals("com.android.launcher3.tests.camera"));
+        when(mAllApps.getContext()).thenReturn(mContext);
+        mAlphabeticalAppsList.updateItemFilter(info -> info != null
+                && info.user.equals(MAIN_HANDLE));
+        when(mAllApps.getHeight()).thenReturn(ALL_APPS_HEIGHT);
+        when(mAllApps.getHeaderProtectionHeight()).thenReturn(HEADER_PROTECTION_HEIGHT);
+        int rows = (int) (ALL_APPS_HEIGHT - BIGGER_PS_HEADER_HEIGHT - HEADER_PROTECTION_HEIGHT);
+        int position = rows * NUM_APP_COLS - (NUM_APP_COLS-1) + 1;
+
+        // The number of adapterItems should be the private space apps + one main app + header.
+        assertEquals(NUM_PRIVATE_SPACE_APPS + 1 + 1,
+                mAlphabeticalAppsList.getAdapterItems().size());
+        assertEquals(position,
+                mPsHeaderViewController.scrollForViewToBeVisibleInContainer(
+                        new AllAppsRecyclerView(mContext),
+                        mAlphabeticalAppsList.getAdapterItems(),
+                        BIGGER_PS_HEADER_HEIGHT,
+                        ALL_APPS_CELL_HEIGHT));
+    }
+
+    @Test
+    public void scrollForViewToBeVisibleInContainer_withNoHeader() {
+        when(mAllAppsStore.getApps()).thenReturn(createAppInfoList());
+        when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
+        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps())
+                .thenReturn(iteminfo -> iteminfo.componentName == null
+                        || !iteminfo.componentName.getPackageName()
+                        .equals("com.android.launcher3.tests.camera"));
+        when(mAllApps.getContext()).thenReturn(mContext);
+        mAlphabeticalAppsList.updateItemFilter(info -> info != null
+                && info.user.equals(MAIN_HANDLE));
+        when(mAllApps.getHeight()).thenReturn(ALL_APPS_HEIGHT);
+        when(mAllApps.getHeaderProtectionHeight()).thenReturn(HEADER_PROTECTION_HEIGHT);
+
+        // The number of adapterItems should be the private space apps + one main app.
+        assertEquals(NUM_PRIVATE_SPACE_APPS + 1,
+                mAlphabeticalAppsList.getAdapterItems().size());
+        assertEquals(SCROLL_NO_WHERE, mPsHeaderViewController.scrollForViewToBeVisibleInContainer(
+                new AllAppsRecyclerView(mContext),
+                mAlphabeticalAppsList.getAdapterItems(),
+                BIGGER_PS_HEADER_HEIGHT,
+                ALL_APPS_CELL_HEIGHT));
+    }
+
     private Bitmap getBitmap(Drawable drawable) {
         Bitmap result;
         if (drawable instanceof BitmapDrawable) {
@@ -248,5 +359,29 @@ public class PrivateSpaceHeaderViewControllerTest {
 
     private static void awaitTasksCompleted() throws Exception {
         UI_HELPER_EXECUTOR.submit(() -> null).get();
+    }
+
+    private int addPrivateSpaceHeader(List<BaseAllAppsAdapter.AdapterItem> adapterItemList) {
+        BaseAllAppsAdapter.AdapterItem privateSpaceHeader =
+                new BaseAllAppsAdapter.AdapterItem(VIEW_TYPE_PRIVATE_SPACE_HEADER);
+        adapterItemList.add(privateSpaceHeader);
+        return adapterItemList.size();
+    }
+
+    private AppInfo[] createAppInfoList() {
+        List<AppInfo> appInfos = new ArrayList<>();
+        ComponentName gmailComponentName = new ComponentName(mContext,
+                "com.android.launcher3.tests.Activity" + "Gmail");
+        AppInfo gmailAppInfo = new
+                AppInfo(gmailComponentName, "Gmail", MAIN_HANDLE, new Intent());
+        appInfos.add(gmailAppInfo);
+        ComponentName privateCameraComponentName = new ComponentName(
+                "com.android.launcher3.tests.camera", "CameraActivity");
+        for (int i = 0; i < NUM_PRIVATE_SPACE_APPS; i++) {
+            AppInfo privateCameraAppInfo = new AppInfo(privateCameraComponentName,
+                    "Private Camera " + i, PRIVATE_HANDLE, new Intent());
+            appInfos.add(privateCameraAppInfo);
+        }
+        return appInfos.toArray(AppInfo[]::new);
     }
 }
