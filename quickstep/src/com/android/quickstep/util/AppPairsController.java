@@ -113,7 +113,7 @@ public class AppPairsController {
     public void saveAppPair(GroupedTaskView gtv) {
         TaskView.TaskIdAttributeContainer[] attributes = gtv.getTaskIdAttributeContainers();
         WorkspaceItemInfo recentsInfo1 = attributes[0].getItemInfo();
-        WorkspaceItemInfo recentsInfo2 = attributes[0].getItemInfo();
+        WorkspaceItemInfo recentsInfo2 = attributes[1].getItemInfo();
         WorkspaceItemInfo app1 = lookupLaunchableItem(recentsInfo1.getComponentKey());
         WorkspaceItemInfo app2 = lookupLaunchableItem(recentsInfo2.getComponentKey());
 
