@@ -561,14 +561,18 @@ public abstract class AbstractLauncherUiTest {
                 true /* newTask */);
     }
 
-    public static void startTestActivity(int activityNumber) {
+    public static void startTestActivity(String activityName, String activityLabel) {
         final String packageName = getAppPackageName();
         final Intent intent = getInstrumentation().getContext().getPackageManager().
                 getLaunchIntentForPackage(packageName);
         intent.setComponent(new ComponentName(packageName,
-                "com.android.launcher3.tests.Activity" + activityNumber));
-        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber),
+                "com.android.launcher3.tests." + activityName));
+        startIntent(intent, By.pkg(packageName).text(activityLabel),
                 false /* newTask */);
+    }
+
+    public static void startTestActivity(int activityNumber) {
+        startTestActivity("Activity" + activityNumber, "TestActivity" + activityNumber);
     }
 
     public static void startImeTestActivity() {
