@@ -19,6 +19,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Rect
+import android.platform.test.flag.junit.SetFlagsRule
 import android.platform.test.rule.AllowedDevices
 import android.platform.test.rule.DeviceProduct
 import android.platform.test.rule.IgnoreLimit
@@ -33,6 +34,7 @@ import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
 import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.rule.TestStabilityRule
+import com.android.launcher3.util.rule.setFlags
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
 import com.google.common.truth.Truth
@@ -63,6 +65,8 @@ abstract class AbstractDeviceProfileTest {
     private val displayController: DisplayController = mock()
     private val windowManagerProxy: WindowManagerProxy = mock()
     private val launcherPrefs: LauncherPrefs = mock()
+
+    @get:Rule val setFlagsRule = SetFlagsRule(SetFlagsRule.DefaultInitValueType.DEVICE_DEFAULT)
 
     @Rule @JvmField val testStabilityRule = TestStabilityRule()
 
@@ -270,6 +274,7 @@ abstract class AbstractDeviceProfileTest {
         isGestureMode: Boolean = true,
         densityDpi: Int
     ) {
+        setFlagsRule.setFlags(false, Flags.FLAG_ENABLE_TWOLINE_TOGGLE)
         val windowsBounds = perDisplayBoundsCache[displayInfo]!!
         val realBounds = windowsBounds[rotation]
         whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)
