@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldDefaults
@@ -131,7 +130,7 @@ private fun SearchBar(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchTextField(
     value: String,
@@ -159,7 +158,7 @@ private fun SearchTextField(
                     enabled = true,
                     singleLine = true,
                     visualTransformation = VisualTransformation.None,
-                    interactionSource = remember<MutableInteractionSource> { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() },
                     placeholder = placeholder,
                     colors = OutlinedTextFieldDefaults.colors(),
                     contentPadding = PaddingValues(4.dp),

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDropDown
@@ -140,7 +139,7 @@ fun FontSelection(
         placeholder = {
             Text(
                 text = stringResource(id = R.string.label_search),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
         actions = {
@@ -263,7 +262,7 @@ private fun FontSelectionItem(
                         Icon(
                             imageVector = Icons.Rounded.Delete,
                             contentDescription = stringResource(id = R.string.delete),
-                            tint = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }

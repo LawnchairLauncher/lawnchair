@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -81,7 +80,7 @@ fun NotificationDotsPreference(
                         .size(24.dp),
                     painter = painterResource(id = R.drawable.ic_warning),
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         } else {

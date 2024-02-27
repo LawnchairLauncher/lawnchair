@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ContentCopy
@@ -233,7 +231,7 @@ private fun ClipboardButton(
         description = { description?.let { Text(text = it) } },
         startWidget = {
             val tint = LocalContentColor.current
-            val contentAlpha = if (enabled) tint.alpha else ContentAlpha.disabled
+            val contentAlpha = if (enabled) tint.alpha else 0.38f
             val alpha by animateFloatAsState(targetValue = contentAlpha, label = "")
             Icon(
                 imageVector = imageVector,
@@ -299,8 +297,7 @@ private fun CornerSlider(
             ) {
                 Text(text = label)
                 CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
                 ) {
                     val valueText = stringResource(
                         id = R.string.n_percent,
