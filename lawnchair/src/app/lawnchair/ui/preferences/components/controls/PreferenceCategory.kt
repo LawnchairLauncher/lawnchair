@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences.components.layout
+package app.lawnchair.ui.preferences.components.controls
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.PreviewLawnchair
@@ -74,7 +75,7 @@ fun PreferenceCategory(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(
                         bounded = true,
-                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     ),
                     onClick = { onNavigate() },
                 ),

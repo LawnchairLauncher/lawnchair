@@ -37,7 +37,7 @@ import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
-import app.lawnchair.ui.preferences.components.layout.PreferenceCategory
+import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
