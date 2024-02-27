@@ -112,7 +112,7 @@ fun SliderPreference(
                         } else {
                             value.roundToInt().toString() + " $showUnit"
                         },
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

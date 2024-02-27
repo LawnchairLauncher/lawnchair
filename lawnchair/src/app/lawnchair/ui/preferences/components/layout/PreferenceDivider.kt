@@ -17,6 +17,6 @@ fun PreferenceDivider(
     HorizontalDivider(
         modifier = modifier
             .padding(start = startIndent + 16.dp, end = endIndent + 16.dp),
-        color = dividerColor()
+        color = dividerColor(),
     )
 }

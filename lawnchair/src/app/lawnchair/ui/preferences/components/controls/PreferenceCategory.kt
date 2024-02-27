@@ -27,7 +27,6 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -75,7 +74,7 @@ fun PreferenceCategory(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(
                         bounded = true,
-                        color = MaterialTheme.colorScheme.surfaceVariant
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                     ),
                     onClick = { onNavigate() },
                 ),
