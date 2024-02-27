@@ -24,6 +24,7 @@ import com.android.launcher3.util.LauncherLayoutBuilder
 import com.android.launcher3.util.LauncherModelHelper
 import com.android.launcher3.util.LauncherModelHelper.*
 import com.android.launcher3.util.TestUtil
+import com.android.launcher3.util.rule.TestStabilityRule
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import java.util.concurrent.CountDownLatch
@@ -87,6 +88,9 @@ class FolderIconLoadTest {
 
     @Test
     @Throws(Exception::class)
+    @TestStabilityRule.Stability(
+        flavors = TestStabilityRule.LOCAL or TestStabilityRule.PLATFORM_POSTSUBMIT
+    ) // b/319923578
     fun folderLoadedWithHighRes_max_3x3() {
         val idp = LauncherAppState.getIDP(modelHelper.sandboxContext)
         idp.numFolderColumns = intArrayOf(3, 3, 3, 3)
@@ -100,6 +104,9 @@ class FolderIconLoadTest {
 
     @Test
     @Throws(Exception::class)
+    @TestStabilityRule.Stability(
+        flavors = TestStabilityRule.LOCAL or TestStabilityRule.PLATFORM_POSTSUBMIT
+    ) // b/319923578
     fun folderLoadedWithHighRes_max_4x4() {
         val idp = LauncherAppState.getIDP(modelHelper.sandboxContext)
         idp.numFolderColumns = intArrayOf(4, 4, 4, 4)
@@ -113,6 +120,10 @@ class FolderIconLoadTest {
 
     @Test
     @Throws(Exception::class)
+    // Stress tests are long. We permanently demote them from presubmit to match the presubmit SLO.
+    @TestStabilityRule.Stability(
+        flavors = TestStabilityRule.LOCAL or TestStabilityRule.PLATFORM_POSTSUBMIT
+    ) // b/319923578
     fun folderLoadedWithHighRes_differentFolderConfigurations() {
         val idp = LauncherAppState.getIDP(modelHelper.sandboxContext)
         idp.numFolderColumns = intArrayOf(4, 3, 4, 4)
