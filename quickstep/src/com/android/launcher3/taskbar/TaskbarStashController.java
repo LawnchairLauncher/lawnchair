@@ -893,6 +893,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
 
         // Only update the following flags when system gesture is not in progress.
+        setStashedImeState();
+    }
+
+    private void setStashedImeState() {
         boolean shouldStashForIme = shouldStashForIme();
         updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
         if (hasAnyFlag(FLAG_STASHED_IN_APP_IME) != shouldStashForIme) {
@@ -901,6 +905,13 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         } else {
             applyState(mControllers.taskbarOverlayController.getCloseDuration());
         }
+    }
+
+    /**
+     * Should be called when Ime inset is changed to determine if taskbar should be stashed
+     */
+    public void onImeInsetChanged() {
+        setStashedImeState();
     }
 
     /**
@@ -952,7 +963,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *
      * <p>Do not stash if in small screen, with 3 button nav, and in landscape (or seascape).
      * <p>Do not stash if taskbar is transient.
-     * <p>Do not stash if hardware keyboard is attached and taskbar is pinned.
+     * <p>Do not stash if hardware keyboard is attached and taskbar is pinned and IME is docked
      */
     private boolean shouldStashForIme() {
         if (DisplayController.isTransientTaskbar(mActivity)) {
@@ -963,8 +974,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 && mActivity.getDeviceProfile().isLandscape) {
             return false;
         }
-        // Do not stash if pinned taskbar and hardware keyboard is attached.
-        if (mActivity.isHardwareKeyboard() && DisplayController.isPinnedTaskbar(mActivity)) {
+
+        // Do not stash if pinned taskbar, hardware keyboard is attached and no IME is docked
+        if (mActivity.isHardwareKeyboard() && DisplayController.isPinnedTaskbar(mActivity)
+                && !mActivity.isImeDocked()) {
             return false;
         }
 

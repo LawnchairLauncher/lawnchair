@@ -400,6 +400,9 @@
     <dimen name="taskbar_button_margin_split">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
 
+    <!--- Floating Ime Inset height-->
+    <dimen name="floating_ime_inset_height">0dp</dimen>
+
     <!-- Bubble bar (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="bubblebar_hotseat_adjustment_threshold">0dp</dimen>
 
