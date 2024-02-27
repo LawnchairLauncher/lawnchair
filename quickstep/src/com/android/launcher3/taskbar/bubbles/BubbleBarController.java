@@ -156,6 +156,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
      * {@link BubbleBarBubble}s so that it can be used to update the views.
      */
     private static class BubbleBarViewUpdate {
+        final boolean initialState;
         boolean expandedChanged;
         boolean expanded;
         boolean shouldShowEducation;
@@ -172,6 +173,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         List<BubbleBarBubble> currentBubbles;
 
         BubbleBarViewUpdate(BubbleBarUpdate update) {
+            initialState = update.initialState;
             expandedChanged = update.expandedChanged;
             expanded = update.expanded;
             shouldShowEducation = update.shouldShowEducation;
@@ -405,7 +407,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
         }
         if (update.bubbleBarLocation != null) {
             if (update.bubbleBarLocation != mBubbleBarViewController.getBubbleBarLocation()) {
-                mBubbleBarViewController.setBubbleBarLocation(update.bubbleBarLocation);
+                // Animate when receiving updates. Skip it if we received the initial state.
+                boolean animate = !update.initialState;
+                mBubbleBarViewController.setBubbleBarLocation(update.bubbleBarLocation, animate);
                 mBubbleStashController.setBubbleBarLocation(update.bubbleBarLocation);
             }
         }

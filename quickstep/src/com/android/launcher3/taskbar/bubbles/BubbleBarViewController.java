@@ -179,8 +179,8 @@ public class BubbleBarViewController {
     /**
      * Update bar {@link BubbleBarLocation}
      */
-    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
-        mBarView.setBubbleBarLocation(bubbleBarLocation);
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation, boolean animate) {
+        mBarView.setBubbleBarLocation(bubbleBarLocation, animate);
     }
 
     /**
