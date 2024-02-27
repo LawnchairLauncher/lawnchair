@@ -26,11 +26,7 @@ fun <T> ColorDot(
     val colorLight = entry.lightColor(context)
     val colorDark = entry.darkColor(context)
 
-    val color = if (!isSelectedThemeDark()) {
-        colorLight
-    } else {
-        colorDark
-    }
+    val color = if (isSelectedThemeDark()) colorDark else colorLight
 
     if (colorLight != 0) {
         ColorDot(

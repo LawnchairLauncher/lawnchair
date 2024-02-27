@@ -93,10 +93,10 @@ fun <T> ColorSwatch(
     selected: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val color = if (!isSelectedThemeDark()) {
-        entry.lightColor(LocalContext.current)
-    } else {
+    val color = if (isSelectedThemeDark()) {
         entry.darkColor(LocalContext.current)
+    } else {
+        entry.lightColor(LocalContext.current)
     }
 
     Box(
