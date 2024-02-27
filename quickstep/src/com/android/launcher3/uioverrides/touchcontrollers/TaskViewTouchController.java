@@ -21,7 +21,6 @@ import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_BOTH
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.view.MotionEvent;
 import android.view.View;
@@ -80,6 +79,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     private float mDisplacementShift;
     private float mProgressMultiplier;
     private float mEndDisplacement;
+    private boolean mDraggingEnabled = true;
     private FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
     private Float mOverrideVelocity = null;
 
@@ -270,6 +270,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     @Override
     public void onDragStart(boolean start, float startDisplacement) {
+        if (!mDraggingEnabled) return;
+
         RecentsPagedOrientationHandler orientationHandler =
                 mRecentsView.getPagedOrientationHandler();
         if (mCurrentAnimation == null) {
@@ -285,6 +287,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     @Override
     public boolean onDrag(float displacement) {
+        if (!mDraggingEnabled) return true;
+
         RecentsPagedOrientationHandler orientationHandler =
                 mRecentsView.getPagedOrientationHandler();
         float totalDisplacement = displacement + mDisplacementShift;
@@ -317,12 +321,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                 mOverrideVelocity = -mTaskBeingDragged.getResources().getDimension(velocityDimenId);
 
                 // Once halfway through task dismissal interpolation, switch from reversible
-                // dragging-task animation to playing the remaining task translation animations
-                final long now = SystemClock.uptimeMillis();
-                MotionEvent upAction = MotionEvent.obtain(now, now,
-                        MotionEvent.ACTION_UP, 0.0f, 0.0f, 0);
-                mDetector.onTouchEvent(upAction);
-                upAction.recycle();
+                // dragging-task animation to playing the remaining task translation animations,
+                // while this is in progress disable dragging.
+                mDraggingEnabled = false;
             }
         } else {
             mCurrentAnimation.setPlayFraction(
@@ -343,7 +344,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                 R.dimen.max_task_dismiss_drag_velocity);
         velocity = Utilities.boundToRange(velocity, -maxTaskDismissDragVelocity,
                 maxTaskDismissDragVelocity);
-        boolean fling = mDetector.isFling(velocity);
+        boolean fling = mDraggingEnabled && mDetector.isFling(velocity);
         final boolean goingToEnd;
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
         if (blockedFling) {
@@ -371,19 +372,21 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                 MIN_TASK_DISMISS_ANIMATION_DURATION, MAX_TASK_DISMISS_ANIMATION_DURATION);
 
         mCurrentAnimation.setEndAction(this::clearState);
-        mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,
-                velocity * orientationHandler.getSecondaryTranslationDirectionFactor(),
+        mCurrentAnimation.startWithVelocity(mActivity, goingToEnd, Math.abs(velocity),
                 mEndDisplacement, animationDuration);
         if (goingUp && goingToEnd && !mIsDismissHapticRunning) {
             VibratorWrapper.INSTANCE.get(mActivity).vibrate(TASK_DISMISS_VIBRATION_PRIMITIVE,
                     TASK_DISMISS_VIBRATION_PRIMITIVE_SCALE, TASK_DISMISS_VIBRATION_FALLBACK);
             mIsDismissHapticRunning = true;
         }
+
+        mDraggingEnabled = true;
     }
 
     private void clearState() {
         mDetector.finishedScrolling();
         mDetector.setDetectableScrollConditions(0, false);
+        mDraggingEnabled = true;
         mTaskBeingDragged = null;
         mCurrentAnimation = null;
         mIsDismissHapticRunning = false;
