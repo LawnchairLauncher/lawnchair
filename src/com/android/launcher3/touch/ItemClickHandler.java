@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.BuildConfig;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -149,7 +150,15 @@ public class ItemClickHandler {
     private static void onClickAppPairIcon(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         AppPairIcon appPairIcon = (AppPairIcon) v;
-        if (appPairIcon.getInfo().isDisabled()) {
+        if (!appPairIcon.isLaunchableAtScreenSize()) {
+            // Display a message for app pairs that are disabled due to screen size
+            boolean isFoldable = InvariantDeviceProfile.INSTANCE.get(launcher)
+                    .supportedProfiles.stream().anyMatch(dp -> dp.isTwoPanels);
+            Toast.makeText(launcher, isFoldable
+                            ? R.string.app_pair_needs_unfold
+                            : R.string.app_pair_unlaunchable_at_screen_size,
+                    Toast.LENGTH_SHORT).show();
+        } else if (appPairIcon.getInfo().isDisabled()) {
             WorkspaceItemInfo app1 = appPairIcon.getInfo().contents.get(0);
             WorkspaceItemInfo app2 = appPairIcon.getInfo().contents.get(1);
             // Show the user why the app pair is disabled.

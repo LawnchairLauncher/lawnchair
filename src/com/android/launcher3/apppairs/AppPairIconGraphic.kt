@@ -46,6 +46,9 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         private const val CENTER_CHANNEL_SCALE = 1 / 30f
         private const val BIG_RADIUS_SCALE = 1 / 5f
         private const val SMALL_RADIUS_SCALE = 1 / 15f
+        // Disabled alpha is 38%, or 97/255
+        private const val DISABLED_ALPHA = 97
+        private const val ENABLED_ALPHA = 255
     }
 
     // App pair icons are slightly smaller than regular icons, so we pad the icon by this much on
@@ -133,7 +136,13 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
+
+        val drawAlpha =
+            if (!parentIcon.isLaunchableAtScreenSize || parentIcon.info.isDisabled) DISABLED_ALPHA
+            else ENABLED_ALPHA
+
         // Draw background
+        appPairBackground.alpha = drawAlpha
         appPairBackground.draw(canvas)
 
         // Make sure icons are loaded and fresh
@@ -147,6 +156,7 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         } else {
             canvas.translate(width / 2f - memberIconSize / 2f, innerPadding)
         }
+        appIcon1?.alpha = drawAlpha
         appIcon1?.draw(canvas)
         canvas.restore()
 
@@ -164,6 +174,7 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
                 height - (innerPadding + memberIconSize)
             )
         }
+        appIcon2?.alpha = drawAlpha
         appIcon2?.draw(canvas)
         canvas.restore()
     }

@@ -107,6 +107,15 @@ public class ApiWrapper {
                         .authority(context.getPackageName()).build());
     }
 
+    /**
+     * Checks if an activity is flagged as non-resizeable.
+     */
+    public static boolean isNonResizeableActivity(LauncherActivityInfo lai) {
+        // Overridden in quickstep
+        return false;
+    }
+
+
     private static class NoopDrawable extends ColorDrawable {
         @Override
         public int getIntrinsicHeight() {
