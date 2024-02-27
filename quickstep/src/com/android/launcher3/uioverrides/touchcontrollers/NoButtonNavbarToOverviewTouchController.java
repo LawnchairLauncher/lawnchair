@@ -56,7 +56,7 @@ import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Touch controller which handles swipe and hold from the nav bar to go to Overview. Swiping above
@@ -72,7 +72,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private static final float TRANSLATION_ANIM_VELOCITY_DP_PER_MS = 0.8f;
 
     private final VibratorWrapper mVibratorWrapper;
-    private final Consumer<AnimatorSet> mCancelSplitRunnable;
+    private final BiConsumer<AnimatorSet, Long> mCancelSplitRunnable;
     private final RecentsView mRecentsView;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
@@ -93,7 +93,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
      *                            Animation should be added to the provided AnimatorSet
      */
     public NoButtonNavbarToOverviewTouchController(Launcher l,
-            Consumer<AnimatorSet> cancelSplitRunnable) {
+            BiConsumer<AnimatorSet, Long> cancelSplitRunnable) {
         super(l);
         mRecentsView = l.getOverviewPanel();
         mMotionPauseDetector = new MotionPauseDetector(l);
@@ -208,9 +208,10 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             // Normally we compute the duration based on the velocity and distance to the given
             // state, but since the hint state tracks the entire screen without a clear endpoint, we
             // need to manually set the duration to a reasonable value.
-            animator.setDuration(HINT_STATE.getTransitionDuration(mLauncher, true /* isToState */));
+            long duration = HINT_STATE.getTransitionDuration(mLauncher, true /* isToState */);
+            animator.setDuration(duration);
             AnimatorSet animatorSet = new AnimatorSet();
-            mCancelSplitRunnable.accept(animatorSet);
+            mCancelSplitRunnable.accept(animatorSet, duration);
             animatorSet.start();
         }
         if (FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() &&
