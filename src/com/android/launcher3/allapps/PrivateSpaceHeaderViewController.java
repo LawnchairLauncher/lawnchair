@@ -17,6 +17,7 @@
 package com.android.launcher3.allapps;
 
 import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
@@ -49,6 +50,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.UserProfileManager.UserProfileState;
 import com.android.launcher3.anim.AnimatedPropertySetter;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
 
@@ -220,11 +222,15 @@ public class PrivateSpaceHeaderViewController {
     private ValueAnimator animateCollapseAnimation(ViewGroup lockButton) {
         float from = 1;
         float to = 0;
+        RecyclerViewFastScroller scrollBar = mAllApps.getActiveRecyclerView().getScrollbar();
         ValueAnimator collapseAnim = ValueAnimator.ofFloat(from, to);
         collapseAnim.setDuration(EXPAND_COLLAPSE_DURATION);
         collapseAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                if (scrollBar != null) {
+                    scrollBar.setVisibility(INVISIBLE);
+                }
                 // scroll up
                 collapse();
                 // Animate the collapsing of the text.
@@ -233,6 +239,10 @@ public class PrivateSpaceHeaderViewController {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
+                if (scrollBar != null) {
+                    scrollBar.setThumbOffsetY(-1);
+                    scrollBar.setVisibility(VISIBLE);
+                }
                 mPrivateProfileManager.lockPrivateProfile();
             }
         });
