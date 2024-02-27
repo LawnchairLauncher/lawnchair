@@ -124,6 +124,7 @@ public final class WidgetsListTableViewHolderBinder
                 widget.applyFromCellItem(widgetItem, 1f,
                         bitmap -> holder.onPreviewLoaded(Pair.create(widgetItem, bitmap)),
                         holder.previewCache.get(widgetItem));
+                widget.requestLayout();
             }
         }
     }
