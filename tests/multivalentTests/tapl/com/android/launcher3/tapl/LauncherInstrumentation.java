@@ -1207,7 +1207,8 @@ public final class LauncherInstrumentation {
             waitForNavigationUiObject("back").click();
         }
         if (launcherVisible) {
-            if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
+            if (InstrumentationRegistry.getTargetContext().getApplicationInfo()
+                    .isOnBackInvokedCallbackEnabled()) {
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
             } else {
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
