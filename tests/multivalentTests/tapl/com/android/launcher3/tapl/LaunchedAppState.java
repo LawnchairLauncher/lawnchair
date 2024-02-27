@@ -24,7 +24,9 @@ import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_B
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_SHELL_DRAG_READY;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_STASHED_TASKBAR_SCALE;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_TASKBAR_FROM_NAV_THRESHOLD;
+import static com.android.launcher3.testing.shared.TestProtocol.SUCCESSFUL_GESTURE_MISMATCH_EVENTS;
 import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -139,6 +141,8 @@ public final class LaunchedAppState extends Background {
 
             return new Taskbar(mLauncher);
         } finally {
+            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
+                    "swipeUpToUnstashTaskbar: completed gesture");
             mLauncher.getTestInfo(REQUEST_DISABLE_BLOCK_TIMEOUT);
         }
     }
