@@ -16,15 +16,9 @@
 
 package app.lawnchair.ui.preferences.components.layout
 
-import androidx.compose.material3.Surface as Surface
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -44,7 +38,6 @@ import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.PreviewLawnchair
-import app.lawnchair.ui.util.addIf
 import com.android.launcher3.R
 
 @Composable
@@ -81,8 +74,7 @@ fun PreferenceCategory(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(
                         bounded = true,
-                        radius = 16.dp,
-//                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
                     ),
                     onClick = { onNavigate() },
                 ),
