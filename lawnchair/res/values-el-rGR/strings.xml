@@ -166,7 +166,7 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Προσθήκη Nέων Eφαρμογών Στην Αρχική Οθόνη</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_enable">Εμφάνιση Ροής</string>
     <string name="minus_one_unavailable">Δεν υπάρχει εγκατεστημένη τροφοδοσία.</string>
     <string name="minus_one">Ροή</string>
     <string name="feed_provider">Πάροχος Ροής</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Αναζήτηση Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">Εμφάνιση Μπάρας Εφαρμογών</string>
     <string name="hotseat_mode_label">Γραφικό Μπάρας Αναζήτησης</string>
     <string name="hotseat_mode_disabled">Απενεργοποιημένο</string>
     <string name="hotseat_mode_lawnchair">Εκκινητής Lawnchair</string>
@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">Απόκρυψη στα Αποτελέσματα Αναζήτησης</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Μαζική φόρτωση Εφαρμογών</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Μαζική φόρτωση και εμφάνιση εικονιδίων αντί για ατομική φόρτωση και εμφάνιση εικονιδίων</string>
+    <string name="pref_all_apps_remember_position_title">Απομνημόνευση Θέσης</string>
+    <string name="pref_all_apps_remember_position_description">Απομνημόνευση της τελευταίας θέσης στο συρτάρι εφαρμογών αντί για την κορυφή του</string>
+    <string name="pref_all_apps_show_scrollbar_title">Εμφάνιση Πλαϊνής Μπάρας Κύλισης</string>
     <string name="pref_category_search">Αναζήτηση</string>
     <string name="show_app_search_bar">Εμφάνιση Γραμμής Αναζήτησης</string>
     <string name="pref_search_auto_show_keyboard">Αυτόματη Εμφάνιση Πληκτρολογίου</string>
@@ -346,7 +349,7 @@
     <string name="action_share">Κοινοποίηση</string>
     <string name="action_lens">Φακός</string>
     <string name="recents_clear_all">Εκκαθάριση Όλων</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Αναγκαστικό κλείσιμο</string>
     <string name="window_corner_radius_label">Ακτίνα Γωνίας Οθόνης</string>
     <string name="override_window_corner_radius_label">Προσαρμοσμένη Ακτίνα Γωνίας Οθόνης</string>
     <string name="window_corner_radius_description">Όταν σύρετε προς τα πάνω για να ανοίξετε τα Πρόσφατα, η τρέχουσα εφαρμογή ακολουθεί το δάχτυλό σας και συρρικνώνεται σε μια κάρτα. Χρησιμοποιήστε αυτό το ρυθμιστικό για να ρυθμίσετε την ακτίνα γωνίας της κάρτας όταν είναι σχεδόν σε πλήρη οθόνη έτσι ώστε να ταιριάζει με τις γωνίες της οθόνης σας.</string>

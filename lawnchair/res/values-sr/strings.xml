@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">Сакриј у резултатима претраге</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Учитавај апликације одједном</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Учитава и приказује иконе групно уместо појединачно</string>
+    <string name="pref_all_apps_remember_position_title">Запамти положај</string>
+    <string name="pref_all_apps_remember_position_description">Креће од последњег положаја у листи апликација уместо од врха</string>
+    <string name="pref_all_apps_show_scrollbar_title">Прикажи клизач</string>
     <string name="pref_category_search">Претрага</string>
     <string name="show_app_search_bar">Прикажи оквир за претрагу</string>
     <string name="pref_search_auto_show_keyboard">Аутоматски приказуј тастатуру</string>
@@ -347,7 +350,7 @@
     <string name="action_share">Дели</string>
     <string name="action_lens">Објектив</string>
     <string name="recents_clear_all">Обриши све</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Принудно затвори</string>
     <string name="window_corner_radius_label">Радијус угла екрана</string>
     <string name="override_window_corner_radius_label">Прилагођени радијус угла екрана</string>
     <string name="window_corner_radius_description">Када превучете нагоре и отворите Недавно, тренутна апликација ће пратити ваш прст и смањити се у картицу. Помоћу овог клизача подесите радијус угла картице када је скоро у режиму целог екрана како би одговарала угловима екрана.</string>
@@ -445,8 +448,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s и %s</string>
     <string name="system_settings">Подешавања система</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Откључај</string>
+    <string name="action_lock">Закључај</string>
+    <string name="recents_lock_unlock">Закључај/откључај</string>
+    <string name="recents_lock_unlock_description">Спречите брисање изабране апликације када додирнете „Обриши све”</string>
 </resources>

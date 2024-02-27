@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">Cacher dans les résultats de recherche</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Charger des applications en vrac</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Charger et afficher les icônes en vrac au lieu de charger et afficher individuellement les icônes</string>
+    <string name="pref_all_apps_remember_position_title">Remember Position</string>
+    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">Rechercher</string>
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
     <string name="pref_search_auto_show_keyboard">Afficher automatiquement le clavier</string>

@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">Sakrij u rezultatima pretrage</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Učitavaj aplikacije odjednom</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Učitava i prikazuje ikone grupno umesto pojedinačno</string>
+    <string name="pref_all_apps_remember_position_title">Zapamti položaj</string>
+    <string name="pref_all_apps_remember_position_description">Kreće od poslednjeg položaja u listi aplikacija umesto od vrha</string>
+    <string name="pref_all_apps_show_scrollbar_title">Prikaži klizač</string>
     <string name="pref_category_search">Pretraga</string>
     <string name="show_app_search_bar">Prikaži okvir za pretragu</string>
     <string name="pref_search_auto_show_keyboard">Automatski prikazuj tastaturu</string>
@@ -347,7 +350,7 @@
     <string name="action_share">Deli</string>
     <string name="action_lens">Objektiv</string>
     <string name="recents_clear_all">Obriši sve</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Prinudno zatvori</string>
     <string name="window_corner_radius_label">Radijus ugla ekrana</string>
     <string name="override_window_corner_radius_label">Prilagođeni radijus ugla ekrana</string>
     <string name="window_corner_radius_description">Kada prevučete nagore i otvorite Nedavno, trenutna aplikacija će pratiti vaš prst i smanjiti se u karticu. Pomoću ovog klizača podesite radijus ugla kartice kada je skoro u režimu celog ekrana kako bi odgovarala uglovima ekrana.</string>
@@ -445,8 +448,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s i %s</string>
     <string name="system_settings">Podešavanja sistema</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Otključaj</string>
+    <string name="action_lock">Zaključaj</string>
+    <string name="recents_lock_unlock">Zaključaj/otključaj</string>
+    <string name="recents_lock_unlock_description">Sprečite brisanje izabrane aplikacije kada dodirnete „Obriši sve”</string>
 </resources>

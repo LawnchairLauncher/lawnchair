@@ -51,7 +51,7 @@
     <string name="workspace_increase_max_grid_size_label">Tăng kích thước lưới màn hình chính lên tối đa</string>
     <string name="workspace_increase_max_grid_size_description">Tăng kích thước lưới ở màn hình chính cho phép tối đa từ 10 x 10 đến 20 x 20.</string>
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
-    <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ cache từ các gói biểu tượng</string>
+    <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
     <string name="transparent_background_icons">Biểu tượng theo chủ đề trong suốt</string>
     <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo chủ đề</string>
     <!-- GeneralPreferences -->
@@ -123,7 +123,7 @@
     <string name="icon_shape_octagon">Hình bát giác</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Vuông bo góc</string>
-    <string name="icon_shape_sharp_square">Hình vuông sắc nét</string>
+    <string name="icon_shape_sharp_square">Hình vuông</string>
     <string name="icon_shape_square">Vuông</string>
     <string name="icon_shape_squircle">Vuông tròn</string>
     <string name="icon_shape_teardrop">Giọt nước</string>
@@ -169,23 +169,23 @@
     <string name="minus_one_enable">Hiện bản tin</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin.</string>
     <string name="minus_one">Bản tin</string>
-    <string name="feed_provider">Nhà cung cấp thức ăn</string>
+    <string name="feed_provider">Nhà cung cấp bảng Feed</string>
     <string name="feed_default">Mặc định</string>
     <string name="wallpaper">Hình nền</string>
     <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
     <string name="wallpaper_depth_effect_label">Hiệu ứng chiều sâu hình nền</string>
-    <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi trạng thái.</string>
+    <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi giữa các khu vực của trình khởi chạy.</string>
     <string name="show_sys_ui_scrim">Đổ bóng phía trên</string>
     <string name="layout">Bố cục</string>
     <string name="home_screen_grid">Lưới màn hình chính</string>
     <string name="home_screen_lock">Khoá màn hình chính</string>
-    <string name="home_screen_lock_description">Ngăn các thay đổi đối với bố cục màn hình chính.</string>
+    <string name="home_screen_lock_description">Ngăn bố cục màn hình chính bị thay đổi.</string>
     <string name="home_screen_unlock">Mở khóa màn hình chính</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Đã khoá màn hình chính.</string>
     <string name="show_dot_pagination_label">Hiển thị dấu chấm số trang</string>
     <string name="show_dot_pagination_description">Bật hiển thị dấu chấm số trang trong không gian làm việc.</string>
-    <string name="show_material_u_popup_label">Hiển thị tài liệu trong cửa sổ popup</string>
+    <string name="show_material_u_popup_label">Hiện popup phong cách Material U</string>
     <string name="show_material_u_popup_description">Cửa sổ popup bật nảy lên và hơi hợp nhất.</string>
     <string name="popup_menu">Menu pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Hiển thị phím khóa</string>
@@ -236,7 +236,7 @@
     <string name="smartspace_requires_setup">Chạm để thiết lập</string>
     <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, kích hoạt Dấu chấm thông báo.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregory</string>
+    <string name="smartspace_calendar_gregorian">Dương</string>
     <string name="smartspace_calendar_persian">Ba Tư</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
     <string name="smartspace_widget_toggle_label">Hiện trên Màn Hình Chính</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Tìm kiếm</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">Hiện thanh dock</string>
     <string name="hotseat_mode_label">Tiện ích thanh tìm kiếm</string>
     <string name="hotseat_mode_disabled">Đã vô hiệu hoá</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">Ẩn khỏi kết quả tìm kiếm</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Load hàng loạt ứng dụng</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Load và hiện thị các biểu tượng hàng loạt thay vì tải và hiển thị các biểu tượng riêng lẻ</string>
+    <string name="pref_all_apps_remember_position_title">Nhớ vị trí</string>
+    <string name="pref_all_apps_remember_position_description">Nhớ vị trí khi bạn rời khỏi thay vì trên cùng</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">Tìm kiếm</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
@@ -345,7 +348,7 @@
     <string name="action_share">Chia sẻ</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Xoá tất cả</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Buộc đóng</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
@@ -389,7 +392,7 @@
     <string name="label">Nhãn</string>
     <string name="hide_from_drawer">Ẩn khỏi ngăn kéo ứng dụng</string>
     <string name="suggestion_pref_screen_title">Gợi ý</string>
-    <string name="show_suggested_apps_at_drawer_top">Hiển thị ứng dụng đề xuất ở phần đầu danh sách</string>
+    <string name="show_suggested_apps_at_drawer_top">Hiển thị ứng dụng đề xuất ở đầu danh sách</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
     <string name="crash_report_notif_title">%1$s đã dừng</string>
@@ -422,7 +425,7 @@
     <string name="warn_contact_permission_content">Yêu cầu quyền truy cập danh bạ</string>
     <string name="warn_files_permission_content">Yêu cầu quyền lưu trữ</string>
     <string name="all_apps_search_result_files_description">Phương tiện truyền thông, tài liệu, thư mục, và hơn thế nữa.</string>
-    <string name="all_apps_search_result_contacts_description">Danh bạn và mục khác</string>
+    <string name="all_apps_search_result_contacts_description">Danh bạ và mục khác</string>
     <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
     <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
     <string name="delete">Xoá</string>
@@ -443,8 +446,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Cài đặt hệ thống</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Mở khóa</string>
+    <string name="action_lock">Khóa</string>
+    <string name="recents_lock_unlock">Khóa/Mở khóa</string>
+    <string name="recents_lock_unlock_description">Ngăn ứng dụng được chọn bị đóng khi sử dụng \"Đóng tất cả\"</string>
 </resources>

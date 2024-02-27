@@ -169,7 +169,7 @@
     <string name="minus_one_enable">Akışı göster</string>
     <string name="minus_one_unavailable">Akış mevcut değil</string>
     <string name="minus_one">Akış</string>
-    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_provider">Akış Sağlayıcı</string>
     <string name="feed_default">Varsayılan</string>
     <string name="wallpaper">Duvar Kağıdı</string>
     <string name="wallpaper_scrolling_label">Duvar Kağıdını Kaydır</string>
@@ -185,12 +185,12 @@
     <string name="home_screen_locked">Ana Ekran kilitli.</string>
     <string name="show_dot_pagination_label">Show dot pagination</string>
     <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_label">Material you popup göster</string>
     <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">Açılır menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Kilit tuşunu göster</string>
     <string name="show_system_settings_entry">Sistem ayarları girişini göster</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Düzenle tuşunu göster</string>
     <string name="status_bar_label">Durum Çubuğu</string>
     <string name="show_status_bar">Durum Çubuğunu Göster</string>
     <string name="dark_status_bar_label">Koyu Durum Çubuğu</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Google Arama</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">Dock\'u göster</string>
     <string name="hotseat_mode_label">Arama Kutusu Widget\'ı</string>
     <string name="hotseat_mode_disabled">Devre dışı</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -262,7 +262,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Uygulama Araması</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">Lawnchar\'ın %1$s &amp; ile sponsorluk anlaşması vardır\n\n %1$s ile arama yaparak Lawnchair\'a katkı sağlayabilirsiniz.</string>
     <string name="app_label">Uygulama</string>
     <string name="website_label">Web sitesi</string>
     <string name="qsb_search_provider_app_required">Uygulama gereklidir.</string>
@@ -274,8 +274,11 @@
     <string name="hidden_apps_label">Gizlenmiş Uygulamalar</string>
     <string name="show_enable_smart_hide">Tam adı Yazıldığında Göster</string>
     <string name="hide_hidden_apps_search">Arama Sonuçlarında gizle</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Uygulamaları toplu olarak yükle</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_remember_position_title">Remember Position</string>
+    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">Ara</string>
     <string name="show_app_search_bar">Arama Çubuğunu Göster</string>
     <string name="pref_search_auto_show_keyboard">Klavyeyi Otomatik Göster</string>
@@ -288,18 +291,18 @@
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
     <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
-    <string name="clear_history">Clear</string>
+    <string name="clear_history">Geçmişi temizle</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Uygulama Çekmecesi Sütunları</string>
     <string name="row_height_label">Satır yüksekliği</string>
     <string name="app_drawer_indent_label">Horizontal Padding</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
+    <string name="perform_wide_search_title">Yerel arama</string>
+    <string name="perform_wide_search_file">Dosya arama</string>
     <string name="pref_suggestion_label">Öneriler</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="pref_recent_suggestion_title">History</string>
+    <string name="pref_suggestion_title">Web önerileri (<xliff:g id="startpage">Startpage</xliff:g> ile)</string>
+    <string name="pref_advance_search_category">Gelişmiş Arama</string>
+    <string name="perform_wide_search_description">Uyglama menüsünde kişileri, dosyaları ve ayarları ara.</string>
+    <string name="pref_recent_suggestion_title">Geçmiş</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -339,14 +342,14 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">Lawnchair, Son Kullanılanlar sağlayıcısı olarak ayarlanmadığından bu ayarlar göz ardı edilecektir.</string>
     <string name="translucent_background">Hafif Saydam Arka Plan</string>
     <string name="recents_actions_label">Hızlı Eylemler</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Paylaş</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Hepsini Temizle</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Zorla kapat</string>
     <string name="window_corner_radius_label">Ekran Köşe Yarıçapı</string>
     <string name="override_window_corner_radius_label">Özel Köşe Yarıçapı</string>
     <string name="window_corner_radius_description">Son Kullanılanları açmak için yukarı kaydırınca mevcut uygulama parmağınızı takip edip bir kart haline küçülür. Bu kart neredeyse tam ekranken kartın köşesinin yarıçapının ekranınızın köşesiyle uyuşması için bu kaydırıcıyı kullanın.</string>
@@ -414,15 +417,15 @@
     <string name="label_voice_search">Sesli Arama</string>
     <string name="search_pref_result_settings_entry_title">Settings Entry</string>
     <string name="all_apps_search_market_message">Daha Fazla Uygulama İçin Ara</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message"><xliff:g id="startpage">Startpage</xliff:g> \'da ara</string>
     <string name="error_no_market_or_browser_installed">Ne uygulama mağazası ne de tarayıcı yüklü değil.</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_suggestions">Web\'den</string>
+    <string name="all_apps_search_result_contacts_from_device">Kişilerden</string>
+    <string name="all_apps_search_result_files">Dosyalardan</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Ayarlardan</string>
+    <string name="warn_contact_permission_content">Kişilere erişim izni gerektirir</string>
+    <string name="warn_files_permission_content">Depolama izni gerektirir</string>
+    <string name="all_apps_search_result_files_description">Medya, belgeler, dosyalar vb.</string>
     <string name="all_apps_search_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">Uyumsuz Sistem Entegrasyonu</string>
     <string name="quickstep_incompatible_description">Cihazınız %1$s tarafından sağlanan sistem hareketlerine (Quickstep olarak bilinir) sahip olacak şekilde yapılandırılmış, ancak %1$s ürününün bu sürümü Android sürümünüzle uyumlu değil. Cihazınızı kullanmaya devam etmek için lütfen %1$s güncellemelerini kaldırın veya sistem hareketi sağlayıcısı olarak %1$s\'yi devre dışı bırakın.</string>
@@ -444,8 +447,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Sistem ayarları</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="action_unlock">Kilidi aç</string>
+    <string name="action_lock">Kilitle</string>
+    <string name="recents_lock_unlock">Kilitle/Kilidi aç</string>
     <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

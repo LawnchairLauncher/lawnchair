@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">在搜尋結果中隱藏</string>
     <string name="pref_all_apps_bulk_icon_loading_title">批次處理應用程式</string>
     <string name="pref_all_apps_bulk_icon_loading_description">同時載入並顯示所有應用程式</string>
+    <string name="pref_all_apps_remember_position_title">記住位置</string>
+    <string name="pref_all_apps_remember_position_description">離開後保留之前的位置而不是重置到頂部</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">搜尋</string>
     <string name="show_app_search_bar">顯示搜尋列</string>
     <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
