@@ -285,7 +285,8 @@ public class DesktopVisibilityController {
         if (dragLayer != null) {
             dragLayer.setVisibility(visibility);
         }
-        if (mLauncher instanceof QuickstepLauncher ql && ql.getTaskbarUIController() != null) {
+        if (mLauncher instanceof QuickstepLauncher ql && ql.getTaskbarUIController() != null
+                && mVisibleFreeformTasksCount != 0) {
             ql.getTaskbarUIController().onLauncherVisibilityChanged(visibility == VISIBLE);
         }
     }
