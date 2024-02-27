@@ -155,7 +155,7 @@ fun SmartspaceProviderPreference(
 
 @Composable
 fun SmartspacePreview() {
-    val themeRes = if (isSelectedThemeDark()) R.style.AppTheme_Dark else R.style.AppTheme_DarkText
+    val themeRes = if (isSelectedThemeDark) R.style.AppTheme_Dark else R.style.AppTheme_DarkText
     val context = LocalContext.current
     val themedContext = remember(themeRes) { ContextThemeWrapper(context, themeRes) }
 
