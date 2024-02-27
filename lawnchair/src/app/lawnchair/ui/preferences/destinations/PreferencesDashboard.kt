@@ -165,7 +165,7 @@ fun PreferencesOverflowMenu() {
         })
         PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
         DropdownMenuItem(onClick = {
-            navController.navigate("${Routes.CREATE_BACKUP}/")
+            navController.navigate("/${Routes.CREATE_BACKUP}/")
             hideMenu()
         }, text = {
             Text(text = stringResource(id = R.string.create_backup))

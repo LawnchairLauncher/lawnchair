@@ -16,9 +16,15 @@
 
 package app.lawnchair.ui.preferences.components.layout
 
+import androidx.compose.material3.Surface as Surface
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -27,6 +33,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,8 +41,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.PreviewLawnchair
+import app.lawnchair.ui.util.addIf
 import com.android.launcher3.R
 
 @Composable
@@ -46,11 +55,12 @@ fun PreferenceCategory(
     description: String? = null,
 ) {
     val navController = LocalNavController.current
+    val resolvedRoute = subRoute(name = route)
 
     PreferenceCategory(
         label = label,
         iconResource = iconResource,
-        onNavigate = { navController.navigate(route) },
+        onNavigate = { navController.navigate(resolvedRoute) },
         description = description,
     )
 }
