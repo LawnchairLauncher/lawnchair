@@ -21,9 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -102,7 +100,6 @@ fun SliderPreference(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
                 CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
                     LocalContentColor provides MaterialTheme.colorScheme.onBackground,
                 ) {
                     val value = snapSliderValue(valueRange.start, sliderValue, step)
@@ -115,6 +112,7 @@ fun SliderPreference(
                         } else {
                             value.roundToInt().toString() + " $showUnit"
                         },
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

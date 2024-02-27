@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.HdrAuto
 import androidx.compose.material3.Icon
@@ -26,7 +26,8 @@ fun <T> ColorDot(
     val colorLight = entry.lightColor(context)
     val colorDark = entry.darkColor(context)
 
-    val color = if (MaterialTheme.colors.isLight) {
+    // todo refactor isLight
+    val color = if (true) {
         colorLight
     } else {
         colorDark

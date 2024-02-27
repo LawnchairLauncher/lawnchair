@@ -27,9 +27,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -73,7 +72,7 @@ fun LawnchairLink(
         Spacer(modifier = Modifier.requiredHeight(4.dp))
         Text(
             text = label,
-            style = Material3Theme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

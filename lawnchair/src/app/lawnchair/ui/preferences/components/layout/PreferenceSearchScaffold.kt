@@ -19,15 +19,16 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Surface
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -110,7 +111,7 @@ private fun SearchBar(
                 }
             }
         }
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
             Row(
                 Modifier.fillMaxHeight(),
                 horizontalArrangement = Arrangement.End,
@@ -130,7 +131,7 @@ private fun SearchBar(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchTextField(
     value: String,
@@ -140,7 +141,7 @@ private fun SearchTextField(
     val colors = TextFieldDefaults.outlinedTextFieldColors()
     val textStyle: TextStyle = LocalTextStyle.current
 
-    val textColor = colors.textColor(true).value
+    val textColor = MaterialTheme.colorScheme.onSurfaceVariant
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor))
 
     Row(
@@ -152,19 +153,20 @@ private fun SearchTextField(
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             decorationBox = @Composable { innerTextField ->
-                TextFieldDefaults.OutlinedTextFieldDecorationBox(
+                OutlinedTextFieldDefaults.DecorationBox(
+                    value = value,
                     innerTextField = innerTextField,
                     enabled = true,
-                    interactionSource = remember { MutableInteractionSource() },
                     singleLine = true,
-                    value = value,
                     visualTransformation = VisualTransformation.None,
+                    interactionSource = remember<MutableInteractionSource> { MutableInteractionSource() },
                     placeholder = placeholder,
-                    border = {},
+                    colors = OutlinedTextFieldDefaults.colors(),
                     contentPadding = PaddingValues(4.dp),
+                    container = {},
                 )
             },
-            cursorBrush = SolidColor(colors.cursorColor(false).value),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             textStyle = mergedTextStyle,
         )
     }

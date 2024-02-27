@@ -7,12 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
@@ -34,10 +31,8 @@ fun AlertBottomSheetContent(
     ) {
         if (title != null) {
             Box(modifier = contentPadding) {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                    val textStyle = MaterialTheme.typography.titleLarge
-                    ProvideTextStyle(textStyle, title)
-                }
+                val textStyle = MaterialTheme.typography.titleLarge
+                ProvideTextStyle(textStyle, title)
             }
         }
         if (text != null) {

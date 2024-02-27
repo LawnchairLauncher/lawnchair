@@ -16,9 +16,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme as Material2Theme
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -115,7 +113,7 @@ fun IconPickerPreference(
         placeholder = {
             Text(
                 text = iconPack.label,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
         actions = {
@@ -127,9 +125,9 @@ fun IconPickerPreference(
                             .setComponent(pickerComponent)
                         pickerLauncher.launch(intent)
                         hideMenu()
-                    }) {
+                    }, text = {
                         Text(text = stringResource(id = R.string.icon_pack_external_picker))
-                    }
+                    })
                 }
             }
         },
@@ -231,7 +229,7 @@ fun IconPreview(
     }
     Box(
         modifier = Modifier
-            .clip(Material2Theme.shapes.small)
+            .clip(MaterialTheme.shapes.small)
             .clickable(onClick = onClick)
             .padding(8.dp),
     ) {

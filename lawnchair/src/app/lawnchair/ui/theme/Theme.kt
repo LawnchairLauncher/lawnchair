@@ -17,9 +17,8 @@
 package app.lawnchair.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +32,6 @@ import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.m3ColorScheme
-import app.lawnchair.theme.materialColors
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
@@ -45,16 +43,11 @@ fun LawnchairTheme(
 ) {
     val colorScheme = getColorScheme(darkTheme = darkTheme)
     MaterialTheme(
-        colors = materialColors(colorScheme, darkTheme),
+        colorScheme = colorScheme,
         typography = Typography,
+        content = content,
         shapes = Shapes,
-    ) {
-        Material3Theme(
-            colorScheme = colorScheme,
-            typography = M3Typography,
-            content = content,
-        )
-    }
+    )
 }
 
 @Composable
