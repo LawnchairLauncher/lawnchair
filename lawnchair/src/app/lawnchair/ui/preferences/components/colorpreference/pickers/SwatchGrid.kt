@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
+import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 import kotlinx.collections.immutable.ImmutableList
 
@@ -92,8 +93,7 @@ fun <T> ColorSwatch(
     selected: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    // refactor isLight
-    val color = if (true) {
+    val color = if (!isSelectedThemeDark()) {
         entry.lightColor(LocalContext.current)
     } else {
         entry.darkColor(LocalContext.current)

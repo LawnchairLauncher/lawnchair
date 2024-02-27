@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.theme.isSelectedThemeDark
 
 @Composable
 fun <T> ColorDot(
@@ -26,8 +27,7 @@ fun <T> ColorDot(
     val colorLight = entry.lightColor(context)
     val colorDark = entry.darkColor(context)
 
-    // todo refactor isLight
-    val color = if (true) {
+    val color = if (!isSelectedThemeDark()) {
         colorLight
     } else {
         colorDark

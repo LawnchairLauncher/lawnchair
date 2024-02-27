@@ -87,7 +87,7 @@ fun PreferenceTemplate(
                         title()
                     }
                     CompositionLocalProvider(
-                        LocalContentColor provides contentAlphaDisabled,
+                        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
                         LocalTextStyle provides MaterialTheme.typography.bodyMedium,
                     ) {
                         description()
