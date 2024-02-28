@@ -112,7 +112,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         boolean exitingOverview = !FeatureFlags.enableSplitContextually() && !toState.overviewUi;
         if (mRecentsView.isSplitSelectionActive() && exitingOverview) {
             setter.add(mRecentsView.getSplitSelectController().getSplitAnimationController()
-                    .createPlaceholderDismissAnim(mLauncher, LAUNCHER_SPLIT_SELECTION_EXIT_HOME));
+                    .createPlaceholderDismissAnim(mLauncher, LAUNCHER_SPLIT_SELECTION_EXIT_HOME,
+                            setter.getDuration()));
             setter.setViewAlpha(
                     mRecentsView.getSplitInstructionsView(),
                     0,

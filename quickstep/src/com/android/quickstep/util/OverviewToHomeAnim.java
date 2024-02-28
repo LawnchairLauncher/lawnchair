@@ -30,7 +30,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Runs an animation from overview to home. Currently, this animation is just a wrapper around the
@@ -44,14 +44,14 @@ public class OverviewToHomeAnim {
     private final Launcher mLauncher;
     private final Runnable mOnReachedHome;
     @Nullable
-    private final Consumer<AnimatorSet> mSplitCancelConsumer;
+    private final BiConsumer<AnimatorSet, Long> mSplitCancelConsumer;
 
     // Only run mOnReachedHome when both of these are true.
     private boolean mIsHomeStaggeredAnimFinished;
     private boolean mIsOverviewHidden;
 
     public OverviewToHomeAnim(Launcher launcher, Runnable onReachedHome,
-            @Nullable Consumer<AnimatorSet> splitCancelConsumer) {
+            @Nullable BiConsumer<AnimatorSet, Long> splitCancelConsumer) {
         mLauncher = launcher;
         mOnReachedHome = onReachedHome;
         mSplitCancelConsumer = splitCancelConsumer;
@@ -103,7 +103,7 @@ public class OverviewToHomeAnim {
 
         if (mSplitCancelConsumer != null) {
             // Clear split state when swiping to home
-            mSplitCancelConsumer.accept(anim);
+            mSplitCancelConsumer.accept(anim, config.duration);
         }
         anim.play(stateAnim);
         stateManager.setCurrentAnimation(anim, NORMAL);
