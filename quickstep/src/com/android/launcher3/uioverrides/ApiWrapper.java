@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherUserInfo;
@@ -154,6 +155,13 @@ public class ApiWrapper {
                     .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
                             .authority(context.getPackageName()).build());
         }
+    }
+
+    /**
+     * Checks if an activity is flagged as non-resizeable.
+     */
+    public static boolean isNonResizeableActivity(LauncherActivityInfo lai) {
+        return lai.getActivityInfo().resizeMode == ActivityInfo.RESIZE_MODE_UNRESIZEABLE;
     }
 
     private static class NoopDrawable extends ColorDrawable {

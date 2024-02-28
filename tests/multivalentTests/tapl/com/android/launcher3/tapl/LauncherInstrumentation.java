@@ -94,7 +94,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -199,8 +198,6 @@ public final class LauncherInstrumentation {
     private Function<Long, String> mSystemHealthSupplier;
 
     private boolean mIgnoreTaskbarVisibility = false;
-
-    private Consumer<ContainerType> mOnSettledStateAction;
 
     private LogEventChecker mEventChecker;
 
@@ -655,10 +652,6 @@ public final class LauncherInstrumentation {
         this.mSystemHealthSupplier = supplier;
     }
 
-    public void setOnSettledStateAction(Consumer<ContainerType> onSettledStateAction) {
-        mOnSettledStateAction = onSettledStateAction;
-    }
-
     public void onTestStart() {
         mTestStartTime = System.currentTimeMillis();
     }
@@ -868,8 +861,6 @@ public final class LauncherInstrumentation {
         log("verifyContainerType: " + containerType);
 
         final UiObject2 container = verifyVisibleObjects(containerType);
-
-        if (mOnSettledStateAction != null) mOnSettledStateAction.accept(containerType);
 
         return container;
     }
@@ -1216,7 +1207,8 @@ public final class LauncherInstrumentation {
             waitForNavigationUiObject("back").click();
         }
         if (launcherVisible) {
-            if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
+            if (InstrumentationRegistry.getTargetContext().getApplicationInfo()
+                    .isOnBackInvokedCallbackEnabled()) {
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
             } else {
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
@@ -2239,6 +2231,11 @@ public final class LauncherInstrumentation {
     public boolean isTransientTaskbar() {
         return getTestInfo(TestProtocol.REQUEST_IS_TRANSIENT_TASKBAR)
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    public boolean isImeDocked() {
+        return getTestInfo(TestProtocol.REQUEST_TASKBAR_IME_DOCKED).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /** Enables transient taskbar for testing purposes only. */

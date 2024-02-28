@@ -373,7 +373,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             boolean isTransientTaskbar = mLauncher.isTransientTaskbar();
             // Expect task bar invisible when the launched app was the IME activity.
             LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
-            if (!isTransientTaskbar && isHardwareKeyboard()) {
+            if (!isTransientTaskbar && isHardwareKeyboard() && !mLauncher.isImeDocked()) {
                 launchedAppState.assertTaskbarVisible();
             } else {
                 launchedAppState.assertTaskbarHidden();

@@ -276,6 +276,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         }
 
         /**
+         * Called when an IME inset is changed.
+         */
+        public void onImeInsetChanged() {
+            mControllers.taskbarStashController.onImeInsetChanged();
+        }
+
+        /**
          * Called when a child is removed from TaskbarDragLayer.
          */
         public void onDragLayerViewRemoved() {

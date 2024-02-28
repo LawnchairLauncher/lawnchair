@@ -35,7 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.systemui.animation.RemoteAnimationDelegate;
-import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
+import com.android.systemui.animation.RemoteAnimationRunnerCompat;
 
 import java.lang.ref.WeakReference;
 
