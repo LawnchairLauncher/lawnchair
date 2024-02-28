@@ -45,7 +45,6 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
 import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.app.animation.Interpolators;
@@ -62,7 +61,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -92,8 +90,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public static final int ALPHA_INDEX_ASSISTANT_INVOKED = 5;
     public static final int ALPHA_INDEX_SMALL_SCREEN = 6;
     private static final int NUM_ALPHA_CHANNELS = 7;
-
-    private static final float TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE = 0.30f;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -125,12 +121,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     private int mTaskbarBottomMargin;
     private final int mStashedHandleHeight;
-    private final int mLauncherThemedIconsBackgroundColor;
-    private final int mTaskbarThemedIconsBackgroundColor;
-
-    /** Progress from {@code 0} for Launcher's color to {@code 1} for Taskbar's color. */
-    private final AnimatedFloat mThemedIconsBackgroundProgress = new AnimatedFloat(
-            this::updateIconsBackground);
 
     private final TaskbarModelCallbacks mModelCallbacks;
 
@@ -173,16 +163,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarBottomMargin = activity.getDeviceProfile().taskbarBottomMargin;
         mStashedHandleHeight = activity.getResources()
                 .getDimensionPixelSize(R.dimen.taskbar_stashed_handle_height);
-        mLauncherThemedIconsBackgroundColor = ThemedIconDrawable.getColors(mActivity)[0];
-        if (!Utilities.isDarkTheme(mActivity)) {
-            mTaskbarThemedIconsBackgroundColor = mLauncherThemedIconsBackgroundColor;
-        } else {
-            // Increase luminance for dark themed icons given they are on a dark Taskbar background.
-            float[] colorHSL = new float[3];
-            ColorUtils.colorToHSL(mLauncherThemedIconsBackgroundColor, colorHSL);
-            colorHSL[2] = TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE;
-            mTaskbarThemedIconsBackgroundColor = ColorUtils.HSLToColor(colorHSL);
-        }
+
         mIsRtl = Utilities.isRtl(mTaskbarView.getResources());
         mTaskbarLeftRightMargin = mActivity.getResources().getDimensionPixelSize(
                 R.dimen.transient_taskbar_padding);
@@ -470,18 +451,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return taskbarIconTranslationYForPinningValue;
     }
 
-    /**
-     * Updates the Taskbar's themed icons background according to the progress between in-app/home.
-     */
-    protected void updateIconsBackground() {
-        mTaskbarView.setThemedIconsBackgroundColor(
-                ColorUtils.blendARGB(
-                        mLauncherThemedIconsBackgroundColor,
-                        mTaskbarThemedIconsBackgroundColor,
-                        mThemedIconsBackgroundProgress.value
-                ));
-    }
-
     private ValueAnimator createRevealAnimForView(View view, boolean isStashed, float newWidth,
             boolean isQsb, boolean dispatchOnAnimationStart) {
         Rect viewBounds = new Rect(0, 0, view.getWidth(), view.getHeight());
@@ -678,10 +647,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, interpolator);
         setter.setFloat(mTaskbarNavButtonTranslationY, VALUE, -offsetY, interpolator);
         setter.setFloat(mTaskbarNavButtonTranslationYForInAppDisplay, VALUE, offsetY, interpolator);
-
-        if (Utilities.isDarkTheme(mTaskbarView.getContext())) {
-            setter.addFloat(mThemedIconsBackgroundProgress, VALUE, 1f, 0f, LINEAR);
-        }
 
         int collapsedHeight = mActivity.getDefaultTaskbarWindowSize();
         int expandedHeight = Math.max(collapsedHeight, taskbarDp.taskbarHeight + offsetY);
