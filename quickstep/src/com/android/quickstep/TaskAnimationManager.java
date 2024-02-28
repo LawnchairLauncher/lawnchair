@@ -115,7 +115,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         ActiveGestureLog.INSTANCE.addLog(
                 /* event= */ "startRecentsAnimation",
                 /* gestureEvent= */ START_RECENTS_ANIMATION);
-        mRecentsAnimationStartPending = true;
         // Notify if recents animation is still running
         if (mController != null) {
             String msg = "New recents animation started before old animation completed";
@@ -300,10 +299,16 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 options.setTransientLaunch();
             }
             options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
-            SystemUiProxy.INSTANCE.getNoCreate().startRecentsActivity(intent, options, mCallbacks);
+            mRecentsAnimationStartPending = SystemUiProxy.INSTANCE.getNoCreate()
+                    .startRecentsActivity(intent, options, mCallbacks);
         } else {
-            UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                    .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
+            UI_HELPER_EXECUTOR.execute(
+                    () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
+                            intent,
+                            eventTime,
+                            mCallbacks,
+                            result -> mRecentsAnimationStartPending = result,
+                            MAIN_EXECUTOR.getHandler()));
         }
         gestureState.setState(STATE_RECENTS_ANIMATION_INITIALIZED);
         return mCallbacks;

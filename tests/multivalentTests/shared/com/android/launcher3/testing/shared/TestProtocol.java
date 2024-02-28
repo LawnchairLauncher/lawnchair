@@ -101,6 +101,7 @@ public final class TestProtocol {
     public static final String REQUEST_TASKBAR_FROM_NAV_THRESHOLD = "taskbar-from-nav-threshold";
     public static final String REQUEST_STASHED_TASKBAR_SCALE = "taskbar-stash-handle-scale";
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
+    public static final String REQUEST_TASKBAR_IME_DOCKED = "taskbar-ime-docked";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
     public static final String REQUEST_TASKBAR_APPS_LIST_SCROLL_Y = "taskbar-apps-list-scroll-y";

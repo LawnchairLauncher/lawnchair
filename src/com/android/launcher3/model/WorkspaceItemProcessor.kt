@@ -38,6 +38,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.pm.PackageInstallInfo
 import com.android.launcher3.shortcuts.ShortcutKey
+import com.android.launcher3.uioverrides.ApiWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.util.PackageUserKey
@@ -321,6 +322,9 @@ class WorkspaceItemProcessor(
             }
             val activityInfo = c.launcherActivityInfo
             if (activityInfo != null) {
+                if (ApiWrapper.isNonResizeableActivity(activityInfo)) {
+                    info.status = info.status or WorkspaceItemInfo.FLAG_NON_RESIZEABLE
+                }
                 info.setProgressLevel(
                     PackageManagerHelper.getLoadingProgress(activityInfo),
                     PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING

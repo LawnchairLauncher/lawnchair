@@ -401,6 +401,9 @@
     <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
     <dimen name="taskbar_pinning_popup_menu_vertical_margin">16dp</dimen>
 
+    <!--- Floating Ime Inset height-->
+    <dimen name="floating_ime_inset_height">60dp</dimen>
+
     <!-- Recents overview -->
     <dimen name="recents_filter_icon_size">30dp</dimen>
 

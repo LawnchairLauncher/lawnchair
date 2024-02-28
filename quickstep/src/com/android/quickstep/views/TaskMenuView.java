@@ -136,6 +136,17 @@ public class TaskMenuView extends AbstractFloatingView {
         };
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (!enableOverviewIconMenu()) {
+            int maxMenuHeight = calculateMaxHeight();
+            if (MeasureSpec.getSize(heightMeasureSpec) > maxMenuHeight) {
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST);
+            }
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     public void onRotationChanged() {
         if (mOpenCloseAnimator != null && mOpenCloseAnimator.isRunning()) {
             mOpenCloseAnimator.end();
@@ -391,6 +402,18 @@ public class TaskMenuView extends AbstractFloatingView {
                 0);
         Rect toRect = new Rect(0, 0, getWidth(), getHeight());
         return new RoundedRectRevealOutlineProvider(radius, radius, fromRect, toRect);
+    }
+
+    /**
+     * Calculates max height based on how much space we have available.
+     * If not enough space then the view will scroll. The maximum menu size will sit inside the task
+     * with a margin on the top and bottom.
+     */
+    private int calculateMaxHeight() {
+        float taskBottom = mTaskView.getHeight() + mTaskView.getPersistentTranslationY();
+        float taskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
+
+        return (int) (taskBottom - taskInsetMargin - getTranslationY());
     }
 
     private void setOnClosingStartCallback(Runnable onClosingStartCallback) {

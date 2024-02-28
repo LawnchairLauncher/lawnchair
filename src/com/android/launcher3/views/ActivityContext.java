@@ -322,8 +322,8 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns if the software keyboard is hidden. Hardware keyboards do not display on screen by
-     * default.
+     * Returns if the software keyboard (including input toolbar) is hidden. Hardware
+     * keyboards do not display on screen by default.
      */
     default boolean isSoftwareKeyboardHidden() {
         if (isHardwareKeyboard()) {
