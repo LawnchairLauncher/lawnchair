@@ -29,7 +29,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -137,7 +136,6 @@ private fun SearchTextField(
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit)? = null,
 ) {
-    val colors = TextFieldDefaults.outlinedTextFieldColors()
     val textStyle: TextStyle = LocalTextStyle.current
 
     val textColor = MaterialTheme.colorScheme.onSurfaceVariant

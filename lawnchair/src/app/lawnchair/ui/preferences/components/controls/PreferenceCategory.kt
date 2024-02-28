@@ -60,7 +60,7 @@ fun PreferenceCategory(
 }
 
 @Composable
-fun PreferenceCategory(
+private fun PreferenceCategory(
     label: String,
     @DrawableRes iconResource: Int,
     onNavigate: () -> Unit,

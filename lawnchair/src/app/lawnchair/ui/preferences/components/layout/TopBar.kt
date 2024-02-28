@@ -19,8 +19,8 @@ package app.lawnchair.ui.preferences.components.layout
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Text
@@ -66,9 +66,9 @@ fun TopBar(
 @Composable
 fun backIcon(): ImageVector =
     if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
-        Icons.Rounded.ArrowBack
+        Icons.AutoMirrored.Rounded.ArrowBack
     } else {
-        Icons.Rounded.ArrowForward
+        Icons.AutoMirrored.Rounded.ArrowForward
     }
 
 val topBarSize = 64.dp

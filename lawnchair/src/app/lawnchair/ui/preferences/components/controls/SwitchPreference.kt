@@ -55,7 +55,6 @@ fun SwitchPreference(
 
 /**
  * A Preference that provides a two-state toggleable option.
- * @param checked
  */
 @Composable
 fun SwitchPreference(

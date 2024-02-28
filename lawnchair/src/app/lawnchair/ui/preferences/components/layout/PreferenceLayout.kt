@@ -41,8 +41,9 @@ import androidx.compose.ui.unit.dp
  * @param actions what content to show at the top-right of the layout
  * @param bottomBar what content to show at the bottom of the layout
  * @param content the actual content
- *  @see [PreferenceLayoutLazyColumn]
- * @todo use DSL to represent all preferences
+ * @see [PreferenceLayoutLazyColumn]
+ *
+ * TODO: use DSL to represent all preferences
  */
 @Composable
 fun PreferenceLayout(
@@ -83,8 +84,9 @@ fun PreferenceLayout(
  * @param state the state object to be used to control or observe the list's state
  * @param actions what content to show at the top-right of the layout
  * @param content the actual content
- * @todo use DSL to represent all preferences
  * @see [PreferenceLayout]
+ *
+ * TODO: use DSL to represent all preferences
  */
 @Composable
 fun PreferenceLayoutLazyColumn(

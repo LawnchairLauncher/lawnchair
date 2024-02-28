@@ -16,7 +16,7 @@
 
 package app.lawnchair.ui.preferences.components.controls
 
-import android.R
+import android.R as AndroidR
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
@@ -88,7 +88,7 @@ fun <T> ListPreference(
                     title = { Text(label) },
                     buttons = {
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
-                            Text(text = stringResource(id = R.string.cancel))
+                            Text(text = stringResource(id = AndroidR.string.cancel))
                         }
                     },
                 ) {

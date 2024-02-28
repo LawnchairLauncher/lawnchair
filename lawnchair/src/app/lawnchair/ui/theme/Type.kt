@@ -16,7 +16,7 @@
 
 package app.lawnchair.ui.theme
 
-import androidx.compose.material3.Typography as MaterialTypography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -30,8 +30,8 @@ private val InterFontFamily = FontFamily(
     Font(R.font.inter_bold, FontWeight.Bold),
 )
 
-private val base = MaterialTypography()
-val Typography = MaterialTypography(
+private val base = Typography()
+val Typography = Typography(
     displayLarge = base.displayLarge.copy(fontFamily = InterFontFamily),
     displayMedium = base.displayMedium.copy(fontFamily = InterFontFamily),
     displaySmall = base.displaySmall.copy(fontFamily = InterFontFamily),

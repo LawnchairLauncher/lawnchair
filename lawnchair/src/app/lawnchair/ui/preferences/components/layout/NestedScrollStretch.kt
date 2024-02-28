@@ -21,7 +21,8 @@ import app.lawnchair.ui.StretchEdgeEffect
 /**
  * Creates a custom overscroll effect based off the Android 12 "stretch" animation.
  * @param content The content to animate.
- * @todo Allow horizontal stretch
+ *
+ * TODO: Allow horizontal stretch
  */
 @Composable
 fun NestedScrollStretch(

@@ -1,6 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
-import android.R
+import android.R as AndroidR
 import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
@@ -60,7 +60,7 @@ fun GestureHandlerPreference(
                     title = { Text(label) },
                     buttons = {
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
-                            Text(text = stringResource(id = R.string.cancel))
+                            Text(text = stringResource(id = AndroidR.string.cancel))
                         }
                     },
                 ) {

@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Creates a vertical grid of items via LazyList
- * @todo use [LazyVerticalGrid]
+ *
+ * TODO: use [LazyVerticalGrid]
  */
 fun LazyListScope.verticalGridItems(
     modifier: Modifier = Modifier,

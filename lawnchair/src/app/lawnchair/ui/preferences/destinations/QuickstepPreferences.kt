@@ -109,7 +109,7 @@ fun QuickSwitchIgnoredWarning() {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
-        color = androidx.compose.material3.MaterialTheme.colorScheme.errorContainer,
+        color = MaterialTheme.colorScheme.errorContainer,
     ) {
         WarningPreference(
             text = stringResource(id = R.string.quickswitch_ignored_warning),
