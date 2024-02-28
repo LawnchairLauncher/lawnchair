@@ -92,7 +92,7 @@ fun CustomizeDialog(
             },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12F),
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
             shape = MaterialTheme.shapes.large,
