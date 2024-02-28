@@ -22,7 +22,7 @@
     <dimen name="dynamic_grid_edge_margin">10.77dp</dimen>
     <dimen name="dynamic_grid_left_right_margin">8dp</dimen>
     <!-- Minimum amount of next page visible in spring loaded mode -->
-    <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">24dp</dimen>
+    <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">48dp</dimen>
 
     <dimen name="dynamic_grid_cell_border_spacing">16dp</dimen>
     <dimen name="cell_layout_padding">10.77dp</dimen>
