@@ -18,7 +18,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="iconPackPackageDefault" translatable="false">""</string>
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
-    T
     <!-- PreferenceDashboard -->
     <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
     <string name="settings">Settings</string>
