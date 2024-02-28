@@ -31,7 +31,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.ThemeProvider
-import app.lawnchair.theme.m3ColorScheme
+import app.lawnchair.theme.toM3ColorScheme
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
@@ -59,7 +59,7 @@ fun getColorScheme(darkTheme: Boolean): ColorScheme {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 
-    return m3ColorScheme(colorScheme = colorScheme, isDark = darkTheme)
+    return colorScheme.toM3ColorScheme(isDark = darkTheme)
 }
 
 val isSelectedThemeDark: Boolean

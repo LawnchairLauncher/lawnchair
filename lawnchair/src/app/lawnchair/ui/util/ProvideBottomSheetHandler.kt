@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme as Material2Theme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
@@ -102,7 +101,7 @@ fun ProvideBottomSheetHandler(
             }
         },
         sheetState = bottomSheetState,
-        sheetShape = Material2Theme.shapes.large.copy(
+        sheetShape = MaterialTheme.shapes.large.copy(
             bottomStart = CornerSize(0.dp),
             bottomEnd = CornerSize(0.dp),
         ),
