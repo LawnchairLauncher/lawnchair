@@ -177,7 +177,7 @@ android_library {
     name: "launcher-testing-shared",
     srcs: [
         "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.java",
-        "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.kt"
+        "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.kt",
     ],
     resource_dirs: [],
     manifest: "multivalentTests/shared/AndroidManifest.xml",
@@ -225,8 +225,8 @@ android_robolectric_test {
     // multivalentTests directory is a shared folder for not only robolectric converted test
     // classes but also shared helper classes.
     srcs: [
-        "multivalentTests/src/com/android/launcher3/util/*.java",
-        "multivalentTests/src/com/android/launcher3/util/*.kt",
+        "multivalentTests/src/**/*.java",
+        "multivalentTests/src/**/*.kt",
 
         // Test util classes
         ":launcher-testing-helpers",
@@ -246,7 +246,8 @@ android_robolectric_test {
         "androidx.test.uiautomator_uiautomator",
         "androidx.core_core-animation-testing",
         "androidx.test.ext.junit",
-        "inline-mockito-robolectric-prebuilt",
+        "mockito-robolectric-prebuilt",
+        "mockito-kotlin2",
         "platform-parametric-runner-lib",
         "testables",
         "Launcher3TestResources",
