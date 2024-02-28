@@ -13,30 +13,8 @@ import kotlin.math.ln
 
 @Composable
 fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorScheme = remember(this, isDark) {
-    when (isDark) {
-        false -> lightColorScheme(
-            primary = primary(40),
-            onPrimary = primary(100),
-            primaryContainer = primary(90),
-            onPrimaryContainer = primary(10),
-            inversePrimary = primary(80),
-            secondary = secondary(40),
-            onSecondary = secondary(100),
-            secondaryContainer = secondary(90),
-            onSecondaryContainer = secondary(10),
-            tertiaryContainer = tertiary(90),
-            onTertiaryContainer = tertiary(10),
-            background = neutral(99),
-            onBackground = neutral(10),
-            surface = neutral(99),
-            onSurface = neutral(10),
-            surfaceVariant = neutralVariant(90),
-            onSurfaceVariant = neutralVariant(30),
-            inverseSurface = neutral(20),
-            inverseOnSurface = neutral(95),
-            outline = neutralVariant(50),
-        )
-        true -> darkColorScheme(
+    if (isDark) {
+        darkColorScheme(
             primary = primary(80),
             onPrimary = primary(20),
             primaryContainer = primary(30),
@@ -57,6 +35,29 @@ fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorS
             inverseSurface = neutral(90),
             inverseOnSurface = neutral(20),
             outline = neutralVariant(60),
+        )
+    } else {
+        lightColorScheme(
+            primary = primary(40),
+            onPrimary = primary(100),
+            primaryContainer = primary(90),
+            onPrimaryContainer = primary(10),
+            inversePrimary = primary(80),
+            secondary = secondary(40),
+            onSecondary = secondary(100),
+            secondaryContainer = secondary(90),
+            onSecondaryContainer = secondary(10),
+            tertiaryContainer = tertiary(90),
+            onTertiaryContainer = tertiary(10),
+            background = neutral(99),
+            onBackground = neutral(10),
+            surface = neutral(99),
+            onSurface = neutral(10),
+            surfaceVariant = neutralVariant(90),
+            onSurfaceVariant = neutralVariant(30),
+            inverseSurface = neutral(20),
+            inverseOnSurface = neutral(95),
+            outline = neutralVariant(50),
         )
     }
 }
