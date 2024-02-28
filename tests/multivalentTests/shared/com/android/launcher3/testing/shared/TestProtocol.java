@@ -174,6 +174,7 @@ public final class TestProtocol {
     public static final String UIOBJECT_STALE_ELEMENT = "b/319501259";
     public static final String ACTIVITY_NOT_RESUMED_AFTER_BACK = "b/322823209";
     public static final String GET_FROM_RECENTS_FAILURE = "b/321775748";
+    public static final String SUCCESSFUL_GESTURE_MISMATCH_EVENTS = "b/324940434";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
