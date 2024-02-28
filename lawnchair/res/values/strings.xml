@@ -18,9 +18,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="iconPackPackageDefault" translatable="false">""</string>
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
-
+    T
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchiar as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
     <string name="settings">Settings</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Icon Pack, Notification Dots</string>
@@ -53,6 +53,8 @@
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <string name="always_reload_icons_label">Always Reload Icons</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using "Clear All"</string>
 
     <!-- Relating to label/icon size -->
     <string name="icons">Icons</string>
@@ -463,8 +465,8 @@
     <string name="system">System</string>
 
     <string name="customize_button_text">Customize</string>
-      <string name="label">Label</string>
-      <string name="hide_from_drawer">Hide from App Drawer</string>
+    <string name="label">Label</string>
+    <string name="hide_from_drawer">Hide from App Drawer</string>
 
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
@@ -545,6 +547,4 @@
 
     <string name="action_unlock">Unlock</string>
     <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using "Clear All"</string>
 </resources>

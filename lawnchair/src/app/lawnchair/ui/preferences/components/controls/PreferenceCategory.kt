@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalNavController
@@ -70,14 +71,14 @@ fun PreferenceCategory(
     ) {
         PreferenceTemplate(
             modifier = Modifier
+                .clip(MaterialTheme.shapes.large)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(
                         bounded = true,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                     ),
-                    onClick = { onNavigate() },
-                ),
+                ) { onNavigate() },
             verticalPadding = 14.dp,
             title = {
                 Text(text = label)
