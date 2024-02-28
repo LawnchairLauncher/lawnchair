@@ -1,6 +1,9 @@
 package app.lawnchair.qsb.providers
 
+import app.lawnchair.animateToAllApps
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.qsb.ThemingMethod
+import com.android.launcher3.Launcher
 import com.android.launcher3.R
 
 data object Startpage : QsbSearchProvider(
@@ -10,6 +13,18 @@ data object Startpage : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "",
     website = "https://startpage.com/?segment=startpage.lawnchair",
-    type = QsbSearchProviderType.WEBSITE,
+    type = QsbSearchProviderType.LOCAL,
     sponsored = true,
-)
+) {
+    override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
+        val prefs = PreferenceManager.getInstance(launcher)
+        val useWebSuggestions = prefs.searchResultStartPageSuggestion.get()
+
+        if (useWebSuggestions) {
+            launcher.animateToAllApps()
+            launcher.appsView.searchUiManager.editText?.showKeyboard(true)
+        } else {
+            super.launch(launcher, forceWebsite)
+        }
+    }
+}
