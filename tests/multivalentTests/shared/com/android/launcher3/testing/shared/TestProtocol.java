@@ -175,6 +175,7 @@ public final class TestProtocol {
     public static final String ACTIVITY_NOT_RESUMED_AFTER_BACK = "b/322823209";
     public static final String GET_FROM_RECENTS_FAILURE = "b/321775748";
     public static final String SUCCESSFUL_GESTURE_MISMATCH_EVENTS = "b/324940434";
+    public static final String TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE = "b/326908466";
     public static final String TEST_TAPL_OVERVIEW_ACTIONS_MENU_FAILURE = "b/326073471";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
