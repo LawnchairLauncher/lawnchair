@@ -188,16 +188,12 @@ public class PrivateSpaceHeaderViewController {
     /** Finds the private space header to scroll to and set the private space icons to GONE. */
     private void collapse() {
         AllAppsRecyclerView allAppsRecyclerView = mAllApps.getActiveRecyclerView();
-        for (int i = allAppsRecyclerView.getChildCount() - 1; i > 0; i--) {
-            int adapterPosition = allAppsRecyclerView.getChildAdapterPosition(
-                    allAppsRecyclerView.getChildAt(i));
-            List<BaseAllAppsAdapter.AdapterItem> allAppsAdapters = allAppsRecyclerView.getApps()
-                    .getAdapterItems();
-            if (adapterPosition < 0 || adapterPosition >= allAppsAdapters.size()) {
-                continue;
-            }
+        List<BaseAllAppsAdapter.AdapterItem> appListAdapterItems =
+                allAppsRecyclerView.getApps().getAdapterItems();
+        for (int i = appListAdapterItems.size() - 1; i > 0; i--) {
+            BaseAllAppsAdapter.AdapterItem currentItem = appListAdapterItems.get(i);
             // Scroll to the private space header.
-            if (allAppsAdapters.get(adapterPosition).viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER) {
+            if (currentItem.viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER) {
                 // Note: SmoothScroller is meant to be used once.
                 RecyclerView.SmoothScroller smoothScroller =
                         new LinearSmoothScroller(mAllApps.getContext()) {
@@ -205,7 +201,7 @@ public class PrivateSpaceHeaderViewController {
                                 return LinearSmoothScroller.SNAP_TO_END;
                             }
                         };
-                smoothScroller.setTargetPosition(adapterPosition);
+                smoothScroller.setTargetPosition(i);
                 RecyclerView.LayoutManager layoutManager = allAppsRecyclerView.getLayoutManager();
                 if (layoutManager != null) {
                     layoutManager.startSmoothScroll(smoothScroller);
@@ -213,8 +209,12 @@ public class PrivateSpaceHeaderViewController {
                 break;
             }
             // Make the private space apps gone to "collapse".
-            if (allAppsAdapters.get(adapterPosition).decorationInfo != null) {
-                allAppsRecyclerView.getChildAt(i).setVisibility(GONE);
+            if (currentItem.decorationInfo != null) {
+                RecyclerView.ViewHolder viewHolder =
+                        allAppsRecyclerView.findViewHolderForAdapterPosition(i);
+                if (viewHolder != null) {
+                    viewHolder.itemView.setVisibility(GONE);
+                }
             }
         }
     }
