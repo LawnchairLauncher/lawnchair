@@ -133,6 +133,7 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord // b/325383911
     public void workTabExists() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
