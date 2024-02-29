@@ -267,7 +267,11 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     public void onBackInvoked() {
-        if (!mAllAppsCallbacks.handleSearchBackInvoked()) {
+        if (mAllAppsCallbacks.handleSearchBackInvoked()) {
+            // We need to scale back taskbar all apps if we navigate back within search inside all
+            // apps
+            animateSlideInViewToNoScale();
+        } else {
             super.onBackInvoked();
         }
     }
