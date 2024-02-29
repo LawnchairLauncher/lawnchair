@@ -686,15 +686,10 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         float toScale = iconSize / mDragIconSize;
         float toAlpha = (target == originalView) ? 1f : 0f;
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
-            final FloatProp mDx = new FloatProp(fromX, toPosition[0], 0,
-                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, Interpolators.FAST_OUT_SLOW_IN);
-            final FloatProp mDy = new FloatProp(fromY, toPosition[1], 0,
-                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR,
-                    FAST_OUT_SLOW_IN);
-            final FloatProp mScale = new FloatProp(1f, toScale, 0,
-                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, FAST_OUT_SLOW_IN);
-            final FloatProp mAlpha = new FloatProp(1f, toAlpha, 0,
-                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, Interpolators.ACCELERATE_2);
+            final FloatProp mDx = new FloatProp(fromX, toPosition[0], FAST_OUT_SLOW_IN);
+            final FloatProp mDy = new FloatProp(fromY, toPosition[1], FAST_OUT_SLOW_IN);
+            final FloatProp mScale = new FloatProp(1f, toScale, FAST_OUT_SLOW_IN);
+            final FloatProp mAlpha = new FloatProp(1f, toAlpha, Interpolators.ACCELERATE_2);
             @Override
             public void onUpdate(float percent, boolean initOnly) {
                 animListener.updateDragShadow(mDx.value, mDy.value, mScale.value, mAlpha.value);

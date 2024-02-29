@@ -328,20 +328,20 @@ public class FloatingTaskView extends FrameLayout {
 
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
             // SplitPlaceholderView: rectangle translates and stretches to new position
-            final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration,
+            final FloatProp mDx = new FloatProp(0, prop.dX,
                     clampToProgress(timings.getStagedRectXInterpolator(),
                             timings.getStagedRectSlideStartOffset(),
                             timings.getStagedRectSlideEndOffset()));
-            final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration,
+            final FloatProp mDy = new FloatProp(0, prop.dY,
                     clampToProgress(timings.getStagedRectYInterpolator(),
                             timings.getStagedRectSlideStartOffset(),
                             timings.getStagedRectSlideEndOffset()));
-            final FloatProp mTaskViewScaleX = new FloatProp(1f, prop.finalTaskViewScaleX, 0,
-                    animDuration, clampToProgress(timings.getStagedRectScaleXInterpolator(),
+            final FloatProp mTaskViewScaleX = new FloatProp(1f, prop.finalTaskViewScaleX,
+                    clampToProgress(timings.getStagedRectScaleXInterpolator(),
                     timings.getStagedRectSlideStartOffset(),
                     timings.getStagedRectSlideEndOffset()));
-            final FloatProp mTaskViewScaleY = new FloatProp(1f, prop.finalTaskViewScaleY, 0,
-                    animDuration, clampToProgress(timings.getStagedRectScaleYInterpolator(),
+            final FloatProp mTaskViewScaleY = new FloatProp(1f, prop.finalTaskViewScaleY,
+                    clampToProgress(timings.getStagedRectScaleYInterpolator(),
                     timings.getStagedRectSlideStartOffset(),
                     timings.getStagedRectSlideEndOffset()));
             @Override

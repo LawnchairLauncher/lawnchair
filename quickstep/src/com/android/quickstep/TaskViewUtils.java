@@ -37,6 +37,7 @@ import static com.android.launcher3.QuickstepTransitionManager.SPLIT_DIVIDER_ANI
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
+import static com.android.quickstep.util.AnimUtils.clampToDuration;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import android.animation.Animator;
@@ -267,10 +268,16 @@ public final class TaskViewUtils {
             if (navBarTarget != null) {
                 final Rect cropRect = new Rect();
                 out.addOnFrameListener(new MultiValueUpdateListener() {
-                    FloatProp mNavFadeOut = new FloatProp(1f, 0f, 0,
-                            ANIMATION_NAV_FADE_OUT_DURATION, NAV_FADE_OUT_INTERPOLATOR);
-                    FloatProp mNavFadeIn = new FloatProp(0f, 1f, ANIMATION_DELAY_NAV_FADE_IN,
-                            ANIMATION_NAV_FADE_IN_DURATION, NAV_FADE_IN_INTERPOLATOR);
+                    FloatProp mNavFadeOut = new FloatProp(1f, 0f, clampToDuration(
+                            NAV_FADE_OUT_INTERPOLATOR,
+                            0,
+                            ANIMATION_NAV_FADE_OUT_DURATION,
+                            out.getDuration()));
+                    FloatProp mNavFadeIn = new FloatProp(0f, 1f, clampToDuration(
+                            NAV_FADE_IN_INTERPOLATOR,
+                            ANIMATION_DELAY_NAV_FADE_IN,
+                            ANIMATION_NAV_FADE_IN_DURATION,
+                            out.getDuration()));
 
                     @Override
                     public void onUpdate(float percent, boolean initOnly) {
