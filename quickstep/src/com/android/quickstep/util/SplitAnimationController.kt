@@ -242,7 +242,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             return
         }
 
-        val anim = createPlaceholderDismissAnim(launcher, splitDismissEvent)
+        val anim = createPlaceholderDismissAnim(launcher, splitDismissEvent, null /*duration*/)
         anim.start()
     }
 
@@ -251,8 +251,10 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      * for why split is being dismissed
      */
     fun createPlaceholderDismissAnim(launcher: StatefulActivity<*>,
-                                     splitDismissEvent: EventEnum) : AnimatorSet {
+                                     splitDismissEvent: EventEnum,
+                                     duration: Long?) : AnimatorSet {
         val animatorSet = AnimatorSet()
+        duration?.let { animatorSet.duration = it }
         val recentsView : RecentsView<*, *> = launcher.getOverviewPanel()
         val floatingTask: FloatingTaskView = splitSelectStateController.firstFloatingTaskView
                 ?: return animatorSet

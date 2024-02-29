@@ -186,3 +186,23 @@ flag {
     description: "Use an activity for home screen overlay"
     bug: "273828110"
 }
+
+flag {
+    name: "grid_migration_fix"
+    namespace: "launcher"
+    description: "Keep items in place when migrating to a bigger grid"
+    bug: "325286145"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "narrow_grid_restore"
+    namespace: "launcher"
+    description: "Using only the most recent workspace when restoring to avoid confusion."
+    bug: "325285743"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
