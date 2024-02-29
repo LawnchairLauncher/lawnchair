@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏%1$s کے لیے ایپ کی معلومات"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ایپس کے جوڑے کو محفوظ کریں"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ویجیٹ منتقل کرنے کے لیے ٹچ کریں اور پکڑ کر رکھیں۔"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ویجیٹ کو منتقل کرنے یا حسب ضرورت کارروائیاں استعمال کرنے کے لیے دوبار تھپتھپائیں اور پکڑ کر رکھیں۔"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,8 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ہوم اسکرین میں شامل کریں"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ویجیٹ کو ہوم اسکرین میں شامل کیا گیا"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"تجاویز"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"آپ کے روز مرہ کے لوازمات"</string>
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"آپ کے لیے خبریں"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"آپ کا آرام دہ زون"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"اپنی تندرستی کے مقاصد حاصل کریں"</string>
@@ -185,8 +188,7 @@
     <string name="ps_container_title" msgid="4391796149519594205">"نجی"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"نجی اسپیس کی ترتیبات"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"نجی اسپیس کو مقفل کریں/غیر مقفل کریں"</string>
-    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
-    <skip />
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"مقفل کریں"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"نجی اسپیس کی منتقلی"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ایپس انسٹال کریں"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"پرائیویٹ اسپیس میں ایپس انسٹال کریں"</string>
