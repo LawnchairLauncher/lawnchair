@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static com.android.launcher3.util.rule.ShellCommandRule.createEnableInputTransportPublisherRule;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +32,9 @@ import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 /**
@@ -40,6 +44,9 @@ import org.junit.runner.RunWith;
 @MediumTest
 @RunWith(AndroidJUnit4.class)
 public class TaplWidgetPickerTest extends AbstractLauncherUiTest {
+    // b/325377690 : To get the log printed where DOWN key event is getting lost from TAPL.
+    @Rule public final TestRule mEnableInputTransportPublisherRule =
+            createEnableInputTransportPublisherRule();
 
     private WidgetsRecyclerView getWidgetsView(Launcher launcher) {
         return WidgetsFullSheet.getWidgetsView(launcher);
