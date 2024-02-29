@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$sக்கான ஆப்ஸ் தகவல்கள்"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ஆப்ஸ் ஜோடியைச் சேமி"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"விட்ஜெட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"விட்ஜெட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,8 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"முகப்புத் திரையில் சேர்"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட் முகப்புத் திரையில் சேர்க்கப்பட்டது"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"பரிந்துரைகள்"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"உங்கள் தினசரி அத்தியாவசியத் தேவைகள்"</string>
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"உங்களுக்கான செய்திகள்"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"உங்கள் மனதுக்கு இதமானவை"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"உடற்பயிற்சி இலக்குகளை அடையுங்கள்"</string>
@@ -185,8 +188,7 @@
     <string name="ps_container_title" msgid="4391796149519594205">"தனிப்பட்டது"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"தனிப்பட்ட சேமிப்பிட அமைப்புகள்"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"தனிப்பட்ட சேமிப்பிடத்தை லாக்/அன்லாக் செய்யும்"</string>
-    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
-    <skip />
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"பூட்டு"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"தனிப்பட்ட சேமிப்பிடத்திற்கு மாற்றுகிறது"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ஆப்ஸை நிறுவுதல்"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"தனிப்பட்ட சேமிப்பிடத்தில் ஆப்ஸை நிறுவும்"</string>

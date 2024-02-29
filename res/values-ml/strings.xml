@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s എന്നതിന്റെ ആപ്പ് വിവരങ്ങൾ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ആപ്പ് ജോടി സംരക്ഷിക്കുക"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"വിജറ്റ് നീക്കാൻ സ്‌പർശിച്ച് പിടിക്കുക."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"വിജറ്റ് നീക്കാൻ ഡബിൾ ടാപ്പ് ചെയ്യൂ, ഹോൾഡ് ചെയ്യൂ അല്ലെങ്കിൽ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കൂ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,8 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ഹോം സ്‌ക്രീനിലേക്ക് ചേർക്കുക"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> വിജറ്റ് ഹോം സ്‌ക്രീനിലേക്ക് ചേർത്തു"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"നിർദ്ദേശങ്ങൾ"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"ഓരോ ദിവസവും ആവശ്യമായവ"</string>
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"നിങ്ങൾക്കായുള്ള വാർത്ത"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"നിങ്ങൾക്ക് സുഖപ്രദമായ സ്ഥലം"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"ശാരീരികക്ഷമതയുമായി ബന്ധപ്പെട്ട ലക്ഷ്യങ്ങൾ കൈവരിക്കൂ"</string>
@@ -185,8 +188,7 @@
     <string name="ps_container_title" msgid="4391796149519594205">"സ്വകാര്യം"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"സ്വകാര്യ സ്‌പേസ് ക്രമീകരണം"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"സ്വകാര്യ സ്‌പേസ് ലോക്ക് ചെയ്യുക/അൺലോക്ക് ചെയ്യുക"</string>
-    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
-    <skip />
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"ലോക്ക് ചെയ്യുക"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"പ്രൈവറ്റ് സ്‌പേസ് ട്രാൻസിഷനിംഗ്"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"സ്വകാര്യ സ്പേസിലേക്ക് ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>

@@ -31,6 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Programos „%1$s“ informacija"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Išsaugoti programų porą"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="336173604186644640">"Ši programų pora nepalaikoma tokio dydžio ekrane"</string>
+    <string name="app_pair_needs_unfold" msgid="1569248713407876318">"Atlenkite telefoną, kad galėtumėte naudoti šią programų porą"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Dukart pal. ir palaik., kad perkeltumėte valdiklį."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dukart palieskite ir palaikykite, kad perkeltumėte valdiklį ar naudotumėte tinkintus veiksmus."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,8 +42,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Pridėti prie pagrindinio ekrano"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Valdiklis „<xliff:g id="WIDGET_NAME">%1$s</xliff:g>“ pridėtas prie pagrindinio ekrano"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Pasiūlymai"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Tai, ko jums reikia kasdien"</string>
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Naujienos jums"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Jūsų atsipalaidavimo zona"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Pasiekite mankštos tikslus"</string>
@@ -185,8 +186,7 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Privatus"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Privačios erdvės nustatymai"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Užrakinti ir (arba) atrakinti privačią erdvę"</string>
-    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
-    <skip />
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Užrakinti"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Privačios erdvės perkėlimas"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Programų diegimas"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Įdiegti programas privačioje erdvėje"</string>
