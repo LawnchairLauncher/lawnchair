@@ -25,17 +25,19 @@ import android.util.Log
 import android.view.Gravity
 import android.widget.FrameLayout
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener
 import com.android.launcher3.icons.BitmapInfo
 import com.android.launcher3.icons.PlaceHolderIconDrawable
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.ActivityContext
 
 /**
  * A FrameLayout marking the area on an [AppPairIcon] where the visual icon will be drawn. One of
  * two child UI elements on an [AppPairIcon], along with a BubbleTextView holding the text title.
  */
 class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
-    FrameLayout(context, attrs) {
+    FrameLayout(context, attrs), OnDeviceProfileChangeListener {
     private val TAG = "AppPairIconGraphic"
 
     companion object {
@@ -69,14 +71,17 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
     // The app pairs icon appears differently in portrait and landscape.
     var isLeftRightSplit = false
 
+    private lateinit var activityContext: ActivityContext
     private lateinit var parentIcon: AppPairIcon
     private lateinit var appPairBackground: Drawable
     private var appIcon1: Drawable? = null
     private var appIcon2: Drawable? = null
 
-    fun init(grid: DeviceProfile, icon: AppPairIcon) {
+    fun init(activity: ActivityContext, icon: AppPairIcon) {
+        activityContext = activity
+
         // Calculate device-specific measurements
-        val defaultIconSize = grid.iconSizePx
+        val defaultIconSize = activity.deviceProfile.iconSizePx
         outerPadding = OUTER_PADDING_SCALE * defaultIconSize
         innerPadding = INNER_PADDING_SCALE * defaultIconSize
         backgroundSize = defaultIconSize - outerPadding * 2
@@ -84,8 +89,8 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         centerChannelSize = CENTER_CHANNEL_SCALE * defaultIconSize
         bigRadius = BIG_RADIUS_SCALE * defaultIconSize
         smallRadius = SMALL_RADIUS_SCALE * defaultIconSize
-        isLeftRightSplit = grid.isLeftRightSplit
         parentIcon = icon
+        updateOrientation()
 
         appPairBackground = AppPairIconBackground(context, this)
         appPairBackground.setBounds(0, 0, backgroundSize.toInt(), backgroundSize.toInt())
@@ -98,6 +103,28 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         lp.height = backgroundSize.toInt()
         lp.width = backgroundSize.toInt()
         layoutParams = lp
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        activityContext.addOnDeviceProfileChangeListener(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        activityContext.removeOnDeviceProfileChangeListener(this)
+    }
+
+    /** Checks the device orientation and updates isLeftRightSplit accordingly. */
+    private fun updateOrientation() {
+        val activity: ActivityContext = ActivityContext.lookupContext(context)
+        isLeftRightSplit = activity.deviceProfile.isLeftRightSplit
+    }
+
+    /** When device profile changes, update orientation */
+    override fun onDeviceProfileChanged(dp: DeviceProfile?) {
+        updateOrientation()
+        invalidate()
     }
 
     /** Sets up app pair member icons for drawing. */
