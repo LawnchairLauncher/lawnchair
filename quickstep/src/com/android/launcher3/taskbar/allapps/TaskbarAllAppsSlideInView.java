@@ -196,7 +196,13 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        mAppsView.drawOnScrimWithScale(canvas, mSlideInViewScale.value);
+        // We should call drawOnScrimWithBottomOffset() rather than drawOnScrimWithScale(). Because
+        // for taskbar all apps, the scrim view is a child view of AbstractSlideInView. Thus scaling
+        // down in AbstractSlideInView#onScaleProgressChanged() with SCALE_PROPERTY has already
+        // done the job - there is no need to re-apply scale effect here. But it also means we need
+        // to pass extra bottom offset to background scrim to fill the bottom gap during predictive
+        // back swipe.
+        mAppsView.drawOnScrimWithBottomOffset(canvas, getBottomOffsetPx());
         super.dispatchDraw(canvas);
     }
 

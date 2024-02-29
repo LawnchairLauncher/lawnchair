@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Px;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BaseActivity;
@@ -187,9 +188,19 @@ public class ScrimView extends View implements Insettable {
      * A Utility interface allowing for other surfaces to draw on ScrimView
      */
     public interface ScrimDrawingController {
-        /**
-         * Called inside ScrimView#OnDraw
-         */
-        void drawOnScrimWithScale(Canvas canvas, float scale);
+
+        /** Draw scrim view on canvas with scale. */
+        default void drawOnScrimWithScale(Canvas canvas, float scale) {
+            drawOnScrimWithScaleAndBottomOffset(canvas, scale, 0);
+        }
+
+        /** Draw scrim view on canvas with bottomOffset. */
+        default void drawOnScrimWithBottomOffset(Canvas canvas, @Px int bottomOffsetPx) {
+            drawOnScrimWithScaleAndBottomOffset(canvas, 1f, bottomOffsetPx);
+        }
+
+        /** Draw scrim view on canvas with scale and bottomOffset. */
+        void drawOnScrimWithScaleAndBottomOffset(
+                Canvas canvas, float scale, @Px int bottomOffsetPx);
     }
 }
