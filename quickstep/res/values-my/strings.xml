@@ -108,10 +108,10 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ကျော်ရန်"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ဖန်သားပြင်လှည့်ရန်"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"လုပ်ဆောင်စရာဘား ပညာပေး"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"အက်ပ် ၂ ခု တစ်ပြိုင်တည်းသုံးရန် အက်ပ်ကို ဘေးသို့ ဖိဆွဲပါ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"အက်ပ် ၂ ခု တစ်ပြိုင်တည်းသုံးရန် အက်ပ်တစ်ခုကို ဘေးသို့ဖိဆွဲပါ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Taskbar ပြရန် အပေါ်သို့ ဖြည်းဖြည်းပွတ်ဆွဲပါ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ပုံမှန်အစီအစဉ်ပေါ် အခြေခံ၍ အက်ပ်အကြံပြုချက်များကို ရယူပါ"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Taskbar ပင်ထိုးရန် ခွဲခြားမျဉ်းကို ဖိနှိပ်ပါ"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Taskbar ပင်ထိုးရန် ခွဲခြားမျဉ်းကို နှိပ်ထားပါ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Taskbar ဖြင့် ပိုမိုလုပ်ဆောင်နိုင်ခြင်း"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Taskbar ကို အမြဲပြပါ"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Taskbar ကို စခရင်အောက်ခြေတွင် အမြဲပြရန် ခွဲခြားမျဉ်းကို တို့ထိ၍ ဖိထားပါ"</string>
@@ -128,7 +128,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskbar ပြထားသည်"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taskbar ဖျောက်ထားသည်"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"လမ်းညွှန်ဘား"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"‘လုပ်ဆောင်စရာဘား’ အမြဲပြပါ"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Taskbar အမြဲပြပါ"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"ရွှေ့ကြည့်သည့်မုဒ် ပြောင်းရန်"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"လုပ်ဆောင်စရာဘား ပိုင်းခြားစနစ်"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"အပေါ်/ဘယ်ဘက်သို့ ရွှေ့ရန်"</string>

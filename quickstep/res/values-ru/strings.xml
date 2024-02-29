@@ -111,7 +111,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Используйте два приложения сразу, перетащив одно в сторону."</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Чтобы открыть панель задач, медленно проведите снизу вверх."</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Получайте рекомендации, основанные на ваших действиях."</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Закрепите панель задач долгим нажатием на разделитель"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Закрепите панель задач долгим нажатием на разделитель."</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Используйте все возможности панели задач"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Закрепите панель задач внизу экрана"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Для этого нажмите на разделитель и удерживайте его."</string>
