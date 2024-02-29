@@ -310,8 +310,16 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
         boolean isInSetup = !mActivity.isUserSetupComplete() || setupUIVisible;
-        boolean isStashedInAppAuto =
-                isTransientTaskbar && !mTaskbarSharedState.getTaskbarWasPinned();
+        boolean taskbarWasPinned = mTaskbarSharedState.getTaskbarWasPinned();
+        boolean isStashedInAppAuto = isTransientTaskbar && !taskbarWasPinned;
+
+        // now that we know we need to keep transient taskbar unstashed after unpinning animation
+        // we need to reset the shared state, so everytime user recreates taskbar we don't unstash
+        // transient taskbar by default.
+        if (mTaskbarSharedState.getTaskbarWasPinned()) {
+            mTaskbarSharedState.setTaskbarWasPinned(false);
+        }
+
         if (ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             isStashedInAppAuto = isStashedInAppAuto && mTaskbarSharedState.taskbarWasStashedAuto;
         }
@@ -324,8 +332,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // us that we're paused until a bit later. This avoids flickering upon recreating taskbar.
         updateStateForFlag(FLAG_IN_APP, true);
         applyState(/* duration = */ 0);
-        if (mTaskbarSharedState.getTaskbarWasPinned()
-                || !mTaskbarSharedState.taskbarWasStashedAuto) {
+        if (taskbarWasPinned || !mTaskbarSharedState.taskbarWasStashedAuto) {
             tryStartTaskbarTimeout();
         }
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());

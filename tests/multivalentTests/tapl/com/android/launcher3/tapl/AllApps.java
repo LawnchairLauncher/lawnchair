@@ -261,7 +261,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
             int attempts = 0;
             final Rect margins = new Rect(
                     /* left= */ 0,
-                    getTopVisibleIconBounds(allAppsContainer).bottom,
+                    mHeight / 2,
                     /* right= */ 0,
                     /* bottom= */ getAppsListRecyclerBottomPadding());
 
