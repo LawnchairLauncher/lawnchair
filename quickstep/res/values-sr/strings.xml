@@ -109,7 +109,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ротирајте екран"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Упутства на траци задатака"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Превуците на страну да бисте користили 2 апликације одједном"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Споро превуците нагоре да бисте приказали траку задатака"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Споро превуците нагоре да бисте видели траку задатака"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Добијајте предлоге апликација на основу рутине"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Дуго притискајте разделник да бисте закачили траку задатака"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Урадите више помоћу траке задатака"</string>

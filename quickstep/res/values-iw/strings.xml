@@ -109,7 +109,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"סיבוב המסך"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"הסבר על סרגל האפליקציות"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"כדי להשתמש בשתי אפליקציות בו-זמנית, צריך לגרור אפליקציה לצד"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"צריך להחליק לאט כדי להציג את סרגל האפליקציות"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"צריך להחליק לאט למעלה כדי להציג את סרגל האפליקציות"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"קבלת הצעות לאפליקציות על סמך השימוש השגרתי שלך"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"כדי להצמיד את סרגל האפליקציות, לוחצים לחיצה ארוכה על המחיצה"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"פעולות נוספות שאפשר לעשות עם סרגל האפליקציות"</string>

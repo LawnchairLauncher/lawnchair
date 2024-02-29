@@ -109,7 +109,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ekranı döndür"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Görev çubuğu eğitimi"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Aynı anda iki uygulama kullanmak için birini yana sürükleyin"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Görev çubuğunu göstermek için yukarı doğru yavaşça kaydırın"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Görev çubuğunun görünmesi için yukarı doğru yavaşça kaydırın"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Rutininize göre uygulama önerileri alın"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Görev çubuğunu sabitlemek için ayırıcıya uzun basın"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Görev çubuğuyla daha fazla şey yapın"</string>

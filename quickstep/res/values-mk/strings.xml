@@ -112,7 +112,7 @@
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже лентата со задачи"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Добивајте предлози за апликации според вашата рутина"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Притиснете долго на разделникот за да ја закачите „Лентата со задачи“"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повеќе со една лента со задачи"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете сешто со „Лентата со задачи“"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Како секогаш да се прикажува „Лентата со задачи“"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Допрете и задржете го разделникот за да може „Лентата со задачи“ секогаш да се прикажува на дното на екранот"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затвори"</string>
