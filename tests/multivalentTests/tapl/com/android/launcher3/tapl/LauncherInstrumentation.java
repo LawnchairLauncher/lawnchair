@@ -31,6 +31,7 @@ import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORD
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_GET_SPLIT_SELECTION_ACTIVE;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS;
 import static com.android.launcher3.testing.shared.TestProtocol.SUCCESSFUL_GESTURE_MISMATCH_EVENTS;
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
 import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
 import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
@@ -1165,7 +1166,11 @@ public final class LauncherInstrumentation {
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 action = "clicking home button";
-
+                Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                        "LauncherInstrumentation.goHome: isThreeFingerTrackpadGesture: "
+                                + isThreeFingerTrackpadGesture
+                                + "getNavigationModel() == NavigationModel.ZERO_BUTTON: " + (
+                                getNavigationModel() == NavigationModel.ZERO_BUTTON));
                 runToState(
                         getHomeButton()::click,
                         NORMAL_STATE_ORDINAL,
@@ -1512,6 +1517,8 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForLauncherObject(String resName) {
+        Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                "LauncherInstrumentation.waitForLauncherObject");
         return waitForObjectBySelector(getLauncherObjectSelector(resName));
     }
 
@@ -1541,12 +1548,16 @@ public final class LauncherInstrumentation {
 
     @NonNull
     List<UiObject2> waitForObjectsBySelector(BySelector selector) {
+        Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                "LauncherInstrumentation.waitForObjectsBySelector");
         final List<UiObject2> objects = mDevice.wait(Until.findObjects(selector), WAIT_TIME_MS);
         assertNotNull("Can't find any view in Launcher, selector: " + selector, objects);
         return objects;
     }
 
     private UiObject2 waitForObjectBySelector(BySelector selector) {
+        Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                "LauncherInstrumentation.waitForObjectBySelector");
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
         assertNotNull("Can't find a view in Launcher, selector: " + selector, object);
         return object;
@@ -1589,6 +1600,9 @@ public final class LauncherInstrumentation {
 
     void runToState(Runnable command, int expectedState, boolean requireEvent, String actionName) {
         if (requireEvent) {
+            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                    "LauncherInstrumentation.runToState: command: " + command + " expectedState: "
+                            + expectedState + " actionName: " + actionName + "requireEvent: true");
             runToState(command, expectedState, actionName);
         } else {
             command.run();
@@ -1938,6 +1952,10 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    boolean isAppPairsEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_FLAG_ENABLE_APP_PAIRS).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
         sendPointer(downTime, currentTime, action, point, gestureScope,
@@ -1966,11 +1984,15 @@ public final class LauncherInstrumentation {
                     mPointerCount = 1;
                     pointerCount = mPointerCount;
                 }
+                Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                        "LauncherInstrumentation.sendPointer: ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_UP:
                 if (hasTIS && gestureScope == GestureScope.EXPECT_PILFER) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
                 }
+                Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                        "LauncherInstrumentation.sendPointer: ACTION_UP");
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 mPointerCount++;
