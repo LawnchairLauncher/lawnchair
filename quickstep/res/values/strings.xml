@@ -230,8 +230,6 @@
     <string name="action_screenshot">Screenshot</string>
     <!-- Label for a button that enters split screen selection mode. [CHAR_LIMIT=20] -->
     <string name="action_split">Split</string>
-    <!-- Label for a button that saves a new app pair. [CHAR_LIMIT=20] -->
-    <string name="action_save_app_pair">Save app pair</string>
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
     <string name="toast_split_select_app">Tap another app to use split screen</string>
     <string name="toast_contextual_split_select_app">Choose another app to use split screen</string>
