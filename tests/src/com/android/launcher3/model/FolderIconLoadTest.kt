@@ -30,6 +30,7 @@ import com.google.common.truth.Truth.assertWithMessage
 import java.util.concurrent.CountDownLatch
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -56,6 +57,8 @@ class FolderIconLoadTest {
             TEST_ACTIVITY13,
             TEST_ACTIVITY14
         )
+
+    @get:Rule(order = 0) val testStabilityRule = TestStabilityRule()
 
     @Before
     fun setUp() {

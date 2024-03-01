@@ -16,6 +16,9 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
+
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,7 +52,7 @@ public abstract class AppIcon extends Launchable {
     /**
      * Find an app icon with the given name.
      *
-     * @param appName app icon to look for
+     * @param appName  app icon to look for
      * @param launcher (optional) - only match ui elements from Launcher's package
      */
     static BySelector getAppIconSelector(String appName, LauncherInstrumentation launcher) {
@@ -95,6 +98,8 @@ public abstract class AppIcon extends Launchable {
 
     @Override
     protected void waitForLongPressConfirmation() {
+        Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                "AppIcon.waitForLongPressConfirmation, resName: popupContainer");
         mLauncher.waitForLauncherObject("popup_container");
     }
 

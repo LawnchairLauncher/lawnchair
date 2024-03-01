@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.dragging;
 
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.PHOTOS_APP_NAME;
@@ -233,6 +234,11 @@ public class TaplDragTest extends AbstractLauncherUiTest {
         final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(TEST_APP_NAME);
         for (Point target : targets) {
             startTime = SystemClock.uptimeMillis();
+            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                    "TaplDragTest.java.testDragAppIconToMultipleWorkspaceCells: shortcut name: "
+                            + launcherTestAppIcon.getIconName()
+                            + " | target cell coordinates: (" + target.x + ", " + target.y
+                            + ") | start time: " + startTime);
             launcherTestAppIcon.dragToWorkspace(target.x, target.y);
             endTime = SystemClock.uptimeMillis();
             elapsedTime = endTime - startTime;

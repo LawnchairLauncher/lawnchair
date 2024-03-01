@@ -83,6 +83,7 @@ public class DeviceProfile {
 
     // Minimum aspect ratio beyond which an extra top padding may be applied to a bottom sheet.
     private static final float MIN_ASPECT_RATIO_FOR_EXTRA_TOP_PADDING = 1.5f;
+    private static final float MAX_ASPECT_RATIO_FOR_ALTERNATE_EDIT_STATE = 1.5f;
 
     public static final PointF DEFAULT_SCALE = new PointF(1.0f, 1.0f);
     public static final ViewScaleProvider DEFAULT_PROVIDER = itemInfo -> DEFAULT_SCALE;
@@ -503,8 +504,17 @@ public class DeviceProfile {
         }
 
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
-        dropTargetBarTopMarginPx = res.getDimensionPixelSize(R.dimen.drop_target_top_margin);
-        dropTargetBarBottomMarginPx = res.getDimensionPixelSize(R.dimen.drop_target_bottom_margin);
+        // Some foldable portrait modes are too wide in terms of aspect ratio so we need to tweak
+        // the dimensions for edit state.
+        final boolean shouldApplyWidePortraitDimens = isTablet
+                && !isLandscape
+                && aspectRatio < MAX_ASPECT_RATIO_FOR_ALTERNATE_EDIT_STATE;
+        dropTargetBarTopMarginPx = shouldApplyWidePortraitDimens
+                ? 0
+                : res.getDimensionPixelSize(R.dimen.drop_target_top_margin);
+        dropTargetBarBottomMarginPx = shouldApplyWidePortraitDimens
+                ? res.getDimensionPixelSize(R.dimen.drop_target_bottom_margin_wide_portrait)
+                : res.getDimensionPixelSize(R.dimen.drop_target_bottom_margin);
         dropTargetDragPaddingPx = res.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
         dropTargetTextSizePx = res.getDimensionPixelSize(R.dimen.drop_target_text_size);
         dropTargetHorizontalPaddingPx = res.getDimensionPixelSize(
@@ -595,8 +605,9 @@ public class DeviceProfile {
             }
         }
 
-        springLoadedHotseatBarTopMarginPx = res.getDimensionPixelSize(
-                R.dimen.spring_loaded_hotseat_top_margin);
+        springLoadedHotseatBarTopMarginPx = shouldApplyWidePortraitDimens
+                ? res.getDimensionPixelSize(R.dimen.spring_loaded_hotseat_top_margin_wide_portrait)
+                : res.getDimensionPixelSize(R.dimen.spring_loaded_hotseat_top_margin);
 
         if (mIsResponsiveGrid) {
             updateHotseatSizes(mResponsiveWorkspaceCellSpec.getIconSize());

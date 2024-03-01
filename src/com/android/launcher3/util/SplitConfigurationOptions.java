@@ -169,6 +169,15 @@ public final class SplitConfigurationOptions {
             dividerWidthPercent = visualDividerBounds.width() / totalWidth;
             dividerHeightPercent = visualDividerBounds.height() / totalHeight;
         }
+
+        @Override
+        public String toString() {
+            return "LeftTop: " + leftTopBounds + ", taskId: " + leftTopTaskId + "\n"
+                    + "RightBottom: " + rightBottomBounds + ", taskId: " + rightBottomTaskId +  "\n"
+                    + "Divider: " + visualDividerBounds + "\n"
+                    + "AppsVertical? " + appsStackedVertically + "\n"
+                    + "snapPosition: " + snapPosition;
+        }
     }
 
     public static class SplitStageInfo {
