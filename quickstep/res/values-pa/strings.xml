@@ -108,8 +108,8 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ਛੱਡੋ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ਸਕ੍ਰੀਨ ਘੁਮਾਓ"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ਟਾਸਕਬਾਰ ਸਿੱਖਿਆ"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ਇੱਕੋ ਸਮੇਂ \'ਤੇ 2 ਐਪਾਂ ਵਰਤਣ ਲਈ, ਐਪ ਨੂੰ ਪਾਸੇ ਵੱਲ ਘਸੀਟੋ"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ਟਾਸਕਬਾਰ ਦਿਖਾਉਣ ਲਈ ਥੋੜ੍ਹਾ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ਇੱਕੋ ਵੇਲੇ 2 ਐਪਾਂ ਵਰਤਣ ਲਈ, ਕਿਸੇ ਐਪ ਨੂੰ ਸਾਈਡ \'ਤੇ ਘਸੀਟੋ"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ਟਾਸਕਬਾਰ ਦਿਖਾਉਣ ਲਈ ਹੌਲੀ ਜਿਹੀ ਉੱਤੇ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ਤੁਹਾਡੇ ਨਿਯਮਬੱਧ ਕੰਮ ਦੇ ਆਧਾਰ \'ਤੇ ਐਪ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ਟਾਸਕਬਾਰ \'ਤੇ ਪਿੰਨ ਕਰਨ ਲਈ ਵਿਭਾਜਕ \'ਤੇ ਦਬਾਈ ਰੱਖੋ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ਟਾਸਕਬਾਰ ਦਾ ਹੋਰ ਲਾਹਾ ਲਓ"</string>

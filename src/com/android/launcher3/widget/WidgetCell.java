@@ -48,10 +48,13 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.views.ActivityContext;
 
@@ -101,6 +104,8 @@ public class WidgetCell extends LinearLayout {
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
     private float mAppWidgetHostViewScale = 1f;
     private int mSourceContainer = CONTAINER_WIDGETS_TRAY;
+
+    private CancellableTask mIconLoadRequest;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -185,6 +190,7 @@ public class WidgetCell extends LinearLayout {
         mPreviewContainerScale = 1f;
         mItem = null;
         mWidgetSize = new Size(0, 0);
+        showAppIconInWidgetTitle(false);
     }
 
     public void setSourceContainer(int sourceContainer) {
@@ -377,6 +383,31 @@ public class WidgetCell extends LinearLayout {
         mWidgetDescription.setVisibility(show ? VISIBLE : GONE);
     }
 
+    /**
+     * Set whether the app icon, for the app that provides the widget, should be shown next to the
+     * title text of the widget.
+     *
+     * @param show true if the app icon should be shown in the title text of the cell, false hides
+     *             it.
+     */
+    public void showAppIconInWidgetTitle(boolean show) {
+        if (show) {
+            if (mItem.widgetInfo != null) {
+                loadHighResPackageIcon();
+
+                Drawable icon = mItem.bitmap.newIcon(getContext());
+                int size = getResources().getDimensionPixelSize(R.dimen.widget_cell_app_icon_size);
+                icon.setBounds(0, 0, size, size);
+                mWidgetName.setCompoundDrawablesRelative(
+                        icon,
+                        null, null, null);
+            }
+        } else {
+            cancelIconLoadRequest();
+            mWidgetName.setCompoundDrawables(null, null, null, null);
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         super.onTouchEvent(ev);
@@ -429,5 +460,39 @@ public class WidgetCell extends LinearLayout {
         // No need to call mWidgetImageContainer.setLayoutParams as we are in measure pass
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    /**
+     * Loads a high resolution package icon to show next to the widget title.
+     */
+    public void loadHighResPackageIcon() {
+        cancelIconLoadRequest();
+        if (mItem.bitmap.isLowRes()) {
+            // We use the package icon instead of the receiver one so that the overall package that
+            // the widget came from can be identified in the recommended widgets. This matches with
+            // the package icon headings in the all widgets list.
+            PackageItemInfo tmpPackageItem = new PackageItemInfo(
+                    mItem.componentName.getPackageName(),
+                    mItem.user);
+            mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
+                    .updateIconInBackground(this::reapplyIconInfo, tmpPackageItem);
+        }
+    }
+
+    /** Can be called to update the package icon shown in the label of recommended widgets. */
+    private void reapplyIconInfo(ItemInfoWithIcon info) {
+        if (mItem == null || info.bitmap.isNullOrLowRes()) {
+            showAppIconInWidgetTitle(false);
+            return;
+        }
+        mItem.bitmap = info.bitmap;
+        showAppIconInWidgetTitle(true);
+    }
+
+    private void cancelIconLoadRequest() {
+        if (mIconLoadRequest != null) {
+            mIconLoadRequest.cancel();
+            mIconLoadRequest = null;
+        }
     }
 }

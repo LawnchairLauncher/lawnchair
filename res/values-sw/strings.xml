@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Maelezo ya programu ya %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Hifadhi jozi ya programu"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Gusa na ushikilie ili usogeze wijeti."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Gusa mara mbili na ushikilie ili usogeze wijeti au utumie vitendo maalum."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,8 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Weka kwenye skrini ya kwanza"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Umeongeza wijeti ya <xliff:g id="WIDGET_NAME">%1$s</xliff:g> kwenye skrini ya kwanza"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Mapendekezo"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Hati Zako Muhimu za Kila Siku"</string>
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Habari Kwa Ajili Yako"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Mahali Pako pa Kupumzika"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Fikia Malengo Yako ya Siha"</string>
@@ -182,11 +185,10 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Hitilafu: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Nafasi ya faragha"</string>
     <string name="private_space_secondary_label" msgid="611902414159280263">"Funga na ufiche programu za faragha"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Ya Faragha"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Faragha"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Mipangilio ya Nafasi ya Faragha"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Funga/Fungua Nafasi ya Faragha"</string>
-    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
-    <skip />
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Funga"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Mabadiliko ya Nafasi ya Faragha"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Sakinisha programu"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Sakinisha programu kwenye Sehemu ya Faragha"</string>

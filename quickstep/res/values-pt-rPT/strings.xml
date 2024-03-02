@@ -128,7 +128,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Barra de tarefas apresentada"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Barra de tarefas ocultada"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegação"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Mostr. sempre Barra de tarefas"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Ver sempre Barra de tarefas"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Alterar modo de navegação"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Divisor da Barra de tarefas"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover para a parte superior esquerda"</string>

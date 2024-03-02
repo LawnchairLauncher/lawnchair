@@ -109,7 +109,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Bildschirm drehen"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informationen zur Taskleiste"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"App zur Seite ziehen, um zwei Apps gleichzeitig zu nutzen"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Langsam nach oben wischen, um die Taskleiste anzuzeigen"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Langsam nach oben wischen, um die Taskleiste zu sehen"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"App-Vorschläge auf Grundlage deiner Nutzung erhalten"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Bildschirmteiler lange drücken, um die Taskleiste anzupinnen"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Mehr Möglichkeiten mit der Taskleiste"</string>

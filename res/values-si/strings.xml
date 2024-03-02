@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s සඳහා යෙදුම් තතු"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"යෙදුම් යුගල සුරකින්න"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"විජට් එකක් ගෙන යාමට ස්පර්ශ කර අල්ලා ගෙන සිටින්න."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"විජට් එකක් ගෙන යාමට හෝ අභිරුචි ක්‍රියා භාවිත කිරීමට දෙවරක් තට්ටු කර අල්ලා ගෙන සිටින්න."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,8 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"මුල් තිරය වෙත එක් කරන්න"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> විජට්ටුව මුල් පිටු තිරය වෙත එක් කරන ලදි"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"යෝජනා"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (1722113555721820766) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"ඔබේ දෛනික අත්‍යවශ්‍යාංග"</string>
     <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"ඔබ වෙනුවෙන් පුවත්"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ඔබේ නිවුණු කලාපය"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"ඔබේ යෝග්‍යතා ඉලක්ක ළඟා කර ගන්න"</string>
@@ -185,8 +188,7 @@
     <string name="ps_container_title" msgid="4391796149519594205">"පෞද්ගලික"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"පෞද්ගලික අවකාශ සැකසීම්"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"පෞද්ගලික අවකාශය අගුළු දමන්න/අගුළු හරින්න"</string>
-    <!-- no translation found for ps_container_lock_title (2640257399982364682) -->
-    <skip />
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"අගුළු දමන්න"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"පෞද්ගලික අවකාශ සංක්‍රමණය"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"යෙදුම් ස්ථාපනය කරන්න"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"පෞද්ගලික අවකාශයට යෙදුම් ස්ථාපනය කරන්න"</string>

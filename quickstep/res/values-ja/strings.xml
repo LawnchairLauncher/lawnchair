@@ -108,10 +108,10 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"スキップ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"画面を回転"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"タスクバーの説明"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"アプリを横にドラッグして 2 個のアプリを同時に使用できます"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"アプリを横にドラッグすると 2 個のアプリを同時に使用できます"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"タスクバーを表示するには、上にゆっくりとスワイプします"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"毎日の使用状況に基づいてアプリの候補が表示されます"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"タスクバーを固定するには分割線を長押ししてください"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"分割線を長押ししてタスクバーを固定します"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"タスクバーの各種機能"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"タスクバーを常に表示"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"タスクバーを画面下部に常に表示するには分割線を長押しします"</string>
@@ -128,7 +128,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"タスクバー表示"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"タスクバー非表示"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ナビゲーション バー"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"常にタスクバーを表示"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"常にタスクバーを表示する"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"ナビゲーション モードを変更"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"タスクバーの区切り"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"上 / 左に移動"</string>
