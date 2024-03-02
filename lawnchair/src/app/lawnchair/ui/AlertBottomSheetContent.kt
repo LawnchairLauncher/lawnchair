@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 
 @Composable
 fun ModalBottomSheetContent(
@@ -44,8 +42,8 @@ fun ModalBottomSheetContent(
         content?.let {
             Box(
                 modifier = Modifier.padding(
-                    top = if (title != null || text != null) 16.dp else 0.dp
-                )
+                    top = if (title != null || text != null) 16.dp else 0.dp,
+                ),
             ) {
                 content()
             }
