@@ -108,9 +108,9 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"跳过"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"旋转屏幕"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"任务栏教程"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"将一个应用拖到一侧，即可一次使用两个应用"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"将一个应用拖到一侧，即可同时使用两个应用"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"缓慢向上滑动即可显示任务栏"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"根据您的日常安排获取应用建议"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"根据您的日常使用习惯获得应用建议"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"长按分隔线即可固定任务栏"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"体验任务栏的更多功能"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"始终显示任务栏"</string>

@@ -308,6 +308,9 @@ public class TaskbarManager {
                     }
                 }
                 mOldConfig = new Configuration(newConfig);
+                // reset taskbar was pinned value, so we don't automatically unstash taskbar upon
+                // user unfolding the device.
+                mSharedState.setTaskbarWasPinned(false);
             }
 
             @Override
@@ -468,7 +471,7 @@ public class TaskbarManager {
      * In other case (folding/unfolding) we don't need to remove and add window.
      */
     @VisibleForTesting
-    public void recreateTaskbar() {
+    public synchronized void recreateTaskbar() {
         Trace.beginSection("recreateTaskbar");
         try {
             DeviceProfile dp = mUserUnlocked ?

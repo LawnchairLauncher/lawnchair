@@ -311,21 +311,9 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            DeviceProfile deviceProfile = activity.getDeviceProfile();
             final TaskView taskView = taskContainer.getTaskView();
-            final RecentsView recentsView = taskView.getRecentsView();
-            boolean isLargeTileFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
-            boolean isInExpectedScrollPosition =
-                    recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
-            boolean shouldShowActionsButtonInstead =
-                    isLargeTileFocusedTask && isInExpectedScrollPosition;
 
-            // No "save app pair" menu item if:
-            // - app pairs feature is not enabled
-            // - the task in question is a single task
-            // - the Overview Actions Button should be visible
-            if (!FeatureFlags.enableAppPairs() || !taskView.containsMultipleTasks()
-                    || shouldShowActionsButtonInstead) {
+            if (!FeatureFlags.enableAppPairs() || !taskView.containsMultipleTasks()) {
                 return null;
             }
 

@@ -109,7 +109,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Girar pantalla"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Información sobre la barra de tareas"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arrastra una app a un lado para usar 2 apps a la vez"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Desliza despacio hacia arriba para ver la Barra de tareas"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Desliza lento hacia arriba para ver la Barra de tareas"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Recibe sugerencias de aplicaciones basadas en tu rutina"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Mantén presionado el divisor para fijar la Barra de tareas"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Aprovecha mejor la Barra de tareas"</string>
@@ -128,7 +128,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Barra de tareas visible"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Barra de tareas oculta"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegación"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Ver siempre la Barra de tareas"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Ver siempre Barra de tareas"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Cambiar el modo de navegación"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Divisor de la Barra de tareas"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover a la parte superior o izquierda"</string>

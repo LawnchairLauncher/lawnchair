@@ -31,8 +31,9 @@ import static com.android.wm.shell.common.split.SplitScreenConstants.isPersisten
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.util.Pair;
 
@@ -129,6 +130,11 @@ public class AppPairsController {
                     + " failed. Falling back to the WorkspaceItemInfo from Recents.");
             app2 = convertRecentsItemToAppItem(recentsInfo2);
         }
+
+        // WorkspaceItemProcessor won't process these new ItemInfos until the next launcher restart,
+        // so update some flags now.
+        updateWorkspaceItemFlags(app1);
+        updateWorkspaceItemFlags(app2);
 
         @PersistentSnapPosition int snapPosition = gtv.getSnapPosition();
         if (!isPersistentSnapPosition(snapPosition)) {
@@ -237,6 +243,25 @@ public class AppPairsController {
         }
 
         return appInfo != null ? appInfo.makeWorkspaceItem(mContext) : null;
+    }
+
+    /**
+     * Updates flags for newly created WorkspaceItemInfos.
+     */
+    private void updateWorkspaceItemFlags(WorkspaceItemInfo wii) {
+        PackageManager pm = mContext.getPackageManager();
+        ActivityInfo ai = null;
+        try {
+            ai = pm.getActivityInfo(wii.getTargetComponent(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "PackageManager lookup failed.");
+        }
+
+        if (ai != null) {
+            wii.status = ai.resizeMode == ActivityInfo.RESIZE_MODE_UNRESIZEABLE
+                    ? wii.status | WorkspaceItemInfo.FLAG_NON_RESIZEABLE
+                    : wii.status & ~WorkspaceItemInfo.FLAG_NON_RESIZEABLE;
+        }
     }
 
     /**

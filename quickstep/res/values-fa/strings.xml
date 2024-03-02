@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"پین"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
-    <string name="recents_empty_message" msgid="7040467240571714191">"بدون موارد اخیر"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"چیز جدیدی اینجا نیست"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"تنظیمات استفاده از برنامه"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"پاک کردن همه"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"برنامه‌های اخیر"</string>
@@ -108,7 +108,7 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"رد شدن"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"چرخاندن صفحه"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"آموزش نوار وظیفه"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"برای استفاده هم‌زمان از ۲ برنامه، یک برنامه را به کناری بکشید"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"برای استفاده هم‌زمان از ۲ برنامه، یک برنامه را به‌کنار بکشید"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"برای نمایش «نوار وظیفه»، انگشتتان را آهسته به‌بالا بکشید"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"براساس روال‌هایتان، پیشنهاد برنامه دریافت کنید"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"جداکننده را چند ثانیه فشار دهید تا «نوار وظیفه» سنجاق شود"</string>

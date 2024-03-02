@@ -178,6 +178,8 @@
     <dimen name="widget_cell_vertical_padding">8dp</dimen>
     <dimen name="widget_cell_horizontal_padding">16dp</dimen>
     <dimen name="widget_cell_font_size">14sp</dimen>
+    <dimen name="widget_cell_app_icon_size">24dp</dimen>
+    <dimen name="widget_cell_app_icon_padding">8dp</dimen>
 
     <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
