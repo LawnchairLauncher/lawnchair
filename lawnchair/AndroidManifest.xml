@@ -33,6 +33,8 @@
     <uses-permission android:name="android.permission.MANAGE_USERS"/>
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
 
+    <!--override minSdk declared in it-->
+    <uses-sdk tools:overrideLibrary="com.kieronquinn.app.smartspacer.sdk" />
 
     <permission
         android:name="${packageName}.permission.READ_SETTINGS"
