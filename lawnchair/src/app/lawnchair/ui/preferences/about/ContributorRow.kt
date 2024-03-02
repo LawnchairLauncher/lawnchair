@@ -33,8 +33,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.surfaceColorAtElevation
 import app.lawnchair.ui.placeholder.PlaceholderHighlight
-import app.lawnchair.ui.placeholder.material.fade
-import app.lawnchair.ui.placeholder.material.placeholder
+import app.lawnchair.ui.placeholder.fade
+import app.lawnchair.ui.placeholder.placeholder
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import coil.compose.SubcomposeAsyncImage
 
