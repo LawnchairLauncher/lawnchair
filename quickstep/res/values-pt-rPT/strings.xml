@@ -110,7 +110,7 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Educação da Barra de tarefas"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arraste uma app para o lado para usar 2 apps em simultâneo"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Deslize lentamente para cima para mostrar a Barra de tarefas"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtenha sugestões de apps baseadas na sua rotina"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Receba sugestões de apps baseadas na sua rotina"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Mantenha o divisor premido para fixar a Barra de tarefas"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Faça mais com a Barra de tarefas"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Mostre sempre a Barra de tarefas"</string>

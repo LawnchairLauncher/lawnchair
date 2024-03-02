@@ -31,10 +31,10 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> gelditzen dira gaur"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Aplikazioen iradokizunak"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Iradokitako aplikazioak"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Jaso aplikazioen iradokizunak hasierako pantailaren beheko errenkadan"</string>
-    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Jaso aplikazioen iradokizunak hasierako pantailako gogokoen errenkadan"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Atzitu erraz aplikazio erabilienak hasierako pantailatik bertatik. Ohituren arabera aldatuko dira iradokizunak. Hasierako pantailara eramango dira beheko errenkadan dauden aplikazioak."</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Atzitu erraz aplikazio erabilienak hasierako pantailatik bertatik. Ohituren arabera aldatuko dira iradokizunak. Gogokoen errenkadako aplikazioak hasierako pantailara eramango ditugu."</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Jaso aplikazioen iradokizunak orri nagusiaren beheko errenkadan"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Jaso aplikazioen iradokizunak orri nagusiko gogokoen errenkadan"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Atzitu erraz aplikazio erabilienak orri nagusitik bertatik. Ohituren arabera aldatuko dira iradokizunak. Orri nagusira eramango dira beheko errenkadan dauden aplikazioak."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Atzitu erraz aplikazio erabilienak orri nagusitik bertatik. Ohituren arabera aldatuko dira iradokizunak. Gogokoen errenkadako aplikazioak orri nagusira eramango ditugu."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Jaso aplikazioen iradokizunak"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Ez, eskerrik asko"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Ezarpenak"</string>
@@ -61,12 +61,12 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Ziurtatu hatza pantailaren beheko ertzetik gora pasatzen duzula"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Ziurtatu ez duzula mugimendua gelditzen askatu arte"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Ziurtatu hatza zuzen pasatzen duzula gora"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ikasi duzu hasierako pantailara joateko keinua. Orain, ikasi atzera egiten."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ikasi duzu hasierako pantailara joateko keinua"</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Pasatu hatza hasierako pantailara joateko"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pasatu hatza pantailaren behealdetik gora. Keinu horrek hasierako pantailara eramango zaitu beti."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pasatu bi hatz pantailaren behealdetik gora. Hasierako pantailara eramango zaitu beti keinu horrek."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Joan hasierako pantailara"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ikasi duzu orri nagusira joateko keinua. Orain, ikasi atzera egiten."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ikasi duzu orri nagusira joateko keinua"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Pasatu hatza orri nagusira joateko"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pasatu hatza pantailaren behealdetik gora. Keinu horrek orri nagusira eramango zaitu beti."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pasatu bi hatz pantailaren behealdetik gora. Orri nagusira eramango zaitu beti keinu horrek."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Joan orri nagusira"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Pasatu hatza pantailaren behealdetik gora"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Bikain!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Ziurtatu hatza pantailaren beheko ertzetik gora pasatzen duzula"</string>
@@ -87,8 +87,8 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Ederki!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutoriala: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Dena prest!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Pasatu hatza gora hasierako pantailara joateko"</string>
-    <string name="allset_button_hint" msgid="2395219947744706291">"Hasierako pantailara joateko, sakatu Hasiera botoia"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Pasatu hatza gora orri nagusira joateko"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Orri nagusira joateko, sakatu Hasiera botoia"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Prest zaude <xliff:g id="DEVICE">%1$s</xliff:g> erabiltzen hasteko"</string>
     <string name="default_device_name" msgid="6660656727127422487">"gailua"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Sisteman nabigatzeko ezarpenak"</annotation></string>
