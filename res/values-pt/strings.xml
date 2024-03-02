@@ -31,9 +31,9 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informações do app %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Salvar par de apps"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
     <skip />
-    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
     <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Toque e pressione para mover um widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Toque duas vezes e mantenha a tela pressionada para mover um widget ou usar ações personalizadas."</string>
@@ -137,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instalando <xliff:g id="NAME">%1$s</xliff:g>. <xliff:g id="PROGRESS">%2$s</xliff:g> concluído"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Fazendo download de <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> concluído"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Aguardando instalação de <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"Atualização obrigatória do app"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"O app desse ícone não está atualizado. Você pode remover o ícone ou atualizar o app manualmente para reativar esse atalho."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Atualizar"</string>
