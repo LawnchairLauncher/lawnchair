@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
@@ -15,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 
 @Composable
-fun AlertBottomSheetContent(
+fun ModalBottomSheetContent(
     buttons: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
     title: (@Composable () -> Unit)? = null,
@@ -26,23 +27,26 @@ fun AlertBottomSheetContent(
 
     Column(
         modifier = modifier
-            .navigationBarsOrDisplayCutoutPadding()
             .fillMaxWidth(),
     ) {
-        if (title != null) {
-            Box(modifier = contentPadding) {
+        title?.let {
+            Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                 val textStyle = MaterialTheme.typography.titleLarge
                 ProvideTextStyle(textStyle, title)
             }
         }
-        if (text != null) {
+        text?.let {
             Box(modifier = contentPadding) {
                 val textStyle = MaterialTheme.typography.bodyMedium
                 ProvideTextStyle(textStyle, text)
             }
         }
-        if (content != null) {
-            Box(modifier = Modifier.padding(top = if (title != null || text != null) 16.dp else 0.dp)) {
+        content?.let {
+            Box(
+                modifier = Modifier.padding(
+                    top = if (title != null || text != null) 16.dp else 0.dp
+                )
+            ) {
                 content()
             }
         }

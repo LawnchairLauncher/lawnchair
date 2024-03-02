@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.bottomSheetHandler
 
@@ -73,7 +73,7 @@ fun TextPreferenceDialog(
     onConfirm: (String) -> Unit,
 ) {
     var value by remember { mutableStateOf(initialValue) }
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
         title = { Text(text = title) },
         text = {
             OutlinedTextField(

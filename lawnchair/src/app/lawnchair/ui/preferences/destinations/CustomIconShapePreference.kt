@@ -43,7 +43,7 @@ import app.lawnchair.icons.shape.IconCornerShape
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.IconShapePreview
 import app.lawnchair.ui.preferences.components.controls.getSteps
 import app.lawnchair.ui.preferences.components.controls.snapSliderValue
@@ -334,7 +334,7 @@ private fun CornerSlider(
                     .clip(shape = MaterialTheme.shapes.small)
                     .clickable {
                         bottomSheetHandler.show {
-                            AlertBottomSheetContent(
+                            ModalBottomSheetContent(
                                 title = { Text(stringResource(id = R.string.icon_shape_corner)) },
                                 buttons = {
                                     OutlinedButton(onClick = { bottomSheetHandler.hide() }) {

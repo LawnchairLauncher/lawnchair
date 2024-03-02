@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.addIf
@@ -84,7 +84,7 @@ fun <T> ListPreference(
         applyPaddings = false,
         modifier = Modifier.clickable(enabled) {
             bottomSheetHandler.show {
-                AlertBottomSheetContent(
+                ModalBottomSheetContent(
                     title = { Text(label) },
                     buttons = {
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {

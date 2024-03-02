@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.config.GestureHandlerOption
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.LocalBottomSheetHandler
@@ -56,7 +56,7 @@ fun GestureHandlerPreference(
         description = { Text(text = currentConfig.getLabel(context)) },
         modifier = Modifier.clickable {
             bottomSheetHandler.show {
-                AlertBottomSheetContent(
+                ModalBottomSheetContent(
                     title = { Text(label) },
                     buttons = {
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {

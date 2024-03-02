@@ -42,7 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.util.lifecycleState
@@ -110,7 +110,7 @@ fun NotificationAccessConfirmation(
 ) {
     val context = LocalContext.current
 
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
         title = { Text(text = stringResource(id = R.string.missing_notification_access_label)) },
         text = {
             val appName = stringResource(id = R.string.derived_app_name)
