@@ -125,7 +125,7 @@
     <string name="icon_shape_rounded_square">Στρογγυλό Τετράγωνο</string>
     <string name="icon_shape_sharp_square">Αιχμηρό Τετράγωνο</string>
     <string name="icon_shape_square">Τετράγωνο</string>
-    <string name="icon_shape_squircle">Οβάλ τετράγωνο</string>
+    <string name="icon_shape_squircle">Οβάλ Τετράγωνο</string>
     <string name="icon_shape_teardrop">Δάκρυ</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Προσθήκη Γραμματοσειρών</string>
@@ -183,8 +183,8 @@
     <string name="home_screen_unlock">Ξεκλείδωμα αρχικής οθόνης</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Η Αρχική Οθόνη είναι κλειδωμένη.</string>
-    <string name="show_dot_pagination_label">Εμφάνιση οριοθέτησης κουκίδας ειδοποίησης</string>
-    <string name="show_dot_pagination_description">Ενεργοποίηση εμφάνισης οριοθέτησης κουκίδας ειδοποίησης στον χώρο εργασίας.</string>
+    <string name="show_dot_pagination_label">Εμφάνιση διαχωριστικών κουκκίδων επιφανειών εργασίας</string>
+    <string name="show_dot_pagination_description">Ενεργοποίηση εμφάνισης διαχωριστικών κουκκίδων στις επιφάνειες εργασίας.</string>
     <string name="show_material_u_popup_label">Εμφάνιση Αναδυόμενου παραθύρου εφαρμογών σε σχεδιασμό Material U</string>
     <string name="show_material_u_popup_description">Ενεργοποίηση αναπήδησης &amp; ελαφρώς ενοποιημένου αναδυόμενου παραθύρου εφαρμογών.</string>
     <string name="popup_menu">Αναδυόμενο Μενού</string>
@@ -234,7 +234,7 @@
     <string name="smartspace_battery_status">Κατάσταση Μπαταρίας</string>
     <string name="smartspace_now_playing">Παίζει Τώρα</string>
     <string name="smartspace_requires_setup">Πατήστε για Ρύθμιση</string>
-    <string name="event_provider_missing_notification_dots">Για να χρησιμοποιήσετε <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε τις Κουκίδες Ειδοποιήσεων.</string>
+    <string name="event_provider_missing_notification_dots">Για να χρησιμοποιήσετε <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε τις Κουκκίδες Ειδοποιήσεων.</string>
     <string name="smartspace_media_info_separator">"•"</string>
     <string name="smartspace_calendar_gregorian">Γρηγοριανό</string>
     <string name="smartspace_calendar_persian">Περσικό</string>
