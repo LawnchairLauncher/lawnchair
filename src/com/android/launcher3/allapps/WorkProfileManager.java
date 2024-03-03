@@ -73,7 +73,7 @@ public class WorkProfileManager extends UserProfileManager
      * Posts quite mode enable/disable call for work profile user
      */
     public void setWorkProfileEnabled(boolean enabled) {
-        setCurrentState(STATE_TRANSITION);
+        updateCurrentState(STATE_TRANSITION);
         setQuietMode(!enabled);
     }
 
