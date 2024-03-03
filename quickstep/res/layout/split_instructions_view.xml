@@ -24,8 +24,7 @@
     android:paddingTop="@dimen/split_instructions_vertical_padding"
     android:paddingBottom="@dimen/split_instructions_vertical_padding"
     android:elevation="@dimen/split_instructions_elevation"
-    android:visibility="gone"
-    android:importantForAccessibility="yes">
+    android:visibility="gone">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/split_instructions_text"
         android:layout_height="wrap_content"
