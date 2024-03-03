@@ -128,6 +128,9 @@ public class SplitInstructionsView extends LinearLayout {
             cancelTextView.setOnClickListener((v) -> exitSplitSelection());
             instructionTextView.setText(R.string.toast_contextual_split_select_app);
         }
+
+        // Set accessibility title, will be announced by a11y tools.
+        instructionTextView.setAccessibilityPaneTitle(instructionTextView.getText());
     }
 
     private void exitSplitSelection() {
