@@ -49,7 +49,11 @@ class TestToPhoneFileCopier(
         object : Statement() {
             override fun evaluate() {
                 before()
-                base.evaluate()
+                try {
+                    base.evaluate()
+                } finally {
+                    after()
+                }
             }
         }
 }
