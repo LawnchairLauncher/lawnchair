@@ -105,12 +105,10 @@ public class GridSizeMigrationUtil {
      */
     public static boolean migrateGridIfNeeded(
             @NonNull Context context,
-            @NonNull InvariantDeviceProfile idp,
+            @NonNull DeviceGridState srcDeviceState,
+            @NonNull DeviceGridState destDeviceState,
             @NonNull DatabaseHelper target,
             @NonNull SQLiteDatabase source) {
-
-        DeviceGridState srcDeviceState = new DeviceGridState(context);
-        DeviceGridState destDeviceState = new DeviceGridState(idp);
         if (!needsToMigrate(srcDeviceState, destDeviceState)) {
             return true;
         }
