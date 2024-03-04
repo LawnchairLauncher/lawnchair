@@ -614,7 +614,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             location.right = currentBarBounds.right;
         }
         final int translation = (int) abs(mBubbleStashController.getBubbleBarTranslationY());
-        location.top = displaySize.y - mBarView.getHeight() - translation;
+        location.top = displaySize.y - currentBarBounds.height() - translation;
         location.bottom = displaySize.y - translation;
         return location;
     }

@@ -110,6 +110,7 @@ public class BubbleBarView extends FrameLayout {
     private final float mIconSize;
     // The elevation of the bubbles within the bar
     private final float mBubbleElevation;
+    private final int mPointerSize;
 
     // Whether the bar is expanded (i.e. the bubble activity is being displayed).
     private boolean mIsBarExpanded = false;
@@ -166,6 +167,8 @@ public class BubbleBarView extends FrameLayout {
         mIconSpacing = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_spacing);
         mIconSize = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_size);
         mBubbleElevation = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_elevation);
+        mPointerSize = getResources().getDimensionPixelSize(R.dimen.bubblebar_pointer_size);
+
         setClipToPadding(false);
 
         mBubbleBarBackground = new BubbleBarBackground(activityContext,
@@ -214,7 +217,7 @@ public class BubbleBarView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         mBubbleBarBounds.left = left;
-        mBubbleBarBounds.top = top;
+        mBubbleBarBounds.top = top + mPointerSize;
         mBubbleBarBounds.right = right;
         mBubbleBarBounds.bottom = bottom;
 
@@ -272,6 +275,7 @@ public class BubbleBarView extends FrameLayout {
         if (bubbleBarLocation != mBubbleBarLocation) {
             mBubbleBarLocation = bubbleBarLocation;
             onBubbleBarLocationChanged();
+            invalidate();
         }
     }
 
@@ -344,7 +348,7 @@ public class BubbleBarView extends FrameLayout {
      * Updates the bounds with translation that may have been applied and returns the result.
      */
     public Rect getBubbleBarBounds() {
-        mBubbleBarBounds.top = getTop() + (int) getTranslationY();
+        mBubbleBarBounds.top = getTop() + (int) getTranslationY() + mPointerSize;
         mBubbleBarBounds.bottom = getBottom() + (int) getTranslationY();
         return mBubbleBarBounds;
     }
