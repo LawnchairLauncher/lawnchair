@@ -1483,11 +1483,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (showPendingWidget) {
             launcherInfo.restoreStatus = LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
             PendingAppWidgetHostView pendingAppWidgetHostView = new PendingAppWidgetHostView(
-                    this, mAppWidgetHolder, launcherInfo, appWidgetInfo);
-            pendingAppWidgetHostView.setPreviewBitmap(widgetPreviewBitmap);
+                    this, mAppWidgetHolder, launcherInfo, appWidgetInfo, widgetPreviewBitmap);
             hostView = pendingAppWidgetHostView;
         } else if (hostView instanceof PendingAppWidgetHostView) {
-            ((PendingAppWidgetHostView) hostView).setPreviewBitmap(null);
+            ((PendingAppWidgetHostView) hostView).setPreviewBitmapAndUpdateBackground(null);
             // User has selected a widget config and exited the config activity, we can trigger
             // re-inflation of PendingAppWidgetHostView to replace it with
             // LauncherAppWidgetHostView in workspace.
@@ -1822,7 +1821,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (isActivityStarted) {
             DragView dropView = getDragLayer().clearAnimatedView();
             if (dropView != null && dropView.containsAppWidgetHostView()) {
-                widgetPreviewBitmap = getBitmapFromView(dropView.getContentView());
+                // Extracting Bitmap from dropView instead of its content view produces the correct
+                // bitmap.
+                widgetPreviewBitmap = getBitmapFromView(dropView);
             }
         }
 
