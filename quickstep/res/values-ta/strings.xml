@@ -108,10 +108,10 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"தவிர்"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"திரையைச் சுழற்றும்"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"செயல் பட்டியைப் பயன்படுத்தும் விதம்"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ஒரே நேரத்தில் 2 ஆப்ஸைப் பயன்படுத்தப் பக்கவாட்டில் இழுக்கவும்"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ஆப்ஸை பக்கவாட்டில் இழுத்து ஒரே நேரத்தில் 2 ஆப்ஸைப் பயன்படுத்தலாம்"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"செயல் பட்டியைக் காட்ட மேல்நோக்கி மெதுவாக ஸ்வைப் செய்யவும்"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸ் பரிந்துரைகளைப் பெறலாம்"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"பிரிப்பானை நீண்ட நேரம் அழுத்தி, செயல் பட்டியைப் பின் செய்க"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"பிரிப்பானை நீண்ட நேரம் அழுத்தி, செயல் பட்டியைப் பின் செய்யலாம்"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"செயல் பட்டி மூலம் மேலும் பலவற்றைச் செய்யுங்கள்"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"செயல் பட்டியை எப்போதும் காட்டுதல்"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"திரையின் கீழ்ப்பகுதியில் செயல் பட்டியை எப்போதும் காட்டுவதற்கு, பிரிப்பானைத் தொட்டுப் பிடித்திருக்கவும்"</string>
