@@ -309,6 +309,13 @@ class LauncherPrefs(private val encryptedContext: Context) {
         val LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE =
             nonRestorableItem("LPNH_SLOP_PERCENTAGE", 100, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
         @JvmField
+        val LONG_PRESS_NAV_HANDLE_EXTRA_TOUCH_WIDTH_DP =
+            nonRestorableItem(
+                "LPNH_EXTRA_TOUCH_WIDTH_DP",
+                0,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
         val LONG_PRESS_NAV_HANDLE_TIMEOUT_MS =
             nonRestorableItem(
                 "LPNH_TIMEOUT_MS",
@@ -349,8 +356,8 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmField
         val PRIVATE_SPACE_APPS =
             nonRestorableItem("pref_private_space_apps", 0, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
-        @JvmField val ENABLE_TWOLINE_ALLAPPS_TOGGLE =
-                backedUpItem("pref_enable_two_line_toggle", false)
+        @JvmField
+        val ENABLE_TWOLINE_ALLAPPS_TOGGLE = backedUpItem("pref_enable_two_line_toggle", false)
         @JvmField
         val THEMED_ICONS =
             backedUpItem(Themes.KEY_THEMED_ICONS, false, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
