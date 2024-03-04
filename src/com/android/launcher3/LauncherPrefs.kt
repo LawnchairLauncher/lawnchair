@@ -349,8 +349,8 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmField
         val PRIVATE_SPACE_APPS =
             nonRestorableItem("pref_private_space_apps", 0, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
-        @JvmField
-        val ENABLE_TWOLINE_ALLAPPS_TOGGLE = backedUpItem("pref_enable_two_line_toggle", false)
+        @JvmField val ENABLE_TWOLINE_ALLAPPS_TOGGLE =
+                backedUpItem("pref_enable_two_line_toggle", false)
         @JvmField
         val THEMED_ICONS =
             backedUpItem(Themes.KEY_THEMED_ICONS, false, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
@@ -494,7 +494,8 @@ class LauncherPrefs(private val encryptedContext: Context) {
 }
 
 // It is a var because the unit tests are setting this to true so they can run.
-var moveStartupDataToDeviceProtectedStorageIsEnabled: Boolean = false
+var moveStartupDataToDeviceProtectedStorageIsEnabled: Boolean =
+    com.android.launcher3.config.FeatureFlags.MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE.get()
 
 private val ITEMS_TO_MOVE_TO_DEVICE_PROTECTED_STORAGE: MutableSet<ConstantItem<*>> = mutableSetOf()
 
