@@ -31,9 +31,9 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s के लिए ऐप्लिकेशन की जानकारी"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"साथ में इस्तेमाल किए जा सकने वाले ऐप्लिकेशन की जानकारी सेव करें"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
     <skip />
-    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
     <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उसे दबाकर रखें."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उस पर दो बार टैप करके दबाकर रखें या पसंद के मुताबिक कार्रवाइयां इस्तेमाल करें."</string>
@@ -137,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल किया जा रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरा हो गया"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरी हुई"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"ऐप्लिकेशन को अपडेट करना ज़रूरी है"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"इस आइकॉन का ऐप्लिकेशन अपडेट नहीं है. इस शॉर्टकट को फिर से चालू करने या आइकॉन को हटाने के लिए, ऐप्लिकेशन को मैन्युअल रूप से अपडेट किया जा सकता है."</string>
     <string name="dialog_update" msgid="2178028071796141234">"अपडेट करें"</string>
