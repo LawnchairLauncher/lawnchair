@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -87,7 +88,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private static final int FEEDBACK_ANIMATION_MS = 133;
     private static final int RIPPLE_VISIBLE_MS = 300;
     private static final int GESTURE_ANIMATION_DELAY_MS = 1500;
-    private static final int ADVANCE_TUTORIAL_TIMEOUT_MS = 2000;
+    private static final int ADVANCE_TUTORIAL_TIMEOUT_MS = 3000;
     private static final long GESTURE_ANIMATION_PAUSE_DURATION_MILLIS = 1000;
     protected float mExitingAppEndingCornerRadius;
     protected float mExitingAppStartingCornerRadius;
@@ -209,8 +210,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                                 mFeedbackView.removeCallbacks(mFeedbackViewCallback);
                             }
                             mFeedbackViewCallback = mTutorialFragment::continueTutorial;
-                            mFeedbackView.postDelayed(mFeedbackViewCallback,
-                                    ADVANCE_TUTORIAL_TIMEOUT_MS);
+                            mFeedbackView.postDelayed(
+                                    mFeedbackViewCallback,
+                                    AccessibilityManager.getInstance(mContext)
+                                            .getRecommendedTimeoutMillis(
+                                                    ADVANCE_TUTORIAL_TIMEOUT_MS,
+                                                    AccessibilityManager.FLAG_CONTENT_TEXT));
                         }
                     })
                     .start();
