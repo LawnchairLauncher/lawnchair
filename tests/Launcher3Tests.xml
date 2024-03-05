@@ -13,14 +13,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!-- This test config file is auto-generated. -->
+
 <configuration description="Runs Launcher3 tests.">
     <option name="test-suite-tag" value="apct" />
     <option name="test-suite-tag" value="apct-instrumentation" />
 
     <target_preparer class="com.android.tradefed.targetprep.DeviceSetup">
         <option name="set-test-harness" value="true" />
-        <option name="run-command" value="am force-stop com.android.launcher3" />
+
+        <option name="run-command" value="svc nfc disable" />
+        <option name="run-command" value="settings put global ble_scan_always_enabled 0" />
+        <option name="run-command" value="svc bluetooth disable" />
+
         <option name="run-command" value="pm uninstall com.google.android.apps.nexuslauncher" />
         <option name="run-command" value="pm uninstall com.google.android.apps.nexuslauncher.out_of_proc_tests" />
         <option name="run-command" value="pm uninstall com.google.android.apps.nexuslauncher.tests" />
