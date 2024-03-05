@@ -1087,7 +1087,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         } else if (tag instanceof FolderInfo fi && fi.itemType == Favorites.ITEM_TYPE_APP_PAIR) {
             // Tapping an app pair icon on Taskbar
             if (recents != null && recents.isSplitSelectionActive()) {
-                // TODO (b/274835596): Implement "can't split with this" bounce animation
                 Toast.makeText(this, "Unable to split with an app pair. Select another app.",
                         Toast.LENGTH_SHORT).show();
             } else {
