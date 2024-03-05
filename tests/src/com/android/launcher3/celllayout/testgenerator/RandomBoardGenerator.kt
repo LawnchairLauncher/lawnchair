@@ -33,9 +33,9 @@ open class RandomBoardGenerator(generator: Random) : DeterministicRandomGenerato
     }
 
     protected fun fillBoard(
-        board: CellLayoutBoard,
-        area: Rect,
-        remainingEmptySpacesArg: Int
+            board: CellLayoutBoard,
+            area: Rect,
+            remainingEmptySpacesArg: Int
     ): CellLayoutBoard {
         var remainingEmptySpaces = remainingEmptySpacesArg
         if (area.height() * area.width() <= 0) return board

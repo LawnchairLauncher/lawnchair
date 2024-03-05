@@ -361,7 +361,7 @@ public class TaskMenuView extends AbstractFloatingView {
             menuTranslationXAnim.setInterpolator(EMPHASIZED);
 
             mOpenCloseAnimator.playTogether(translationYAnim, translationXAnim,
-                    menuTranslationXAnim);
+                    menuTranslationXAnim, menuTranslationYAnim);
         }
 
         mOpenCloseAnimator.playTogether(mRevealAnimator,

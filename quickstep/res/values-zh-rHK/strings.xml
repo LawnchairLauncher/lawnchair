@@ -108,9 +108,9 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"略過"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"旋轉螢幕"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"工作列教學"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"將應用程式拖曳到一邊，即可同時使用 2 個應用程式"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"慢慢向上滑動即可顯示工作列"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"根據你的日常安排提供應用程式建議"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"將應用程式拖曳到一邊，同時使用兩個應用程式"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"慢慢向上掃即可顯示工作列"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"獲取符合日常習慣的應用程式建議"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"長按分隔線即可固定工作列"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"工作列助你事半功倍"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"永遠顯示工作列"</string>

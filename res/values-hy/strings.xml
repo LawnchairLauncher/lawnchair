@@ -31,9 +31,9 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Տեղեկություններ %1$s հավելվածի մասին"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Պահել հավելվածների զույգը"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (336173604186644640) -->
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
     <skip />
-    <!-- no translation found for app_pair_needs_unfold (1569248713407876318) -->
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
     <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Հպեք և պահեք՝ վիջեթ տեղափոխելու համար։"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Կրկնակի հպեք և պահեք՝ վիջեթ տեղափոխելու համար, կամ օգտվեք հատուկ գործողություններից։"</string>
@@ -137,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> հավելվածը տեղադրվում է, կատարված է <xliff:g id="PROGRESS">%2$s</xliff:g>-ը"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>–ի ներբեռնում (<xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>-ի տեղադրման սպասում"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"Պահանջվում է թարմացնել հավելվածը"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Հավելվածը հնացել է։ Թարմացրեք այն ձեռքով, որպեսզի շարունակեք օգտագործել դյուրանցումը, կամ հեռացրեք հավելվածի պատկերակը։"</string>
     <string name="dialog_update" msgid="2178028071796141234">"Թարմացնել"</string>
