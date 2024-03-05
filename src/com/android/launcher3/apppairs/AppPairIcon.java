@@ -19,7 +19,6 @@ package com.android.launcher3.apppairs;
 import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -192,16 +191,11 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
     }
 
     /**
-     * Checks if the app pair is launchable in the current device configuration.
-     *
+     * Updates the "disabled" state of the app pair in the current device configuration.
      * App pairs can be "disabled" in two ways:
      * 1) One of the member WorkspaceItemInfos is disabled (i.e. the app software itself is paused
-     * by the user or can't be launched).
+     * by the user or can't be launched for some other reason).
      * 2) This specific instance of an app pair can't be launched due to screen size requirements.
-     *
-     * This method checks and updates #2. Both #1 and #2 are checked when app pairs are drawn
-     * {@link AppPairIconGraphic#dispatchDraw(Canvas)} or clicked on
-     * {@link com.android.launcher3.touch.ItemClickHandler#onClickAppPairIcon(View)}
      */
     public void checkDisabledState() {
         DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
