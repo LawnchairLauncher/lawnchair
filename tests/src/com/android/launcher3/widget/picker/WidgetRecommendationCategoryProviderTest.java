@@ -23,6 +23,7 @@ import static android.content.pm.ApplicationInfo.CATEGORY_PRODUCTIVITY;
 import static android.content.pm.ApplicationInfo.CATEGORY_SOCIAL;
 import static android.content.pm.ApplicationInfo.CATEGORY_UNDEFINED;
 import static android.content.pm.ApplicationInfo.CATEGORY_VIDEO;
+import static android.content.pm.ApplicationInfo.FLAG_INSTALLED;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -30,8 +31,7 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +41,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
+import android.content.pm.LauncherApps;
 import android.os.Process;
 
 import androidx.test.core.content.pm.ApplicationInfoBuilder;
@@ -70,10 +70,25 @@ import java.util.Map;
 public class WidgetRecommendationCategoryProviderTest {
     private static final String TEST_PACKAGE = "com.foo.test";
     private static final String TEST_APP_NAME = "foo";
-    public static final WidgetRecommendationCategory SOCIAL_AND_ENTERTAINMENT_CATEGORY =
+    private static final WidgetRecommendationCategory PRODUCTIVITY =
             new WidgetRecommendationCategory(
-                    R.string.social_and_entertainment_widget_recommendation_category_label,
-                    /*order=*/4);
+                    R.string.productivity_widget_recommendation_category_label,
+                    /*order=*/0);
+    private static final WidgetRecommendationCategory NEWS =
+            new WidgetRecommendationCategory(
+                    R.string.news_widget_recommendation_category_label, /*order=*/1);
+    private static final WidgetRecommendationCategory SUGGESTED_FOR_YOU =
+            new WidgetRecommendationCategory(
+                    R.string.others_widget_recommendation_category_label, /*order=*/4);
+    private static final WidgetRecommendationCategory SOCIAL =
+            new WidgetRecommendationCategory(
+                    R.string.social_widget_recommendation_category_label,
+                    /*order=*/5);
+    private static final WidgetRecommendationCategory ENTERTAINMENT =
+            new WidgetRecommendationCategory(
+                    R.string.entertainment_widget_recommendation_category_label,
+                    /*order=*/6);
+
     private final ApplicationInfo mTestAppInfo = ApplicationInfoBuilder.newBuilder().setPackageName(
             TEST_PACKAGE).setName(TEST_APP_NAME).build();
     private Context mContext;
@@ -82,7 +97,7 @@ public class WidgetRecommendationCategoryProviderTest {
 
     private WidgetItem mTestWidgetItem;
     @Mock
-    private PackageManager mPackageManager;
+    private LauncherApps mLauncherApps;
     private InvariantDeviceProfile mTestProfile;
 
     @Before
@@ -90,10 +105,12 @@ public class WidgetRecommendationCategoryProviderTest {
         MockitoAnnotations.initMocks(this);
         mContext = new ContextWrapper(getInstrumentation().getTargetContext()) {
             @Override
-            public PackageManager getPackageManager() {
-                return mPackageManager;
+            public Object getSystemService(String name) {
+                return LAUNCHER_APPS_SERVICE.equals(name) ? mLauncherApps : super.getSystemService(
+                        name);
             }
         };
+        mTestAppInfo.flags = FLAG_INSTALLED;
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
@@ -103,25 +120,22 @@ public class WidgetRecommendationCategoryProviderTest {
     @Test
     public void getWidgetRecommendationCategory_returnsMappedCategory() throws Exception {
         ImmutableMap<Integer, WidgetRecommendationCategory> testCategories = ImmutableMap.of(
-                CATEGORY_PRODUCTIVITY, new WidgetRecommendationCategory(
-                        R.string.productivity_widget_recommendation_category_label,
-                        /*order=*/
-                        0),
-                CATEGORY_NEWS, new WidgetRecommendationCategory(
-                        R.string.news_widget_recommendation_category_label, /*order=*/1),
-                CATEGORY_SOCIAL, SOCIAL_AND_ENTERTAINMENT_CATEGORY,
-                CATEGORY_AUDIO, SOCIAL_AND_ENTERTAINMENT_CATEGORY,
-                CATEGORY_IMAGE, SOCIAL_AND_ENTERTAINMENT_CATEGORY,
-                CATEGORY_VIDEO, SOCIAL_AND_ENTERTAINMENT_CATEGORY,
-                CATEGORY_UNDEFINED, new WidgetRecommendationCategory(
-                        R.string.others_widget_recommendation_category_label, /*order=*/5));
+                CATEGORY_PRODUCTIVITY, PRODUCTIVITY,
+                CATEGORY_NEWS, NEWS,
+                CATEGORY_SOCIAL, SOCIAL,
+                CATEGORY_AUDIO, ENTERTAINMENT,
+                CATEGORY_IMAGE, ENTERTAINMENT,
+                CATEGORY_VIDEO, ENTERTAINMENT,
+                CATEGORY_UNDEFINED, SUGGESTED_FOR_YOU);
 
         for (Map.Entry<Integer, WidgetRecommendationCategory> testCategory :
                 testCategories.entrySet()) {
 
             mTestAppInfo.category = testCategory.getKey();
-            when(mPackageManager.getApplicationInfo(anyString(), anyInt())).thenReturn(
-                    mTestAppInfo);
+            when(mLauncherApps.getApplicationInfo(/*packageName=*/ eq(TEST_PACKAGE),
+                    /*flags=*/ eq(0),
+                    /*user=*/ eq(Process.myUserHandle())))
+                    .thenReturn(mTestAppInfo);
 
             WidgetRecommendationCategory category = Executors.MODEL_EXECUTOR.submit(() ->
                     new WidgetRecommendationCategoryProvider().getWidgetRecommendationCategory(
