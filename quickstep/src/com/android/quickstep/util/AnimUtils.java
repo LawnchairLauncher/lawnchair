@@ -16,10 +16,12 @@
 
 package com.android.quickstep.util;
 
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.os.Bundle;
 import android.os.IRemoteCallback;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.util.RunnableList;
 
@@ -66,5 +68,16 @@ public class AnimUtils {
                 MAIN_EXECUTOR.execute(list::executeAllAndDestroy);
             }
         };
+    }
+
+    /**
+     * Returns a function that runs the given interpolator such that the entire progress is set
+     * between the given duration. That is, we set the interpolation to 0 until startDelay and reach
+     * 1 by (startDelay + duration).
+     */
+    public static Interpolator clampToDuration(Interpolator interpolator, float startDelay,
+            float duration, float totalDuration) {
+        return clampToProgress(interpolator, startDelay / totalDuration,
+                (startDelay + duration) / totalDuration);
     }
 }
