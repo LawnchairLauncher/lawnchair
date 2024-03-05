@@ -38,6 +38,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherPrefs;
@@ -92,6 +93,15 @@ public class GridSizeMigrationUtil {
                     + ", srcDeviceState: " + srcDeviceState);
         }
         return needsToMigrate;
+    }
+
+    @VisibleForTesting
+    public static List<DbEntry> readAllEntries(SQLiteDatabase db, String tableName,
+            Context context) {
+        DbReader dbReader = new DbReader(db, tableName, context, getValidPackages(context));
+        List<DbEntry> result = dbReader.loadAllWorkspaceEntries();
+        result.addAll(dbReader.loadHotseatEntries());
+        return result;
     }
 
     /**
@@ -654,7 +664,7 @@ public class GridSizeMigrationUtil {
         }
     }
 
-    protected static class DbEntry extends ItemInfo implements Comparable<DbEntry> {
+    public static class DbEntry extends ItemInfo implements Comparable<DbEntry> {
 
         private String mIntent;
         private String mProvider;
