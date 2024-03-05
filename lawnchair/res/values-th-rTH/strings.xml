@@ -75,7 +75,7 @@
     <!-- Notification popup -->
     <string name="missing_notification_access_label">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
     <string name="missing_notification_access_description">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
-    <string name="msg_missing_notification_access">เพื่อใช้ Notification Dots, กรุณาอนุญาตให้ <xliff:g id="name" example="My App">%1$s</xliff:g>เข้าถึงการแจ้งเตือน</string>
+    <string name="msg_missing_notification_access">เพื่อใช้จุดแสดงการแจ้งเตือน, กรุณาอนุญาตให้ <xliff:g id="name" example="My App">%1$s</xliff:g>เข้าถึงการแจ้งเตือน</string>
     <string name="title_change_settings">เปลี่ยนการตั้งค่า</string>
     <string name="colors">สี</string>
     <string name="theme_label">ธีม</string>
@@ -446,8 +446,8 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">ตั้งค่าระบบ</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">ปลดล็อค</string>
+    <string name="action_lock">ล็อค</string>
     <string name="recents_lock_unlock">Lock/Unlock</string>
     <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

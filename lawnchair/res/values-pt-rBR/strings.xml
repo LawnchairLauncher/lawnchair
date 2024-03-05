@@ -183,14 +183,14 @@
     <string name="home_screen_unlock">Desbloquear Tela Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">A Tela Inicial está bloqueada.</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
-    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
+    <string name="show_dot_pagination_label">Exibir paginação de pontos</string>
+    <string name="show_dot_pagination_description">Habilitar a exibição de paginação de pontos no desktop.</string>
+    <string name="show_material_u_popup_label">Exibir Pop-up Material U</string>
+    <string name="show_material_u_popup_description">Habilitar saltos e pop-up ligeiramente consolidados.</string>
     <string name="popup_menu">Menu Flutuante</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio</string>
     <string name="show_system_settings_entry">Mostrar Entrada para Configurações do Sistema</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Mostrar Botão Editar</string>
     <string name="status_bar_label">Barra de Status</string>
     <string name="show_status_bar">Mostrar barra de status</string>
     <string name="dark_status_bar_label">Barra de Status Escura</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Pesquisa do Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">Exibir Dock</string>
     <string name="hotseat_mode_label">Widget da Barra de Pesquisa</string>
     <string name="hotseat_mode_disabled">Desativado</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>

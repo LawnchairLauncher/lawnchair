@@ -3,14 +3,14 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.2.2"
-    id 'com.android.library' version "8.2.2" apply false
-    id 'com.android.test' version '8.2.2' apply false
+    id 'com.android.application' version "8.3.0"
+    id 'com.android.library' version "8.3.0" apply false
+    id 'com.android.test' version '8.3.0' apply false
     id 'androidx.baselineprofile' version '1.2.3'
     id 'org.jetbrains.kotlin.android' version "1.9.22"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.22"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.22"
-    id "com.google.devtools.ksp" version "1.9.22-1.0.17"
+    id "com.google.devtools.ksp" version "1.9.22-1.0.18"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.9.1"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -77,7 +77,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.50'
+        daggerVersion = '2.51'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -400,7 +400,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.3.0'
+    implementation 'com.airbnb.android:lottie:6.4.0'
 
     // Smartspacer
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.6') {
