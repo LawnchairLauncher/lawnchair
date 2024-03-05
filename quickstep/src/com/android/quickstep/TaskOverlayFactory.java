@@ -43,6 +43,7 @@ import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.Snackbar;
 import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -210,11 +211,17 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             }
         }
 
-        private void enterSplitSelect() {
+        protected void enterSplitSelect() {
             RecentsView overviewPanel = mThumbnailView.getTaskView().getRecentsView();
             // Task has already been dismissed
             if (overviewPanel == null) return;
             overviewPanel.initiateSplitSelect(mThumbnailView.getTaskView());
+        }
+
+        protected void saveAppPair() {
+            GroupedTaskView taskView = (GroupedTaskView) mThumbnailView.getTaskView();
+            taskView.getRecentsView().getSplitSelectController().getAppPairsController()
+                    .saveAppPair(taskView);
         }
 
         /**
@@ -329,6 +336,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             public void onSplit() {
                 endLiveTileMode(TaskOverlay.this::enterSplitSelect);
             }
+
+            public void onSaveAppPair() {
+                endLiveTileMode(TaskOverlay.this::saveAppPair);
+            }
         }
     }
 
@@ -342,5 +353,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
         /** User wants to start split screen with current app. */
         void onSplit();
+
+        /** User wants to save an app pair with current group of apps. */
+        void onSaveAppPair();
     }
 }
