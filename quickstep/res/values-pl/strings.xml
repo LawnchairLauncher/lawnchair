@@ -108,7 +108,7 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Pomiń"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Obróć ekran"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informacje o pasku aplikacji"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Przeciągnij aplikację w bok, aby używać 2 aplikacji naraz"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Przeciągnij aplikację na bok, aby używać 2 aplikacji naraz"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Aby wyświetlić pasek aplikacji, powoli przesuń palcem w górę"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Otrzymuj sugestie aplikacji na podstawie typowych działań"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Przytrzymaj separator, aby przypiąć pasek aplikacji"</string>
