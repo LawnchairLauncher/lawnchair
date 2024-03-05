@@ -29,6 +29,7 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -83,6 +84,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
@@ -500,6 +502,11 @@ public class TaskView extends FrameLayout implements Reusable {
         stubInfo.title = task.title;
         if (getRecentsView() != null) {
             stubInfo.screenId = getRecentsView().indexOfChild(this);
+        }
+        if (Flags.privateSpaceRestrictAccessibilityDrag()) {
+            if (UserCache.getInstance(getContext()).getUserInfo(componentKey.user).isPrivate()) {
+                stubInfo.runtimeStatusFlags |= FLAG_NOT_PINNABLE;
+            }
         }
         return stubInfo;
     }

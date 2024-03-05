@@ -45,6 +45,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.util.InstantAppResolver;
@@ -61,6 +62,7 @@ import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFutur
 import com.android.systemui.shared.recents.view.RecentsTransition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -319,13 +321,18 @@ public interface TaskShortcutFactory {
                     recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
             boolean shouldShowActionsButtonInstead =
                     isLargeTileFocusedTask && isInExpectedScrollPosition;
+            boolean hasUnpinnableApp = Arrays.stream(taskView.getTaskIdAttributeContainers())
+                    .anyMatch(att -> att != null && att.getItemInfo() != null
+                            && ((att.getItemInfo().runtimeStatusFlags
+                                & ItemInfoWithIcon.FLAG_NOT_PINNABLE) != 0));
 
             // No "save app pair" menu item if:
             // - app pairs feature is not enabled
             // - the task in question is a single task
+            // - at least one app in app pair is unpinnable
             // - the Overview Actions Button should be visible
             if (!FeatureFlags.enableAppPairs() || !taskView.containsMultipleTasks()
-                    || shouldShowActionsButtonInstead) {
+                    || hasUnpinnableApp || shouldShowActionsButtonInstead) {
                 return null;
             }
 
