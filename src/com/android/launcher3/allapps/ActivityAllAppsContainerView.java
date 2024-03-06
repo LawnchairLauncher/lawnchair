@@ -1372,7 +1372,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     @Override
-    public void drawOnScrimWithScale(Canvas canvas, float scale) {
+    public void drawOnScrimWithScaleAndBottomOffset(
+            Canvas canvas, float scale, @Px int bottomOffsetPx) {
         final View panel = mBottomSheetBackground;
         final boolean hasBottomSheet = panel.getVisibility() == VISIBLE;
         final float translationY = ((View) panel.getParent()).getTranslationY();
@@ -1384,6 +1385,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         final float topWithScale = topNoScale + verticalScaleOffset;
         final float leftWithScale = panel.getLeft() + horizontalScaleOffset;
         final float rightWithScale = panel.getRight() - horizontalScaleOffset;
+        final float bottomWithOffset = panel.getBottom() + bottomOffsetPx;
         // Draw full background panel for tablets.
         if (hasBottomSheet) {
             mHeaderPaint.setColor(mBottomSheetBackgroundColor);
@@ -1393,7 +1395,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                     leftWithScale,
                     topWithScale,
                     rightWithScale,
-                    panel.getBottom());
+                    bottomWithOffset);
             mTmpPath.reset();
             mTmpPath.addRoundRect(mTmpRectF, mBottomSheetCornerRadii, Direction.CW);
             canvas.drawPath(mTmpPath, mHeaderPaint);
