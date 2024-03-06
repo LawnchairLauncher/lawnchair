@@ -26,8 +26,8 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.icons.BitmapInfo
-import com.android.launcher3.icons.PlaceHolderIconDrawable
-import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.icons.FastBitmapDrawable
+import com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter
 import com.android.launcher3.util.Themes
 
 /**
@@ -46,9 +46,6 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         private const val CENTER_CHANNEL_SCALE = 1 / 30f
         private const val BIG_RADIUS_SCALE = 1 / 5f
         private const val SMALL_RADIUS_SCALE = 1 / 15f
-        // Disabled alpha is 38%, or 97/255
-        private const val DISABLED_ALPHA = 97
-        private const val ENABLED_ALPHA = 255
     }
 
     // App pair icons are slightly smaller than regular icons, so we pad the icon by this much on
@@ -71,8 +68,8 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
 
     private lateinit var parentIcon: AppPairIcon
     private lateinit var appPairBackground: Drawable
-    private var appIcon1: Drawable? = null
-    private var appIcon2: Drawable? = null
+    private lateinit var appIcon1: FastBitmapDrawable
+    private lateinit var appIcon2: FastBitmapDrawable
 
     fun init(grid: DeviceProfile, icon: AppPairIcon) {
         // Calculate device-specific measurements
@@ -89,7 +86,8 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
 
         appPairBackground = AppPairIconBackground(context, this)
         appPairBackground.setBounds(0, 0, backgroundSize.toInt(), backgroundSize.toInt())
-        applyIcons(parentIcon.info.contents)
+
+        applyIcons()
 
         // Center the drawable area in the larger icon canvas
         val lp: LayoutParams = layoutParams as LayoutParams
@@ -101,26 +99,29 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     /** Sets up app pair member icons for drawing. */
-    private fun applyIcons(contents: ArrayList<WorkspaceItemInfo>) {
-        // App pair should always contain 2 members; if not 2, return to avoid a crash loop
-        if (contents.size != 2) {
-            Log.wtf(TAG, "AppPair contents not 2, size: " + contents.size, Throwable())
+    fun applyIcons() {
+        val apps = parentIcon.info.contents
+
+        // TODO (b/326664798): Delete this check, instead check at launcher load time
+        if (apps.size != 2) {
+            Log.wtf(TAG, "AppPair contents not 2, size: " + apps.size, Throwable())
             return
         }
 
         // Generate new icons, using themed flag if needed
         val flags = if (Themes.isThemedIconEnabled(context)) BitmapInfo.FLAG_THEMED else 0
-        val newIcon1 = parentIcon.info.contents[0].newIcon(context, flags)
-        val newIcon2 = parentIcon.info.contents[1].newIcon(context, flags)
+        appIcon1 = apps[0].newIcon(context, flags)
+        appIcon2 = apps[1].newIcon(context, flags)
+        appIcon1.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
+        appIcon2.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
 
-        // If app icons did not draw fully last time, animate to full icon
-        (appIcon1 as? PlaceHolderIconDrawable)?.animateIconUpdate(newIcon1)
-        (appIcon2 as? PlaceHolderIconDrawable)?.animateIconUpdate(newIcon2)
+        // Check disabled state
+        val shouldDrawAsDisabled =
+            parentIcon.info.isDisabled || !parentIcon.isLaunchableAtScreenSize
 
-        appIcon1 = newIcon1
-        appIcon2 = newIcon2
-        appIcon1?.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
-        appIcon2?.setBounds(0, 0, memberIconSize.toInt(), memberIconSize.toInt())
+        appPairBackground.colorFilter = if (shouldDrawAsDisabled) getDisabledColorFilter() else null
+        appIcon1.setIsDisabled(shouldDrawAsDisabled)
+        appIcon2.setIsDisabled(shouldDrawAsDisabled)
     }
 
     /** Gets this icon graphic's bounds, with respect to the parent icon's coordinate system. */
@@ -137,16 +138,8 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
 
-        val drawAlpha =
-            if (!parentIcon.isLaunchableAtScreenSize || parentIcon.info.isDisabled) DISABLED_ALPHA
-            else ENABLED_ALPHA
-
         // Draw background
-        appPairBackground.alpha = drawAlpha
         appPairBackground.draw(canvas)
-
-        // Make sure icons are loaded and fresh
-        applyIcons(parentIcon.info.contents)
 
         // Draw first icon
         canvas.save()
@@ -156,8 +149,8 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
         } else {
             canvas.translate(width / 2f - memberIconSize / 2f, innerPadding)
         }
-        appIcon1?.alpha = drawAlpha
-        appIcon1?.draw(canvas)
+
+        appIcon1.draw(canvas)
         canvas.restore()
 
         // Draw second icon
@@ -174,8 +167,8 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
                 height - (innerPadding + memberIconSize)
             )
         }
-        appIcon2?.alpha = drawAlpha
-        appIcon2?.draw(canvas)
+
+        appIcon2.draw(canvas)
         canvas.restore()
     }
 }
