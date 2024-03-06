@@ -23,15 +23,23 @@ filegroup {
 }
 
 filegroup {
-    name: "launcher3-quickstep-robolectric-src",
-    path: "robolectric_tests",
-    srcs: ["robolectric_tests/src/**/*.java"],
+    name: "launcher3-quickstep-robo-src",
+    path: "tests/multivalentTests",
+    srcs: [
+        "tests/multivalentTests/src/**/*.java",
+        "tests/multivalentTests/src/**/*.kt",
+    ],
 }
 
 filegroup {
     name: "launcher3-quickstep-tests-src",
     path: "tests",
-    srcs: ["tests/src/**/*.java", "tests/src/**/*.kt"],
+    srcs: [
+        "tests/multivalentTests/src/**/*.java",
+        "tests/multivalentTests/src/**/*.kt",
+        "tests/src/**/*.java",
+        "tests/src/**/*.kt",
+    ],
 }
 
 filegroup {
@@ -44,5 +52,5 @@ filegroup {
         "tests/src/com/android/quickstep/TaplOverviewIconTest.java",
         "tests/src/com/android/quickstep/TaplTestsQuickstep.java",
         "tests/src/com/android/quickstep/TaplTestsSplitscreen.java",
-    ]
+    ],
 }
