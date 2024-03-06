@@ -101,7 +101,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
 
         // Set up icon drawable area
         icon.mIconGraphic = icon.findViewById(R.id.app_pair_icon_graphic);
-        icon.mIconGraphic.init(activity.getDeviceProfile(), icon);
+        icon.mIconGraphic.init(activity, icon);
 
         icon.checkDisabledState();
 
