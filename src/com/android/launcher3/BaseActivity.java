@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.IntDef;
@@ -38,6 +37,7 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
@@ -153,6 +153,18 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
 
     private final ViewCache mViewCache = new ViewCache();
 
+    @Retention(SOURCE)
+    @IntDef({EVENT_STARTED, EVENT_RESUMED, EVENT_STOPPED, EVENT_DESTROYED})
+    public @interface ActivityEvent { }
+    public static final int EVENT_STARTED = 0;
+    public static final int EVENT_RESUMED = 1;
+    public static final int EVENT_STOPPED = 2;
+    public static final int EVENT_DESTROYED = 3;
+
+    // Callback array that corresponds to events defined in @ActivityEvent
+    private final RunnableList[] mEventCallbacks =
+            {new RunnableList(), new RunnableList(), new RunnableList(), new RunnableList()};
+
     @Override
     public ViewCache getViewCache() {
         return mViewCache;
@@ -205,12 +217,14 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     protected void onStart() {
         addActivityFlags(ACTIVITY_STATE_STARTED);
         super.onStart();
+        mEventCallbacks[EVENT_STARTED].executeAllAndClear();
     }
 
     @Override
     protected void onResume() {
         setResumed();
         super.onResume();
+        mEventCallbacks[EVENT_RESUMED].executeAllAndClear();
     }
 
     @Override
@@ -232,10 +246,18 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
         removeActivityFlags(ACTIVITY_STATE_STARTED | ACTIVITY_STATE_USER_ACTIVE);
         mForceInvisible = 0;
         super.onStop();
+        mEventCallbacks[EVENT_STOPPED].executeAllAndClear();
+
 
         // Reset the overridden sysui flags used for the task-swipe launch animation, this is a
         // catch all for if we do not get resumed (and therefore not paused below)
         getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, 0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mEventCallbacks[EVENT_DESTROYED].executeAllAndClear();
     }
 
     @Override
@@ -258,7 +280,6 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
         } else {
             removeActivityFlags(ACTIVITY_STATE_WINDOW_FOCUSED);
         }
-
     }
 
     protected void registerBackDispatcher() {
@@ -364,9 +385,15 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     }
 
     /**
-     * Attempts to clear accessibility focus on {@param view}.
+     * Adds a callback for the provided activity event
      */
-    public void tryClearAccessibilityFocus(View view) {
+    public void addEventCallback(@ActivityEvent int event, Runnable callback) {
+        mEventCallbacks[event].add(callback);
+    }
+
+    /** Removes a previously added callback */
+    public void removeEventCallback(@ActivityEvent int event, Runnable callback) {
+        mEventCallbacks[event].remove(callback);
     }
 
     public interface MultiWindowModeChangedListener {

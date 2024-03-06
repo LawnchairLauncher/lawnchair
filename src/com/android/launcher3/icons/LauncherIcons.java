@@ -20,11 +20,16 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_FORCED_MONO_ICON;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.UserHandle;
+
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.LauncherPreviewRenderer;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.UserIconInfo;
 
 /**
  * Wrapper class to provide access to {@link BaseIconFactory} and also to provide pool of this class
@@ -105,6 +110,12 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
             mMonochromeIconFactory = new MonochromeIconFactory(mIconBitmapSize);
         }
         return mMonochromeIconFactory.wrap(base);
+    }
+
+    @NonNull
+    @Override
+    protected UserIconInfo getUserInfo(@NonNull UserHandle user) {
+        return UserCache.INSTANCE.get(mContext).getUserInfo(user);
     }
 
     @Override

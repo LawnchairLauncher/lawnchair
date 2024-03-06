@@ -50,15 +50,19 @@ public class OverviewTaskMenu {
         }
     }
 
-    /** Taps the app info item from the overview task menu and returns the LaunchedAppState
-     * representing the App info settings page. */
+    /**
+     * Taps the app info item from the overview task menu and returns the LaunchedAppState
+     * representing the App info settings page.
+     */
     @NonNull
     public LaunchedAppState tapAppInfoMenuItem() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "before tapping the app info menu item")) {
-            mLauncher.clickLauncherObject(
-                    mLauncher.findObjectInContainer(mMenu, By.text("App info")));
+            mLauncher.executeAndWaitForLauncherStop(
+                    () -> mLauncher.clickLauncherObject(
+                            mLauncher.findObjectInContainer(mMenu, By.text("App info"))),
+                    "tapped app info menu item");
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "tapped app info menu item")) {
@@ -80,5 +84,12 @@ public class OverviewTaskMenu {
     public OverviewTaskMenuItem getMenuItemByName(String menuItemName) {
         return new OverviewTaskMenuItem(mLauncher,
                 mLauncher.waitForObjectInContainer(mMenu, By.text(menuItemName)));
+    }
+
+    /**
+     * Taps outside task menu to dismiss it.
+     */
+    public void touchOutsideTaskMenuToDismiss() {
+        mLauncher.touchOutsideContainer(mMenu, false);
     }
 }

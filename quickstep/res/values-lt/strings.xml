@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Siūlomų programų funkcija įgalinta"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Siūlomų programų funkcija išjungta"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Numatoma programa: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Turite perbraukti nuo dešiniojo ar kairiojo krašto."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Turite perbraukti nuo dešiniojo ar kairiojo krašto link ekrano vidurio ir pakelti pirštą."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Pasukite įrenginį"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Pasukite įrenginį, kad pereitumėte į naršymo gestais mokomąją medžiagą"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Turite perbraukti nuo dešiniojo ar kairiojo krašto"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Turite perbraukti nuo dešiniojo ar kairiojo krašto link ekrano vidurio ir pakelti pirštą"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Išmokote, kaip sugrįžti perbraukiant iš dešinės. Toliau sužinosite, kaip perjungti programas."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Atlikote grįžimo atgal gestą."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Nebraukite per arti ekrano apačios."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Atlikote grįžimo atgal gestą"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Nebraukite per arti ekrano apačios"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Norėd. pak. grįžimo gesto jautr., eikite į sk. „Nustatymai“"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Norėdami grįžti, perbraukite"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Norėdami grįžti į ankstesnį ekraną, perbr. nuo kairiojo arba dešinio krašto link ekrano vidurio."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Jei norite grįžti į ankstesnį ekraną, perbraukite dviem pirštais nuo kairiojo arba dešiniojo krašto link ekrano vidurio."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Grįžti"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Turite perbraukti aukštyn nuo apatinio ekrano krašto."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Nepristabdykite prieš pakeldami pirštą."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Turite tiesiai perbraukti aukštyn."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Atlikote perėjimo į pagrindinį ekraną gestą. Toliau sužinosite, kaip grįžti atgal."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Atlikote perėjimo į pagrindinį ekraną gestą."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Perbraukite nuo kairiojo arba dešiniojo krašto link ekrano vidurio"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Turite perbraukti aukštyn nuo apatinio ekrano krašto"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Nepristabdykite prieš pakeldami pirštą"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Turite tiesiai perbraukti aukštyn"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Atlikote perėjimo į pagrindinį ekraną gestą. Toliau sužinosite, kaip grįžti atgal."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Atlikote perėjimo į pagrindinį ekraną gestą"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Perbraukite, kad pereitumėte į pagrindinį ekraną"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Perbraukite aukštyn nuo ekrano apačios. Atlikus šį gestą, visada nukreipiama į pagrindinį ekraną."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Perbraukite dviem pirštais nuo ekrano apačios. Šis gestas visada nukreipia į pagrindinį ekraną."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Eikite į pagrindinį ekraną"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Jei norite bet kada pasiekti pagrindinį ekraną, perbraukite aukštyn iš ekrano apačios"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Turite perbraukti aukštyn nuo apatinio ekrano krašto."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pabandykite palaikyti langą ilgiau prieš pakeldami pirštą."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Turite tiesiai perbraukti aukštyn, o tada pristabdyti."</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"išmokote naudotis gestais. Gestus galite išjungti nustatymuose."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Atlikote programų perjungimo gestą."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Eiti į pagrindinį ekraną"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Perbraukite aukštyn nuo ekrano apačios"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Puiku!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Turite perbraukti aukštyn nuo apatinio ekrano krašto"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Pabandykite palaikyti langą ilgiau prieš pakeldami pirštą"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Turite tiesiai perbraukti aukštyn, o tada pristabdyti"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Išmokote naudotis gestais. Gestus galite išjungti nustatymuose."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Atlikote programų perjungimo gestą"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Perbraukite, kad perjungtumėte programas"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Norėdami perjungti programas, perbraukite aukštyn nuo ekrano apačios, palaikykite ir paleiskite."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Perjunkite programas perbraukę dviem pirštais aukštyn nuo ekrano apačios, palaikę ir paleidę."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Perjungti programas"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Perbraukite aukštyn nuo ekrano apačios, palaikykite ir paleiskite"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Puiku!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Viskas nustatyta"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Atlikta"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Nustatymai"</string>
@@ -89,8 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Ekrano kopija"</string>
     <string name="action_split" msgid="2098009717623550676">"Išskaidymo režimas"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Išskaidyto ekrano režimas palietus kitą programą"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Atšaukti"</b></string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Išeiti iš išskaidyto ekrano pasirinkimo"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Išskaidyto ekrano režimą naudokite kita programa"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Jūsų organizacijoje arba naudojant šią programą neleidžiama atlikti šio veiksmo"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Valdikliai šiuo metu nepalaikomi, pasirinkite kitą programą"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Praleisti naršymo mokymo programą?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Tai galėsite rasti vėliau programoje „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Atšaukti"</string>
@@ -100,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Nuvilkę programą į šoną vienu metu naudokite dvi programas"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Trumpai perbraukite, kad būtų rodoma Užduočių juosta"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Gaukite programų pasiūlymų pagal savo veiklą"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Įjungę naršymą gestais „Nustatymų“ skiltyje automatiškai paslėpkite Užduočių juostą"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Ilgai paspauskite daliklį, kad prisegtumėte užduočių juostą"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Atlikite daugiau naudodami Užduočių juostą"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Uždaryti"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Atlikta"</string>
@@ -115,8 +124,13 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Užduočių juosta rodoma"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Užduočių juosta paslėpta"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Naršymo juosta"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Visada rodyti užduočių juostą"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Keisti naršymo režimą"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Užduočių juostos daliklis"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Perkelti aukštyn, kairėn"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Perkelti žemyn, dešinėn"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Rodyti dar # programą.}one{Rodyti dar # programą.}few{Rodyti dar # programas.}many{Rodyti dar # programos.}other{Rodyti dar # programų.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"„<xliff:g id="APP_NAME_1">%1$s</xliff:g>“ ir „<xliff:g id="APP_NAME_2">%2$s</xliff:g>“"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Pridedama programa prie darbalaukio"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Atšaukti"</string>
 </resources>

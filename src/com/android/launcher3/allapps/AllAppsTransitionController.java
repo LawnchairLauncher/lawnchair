@@ -33,7 +33,6 @@ import static com.android.launcher3.util.SystemUiController.FLAG_LIGHT_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.FloatProperty;
@@ -54,7 +53,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
@@ -171,9 +169,6 @@ public class AllAppsTransitionController
 
     private boolean mIsVerticalLayout;
 
-    // Whether this class should take care of closing the keyboard.
-    private boolean mShouldControlKeyboard;
-
     // Animation in this class is controlled by a single variable {@link mProgress}.
     // Visually, it represents top y coordinate of the all apps container if multiplied with
     // {@link mShiftRange}.
@@ -276,7 +271,6 @@ public class AllAppsTransitionController
     public void setState(LauncherState state) {
         setProgress(state.getVerticalProgress(mLauncher));
         setAlphas(state, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
-        onProgressAnimationEnd();
     }
 
     @Override
@@ -339,24 +333,10 @@ public class AllAppsTransitionController
     public void setStateWithAnimation(LauncherState toState,
             StateAnimationConfig config, PendingAnimation builder) {
         if (mLauncher.isInState(ALL_APPS) && !ALL_APPS.equals(toState)) {
-            // For atomic animations, we close the keyboard immediately.
-            if (!config.userControlled && mShouldControlKeyboard) {
-                mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
-            }
-
             builder.addEndListener(success -> {
                 // Reset pull back progress and alpha after switching states.
                 ALL_APPS_PULL_BACK_TRANSLATION.set(this, ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
                 ALL_APPS_PULL_BACK_ALPHA.set(this, ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
-
-                // We only want to close the keyboard if the animation has completed successfully.
-                // The reason is that with keyboard sync, if the user swipes down from All Apps with
-                // the keyboard open and then changes their mind and swipes back up, we want the
-                // keyboard to remain open. However an onCancel signal is sent to the listeners
-                // (success = false), so we need to check for that.
-                if (config.userControlled && success && mShouldControlKeyboard) {
-                    mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
-                }
 
                 mAllAppScale.updateValue(1f);
             });
@@ -373,7 +353,9 @@ public class AllAppsTransitionController
                         new VibrationAnimatorUpdateListener(this, mVibratorWrapper,
                                 0, SWIPE_DRAG_COMMIT_THRESHOLD));
             }
-            builder.addEndListener(mVibratorWrapper::cancelVibrate);
+            builder.addEndListener((unused) -> {
+                mVibratorWrapper.cancelVibrate();
+            });
         }
 
         float targetProgress = toState.getVerticalProgress(mLauncher);
@@ -388,7 +370,6 @@ public class AllAppsTransitionController
                 config.userControlled ? LINEAR : DECELERATE_1_7);
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(verticalProgressInterpolator);
-        anim.addListener(getProgressAnimatorListener());
         builder.add(anim);
 
         setAlphas(toState, config, builder);
@@ -426,10 +407,6 @@ public class AllAppsTransitionController
         mScrimView.setDrawingController(shouldProtectHeader ? mAppsView : null);
     }
 
-    public AnimatorListener getProgressAnimatorListener() {
-        return AnimatorListeners.forSuccessCallback(this::onProgressAnimationEnd);
-    }
-
     /**
      * see Launcher#setupViews
      */
@@ -443,8 +420,6 @@ public class AllAppsTransitionController
         mAppsViewAlpha.setUpdateVisibility(true);
         mAppsViewTranslationY = new MultiPropertyFactory<>(
                 mAppsView, VIEW_TRANSLATE_Y, APPS_VIEW_INDEX_COUNT, Float::sum);
-
-        mShouldControlKeyboard = !mLauncher.getSearchConfig().isKeyboardSyncEnabled();
     }
 
     /**
@@ -525,18 +500,6 @@ public class AllAppsTransitionController
      */
     public void setShiftRange(float shiftRange) {
         mShiftRange = shiftRange;
-    }
-
-    /**
-     * Set the final view states based on the progress.
-     * TODO: This logic should go in {@link LauncherState}
-     */
-    private void onProgressAnimationEnd() {
-        if (Float.compare(mProgress, 1f) == 0) {
-            if (mShouldControlKeyboard) {
-                mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
-            }
-        }
     }
 
     /**

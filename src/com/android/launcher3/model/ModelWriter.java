@@ -28,7 +28,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -74,7 +73,6 @@ public class ModelWriter {
     @Nullable
     private final Callbacks mOwner;
 
-    private final boolean mHasVerticalHotseat;
     private final boolean mVerifyChanges;
 
     // Keep track of delete operations that occur when an Undo option is present; we may not commit.
@@ -83,12 +81,10 @@ public class ModelWriter {
     private final CellPosMapper mCellPosMapper;
 
     public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
-            boolean hasVerticalHotseat, boolean verifyChanges, CellPosMapper cellPosMapper,
-            @Nullable Callbacks owner) {
+            boolean verifyChanges, CellPosMapper cellPosMapper, @Nullable Callbacks owner) {
         mContext = context;
         mModel = model;
         mBgDataModel = dataModel;
-        mHasVerticalHotseat = hasVerticalHotseat;
         mVerifyChanges = verifyChanges;
         mOwner = owner;
         mCellPosMapper = cellPosMapper;
@@ -102,14 +98,8 @@ public class ModelWriter {
         item.container = container;
         item.cellX = modelPos.cellX;
         item.cellY = modelPos.cellY;
-        // We store hotseat items in canonical form which is this orientation invariant position
-        // in the hotseat
-        if (container == Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = mHasVerticalHotseat
-                    ? LauncherAppState.getIDP(mContext).numDatabaseHotseatIcons - cellY - 1 : cellX;
-        } else {
-            item.screenId = modelPos.screenId;
-        }
+        item.screenId = modelPos.screenId;
+
     }
 
     /**

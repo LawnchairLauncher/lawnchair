@@ -57,6 +57,7 @@ public class FlagsFactory {
     public static final String NAMESPACE_LAUNCHER = "launcher";
 
     private static final List<DebugFlag> sDebugFlags = new ArrayList<>();
+    private static final List<IntFlag> sIntFlags = new ArrayList<>();
     private static SharedPreferences sSharedPreferences;
 
     static final BooleanFlag TEAMFOOD_FLAG = getReleaseFlag(
@@ -132,7 +133,14 @@ public class FlagsFactory {
     public static IntFlag getIntFlag(
             int bugId, String key, int defaultValueInCode, String description) {
         INSTANCE.mKeySet.add(key);
-        return new IntFlag(DeviceConfig.getInt(NAMESPACE_LAUNCHER, key, defaultValueInCode));
+        int defaultValue = DeviceConfig.getInt(NAMESPACE_LAUNCHER, key, defaultValueInCode);
+        if (IS_DEBUG_DEVICE) {
+            IntDeviceFlag flag = new IntDeviceFlag(key, defaultValue, defaultValueInCode);
+            sIntFlags.add(flag);
+            return flag;
+        } else {
+            return new IntFlag(defaultValue);
+        }
     }
 
     static List<DebugFlag> getDebugFlags() {
@@ -163,18 +171,25 @@ public class FlagsFactory {
             return;
         }
         pw.println("DeviceFlags:");
+        pw.println("  BooleanFlags:");
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
                 if (flag instanceof DeviceFlag) {
-                    pw.println("  " + flag);
+                    pw.println((flag.currentValueModified() ? "  ->" : "    ") + flag);
                 }
             }
         }
-        pw.println("DebugFlags:");
+        pw.println("  IntFlags:");
+        synchronized (sIntFlags) {
+            for (IntFlag flag : sIntFlags) {
+                pw.println("    " + flag);
+            }
+        }
+        pw.println("  DebugFlags:");
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
                 if (!(flag instanceof DeviceFlag)) {
-                    pw.println("  " + flag);
+                    pw.println((flag.currentValueModified() ? "  ->" : "    ") + flag);
                 }
             }
         }

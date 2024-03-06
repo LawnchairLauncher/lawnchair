@@ -18,12 +18,9 @@ package com.android.launcher3.popup;
 
 import static androidx.core.content.ContextCompat.getColorStateList;
 
-import static com.android.app.animation.Interpolators.ACCELERATED_EASE;
-import static com.android.app.animation.Interpolators.DECELERATED_EASE;
 import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
 import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -130,6 +127,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
     protected final float mElevation;
 
+    // Tag for Views that have children that will need to be iterated to add styling.
     private final String mIterateChildrenTag;
 
     protected final int[] mColorIds;
@@ -170,7 +168,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
         mIterateChildrenTag = getContext().getString(R.string.popup_container_iterate_children);
 
-        if (!ENABLE_MATERIAL_U_POPUP.get() && mActivityContext.canUseMultipleShadesForPopup()) {
+        if (mActivityContext.canUseMultipleShadesForPopup()) {
             mColorIds = new int[]{R.color.popup_shade_first, R.color.popup_shade_second,
                     R.color.popup_shade_third};
         } else {
@@ -241,14 +239,13 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
             }
         }
 
-        int numVisibleChild = 0;
         int numVisibleShortcut = 0;
         View lastView = null;
         AnimatorSet colorAnimator = new AnimatorSet();
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
             if (view.getVisibility() == VISIBLE) {
-                if (lastView != null) {
+                if (lastView != null && (isShortcutContainer(lastView))) {
                     MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
                     mlp.bottomMargin = mChildContainerMargin;
                 }
@@ -256,26 +253,13 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
                 mlp.bottomMargin = 0;
 
-                if (colors != null) {
-                    if (!ENABLE_MATERIAL_U_POPUP.get()) {
-                        backgroundColor = colors[numVisibleChild % colors.length];
-                    }
-
-                    if (ENABLE_MATERIAL_U_POPUP.get() && isShortcutContainer(view)) {
-                        setChildColor(view, colors[0], colorAnimator);
-                        mArrowColor = colors[0];
-                    }
-                }
-
-                // Arrow color matches the first child or the last child.
-                if (!ENABLE_MATERIAL_U_POPUP.get()
-                        && (mIsAboveIcon || (numVisibleChild == 0 && viewGroup == this))) {
-                    mArrowColor = backgroundColor;
+                if (colors != null && isShortcutContainer(view)) {
+                    setChildColor(view, colors[0], colorAnimator);
+                    mArrowColor = colors[0];
                 }
 
                 if (view instanceof ViewGroup && isShortcutContainer(view)) {
                     assignMarginsAndBackgrounds((ViewGroup) view, backgroundColor);
-                    numVisibleChild++;
                     continue;
                 }
 
@@ -295,7 +279,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 }
 
                 setChildColor(view, backgroundColor, colorAnimator);
-                numVisibleChild++;
             }
         }
 
@@ -433,8 +416,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     private void orientAboutObject(boolean allowAlignLeft, boolean allowAlignRight) {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 
-        int extraVerticalSpace = mArrowHeight + mArrowOffsetVertical
-                + getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
+        int extraVerticalSpace = mArrowHeight + mArrowOffsetVertical + getExtraVerticalOffset();
         // The margins are added after we call this method, so we need to account for them here.
         int numVisibleChildren = 0;
         for (int i = getChildCount() - 1; i >= 0; --i) {
@@ -573,23 +555,14 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
     protected void animateOpen() {
         setVisibility(View.VISIBLE);
-        mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
-                ? getMaterialUOpenCloseAnimator(
+        mOpenCloseAnimator = getOpenCloseAnimator(
                         true,
                         OPEN_DURATION_U,
                         OPEN_FADE_START_DELAY_U,
                         OPEN_FADE_DURATION_U,
                         OPEN_CHILD_FADE_START_DELAY_U,
                         OPEN_CHILD_FADE_DURATION_U,
-                        EMPHASIZED_DECELERATE)
-                : getOpenCloseAnimator(
-                        true,
-                        mOpenDuration,
-                        mOpenFadeStartDelay,
-                        mOpenFadeDuration,
-                        mOpenChildFadeStartDelay,
-                        mOpenChildFadeDuration,
-                        DECELERATED_EASE);
+                        EMPHASIZED_DECELERATE);
 
         onCreateOpenAnimation(mOpenCloseAnimator);
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
@@ -601,44 +574,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
             }
         });
         mOpenCloseAnimator.start();
-    }
-
-    private AnimatorSet getOpenCloseAnimator(boolean isOpening, int totalDuration,
-            int fadeStartDelay, int fadeDuration, int childFadeStartDelay,
-            int childFadeDuration, Interpolator interpolator) {
-        final AnimatorSet animatorSet = new AnimatorSet();
-        float[] alphaValues = isOpening ? new float[] {0, 1} : new float[] {1, 0};
-        float[] scaleValues = isOpening ? new float[] {0.5f, 1} : new float[] {1, 0.5f};
-
-        ValueAnimator fade = ValueAnimator.ofFloat(alphaValues);
-        fade.setStartDelay(fadeStartDelay);
-        fade.setDuration(fadeDuration);
-        fade.setInterpolator(LINEAR);
-        fade.addUpdateListener(anim -> {
-            float alpha = (float) anim.getAnimatedValue();
-            mArrow.setAlpha(alpha);
-            setAlpha(alpha);
-        });
-        animatorSet.play(fade);
-
-        setPivotX(mIsLeftAligned ? 0 : getMeasuredWidth());
-        setPivotY(mIsAboveIcon ? getMeasuredHeight() : 0);
-        Animator scale = ObjectAnimator.ofFloat(this, View.SCALE_Y, scaleValues);
-        scale.setDuration(totalDuration);
-        scale.setInterpolator(interpolator);
-        animatorSet.play(scale);
-
-        if (shouldScaleArrow) {
-            Animator arrowScaleAnimator = ObjectAnimator.ofFloat(mArrow, View.SCALE_Y,
-                    scaleValues);
-            arrowScaleAnimator.setDuration(totalDuration);
-            arrowScaleAnimator.setInterpolator(interpolator);
-            animatorSet.play(arrowScaleAnimator);
-        }
-
-        fadeInChildViews(this, alphaValues, childFadeStartDelay, childFadeDuration, animatorSet);
-
-        return animatorSet;
     }
 
     private void fadeInChildViews(ViewGroup group, float[] alphaValues, long startDelay,
@@ -673,22 +608,14 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         }
         mIsOpen = false;
 
-        mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
-                ? getMaterialUOpenCloseAnimator(
+        mOpenCloseAnimator = getOpenCloseAnimator(
                         false,
                         CLOSE_DURATION_U,
                         CLOSE_FADE_START_DELAY_U,
                         CLOSE_FADE_DURATION_U,
                         CLOSE_CHILD_FADE_START_DELAY_U,
                         CLOSE_CHILD_FADE_DURATION_U,
-                        EMPHASIZED_ACCELERATE)
-                : getOpenCloseAnimator(false,
-                        mCloseDuration,
-                        mCloseFadeStartDelay,
-                        mCloseFadeDuration,
-                        mCloseChildFadeStartDelay,
-                        mCloseChildFadeDuration,
-                        ACCELERATED_EASE);
+                        EMPHASIZED_ACCELERATE);
 
         onCreateCloseAnimation(mOpenCloseAnimator);
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
@@ -705,7 +632,11 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mOpenCloseAnimator.start();
     }
 
-    protected AnimatorSet getMaterialUOpenCloseAnimator(boolean isOpening, int scaleDuration,
+    public int getExtraVerticalOffset() {
+        return getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
+    }
+
+    protected AnimatorSet getOpenCloseAnimator(boolean isOpening, int scaleDuration,
             int fadeStartDelay, int fadeDuration, int childFadeStartDelay, int childFadeDuration,
             Interpolator interpolator) {
 

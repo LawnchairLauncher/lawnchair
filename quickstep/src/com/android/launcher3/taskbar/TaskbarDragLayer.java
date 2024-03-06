@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar;
 import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
@@ -73,6 +75,8 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     private SafeCloseable mViewCaptureCloseable;
 
     private float mTaskbarBackgroundOffset;
+    private float mTaskbarBackgroundProgress;
+    private boolean mIsAnimatingTaskbarPinning = false;
 
     private final MultiPropertyFactory<TaskbarDragLayer> mTaskbarBackgroundAlpha;
 
@@ -124,7 +128,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     protected void onDestroy() {
-        onDestroy(!TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW);
+        onDestroy(!ENABLE_TASKBAR_NAVBAR_UNIFICATION);
     }
 
     @Override
@@ -162,8 +166,17 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         float backgroundHeight = mControllerCallbacks.getTaskbarBackgroundHeight()
                 * (1f - mTaskbarBackgroundOffset);
         mBackgroundRenderer.setBackgroundHeight(backgroundHeight);
+        mBackgroundRenderer.setBackgroundProgress(mTaskbarBackgroundProgress);
         mBackgroundRenderer.draw(canvas);
         super.dispatchDraw(canvas);
+    }
+
+    /**
+     * Sets animation boolean when taskbar pinning animation starts or stops.
+     */
+    public void setAnimatingTaskbarPinning(boolean animatingTaskbarPinning) {
+        mIsAnimatingTaskbarPinning = animatingTaskbarPinning;
+        mBackgroundRenderer.setAnimatingPinning(mIsAnimatingTaskbarPinning);
     }
 
     protected MultiProperty getBackgroundRendererAlpha() {
@@ -172,6 +185,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     protected MultiProperty getBackgroundRendererAlphaForStash() {
         return mTaskbarBackgroundAlpha.get(INDEX_STASH_ANIM);
+    }
+
+    /**
+     * Sets the value for taskbar background switching between persistent and transient backgrounds.
+     * @param progress 0 is transient background, 1 is persistent background.
+     */
+    protected void setTaskbarBackgroundProgress(float progress) {
+        mTaskbarBackgroundProgress = progress;
+        invalidate();
     }
 
     /**

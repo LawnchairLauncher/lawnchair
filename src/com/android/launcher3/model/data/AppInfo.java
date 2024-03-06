@@ -23,8 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
-import android.os.Build;
-import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 
@@ -176,12 +174,6 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         }
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
                 ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
-
-        if (appInfo.targetSdkVersion >= Build.VERSION_CODES.O
-                && Process.myUserHandle().equals(lai.getUser())) {
-            // The icon for a non-primary user is badged, hence it's not exactly an adaptive icon.
-            info.runtimeStatusFlags |= FLAG_ADAPTIVE_ICON;
-        }
 
         // Sets the progress level, installation and incremental download flags.
         info.setProgressLevel(

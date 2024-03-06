@@ -25,6 +25,8 @@ import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewRootImpl;
 
+import androidx.annotation.NonNull;
+
 import com.android.quickstep.RemoteAnimationTargets.ReleaseCheck;
 
 /**
@@ -48,7 +50,7 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
     /**
      * @param targetView The view in the surface that acts as synchronization anchor.
      */
-    public SurfaceTransactionApplier(View targetView) {
+    public SurfaceTransactionApplier(@NonNull View targetView) {
         if (targetView.isAttachedToWindow()) {
             initialize(targetView);
         } else {

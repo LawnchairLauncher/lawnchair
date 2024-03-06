@@ -20,15 +20,15 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
 /**
  * Education view about widgets.
  */
-public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Insettable {
+public class WidgetsEduView extends AbstractSlideInView<BaseActivity> implements Insettable {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
 
@@ -124,10 +124,10 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
     }
 
     /** Shows widget education dialog. */
-    public static WidgetsEduView showEducationDialog(Launcher launcher) {
-        LayoutInflater layoutInflater = LayoutInflater.from(launcher);
+    public static WidgetsEduView showEducationDialog(BaseActivity activity) {
+        LayoutInflater layoutInflater = LayoutInflater.from(activity);
         WidgetsEduView v = (WidgetsEduView) layoutInflater.inflate(
-                R.layout.widgets_edu, launcher.getDragLayer(), false);
+                R.layout.widgets_edu, activity.getDragLayer(), false);
         v.show();
         return v;
     }

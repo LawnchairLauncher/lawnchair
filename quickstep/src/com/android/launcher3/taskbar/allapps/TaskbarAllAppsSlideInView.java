@@ -220,7 +220,9 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mNoIntercept = !mAppsView.shouldContainerScroll(ev);
+            mNoIntercept = !mAppsView.shouldContainerScroll(ev)
+                    || getTopOpenViewWithType(
+                            mActivityContext, TYPE_TOUCH_CONTROLLER_NO_INTERCEPT) != null;
         }
         return super.onControllerInterceptTouchEvent(ev);
     }

@@ -85,17 +85,31 @@ import java.util.concurrent.Executors;
  * information to render each of the bubbles & dispatches changes to
  * {@link BubbleBarViewController} which will then update {@link BubbleBarView} as needed.
  *
- * For details around the behavior of the bubble bar, see {@link BubbleBarView}.
+ * <p>For details around the behavior of the bubble bar, see {@link BubbleBarView}.
  */
 public class BubbleBarController extends IBubblesListener.Stub {
 
     private static final String TAG = BubbleBarController.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    // Whether bubbles are showing in the bubble bar from launcher
-    public static final boolean BUBBLE_BAR_ENABLED =
+    /**
+     * Determines whether bubbles can be shown in the bubble bar. This value updates when the
+     * taskbar is recreated.
+     *
+     * @see #onTaskbarRecreated()
+     */
+    private static boolean sBubbleBarEnabled =
             SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
 
+    /** Whether showing bubbles in the launcher bubble bar is enabled. */
+    public static boolean isBubbleBarEnabled() {
+        return sBubbleBarEnabled;
+    }
+
+    /** Re-reads the value of the flag from SystemProperties when taskbar is recreated. */
+    public static void onTaskbarRecreated() {
+        sBubbleBarEnabled = SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
+    }
     private static final int MASK_HIDE_BUBBLE_BAR = SYSUI_STATE_BOUNCER_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
@@ -137,6 +151,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private static class BubbleBarViewUpdate {
         boolean expandedChanged;
         boolean expanded;
+        boolean shouldShowEducation;
         String selectedBubbleKey;
         String suppressedBubbleKey;
         String unsuppressedBubbleKey;
@@ -151,6 +166,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         BubbleBarViewUpdate(BubbleBarUpdate update) {
             expandedChanged = update.expandedChanged;
             expanded = update.expanded;
+            shouldShowEducation = update.shouldShowEducation;
             selectedBubbleKey = update.selectedBubbleKey;
             suppressedBubbleKey = update.suppressedBubbleKey;
             unsuppressedBubbleKey = update.unsupressedBubbleKey;
@@ -165,7 +181,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
 
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(context);
 
-        if (BUBBLE_BAR_ENABLED) {
+        if (sBubbleBarEnabled) {
             mSystemUiProxy.setBubblesListener(this);
         }
         mMainExecutor = MAIN_EXECUTOR;
@@ -188,8 +204,10 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mBubbleStashedHandleViewController = bubbleControllers.bubbleStashedHandleViewController;
 
         bubbleControllers.runAfterInit(() -> {
-            mBubbleBarViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
-            mBubbleStashedHandleViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
+            mBubbleBarViewController.setHiddenForBubbles(
+                    !sBubbleBarEnabled || mBubbles.isEmpty());
+            mBubbleStashedHandleViewController.setHiddenForBubbles(
+                    !sBubbleBarEnabled || mBubbles.isEmpty());
             mBubbleBarViewController.setUpdateSelectedBubbleAfterCollapse(
                     key -> setSelectedBubble(mBubbles.get(key)));
         });
@@ -366,7 +384,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 mBubbleStashController.animateToInitialState(update.expanded);
             }
         }
-
+        if (update.shouldShowEducation) {
+            mBubbleBarViewController.prepareToShowEducation();
+        }
         if (update.expandedChanged) {
             if (update.expanded != mBubbleBarViewController.isExpanded()) {
                 mBubbleBarViewController.setExpandedFromSysui(update.expanded);

@@ -17,6 +17,7 @@
 package com.android.launcher3.pm;
 
 import static com.android.launcher3.Utilities.ATLEAST_U;
+import static com.android.launcher3.uioverrides.ApiWrapper.queryAllUsers;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
@@ -24,7 +25,6 @@ import android.content.Intent;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.util.ArrayMap;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
@@ -33,6 +33,7 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.launcher3.util.UserIconInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,9 +55,17 @@ public class UserCache implements SafeCloseable {
             ? Intent.ACTION_PROFILE_ACCESSIBLE : Intent.ACTION_MANAGED_PROFILE_UNLOCKED;
     public static final String ACTION_PROFILE_LOCKED = ATLEAST_U
             ? Intent.ACTION_PROFILE_INACCESSIBLE : Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE;
+    public static final String ACTION_PROFILE_AVAILABLE = "android.intent.action.PROFILE_AVAILABLE";
+    public static final String ACTION_PROFILE_UNAVAILABLE =
+            "android.intent.action.PROFILE_UNAVAILABLE";
 
     public static final MainThreadInitializedObject<UserCache> INSTANCE =
             new MainThreadInitializedObject<>(UserCache::new);
+
+    /** Returns an instance of UserCache bound to the context provided. */
+    public static UserCache getInstance(Context context) {
+        return INSTANCE.get(context);
+    }
 
     private final List<BiConsumer<UserHandle, String>> mUserEventListeners = new ArrayList<>();
     private final SimpleBroadcastReceiver mUserChangeReceiver =
@@ -65,7 +74,7 @@ public class UserCache implements SafeCloseable {
     private final Context mContext;
 
     @NonNull
-    private Map<UserHandle, Long> mUserToSerialMap;
+    private Map<UserHandle, UserIconInfo> mUserToSerialMap;
 
     private UserCache(Context context) {
         mContext = context;
@@ -86,7 +95,9 @@ public class UserCache implements SafeCloseable {
                 ACTION_PROFILE_ADDED,
                 ACTION_PROFILE_REMOVED,
                 ACTION_PROFILE_UNLOCKED,
-                ACTION_PROFILE_LOCKED);
+                ACTION_PROFILE_LOCKED,
+                ACTION_PROFILE_AVAILABLE,
+                ACTION_PROFILE_UNAVAILABLE);
         updateCache();
     }
 
@@ -103,7 +114,7 @@ public class UserCache implements SafeCloseable {
 
     @WorkerThread
     private void updateCache() {
-        mUserToSerialMap = queryAllUsers(mContext.getSystemService(UserManager.class));
+        mUserToSerialMap = queryAllUsers(mContext);
     }
 
     /**
@@ -118,19 +129,26 @@ public class UserCache implements SafeCloseable {
      * @see UserManager#getSerialNumberForUser(UserHandle)
      */
     public long getSerialNumberForUser(UserHandle user) {
-        Long serial = mUserToSerialMap.get(user);
-        return serial == null ? 0 : serial;
+        return getUserInfo(user).userSerial;
+    }
+
+    /**
+     * Returns the user properties for the provided user or default values
+     */
+    @NonNull
+    public UserIconInfo getUserInfo(UserHandle user) {
+        UserIconInfo info = mUserToSerialMap.get(user);
+        return info == null ? new UserIconInfo(user, UserIconInfo.TYPE_MAIN) : info;
     }
 
     /**
      * @see UserManager#getUserForSerialNumber(long)
      */
     public UserHandle getUserForSerialNumber(long serialNumber) {
-        Long value = serialNumber;
         return mUserToSerialMap
                 .entrySet()
                 .stream()
-                .filter(entry -> value.equals(entry.getValue()))
+                .filter(entry -> serialNumber == entry.getValue().userSerial)
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(Process.myUserHandle());
@@ -141,17 +159,5 @@ public class UserCache implements SafeCloseable {
      */
     public List<UserHandle> getUserProfiles() {
         return List.copyOf(mUserToSerialMap.keySet());
-    }
-
-    private static Map<UserHandle, Long> queryAllUsers(UserManager userManager) {
-        Map<UserHandle, Long> users = new ArrayMap<>();
-        List<UserHandle> usersActual = userManager.getUserProfiles();
-        if (usersActual != null) {
-            for (UserHandle user : usersActual) {
-                long serial = userManager.getSerialNumberForUser(user);
-                users.put(user, serial);
-            }
-        }
-        return users;
     }
 }

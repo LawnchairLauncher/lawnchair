@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"යෙදුම් යෝජනා සබලිතයි"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"යෙදුම් යෝජනා අබල කර ඇත"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"පුරෝකථනය කළ යෙදුම: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"ඔබ ඈත දකුණු හෝ ඈත වම් දාරයේ ස්වයිප් කරන බව සහතික කර ගන්න."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"ඔබ දකුණු හෝ වම් දාරයේ සිට තිරයේ මැදට ස්වයිප් කර අත හරින බව සහතික කර ගන්න."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"ඔබේ උපාංගය කරකවන්න"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"අභින සංචාලන නිබන්ධනය සම්පූර්ණ කිරීම සඳහා ඔබේ උපාංගය කරකවන්න"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ඔබ ඈත දකුණු හෝ ඈත වම් දාරයේ සිට ස්වයිප් කරන බව සහතික කර ගන්න"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ඔබ දකුණු හෝ වම් දාරයේ සිට තිරයේ මැදට ස්වයිප් කර අත හරින බව සහතික කර ගන්න"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ආපසු යාමට දකුණේ සිට ස්වයිප් කරන්නේ කෙසේදැයි ඔබ දැන ගත්තේය. ඊළඟට, යෙදුම් මාරු කරන ආකාරය දැන ගන්න."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"ඔබ ආපසු යාමේ ඉංගිතය සම්පූර්ණ කරන ලදි."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ඔබ තිරයේ පහළට ඉතාම සමීපව ස්වයිප් නොකරන බවට සහතික කර ගන්න."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ඔබ ආපසු යාමේ ඉංගිතය සම්පූර්ණ කළා"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ඔබ තිරයේ පහළට ඉතාම සමීපව ස්වයිප් නොකරන බවට සහතික කර ගන්න"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ආපසු ඉංගිතයෙහි සංවේදීතාව වෙනස් කිරීමට, සැකසීම් වෙත යන්න"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ආපසු යාමට ස්වයිප් කරන්න"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"අවසාන තිරයට ආපසු යාමට, වම් හෝ දකුණු දාරයෙන් තිරයේ මැදට ස්වයිප් කරන්න."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"අවසාන තිරයට ආපසු යාමට, වම් හෝ දකුණු දාරයෙන් තිරයේ මැදට ඇඟිලි 2කින් ස්වයිප් කරන්න."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ආපසු යන්න"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"යාමට ඉඩ හැරීමට පෙර ඔබ විරාමයක් නොගන්නා බව සහතික කර ගන්න."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"ඔබ මුල් පිටුවට යාමේ ඉංගිතය සම්පූර්ණ කරන ලදි. ඊළඟට, ආපසු යන ආකාරය දැන ගන්න."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"ඔබ මුල් පිටුවට යාමේ ඉංගිතය සම්පූර්ණ කරන ලදි."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"වම් හෝ දකුණු කෙළවරේ සිට තිරයේ මැදට ස්වයිප් කරන්න"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"යාමට ඉඩ හැරීමට පෙර ඔබ විරාමයක් නොගන්නා බව සහතික කර ගන්න"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"ඔබ මුල් පිටුවට යාමේ ඉංගිතය සම්පූර්ණ කළා. මීළඟට, ආපසු යන ආකාරය දැන ගන්න."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"ඔබ මුල් පිටුවට යාමේ ඉංගිතය සම්පූර්ණ කළා"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"මුල් පිටුවට යාමට ස්වයිප් කරන්න"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ඔබගේ තිරයේ පහළින් උඩට ස්වයිප් කරන්න.මෙම ඉංගිතය සැම විටම ඔබව මුල් තිරයට ගෙන යයි."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"තිරයේ පහළම සිට ඇඟිලි 2කින් ඉහළට ස්වයිප් කරන්න. මෙම ඉංගිතය සැම විටම ඔබව මුල් තිරයට ගෙන යයි."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"මුල් පිටුවට යන්න"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ඕනෑම වේලාවක දී ඔබේ මුල් තිරයට යාම සඳහා, ඔබේ තිරයෙහි පහළ සිට ඉහළට ස්වයිප් කරන්න"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"මුදා හැරීමට පෙර කවුළුව වැඩි වේලාවක් රඳවා තබා ගැනීමට උත්සාහ කරන්න."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කර, අනතුරුව විරාම කරන බව සහතික කර ගන්න."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"ඔබේ තිරයේ පහළ සිට උඩට ස්වයිප් කරන්න"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"අනර්ඝ වැඩක්!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"මුදා හැරීමට පෙර කවුළුව වැඩි වේලාවක් රඳවා ගැනීමට උත්සාහ කරන්න"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"ඔබ කෙළින්ම ඉහළට ස්වයිප් කර, පසුව විරාම කරන බව සහතික කර ගන්න"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ඔබ ඉංගිත භාවිත කරන ආකාරය දැන ගෙන ඇත. ඉංගිත ක්‍රියාවිරහිත කිරීමට, සැකසීම් වෙත යන්න."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ඔබ යෙදුම් මාරු කිරීමේ ඉංගිතය සම්පූර්ණ කර ඇත."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"ඔබ යෙදුම් මාරු කිරීමේ ඉංගිතය සම්පූර්ණ කළා"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"යෙදුම් මාරු කිරීමට ස්වයිප් කරන්න"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"යෙදුම් අතර මාරු වීමට, ඔබගේ තිරයේ පහළම සිට උඩට ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"යෙදුම් අතර මාරු වීමට, ඔබගේ තිරයේ පහළම සිට උඩට ඇඟිලි 2කින් ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"යෙදුම් මාරු කරන්න"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"ඔබේ තිරයේ පහළ සිට ඉහළට ස්වයිප් කරන්න, රඳවා ගෙන සිට, පසුව මුදා හරින්න"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"හොඳින් කළා!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"සියල්ල සකසා ඇත"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"නිමයි"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"සැකසීම්"</string>
@@ -89,8 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"තිර රුව"</string>
     <string name="action_split" msgid="2098009717623550676">"බෙදන්න"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"බෙදුම් තිරය භාවිතා කිරීමට තවත් යෙදුමක් තට්ටු කරන්න"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"අවලංගු කරන්න"</b></string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"බෙදීම් තිර තේරීමෙන් පිටවන්න"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"බෙදීම් තිරය භාවිතා කිරීමට වෙනත් යෙදුමක් තෝරා ගන්න"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"මෙම ක්‍රියාව යෙදුම හෝ ඔබේ සංවිධානය මගින් ඉඩ නොදේ"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"විජට් දැනට සහාය නොදක්වයි, වෙනත් යෙදුමක් තෝරන්න"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"නිබන්ධනය සංචාලනය මඟ හරින්නද?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ඔබට මෙය පසුව <xliff:g id="NAME">%1$s</xliff:g> යෙදුම තුළ සොයා ගත හැකිය"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"අවලංගු කරන්න"</string>
@@ -100,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"එකවර යෙදුම් 2ක් භාවිතා කිරීමට යෙදුමක් පැත්තට අදින්න"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"කාර්ය තීරුව පෙන්වීමට ඉහළට සෙමින් ස්වයිප් කරන්න"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ඔබේ දිනචරියාව මත පදනම්ව යෙදුම් යෝජනා ලබා ගන්න"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"කාර්ය තීරුව ස්වයංක්‍රීයව සැඟවීමට සැකසීම් තුළ අභින සංචලනය සක්‍රීය කරන්න"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"කාර්ය තීරුව ඇමිණීමට බෙදනය මත දිගු වේලාවක් ඔබන්න"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"කාර්ය තීරුව සමග තවත් කරන්න"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"වසන්න"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"නිමයි"</string>
@@ -115,8 +124,13 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"කාර්ය තීරුව පෙන්වා ඇත"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"කාර්ය තීරුව සඟවා ඇත"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"සංචලන තීරුව"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"සෑම විටම කාර්ය තීරුව පෙන්වන්න"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"සංචාලන ප්‍රකාරය වෙනස් කරන්න"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"කාර්ය තීරු බෙදනය"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ඉහළ/වම වෙත ගෙන යන්න"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"පහළ/දකුණ වෙත ගෙන යන්න"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{තවත් # යෙදුමක් පෙන්වන්න.}one{තවත් යෙදුම් #ක් පෙන්වන්න.}other{තවත් යෙදුම් #ක් පෙන්වන්න.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> සහ <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"ඩෙස්ක්ටොප් වෙත යෙදුම එක් කිරීම"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"අවලංගු කරන්න"</string>
 </resources>

@@ -44,13 +44,13 @@ import android.view.ViewGroup;
 
 import androidx.core.graphics.ColorUtils;
 
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.DelegatedCellDrawing;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
@@ -418,7 +418,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     /**
      * Draws Predicted Icon outline on cell layout
      */
-    public static class PredictedIconOutlineDrawing extends CellLayout.DelegatedCellDrawing {
+    public static class PredictedIconOutlineDrawing extends DelegatedCellDrawing {
 
         private final PredictedAppIcon mIcon;
         private final Paint mOutlinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);

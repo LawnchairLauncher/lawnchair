@@ -15,9 +15,9 @@
  */
 package com.android.launcher3.taskbar
 
-import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.graphics.Insets
 import android.graphics.Region
+import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.os.Binder
 import android.os.IBinder
 import android.view.Gravity
@@ -41,6 +41,8 @@ import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
+import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION
+import com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
@@ -97,7 +99,14 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 0
             }
 
-        windowLayoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
+        windowLayoutParams.providedInsets =
+            if (enableTaskbarNoRecreate()) {
+                getProvidedInsets(controllers.sharedState!!.insetsFrameProviders!!,
+                        insetsRoundedCornerFlag)
+            } else {
+                getProvidedInsets(insetsRoundedCornerFlag)
+            }
+
         if (!context.isGestureNav) {
             if (windowLayoutParams.paramsForRotation != null) {
                 for (layoutParams in windowLayoutParams.paramsForRotation) {
@@ -154,6 +163,26 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     }
 
     /**
+     * This is for when ENABLE_TASKBAR_NO_RECREATION is enabled. We generate one instance of
+     * providedInsets and use it across the entire lifecycle of TaskbarManager. The only thing
+     * we need to reset is nav bar flags based on insetsRoundedCornerFlag.
+     */
+    private fun getProvidedInsets(providedInsets: Array<InsetsFrameProvider>,
+                                  insetsRoundedCornerFlag: Int): Array<InsetsFrameProvider> {
+        val navBarsFlag =
+                (if (context.isGestureNav) FLAG_SUPPRESS_SCRIM else 0) or insetsRoundedCornerFlag
+        for (provider in providedInsets) {
+            if (provider.type == navigationBars()) {
+                provider.setFlags(
+                        navBarsFlag,
+                        FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
+                )
+            }
+        }
+        return providedInsets
+    }
+
+    /**
      * The inset types and number of insets provided have to match for both gesture nav and button
      * nav. The values and the order of the elements in array are allowed to differ.
      * Reason being WM does not allow types and number of insets changing for a given window once it
@@ -197,7 +226,6 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             provider.insetsSize = Insets.of(0, 0, rightIndexInset, 0)
         }
 
-
         // When in gesture nav, report the stashed height to the IME, to allow hiding the
         // IME navigation bar.
         val imeInsetsSize = if (ENABLE_HIDE_IME_CAPTION_BAR && context.isGestureNav) {
@@ -208,6 +236,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         val imeInsetsSizeOverride =
                 arrayOf(
                         InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_VOICE_INTERACTION,
+                                // No-op override to keep the size and types in sync with the
+                                // override below (insetsSizeOverrides must have the same length and
+                                // types after the window is added according to
+                                // WindowManagerService#relayoutWindow)
+                                provider.insetsSize)
                 )
         // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
         val visInsetsSizeForTappableElement =
@@ -216,12 +250,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         val insetsSizeOverrideForTappableElement =
                 arrayOf(
                         InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-                        InsetsFrameProvider.InsetsSizeOverride(
-                                TYPE_VOICE_INTERACTION,
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_VOICE_INTERACTION,
                                 visInsetsSizeForTappableElement
                         ),
                 )
-        if ((context.isGestureNav || TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        if ((context.isGestureNav || ENABLE_TASKBAR_NAVBAR_UNIFICATION)
                 && provider.type == tappableElement()) {
             provider.insetsSizeOverrides = insetsSizeOverrideForTappableElement
         } else if (provider.type != systemGestures()) {

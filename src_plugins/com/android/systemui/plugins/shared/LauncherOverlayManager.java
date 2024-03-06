@@ -15,16 +15,12 @@
  */
 package com.android.systemui.plugins.shared;
 
-import android.app.Activity;
-import android.app.Application;
-import android.os.Bundle;
-
 import java.io.PrintWriter;
 
 /**
  * Interface to control the overlay on Launcher
  */
-public interface LauncherOverlayManager extends Application.ActivityLifecycleCallbacks {
+public interface LauncherOverlayManager {
 
     default void onDeviceProvideChanged() { }
 
@@ -41,30 +37,15 @@ public interface LauncherOverlayManager extends Application.ActivityLifecycleCal
 
     default void hideOverlay(int duration) { }
 
-    default boolean startSearch(byte[] config, Bundle extras) {
-        return false;
-    }
+    default void onActivityStarted() { }
 
-    @Override
-    default void onActivityCreated(Activity activity, Bundle bundle) { }
+    default void onActivityResumed() { }
 
-    @Override
-    default void onActivityStarted(Activity activity) { }
+    default void onActivityPaused() { }
 
-    @Override
-    default void onActivityResumed(Activity activity) { }
+    default void onActivityStopped() { }
 
-    @Override
-    default void onActivityPaused(Activity activity) { }
-
-    @Override
-    default void onActivityStopped(Activity activity) { }
-
-    @Override
-    default void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
-
-    @Override
-    default void onActivityDestroyed(Activity activity) { }
+    default void onActivityDestroyed() { }
 
     interface LauncherOverlay {
 

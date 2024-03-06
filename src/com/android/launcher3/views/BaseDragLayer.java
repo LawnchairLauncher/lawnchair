@@ -41,6 +41,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.TouchController;
@@ -559,7 +560,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             DeviceProfile dp = mActivity.getDeviceProfile();
             if (dp.isTaskbarPresent) {
                 // Ignore taskbar gesture insets to avoid interfering with TouchControllers.
-                gestureInsetBottom = Math.max(0, gestureInsetBottom - dp.taskbarHeight);
+                gestureInsetBottom = ResourceUtils.getNavbarSize(
+                        ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources());
             }
             mSystemGestureRegion.set(
                     Math.max(gestureInsets.left, imeInset.left),

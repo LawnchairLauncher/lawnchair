@@ -67,7 +67,8 @@ public class WindowBounds {
             return false;
         }
         WindowBounds other = (WindowBounds) obj;
-        return other.bounds.equals(bounds) && other.insets.equals(insets);
+        return other.bounds.equals(bounds) && other.insets.equals(insets)
+                && other.rotationHint == rotationHint;
     }
 
     @Override
@@ -84,7 +85,7 @@ public class WindowBounds {
      * Returns true if the device is in landscape orientation
      */
     public final boolean isLandscape() {
-        return availableSize.x > availableSize.y;
+        return bounds.width() > bounds.height();
     }
 
     /**

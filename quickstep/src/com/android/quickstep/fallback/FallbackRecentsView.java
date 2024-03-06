@@ -36,6 +36,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -73,8 +74,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController) {
-        super.init(actionsView, splitController);
+    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController,
+            @Nullable DesktopRecentsTransitionController desktopRecentsTransitionController) {
+        super.init(actionsView, splitController, desktopRecentsTransitionController);
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
     }
@@ -236,6 +238,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (toState == MODAL_TASK) {
             setOverviewSelectEnabled(true);
         }
+
+        // Set border after select mode changes to avoid showing border during state transition
+        if (!toState.overviewUi() || toState == MODAL_TASK) {
+            setTaskBorderEnabled(false);
+        }
+
         setFreezeViewVisibility(true);
     }
 
@@ -251,8 +259,13 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (finalState != MODAL_TASK) {
             setOverviewSelectEnabled(false);
         }
+
+        if (finalState.overviewUi() && finalState != MODAL_TASK) {
+            setTaskBorderEnabled(true);
+        }
+
         if (finalState != OVERVIEW_SPLIT_SELECT) {
-            if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            if (FeatureFlags.enableSplitContextually()) {
                 mSplitSelectStateController.resetState();
             } else {
                 resetFromSplitSelectionState();

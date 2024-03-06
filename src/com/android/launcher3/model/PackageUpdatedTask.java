@@ -15,7 +15,9 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_WORK_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
@@ -31,7 +33,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -44,7 +46,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -68,7 +69,8 @@ import java.util.stream.Collectors;
  */
 public class PackageUpdatedTask extends BaseModelUpdateTask {
 
-    private static boolean DEBUG = false;
+    // TODO(b/290090023): Set to false after root causing is done.
+    private static final boolean DEBUG = true;
     private static final String TAG = "PackageUpdatedTask";
 
     public static final int OP_NONE = 0;
@@ -133,14 +135,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         iconCache.updateIconsForPkg(packages[i], mUser);
                         activitiesLists.put(
                                 packages[i], appsList.updatePackage(context, packages[i], mUser));
-
-                        // The update may have changed which shortcuts/widgets are available.
-                        // Refresh the widgets for the package if we have an activity running.
-                        Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
-                        if (launcher != null) {
-                            launcher.refreshAndBindWidgetsForPackageUser(
-                                    new PackageUserKey(packages[i], mUser));
-                        }
                     }
                 }
                 // Since package was just updated, the target must be available now.
@@ -148,7 +142,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
             case OP_REMOVE: {
                 for (int i = 0; i < N; i++) {
-                    FileLog.d(TAG, "Removing app icon" + packages[i]);
+                    FileLog.d(TAG, "Removing app icon: " + packages[i]);
                     iconCache.removeIconsForPkg(packages[i], mUser);
                 }
                 // Fall through
@@ -169,14 +163,24 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
             case OP_USER_AVAILABILITY_CHANGE: {
                 UserManagerState ums = new UserManagerState();
-                ums.init(UserCache.INSTANCE.get(context),
-                        context.getSystemService(UserManager.class));
+                UserManager userManager = context.getSystemService(UserManager.class);
+                ums.init(UserCache.INSTANCE.get(context), userManager);
+                boolean isUserQuiet =  ums.isUserQuiet(mUser);
                 flagOp = FlagOp.NO_OP.setFlag(
-                        WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER, ums.isUserQuiet(mUser));
+                        WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER, isUserQuiet);
                 appsList.updateDisabledFlags(matcher, flagOp);
 
-                // We are not synchronizing here, as int operations are atomic
-                appsList.setFlags(FLAG_QUIET_MODE_ENABLED, ums.isAnyProfileQuietModeEnabled());
+                if (Flags.enablePrivateSpace()) {
+                    UserCache userCache = UserCache.INSTANCE.get(context);
+                    if (userCache.getUserInfo(mUser).isWork()) {
+                        appsList.setFlags(FLAG_WORK_PROFILE_QUIET_MODE_ENABLED, isUserQuiet);
+                    } else if (userCache.getUserInfo(mUser).isPrivate()) {
+                        appsList.setFlags(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED, isUserQuiet);
+                    }
+                } else {
+                    // We are not synchronizing here, as int operations are atomic
+                    appsList.setFlags(FLAG_QUIET_MODE_ENABLED, ums.isAnyProfileQuietModeEnabled());
+                }
                 break;
             }
             default:

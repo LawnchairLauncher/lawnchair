@@ -20,6 +20,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:focusable="true" >
+    <com.android.launcher3.apppairs.AppPairIconGraphic
+        android:id="@+id/app_pair_icon_graphic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false" />
     <com.android.launcher3.views.DoubleShadowBubbleTextView
         style="@style/BaseIcon.Workspace"
         android:id="@+id/app_pair_icon_name"

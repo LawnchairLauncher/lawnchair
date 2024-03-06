@@ -61,6 +61,9 @@ public class UserManagerState {
 
     /**
      * Returns true if any user profile has quiet mode enabled.
+     * <p>
+     * Do not use this for determining if a specific profile has quiet mode enabled, as their can
+     * be more than one profile in quiet mode.
      */
     public boolean isAnyProfileQuietModeEnabled() {
         for (int i = mQuietUsersHashCodeMap.size() - 1; i >= 0; i--) {

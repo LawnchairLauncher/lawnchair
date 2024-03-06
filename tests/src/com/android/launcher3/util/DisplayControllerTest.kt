@@ -30,8 +30,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.LauncherPrefs
+import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
 import com.android.launcher3.util.DisplayController.CHANGE_DENSITY
 import com.android.launcher3.util.DisplayController.CHANGE_ROTATION
+import com.android.launcher3.util.DisplayController.CHANGE_TASKBAR_PINNING
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
 import com.android.launcher3.util.window.CachedDisplayInfo
@@ -40,11 +42,13 @@ import kotlin.math.min
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito.doNothing
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when` as whenever
-import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.mockito.stubbing.Answer
 
 /** Unit tests for {@link DisplayController} */
@@ -54,13 +58,13 @@ class DisplayControllerTest {
 
     private val appContext: Context = ApplicationProvider.getApplicationContext()
 
-    @Mock private lateinit var context: SandboxContext
-    @Mock private lateinit var windowManagerProxy: WindowManagerProxy
-    @Mock private lateinit var launcherPrefs: LauncherPrefs
-    @Mock private lateinit var displayManager: DisplayManager
-    @Mock private lateinit var display: Display
-    @Mock private lateinit var resources: Resources
-    @Mock private lateinit var displayInfoChangeListener: DisplayInfoChangeListener
+    private val context: SandboxContext = mock()
+    private val windowManagerProxy: WindowManagerProxy = mock()
+    private val launcherPrefs: LauncherPrefs = mock()
+    private val displayManager: DisplayManager = mock()
+    private val display: Display = mock()
+    private val resources: Resources = mock()
+    private val displayInfoChangeListener: DisplayInfoChangeListener = mock()
 
     private lateinit var displayController: DisplayController
 
@@ -86,9 +90,9 @@ class DisplayControllerTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         whenever(context.getObject(eq(WindowManagerProxy.INSTANCE))).thenReturn(windowManagerProxy)
         whenever(context.getObject(eq(LauncherPrefs.INSTANCE))).thenReturn(launcherPrefs)
+        whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(false)
 
         // Mock WindowManagerProxy
         val displayInfo =
@@ -107,11 +111,12 @@ class DisplayControllerTest {
             bounds[i.getArgument<CachedDisplayInfo>(1).rotation]
         }
 
+        whenever(windowManagerProxy.getNavigationMode(any())).thenReturn(NavigationMode.NO_BUTTON)
         // Mock context
-        whenever(context.createWindowContext(any(), any(), nullable())).thenReturn(context)
+        whenever(context.createWindowContext(any(), any(), anyOrNull())).thenReturn(context)
         whenever(context.getSystemService(eq(DisplayManager::class.java)))
             .thenReturn(displayManager)
-        doNothing().`when`(context).registerComponentCallbacks(any())
+        doNothing().whenever(context).registerComponentCallbacks(any())
 
         // Mock display
         whenever(display.rotation).thenReturn(displayInfo.rotation)
@@ -155,5 +160,14 @@ class DisplayControllerTest {
         displayController.onConfigurationChanged(configuration)
 
         verify(displayInfoChangeListener).onDisplayInfoChanged(any(), any(), eq(CHANGE_DENSITY))
+    }
+
+    @Test
+    @UiThreadTest
+    fun testTaskbarPinning() {
+        whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(true)
+        displayController.handleInfoChange(display)
+        verify(displayInfoChangeListener)
+            .onDisplayInfoChanged(any(), any(), eq(CHANGE_TASKBAR_PINNING))
     }
 }

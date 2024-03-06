@@ -22,12 +22,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="true"
-    android:clipToOutline="true"
     android:defaultFocusHighlightEnabled="false"
     android:focusable="true"
     launcher:focusBorderColor="?androidprv:attr/materialColorOutline"
-    launcher:hoverBorderColor="?androidprv:attr/materialColorPrimary">
-
+    launcher:hoverBorderColor="?androidprv:attr/materialColorPrimary"
+    android:clipToPadding="true"
+    android:padding="0.1dp">
+    <!-- Setting a padding of 0.1 dp since android:clipToPadding needs a non-zero value for
+    padding to work-->
     <View
         android:id="@+id/background"
         android:layout_width="match_parent"
@@ -45,11 +47,10 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <com.android.quickstep.views.IconView
+    <ViewStub
         android:id="@+id/icon"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
-        android:focusable="false"
-        android:importantForAccessibility="no" />
+        android:inflatedId="@id/icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
 
 </com.android.quickstep.views.DesktopTaskView>
