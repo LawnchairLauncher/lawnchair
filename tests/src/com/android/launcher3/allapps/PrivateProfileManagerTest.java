@@ -26,7 +26,7 @@ import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
@@ -80,7 +80,7 @@ public class PrivateProfileManagerTest {
 
     private PrivateProfileManager mPrivateProfileManager;
     @Mock
-    private ActivityAllAppsContainerView mActivityAllAppsContainerView;
+    private ActivityAllAppsContainerView mAllApps;
     @Mock
     private StatsLogManager mStatsLogManager;
     @Mock
@@ -90,13 +90,13 @@ public class PrivateProfileManagerTest {
     @Mock
     private Context mContext;
     @Mock
-    private AllAppsStore mAllAppsStore;
+    private AllAppsStore<?> mAllAppsStore;
     @Mock
     private PackageManager mPackageManager;
     @Mock
     private LauncherApps mLauncherApps;
-
-    private boolean mRunnableCalled = false;
+    @Mock
+    private AllAppsRecyclerView mAllAppsRecyclerView;
 
     @Before
     public void setUp() {
@@ -105,8 +105,9 @@ public class PrivateProfileManagerTest {
                 .thenReturn(Arrays.asList(MAIN_HANDLE, PRIVATE_HANDLE));
         when(mUserCache.getUserInfo(Process.myUserHandle())).thenReturn(MAIN_ICON_INFO);
         when(mUserCache.getUserInfo(PRIVATE_HANDLE)).thenReturn(PRIVATE_ICON_INFO);
-        when(mActivityAllAppsContainerView.getContext()).thenReturn(mContext);
-        when(mActivityAllAppsContainerView.getAppsStore()).thenReturn(mAllAppsStore);
+        when(mAllApps.getContext()).thenReturn(mContext);
+        when(mAllApps.getAppsStore()).thenReturn(mAllAppsStore);
+        when(mAllApps.getActiveRecyclerView()).thenReturn(mAllAppsRecyclerView);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
         when(mPackageManager.resolveActivity(any(), any())).thenReturn(new ResolveInfo());
         when(mContext.getSystemService(LauncherApps.class)).thenReturn(mLauncherApps);
@@ -117,7 +118,7 @@ public class PrivateProfileManagerTest {
                 .thenReturn("com.android.launcher3.tests.privateProfileManager");
         when(mLauncherApps.getPreInstalledSystemPackages(any())).thenReturn(new ArrayList<>());
         mPrivateProfileManager = new PrivateProfileManager(mUserManager,
-                mActivityAllAppsContainerView, mStatsLogManager, mUserCache);
+                mAllApps, mStatsLogManager, mUserCache);
     }
 
     @Test
@@ -134,7 +135,7 @@ public class PrivateProfileManagerTest {
     public void unlockPrivateProfile_requestsQuietModeAsFalse() throws Exception {
         when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED)).thenReturn(true);
 
-        mPrivateProfileManager.unlockPrivateProfile(() -> {});
+        mPrivateProfileManager.unlockPrivateProfile();
 
         awaitTasksCompleted();
         Mockito.verify(mUserManager).requestQuietModeEnabled(false, PRIVATE_HANDLE);
@@ -160,20 +161,36 @@ public class PrivateProfileManagerTest {
 
     @Test
     @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/320703862
-    public void transitioningToUnlocked_resetCallsPendingRunnable() throws Exception {
+    public void transitioningToUnlocked_resetCallsPostUnlock() throws Exception {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
         when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
                 .thenReturn(false);
+        doNothing().when(privateProfileManager).expandPrivateSpace();
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_DISABLED);
-        mRunnableCalled = false;
 
-        privateProfileManager.unlockPrivateProfile(this::testRunnable);
+        privateProfileManager.unlockPrivateProfile();
         privateProfileManager.reset();
 
         awaitTasksCompleted();
-        Mockito.verify(privateProfileManager).applyUnlockRunnable();
-        assertTrue("Unlock Runnable not Invoked", mRunnableCalled);
+        Mockito.verify(privateProfileManager).postUnlock();
+    }
+
+    @Test
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+    public void transitioningToLocked_resetCallsExecuteLock() throws Exception {
+        PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
+        doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
+        when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
+                .thenReturn(true);
+        doNothing().when(privateProfileManager).expandPrivateSpace();
+        when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
+
+        privateProfileManager.lockPrivateProfile();
+        privateProfileManager.reset();
+
+        awaitTasksCompleted();
+        Mockito.verify(privateProfileManager).executeLock();
     }
 
     @Test
@@ -190,9 +207,5 @@ public class PrivateProfileManagerTest {
 
     private static void awaitTasksCompleted() throws Exception {
         UI_HELPER_EXECUTOR.submit(() -> null).get();
-    }
-
-    private void testRunnable() {
-        mRunnableCalled = true;
     }
 }

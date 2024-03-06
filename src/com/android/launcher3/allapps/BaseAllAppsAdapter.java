@@ -169,16 +169,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     protected final OnClickListener mOnIconClickListener;
     protected final OnLongClickListener mOnIconLongClickListener;
     protected OnFocusChangeListener mIconFocusListener;
-    private final PrivateSpaceHeaderViewController mPrivateSpaceHeaderViewController;
 
     public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider) {
-        this(activityContext, inflater, apps, adapterProvider, null);
-    }
-
-    public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
-            AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider,
-            PrivateSpaceHeaderViewController privateSpaceHeaderViewController) {
         mActivityContext = activityContext;
         mApps = apps;
         mLayoutInflater = inflater;
@@ -187,7 +180,6 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         mOnIconLongClickListener = mActivityContext.getAllAppsItemLongClickListener();
 
         mAdapterProvider = adapterProvider;
-        mPrivateSpaceHeaderViewController = privateSpaceHeaderViewController;
     }
 
     /** Checks if the passed viewType represents all apps divider. */
@@ -283,13 +275,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_PRIVATE_SPACE_HEADER:
                 RelativeLayout psHeaderLayout = holder.itemView.findViewById(
                         R.id.ps_header_layout);
-                assert mPrivateSpaceHeaderViewController != null;
-                assert psHeaderLayout != null;
-                mPrivateSpaceHeaderViewController.addPrivateSpaceHeaderViewElements(psHeaderLayout);
+                mApps.getPrivateProfileManager().addPrivateSpaceHeaderViewElements(psHeaderLayout);
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
                 int roundRegions = ROUND_TOP_LEFT | ROUND_TOP_RIGHT;
-                if (mPrivateSpaceHeaderViewController.getPrivateProfileManager().getCurrentState()
-                        == STATE_DISABLED) {
+                if (mApps.getPrivateProfileManager().getCurrentState() == STATE_DISABLED) {
                     roundRegions |= (ROUND_BOTTOM_LEFT | ROUND_BOTTOM_RIGHT);
                 }
                 adapterItem.decorationInfo =

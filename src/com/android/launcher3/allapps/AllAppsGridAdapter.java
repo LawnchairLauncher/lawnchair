@@ -73,9 +73,8 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
 
 
     public AllAppsGridAdapter(T activityContext, LayoutInflater inflater,
-            AlphabeticalAppsList apps, SearchAdapterProvider<?> adapterProvider,
-            PrivateSpaceHeaderViewController privateSpaceHeaderViewController) {
-        super(activityContext, inflater, apps, adapterProvider, privateSpaceHeaderViewController);
+            AlphabeticalAppsList apps, SearchAdapterProvider<?> adapterProvider) {
+        super(activityContext, inflater, apps, adapterProvider);
         mGridLayoutMgr = new AppsGridLayoutManager(mActivityContext);
         mGridLayoutMgr.setSpanSizeLookup(new GridSpanSizer());
         setAppsPerRow(activityContext.getDeviceProfile().numShownAllAppsColumns);
