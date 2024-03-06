@@ -105,6 +105,21 @@ public class PackageManagerHelper {
     }
 
     /**
+     * Returns whether the target app is archived for a given user
+     */
+    public boolean isAppArchivedForUser(@NonNull final String packageName,
+            @NonNull final UserHandle user) {
+        if (!Utilities.enableSupportForArchiving()) {
+            return false;
+        }
+        final ApplicationInfo info = getApplicationInfo(
+                // LauncherApps does not support long flags currently. Since archived apps are
+                // subset of uninstalled apps, this filter also includes archived apps.
+                packageName, user, PackageManager.MATCH_UNINSTALLED_PACKAGES);
+        return info != null && info.isArchived;
+    }
+
+    /**
      * Returns whether the target app is in archived state
      */
     @SuppressWarnings("NewApi")
@@ -172,7 +187,7 @@ public class PackageManagerHelper {
     public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
         if (info instanceof ItemInfoWithIcon
                 && (((ItemInfoWithIcon) info).runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
             ItemInfoWithIcon appInfo = (ItemInfoWithIcon) info;
             mContext.startActivity(ApiWrapper.getAppMarketActivityIntent(mContext,
                     appInfo.getTargetComponent().getPackageName(), Process.myUserHandle()));
@@ -251,6 +266,7 @@ public class PackageManagerHelper {
 
     /**
      * Returns true if Launcher has the permission to access shortcuts.
+     *
      * @see LauncherApps#hasShortcutHostPermission()
      */
     public static boolean hasShortcutsPermission(Context context) {

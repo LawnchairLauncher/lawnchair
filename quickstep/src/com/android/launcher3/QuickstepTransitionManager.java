@@ -64,6 +64,7 @@ import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATI
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
+import static com.android.quickstep.util.AnimUtils.clampToDuration;
 import static com.android.quickstep.util.AnimUtils.completeRunnableListCallback;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
@@ -748,34 +749,35 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         final float finalShadowRadius = appTargetsAreTranslucent ? 0 : mMaxShadowRadius;
 
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
-            FloatProp mDx = new FloatProp(0, prop.dX, 0, APP_LAUNCH_DURATION,
-                    mOpeningXInterpolator);
-            FloatProp mDy = new FloatProp(0, prop.dY, 0, APP_LAUNCH_DURATION,
-                    mOpeningInterpolator);
+            FloatProp mDx = new FloatProp(0, prop.dX, mOpeningXInterpolator);
+            FloatProp mDy = new FloatProp(0, prop.dY, mOpeningInterpolator);
 
             FloatProp mIconScaleToFitScreen = new FloatProp(prop.initialAppIconScale,
-                    prop.finalAppIconScale, 0, APP_LAUNCH_DURATION, mOpeningInterpolator);
+                    prop.finalAppIconScale, mOpeningInterpolator);
             FloatProp mIconAlpha = new FloatProp(prop.iconAlphaStart, 0f,
-                    APP_LAUNCH_ALPHA_START_DELAY, APP_LAUNCH_ALPHA_DURATION, LINEAR);
+                    clampToDuration(LINEAR, APP_LAUNCH_ALPHA_START_DELAY, APP_LAUNCH_ALPHA_DURATION,
+                            APP_LAUNCH_DURATION));
 
-            FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius, 0,
-                    APP_LAUNCH_DURATION, mOpeningInterpolator);
-            FloatProp mShadowRadius = new FloatProp(0, finalShadowRadius, 0,
-                    APP_LAUNCH_DURATION, mOpeningInterpolator);
+            FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius,
+                    mOpeningInterpolator);
+            FloatProp mShadowRadius = new FloatProp(0, finalShadowRadius,
+                    mOpeningInterpolator);
 
             FloatProp mCropRectCenterX = new FloatProp(prop.cropCenterXStart, prop.cropCenterXEnd,
-                    0, APP_LAUNCH_DURATION, mOpeningInterpolator);
+                    mOpeningInterpolator);
             FloatProp mCropRectCenterY = new FloatProp(prop.cropCenterYStart, prop.cropCenterYEnd,
-                    0, APP_LAUNCH_DURATION, mOpeningInterpolator);
-            FloatProp mCropRectWidth = new FloatProp(prop.cropWidthStart, prop.cropWidthEnd, 0,
-                    APP_LAUNCH_DURATION, mOpeningInterpolator);
-            FloatProp mCropRectHeight = new FloatProp(prop.cropHeightStart, prop.cropHeightEnd, 0,
-                    APP_LAUNCH_DURATION, mOpeningInterpolator);
+                    mOpeningInterpolator);
+            FloatProp mCropRectWidth = new FloatProp(prop.cropWidthStart, prop.cropWidthEnd,
+                    mOpeningInterpolator);
+            FloatProp mCropRectHeight = new FloatProp(prop.cropHeightStart, prop.cropHeightEnd,
+                    mOpeningInterpolator);
 
-            FloatProp mNavFadeOut = new FloatProp(1f, 0f, 0, ANIMATION_NAV_FADE_OUT_DURATION,
-                    NAV_FADE_OUT_INTERPOLATOR);
-            FloatProp mNavFadeIn = new FloatProp(0f, 1f, ANIMATION_DELAY_NAV_FADE_IN,
-                    ANIMATION_NAV_FADE_IN_DURATION, NAV_FADE_IN_INTERPOLATOR);
+            FloatProp mNavFadeOut = new FloatProp(1f, 0f, clampToDuration(
+                    NAV_FADE_OUT_INTERPOLATOR, 0, ANIMATION_NAV_FADE_OUT_DURATION,
+                    APP_LAUNCH_DURATION));
+            FloatProp mNavFadeIn = new FloatProp(0f, 1f, clampToDuration(
+                    NAV_FADE_IN_INTERPOLATOR, ANIMATION_DELAY_NAV_FADE_IN,
+                    ANIMATION_NAV_FADE_IN_DURATION, APP_LAUNCH_DURATION));
 
             @Override
             public void onUpdate(float percent, boolean initOnly) {
@@ -968,37 +970,36 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
             float mAppWindowScale = 1;
-            final FloatProp mWidgetForegroundAlpha = new FloatProp(1 /* start */,
-                    0 /* end */, 0 /* delay */,
-                    WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* duration */, LINEAR);
-            final FloatProp mWidgetFallbackBackgroundAlpha = new FloatProp(0 /* start */,
-                    1 /* end */, 0 /* delay */, 75 /* duration */, LINEAR);
-            final FloatProp mPreviewAlpha = new FloatProp(0 /* start */, 1 /* end */,
+            final FloatProp mWidgetForegroundAlpha = new FloatProp(1, 0, clampToDuration(
+                    LINEAR, 0, WIDGET_CROSSFADE_DURATION_MILLIS / 2, APP_LAUNCH_DURATION));
+
+            final FloatProp mWidgetFallbackBackgroundAlpha = new FloatProp(0, 1,
+                    clampToDuration(LINEAR, 0, 75, APP_LAUNCH_DURATION));
+            final FloatProp mPreviewAlpha = new FloatProp(0, 1, clampToDuration(
+                    LINEAR,
                     WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* delay */,
-                    WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* duration */, LINEAR);
+                    WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* duration */,
+                    APP_LAUNCH_DURATION));
             final FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius,
-                    0 /* start */, APP_LAUNCH_DURATION, mOpeningInterpolator);
-            final FloatProp mCornerRadiusProgress = new FloatProp(0, 1, 0, APP_LAUNCH_DURATION,
                     mOpeningInterpolator);
+            final FloatProp mCornerRadiusProgress = new FloatProp(0, 1, mOpeningInterpolator);
 
             // Window & widget background positioning bounds
             final FloatProp mDx = new FloatProp(widgetBackgroundBounds.centerX(),
-                    windowTargetBounds.centerX(), 0 /* delay */, APP_LAUNCH_DURATION,
-                    mOpeningXInterpolator);
+                    windowTargetBounds.centerX(), mOpeningXInterpolator);
             final FloatProp mDy = new FloatProp(widgetBackgroundBounds.centerY(),
-                    windowTargetBounds.centerY(), 0 /* delay */, APP_LAUNCH_DURATION,
-                    mOpeningInterpolator);
+                    windowTargetBounds.centerY(), mOpeningInterpolator);
             final FloatProp mWidth = new FloatProp(widgetBackgroundBounds.width(),
-                    windowTargetBounds.width(), 0 /* delay */, APP_LAUNCH_DURATION,
-                    mOpeningInterpolator);
+                    windowTargetBounds.width(), mOpeningInterpolator);
             final FloatProp mHeight = new FloatProp(widgetBackgroundBounds.height(),
-                    windowTargetBounds.height(), 0 /* delay */, APP_LAUNCH_DURATION,
-                    mOpeningInterpolator);
+                    windowTargetBounds.height(), mOpeningInterpolator);
 
-            final FloatProp mNavFadeOut = new FloatProp(1f, 0f, 0, ANIMATION_NAV_FADE_OUT_DURATION,
-                    NAV_FADE_OUT_INTERPOLATOR);
-            final FloatProp mNavFadeIn = new FloatProp(0f, 1f, ANIMATION_DELAY_NAV_FADE_IN,
-                    ANIMATION_NAV_FADE_IN_DURATION, NAV_FADE_IN_INTERPOLATOR);
+            final FloatProp mNavFadeOut = new FloatProp(1f, 0f, clampToDuration(
+                    NAV_FADE_OUT_INTERPOLATOR, 0, ANIMATION_NAV_FADE_OUT_DURATION,
+                    APP_LAUNCH_DURATION));
+            final FloatProp mNavFadeIn = new FloatProp(0f, 1f, clampToDuration(
+                    NAV_FADE_IN_INTERPOLATOR, ANIMATION_DELAY_NAV_FADE_IN,
+                    ANIMATION_NAV_FADE_IN_DURATION, APP_LAUNCH_DURATION));
 
             @Override
             public void onUpdate(float percent, boolean initOnly) {
@@ -1508,11 +1509,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         float startShadowRadius = areAllTargetsTranslucent(appTargets) ? 0 : mMaxShadowRadius;
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
-            FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DECELERATE_1_7);
-            FloatProp mScale = new FloatProp(1f, 1f, 0, duration, DECELERATE_1_7);
-            FloatProp mAlpha = new FloatProp(1f, 0f, 25, 125, LINEAR);
-            FloatProp mShadowRadius = new FloatProp(startShadowRadius, 0, 0, duration,
-                    DECELERATE_1_7);
+            FloatProp mDy = new FloatProp(0, mClosingWindowTransY, DECELERATE_1_7);
+            FloatProp mScale = new FloatProp(1f, 1f, DECELERATE_1_7);
+            FloatProp mAlpha = new FloatProp(1f, 0f, clampToDuration(LINEAR, 25, 125, duration));
+            FloatProp mShadowRadius = new FloatProp(startShadowRadius, 0, DECELERATE_1_7);
 
             @Override
             public void onUpdate(float percent, boolean initOnly) {

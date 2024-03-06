@@ -308,8 +308,12 @@ public class ModelDbController {
         mOpenHelper = (mContext instanceof SandboxContext) ? oldHelper
                 : createDatabaseHelper(true /* forMigration */);
         try {
-            return GridSizeMigrationUtil.migrateGridIfNeeded(mContext, idp, mOpenHelper,
-                   oldHelper.getWritableDatabase());
+            // This is the current grid we have, given by the mContext
+            DeviceGridState srcDeviceState = new DeviceGridState(mContext);
+            // This is the state we want to migrate to that is given by the idp
+            DeviceGridState destDeviceState = new DeviceGridState(idp);
+            return GridSizeMigrationUtil.migrateGridIfNeeded(mContext, srcDeviceState,
+                    destDeviceState, mOpenHelper, oldHelper.getWritableDatabase());
         } catch (Exception e) {
             FileLog.e(TAG, "Failed to migrate grid", e);
             return false;

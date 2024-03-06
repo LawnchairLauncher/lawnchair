@@ -17,6 +17,7 @@
 package com.android.launcher3.config;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_EXTRA_TOUCH_WIDTH_DP;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
@@ -146,6 +147,12 @@ public final class FeatureFlags {
             FlagsFactory.getIntFlag(301680992, "LPNH_SLOP_PERCENTAGE", 100,
                     "Controls touch slop percentage for lpnh",
                     LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE);
+
+    public static final IntFlag LPNH_EXTRA_TOUCH_WIDTH_DP =
+            FlagsFactory.getIntFlag(301680992, "LPNH_EXTRA_TOUCH_WIDTH_DP", 0,
+                    "Controls extra dp on the nav bar sides to trigger LPNH."
+                            + " Can be negative for a smaller touch region.",
+                    LONG_PRESS_NAV_HANDLE_EXTRA_TOUCH_WIDTH_DP);
 
     public static final IntFlag LPNH_TIMEOUT_MS =
             FlagsFactory.getIntFlag(301680992, "LPNH_TIMEOUT_MS",

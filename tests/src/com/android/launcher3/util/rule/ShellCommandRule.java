@@ -21,6 +21,7 @@ import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
 
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 import androidx.test.InstrumentationRegistry;
@@ -40,6 +41,9 @@ import java.util.ArrayList;
  */
 public class ShellCommandRule implements TestRule {
 
+    private static final String SETPROP_PREFIX = "setprop";
+    private static final String GETPROP_PREFIX = "getprop";
+    private static final String UNKNOWN = "UNKNOWN";
     private final String mCmd;
     private final String mRevertCommand;
     private final boolean mCheckSuccess;
@@ -62,6 +66,19 @@ public class ShellCommandRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                String revertSetPropCmd = null;
+                if (mCmd.startsWith(SETPROP_PREFIX) && mRevertCommand == null) {
+                    // setprop command always follows format : setprop <TAG> <value>
+                    // We are stripping out only the TAG here
+                    String tag = mCmd.split("\\s")[1];
+                    String getpropCmd = GETPROP_PREFIX + " " + tag;
+                    String initialValue = UiDevice.getInstance(
+                            getInstrumentation()).executeShellCommand(getpropCmd);
+                    if (TextUtils.isEmpty(initialValue.trim())) {
+                        initialValue = UNKNOWN;
+                    }
+                    revertSetPropCmd = SETPROP_PREFIX + " " + tag + " " + initialValue;
+                }
                 final String result =
                         UiDevice.getInstance(getInstrumentation()).executeShellCommand(mCmd);
                 if (mCheckSuccess) {
@@ -73,13 +90,15 @@ public class ShellCommandRule implements TestRule {
                 try {
                     base.evaluate();
                 } finally {
-                    if (mRevertCommand != null) {
+                    if (mRevertCommand != null || revertSetPropCmd != null) {
+                        String revertCmd =
+                                mRevertCommand != null ? mRevertCommand : revertSetPropCmd;
                         final String revertResult = UiDevice.getInstance(
                                 getInstrumentation()).executeShellCommand(
-                                mRevertCommand);
+                                revertCmd);
                         if (mCheckSuccess) {
                             Assert.assertTrue(
-                                    "Failed command: " + mRevertCommand
+                                    "Failed command: " + revertCmd
                                             + ", result: " + revertResult,
                                     "Success".equals(result.replaceAll("\\s", "")));
                         }
@@ -121,5 +140,15 @@ public class ShellCommandRule implements TestRule {
     public static ShellCommandRule disableHeadsUpNotification() {
         return new ShellCommandRule("settings put global heads_up_notifications_enabled 0",
                 "settings put global heads_up_notifications_enabled 1");
+    }
+
+    /**
+     * Enables "InputTransportPublisher" debug flag. This prints the key input events dispatched by
+     * the system server.
+     * adb shell setprop log.tag.InputTransportPublisher DEBUG
+     * See {@link com.android.cts.input.DebugInputRule} for more details.
+     */
+    public static ShellCommandRule createEnableInputTransportPublisherRule() {
+        return new ShellCommandRule("setprop log.tag.InputTransportPublisher DEBUG", null);
     }
 }
