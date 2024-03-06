@@ -23,7 +23,6 @@ import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
-import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_PRIVATE_SPACE_INSTALL_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
@@ -43,6 +42,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.PrivateSpaceInstallAppButtonInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.Preconditions;
@@ -105,13 +105,13 @@ public class PrivateProfileManager extends UserProfileManager {
                 context, com.android.launcher3.R.drawable.private_space_install_app_icon);
         BitmapInfo bitmapInfo = LauncherIcons.obtain(context).createIconBitmap(shortcut);
 
-        AppInfo itemInfo = new AppInfo();
+        PrivateSpaceInstallAppButtonInfo itemInfo = new PrivateSpaceInstallAppButtonInfo();
         itemInfo.title = context.getResources().getString(R.string.ps_add_button_label);
         itemInfo.intent = mAppInstallerIntent;
         itemInfo.bitmap = bitmapInfo;
         itemInfo.contentDescription = context.getResources().getString(
                 com.android.launcher3.R.string.ps_add_button_content_description);
-        itemInfo.runtimeStatusFlags |= FLAG_PRIVATE_SPACE_INSTALL_APP | FLAG_NOT_PINNABLE;
+        itemInfo.runtimeStatusFlags |= FLAG_NOT_PINNABLE;
 
         BaseAllAppsAdapter.AdapterItem item = new BaseAllAppsAdapter.AdapterItem(VIEW_TYPE_ICON);
         item.itemInfo = itemInfo;
