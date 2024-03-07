@@ -302,4 +302,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     protected boolean canLaunchFullscreenTask() {
         return !mActivity.isInState(OVERVIEW_SPLIT_SELECT);
     }
+
+    /** Returns if app pairs are supported in this launcher. */
+    @Override
+    public boolean supportsAppPairs() {
+        return false;
+    }
 }

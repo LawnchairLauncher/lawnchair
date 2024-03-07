@@ -322,9 +322,12 @@ public interface TaskShortcutFactory {
 
             // No "save app pair" menu item if:
             // - app pairs feature is not enabled
+            // - we are in 3p launcher
             // - the task in question is a single task
             // - the Overview Actions Button should be visible
-            if (!FeatureFlags.enableAppPairs() || !taskView.containsMultipleTasks()
+            if (!FeatureFlags.enableAppPairs()
+                    || !recentsView.supportsAppPairs()
+                    || !taskView.containsMultipleTasks()
                     || shouldShowActionsButtonInstead) {
                 return null;
             }
