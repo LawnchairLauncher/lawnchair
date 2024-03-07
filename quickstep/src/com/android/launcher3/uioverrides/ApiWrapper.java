@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
@@ -155,6 +156,28 @@ public class ApiWrapper {
                     .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
                             .authority(context.getPackageName()).build());
         }
+    }
+
+    /**
+     * Returns an intent which can be used to open Private Space Settings.
+     */
+    public static Intent getPrivateSpaceSettingsIntent(Context context) {
+        if (android.os.Flags.allowPrivateProfile() && Flags.enablePrivateSpace()) {
+            LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
+            IntentSender intentSender = launcherApps.getPrivateSpaceSettingsIntent();
+            if (intentSender == null) {
+                return null;
+            }
+            StartActivityParams params = new StartActivityParams((PendingIntent) null, 0);
+            params.intentSender = intentSender;
+            ActivityOptions options = ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(ActivityOptions
+                            .MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+            params.options = options.toBundle();
+            params.requireActivityResult = false;
+            return ProxyActivityStarter.getLaunchIntent(context, params);
+        }
+        return null;
     }
 
     /**

@@ -47,6 +47,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.UserIconInfo;
 import com.android.launcher3.util.rule.TestStabilityRule;
@@ -176,17 +177,15 @@ public class PrivateProfileManagerTest {
     }
 
     @Test
-    public void openPrivateSpaceSettings_triggersSecurityAndPrivacyIntent() {
-        Intent expectedIntent = PrivateProfileManager.PRIVATE_SPACE_INTENT;
+    public void openPrivateSpaceSettings_triggersCorrectIntent() {
+        Intent expectedIntent = ApiWrapper.getPrivateSpaceSettingsIntent(mContext);
         ArgumentCaptor<Intent> acIntent = ArgumentCaptor.forClass(Intent.class);
         mPrivateProfileManager.setPrivateSpaceSettingsAvailable(true);
 
         mPrivateProfileManager.openPrivateSpaceSettings();
 
         Mockito.verify(mContext).startActivity(acIntent.capture());
-        Intent actualIntent = acIntent.getValue();
-        assertEquals("Intent Action is different", expectedIntent.getAction(),
-                actualIntent.getAction());
+        assertEquals("Intent Action is different", expectedIntent, acIntent.getValue());
     }
 
     private static void awaitTasksCompleted() throws Exception {
