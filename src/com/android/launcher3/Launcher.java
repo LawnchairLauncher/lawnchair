@@ -1628,7 +1628,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         } else if (INTENT_ACTION_ALL_APPS_TOGGLE.equals(intent.getAction())) {
             toggleAllAppsFromIntent(alreadyOnHome);
         } else if (Intent.ACTION_SHOW_WORK_APPS.equals(intent.getAction())) {
-            showAllAppsWorkTabFromIntent(alreadyOnHome);
+            showAllAppsWithSelectedTabFromIntent(alreadyOnHome,
+                    ActivityAllAppsContainerView.AdapterHolder.WORK);
         }
 
         TraceHelper.INSTANCE.endSection();
@@ -1660,13 +1661,19 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     protected void showAllAppsFromIntent(boolean alreadyOnHome) {
-        AbstractFloatingView.closeAllOpenViews(this);
-        getStateManager().goToState(ALL_APPS, alreadyOnHome);
+        showAllAppsWithSelectedTabFromIntent(alreadyOnHome,
+                ActivityAllAppsContainerView.AdapterHolder.MAIN);
     }
 
-    private void showAllAppsWorkTabFromIntent(boolean alreadyOnHome) {
-        showAllAppsFromIntent(alreadyOnHome);
-        mAppsView.switchToTab(ActivityAllAppsContainerView.AdapterHolder.WORK);
+    private void showAllAppsWithSelectedTabFromIntent(boolean alreadyOnHome, int tab) {
+        AbstractFloatingView.closeAllOpenViews(this);
+        getStateManager().goToState(ALL_APPS, alreadyOnHome);
+        if (mAppsView.isSearching()) {
+            mAppsView.reset(alreadyOnHome);
+        }
+        if (mAppsView.getCurrentPage() != tab) {
+            mAppsView.switchToTab(tab);
+        }
     }
 
     /**
