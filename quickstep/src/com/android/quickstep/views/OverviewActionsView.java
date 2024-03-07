@@ -106,6 +106,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public @interface AppPairButtonHiddenFlags { }
     public static final int FLAG_SINGLE_TASK_HIDE_APP_PAIR = 1 << 0;
     public static final int FLAG_SMALL_SCREEN_HIDE_APP_PAIR = 1 << 1;
+    public static final int FLAG_3P_LAUNCHER_HIDE_APP_PAIR = 1 << 2;
 
     private MultiValueAlpha mMultiValueAlpha;
 
@@ -252,6 +253,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         updateSplitButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_SPLIT, isSmallScreen);
         // Update flags to see if save app pair button should be hidden.
         updateAppPairButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_APP_PAIR, isSmallScreen);
+    }
+
+    /**
+     * Updates flags to hide and show actions buttons for 1p/3p launchers.
+     */
+    public void updateFor3pLauncher(boolean is3pLauncher) {
+        updateAppPairButtonHiddenFlags(FLAG_3P_LAUNCHER_HIDE_APP_PAIR, is3pLauncher);
     }
 
     /**
