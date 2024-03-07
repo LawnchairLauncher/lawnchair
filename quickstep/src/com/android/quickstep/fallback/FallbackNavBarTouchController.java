@@ -45,8 +45,7 @@ public class FallbackNavBarTouchController implements TouchController,
             NavBarPosition navBarPosition = new NavBarPosition(sysUINavigationMode,
                     DisplayController.INSTANCE.get(mActivity).getInfo());
             mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(mActivity,
-                    true /* disableHorizontalSwipe */, navBarPosition,
-                    null /* onInterceptTouch */, this);
+                    true /* disableHorizontalSwipe */, navBarPosition, this);
         } else {
             mTriggerSwipeUpTracker = null;
         }
@@ -78,7 +77,4 @@ public class FallbackNavBarTouchController implements TouchController,
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
         mActivity.<FallbackRecentsView>getOverviewPanel().startHome();
     }
-
-    @Override
-    public void onSwipeUpCancelled() {}
 }
