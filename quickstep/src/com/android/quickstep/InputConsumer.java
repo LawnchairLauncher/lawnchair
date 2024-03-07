@@ -126,4 +126,14 @@ public interface InputConsumer {
         }
         return name.toString();
     }
+
+    /**
+     * Returns an input consumer of the given class type, or null if none is found.
+     */
+    default <T extends InputConsumer> T getInputConsumerOfClass(Class<T> c) {
+        if (getClass().equals(c)) {
+            return c.cast(this);
+        }
+        return null;
+    }
 }

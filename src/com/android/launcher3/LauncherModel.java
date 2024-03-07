@@ -20,6 +20,8 @@ import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURC
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
+import static com.android.launcher3.pm.UserCache.ACTION_PROFILE_AVAILABLE;
+import static com.android.launcher3.pm.UserCache.ACTION_PROFILE_UNAVAILABLE;
 import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -178,10 +180,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     @NonNull
-    public ModelWriter getWriter(final boolean hasVerticalHotseat, final boolean verifyChanges,
-            CellPosMapper cellPosMapper, @Nullable final Callbacks owner) {
-        return new ModelWriter(mApp.getContext(), this, mBgDataModel,
-                hasVerticalHotseat, verifyChanges, cellPosMapper, owner);
+    public ModelWriter getWriter(final boolean verifyChanges, CellPosMapper cellPosMapper,
+            @Nullable final Callbacks owner) {
+        return new ModelWriter(mApp.getContext(), this, mBgDataModel, verifyChanges, cellPosMapper,
+                owner);
     }
 
     @Override
@@ -326,6 +328,16 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         } else if (UserCache.ACTION_PROFILE_ADDED.equals(action)
                 || UserCache.ACTION_PROFILE_REMOVED.equals(action)) {
             forceReload();
+        } else if (ACTION_PROFILE_AVAILABLE.equals(action)
+                || ACTION_PROFILE_UNAVAILABLE.equals(action)) {
+            /*
+             * This broadcast is only available when android.os.Flags.allowPrivateProfile() is set.
+             * For Work-profile this broadcast will be sent in addition to
+             * ACTION_MANAGED_PROFILE_AVAILABLE/UNAVAILABLE.
+             * So effectively, this if block only handles the non-work profile case.
+             */
+            enqueueModelUpdateTask(new PackageUpdatedTask(
+                    PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
         }
     }
 

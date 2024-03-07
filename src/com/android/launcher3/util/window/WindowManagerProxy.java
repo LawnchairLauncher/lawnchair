@@ -338,6 +338,20 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     }
 
     /**
+     * Returns bounds of the display associated with the context, or bounds of DEFAULT_DISPLAY
+     * if the context isn't associated with a display.
+     */
+    public Rect getCurrentBounds(Context displayInfoContext) {
+        Resources res = displayInfoContext.getResources();
+        Configuration config = res.getConfiguration();
+
+        float screenWidth = config.screenWidthDp * res.getDisplayMetrics().density;
+        float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
+
+        return new Rect(0, 0, (int) screenWidth, (int) screenHeight);
+    }
+
+    /**
      * Returns rotation of the display associated with the context, or rotation of DEFAULT_DISPLAY
      * if the context isn't associated with a display.
      */

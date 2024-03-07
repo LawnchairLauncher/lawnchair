@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Iziphakamiso zohlelo lokusebenza zinikwe amandla"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Iziphakamiso zohlelo lokusebenza zikhutshaziwe"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Uhlelo lokusebenza olubikezelwe: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Qiniseka ukuthi uswayipha kusuka onqenqemeni olukude ngakwesokudla noma olukude ngakwesokunxele."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Qiniseka ukuthi uswayipha kusuka kunqenqema ongakwesokudla noma ongakwesokunxele kuya maphakathi nesikrini bese uyadedela."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Zungezisa idivayisi yakho"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Sicela uzungezise idivayisi yakho ukuze uqedele okokufundisa kokufuna ngokuthinta"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Qinisekisa ukuthi uswayipha ukusuka onqenqemeni olukude ngakwesokudla noma olukude ngakwesokunxele"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Qinisekisa ukuthi uswayipha ukusuka kunqenqema olungakwesokudla noma olungakwesokunxele ukuya maphakathi nesikrini bese uyadedela."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ufunde indlela yokuswayipha kusuka kwesokudla ukuze ubuyele emuva. Ngokulandelayo, funda indlela yokushintsha ama-app."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ukuqedile ukuthinta kokubuyela emuva."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Qiniseka ukuba awuswayipheli eduze kakhulu naphansi kwesikrini."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Ukuqedile ukuthinta kokubuyela emuva"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Qinisekisa ukuba awuswayipheli eduze kakhulu naphansi kwesikrini"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Ukuze ushintshe ukuzwela kokuthinta emuva, iya Kumasethingi"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Swayipha ukuze uye emuva"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ukuze ubuyele emuva esikrinini sokugcina, swapha kusuka emngceleni wesobunxele noma wesokudla kuya phakathi kwesikrini."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Ukuze ubuyele esikrinini sokugcina, swayipha ngeminwe emi-2 ukusuka kwesokunxele noma kwesokudla emphethweni uye phakathi kwesikrini."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Iya emuva"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Qiniseka ukuthi uswayiphela phezulu kusuka emngceleni ophansi wesikrini."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Qiniseka ukuthi awumisi ngaphambi kokudedela."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Qiniseka ukuthi uswayiphela ngqo phezulu."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ukuqedile ukuthinta kokuya Ekhaya. Ngokulandelayo, funda indlela yokuya emuva."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ukuqedile ukuthinta kokuya Ekhaya."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Swayipha ukusuka kwesokunxele noma kwesokudla ukuya phakathi kwesikrini"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Qiniseka ukuthi uswayiphela phezulu ukusuka emngceleni ophansi wesikrini"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Qinisekisa ukuthi awumisi ngaphambi kokudedela"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Qiniseka ukuthi uswayiphela ngqo phezulu"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ukuqedile ukuthinta kokuya ekhaya. Ngokulandelayo, funda indlela yokuya emuva."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ukuqedile ukuthinta kokuya ekhaya"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swayipha ukuze uye ekhaya"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swayiphela phezulu kusuka phansi kwesikrini sakho.Lokhu kuthinta kuhlala kukusa esikrinini sasekhaya."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swayiphela phezulu ngeminwe emi-2 kusukela phansi esikrinini. Lesi senzo sihlala sikuyisa esikrinini Sasekhaya."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Iya ekhasini lokuqala"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Ukuze uye esikrinini sakho sasekhaya noma kunini, swayiphela phezulu ukusuka phansi esikrinini sakho"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Qiniseka ukuthi uswayiphela phezulu kusuka emngceleni ophansi wesikrini."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Zama ukubamba iwindi isikhashana ngaphambi kokulidedela."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Qiniseka ukuthi uswayiphela ngqo phezulu bese uyamisa."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Swayiphela phezulu ukusuka phansi esikrinini sakho"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Umsebenzi omuhle!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Qiniseka ukuthi uswayiphela phezulu ukusuka emngceleni ophansi wesikrini"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Zama ukubamba iwindi isikhashana ngaphambi kokulidedela"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Qinisekisa ukuthi uswayiphela ngqo phezulu bese uyamisa"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ufunde ukusebenzisa ukuthinta. Ukuze uvale ukuthinta, iya kokuthi Amasethingi."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ukuqedile ukuthinta kokushintsha ama-app."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Ukuqedile ukuthinta kokushintsha ama-app"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swayipha ukuze ushintshe ama-app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ukuze ushintshe phakathi kwama-app, swayiphela phezulu kusuka ngezansi kwesikrini sakho, bese uyadedela."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ukuze ushintshe phakathi kwama-app, swayiphela phezulu ngeminwe emi-2 kusukela phansi esikrinini sakho, ubambe, bese uyakhulula."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Shintsha ama-app"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Swayiphela phezulu ukusuka phansi esikrinini sakho, ubambe, bese uyadedela"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Wenze kahle!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Konke kusethiwe"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Kwenziwe"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Amasethingi"</string>
@@ -89,8 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Isithombe-skrini"</string>
     <string name="action_split" msgid="2098009717623550676">"Hlukanisa"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Thepha enye i-app ukuze usebenzise isikrini sokuhlukanisa"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Khansela"</b></string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Phuma ekukhetheni ukuhlukaniswa kwesikrini"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Khetha enye i-app ukuze usebenzise ukuhlukanisa isikrini"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Lesi senzo asivunyelwanga uhlelo lokusebenza noma inhlangano yakho"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Amawijethi awasekelwe okwamanje, sicela ukhethe enye i-app"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Yeqa isifundo sokuzulazula?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Lokhu ungakuthola kamuva ku-app ye-<xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Khansela"</string>
@@ -100,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Hudula i-app ukusebenzisa ama-app ama-2 ngesikhathi esisodwa"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Swayiphela phezulu kancane ukuze ubonise i-Taskbar"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Thola iziphakamiso ze-app ngokusekelwe kumjikelezo wakho"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Vula ukufuna kokuthinta Kumasethingi ukuze ufihle ngokuzenzakalela ibha yomsebenzi"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Cindezela isikhathi eside kusihlukanisi ukuze uphine i-Taskbar"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Yenza okwengeziwe nge-Taskbar"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Vala"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Kwenziwe"</string>
@@ -115,8 +124,13 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Ibha yomsebenzi ibonisiwe"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Ibha yomsebenzi ifihliwe"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Ibha yokufuna"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Bonisa i-Taskbar njalo."</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Shintsha imodi yokufuna"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Isihlukanisi se-Taskbar"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Hamba phezulu/kwesokunxele"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Hamba phansi/kwesokudla"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Bonisa i-app e-# ngaphezulu.}one{Bonisa ama-app angu-# ngaphezulu.}other{Bonisa ama-app angu-# ngaphezulu.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"I-<xliff:g id="APP_NAME_1">%1$s</xliff:g> ne-<xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Yengeza i-app ku-Deskithophu"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Khansela"</string>
 </resources>

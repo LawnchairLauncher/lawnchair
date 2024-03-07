@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"स्प्लिट स्क्रिन"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s का हकमा एपसम्बन्धी जानकारी"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"एपको पेयर सेभ गर्नुहोस्"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"कुनै विजेट सार्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"कुनै विजेट सार्न वा आफ्नो रोजाइका कारबाही प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -50,12 +51,13 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"व्यक्तिगत"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"कामसम्बन्धी"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"वार्तालापहरू"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"नोट लेख्ने कार्य"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"उपयोगी जानकारी सजिलै प्राप्त गर्नुहोस्"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"एपहरू नखोलिकनै जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"बुझेँ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेटका सेटिङ बदल्नुहोस्"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी एपहरू"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"एपहरू खोज्नुहोस्"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै एप भेटिएन"</string>
     <string name="label_application" msgid="8531721983832654978">"एप"</string>
@@ -98,13 +100,13 @@
     <string name="folder_renamed" msgid="1794088362165669656">"फोल्डर <xliff:g id="NAME">%1$s</xliff:g> मा पुनःनामाकरण गरियो।"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> वस्तुहरू"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> वा सोभन्दा बढी वस्तुहरू"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"वालपेपरहरु"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"एप पेयर: <xliff:g id="APP1">%1$s</xliff:g> र <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वालपेपर तथा शैली"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"होम स्क्रिन बदल्नुहोस्"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेजका सेटिङहरू"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"तपाईँको प्रशासकद्वारा असक्षम गरिएको"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रिन रोटेट हुन दिइयोस्"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन घुमाउँदा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाको प्रतीक जनाउने थोप्लाहरू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सक्रिय"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"निष्क्रिय"</string>
@@ -170,7 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"कामसम्बन्धी एपहरू पज गर्नुहोस्"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"सुचारु गर्नुहोस्"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"आफ्नो फोन खोज्नुहोस्"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"आफ्नो ट्याब्लेट खोज्नुहोस्"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"निजी स्पेस"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"निजी"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"निजी स्पेससम्बन्धी सेटिङ"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"निजी स्पेस लक/अनलक गर्नुहोस्"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"निजी स्पेस ट्रान्जिसन गरिँदै छ"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ओभरफ्लो"</string>
 </resources>

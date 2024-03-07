@@ -28,6 +28,9 @@ public class KeyboardStateManager {
     // Height of the keyboard when it's shown.
     // mImeShownHeightPx>=mImeHeightPx always.
     private int mImeShownHeightPx;
+    // Indicate if the latest All Apps session was started from a11y action (rather than a direct
+    // user interaction).
+    private boolean mLaunchedFromA11y;
 
     public enum KeyboardState {
         NO_IME_ACTION,
@@ -88,5 +91,15 @@ public class KeyboardStateManager {
             // for future sessions.
             mImeShownHeightPx = mImeHeightPx;
         }
+    }
+
+    /** Getter for {@code mLaunchedFromA11y} */
+    public boolean getLaunchedFromA11y() {
+        return mLaunchedFromA11y;
+    }
+
+    /** Setter for {@code mLaunchedFromA11y} */
+    public void setLaunchedFromA11y(boolean fromA11y) {
+        mLaunchedFromA11y = fromA11y;
     }
 }

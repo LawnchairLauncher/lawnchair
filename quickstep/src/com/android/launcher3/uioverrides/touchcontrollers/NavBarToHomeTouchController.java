@@ -45,6 +45,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
@@ -194,8 +195,21 @@ public class NavBarToHomeTouchController implements TouchController,
             recentsView.switchToScreenshot(null,
                     () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
             if (mStartState.overviewUi) {
-                new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState),
-                        FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+                Runnable onReachedHome = () -> {
+                    StateManager.StateListener<LauncherState> listener =
+                            new StateManager.StateListener<>() {
+                                @Override
+                                public void onStateTransitionComplete(LauncherState finalState) {
+                                    mLauncher.onStateTransitionCompletedAfterSwipeToHome(
+                                            finalState);
+                                    mLauncher.getStateManager().removeStateListener(this);
+                                }
+                            };
+                    mLauncher.getStateManager().addStateListener(listener);
+                    onSwipeInteractionCompleted(mEndState);
+                };
+                new OverviewToHomeAnim(mLauncher, onReachedHome,
+                        FeatureFlags.enableSplitContextually()
                                 ? mCancelSplitRunnable
                                 : null)
                         .animateWithVelocity(velocity);

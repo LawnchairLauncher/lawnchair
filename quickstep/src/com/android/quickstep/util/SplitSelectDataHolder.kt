@@ -54,7 +54,7 @@ import java.io.PrintWriter
  * state
  */
 class SplitSelectDataHolder(
-        val context: Context
+        var context: Context?
 ) {
     val TAG = SplitSelectDataHolder::class.simpleName
 
@@ -93,12 +93,17 @@ class SplitSelectDataHolder(
     private var secondTaskId: Int = INVALID_TASK_ID
     private var initialIntent: Intent? = null
     private var secondIntent: Intent? = null
+    private var widgetSecondIntent: Intent? = null
     private var initialUser: UserHandle? = null
     private var secondUser: UserHandle? = null
     private var initialPendingIntent: PendingIntent? = null
     private var secondPendingIntent: PendingIntent? = null
     private var initialShortcut: ShortcutInfo? = null
     private var secondShortcut: ShortcutInfo? = null
+
+    fun onDestroy() {
+        context = null
+    }
 
     /**
      * @param alreadyRunningTask if set to [android.app.ActivityTaskManager.INVALID_TASK_ID]
@@ -163,19 +168,26 @@ class SplitSelectDataHolder(
         secondUser = pendingIntent.creatorUserHandle
     }
 
+    /**
+     * Similar to [setSecondTask] except this is to be called for widgets which can pass through
+     * an extra intent from their RemoteResponse.
+     * See [android.widget.RemoteViews.RemoteResponse.getLaunchOptions].first
+     */
+    fun setSecondWidget(pendingIntent: PendingIntent, widgetIntent: Intent?) {
+        setSecondTask(pendingIntent)
+        widgetSecondIntent = widgetIntent
+    }
+
     private fun getShortcutInfo(intent: Intent?, user: UserHandle?): ShortcutInfo? {
-        val intentPackage = intent?.getPackage()
-        if (intentPackage == null) {
-            return null
-        }
+        val intentPackage = intent?.getPackage() ?: return null
         val shortcutId = intent.getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID)
                 ?: return null
         try {
             val context: Context =
                 if (user != null) {
-                    context.createPackageContextAsUser(intentPackage, 0 /* flags */, user)
+                    context!!.createPackageContextAsUser(intentPackage, 0 /* flags */, user)
                 } else {
-                    context.createPackageContext(intentPackage, 0 /* *flags */)
+                    context!!.createPackageContext(intentPackage, 0 /* *flags */)
                 }
             return ShortcutInfo.Builder(context, shortcutId).build()
         } catch (e: PackageManager.NameNotFoundException) {
@@ -240,6 +252,7 @@ class SplitSelectDataHolder(
                 secondTaskId,
                 initialPendingIntent,
                 secondPendingIntent,
+                widgetSecondIntent,
                 initialUser?.identifier ?: -1,
                 secondUser?.identifier ?: -1,
                 initialShortcut,
@@ -256,7 +269,8 @@ class SplitSelectDataHolder(
      * Note that both [initialIntent] and [secondIntent] will be nullified on method return
      *
      * One caveat is that if [secondPendingIntent] is set, we will use that and *not* attempt to
-     * convert [secondIntent]
+     * convert [secondIntent].
+     * This also leaves [widgetSecondIntent] untouched.
      */
     private fun convertIntentsToFinalTypes() {
         initialShortcut = getShortcutInfo(initialIntent, initialUser)
@@ -342,6 +356,7 @@ class SplitSelectDataHolder(
             var secondTaskId: Int = INVALID_TASK_ID,
             var initialPendingIntent: PendingIntent? = null,
             var secondPendingIntent: PendingIntent? = null,
+            var widgetSecondIntent: Intent? = null,
             var initialUserId: Int = -1,
             var secondUserId: Int = -1,
             var initialShortcut: ShortcutInfo? = null,
@@ -368,7 +383,8 @@ class SplitSelectDataHolder(
     }
 
     private fun isInitialTaskIntentSet(): Boolean {
-        return initialTaskId != INVALID_TASK_ID || initialIntent != null
+        return initialTaskId != INVALID_TASK_ID || initialIntent != null ||
+                initialPendingIntent != null
     }
 
     fun getInitialTaskId(): Int {
@@ -404,6 +420,7 @@ class SplitSelectDataHolder(
         secondUser = null
         initialIntent = null
         secondIntent = null
+        initialPendingIntent = null
         secondPendingIntent = null
         itemInfo = null
         splitEvent = null

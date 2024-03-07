@@ -13,27 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <com.android.launcher3.popup.PopupContainerWithArrow
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/popup_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
     android:clipChildren="false"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:id="@+id/deep_shortcuts_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tag="@string/popup_container_iterate_children"
-        android:elevation="@dimen/deep_shortcuts_elevation"
-        android:orientation="vertical"/>
-
-    <com.android.launcher3.notification.NotificationContainer
-        android:id="@+id/notification_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-</com.android.launcher3.popup.PopupContainerWithArrow>
+    android:clipToPadding="false"
+    android:orientation="vertical"/>

@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.testing.shared.TestProtocol.SCROLL_FINISHED_MESSAGE;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -25,6 +27,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
@@ -170,7 +173,8 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
         super.onScrollStateChanged(state);
 
         if (state == SCROLL_STATE_IDLE) {
-            AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+            AccessibilityManagerCompat.sendTestProtocolEventToTest(getContext(),
+                    SCROLL_FINISHED_MESSAGE);
         }
     }
 
@@ -188,5 +192,16 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
             mScrollbar.reattachThumbToScroll();
         }
         scrollToPosition(0);
+    }
+
+    /**
+     * Scrolls this recycler view to the bottom with easing and duration.
+     */
+    public void scrollToBottomWithMotion() {
+        if (mScrollbar != null) {
+            mScrollbar.reattachThumbToScroll();
+        }
+        // Emphasized interpolators with 500ms duration
+        smoothScrollBy(0, getAvailableScrollHeight(), Interpolators.EMPHASIZED, 500);
     }
 }

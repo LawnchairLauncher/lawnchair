@@ -44,43 +44,49 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Предлозите за апликации се овозможени"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Предлозите за апликации се оневозможени"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Предвидена апликација: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Повлечете од крајниот десен или крајниот лев раб."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Повлечете од десниот или левиот раб кон средината на екранот и пуштете."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Ротирајте го уредот"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Ротирајте го уредот за да го завршите упатството за навигација со движење"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Повлечете од крајниот десен или крајниот лев раб"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Повлечете од десниот или левиот раб кон средината на екранот и пуштете"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научивте како да повлекувате оддесно за враќање назад. Научете и како да се префрлате помеѓу апликациите."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Завршивте со упатството за враќање назад."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Не повлекувајте преблиску до долниот раб на екранот."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Завршивте со упатството за враќање назад"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не повлекувајте преблиску до дното на екранот"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"За да ја промените чувствителноста, одете во „Поставки“"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Повлечете за да се вратите назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се вратите на последниот екран, повлечете од левиот или десниот раб кон средината на екранот."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"За да се вратите на последниот екран на кој бевте, повлечете со два прста од левиот или десниот раб кон средината на екранот."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Назад"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Повлечете нагоре од долниот раб на екранот."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не правете пауза пред да пуштите."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Повлечете право нагоре."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Го научивте движењето за отворање на почетниот екран. Научете го и движењето за враќање назад."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Го научивте движењето за отворање на почетниот екран."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Враќање назад"</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Повлечете од левиот или десниот раб кон средината на екранот"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Повлечете нагоре од долниот раб на екранот"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Не правете пауза пред да пуштите"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Повлечете право нагоре"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Го научивте движењето за отворање на почетниот екран. Научете го и движењето за враќање назад."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Го научивте движењето за враќање на почетниот екран"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Повлечете за да одите на почетниот екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Повлечете нагоре од долниот раб на екранот. Ова движење секогаш ќе ве одведе на почетниот екран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Повлечете нагоре со два прста од долниот раб на екранот. Движењево секогаш ве носи на почетниот екран."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Одете на почетниот екран"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"За да одите на вашиот почетен екран во кое било време, повлечете нагоре од дното на екранот"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Повлечете нагоре од долниот раб на екранот."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Задржете го прозорецот подолго пред да го пуштите."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Повлечете право нагоре, а потоа застанете."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Отворање на почетниот екран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Повлечете нагоре од дното на екранот"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Одлично сторено!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Повлечете нагоре од долниот раб на екранот"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Задржете го прозорецот подолго пред да го пуштите"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Повлечете право нагоре, а потоа застанете"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Научивте како се користат движењата. За да ги исклучите движењата, одете во „Поставки“."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Завршивте со упатството за префрлање помеѓу апликации."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Го научивте движењето за префрлање помеѓу апликации"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Повлечете за префрлање помеѓу апликации"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За да смените апликација, повлечете нагоре од дното на екранот и задржете, па пуштете."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"За да се префрлате помеѓу апликации, повлечете нагоре со два прста од долниот раб на екранот, задржете и потоа отпуштете."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Променете ја апликацијата"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Повлечете нагоре од дното на екранот и задржете, па пуштете"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Браво!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Поставки"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Обиди се пак"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Обидете се повторно"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Одлично!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Упатство <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Повлечете нагоре за да појдете на почетен екран"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Повлечете нагоре за да го отворите почетниот екран"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Допрете го копчето за почетен екран за да одите на почетниот екран"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Подготвени сте да почнете да го користите вашиот <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"уред"</string>
@@ -89,8 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Слика од екранот"</string>
     <string name="action_split" msgid="2098009717623550676">"Раздели"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Допрете друга аплик. за да користите поделен екран"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Откажи"</b></string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Излези од изборот на поделен екран"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Изберете друга апликација за да користите поделен екран"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Апликацијата или вашата организација не го дозволува дејствово"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Виџетите не се поддржани во моментов, изберете друга апликација"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Да се прескокне упатството за навигација?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Ова може да го најдете подоцна во апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Откажи"</string>
@@ -98,9 +107,9 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ротирајте го екранот"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Обука за лентата со задачи"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Повлечете апликација настрана за да користите 2 апликации"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже „Лентата со задачи“"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже лентата со задачи"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Добивајте предлози за апликации според вашата рутина"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Вклучете навигација со движење во „Поставки“ за автоматско сокривање на „Лентата со задачи“"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Притиснете долго на разделникот за да ја закачите „Лентата со задачи“"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повеќе со една лента со задачи"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затвори"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
@@ -113,10 +122,15 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Брзи поставки"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Лента со задачи"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Лентата со задачи е прикажана"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата со задачи е сокриена"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата со задачи е скриена"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Лента за навигација"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Секогаш прикажувај „Лента“"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Променете режим на навигација"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Разделник на „Лента со задачи“"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Премести горе лево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести долу десно"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Прикажи уште # апликација.}one{Прикажи уште # апликација.}other{Прикажи уште # апликации.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Додавање на апликацијата во „Работна површина“"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Откажи"</string>
 </resources>

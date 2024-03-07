@@ -40,6 +40,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.util.function.Consumer;
 
+import kotlin.Unit;
+
 /**
  * A view that displays a recent task during a keyboard quick switch.
  */
@@ -96,17 +98,18 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
         Resources resources = mContext.getResources();
 
         Preconditions.assertNotNull(mContent);
-        mBorderAnimator = new BorderAnimator(
+        mBorderAnimator = BorderAnimator.createScalingBorderAnimator(
                 /* borderRadiusPx= */ resources.getDimensionPixelSize(
                         R.dimen.keyboard_quick_switch_task_view_radius),
-                /* borderColor= */ mBorderColor,
-                /* borderAnimationParams= */ new BorderAnimator.ScalingParams(
-                        /* borderWidthPx= */ resources.getDimensionPixelSize(
+                /* borderWidthPx= */ resources.getDimensionPixelSize(
                                 R.dimen.keyboard_quick_switch_border_width),
-                        /* boundsBuilder= */ bounds -> bounds.set(
-                                0, 0, getWidth(), getHeight()),
-                        /* targetView= */ this,
-                        /* contentView= */ mContent));
+                /* boundsBuilder= */ bounds -> {
+                    bounds.set(0, 0, getWidth(), getHeight());
+                    return Unit.INSTANCE;
+                },
+                /* targetView= */ this,
+                /* contentView= */ mContent,
+                /* borderColor= */ mBorderColor);
     }
 
     @Nullable

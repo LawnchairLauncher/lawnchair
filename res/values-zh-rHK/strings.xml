@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"分割螢幕"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s 的應用程式資料"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"儲存應用程式配對"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"輕觸並按住即可移動小工具。"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"㩒兩下之後㩒住，就可以郁小工具或者用自訂操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -50,6 +51,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"個人"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"工作"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"對話"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"做筆記"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"實用資訊，唾手可得"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"只要將小工具新增至主畫面，就可以直接查看資料，無需開啟應用程式"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"輕按即可變更小工具設定"</string>
@@ -98,13 +100,13 @@
     <string name="folder_renamed" msgid="1794088362165669656">"資料夾已重新命名為「<xliff:g id="NAME">%1$s</xliff:g>」"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"資料夾：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 個項目"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"資料夾：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 個或以上的項目"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"桌布"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"應用程式配對：<xliff:g id="APP1">%1$s</xliff:g> 和 <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"桌布和樣式"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"編輯主畫面"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"主畫面設定"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由您的管理員停用"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由你的管理員停用"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"允許旋轉主畫面"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"隨手機旋轉"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"通知圓點"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"開啟"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"關閉"</string>
@@ -119,12 +121,12 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜尋"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"尚未安裝這個應用程式"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"您尚未安裝這個圖示代表的應用程式。您可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"你尚未安裝這個圖示代表的應用程式。你可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
     <string name="app_installing_title" msgid="5864044122733792085">"正在安裝「<xliff:g id="NAME">%1$s</xliff:g>」(已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"正在下載 <xliff:g id="NAME">%1$s</xliff:g>，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"正在等待安裝 <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"必須更新應用程式"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"您尚未更新這個圖示代表的應用程式。您可以手動更新以重新啟用此快速鍵，或者移除圖示。"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"你尚未更新這個圖示代表的應用程式。你可以手動更新以重新啟用此快速鍵，或者移除圖示。"</string>
     <string name="dialog_update" msgid="2178028071796141234">"更新"</string>
     <string name="dialog_remove" msgid="6510806469849709407">"移除"</string>
     <string name="widgets_list" msgid="796804551140113767">"小工具清單"</string>
@@ -159,18 +161,22 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"個人"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"工作"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"工作設定檔"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作應用程式均加有標誌。您的 IT 管理員可以看到這些應用程式"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作應用程式均加有標誌。你的 IT 管理員可以看到這些應用程式"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"知道了"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"已暫停工作應用程式"</string>
-    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"您不會收到工作應用程式的通知"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"工作應用程式無法向您傳送通知、使用電池電量或存取您的位置"</string>
-    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"您不會收到工作應用程式的來電、短訊或通知"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"工作應用程式均加有標誌。您的 IT 管理員可以看到這些應用程式"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"你不會收到工作應用程式的通知"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"工作應用程式無法向你傳送通知、使用電池電量或存取你的位置"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"你不會收到工作應用程式的來電、短訊或通知"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"工作應用程式均加有標誌。你的 IT 管理員可以看到這些應用程式"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"知道了"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"暫停工作應用程式"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"取消暫停"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"篩選器"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"搜尋手機內容"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"搜尋平板電腦內容"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"操作失敗：<xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"私人空間"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"私人"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"「私人空間」設定"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"鎖定/解鎖「私人空間」"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"轉為「私人空間」"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"顯示更多"</string>
 </resources>

@@ -409,6 +409,12 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="ProxyActivityStarterTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
     <style name="FolderStyleDefault">
         <item name="folderTopPadding">24dp</item>
         <item name="folderCellHeight">94dp</item>
@@ -428,5 +434,11 @@
     <style name="ArrowTipStyle">
         <item name="arrowTipBackground">@color/arrow_tip_view_bg</item>
         <item name="arrowTipTextColor">@color/arrow_tip_view_content</item>
+    </style>
+
+    <style name="PrivateSpaceHeaderTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/material_color_on_surface</item>
+        <item name="android:fontFamily">google-sans-text-medium</item>
     </style>
 </resources>

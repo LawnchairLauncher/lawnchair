@@ -1,0 +1,92 @@
+package: "com.android.launcher3"
+
+flag {
+    name: "enable_expanding_pause_work_button"
+    namespace: "launcher"
+    description: "Expand and collapse pause work button while scrolling."
+    bug: "270390779"
+}
+
+flag {
+    name: "enable_twoline_allapps"
+    namespace: "launcher"
+    description: "Enables two line label inside all apps."
+    bug: "270390937"
+}
+
+flag {
+    name: "enable_grid_only_overview"
+    namespace: "launcher"
+    description: "Enable a grid-only overview without a focused task."
+    bug: "257950105"
+}
+
+flag {
+    name: "enable_cursor_hover_states"
+    namespace: "launcher"
+    description: "Enables cursor hover states for certain elements."
+    bug: "243191650"
+}
+
+flag {
+    name: "enable_responsive_workspace"
+    namespace: "launcher"
+    description: "Enables new workspace grid calculations method."
+    bug: "302189128"
+}
+
+flag {
+    name: "enable_overview_icon_menu"
+    namespace: "launcher"
+    description: "Enable updated overview icon and menu within task."
+    bug: "257950105"
+}
+
+flag {
+    name: "enable_taskbar_no_recreate"
+    namespace: "launcher"
+    description: "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext."
+    bug: "299193589"
+}
+
+flag {
+    name: "enable_home_transition_listener"
+    namespace: "launcher"
+    description: "Enables launcher to listen to all transitions that include home activity"
+    bug: "306053414"
+}
+
+flag {
+    name: "enable_taskbar_pinning"
+    namespace: "launcher"
+    description: "Enables taskbar pinning to allow user to switch between transient and persistent taskbar flavors."
+    bug: "270396583"
+}
+
+flag {
+    name: "enable_split_from_fullscreen_with_keyboard_shortcuts"
+    namespace: "launcher"
+    description: "Enables initiating split from a fullscreen app using keyboard shortcuts"
+    bug: "270394122"
+}
+
+flag {
+    name: "enable_launcher_br_metrics"
+    namespace: "launcher"
+    description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
+    bug: "307527314"
+}
+
+flag {
+    name: "enable_unfolded_two_pane_picker"
+    namespace: "launcher"
+    description: "Enables two pane widget picker for unfolded foldables"
+    bug: "313922374"
+}
+
+flag {
+    name: "enable_tablet_two_pane_picker_v2"
+    namespace: "launcher"
+    description: "Enables full width two pane widget picker for tablets in landscape and portrait"
+    bug: "315055849"
+}

@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS;
-import static com.android.launcher3.taskbar.TaskbarHoverToolTipController.HOVER_TOOL_TIP_REVEAL_START_DELAY;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -27,7 +26,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -128,14 +126,11 @@ public class TaskbarHoverToolTipControllerTest extends TaskbarBaseTestCase {
 
         boolean hoverHandled =
                 mTaskbarHoverToolTipController.onHover(mHoverBubbleTextView, mMotionEvent);
-
-        // Verify fullscreen is not set until the delayed runnable to reveal the tooltip has run
-        verify(taskbarActivityContext, never()).setTaskbarWindowFullscreen(true);
         waitForIdleSync();
+
         assertThat(hoverHandled).isTrue();
         verify(taskbarActivityContext).setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS,
                 true);
-        verify(taskbarActivityContext).setTaskbarWindowFullscreen(true);
     }
 
     @Test
@@ -159,14 +154,11 @@ public class TaskbarHoverToolTipControllerTest extends TaskbarBaseTestCase {
 
         boolean hoverHandled =
                 mTaskbarHoverToolTipController.onHover(mHoverFolderIcon, mMotionEvent);
-
-        // Verify fullscreen is not set until the delayed runnable to reveal the tooltip has run
-        verify(taskbarActivityContext, never()).setTaskbarWindowFullscreen(true);
         waitForIdleSync();
+
         assertThat(hoverHandled).isTrue();
         verify(taskbarActivityContext).setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS,
                 true);
-        verify(taskbarActivityContext).setTaskbarWindowFullscreen(true);
     }
 
     @Test
@@ -222,7 +214,6 @@ public class TaskbarHoverToolTipControllerTest extends TaskbarBaseTestCase {
     }
 
     private void waitForIdleSync() {
-        mTestableLooper.moveTimeForward(HOVER_TOOL_TIP_REVEAL_START_DELAY + 1);
         mTestableLooper.processAllMessages();
     }
 }

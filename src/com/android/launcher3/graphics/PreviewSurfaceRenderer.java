@@ -114,10 +114,15 @@ public class PreviewSurfaceRenderer {
         mDisplay = context.getSystemService(DisplayManager.class)
                 .getDisplay(bundle.getInt(KEY_DISPLAY_ID));
 
-        mSurfaceControlViewHost = MAIN_EXECUTOR.submit(() -> new SurfaceControlViewHost(mContext,
-                context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY),
-                mHostToken)).get(5, TimeUnit.SECONDS);
+        mSurfaceControlViewHost = MAIN_EXECUTOR.submit(() ->
+                new SurfaceControlViewHost(mContext, context.getSystemService(DisplayManager.class)
+                        .getDisplay(DEFAULT_DISPLAY), mHostToken)
+        ).get(5, TimeUnit.SECONDS);
         mOnDestroyCallbacks.add(mSurfaceControlViewHost::release);
+    }
+
+    public int getDisplayId() {
+        return mDisplay.getDisplayId();
     }
 
     public IBinder getHostToken() {
@@ -225,7 +230,7 @@ public class PreviewSurfaceRenderer {
             PreviewContext previewContext = new PreviewContext(inflationContext, idp);
             // Copy existing data to preview DB
             LauncherDbUtils.copyTable(LauncherAppState.getInstance(mContext)
-                    .getModel().getModelDbController().getDb(),
+                            .getModel().getModelDbController().getDb(),
                     TABLE_NAME,
                     LauncherAppState.getInstance(previewContext)
                             .getModel().getModelDbController().getDb(),

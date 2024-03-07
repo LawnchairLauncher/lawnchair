@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Οι προτεινόμενες εφαρμογές ενεργοποιήθηκαν"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Οι προτεινόμενες εφαρμογές είναι απενεργοποιημένες"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Εφαρμογή από πρόβλεψη: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Φροντίστε να σύρετε από το άκρο της δεξιάς ή της αριστερής πλευράς."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Σύρετε από το δεξί ή αριστερό άκρο προς το μέσο της οθόνης και απομακρύνετε το δάχτυλό σας."</string>
-    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Μάθατε πώς να σύρετε από τα δεξιά για επιστροφή. Στη συνέχεια, μάθετε πώς να κάνετε εναλλαγή εφαρμ."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ολοκληρώσατε την κίνηση επιστροφής."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Φροντίστε να μην σύρετε υπερβολικά κοντά στο κάτω μέρος της οθόνης."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Περιστρέψτε τη συσκευή σας"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Περιστρέψτε τη συσκευή σας για να ολοκληρώσετε τον οδηγό πλοήγησης με κινήσεις"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Φροντίστε να σύρετε από το άκρο της δεξιάς ή της αριστερής πλευράς."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Σύρετε από το δεξί ή το αριστερό άκρο προς το κέντρο της οθόνης και απομακρύνετε το δάχτυλό σας"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Μάθατε πώς να σύρετε από τα δεξιά για επιστροφή. Τώρα, μάθετε πώς να κάνετε εναλλαγή εφαρμογών."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Ολοκληρώσατε την κίνηση επιστροφής"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Φροντίστε να μην σύρετε υπερβολικά κοντά στο κάτω μέρος της οθόνης"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Μεταβείτε στις Ρυθμίσεις για αλλαγή ευαισθ. κίνησης επιστρ."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Σύρετε για επιστροφή"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Για να επιστρέψετε στην τελευτ. οθόνη, σύρετε από το αριστ. ή το δεξί άκρο προς το μέσο της οθόνης."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Για να επιστρέψετε στην τελευταία οθόνη, σύρετε από το αριστερό ή το δεξί άκρο προς το μέσο της οθόνης."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Για να επιστρέψετε στην προηγούμενη οθόνη, σύρετε με 2 δάχτυλα από την αριστερή ή δεξιά άκρη προς τη μέση της οθόνης."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Επιστροφή"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Φροντίστε να μην κάνετε παύση προτού απομακρύνετε τα δάχτυλά σας."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Φροντίστε να σύρετε απευθείας προς τα επάνω."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ολοκληρώσατε την κίνηση μετάβασης στην αρχική οθόνη. Στη συνέχεια, μάθετε πώς να κάνετε επιστροφή."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ολοκληρώσατε την κίνηση μετάβασης στην αρχική οθόνη."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Σύρετε από το αριστερό ή το δεξί άκρο προς το κέντρο της οθόνης"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Φροντίστε να μην διακόψετε την κίνηση προτού απομακρύνετε τα δάχτυλά σας"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Φροντίστε να σύρετε ευθεία προς τα επάνω"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ολοκληρώσατε την κίνηση μετάβασης στην αρχική οθόνη Στη συνέχεια, μάθετε την κίνηση επιστροφής."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ολοκληρώσατε την κίνηση μετάβασης στην αρχική οθόνη"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Σύρετε για μετάβαση στην αρχική οθόνη"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Σύρετε προς τα πάνω από το κάτω μέρος της οθόνης. Αυτή η κίνηση σάς μεταφέρει πάντα στην αρχ. οθόνη."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Σύρετε από το κάτω άκρο προς τα πάνω με 2 δάχτ. Αυτή η κίνηση σάς μεταφέρει πάντα στην αρχική οθόνη."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Αρχική"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Για μετάβαση στην αρχική οθόνη ανά πάσα στιγμή, σύρετε προς τα επάνω από το κάτω μέρος της οθόνης"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Δοκιμάστε να κρατήσετε περισσότερο το παράθυρο προτού απελευθερώσετε."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Φροντίστε να σύρετε απευθείας προς τα επάνω και έπειτα κάντε παύση."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Σύρετε προς τα επάνω από το κάτω μέρος της οθόνης"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Μπράβο!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Δοκιμάστε να κρατήσετε περισσότερο το παράθυρο προτού το αφήσετε."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Φροντίστε να σύρετε ευθεία προς τα επάνω και έπειτα σταματήστε την κίνηση"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Μάθατε πώς να χρησιμοποιείτε κινήσεις. Μεταβείτε στις Ρυθμίσεις για απενεργοποίηση των κινήσεων."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ολοκληρώσατε την κίνηση εναλλαγής εφαρμογών."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Ολοκληρώσατε την κίνηση εναλλαγής εφαρμογών"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Σύρετε για εναλλαγή εφαρμογών"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Για εναλλαγή εφαρμογών, σύρετε προς τα πάνω από το κάτω μέρος της οθόνης, πατήστε παρατεταμένα και μετά αφήστε."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Για εναλλαγή μεταξύ εφαρμογών, σύρετε από κάτω προς τα πάνω με 2 δάχτ., κρατήστε και έπειτα αφήστε."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Εναλλαγή μεταξύ εφαρμογών"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Σύρετε προς τα πάνω από το κάτω μέρος της οθόνης, κρατήστε τα δάχτυλα επάνω στην οθόνη και μετά απομακρύνετέ τα"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Μπράβο!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Όλα είναι έτοιμα"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Τέλος"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ρυθμίσεις"</string>
@@ -89,8 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Στιγμιότυπο οθόνης"</string>
     <string name="action_split" msgid="2098009717623550676">"Διαχωρισμός"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Πατήστε άλλη εφαρμογή για διαχωρισμό οθόνης"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Ακύρωση"</b></string>
+    <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Έξοδος από την επιλογή διαχωρισμού οθόνης"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Επιλέξτε άλλη εφαρμογή για διαχωρισμό οθόνης"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Αυτή η ενέργεια δεν επιτρέπεται από την εφαρμογή ή τον οργανισμό σας."</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Προς το παρόν, τα γραφικά στοιχεία δεν υποστηρίζονται. Επιλέξτε άλλη εφαρμογή"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Παράβλεψη οδηγού πλοήγησης;"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Βρείτε τον αργότερα στην εφαρμογή <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Ακύρωση"</string>
@@ -100,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Σύρετε μια εφαρμ. στην άκρη για χρήση δύο εφαρμ. ταυτόχρονα"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Σύρετε αργά προς τα πάνω για εμφάνιση της Γραμμής εργαλείων"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Λάβετε προτεινόμενες εφαρμογές με βάση τη ρουτίνα σας"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Ενεργοπ. την πλοήγηση με κινήσεις στις Ρυθμίσεις για αυτόμ. απόκρυψη της Γραμμής εργαλείων"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Παρατετ. πάτημα στο διαχωρ. για καρφ. της Γραμμής εργαλείων"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Κάντε περισσότερα με τη Γραμμή εργαλείων"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Κλείσιμο"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Τέλος"</string>
@@ -115,8 +124,13 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Η γραμμή εργαλείων εμφανίζεται"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Η γραμμή εργαλείων είναι κρυφή"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Γραμμή πλοήγησης"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Εμφ. πάντα σε Γραμμή εργαλείων"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Αλλαγή τρόπου πλοήγησης"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Διαχωριστικό Γραμμής εργαλείων"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Μετακίνηση επάνω/αριστερά"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Μετακίνηση κάτω/δεξιά"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Εμφάνιση # ακόμα εφαρμογής.}other{Εμφάνιση # ακόμα εφαρμογών.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> και <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Γίνεται προσθήκη εφαρμογής στον υπολογιστή"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Ακύρωση"</string>
 </resources>

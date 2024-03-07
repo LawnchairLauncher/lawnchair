@@ -9,13 +9,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Unit test for [StartupLatencyLogger]. */
+/** Unit test for [ColdRebootStartupLatencyLogger]. */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class StartupLatencyLoggerTest {
 
-    private val underTest: StartupLatencyLogger =
-        StartupLatencyLogger(StatsLogManager.StatsLatencyLogger.LatencyType.COLD)
+    private val underTest = ColdRebootStartupLatencyLogger()
 
     @Before
     fun setup() {
@@ -155,105 +154,6 @@ class StartupLatencyLoggerTest {
 
     @Test
     @UiThreadTest
-    fun loadStartOfWorkspace_thenEndWithSync_logSyncStart() {
-        underTest
-            .logStart(
-                StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
-                100
-            )
-            .logWorkspaceLoadStartTime(111)
-
-        underTest.logEnd(
-            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC,
-            120
-        )
-
-        assertThat(underTest.startTimeByEvent.size()).isEqualTo(2)
-        assertThat(
-                underTest.startTimeByEvent.get(
-                    StatsLogManager.LauncherLatencyEvent
-                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
-                        .id
-                )
-            )
-            .isEqualTo(111)
-    }
-
-    @Test
-    @UiThreadTest
-    fun loadStartOfWorkspaceLoadSync_thenAsync_asyncNotLogged() {
-        underTest
-            .logStart(
-                StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
-                100
-            )
-            .logStart(
-                StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC,
-                110
-            )
-
-        underTest.logStart(
-            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC,
-            111
-        )
-
-        assertThat(underTest.startTimeByEvent.size()).isEqualTo(2)
-        assertThat(
-                underTest.startTimeByEvent.get(
-                    StatsLogManager.LauncherLatencyEvent
-                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
-                        .id
-                )
-            )
-            .isEqualTo(110)
-        assertThat(
-                underTest.startTimeByEvent.get(
-                    StatsLogManager.LauncherLatencyEvent
-                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC
-                        .id
-                )
-            )
-            .isEqualTo(0)
-    }
-
-    @Test
-    @UiThreadTest
-    fun loadStartOfWorkspaceLoadAsync_thenSync_syncNotLogged() {
-        underTest.logStart(
-            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
-            100
-        )
-        underTest.logStart(
-            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC,
-            111
-        )
-
-        underTest.logStart(
-            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC,
-            112
-        )
-
-        assertThat(underTest.startTimeByEvent.size()).isEqualTo(2)
-        assertThat(
-                underTest.startTimeByEvent.get(
-                    StatsLogManager.LauncherLatencyEvent
-                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC
-                        .id
-                )
-            )
-            .isEqualTo(111)
-        assertThat(
-                underTest.startTimeByEvent.get(
-                    StatsLogManager.LauncherLatencyEvent
-                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
-                        .id
-                )
-            )
-            .isEqualTo(0)
-    }
-
-    @Test
-    @UiThreadTest
     fun logEndOfEvent_withoutStartEvent_notLogged() {
         underTest.logStart(
             StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
@@ -261,7 +161,7 @@ class StartupLatencyLoggerTest {
         )
 
         underTest.logEnd(
-            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC,
+            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC,
             120
         )
 
@@ -269,7 +169,7 @@ class StartupLatencyLoggerTest {
         assertThat(
                 underTest.endTimeByEvent.get(
                     StatsLogManager.LauncherLatencyEvent
-                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
+                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC
                         .id
                 )
             )
@@ -290,7 +190,7 @@ class StartupLatencyLoggerTest {
             )
 
         underTest.logEnd(
-            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC,
+            StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC,
             121
         )
 
@@ -298,7 +198,7 @@ class StartupLatencyLoggerTest {
         assertThat(
                 underTest.endTimeByEvent.get(
                     StatsLogManager.LauncherLatencyEvent
-                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
+                        .LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC
                         .id
                 )
             )
@@ -357,12 +257,35 @@ class StartupLatencyLoggerTest {
         assertThat(underTest.startTimeByEvent.size()).isEqualTo(4)
         assertThat(underTest.endTimeByEvent.size()).isEqualTo(4)
         assertThat(underTest.cardinality).isEqualTo(235)
+        assertThat(underTest.isTornDown).isFalse()
 
         underTest.reset()
 
         assertThat(underTest.startTimeByEvent.isEmpty()).isTrue()
         assertThat(underTest.endTimeByEvent.isEmpty()).isTrue()
-        assertThat(underTest.cardinality).isEqualTo(StartupLatencyLogger.UNSET_INT)
-        assertThat(underTest.workspaceLoadStartTime).isEqualTo(StartupLatencyLogger.UNSET_LONG)
+        assertThat(underTest.cardinality).isEqualTo(ColdRebootStartupLatencyLogger.UNSET_INT)
+        assertThat(underTest.workspaceLoadStartTime)
+            .isEqualTo(ColdRebootStartupLatencyLogger.UNSET_LONG)
+        assertThat(underTest.isTornDown).isTrue()
+    }
+
+    @Test
+    @UiThreadTest
+    fun tornDown_rejectLogs() {
+        underTest.reset()
+
+        underTest
+            .logStart(
+                StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
+                100
+            )
+            .logEnd(
+                StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
+                200
+            )
+            .logCardinality(123)
+        assertThat(underTest.startTimeByEvent.isEmpty()).isTrue()
+        assertThat(underTest.endTimeByEvent.isEmpty()).isTrue()
+        assertThat(underTest.cardinality).isEqualTo(ColdRebootStartupLatencyLogger.UNSET_INT)
     }
 }

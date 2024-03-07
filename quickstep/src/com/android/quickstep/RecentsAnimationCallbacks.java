@@ -19,10 +19,12 @@ import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
-import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_CANCEL_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_FINISH_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_START_RECENTS_ANIMATION;
 
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.util.ArraySet;
 import android.view.RemoteAnimationTarget;
 
@@ -92,9 +94,9 @@ public class RecentsAnimationCallbacks implements
     @Deprecated
     public final void onAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTarget[] appTargets, Rect homeContentInsets,
-            Rect minimizedHomeBounds) {
+            Rect minimizedHomeBounds, Bundle extras) {
         onAnimationStart(controller, appTargets, new RemoteAnimationTarget[0],
-                homeContentInsets, minimizedHomeBounds);
+                homeContentInsets, minimizedHomeBounds, extras);
     }
 
     // Called only in R+ platform
@@ -102,7 +104,7 @@ public class RecentsAnimationCallbacks implements
     public final void onAnimationStart(RecentsAnimationControllerCompat animationController,
             RemoteAnimationTarget[] appTargets,
             RemoteAnimationTarget[] wallpaperTargets,
-            Rect homeContentInsets, Rect minimizedHomeBounds) {
+            Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras) {
         long appCount = Arrays.stream(appTargets)
                 .filter(app -> app.mode == MODE_CLOSING)
                 .count();
@@ -111,9 +113,10 @@ public class RecentsAnimationCallbacks implements
             ActiveGestureLog.INSTANCE.addLog(
                     /* event= */ "RecentsAnimationCallbacks.onAnimationStart (canceled)",
                     /* extras= */ 0,
-                    /* gestureEvent= */ START_RECENTS_ANIMATION);
+                    /* gestureEvent= */ ON_START_RECENTS_ANIMATION);
             notifyAnimationCanceled();
-            animationController.finish(false /* toHome */, false /* sendUserLeaveHint */);
+            animationController.finish(false /* toHome */, false /* sendUserLeaveHint */,
+                    null /* finishCb */);
             return;
         }
 
@@ -137,13 +140,14 @@ public class RecentsAnimationCallbacks implements
                 nonAppTargets = new RemoteAnimationTarget[0];
             }
             final RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
-                    wallpaperTargets, nonAppTargets, homeContentInsets, minimizedHomeBounds);
+                    wallpaperTargets, nonAppTargets, homeContentInsets, minimizedHomeBounds,
+                    extras);
 
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
                 ActiveGestureLog.INSTANCE.addLog(
                         /* event= */ "RecentsAnimationCallbacks.onAnimationStart",
                         /* extras= */ targets.apps.length,
-                        /* gestureEvent= */ START_RECENTS_ANIMATION);
+                        /* gestureEvent= */ ON_START_RECENTS_ANIMATION);
                 for (RecentsAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(mController, targets);
                 }
@@ -157,7 +161,7 @@ public class RecentsAnimationCallbacks implements
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             ActiveGestureLog.INSTANCE.addLog(
                     /* event= */ "RecentsAnimationCallbacks.onAnimationCanceled",
-                    /* gestureEvent= */ CANCEL_RECENTS_ANIMATION);
+                    /* gestureEvent= */ ON_CANCEL_RECENTS_ANIMATION);
             for (RecentsAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled(thumbnailDatas);
             }
@@ -191,7 +195,8 @@ public class RecentsAnimationCallbacks implements
     private final void onAnimationFinished(RecentsAnimationController controller) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             ActiveGestureLog.INSTANCE.addLog(
-                    /* event= */ "RecentsAnimationCallbacks.onAnimationFinished");
+                    /* event= */ "RecentsAnimationCallbacks.onAnimationFinished",
+                    ON_FINISH_RECENTS_ANIMATION);
             for (RecentsAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationFinished(controller);
             }

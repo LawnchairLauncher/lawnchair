@@ -18,7 +18,6 @@ package com.android.launcher3.views;
 import static android.view.Gravity.LEFT;
 
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.getFullDrawable;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -36,6 +35,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -288,28 +288,20 @@ public class FloatingIconView extends FrameLayout implements
         } else {
             int width = (int) pos.width();
             int height = (int) pos.height();
-            Object[] tmpObjArray = new Object[1];
-            boolean[] outIsIconThemed = new boolean[1];
+            Pair<AdaptiveIconDrawable, Drawable> fullIcon = null;
             if (supportsAdaptiveIcons) {
-                boolean shouldThemeIcon = btvIcon instanceof FastBitmapDrawable
-                        && ((FastBitmapDrawable) btvIcon).isThemed();
-                drawable = getFullDrawable(
-                        l, info, width, height, shouldThemeIcon, tmpObjArray, outIsIconThemed);
-                if (drawable instanceof AdaptiveIconDrawable) {
-                    badge = getBadge(l, info, tmpObjArray[0], outIsIconThemed[0]);
-                } else {
-                    // The drawable we get back is not an adaptive icon, so we need to use the
-                    // BubbleTextView icon that is already legacy treated.
-                    drawable = btvIcon;
-                }
+                boolean shouldThemeIcon = (btvIcon instanceof FastBitmapDrawable fbd)
+                        && fbd.isCreatedForTheme();
+                fullIcon = getFullDrawable(l, info, width, height, shouldThemeIcon);
+            } else if (!(originalView instanceof BubbleTextView)) {
+                fullIcon = getFullDrawable(l, info, width, height, true /* shouldThemeIcon */);
+            }
+
+            if (fullIcon != null) {
+                drawable = fullIcon.first;
+                badge = fullIcon.second;
             } else {
-                if (originalView instanceof BubbleTextView) {
-                    // Similar to DragView, we simply use the BubbleTextView icon here.
-                    drawable = btvIcon;
-                } else {
-                    drawable = getFullDrawable(l, info, width, height, true /* shouldThemeIcon */,
-                            tmpObjArray, outIsIconThemed);
-                }
+                drawable = btvIcon;
             }
         }
 
