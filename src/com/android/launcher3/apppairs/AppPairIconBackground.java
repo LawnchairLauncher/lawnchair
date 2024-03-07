@@ -162,6 +162,6 @@ class AppPairIconBackground extends Drawable {
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
-        // Required by Drawable but not used.
+        mBackgroundPaint.setColorFilter(colorFilter);
     }
 }

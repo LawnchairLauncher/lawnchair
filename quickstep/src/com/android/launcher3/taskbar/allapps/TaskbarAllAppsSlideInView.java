@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
@@ -196,7 +197,13 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        mAppsView.drawOnScrimWithScale(canvas, mSlideInViewScale.value);
+        // We should call drawOnScrimWithBottomOffset() rather than drawOnScrimWithScale(). Because
+        // for taskbar all apps, the scrim view is a child view of AbstractSlideInView. Thus scaling
+        // down in AbstractSlideInView#onScaleProgressChanged() with SCALE_PROPERTY has already
+        // done the job - there is no need to re-apply scale effect here. But it also means we need
+        // to pass extra bottom offset to background scrim to fill the bottom gap during predictive
+        // back swipe.
+        mAppsView.drawOnScrimWithBottomOffset(canvas, getBottomOffsetPx());
         super.dispatchDraw(canvas);
     }
 
@@ -205,6 +212,11 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         super.onScaleProgressChanged();
         mAppsView.setClipChildren(!mIsBackProgressing);
         mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsBackProgressing);
+        AllAppsRecyclerView rv = mAppsView.getActiveRecyclerView();
+        if (rv != null && rv.getScrollbar() != null) {
+            rv.getScrollbar().setVisibility(
+                    mIsBackProgressing ? INVISIBLE : VISIBLE);
+        }
     }
 
     @Override
@@ -255,7 +267,11 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     public void onBackInvoked() {
-        if (!mAllAppsCallbacks.handleSearchBackInvoked()) {
+        if (mAllAppsCallbacks.handleSearchBackInvoked()) {
+            // We need to scale back taskbar all apps if we navigate back within search inside all
+            // apps
+            animateSlideInViewToNoScale();
+        } else {
             super.onBackInvoked();
         }
     }

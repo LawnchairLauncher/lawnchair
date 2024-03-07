@@ -17,7 +17,6 @@
 package com.android.launcher3.apppairs;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -94,16 +93,17 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         icon.setOnClickListener(activity.getItemOnClickListener());
         icon.mInfo = appPairInfo;
 
+        // TODO (b/326664798): Delete this check, instead check at launcher load time
         if (icon.mInfo.contents.size() != 2) {
             Log.wtf(TAG, "AppPair contents not 2, size: " + icon.mInfo.contents.size());
             return icon;
         }
 
-        icon.checkScreenSize();
-
         // Set up icon drawable area
         icon.mIconGraphic = icon.findViewById(R.id.app_pair_icon_graphic);
-        icon.mIconGraphic.init(activity.getDeviceProfile(), icon);
+        icon.mIconGraphic.init(activity, icon);
+
+        icon.checkDisabledState();
 
         // Set up app pair title
         icon.mAppPairName = icon.findViewById(R.id.app_pair_icon_name);
@@ -183,23 +183,20 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
     }
 
     /**
-     * Checks if the app pair is launchable in the current device configuration.
-     *
+     * Updates the "disabled" state of the app pair in the current device configuration.
      * App pairs can be "disabled" in two ways:
      * 1) One of the member WorkspaceItemInfos is disabled (i.e. the app software itself is paused
-     * by the user or can't be launched).
+     * by the user or can't be launched for some other reason).
      * 2) This specific instance of an app pair can't be launched due to screen size requirements.
-     *
-     * This method checks and updates #2. Both #1 and #2 are checked when app pairs are drawn
-     * {@link AppPairIconGraphic#dispatchDraw(Canvas)} or clicked on
-     * {@link com.android.launcher3.touch.ItemClickHandler#onClickAppPairIcon(View)}
      */
-    public void checkScreenSize() {
+    public void checkDisabledState() {
         DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
         // If user is on a small screen, we can't launch if either of the apps is non-resizeable
         mIsLaunchableAtScreenSize =
                 dp.isTablet || getInfo().contents.stream().noneMatch(
                         wii -> wii.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE));
+        // Call applyIcons to check and update icons
+        mIconGraphic.applyIcons();
     }
 
     /**
@@ -209,7 +206,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         // If either of the app pair icons return true on the predicate (i.e. in the list of
         // updated apps), redraw the icon graphic (icon background and both icons).
         if (getInfo().contents.stream().anyMatch(itemCheck)) {
-            checkScreenSize();
+            checkDisabledState();
             mIconGraphic.invalidate();
         }
     }
