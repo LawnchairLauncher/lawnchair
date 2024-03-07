@@ -31,6 +31,7 @@ import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarInsetsController;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.util.MultiPropertyFactory;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 
 /**
  * Coordinates between controllers such as BubbleBarView and BubbleHandleViewController to
@@ -355,5 +356,10 @@ public class BubbleStashController {
     /** Checks whether the motion event is over the stash handle. */
     public boolean isEventOverStashHandle(MotionEvent ev) {
         return mHandleViewController.isEventOverHandle(ev);
+    }
+
+    /** Set a bubble bar location */
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        mHandleViewController.setBubbleBarLocation(bubbleBarLocation);
     }
 }

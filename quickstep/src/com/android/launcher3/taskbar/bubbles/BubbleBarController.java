@@ -73,6 +73,7 @@ import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.quickstep.SystemUiProxy;
 import com.android.wm.shell.Flags;
 import com.android.wm.shell.bubbles.IBubblesListener;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 import com.android.wm.shell.common.bubbles.BubbleBarUpdate;
 import com.android.wm.shell.common.bubbles.BubbleInfo;
 import com.android.wm.shell.common.bubbles.RemovedBubble;
@@ -155,12 +156,14 @@ public class BubbleBarController extends IBubblesListener.Stub {
      * {@link BubbleBarBubble}s so that it can be used to update the views.
      */
     private static class BubbleBarViewUpdate {
+        final boolean initialState;
         boolean expandedChanged;
         boolean expanded;
         boolean shouldShowEducation;
         String selectedBubbleKey;
         String suppressedBubbleKey;
         String unsuppressedBubbleKey;
+        BubbleBarLocation bubbleBarLocation;
         List<RemovedBubble> removedBubbles;
         List<String> bubbleKeysInOrder;
 
@@ -170,12 +173,14 @@ public class BubbleBarController extends IBubblesListener.Stub {
         List<BubbleBarBubble> currentBubbles;
 
         BubbleBarViewUpdate(BubbleBarUpdate update) {
+            initialState = update.initialState;
             expandedChanged = update.expandedChanged;
             expanded = update.expanded;
             shouldShowEducation = update.shouldShowEducation;
             selectedBubbleKey = update.selectedBubbleKey;
             suppressedBubbleKey = update.suppressedBubbleKey;
             unsuppressedBubbleKey = update.unsupressedBubbleKey;
+            bubbleBarLocation = update.bubbleBarLocation;
             removedBubbles = update.removedBubbles;
             bubbleKeysInOrder = update.bubbleKeysInOrder;
         }
@@ -400,6 +405,14 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 Log.w(TAG, "expansion was changed but is the same");
             }
         }
+        if (update.bubbleBarLocation != null) {
+            if (update.bubbleBarLocation != mBubbleBarViewController.getBubbleBarLocation()) {
+                // Animate when receiving updates. Skip it if we received the initial state.
+                boolean animate = !update.initialState;
+                mBubbleBarViewController.setBubbleBarLocation(update.bubbleBarLocation, animate);
+                mBubbleStashController.setBubbleBarLocation(update.bubbleBarLocation);
+            }
+        }
     }
 
     /** Tells WMShell to show the currently selected bubble. */
@@ -593,7 +606,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         Rect location = new Rect();
         // currentBarBounds is only useful for distance from left or right edge.
         // It contains the current bounds, calculate the expanded bounds.
-        if (mBarView.isOnLeft()) {
+        if (mBarView.getBubbleBarLocation().isOnLeft(mBarView.isLayoutRtl())) {
             location.left = currentBarBounds.left;
             location.right = (int) (currentBarBounds.left + mBarView.expandedWidth());
         } else {
@@ -601,7 +614,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             location.right = currentBarBounds.right;
         }
         final int translation = (int) abs(mBubbleStashController.getBubbleBarTranslationY());
-        location.top = displaySize.y - mBarView.getHeight() - translation;
+        location.top = displaySize.y - currentBarBounds.height() - translation;
         location.bottom = displaySize.y - translation;
         return location;
     }
