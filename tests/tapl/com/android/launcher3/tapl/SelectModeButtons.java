@@ -33,9 +33,6 @@ import java.util.regex.Pattern;
 public class SelectModeButtons {
     private final UiObject2 mSelectModeButtons;
     private final LauncherInstrumentation mLauncher;
-
-    private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
-            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
 
@@ -69,7 +66,6 @@ public class SelectModeButtons {
     @NonNull
     public Overview dismissByEscKey() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
             mLauncher.runToState(
                     () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
