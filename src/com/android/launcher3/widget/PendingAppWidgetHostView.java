@@ -29,9 +29,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -53,7 +55,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.RectUtilsKt;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -77,9 +78,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     private final Rect mRect = new Rect();
 
-    private final Rect mPreviewBitmapRect = new Rect();
-    private final Rect mCanvasRect = new Rect();
-    private final Rect mLetterBoxedPreviewBitmapRect = new Rect();
+    private final Matrix mMatrix = new Matrix();
+    private final RectF mPreviewBitmapRect = new RectF();
+    private final RectF mCanvasRect = new RectF();
 
     private final LauncherWidgetHolder mWidgetHolder;
     private final LauncherAppWidgetProviderInfo mAppwidget;
@@ -458,9 +459,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             mPreviewBitmapRect.set(0, 0, mPreviewBitmap.getWidth(), mPreviewBitmap.getHeight());
             mCanvasRect.set(0, 0, getWidth(), getHeight());
 
-            RectUtilsKt.letterBox(mPreviewBitmapRect, mCanvasRect, mLetterBoxedPreviewBitmapRect);
-            canvas.drawBitmap(mPreviewBitmap, mPreviewBitmapRect, mLetterBoxedPreviewBitmapRect,
-                    mPreviewPaint);
+            mMatrix.setRectToRect(mPreviewBitmapRect, mCanvasRect, Matrix.ScaleToFit.CENTER);
+            canvas.drawBitmap(mPreviewBitmap, mMatrix, mPreviewPaint);
             return;
         }
         if (mCenterDrawable == null) {
