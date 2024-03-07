@@ -19,7 +19,7 @@ import android.graphics.Point;
 
 import java.util.function.Supplier;
 
-/** Launchable that can serve as a source for dragging and dropping to the workspace. */
+/** {@link Launchable} that can serve as a source for dragging and dropping to the workspace. */
 interface WorkspaceDragSource {
 
     /**
@@ -81,7 +81,8 @@ interface WorkspaceDragSource {
                     launchable,
                     dest,
                     launchable::addExpectedEventsForLongClick,
-                    /*expectDropEvents= */ null);
+                    /*expectDropEvents= */ null,
+                    /* startsActivity = */ false);
 
             try (LauncherInstrumentation.Closable ignore = launcher.addContextLayer("dragged")) {
                 WorkspaceAppIcon appIcon =

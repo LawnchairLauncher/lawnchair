@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Modifications copyright 2021, Lawnchair
  */
 
 package com.android.launcher3;
@@ -23,8 +21,11 @@ import static android.content.Context.RECEIVER_EXPORTED;
 
 import static com.android.launcher3.LauncherPrefs.ICON_STATE;
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
+import static com.android.launcher3.model.LoaderTask.SMARTSPACE_ON_HOME_SCREEN;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
+import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -66,8 +67,6 @@ import app.lawnchair.icons.LawnchairIconProvider;
 public class LauncherAppState implements SafeCloseable {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
-    public static final String KEY_ICON_STATE = "pref_icon_shape_path";
-    public static final String KEY_ALL_APPS_OVERVIEW_THRESHOLD = "pref_all_apps_overview_threshold";
 
     // We do not need any synchronization for this variable as its only written on
     // UI thread.
@@ -88,8 +87,7 @@ public class LauncherAppState implements SafeCloseable {
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final RunnableList mOnTerminateCallback = new RunnableList();
 
-    // WORKAROUND: b/269335387 remove this after widget background listener is
-    // enabled
+    // WORKAROUND: b/269335387 remove this after widget background listener is enabled
     /* Array of RemoteViews cached by Launcher process */
     @GuardedBy("itself")
     @NonNull
@@ -119,9 +117,11 @@ public class LauncherAppState implements SafeCloseable {
         });
 
         mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
-        mOnTerminateCallback.add(() -> mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel));
+        mOnTerminateCallback.add(() ->
+                mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel));
 
-        SimpleBroadcastReceiver modelChangeReceiver = new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
+        SimpleBroadcastReceiver modelChangeReceiver =
+                new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
         modelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
                 ACTION_DEVICE_POLICY_RESOURCE_UPDATED);
 
@@ -130,6 +130,23 @@ public class LauncherAppState implements SafeCloseable {
         SafeCloseable userChangeListener = UserCache.INSTANCE.get(mContext)
                 .addUserEventListener(mModel::onUserEvent);
         mOnTerminateCallback.add(userChangeListener::close);
+
+        if (ENABLE_SMARTSPACE_REMOVAL.get()) {
+            OnSharedPreferenceChangeListener firstPagePinnedItemListener =
+                    new OnSharedPreferenceChangeListener() {
+                        @Override
+                        public void onSharedPreferenceChanged(
+                                SharedPreferences sharedPreferences, String key) {
+                            if (SMARTSPACE_ON_HOME_SCREEN.equals(key)) {
+                                mModel.forceReload();
+                            }
+                        }
+                    };
+            LauncherPrefs.getPrefs(mContext).registerOnSharedPreferenceChangeListener(
+                    firstPagePinnedItemListener);
+            mOnTerminateCallback.add(() -> LauncherPrefs.getPrefs(mContext)
+                    .unregisterOnSharedPreferenceChangeListener(firstPagePinnedItemListener));
+        }
 
         LockedUserState.get(context).runOnUserUnlocked(() -> {
             CustomWidgetManager cwm = CustomWidgetManager.INSTANCE.get(mContext);
@@ -145,18 +162,20 @@ public class LauncherAppState implements SafeCloseable {
             mOnTerminateCallback.add(
                     () -> LauncherPrefs.get(mContext).removeListener(observer, THEMED_ICONS));
 
-            InstallSessionTracker installSessionTracker = InstallSessionHelper.INSTANCE.get(context)
-                    .registerInstallTracker(mModel);
+            InstallSessionTracker installSessionTracker =
+                    InstallSessionHelper.INSTANCE.get(context).registerInstallTracker(mModel);
             mOnTerminateCallback.add(installSessionTracker::unregister);
         });
 
-        // Register an observer to rebind the notification listener when dots are
-        // re-enabled.
+        // Register an observer to rebind the notification listener when dots are re-enabled.
         SettingsCache settingsCache = SettingsCache.INSTANCE.get(mContext);
         SettingsCache.OnChangeListener notificationLister = this::onNotificationSettingsChanged;
         settingsCache.register(NOTIFICATION_BADGING_URI, notificationLister);
         onNotificationSettingsChanged(settingsCache.getValue(NOTIFICATION_BADGING_URI));
-        mOnTerminateCallback.add(() -> settingsCache.unregister(NOTIFICATION_BADGING_URI, notificationLister));
+        mOnTerminateCallback.add(() ->
+                settingsCache.unregister(NOTIFICATION_BADGING_URI, notificationLister));
+        // Register an observer to notify Launcher about Private Space settings toggle.
+        registerPrivateSpaceHideWhenLockListener(settingsCache);
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
@@ -183,6 +202,18 @@ public class LauncherAppState implements SafeCloseable {
         refreshAndReloadLauncher();
     }
 
+    private void registerPrivateSpaceHideWhenLockListener(SettingsCache settingsCache) {
+        SettingsCache.OnChangeListener psHideWhenLockChangedListener =
+                this::onPrivateSpaceHideWhenLockChanged;
+        settingsCache.register(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI, psHideWhenLockChangedListener);
+        mOnTerminateCallback.add(() -> settingsCache.unregister(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI,
+                psHideWhenLockChangedListener));
+    }
+
+    private void onPrivateSpaceHideWhenLockChanged(boolean isPrivateSpaceHideOnLockEnabled) {
+        mModel.forceReload();
+    }
+
     private void refreshAndReloadLauncher() {
         LauncherIcons.clearPool();
         mIconCache.updateIconParams(
@@ -191,8 +222,7 @@ public class LauncherAppState implements SafeCloseable {
     }
 
     /**
-     * Call from Application.onTerminate(), which is not guaranteed to ever be
-     * called.
+     * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
     @Override
     public void close() {

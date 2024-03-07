@@ -16,7 +16,7 @@
 
 package com.android.launcher3.pageindicators;
 
-import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -53,8 +53,7 @@ import com.android.launcher3.util.Themes;
 import app.lawnchair.theme.color.ColorTokens;
 
 /**
- * {@link PageIndicator} which shows dots per page. The active page is shown
- * with the current
+ * {@link PageIndicator} which shows dots per page. The active page is shown with the current
  * accent color.
  */
 public class PageIndicatorDots extends View implements Insettable, PageIndicator {
@@ -73,7 +72,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private static final int PAGE_INDICATOR_ALPHA = 255;
     private static final int DOT_ALPHA = 128;
     private static final float DOT_ALPHA_FRACTION = 0.5f;
-    private final int DOT_GAP_FACTOR = FeatureFlags.showDotPagination(getContext()) ? 4 : 3;
+    private static final int DOT_GAP_FACTOR = FeatureFlags.showDotPagination(getContext()) ? 4 : 3;
     private static final int VISIBLE_ALPHA = 255;
     private static final int INVISIBLE_ALPHA = 0;
     private Paint mPaginationPaint;
@@ -83,23 +82,23 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     private static final RectF sTempRect = new RectF();
 
-    private static final FloatProperty<PageIndicatorDots> CURRENT_POSITION = new FloatProperty<PageIndicatorDots>(
-            "current_position") {
-        @Override
-        public Float get(PageIndicatorDots obj) {
-            return obj.mCurrentPosition;
-        }
+    private static final FloatProperty<PageIndicatorDots> CURRENT_POSITION =
+            new FloatProperty<PageIndicatorDots>("current_position") {
+                @Override
+                public Float get(PageIndicatorDots obj) {
+                    return obj.mCurrentPosition;
+                }
 
-        @Override
-        public void setValue(PageIndicatorDots obj, float pos) {
-            obj.mCurrentPosition = pos;
-            obj.invalidate();
-            obj.invalidateOutline();
-        }
+                @Override
+                public void setValue(PageIndicatorDots obj, float pos) {
+                    obj.mCurrentPosition = pos;
+                    obj.invalidate();
+                    obj.invalidateOutline();
+                }
     };
 
-    private static final IntProperty<PageIndicatorDots> PAGINATION_ALPHA = new IntProperty<PageIndicatorDots>(
-            "pagination_alpha") {
+    private static final IntProperty<PageIndicatorDots> PAGINATION_ALPHA =
+            new IntProperty<PageIndicatorDots>("pagination_alpha") {
         @Override
         public Integer get(PageIndicatorDots obj) {
             return obj.mPaginationPaint.getAlpha();
@@ -126,21 +125,23 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     /**
      * The current position of the active dot including the animation progress.
      * For ex:
-     * 0.0 => Active dot is at position 0
+     * 0.0  => Active dot is at position 0
      * 0.33 => Active dot is at position 0 and is moving towards 1
      * 0.50 => Active dot is at position [0, 1]
      * 0.77 => Active dot has left position 0 and is collapsing towards position 1
-     * 1.0 => Active dot is at position 1
+     * 1.0  => Active dot is at position 1
      */
     private float mCurrentPosition;
     private float mFinalPosition;
     private boolean mAreScreensBinding;
+    private boolean mIsTwoPanels;
     private ObjectAnimator mAnimator;
     private @Nullable ObjectAnimator mAlphaAnimator;
 
     private float[] mEntryAnimationRadiusFactors;
 
-    private final Runnable mHidePaginationRunnable = () -> animatePaginationToAlpha(INVISIBLE_ALPHA);
+    private final Runnable mHidePaginationRunnable =
+            () -> animatePaginationToAlpha(INVISIBLE_ALPHA);
 
     public PageIndicatorDots(Context context) {
         this(context, null);
@@ -157,10 +158,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         mPaginationPaint.setStyle(Style.FILL);
         mPaginationPaint.setColor(ColorTokens.FolderPaginationColor.resolveColor(context));
         mDotRadius = (FeatureFlags.showDotPagination(context)
-                ? getResources().getDimension(R.dimen.page_indicator_dot_size_v2)
-                : getResources().getDimension(R.dimen.page_indicator_dot_size))
-                / 2;
-        mCircleGap = DOT_GAP_FACTOR * mDotRadius;
+            ? getResources().getDimension(R.dimen.page_indicator_dot_size_v2)
+            : getResources().getDimension(R.dimen.page_indicator_dot_size))
+            / 2;mCircleGap = DOT_GAP_FACTOR * mDotRadius;
         setOutlineProvider(new MyOutlineProver());
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -240,8 +240,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     private void animatePaginationToAlpha(int alpha) {
         if (alpha == mToAlpha) {
-            // Ignore the new animation if it is going to the same alpha as the current
-            // animation.
+            // Ignore the new animation if it is going to the same alpha as the current animation.
             return;
         }
 
@@ -357,6 +356,12 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setActiveMarker(int activePage) {
+        // In unfolded foldables, every page has two CellLayouts, so we need to halve the active
+        // page for it to be accurate.
+        if (mIsTwoPanels && !FOLDABLE_SINGLE_PAGE.get()) {
+            activePage = activePage / 2;
+        }
+
         if (mActivePage != activePage) {
             mActivePage = activePage;
         }
@@ -369,7 +374,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     }
 
     @Override
-    public void setAreScreensBinding(boolean areScreensBinding) {
+    public void setAreScreensBinding(boolean areScreensBinding, boolean isTwoPanels) {
+        mIsTwoPanels = isTwoPanels;
+
         // Reapply correct current position which was skipped during setScroll.
         if (mAreScreensBinding && !areScreensBinding) {
             CURRENT_POSITION.set(this, (float) mActivePage);
@@ -380,13 +387,11 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // Add extra spacing of mDotRadius on all sides so than entry animation could be
-        // run.
-        int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ? MeasureSpec.getSize(widthMeasureSpec)
-                : (int) ((mNumPages * 3 + 2) * mDotRadius);
+        // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
+        int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
+                MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
         int height = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY
-                ? MeasureSpec.getSize(heightMeasureSpec)
-                : (int) (4 * mDotRadius);
+                ? MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
         setMeasuredDimension(width, height);
     }
 
@@ -427,15 +432,16 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
             // Here we draw the dots
             mPaginationPaint.setAlpha(FeatureFlags.showDotPagination(getContext())
-                    ? ((int) (alpha * DOT_ALPHA_FRACTION))
-                    : DOT_ALPHA);
+                ? ((int) (alpha * DOT_ALPHA_FRACTION))
+                : DOT_ALPHA);
             for (int i = 0; i < mNumPages; i++) {
                 canvas.drawCircle(x, y, mDotRadius, mPaginationPaint);
                 x += circleGap;
             }
 
             // Here we draw the current page indicator
-            mPaginationPaint.setAlpha(FeatureFlags.showDotPagination(getContext()) ? alpha : PAGE_INDICATOR_ALPHA);
+            mPaginationPaint.setAlpha(FeatureFlags.showDotPagination(getContext())
+                ? alpha : PAGE_INDICATOR_ALPHA);
             canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mPaginationPaint);
         }
     }
@@ -483,7 +489,8 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
                         (int) activeRect.top,
                         (int) activeRect.right,
                         (int) activeRect.bottom,
-                        mDotRadius);
+                        mDotRadius
+                );
             }
         }
     }
@@ -513,8 +520,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     }
 
     /**
-     * We need to override setInsets to prevent InsettableFrameLayout from applying
-     * different
+     * We need to override setInsets to prevent InsettableFrameLayout from applying different
      * margins on the pagination.
      */
     @Override

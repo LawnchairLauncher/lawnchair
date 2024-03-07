@@ -16,7 +16,7 @@
 ** limitations under the License.
 */
 -->
-<com.android.launcher3.dragndrop.AddItemDragLayer
+<com.android.launcher3.dragndrop.SimpleDragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/add_item_drag_layer"
     android:layout_width="match_parent"
@@ -121,6 +121,6 @@
         </LinearLayout>
     </com.android.launcher3.widget.AddItemWidgetsBottomSheet>
 
-</com.android.launcher3.dragndrop.AddItemDragLayer>
+</com.android.launcher3.dragndrop.SimpleDragLayer>
 
 

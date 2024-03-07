@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 
 import android.annotation.Nullable;
@@ -39,6 +40,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
@@ -100,9 +102,8 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     /**
      * Asynchronously fetches the icon and other task data.
      *
-     * @param task     The task to fetch the data for
-     * @param callback The callback to receive the task after its data has been
-     *                 populated.
+     * @param task The task to fetch the data for
+     * @param callback The callback to receive the task after its data has been populated.
      * @return A cancelable handle to the request
      */
     public CancellableTask updateIconInBackground(Task task, Consumer<Task> callback) {
@@ -122,6 +123,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             public void handleResult(TaskCacheEntry result) {
                 task.icon = result.icon;
                 task.titleDescription = result.contentDescription;
+                task.title = result.title;
                 callback.accept(task);
                 dispatchIconUpdate(task.key.id);
             }
@@ -142,8 +144,8 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     }
 
     void invalidateCacheEntries(String pkg, UserHandle handle) {
-        mBgExecutor.execute(() -> mIconCache
-                .removeAll(key -> pkg.equals(key.getPackageName()) && handle.getIdentifier() == key.userId));
+        mBgExecutor.execute(() -> mIconCache.removeAll(key ->
+                pkg.equals(key.getPackageName()) && handle.getIdentifier() == key.userId));
     }
 
     @WorkerThread
@@ -162,9 +164,8 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
         // Load icon
         // TODO: Load icon resource (b/143363444)
-        Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
-        if (icon != null && TaskIconUtils.allowCustomIcon(task)) {
-            /* isInstantApp */
+        Bitmap icon = getIcon(desc, key.userId);
+        if (icon != null) {
             entry.icon = getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
                     key.userId,
@@ -193,6 +194,10 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         if (activityInfo != null) {
             entry.contentDescription = getBadgedContentDescription(
                     activityInfo, task.key.userId, task.taskDescription);
+            if (enableOverviewIconMenu()) {
+                entry.title = Utilities.trim(
+                        activityInfo.applicationInfo.loadLabel(mContext.getPackageManager()));
+            }
         }
 
         mIconCache.put(task.key, entry);
@@ -219,8 +224,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
                 ? pm.getUserBadgedLabel(applicationLabel, UserHandle.of(userId)).toString()
                 : applicationLabel;
         return applicationLabel.equals(taskLabel)
-                ? badgedApplicationLabel
-                : badgedApplicationLabel + " " + taskLabel;
+                ? badgedApplicationLabel : badgedApplicationLabel + " " + taskLabel;
     }
 
     @WorkerThread
@@ -228,7 +232,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         synchronized (mDefaultIcons) {
             if (mDefaultIconBase == null) {
                 try (BaseIconFactory bif = getIconFactory()) {
-                    mDefaultIconBase = bif.makeDefaultIcon(UserHandle.getUserHandleForUid (userId));
+                    mDefaultIconBase = bif.makeDefaultIcon();
                 }
             }
 
@@ -237,7 +241,10 @@ public class TaskIconCache implements DisplayInfoChangeListener {
                 return mDefaultIcons.valueAt(index).newIcon(mContext);
             } else {
                 try (BaseIconFactory li = getIconFactory()) {
-                    BitmapInfo info = li.makeDefaultIcon (UserHandle.getUserHandleForUid (userId));
+                    BitmapInfo info = mDefaultIconBase.withFlags(
+                            li.getBitmapFlagOp(new IconOptions()
+                                    .setUser(UserCache.INSTANCE.get(mContext)
+                                            .getUserInfo(UserHandle.of(userId)))));
                     mDefaultIcons.put(userId, info);
                     return info.newIcon(mContext);
                 }
@@ -247,13 +254,17 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
     @WorkerThread
     private BitmapInfo getBitmapInfo(Drawable drawable, int userId,
-                                     int primaryColor, boolean isInstantApp) {
+            int primaryColor, boolean isInstantApp) {
         try (BaseIconFactory bif = getIconFactory()) {
             bif.setWrapperBackgroundColor(primaryColor);
 
-            // User version code O, so that the icon is always wrapped in an adaptive icon
-            // container
-            return bif.createBadgedIconBitmap(drawable, UserHandle.getUserHandleForUid (userId), false);
+            // User version code O, so that the icon is always wrapped in an adaptive icon container
+            return bif.createBadgedIconBitmap(drawable,
+                    new IconOptions()
+                            .setUser(UserCache.INSTANCE.get(mContext)
+                                    .getUserInfo(UserHandle.of(userId)))
+                            .setInstantApp(isInstantApp)
+                            .setExtractedColor(0));
         }
     }
 
@@ -277,6 +288,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     private static class TaskCacheEntry {
         public Drawable icon;
         public String contentDescription = "";
+        public String title = "";
     }
 
     void registerTaskVisualsChangeListener(TaskVisualsChangeListener newListener) {

@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"স্ক্রিনশট নিন"</string>
     <string name="action_split" msgid="2098009717623550676">"স্প্লিট"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"স্প্লিট স্ক্রিন ব্যবহারের জন্য অ্যাপে ট্যাপ করুন"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"বাতিল করুন"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"স্প্লিট স্ক্রিন বেছে নেওয়ার বিকল্প থেকে বেরিয়ে আসুন"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"স্প্লিট স্ক্রিন ব্যবহার করতে অন্য অ্যাপ বেছে নিন"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"এই অ্যাপ বা আপনার প্রতিষ্ঠান এই অ্যাকশনটি পারফর্ম করার অনুমতি দেয়নি"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"উইজেট বর্তমানে ব্যবহার করা যাচ্ছে না, অন্য একটি অ্যাপ বেছে নিন"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"নেভিগেশন টিউটোরিয়াল এড়িয়ে যেতে চান?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"আপনি <xliff:g id="NAME">%1$s</xliff:g> অ্যাপে পরে এটি খুঁজে পাবেন"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"বাতিল করুন"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"একসাথে ২টি অ্যাপ ব্যবহার করতে একটি অ্যাপ পাশে টেনে আনুন"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"\'টাস্কবার\' দেখানোর জন্য উপরের দিকে আস্তে সোয়াইপ করুন"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"আপনার রুটিন অনুযায়ী অ্যাপ থেকে সাজেশন পান"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"\'টাস্কবার\' অটোমেটিক লুকানোর জন্য, সেটিংসে জেসচার নেভিগেশন চালু করুন"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"টাস্কবার পিন করতে, ড্রাইভার বেশ কিছুক্ষণ প্রেস করে রাখুন"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"\'টাস্কবার\' ফিচারের সাহায্যে আরও অনেক কিছু করুন"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ করুন"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হয়ে গেছে"</string>

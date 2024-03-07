@@ -17,13 +17,11 @@
 package com.android.launcher3.shortcuts;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
@@ -59,11 +57,6 @@ public class DeepShortcutTextView extends BubbleTextView {
 
     public DeepShortcutTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        Resources resources = getResources();
-        mDragHandleWidth = resources.getDimensionPixelSize(R.dimen.popup_padding_end)
-                + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size)
-                + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drawable_padding) / 2;
         showLoadingState(true);
     }
 
@@ -81,12 +74,6 @@ public class DeepShortcutTextView extends BubbleTextView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        mDragHandleBounds.set(0, 0, mDragHandleWidth, getMeasuredHeight());
-        if (!Utilities.isRtl(getResources())) {
-            mDragHandleBounds.offset(getMeasuredWidth() - mDragHandleBounds.width(), 0);
-        }
-
         setLoadingBounds();
     }
 
@@ -97,10 +84,10 @@ public class DeepShortcutTextView extends BubbleTextView {
         mLoadingStateBounds.set(
                 0,
                 0,
-                getMeasuredWidth() - mDragHandleWidth - getPaddingStart(),
+                getMeasuredWidth() - getPaddingEnd() - getPaddingStart(),
                 mLoadingStatePlaceholder.getIntrinsicHeight());
         mLoadingStateBounds.offset(
-                Utilities.isRtl(getResources()) ? mDragHandleWidth : getPaddingStart(),
+                Utilities.isRtl(getResources()) ? getPaddingEnd() : getPaddingStart(),
                 (int) ((getMeasuredHeight() - mLoadingStatePlaceholder.getIntrinsicHeight())
                         / 2.0f)
         );
@@ -123,20 +110,8 @@ public class DeepShortcutTextView extends BubbleTextView {
 
     @Override
     protected boolean shouldIgnoreTouchDown(float x, float y) {
-        // Show toast if user touches the drag handle (long clicks still start the drag).
-        mShowInstructionToast = mDragHandleBounds.contains((int) x, (int) y);
-
         // assume the whole view as clickable
         return false;
-    }
-
-    @Override
-    public boolean performClick() {
-        if (mShowInstructionToast) {
-            showToast();
-            return true;
-        }
-        return super.performClick();
     }
 
     @Override
@@ -171,16 +146,5 @@ public class DeepShortcutTextView extends BubbleTextView {
         }
 
         invalidate();
-    }
-
-    private void showToast() {
-        if (mInstructionToast != null) {
-            mInstructionToast.cancel();
-        }
-        CharSequence msg = Utilities.wrapForTts(
-                getContext().getText(R.string.long_press_shortcut_to_add),
-                getContext().getString(R.string.long_accessible_way_to_add_shortcut));
-        mInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
-        mInstructionToast.show();
     }
 }

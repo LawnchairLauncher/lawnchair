@@ -50,6 +50,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.celllayout.DelegatedCellDrawing;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
@@ -64,7 +65,7 @@ import app.lawnchair.util.LawnchairUtilsKt;
  * measurement
  * information, handles drawing, and animation (accept state <--> rest state).
  */
-public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
+public class PreviewBackground extends DelegatedCellDrawing {
 
     private static final boolean DRAW_SHADOW = false;
     private static final boolean DRAW_STROKE = false;

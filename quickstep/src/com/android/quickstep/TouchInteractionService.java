@@ -24,10 +24,12 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
+import static com.android.launcher3.LauncherPrefs.backedUpItem;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.quickstep.GestureState.TrackpadGestureType.getTrackpadGestureType;
@@ -60,7 +62,6 @@ import android.app.Service;
 import android.content.IIntentReceiver;
 import android.content.IIntentSender;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
@@ -85,7 +86,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.ConstantItem;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.EncryptionType;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -101,9 +104,10 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.flags.FlagsFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LockedUserState;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.util.ScreenOnTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
@@ -162,9 +166,10 @@ public class TouchInteractionService extends Service {
 
     private static final String TAG = "TouchInteractionService";
 
-    private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
+    private static final ConstantItem<Boolean> HAS_ENABLED_QUICKSTEP_ONCE = backedUpItem(
+            "launcher.has_enabled_quickstep_once", false, EncryptionType.ENCRYPTED);
 
-    private final TISBinder mTISBinder = LawnchairApp.isRecentsEnabled() ? new TISBinder(this) : null;
+    private final TISBinder mTISBinder = new TISBinder(this);
 
     /**
      * Local IOverviewProxy implementation with some methods for local components
@@ -173,8 +178,7 @@ public class TouchInteractionService extends Service {
 
         private final WeakReference<TouchInteractionService> mTis;
 
-        @Nullable
-        private Runnable mOnOverviewTargetChangeListener = null;
+        @Nullable private Runnable mOnOverviewTargetChangeListener = null;
 
         private TISBinder(TouchInteractionService tis) {
             mTis = new WeakReference<>(tis);
@@ -194,8 +198,8 @@ public class TouchInteractionService extends Service {
                     bundle.getBinder(KEY_EXTRA_SHELL_SHELL_TRANSITIONS));
             IStartingWindow startingWindow = IStartingWindow.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_STARTING_WINDOW));
-            ISysuiUnlockAnimationController launcherUnlockAnimationController = ISysuiUnlockAnimationController.Stub
-                    .asInterface(
+            ISysuiUnlockAnimationController launcherUnlockAnimationController =
+                    ISysuiUnlockAnimationController.Stub.asInterface(
                             bundle.getBinder(KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER));
             IRecentTasks recentTasks = IRecentTasks.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_RECENT_TASKS));
@@ -225,10 +229,10 @@ public class TouchInteractionService extends Service {
         @BinderThread
         @Override
         public void onTaskbarToggled() {
-            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get() || !LawnchairQuickstepCompat.ATLEAST_S)
-                return;
+            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get()) return;
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
-                TaskbarActivityContext activityContext = tis.mTaskbarManager.getCurrentActivityContext();
+                TaskbarActivityContext activityContext =
+                        tis.mTaskbarManager.getCurrentActivityContext();
 
                 if (activityContext != null) {
                     activityContext.toggleTaskbarStash();
@@ -295,10 +299,8 @@ public class TouchInteractionService extends Service {
         }
 
         /**
-         * Sent when the assistant has been invoked with the given type (defined in
-         * AssistManager)
-         * and should be shown. This method is used if
-         * SystemUiProxy#setAssistantOverridesRequested
+         * Sent when the assistant has been invoked with the given type (defined in AssistManager)
+         * and should be shown. This method is used if SystemUiProxy#setAssistantOverridesRequested
          * was previously called including this invocation type.
          */
         @Override
@@ -334,7 +336,8 @@ public class TouchInteractionService extends Service {
         @Override
         public void enterStageSplitFromRunningApp(boolean leftOrTop) {
             executeForTouchInteractionService(tis -> {
-                StatefulActivity activity = tis.mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
+                StatefulActivity activity =
+                        tis.mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
                 if (activity != null) {
                     activity.enterStageSplitFromRunningApp(leftOrTop);
                 }
@@ -344,8 +347,7 @@ public class TouchInteractionService extends Service {
         /**
          * Preloads the Overview activity.
          * <p>
-         * This method should only be used when the All Set page of the SUW is reached
-         * to safely
+         * This method should only be used when the All Set page of the SUW is reached to safely
          * preload the Launcher for the SUW first reveal.
          */
         public void preloadOverviewForSUWAllSet() {
@@ -354,31 +356,32 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onRotationProposal(int rotation, boolean isValid) {
-            executeForTaskbarManager(taskbarManager -> taskbarManager.onRotationProposal(rotation, isValid));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onRotationProposal(rotation, isValid));
         }
 
         @Override
         public void disable(int displayId, int state1, int state2, boolean animate) {
-            executeForTaskbarManager(
-                    taskbarManager -> taskbarManager.disableNavBarElements(displayId, state1, state2, animate));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.disableNavBarElements(displayId, state1, state2, animate));
         }
 
         @Override
         public void onSystemBarAttributesChanged(int displayId, int behavior) {
-            executeForTaskbarManager(
-                    taskbarManager -> taskbarManager.onSystemBarAttributesChanged(displayId, behavior));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onSystemBarAttributesChanged(displayId, behavior));
         }
 
         @Override
         public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
-            executeForTaskbarManager(taskbarManager -> taskbarManager.onNavButtonsDarkIntensityChanged(darkIntensity));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onNavButtonsDarkIntensityChanged(darkIntensity));
         }
 
         private void executeForTouchInteractionService(
                 @NonNull Consumer<TouchInteractionService> tisConsumer) {
             TouchInteractionService tis = mTis.get();
-            if (tis == null)
-                return;
+            if (tis == null) return;
             tisConsumer.accept(tis);
         }
 
@@ -386,8 +389,7 @@ public class TouchInteractionService extends Service {
                 @NonNull Consumer<TaskbarManager> taskbarManagerConsumer) {
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
                 TaskbarManager taskbarManager = tis.mTaskbarManager;
-                if (taskbarManager == null)
-                    return;
+                if (taskbarManager == null) return;
                 taskbarManagerConsumer.accept(taskbarManager);
             }));
         }
@@ -400,8 +402,7 @@ public class TouchInteractionService extends Service {
         @Nullable
         public TaskbarManager getTaskbarManager() {
             TouchInteractionService tis = mTis.get();
-            if (tis == null || !LawnchairQuickstepCompat.ATLEAST_S)
-                return null;
+            if (tis == null) return null;
             return tis.mTaskbarManager;
         }
 
@@ -413,8 +414,7 @@ public class TouchInteractionService extends Service {
         @Nullable
         public OverviewCommandHelper getOverviewCommandHelper() {
             TouchInteractionService tis = mTis.get();
-            if (tis == null)
-                return null;
+            if (tis == null) return null;
             return tis.mOverviewCommandHelper;
         }
 
@@ -422,20 +422,16 @@ public class TouchInteractionService extends Service {
          * Sets a proxy to bypass swipe up behavior
          */
         public void setSwipeUpProxy(Function<GestureState, AnimatedFloat> proxy) {
-            TouchInteractionService tis = mTis.get();
-            if (tis == null)
-                return;
-            tis.mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null);
+            executeForTouchInteractionService(
+                    tis -> tis.mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null));
         }
 
         /**
          * Sets the task id where gestures should be blocked
          */
         public void setGestureBlockedTaskId(int taskId) {
-            TouchInteractionService tis = mTis.get();
-            if (tis == null)
-                return;
-            tis.mDeviceState.setGestureBlockingTaskId(taskId);
+            executeForTouchInteractionService(
+                    tis -> tis.mDeviceState.setGestureBlockingTaskId(taskId));
         }
 
         /** Sets a listener to be run on Overview Target updates. */
@@ -448,6 +444,12 @@ public class TouchInteractionService extends Service {
                 mOnOverviewTargetChangeListener.run();
                 mOnOverviewTargetChangeListener = null;
             }
+        }
+
+        /** Refreshes the current overview target. */
+        public void refreshOverviewTarget() {
+            executeForTouchInteractionService(tis -> tis.onOverviewTargetChange(
+                    tis.mOverviewComponentObserver.isHomeAndOverviewSame()));
         }
     }
 
@@ -463,8 +465,12 @@ public class TouchInteractionService extends Service {
         return sIsInitialized;
     }
 
-    private final AbsSwipeUpHandler.Factory mLauncherSwipeHandlerFactory = this::createLauncherSwipeHandler;
-    private final AbsSwipeUpHandler.Factory mFallbackSwipeHandlerFactory = this::createFallbackSwipeHandler;
+    private final AbsSwipeUpHandler.Factory mLauncherSwipeHandlerFactory =
+            this::createLauncherSwipeHandler;
+    private final AbsSwipeUpHandler.Factory mFallbackSwipeHandlerFactory =
+            this::createFallbackSwipeHandler;
+
+    private final ScreenOnTracker.ScreenOnListener mScreenOnListener = this::onScreenOnChanged;
 
     private ActivityManagerWrapper mAM;
     private OverviewCommandHelper mOverviewCommandHelper;
@@ -488,8 +494,7 @@ public class TouchInteractionService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!LawnchairApp.isRecentsEnabled())
-            return;
+        if (!LawnchairApp.isRecentsEnabled()) return;
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
@@ -499,14 +504,15 @@ public class TouchInteractionService extends Service {
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         BootAwarePreloader.start(this);
 
-        // Call runOnUserUnlocked() before any other callbacks to ensure everything is
-        // initialized.
+        // Call runOnUserUnlocked() before any other callbacks to ensure everything is initialized.
         LockedUserState.get(this).runOnUserUnlocked(this::onUserUnlocked);
         if (LawnchairQuickstepCompat.ATLEAST_S) {
             LockedUserState.get(this).runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
         }
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         sConnected = true;
+
+        ScreenOnTracker.INSTANCE.get(this).addListener(mScreenOnListener);
     }
 
     private void disposeEventHandlers(String reason) {
@@ -545,8 +551,7 @@ public class TouchInteractionService extends Service {
     }
 
     /**
-     * Called when the navigation mode changes, guaranteed to be after the device
-     * state has updated.
+     * Called when the navigation mode changes, guaranteed to be after the device state has updated.
      */
     private void onNavigationModeChanged() {
         initInputMonitor("onNavigationModeChanged()");
@@ -585,32 +590,31 @@ public class TouchInteractionService extends Service {
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
         if (!LockedUserState.get(this).isUserUnlocked() || mDeviceState.isButtonNavMode()) {
-            // Skip if not yet unlocked (can't read user shared prefs) or if the current
-            // navigation
+            // Skip if not yet unlocked (can't read user shared prefs) or if the current navigation
             // mode doesn't have gestures
             return;
         }
 
         // Reset home bounce seen on quick step enabled for first time
-        SharedPreferences sharedPrefs = LauncherPrefs.getPrefs(this);
-        if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
-            sharedPrefs.edit()
-                    .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
-                    .putBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN, false)
-                    .apply();
+        LauncherPrefs prefs = LauncherPrefs.get(this);
+        if (!prefs.get(HAS_ENABLED_QUICKSTEP_ONCE)) {
+            prefs.put(
+                    HAS_ENABLED_QUICKSTEP_ONCE.to(true),
+                    HOME_BOUNCE_SEEN.to(false));
         }
     }
 
     private void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
-        AccessibilityManager am = getSystemService(AccessibilityManager.class);
+        Executors.UI_HELPER_EXECUTOR.execute(() -> {
+            AccessibilityManager am = getSystemService(AccessibilityManager.class);
 
-        if (LawnchairQuickstepCompat.ATLEAST_R) {
             if (isHomeAndOverviewSame) {
-                am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+                am.registerSystemAction(
+                        createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
             } else {
                 am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
             }
-        }
+        });
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
                 .getCreatedActivity();
@@ -659,7 +663,8 @@ public class TouchInteractionService extends Service {
                 mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
             }
 
-            int isShadeExpandedFlag = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+            int isShadeExpandedFlag =
+                    SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
             boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
             boolean isExpanded = (systemUiStateFlags & isShadeExpandedFlag) != 0;
             if (wasExpanded != isExpanded && isExpanded) {
@@ -703,6 +708,8 @@ public class TouchInteractionService extends Service {
             mTaskbarManager.destroy();
         }
         sConnected = false;
+
+        ScreenOnTracker.INSTANCE.get(this).removeListener(mScreenOnListener);
         super.onDestroy();
     }
 
@@ -712,9 +719,22 @@ public class TouchInteractionService extends Service {
         return mTISBinder;
     }
 
+    protected void onScreenOnChanged(boolean isOn) {
+        if (isOn) {
+            return;
+        }
+        long currentTime = SystemClock.uptimeMillis();
+        MotionEvent cancelEvent = MotionEvent.obtain(
+                currentTime, currentTime, ACTION_CANCEL, 0f, 0f, 0);
+        onInputEvent(cancelEvent);
+        cancelEvent.recycle();
+    }
+
     private void onInputEvent(InputEvent ev) {
         if (!(ev instanceof MotionEvent)) {
-            Log.e(TAG, "Unknown event " + ev);
+            ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
+                    .append("Cannot process input event, received unknown event ")
+                    .append(ev.toString()));
             return;
         }
         MotionEvent event = (MotionEvent) ev;
@@ -722,27 +742,38 @@ public class TouchInteractionService extends Service {
         TestLogging.recordMotionEvent(
                 TestProtocol.SEQUENCE_TIS, "TouchInteractionService.onInputEvent", event);
 
-        if (!LockedUserState.get(this).isUserUnlocked() || (mDeviceState.isButtonNavMode()
+        boolean isUserUnlocked = LockedUserState.get(this).isUserUnlocked();
+        if (!isUserUnlocked || (mDeviceState.isButtonNavMode()
                 && !isTrackpadMotionEvent(event))) {
+            ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
+                    .append("Cannot process input event, ")
+                    .append(!isUserUnlocked
+                            ? "user is locked"
+                            : "using 3-button nav and event is not a trackpad event"));
             return;
         }
 
         SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
 
         final int action = event.getActionMasked();
-        // Note this will create a new consumer every mouse click, as after ACTION_UP
-        // from the click
+        // Note this will create a new consumer every mouse click, as after ACTION_UP from the click
         // an ACTION_HOVER_ENTER will fire as well.
-        boolean isHoverActionWithoutConsumer = isHoverEvent(action)
-                && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
+        boolean isHoverActionWithoutConsumer =
+                event.isHoverEvent() && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
+        CompoundString reasonString = action == ACTION_DOWN
+                ? new CompoundString("onMotionEvent: ") : CompoundString.NO_OP;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if ((!mDeviceState.isOneHandedModeActive()
-                    && mRotationTouchHelper.isInSwipeUpTouchRegion(event))
+            boolean isOneHandedModeActive = mDeviceState.isOneHandedModeActive();
+            boolean isInSwipeUpTouchRegion = mRotationTouchHelper.isInSwipeUpTouchRegion(event);
+            if ((!isOneHandedModeActive && isInSwipeUpTouchRegion)
                     || isHoverActionWithoutConsumer) {
-                // Clone the previous gesture state since onConsumerAboutToBeSwitched might
-                // trigger
+                reasonString.append(!isOneHandedModeActive && isInSwipeUpTouchRegion
+                                ? "one handed mode is not active and event is in swipe up region"
+                                : "isHoverActionWithoutConsumer == true")
+                        .append(", creating new input consumer");
+                // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
                 GestureState newGestureState = createGestureState(mGestureState,
@@ -752,9 +783,13 @@ public class TouchInteractionService extends Service {
                 mGestureState = newGestureState;
                 mConsumer = newConsumer(prevGestureState, mGestureState, event);
                 mUncheckedConsumer = mConsumer;
-            } else if (LockedUserState.get(this).isUserUnlocked()
-                    && (mDeviceState.isFullyGesturalNavMode() || isTrackpadMultiFingerSwipe(event))
+            } else if ((mDeviceState.isFullyGesturalNavMode() || isTrackpadMultiFingerSwipe(event))
                     && mDeviceState.canTriggerAssistantAction(event)) {
+                reasonString.append(mDeviceState.isFullyGesturalNavMode()
+                                ? "using fully gestural nav"
+                                : "event is a trackpad multi-finger swipe")
+                        .append(" and event can trigger assistant action")
+                        .append(", consuming gesture for assistant action");
                 mGestureState = createGestureState(mGestureState,
                         getTrackpadGestureType(event));
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
@@ -762,6 +797,8 @@ public class TouchInteractionService extends Service {
                 // happen if the next gesture is also quick switch.
                 mUncheckedConsumer = tryCreateAssistantInputConsumer(mGestureState, event);
             } else if (mDeviceState.canTriggerOneHandedAction(event)) {
+                reasonString.append("event can trigger one-handed action")
+                                .append(", consuming gesture for one-handed action");
                 // Consume gesture event for triggering one handed feature.
                 mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
                         InputConsumer.NO_OP, mInputMonitorCompat);
@@ -777,29 +814,43 @@ public class TouchInteractionService extends Service {
         }
 
         if (mUncheckedConsumer != InputConsumer.NO_OP) {
-            switch (event.getActionMasked()) {
+            switch (action) {
                 case ACTION_DOWN:
+                    ActiveGestureLog.INSTANCE.addLog(reasonString);
                     // fall through
                 case ACTION_UP:
                     ActiveGestureLog.INSTANCE.addLog(
-                            /* event= */ "onMotionEvent(" + (int) event.getRawX() + ", "
-                                    + (int) event.getRawY() + "): "
-                                    + MotionEvent.actionToString(event.getActionMasked()) + ", "
-                                    + MotionEvent.classificationToString(event.getClassification()),
-                            /* gestureEvent= */ event.getActionMasked() == ACTION_DOWN
+                            new CompoundString("onMotionEvent(")
+                                    .append((int) event.getRawX())
+                                    .append(", ")
+                                    .append((int) event.getRawY())
+                                    .append("): ")
+                                    .append(MotionEvent.actionToString(action))
+                                    .append(", ")
+                                    .append(MotionEvent.classificationToString(
+                                            event.getClassification())),
+                            /* gestureEvent= */ action == ACTION_DOWN
                                     ? MOTION_DOWN
                                     : MOTION_UP);
                     break;
                 case ACTION_MOVE:
-                    ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
-                            + MotionEvent.actionToString(event.getActionMasked()) + ","
-                            + MotionEvent.classificationToString(event.getClassification())
-                            + ", pointerCount: " + event.getPointerCount(), MOTION_MOVE);
+                    ActiveGestureLog.INSTANCE.addLog(
+                            new CompoundString("onMotionEvent: ")
+                                    .append(MotionEvent.actionToString(action))
+                                    .append(",")
+                                    .append(MotionEvent.classificationToString(
+                                            event.getClassification()))
+                                    .append(", pointerCount: ")
+                                    .append(event.getPointerCount()),
+                            MOTION_MOVE);
                     break;
                 default: {
-                    ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
-                            + MotionEvent.actionToString(event.getActionMasked()) + ","
-                            + MotionEvent.classificationToString(event.getClassification()));
+                    ActiveGestureLog.INSTANCE.addLog(
+                            new CompoundString("onMotionEvent: ")
+                                    .append(MotionEvent.actionToString(action))
+                                    .append(",")
+                                    .append(MotionEvent.classificationToString(
+                                            event.getClassification())));
                 }
             }
         }
@@ -868,7 +919,11 @@ public class TouchInteractionService extends Service {
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             gestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.getLogId());
-            taskInfo = previousGestureState.getRunningTask();
+            TopTaskTracker.CachedTaskInfo previousTaskInfo = previousGestureState.getRunningTask();
+            // previousTaskInfo can be null iff previousGestureState == GestureState.DEFAULT_STATE
+            taskInfo = previousTaskInfo != null
+                    ? previousTaskInfo
+                    : TopTaskTracker.INSTANCE.get(this).getCachedTopTask(false);
             gestureState.updateRunningTask(taskInfo);
             gestureState.updateLastStartedTaskIds(previousGestureState.getLastStartedTaskIds());
             gestureState.updatePreviouslyAppearedTaskIds(
@@ -883,7 +938,7 @@ public class TouchInteractionService extends Service {
 
         // Log initial state for the gesture.
         ActiveGestureLog.INSTANCE.addLog(new CompoundString("Current running task package name=")
-                .append(taskInfo == null ? "no running task" : taskInfo.getPackageName()));
+                .append(taskInfo.getPackageName()));
         ActiveGestureLog.INSTANCE.addLog(new CompoundString("Current SystemUi state flags=")
                 .append(mDeviceState.getSystemUiStateString()));
         return gestureState;
@@ -902,16 +957,16 @@ public class TouchInteractionService extends Service {
             return consumer;
         }
 
-        boolean canStartSystemGesture = mGestureState.isTrackpadGesture() ? mDeviceState.canStartTrackpadGesture()
-                : mDeviceState.canStartSystemGesture();
+        boolean canStartSystemGesture =
+                mGestureState.isTrackpadGesture() ? mDeviceState.canStartTrackpadGesture()
+                        : mDeviceState.canStartSystemGesture();
 
         if (!LockedUserState.get(this).isUserUnlocked()) {
             CompoundString reasonString = newCompoundString("device locked");
             InputConsumer consumer;
             if (canStartSystemGesture) {
                 // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
-                // launched while device is locked even after exiting direct boot mode (e.g.
-                // camera).
+                // launched while device is locked even after exiting direct boot mode (e.g. camera).
                 consumer = createDeviceLockedInputConsumer(
                         newGestureState, reasonString.append(SUBSTRING_PREFIX)
                                 .append("can start system gesture"));
@@ -926,13 +981,11 @@ public class TouchInteractionService extends Service {
 
         CompoundString reasonString;
         InputConsumer base;
-        // When there is an existing recents animation running, bypass systemState check
-        // as this is
+        // When there is an existing recents animation running, bypass systemState check as this is
         // a followup gesture and the first gesture started in a valid system state.
         if (canStartSystemGesture || previousGestureState.isRecentsAnimationRunning()) {
             reasonString = newCompoundString(canStartSystemGesture
-                    ? "can start system gesture"
-                    : "recents animation was running")
+                    ? "can start system gesture" : "recents animation was running")
                     .append(", trying to use base consumer");
             base = newBaseConsumer(previousGestureState, newGestureState, event, reasonString);
         } else {
@@ -945,8 +998,8 @@ public class TouchInteractionService extends Service {
             handleOrientationSetup(base);
         }
         if (mDeviceState.isFullyGesturalNavMode() || newGestureState.isTrackpadGesture()) {
-            String reasonPrefix = "device is in gesture navigation mode or 3-button mode with a"
-                    + " trackpad gesture";
+            String reasonPrefix =
+                    "device is in gesture navigation mode or 3-button mode with a trackpad gesture";
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
@@ -956,9 +1009,8 @@ public class TouchInteractionService extends Service {
                 base = tryCreateAssistantInputConsumer(base, newGestureState, event, reasonString);
             }
 
-            // If Taskbar is present, we listen for swipe or cursor hover events to unstash
-            // it.
-            TaskbarActivityContext tac = mTaskbarManager != null ? mTaskbarManager.getCurrentActivityContext() : null;
+            // If Taskbar is present, we listen for swipe or cursor hover events to unstash it.
+            TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
             if (tac != null && !(base instanceof AssistantInputConsumer)) {
                 // Present always on large screen or on small screen w/ flag
                 DeviceProfile dp = tac.getDeviceProfile();
@@ -968,19 +1020,19 @@ public class TouchInteractionService extends Service {
                     reasonString.append(NEWLINE_PREFIX)
                             .append(reasonPrefix)
                             .append(SUBSTRING_PREFIX)
-                            .append("TaskbarActivityContext != null, "
-                                    + "using TaskbarUnstashInputConsumer");
+                            .append("TaskbarActivityContext != null, ")
+                            .append("using TaskbarUnstashInputConsumer");
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
                             mOverviewCommandHelper);
                 }
-            } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()
-                    && !previousGestureState.isRecentsAnimationRunning()) {
+            } else if (canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
-                        .append("Long press nav handle enabled, "
-                                + "using NavHandleLongPressInputConsumer");
-                base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat);
+                        .append("Not running recents animation, ")
+                        .append("using NavHandleLongPressInputConsumer");
+                base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat,
+                        mDeviceState);
             }
 
             if (mDeviceState.isBubblesExpanded()) {
@@ -1013,8 +1065,7 @@ public class TouchInteractionService extends Service {
                         .append(SUBSTRING_PREFIX)
                         .append("screen pinning is active, using ScreenPinnedInputConsumer");
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
-                // base input consumer (which should be NO_OP anyway since topTaskLocked ==
-                // true).
+                // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
                 base = new ScreenPinnedInputConsumer(this, newGestureState);
             }
 
@@ -1095,31 +1146,33 @@ public class TouchInteractionService extends Service {
 
         reasonString.append(SUBSTRING_PREFIX).append("keyguard is not showing occluded");
 
+        TopTaskTracker.CachedTaskInfo runningTask = gestureState.getRunningTask();
         // Use overview input consumer for sharesheets on top of home.
         boolean forceOverviewInputConsumer = gestureState.getActivityInterface().isStarted()
-                && gestureState.getRunningTask() != null
-                && gestureState.getRunningTask().isRootChooseActivity();
+                && runningTask != null
+                && runningTask.isRootChooseActivity();
 
-        // In the case where we are in an excluded, translucent overlay, ignore it and
-        // treat the
+        // In the case where we are in an excluded, translucent overlay, ignore it and treat the
         // running activity as the task behind the overlay.
-        TopTaskTracker.CachedTaskInfo otherVisibleTask = gestureState.getRunningTask() == null
+        TopTaskTracker.CachedTaskInfo otherVisibleTask = runningTask == null
                 ? null
-                : gestureState.getRunningTask().otherVisibleTaskThisIsExcludedOver();
+                : runningTask.otherVisibleTaskThisIsExcludedOver();
         if (otherVisibleTask != null) {
             ActiveGestureLog.INSTANCE.addLog(new CompoundString("Changing active task to ")
                     .append(otherVisibleTask.getPackageName())
                     .append(" because the previous task running on top of this one (")
-                    .append(gestureState.getRunningTask().getPackageName())
+                    .append(runningTask.getPackageName())
                     .append(") was excluded from recents"));
             gestureState.updateRunningTask(otherVisibleTask);
         }
 
-        boolean previousGestureAnimatedToLauncher = previousGestureState.isRunningAnimationToLauncher();
+        boolean previousGestureAnimatedToLauncher =
+                previousGestureState.isRunningAnimationToLauncher();
         // with shell-transitions, home is resumed during recents animation, so
         // explicitly check against recents animation too.
-        boolean launcherResumedThroughShellTransition = gestureState.getActivityInterface().isResumed()
-                && !previousGestureState.isRecentsAnimationRunning();
+        boolean launcherResumedThroughShellTransition =
+                gestureState.getActivityInterface().isResumed()
+                        && !previousGestureState.isRecentsAnimationRunning();
         if (gestureState.getActivityInterface().isInLiveTileMode()) {
             return createOverviewInputConsumer(
                     previousGestureState,
@@ -1128,7 +1181,7 @@ public class TouchInteractionService extends Service {
                     forceOverviewInputConsumer,
                     reasonString.append(SUBSTRING_PREFIX)
                             .append("is in live tile mode, trying to use overview input consumer"));
-        } else if (gestureState.getRunningTask() == null) {
+        } else if (runningTask == null) {
             return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
                     .append("running task == null"));
         } else if (previousGestureAnimatedToLauncher
@@ -1146,7 +1199,7 @@ public class TouchInteractionService extends Service {
                                             ? "launcher resumed through a shell transition"
                                             : "forceOverviewInputConsumer == true"))
                             .append(", trying to use overview input consumer"));
-        } else if (mDeviceState.isGestureBlockedTask(gestureState.getRunningTask())) {
+        } else if (mDeviceState.isGestureBlockedTask(runningTask)) {
             return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
                     .append("is gesture-blocked task, trying to use default input consumer"));
         } else {
@@ -1158,8 +1211,7 @@ public class TouchInteractionService extends Service {
 
     public AbsSwipeUpHandler.Factory getSwipeUpHandlerFactory() {
         return !mOverviewComponentObserver.isHomeAndOverviewSame()
-                ? mFallbackSwipeHandlerFactory
-                : mLauncherSwipeHandlerFactory;
+                ? mFallbackSwipeHandlerFactory : mLauncherSwipeHandlerFactory;
     }
 
     private InputConsumer createOtherActivityInputConsumer(GestureState gestureState,
@@ -1179,8 +1231,8 @@ public class TouchInteractionService extends Service {
         if ((mDeviceState.isFullyGesturalNavMode() || gestureState.isTrackpadGesture())
                 && gestureState.getRunningTask() != null) {
             reasonString.append(SUBSTRING_PREFIX)
-                    .append("device is in gesture nav mode or 3-button mode with a trackpad gesture"
-                            + "and running task != null")
+                    .append("device is in gesture nav mode or 3-button mode with a trackpad")
+                    .append(" gesture and running task != null")
                     .append(", using DeviceLockedInputConsumer");
             return new DeviceLockedInputConsumer(
                     this, mDeviceState, mTaskAnimationManager, gestureState, mInputMonitorCompat);
@@ -1188,9 +1240,9 @@ public class TouchInteractionService extends Service {
             return getDefaultInputConsumer(reasonString
                     .append(SUBSTRING_PREFIX)
                     .append((mDeviceState.isFullyGesturalNavMode()
-                            || gestureState.isTrackpadGesture())
-                                    ? "running task == null"
-                                    : "device is not in gesture nav mode and it's not a trackpad gesture")
+                                    || gestureState.isTrackpadGesture())
+                            ? "running task == null"
+                            : "device is not in gesture nav mode and it's not a trackpad gesture")
                     .append(", trying to use default input consumer"));
         }
     }
@@ -1209,7 +1261,8 @@ public class TouchInteractionService extends Service {
         }
 
         boolean hasWindowFocus = activity.getRootView().hasWindowFocus();
-        boolean isPreviousGestureAnimatingToLauncher = previousGestureState.isRunningAnimationToLauncher();
+        boolean isPreviousGestureAnimatingToLauncher =
+                previousGestureState.isRunningAnimationToLauncher();
         boolean isInLiveTileMode = gestureState.getActivityInterface().isInLiveTileMode();
         reasonString.append(SUBSTRING_PREFIX)
                 .append(hasWindowFocus
@@ -1236,10 +1289,8 @@ public class TouchInteractionService extends Service {
     }
 
     /**
-     * To be called by the consumer when it's no longer active. This can be called
-     * by any consumer
-     * in the hierarchy at any point during the gesture (ie. if a delegate consumer
-     * starts
+     * To be called by the consumer when it's no longer active. This can be called by any consumer
+     * in the hierarchy at any point during the gesture (ie. if a delegate consumer starts
      * intercepting touches, the base consumer can try to call this).
      */
     private void onConsumerInactive(InputConsumer caller) {
@@ -1251,8 +1302,7 @@ public class TouchInteractionService extends Service {
     private void reset() {
         mConsumer = mUncheckedConsumer = getDefaultInputConsumer();
         mGestureState = DEFAULT_STATE;
-        // By default, use batching of the input events, but check receiver before using
-        // in the rare
+        // By default, use batching of the input events, but check receiver before using in the rare
         // case that the monitor was disposed before the swipe settled
         if (mInputEventReceiver != null) {
             mInputEventReceiver.setBatchingEnabled(true);
@@ -1264,8 +1314,7 @@ public class TouchInteractionService extends Service {
     }
 
     /**
-     * Returns the {@link ResetGestureInputConsumer} if user is unlocked, else
-     * NO_OP.
+     * Returns the {@link ResetGestureInputConsumer} if user is unlocked, else NO_OP.
      */
     private @NonNull InputConsumer getDefaultInputConsumer(@NonNull CompoundString reasonString) {
         if (mResetGestureInputConsumer != null) {
@@ -1275,8 +1324,7 @@ public class TouchInteractionService extends Service {
         } else {
             reasonString.append(SUBSTRING_PREFIX).append(
                     "mResetGestureInputConsumer not initialized, using no-op input consumer");
-            // mResetGestureInputConsumer isn't initialized until onUserUnlocked(), so reset
-            // to
+            // mResetGestureInputConsumer isn't initialized until onUserUnlocked(), so reset to
             // NO_OP until then (we never want these to be null).
             return InputConsumer.NO_OP;
         }
@@ -1305,14 +1353,13 @@ public class TouchInteractionService extends Service {
             return;
         }
 
-        final BaseActivityInterface activityInterface = mOverviewComponentObserver.getActivityInterface();
+        final BaseActivityInterface activityInterface =
+                mOverviewComponentObserver.getActivityInterface();
         final Intent overviewIntent = new Intent(
                 mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
         if (activityInterface.getCreatedActivity() != null && fromInit) {
-            // The activity has been created before the initialization of overview service.
-            // It is
-            // usually happens when booting or launcher is the top activity, so we should
-            // already
+            // The activity has been created before the initialization of overview service. It is
+            // usually happens when booting or launcher is the top activity, so we should already
             // have the latest state.
             return;
         }
@@ -1321,6 +1368,7 @@ public class TouchInteractionService extends Service {
         Log.i(TAG, "preloadOverview: forSUWAllSet=" + forSUWAllSet
                 + ", isHomeAndOverviewSame=" + mOverviewComponentObserver.isHomeAndOverviewSame());
 
+        ActiveGestureLog.INSTANCE.addLog("preloadRecentsAnimation");
         mTaskAnimationManager.preloadRecentsAnimation(overviewIntent);
     }
 
@@ -1329,7 +1377,8 @@ public class TouchInteractionService extends Service {
         if (!LockedUserState.get(this).isUserUnlocked()) {
             return;
         }
-        final BaseActivityInterface activityInterface = mOverviewComponentObserver.getActivityInterface();
+        final BaseActivityInterface activityInterface =
+                mOverviewComponentObserver.getActivityInterface();
         final BaseDraggingActivity activity = activityInterface.getCreatedActivity();
         if (activity == null || activity.isStarted()) {
             // We only care about the existing background activity.
@@ -1394,6 +1443,7 @@ public class TouchInteractionService extends Service {
         mTaskbarManager.dumpLogs("", pw);
         pw.println("AssistStateManager:");
         AssistStateManager.INSTANCE.get(this).dump("  ", pw);
+        SystemUiProxy.INSTANCE.get(this).dump(pw);
     }
 
     private AbsSwipeUpHandler createLauncherSwipeHandler(

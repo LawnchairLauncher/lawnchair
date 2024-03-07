@@ -21,6 +21,7 @@ import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITION
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FINISH_RECENTS_ANIMATION;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.IRecentsAnimationController;
@@ -32,6 +33,7 @@ import android.window.PictureInPictureSurfaceTransaction;
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
+import com.android.internal.os.IResultReceiver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
@@ -172,12 +174,19 @@ public class RecentsAnimationController {
         mFinishTargetIsLauncher = toRecents;
         mOnFinishedListener.accept(this);
         Runnable finishCb = () -> {
-            mController.finish(toRecents, sendUserLeaveHint);
+            mController.finish(toRecents, sendUserLeaveHint, new IResultReceiver.Stub() {
+                @Override
+                public void send(int i, Bundle bundle) throws RemoteException {
+                    ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation-callback");
+                    MAIN_EXECUTOR.execute(() -> {
+                        mPendingFinishCallbacks.executeAllAndDestroy();
+                    });
+                }
+            });
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
             InteractionJankMonitorWrapper.end(
                     InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
-            MAIN_EXECUTOR.execute(mPendingFinishCallbacks::executeAllAndDestroy);
         };
         if (forceFinish) {
             finishCb.run();

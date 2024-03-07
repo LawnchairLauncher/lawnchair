@@ -19,12 +19,13 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
-import static com.android.launcher3.util.NavigationMode.TWO_BUTTONS;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
@@ -54,12 +55,19 @@ import android.net.Uri;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.ISystemGestureExclusionListener;
+import android.view.IWindowManager;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+import android.view.WindowManagerGlobal;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
@@ -67,11 +75,11 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
-import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -85,15 +93,36 @@ import app.lawnchair.LawnchairApp;
  */
 public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
+    private static final String TAG = "RecentsAnimationDeviceState";
+
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
     // TODO: Move to quickstep contract
-    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
-    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 3f;
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 1.414f;
 
     private final Context mContext;
     private final DisplayController mDisplayController;
-    private final int mDisplayId;
+
+    private final IWindowManager mIWindowManager;
+
+    @VisibleForTesting
+    final ISystemGestureExclusionListener mGestureExclusionListener =
+            new ISystemGestureExclusionListener.Stub() {
+                @BinderThread
+                @Override
+                public void onSystemGestureExclusionChanged(int displayId,
+                        Region systemGestureExclusionRegion, Region unrestrictedOrNull) {
+                    if (displayId != DEFAULT_DISPLAY) {
+                        return;
+                    }
+                    // Assignments are atomic, it should be safe on binder thread. Also we don't
+                    // think systemGestureExclusionRegion can be null but just in case, don't
+                    // let mExclusionRegion be null.
+                    mExclusionRegion = systemGestureExclusionRegion != null
+                            ? systemGestureExclusionRegion : new Region();
+                }
+            };
     private final RotationTouchHelper mRotationTouchHelper;
     private final TaskStackChangeListener mPipListener;
     // Cache for better performance since it doesn't change at runtime.
@@ -118,26 +147,35 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     private int mGestureBlockingTaskId = -1;
     private @NonNull Region mExclusionRegion = new Region();
-    private SystemGestureExclusionListenerCompat mExclusionListener;
+    private boolean mExclusionListenerRegistered;
 
     public RecentsAnimationDeviceState(Context context) {
-        this(context, false);
+        this(context, false, WindowManagerGlobal.getWindowManagerService());
+    }
+
+    public RecentsAnimationDeviceState(Context context, boolean isInstanceForTouches) {
+        this(context, isInstanceForTouches, WindowManagerGlobal.getWindowManagerService());
+    }
+
+    @VisibleForTesting
+    RecentsAnimationDeviceState(Context context, IWindowManager windowManager) {
+        this(context, false, windowManager);
     }
 
     /**
-     * @param isInstanceForTouches {@code true} if this is the persistent instance
-     *                             being used for
-     *                             gesture touch handling
+     * @param isInstanceForTouches {@code true} if this is the persistent instance being used for
+     *                                   gesture touch handling
      */
-    public RecentsAnimationDeviceState(Context context, boolean isInstanceForTouches) {
+    RecentsAnimationDeviceState(
+            Context context, boolean isInstanceForTouches,
+            IWindowManager windowManager) {
         mContext = context;
         mDisplayController = DisplayController.INSTANCE.get(context);
-        mDisplayId = DEFAULT_DISPLAY;
+        mIWindowManager = windowManager;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
         mRotationTouchHelper = RotationTouchHelper.INSTANCE.get(context);
         if (isInstanceForTouches) {
-            // rotationTouchHelper doesn't get initialized after being destroyed, so only
-            // destroy
+            // rotationTouchHelper doesn't get initialized after being destroyed, so only destroy
             // if primary TouchInteractionService instance needs to be destroyed.
             mRotationTouchHelper.init();
             runOnDestroy(mRotationTouchHelper::destroy);
@@ -145,19 +183,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
         if (Utilities.ATLEAST_Q) {
             // Register for exclusion updates
-            mExclusionListener = new SystemGestureExclusionListenerCompat(mDisplayId) {
-                @Override
-                @BinderThread
-                public void onExclusionChanged(Region region) {
-                    if (region == null) {
-                        // Don't think this is possible but just in case, don't let it be null.
-                        region = new Region();
-                    }
-                    // Assignments are atomic, it should be safe on binder thread
-                    mExclusionRegion = region;
-                }
-            };
-            runOnDestroy(mExclusionListener::unregister);
+            runOnDestroy(() -> unregisterExclusionListener());
         }
 
         // Register for display changes changes
@@ -176,11 +202,12 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
             mIsOneHandedModeEnabled = false;
         }
 
-        Uri swipeBottomNotificationUri = Settings.Secure.getUriFor(ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED);
-        SettingsCache.OnChangeListener onChangeListener = enabled -> mIsSwipeToNotificationEnabled = enabled;
+        Uri swipeBottomNotificationUri =
+                Settings.Secure.getUriFor(ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED);
+        SettingsCache.OnChangeListener onChangeListener =
+                enabled -> mIsSwipeToNotificationEnabled = enabled;
         settingsCache.register(swipeBottomNotificationUri, onChangeListener);
-        mIsSwipeToNotificationEnabled = LawnchairApp.isRecentsEnabled()
-                && settingsCache.getValue(swipeBottomNotificationUri);
+        mIsSwipeToNotificationEnabled = settingsCache.getValue(swipeBottomNotificationUri);
         runOnDestroy(() -> settingsCache.unregister(swipeBottomNotificationUri, onChangeListener));
 
         Uri setupCompleteUri = Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE);
@@ -229,8 +256,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * Adds a listener for the nav mode change, guaranteed to be called after the
-     * device state's
+     * Adds a listener for the nav mode change, guaranteed to be called after the device state's
      * mode has changed.
      */
     public void addNavigationModeChangedCallback(Runnable callback) {
@@ -247,18 +273,58 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
         if ((flags & (CHANGE_ROTATION | CHANGE_NAVIGATION_MODE)) != 0) {
-            mMode = info.navigationMode;
+            mMode = info.getNavigationMode();
+            ActiveGestureLog.INSTANCE.setIsFullyGesturalNavMode(isFullyGesturalNavMode());
             mNavBarPosition = new NavBarPosition(mMode, info);
 
             if (mExclusionListener == null)
                 return;
 
             if (mMode == NO_BUTTON) {
-                mExclusionListener.register();
+                registerExclusionListener();
             } else {
-                mExclusionListener.unregister();
+                unregisterExclusionListener();
             }
         }
+    }
+
+    /**
+     * Registers {@link mGestureExclusionListener} for getting exclusion rect changes. Note that we
+     * make binder call on {@link UI_HELPER_EXECUTOR} to avoid jank.
+     */
+    public void registerExclusionListener() {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (mExclusionListenerRegistered) {
+                return;
+            }
+            try {
+                mIWindowManager.registerSystemGestureExclusionListener(
+                        mGestureExclusionListener, DEFAULT_DISPLAY);
+                mExclusionListenerRegistered = true;
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to register window manager callbacks", e);
+            }
+        });
+    }
+
+    /**
+     * Unregisters {@link mGestureExclusionListener} if previously registered. We make binder call
+     * on same {@link UI_HELPER_EXECUTOR} as in {@link #registerExclusionListener()} so that
+     * read/write {@link mExclusionListenerRegistered} field is thread safe.
+     */
+    public void unregisterExclusionListener() {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (!mExclusionListenerRegistered) {
+                return;
+            }
+            try {
+                mIWindowManager.unregisterSystemGestureExclusionListener(
+                        mGestureExclusionListener, DEFAULT_DISPLAY);
+                mExclusionListenerRegistered = false;
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to unregister window manager callbacks", e);
+            }
+        });
     }
 
     public void onOneHandedModeChanged(int newGesturalHeight) {
@@ -266,8 +332,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * @return the nav bar position for the current nav bar mode and display
-     *         rotation.
+     * @return the nav bar position for the current nav bar mode and display rotation.
      */
     public NavBarPosition getNavBarPosition() {
         return mNavBarPosition;
@@ -281,18 +346,10 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * @return whether the current nav mode has some gestures (either 2 or 0 button
-     *         mode).
+     * @return whether the current nav mode has some gestures (either 2 or 0 button mode).
      */
     public boolean isGesturalNavMode() {
         return mMode.hasGestures;
-    }
-
-    /**
-     * @return whether the current nav mode is 2-button-based.
-     */
-    public boolean isTwoButtonNavMode() {
-        return mMode == TWO_BUTTONS;
     }
 
     /**
@@ -306,7 +363,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
      * @return the display id for the display that Launcher is running on.
      */
     public int getDisplayId() {
-        return mDisplayId;
+        return DEFAULT_DISPLAY;
     }
 
     /**
@@ -356,11 +413,9 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * @return whether SystemUI is in a state where we can start a system gesture
-     *         from the trackpad.
-     *         Trackpad gestures can start even when the nav bar / task bar is
-     *         hidden in sticky immersive
-     *         mode.
+     * @return whether SystemUI is in a state where we can start a system gesture from the trackpad.
+     * Trackpad gestures can start even when the nav bar / task bar is hidden in sticky immersive
+     * mode.
      */
     public boolean canStartTrackpadGesture() {
         return (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
@@ -373,8 +428,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * @return whether the keyguard is showing and is occluded by an app showing
-     *         above the keyguard
+     * @return whether the keyguard is showing and is occluded by an app showing above the keyguard
      *         (like camera or maps)
      */
     public boolean isKeyguardShowingOccluded() {
@@ -400,13 +454,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
      */
     public boolean isBubblesExpanded() {
         return (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
-    }
-
-    /**
-     * @return whether notification panel is expanded
-     */
-    public boolean isNotificationPanelExpanded() {
-        return (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
     }
 
     /**
@@ -459,8 +506,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * Sets the region in screen space where the gestures should be deferred (ie.
-     * due to specific
+     * Sets the region in screen space where the gestures should be deferred (ie. due to specific
      * nav bar ui).
      */
     public void setDeferredGestureRegion(Region deferredGestureRegion) {
@@ -468,10 +514,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * @return whether the given {@param event} is in the deferred gesture region
-     *         indicating that
-     *         the Launcher should not immediately start the recents animation until
-     *         the gesture
+     * @return whether the given {@param event} is in the deferred gesture region indicating that
+     *         the Launcher should not immediately start the recents animation until the gesture
      *         passes a certain threshold.
      */
     public boolean isInDeferredGestureRegion(MotionEvent event) {
@@ -479,8 +523,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * @return whether the given {@param event} is in the app-requested
-     *         gesture-exclusion region.
+     * @return whether the given {@param event} is in the app-requested gesture-exclusion region.
      *         This is only used for quickswitch, and not swipe up.
      */
     public boolean isInExclusionRegion(MotionEvent event) {
@@ -513,8 +556,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     /**
      * @param ev An ACTION_DOWN motion event
-     * @return whether the given motion event can trigger the assistant over the
-     *         current task.
+     * @return whether the given motion event can trigger the assistant over the current task.
      */
     public boolean canTriggerAssistantAction(MotionEvent ev) {
         return mAssistantAvailable
@@ -524,8 +566,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and
-     * portrait mode
+     * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and portrait mode
      *
      * @param ev The touch screen motion event.
      * @return whether the given motion event can trigger the one handed mode.
@@ -559,31 +600,43 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         return mRotationTouchHelper;
     }
 
-    /**
-     * Returns whether IME is rendering nav buttons, and IME is currently showing.
-     */
+    /** Returns whether IME is rendering nav buttons, and IME is currently showing. */
     public boolean isImeRenderingNavButtons() {
         return mCanImeRenderGesturalNavButtons && mMode == NO_BUTTON
                 && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
     }
 
     /**
-     * Returns the touch slop for {@link InputConsumer}s to compare against before
-     * pilfering
-     * pointers. Note that this is squared because it expects to be compared against
-     * {@link com.android.launcher3.Utilities#squaredHypot} (to avoid square root on
-     * each event).
+     * Returns the touch slop for {@link InputConsumer}s to compare against before pilfering
+     * pointers.
      */
-    public float getSquaredTouchSlop() {
+    public float getTouchSlop() {
         float slopMultiplier = isFullyGesturalNavMode()
                 ? QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL
                 : QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
         float touchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
-        return slopMultiplier * touchSlop * touchSlop;
+
+        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
+            float customSlopMultiplier =
+                    LauncherPrefs.get(mContext).get(LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE) / 100f;
+            return customSlopMultiplier * slopMultiplier * touchSlop;
+        } else {
+            return slopMultiplier * touchSlop;
+        }
+    }
+
+    /**
+     * Returns the squared touch slop for {@link InputConsumer}s to compare against before pilfering
+     * pointers. Note that this is squared because it expects to be compared against
+     * {@link com.android.launcher3.Utilities#squaredHypot} (to avoid square root on each event).
+     */
+    public float getSquaredTouchSlop() {
+        float touchSlop = getTouchSlop();
+        return touchSlop * touchSlop;
     }
 
     public String getSystemUiStateString() {
-        return QuickStepContract.getSystemUiStateString(mSystemUiStateFlags);
+        return  QuickStepContract.getSystemUiStateString(mSystemUiStateFlags);
     }
 
     public void dump(PrintWriter pw) {

@@ -143,6 +143,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
         int verticalPadding = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_predicted_icon_vertical_padding);
         int totalHeight = iconHeight + iconPadding + textHeight + verticalPadding * 2;
+        if (FeatureFlags.enableTwolineAllapps()) {
+            // Add extra textHeight to the existing total height.
+            totalHeight += textHeight;
+        }
         return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
 

@@ -17,6 +17,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -170,7 +171,8 @@ public class LoaderCursor extends CursorWrapper {
     public Intent parseIntent() {
         String intentDescription = getString(mIntentIndex);
         try {
-            return TextUtils.isEmpty(intentDescription) ? null : Intent.parseUri(intentDescription, 0);
+            return TextUtils.isEmpty(intentDescription) ?
+                    null : Intent.parseUri(intentDescription, 0);
         } catch (URISyntaxException e) {
             Log.e(TAG, "Error parsing Intent");
             return null;
@@ -196,8 +198,7 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     /**
-     * Loads the icon from the cursor and updates the {@param info} if the icon is
-     * an app resource.
+     * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
     protected boolean loadIcon(WorkspaceItemInfo info) {
         return createIconRequestInfo(info, false).loadWorkspaceIcon(mContext);
@@ -206,8 +207,7 @@ public class LoaderCursor extends CursorWrapper {
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
         byte[] iconBlob = itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
-                ? getIconBlob()
-                : null;
+                ? getIconBlob() : null;
 
         return new IconRequestInfo<>(wai, mActivityInfo, iconBlob, useLowResIcon);
     }
@@ -290,8 +290,7 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     /**
-     * Make an WorkspaceItemInfo object for a restored application or shortcut item
-     * that points
+     * Make an WorkspaceItemInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
     public WorkspaceItemInfo getRestoredItemInfo(Intent intent) {
@@ -395,9 +394,9 @@ public class LoaderCursor extends CursorWrapper {
      * Returns a {@link ContentWriter} which can be used to update the current item.
      */
     public ContentWriter updater() {
-        return new ContentWriter(mContext, new ContentWriter.CommitParams(
-                mApp.getModel().getModelDbController(),
-                BaseColumns._ID + "= ?", new String[] { Integer.toString(id) }));
+       return new ContentWriter(mContext, new ContentWriter.CommitParams(
+               mApp.getModel().getModelDbController(),
+               BaseColumns._ID + "= ?", new String[]{Integer.toString(id)}));
     }
 
     /**
@@ -410,7 +409,6 @@ public class LoaderCursor extends CursorWrapper {
 
     /**
      * Removes any items marked for removal.
-     * 
      * @return true is any item was removed.
      */
     public boolean commitDeleted() {
@@ -475,8 +473,7 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     /**
-     * Adds the {@param info} to {@param dataModel} if it does not overlap with any
-     * other item,
+     * Adds the {@param info} to {@param dataModel} if it does not overlap with any other item,
      * otherwise marks it for deletion.
      */
     public void checkAndAddItem(
@@ -486,7 +483,7 @@ public class LoaderCursor extends CursorWrapper {
             // cause the item loading to get skipped
             ShortcutKey.fromItemInfo(info);
         }
-        if (checkItemPlacement(info)) {
+        if (checkItemPlacement(info, dataModel.isFirstPagePinnedItemEnabled)) {
             dataModel.addItem(mContext, info, false, logger);
         } else {
             markDeleted("Item position overlap");
@@ -494,13 +491,13 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     /**
-     * check & update map of what's occupied; used to discard overlapping/invalid
-     * items
+     * check & update map of what's occupied; used to discard overlapping/invalid items
      */
-    protected boolean checkItemPlacement(ItemInfo item) {
+    protected boolean checkItemPlacement(ItemInfo item, boolean isFirstPagePinnedItemEnabled) {
         int containerIndex = item.screenId;
         if (item.container == Favorites.CONTAINER_HOTSEAT) {
-            final GridOccupancy hotseatOccupancy = mOccupied.get(Favorites.CONTAINER_HOTSEAT);
+            final GridOccupancy hotseatOccupancy =
+                    mOccupied.get(Favorites.CONTAINER_HOTSEAT);
 
             if (item.screenId >= mIDP.numDatabaseHotseatIcons) {
                 Log.e(TAG, "Error loading shortcut " + item
@@ -544,9 +541,9 @@ public class LoaderCursor extends CursorWrapper {
 
         if (!mOccupied.containsKey(item.screenId)) {
             GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
-            if (item.screenId == Workspace.FIRST_SCREEN_ID && FeatureFlags.topQsbOnFirstScreenEnabled(mContext)) {
-                // Mark the first X columns (X is width of the search container) in the first
-                // row as
+            if (item.screenId == Workspace.FIRST_SCREEN_ID && (FeatureFlags.QSB_ON_FIRST_SCREEN
+                    && !shouldShowFirstPageWidget() && isFirstPagePinnedItemEnabled)) {
+                // Mark the first X columns (X is width of the search container) in the first row as
                 // occupied (if the feature is enabled) in order to account for the search
                 // container.
                 int spanX = mIDP.numSearchContainerColumns;

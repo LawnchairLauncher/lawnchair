@@ -18,7 +18,6 @@ package com.android.launcher3.views;
 import static androidx.core.content.ContextCompat.getColorStateList;
 
 import static com.android.launcher3.LauncherState.EDIT_MODE;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
@@ -78,7 +77,8 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
     private static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
     private static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
     // An intent extra to indicate the launch source by launcher.
-    private static final String EXTRA_WALLPAPER_LAUNCH_SOURCE = "com.android.wallpaper.LAUNCH_SOURCE";
+    private static final String EXTRA_WALLPAPER_LAUNCH_SOURCE =
+            "com.android.wallpaper.LAUNCH_SOURCE";
 
     private final ArrayMap<View, OptionItem> mItemMap = new ArrayMap<>();
     private RectF mTargetRect;
@@ -154,11 +154,18 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
 
     @Override
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
-        if (FeatureFlags.showMaterialUPopup(getContext())) {
-            assignMarginsAndBackgrounds(viewGroup,
-                    mColors[0]);
-        } else {
+        if (!FeatureFlags.showMaterialUPopup(getContext())) {
             assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
+        }
+        
+        assignMarginsAndBackgrounds(viewGroup,
+                getColorStateList(getContext(), mColorIds[0]).getDefaultColor());
+        // last shortcut doesn't need bottom margin
+        final int count = viewGroup.getChildCount() - 1;
+        for (int i = 0; i < count; i++) {
+            // These are shortcuts and not shortcut containers, but they still need bottom margin
+            MarginLayoutParams mlp = (MarginLayoutParams) viewGroup.getChildAt(i).getLayoutParams();
+            mlp.bottomMargin = mChildContainerMargin;
         }
     }
 
@@ -170,12 +177,16 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         return show(activityContext, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
-            ActivityContext activityContext,
+    @Nullable
+    private static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            @Nullable ActivityContext activityContext,
             RectF targetRect,
             List<OptionItem> items,
             boolean shouldAddArrow,
             int width) {
+        if (activityContext == null) {
+            return null;
+        }
         OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;

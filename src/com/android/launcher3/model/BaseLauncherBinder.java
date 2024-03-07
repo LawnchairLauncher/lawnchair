@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -54,8 +55,7 @@ import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 /**
- * Binds the results of {@link com.android.launcher3.model.LoaderTask} to the
- * Callbacks objects.
+ * Binds the results of {@link com.android.launcher3.model.LoaderTask} to the Callbacks objects.
  */
 public abstract class BaseLauncherBinder {
 
@@ -88,8 +88,8 @@ public abstract class BaseLauncherBinder {
         Trace.beginSection("BaseLauncherBinder#bindWorkspace");
         try {
             if (FeatureFlags.ENABLE_WORKSPACE_LOADING_OPTIMIZATION.get()) {
-                DisjointWorkspaceBinder workspaceBinder = initWorkspaceBinder(incrementBindId,
-                        mBgDataModel.collectWorkspaceScreens());
+                DisjointWorkspaceBinder workspaceBinder =
+                    initWorkspaceBinder(incrementBindId, mBgDataModel.collectWorkspaceScreens());
                 workspaceBinder.bindCurrentWorkspacePages(isBindSync);
                 workspaceBinder.bindOtherWorkspacePages();
             } else {
@@ -103,11 +103,9 @@ public abstract class BaseLauncherBinder {
     /**
      * Initializes the WorkspaceBinder for binding.
      *
-     * @param incrementBindId this is used to stop previously started binding tasks
-     *                        that are
+     * @param incrementBindId this is used to stop previously started binding tasks that are
      *                        obsolete but still queued.
-     * @param workspacePages  this allows the Launcher to add the correct workspace
-     *                        screens.
+     * @param workspacePages this allows the Launcher to add the correct workspace screens.
      */
     public DisjointWorkspaceBinder initWorkspaceBinder(boolean incrementBindId,
             IntArray workspacePages) {
@@ -164,8 +162,7 @@ public abstract class BaseLauncherBinder {
         Map<PackageUserKey, Integer> packageUserKeytoUidMap = Arrays.stream(apps).collect(
                 Collectors.toMap(
                         appInfo -> new PackageUserKey(appInfo.componentName.getPackageName(),
-                                appInfo.user),
-                        appInfo -> appInfo.uid, (a, b) -> a));
+                                appInfo.user), appInfo -> appInfo.uid, (a, b) -> a));
         executeCallbacksTask(c -> c.bindAllApplications(apps, flags, packageUserKeytoUidMap),
                 mUiExecutor);
     }
@@ -176,8 +173,12 @@ public abstract class BaseLauncherBinder {
     public abstract void bindWidgets();
 
     /**
-     * Sorts the set of items by hotseat, workspace (spatially from top to bottom,
-     * left to right)
+     * bindWidgets is abstract because it is a no-op for the go launcher.
+     */
+    public abstract void bindSmartspaceWidget();
+
+    /**
+     * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to right)
      */
     protected void sortWorkspaceItemsSpatially(InvariantDeviceProfile profile,
             ArrayList<ItemInfo> workspaceItems) {
@@ -229,8 +230,7 @@ public abstract class BaseLauncherBinder {
      */
     public LooperIdleLock newIdleLock(Object lock) {
         LooperIdleLock idleLock = new LooperIdleLock(lock, mUiExecutor.getLooper());
-        // If we are not binding or if the main looper is already idle, there is no
-        // reason to wait
+        // If we are not binding or if the main looper is already idle, there is no reason to wait
         if (mUiExecutor.getLooper().getQueue().isIdle()) {
             idleLock.queueIdle();
         }
@@ -272,11 +272,11 @@ public abstract class BaseLauncherBinder {
         }
 
         private void bind(boolean isBindSync, int workspaceItemCount) {
-            final IntSet currentScreenIds = mCallbacks.getPagesToBindSynchronously(mOrderedScreenIds);
+            final IntSet currentScreenIds =
+                    mCallbacks.getPagesToBindSynchronously(mOrderedScreenIds);
             Objects.requireNonNull(currentScreenIds, "Null screen ids provided by " + mCallbacks);
 
-            // Separate the items that are on the current screen, and all the other
-            // remaining items
+            // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
             ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
             ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
@@ -294,6 +294,10 @@ public abstract class BaseLauncherBinder {
             executeCallbacksTask(c -> {
                 c.clearPendingBinds();
                 c.startBinding();
+                if (ENABLE_SMARTSPACE_REMOVAL.get()) {
+                    c.setIsFirstPagePinnedItemEnabled(
+                            mBgDataModel.isFirstPagePinnedItemEnabled);
+                }
             }, mUiExecutor);
 
             // Bind workspace screens
@@ -303,13 +307,18 @@ public abstract class BaseLauncherBinder {
             bindWorkspaceItems(currentWorkspaceItems, mUiExecutor);
             bindAppWidgets(currentAppWidgets, mUiExecutor);
             if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
-                mExtraItems.forEach(item -> executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
+                mExtraItems.forEach(item ->
+                        executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
             }
 
             RunnableList pendingTasks = new RunnableList();
             Executor pendingExecutor = pendingTasks::add;
             bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
             bindAppWidgets(otherAppWidgets, pendingExecutor);
+
+            StringCache cacheClone = mBgDataModel.stringCache.clone();
+            executeCallbacksTask(c -> c.bindStringCache(cacheClone), pendingExecutor);
+
             executeCallbacksTask(c -> c.finishBindingItems(currentScreenIds), pendingExecutor);
             pendingExecutor.execute(
                     () -> {
@@ -324,9 +333,6 @@ public abstract class BaseLauncherBinder {
                         c.onInitialBindComplete(
                                 currentScreenIds, pendingTasks, workspaceItemCount, isBindSync);
                     }, mUiExecutor);
-
-            StringCache cacheClone = mBgDataModel.stringCache.clone();
-            executeCallbacksTask(c -> c.bindStringCache(cacheClone), pendingExecutor);
         }
 
         private void bindWorkspaceItems(
@@ -380,15 +386,11 @@ public abstract class BaseLauncherBinder {
         }
 
         /**
-         * Binds the currently loaded items in the Data Model. Also signals to the
-         * Callbacks[]
-         * that these items have been bound and their respective screens are ready to be
-         * shown.
+         * Binds the currently loaded items in the Data Model. Also signals to the Callbacks[]
+         * that these items have been bound and their respective screens are ready to be shown.
          *
-         * If this method is called after all the items on the workspace screen have
-         * already been
-         * loaded, it will bind all workspace items immediately, and
-         * bindOtherWorkspacePages() will
+         * If this method is called after all the items on the workspace screen have already been
+         * loaded, it will bind all workspace items immediately, and bindOtherWorkspacePages() will
          * not bind any items.
          */
         protected void bindCurrentWorkspacePages(boolean isBindSync) {
@@ -409,7 +411,8 @@ public abstract class BaseLauncherBinder {
             workspaceItems.forEach(it -> mBoundItemIds.add(it.id));
             appWidgets.forEach(it -> mBoundItemIds.add(it.id));
             if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
-                fciList.forEach(item -> executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
+                fciList.forEach(item ->
+                        executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
             }
 
             sortWorkspaceItemsSpatially(mApp.getInvariantDeviceProfile(), workspaceItems);

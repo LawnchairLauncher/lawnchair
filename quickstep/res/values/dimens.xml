@@ -44,6 +44,51 @@
     <dimen name="overview_task_margin">16dp</dimen>
     <!--  The horizontal space between tasks  -->
     <dimen name="overview_page_spacing">16dp</dimen>
+    <!--  The min width of the thumbnail icon menu for non-split tasks  -->
+    <dimen name="task_thumbnail_icon_menu_min_width">156dp</dimen>
+    <!--  The max width of the thumbnail icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_max_width">216dp</dimen>
+    <!--  The width of the thumbnail icon menu background  -->
+    <dimen name="task_thumbnail_icon_menu_background_min_width">120dp</dimen>
+    <!--  The width of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_width">86dp</dimen>
+    <!--  The max width of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_max_width">118dp</dimen>
+    <!--  The size of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_size">14sp</dimen>
+    <!--  The max width of the thumbnail icon menu background  -->
+    <dimen name="task_thumbnail_icon_menu_background_max_width">164dp</dimen>
+    <!--  The height of the thumbnail icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_min_height">36dp</dimen>
+    <!--  The corner radius of the thumbnail icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_corner_radius">28dp</dimen>
+    <!--  The width of the thumbnail icon menu backgorund's corners when collapsed  -->
+    <dimen name="task_thumbnail_icon_menu_corner_width">36dp</dimen>
+    <!--  The max height of the thumbnail icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_max_height">52dp</dimen>
+    <!--  The size of the icon menu arrow  -->
+    <dimen name="task_thumbnail_icon_menu_arrow_size">24dp</dimen>
+    <!--  The size of the icon menu arrow drawable  -->
+    <dimen name="task_thumbnail_icon_menu_arrow_drawable_size">16dp</dimen>
+    <!--  The margin at the start of the task icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_start_margin">12dp</dimen>
+    <!--  The margin at the top of the task icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_top_margin">12dp</dimen>
+    <!--  The gap at the top of the task icon menu when expanded  -->
+    <dimen name="task_thumbnail_icon_menu_expanded_gap">6dp</dimen>
+    <!--  The margin at the start of the task icon view in the icon menu  -->
+    <dimen name="task_thumbnail_icon_view_start_margin">6dp</dimen>
+    <!--  The space around the task icon arrow within the icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_arrow_margin">8dp</dimen>
+    <!--  The max space around the task icon within the icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_touch_max_margin">8dp</dimen>
+    <!--  The icon size for the icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_drawable_size">24dp</dimen>
+    <!--  The icon size for the icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_drawable_max_size">32dp</dimen>
+    <!--  The size of the icon menu's icon touch target  -->
+    <dimen name="task_thumbnail_icon_menu_drawable_touch_size">44dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_elevation">4dp</dimen>
 
     <dimen name="task_icon_cache_default_icon_size">72dp</dimen>
     <item name="overview_modal_max_scale" format="float" type="dimen">1.1</item>
@@ -86,10 +131,11 @@
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
     <dimen name="task_card_menu_option_vertical_padding">16dp</dimen>
-    <dimen name="task_menu_vertical_padding">8dp</dimen>
+    <dimen name="task_menu_edge_padding">8dp</dimen>
     <dimen name="task_card_margin">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
     <dimen name="task_menu_option_start_margin">16dp</dimen>
+    <dimen name="task_menu_option_text_start_margin">18dp</dimen>
     <!-- Copied from framework resource:
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
@@ -276,6 +322,7 @@
 
     <!-- Taskbar -->
     <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
+    <dimen name="taskbar_phone_size">@*android:dimen/navigation_bar_frame_height</dimen>
     <dimen name="taskbar_ime_size">48dp</dimen>
     <dimen name="taskbar_icon_min_touch_size">48dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
@@ -306,7 +353,7 @@
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
     <dimen name="taskbar_all_apps_button_translation_x_offset">6dp</dimen>
-
+    <dimen name="taskbar_all_apps_search_button_translation_x_offset">6dp</dimen>
 
     <!-- Transient taskbar -->
     <dimen name="transient_taskbar_padding">12dp</dimen>
@@ -315,8 +362,10 @@
     <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
     <dimen name="transient_taskbar_stashed_height">32dp</dimen>
-    <dimen name="transient_taskbar_all_apps_button_translation_x_offset">4dp</dimen>
+    <dimen name="transient_taskbar_all_apps_button_translation_x_offset">8dp</dimen>
     <dimen name="transient_taskbar_stash_spring_velocity_dp_per_s">400dp</dimen>
+    <dimen name="taskbar_tooltip_vertical_padding">8dp</dimen>
+    <dimen name="taskbar_tooltip_horizontal_padding">16dp</dimen>
 
     <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
     <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
@@ -352,11 +401,12 @@
     <dimen name="taskbar_edu_features_lottie_width">170dp</dimen>
     <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
     <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
-    <dimen name="taskbar_edu_features_tooltip_width_persistent">624dp</dimen>
-    <dimen name="taskbar_edu_features_tooltip_width_transient">428dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_with_two_features">428dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_with_three_features">624dp</dimen>
 
     <!--- Taskbar Pinning -->
     <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
+    <dimen name="taskbar_pinning_popup_menu_vertical_margin">16dp</dimen>
 
     <!-- Recents overview -->
     <dimen name="recents_filter_icon_size">30dp</dimen>
@@ -368,6 +418,7 @@
     <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
     <dimen name="bubblebar_pointer_size">8dp</dimen>
     <dimen name="bubblebar_elevation">1dp</dimen>
+    <dimen name="bubblebar_hotseat_adjustment_threshold">90dp</dimen>
 
     <dimen name="bubblebar_icon_size">50dp</dimen>
     <dimen name="bubblebar_badge_size">24dp</dimen>

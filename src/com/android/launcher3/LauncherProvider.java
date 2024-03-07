@@ -33,7 +33,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
@@ -43,8 +42,6 @@ import java.util.function.ToIntFunction;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
-
-    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3

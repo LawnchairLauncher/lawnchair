@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Слика од екранот"</string>
     <string name="action_split" msgid="2098009717623550676">"Раздели"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Допрете друга аплик. за да користите поделен екран"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Откажи"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Излези од изборот на поделен екран"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Изберете друга апликација за да користите поделен екран"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Апликацијата или вашата организација не го дозволува дејствово"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Виџетите не се поддржани во моментов, изберете друга апликација"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Да се прескокне упатството за навигација?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Ова може да го најдете подоцна во апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Откажи"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Повлечете апликација настрана за да користите 2 апликации"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже лентата со задачи"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Добивајте предлози за апликации според вашата рутина"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Вклучете навигација со движење во „Поставки“ за автоматско сокривање на „Лентата со задачи“"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Притиснете долго на разделникот за да ја закачите „Лентата со задачи“"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повеќе со една лента со задачи"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затвори"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>

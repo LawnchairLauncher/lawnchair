@@ -23,6 +23,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
+import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -43,6 +45,7 @@ import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
 import android.window.BackMotionEvent;
@@ -51,30 +54,30 @@ import android.window.IOnBackInvokedCallback;
 
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Controls the animation of swiping back and returning to launcher.
  *
- * This is a two part animation. The first part is an animation that tracks
- * gesture location to
- * scale and move the leaving app window. Once the gesture is committed, the
- * second part takes over
+ * This is a two part animation. The first part is an animation that tracks gesture location to
+ * scale and move the leaving app window. Once the gesture is committed, the second part takes over
  * the app window and plays the rest of app close transitions in one go.
  *
  * This animation is used only for apps that enable back dispatching via
  * {@link android.window.OnBackInvokedDispatcher}. The controller registers
- * an {@link IOnBackInvokedCallback} with WM Shell and receives back dispatches
- * when a back
+ * an {@link IOnBackInvokedCallback} with WM Shell and receives back dispatches when a back
  * navigation to launcher starts.
  *
- * Apps using the legacy back dispatching will keep triggering the
- * WALLPAPER_OPEN remote
+ * Apps using the legacy back dispatching will keep triggering the WALLPAPER_OPEN remote
  * transition registered in {@link QuickstepTransitionManager}.
  *
  */
@@ -101,6 +104,7 @@ public class LauncherBackAnimationController {
     private final float mWindowScaleEndCornerRadius;
     private final float mWindowScaleStartCornerRadius;
     private final Interpolator mCancelInterpolator;
+    private final Interpolator mProgressInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
 
     private RemoteAnimationTarget mBackTarget;
@@ -109,7 +113,7 @@ public class LauncherBackAnimationController {
     private boolean mAnimatorSetInProgress = false;
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
-    private IOnBackInvokedCallback mBackCallback;
+    private OnBackInvokedCallbackStub mBackCallback;
     private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
     private BackProgressAnimator mProgressAnimator;
     private SurfaceControl mScrimLayer;
@@ -124,109 +128,135 @@ public class LauncherBackAnimationController {
         mQuickstepTransitionManager = quickstepTransitionManager;
         mWindowScaleEndCornerRadius = QuickStepContract.supportsRoundedCornersOnWindows(
                 mLauncher.getResources())
-                        ? mLauncher.getResources().getDimensionPixelSize(
-                                R.dimen.swipe_back_window_corner_radius)
-                        : 0;
+                ? mLauncher.getResources().getDimensionPixelSize(
+                        R.dimen.swipe_back_window_corner_radius)
+                : 0;
         mWindowScaleStartCornerRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
         mWindowScaleMarginX = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_scale_x_margin);
         mWindowMaxDeltaY = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_max_delta_y);
-        mCancelInterpolator = AnimationUtils.loadInterpolator(mLauncher, R.interpolator.standard_interpolator);
+        mCancelInterpolator =
+                AnimationUtils.loadInterpolator(mLauncher, R.interpolator.standard_interpolator);
         try {
             mProgressAnimator = new BackProgressAnimator();
         } catch (Throwable throwable) {
             // ignore
         }
-
     }
 
     /**
-     * Registers {@link IOnBackInvokedCallback} to receive back dispatches from
-     * shell.
-     * 
+     * Registers {@link IOnBackInvokedCallback} to receive back dispatches from shell.
      * @param handler Handler to the thread to run the animations on.
      */
     public void registerBackCallbacks(Handler handler) {
-        try {
-            mBackCallback = new IOnBackInvokedCallback.Stub() {
-                @Override
-                public void onBackStarted(BackMotionEvent backMotionEvent) {
-                    startBack(backMotionEvent);
-                    handler.post(() -> {
-                        if (mProgressAnimator == null) {
-                            return;
-                        }
-                        mProgressAnimator.onBackStarted(backMotionEvent, event -> {
-                            mBackProgress = event.getProgress();
-                            // TODO: Update once the interpolation curve spec is finalized.
-                            mBackProgress = 1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
-                                    - mBackProgress);
-                            updateBackProgress(mBackProgress, event);
-                        });
-                    });
-                }
+        mBackCallback = new OnBackInvokedCallbackStub(handler, mProgressAnimator,
+                mProgressInterpolator, this);
+        SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback,
+                new RemoteAnimationRunnerStub(this));
+    }
 
-                @Override
-                public void onBackProgressed(BackMotionEvent backMotionEvent) {
-                    handler.post(() -> {
-                        if (mProgressAnimator == null) {
-                            return;
-                        }
-                        mProgressAnimator.onBackProgressed(backMotionEvent);
-                    });
-                }
+    private static class OnBackInvokedCallbackStub extends IOnBackInvokedCallback.Stub {
+        private Handler mHandler;
+        private BackProgressAnimator mProgressAnimator;
+        private final Interpolator mProgressInterpolator;
+        // LauncherBackAnimationController has strong reference to Launcher activity, the binder
+        // callback should not hold strong reference to it to avoid memory leak.
+        private WeakReference<LauncherBackAnimationController> mControllerRef;
 
-                @Override
-                public void onBackCancelled() {
-                    handler.post(() -> {
-                        if (mProgressAnimator == null) {
-                            return;
-                        }
-                        mProgressAnimator.onBackCancelled(
-                                LauncherBackAnimationController.this::resetPositionAnimated);
-                    });
-                }
-
-                @Override
-                public void onBackInvoked() {
-                    handler.post(() -> {
-                        startTransition();
-                        if (mProgressAnimator == null) {
-                            return;
-                        }
-                        mProgressAnimator.reset();
-                    });
-                }
-            };
-
-            final IRemoteAnimationRunner runner = new IRemoteAnimationRunner.Stub() {
-                @Override
-                public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
-                                             RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
-                                             IRemoteAnimationFinishedCallback finishedCallback) {
-                    for (final RemoteAnimationTarget target : apps) {
-                        if (MODE_CLOSING == target.mode) {
-                            mBackTarget = target;
-                            break;
-                        }
-                    }
-                    mAnimationFinishedCallback = finishedCallback;
-                }
-
-                void onAnimationCancelled(boolean isKeyguardOccluded) {
-                }
-
-                public void onAnimationCancelled() {
-                }
-            };
-
-            SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback, runner);
-
-        } catch (Throwable t) {
-            // Ignore
+        private OnBackInvokedCallbackStub(
+                Handler handler,
+                BackProgressAnimator progressAnimator,
+                Interpolator progressInterpolator,
+                LauncherBackAnimationController controller) {
+            mHandler = handler;
+            mProgressAnimator = progressAnimator;
+            mProgressInterpolator = progressInterpolator;
+            mControllerRef = new WeakReference<>(controller);
         }
 
+        @Override
+        public void onBackCancelled() {
+            mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller != null) {
+                    mProgressAnimator.onBackCancelled(
+                            controller::resetPositionAnimated);
+                }
+            });
+        }
+
+        @Override
+        public void onBackInvoked() {
+            mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller != null) {
+                    controller.startTransition();
+                }
+                mProgressAnimator.reset();
+            });
+        }
+
+        @Override
+        public void onBackProgressed(BackMotionEvent backMotionEvent) {
+            mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller == null
+                        || controller.mLauncher == null
+                        || !controller.mLauncher.isStarted()) {
+                    // Skip animating back progress if Launcher isn't visible yet.
+                    return;
+                }
+                mProgressAnimator.onBackProgressed(backMotionEvent);
+            });
+        }
+
+        @Override
+        public void onBackStarted(BackMotionEvent backEvent) {
+            mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller != null) {
+                    controller.startBack(backEvent);
+                    mProgressAnimator.onBackStarted(backEvent, event -> {
+                        float backProgress = event.getProgress();
+                        controller.mBackProgress =
+                                mProgressInterpolator.getInterpolation(backProgress);
+                        controller.updateBackProgress(controller.mBackProgress, event);
+                    });
+                }
+            });
+        }
+    }
+
+    private static class RemoteAnimationRunnerStub extends IRemoteAnimationRunner.Stub {
+
+        // LauncherBackAnimationController has strong reference to Launcher activity, the binder
+        // callback should not hold strong reference to it to avoid memory leak.
+        private WeakReference<LauncherBackAnimationController> mControllerRef;
+
+        private RemoteAnimationRunnerStub(LauncherBackAnimationController controller) {
+            mControllerRef = new WeakReference<>(controller);
+        }
+
+        @Override
+        public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
+                RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
+                IRemoteAnimationFinishedCallback finishedCallback) {
+            LauncherBackAnimationController controller = mControllerRef.get();
+            if (controller == null) {
+                return;
+            }
+            for (final RemoteAnimationTarget target : apps) {
+                if (MODE_CLOSING == target.mode) {
+                    controller.mBackTarget = target;
+                    break;
+                }
+            }
+            controller.mAnimationFinishedCallback = finishedCallback;
+        }
+
+        @Override
+        public void onAnimationCancelled() {}
     }
 
     private void resetPositionAnimated() {
@@ -274,8 +304,12 @@ public class LauncherBackAnimationController {
         mBackTarget = appTarget;
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
-        // TODO(b/218916755): Offset start rectangle in multiwindow mode.
         mStartRect.set(appTarget.windowConfiguration.getMaxBounds());
+        if (mLauncher.getDeviceProfile().isTaskbarPresent && enableTaskbarPinning()
+                && LauncherPrefs.get(mLauncher).get(TASKBAR_PINNING)) {
+            int insetBottom = mStartRect.bottom - appTarget.contentInsets.bottom;
+            mStartRect.set(mStartRect.left, mStartRect.top, mStartRect.right, insetBottom);
+        }
         mCurrentRect.set(mStartRect);
         addScrimLayer();
         mTransaction.apply();
@@ -286,6 +320,10 @@ public class LauncherBackAnimationController {
         SurfaceControl parent = viewRootImpl != null
                 ? viewRootImpl.getSurfaceControl()
                 : null;
+        if (parent == null || !parent.isValid()) {
+            // Parent surface is not ready at the moment. Retry later.
+            return;
+        }
         boolean isDarkTheme = Utilities.isDarkTheme(mLauncher);
         mScrimLayer = new SurfaceControl.Builder()
                 .setName("Back to launcher background scrim")
@@ -297,8 +335,7 @@ public class LauncherBackAnimationController {
                 .build();
         final float[] colorComponents = new float[] { 0f, 0f, 0f };
         mScrimAlpha = (isDarkTheme)
-                ? MAX_SCRIM_ALPHA_DARK
-                : MAX_SCRIM_ALPHA_LIGHT;
+                ? MAX_SCRIM_ALPHA_DARK : MAX_SCRIM_ALPHA_LIGHT;
         mTransaction
                 .setColor(mScrimLayer, colorComponents)
                 .setAlpha(mScrimLayer, mScrimAlpha)
@@ -319,13 +356,24 @@ public class LauncherBackAnimationController {
         if (!mBackInProgress || mBackTarget == null) {
             return;
         }
+        if (mScrimLayer == null) {
+            // Scrim hasn't been attached yet. Let's attach it.
+            addScrimLayer();
+        }
         float screenWidth = mStartRect.width();
         float screenHeight = mStartRect.height();
         float width = Utilities.mapRange(progress, 1, MIN_WINDOW_SCALE) * screenWidth;
         float height = screenHeight / screenWidth * width;
-        float deltaYRatio = (event.getTouchY() - mInitialTouchPos.y) / screenHeight;
+
         // Base the window movement in the Y axis on the touch movement in the Y axis.
-        float deltaY = (float) Math.sin(deltaYRatio * Math.PI * 0.5f) * mWindowMaxDeltaY * progress;
+        float rawYDelta = event.getTouchY() - mInitialTouchPos.y;
+        float yDirection = rawYDelta < 0 ? -1 : 1;
+        // limit yDelta interpretation to 1/2 of screen height in either direction
+        float deltaYRatio = Math.min(screenHeight / 2f, Math.abs(rawYDelta)) / (screenHeight / 2f);
+        float interpolatedYRatio = mProgressInterpolator.getInterpolation(deltaYRatio);
+        // limit y-shift so surface never passes 8dp screen margin
+        float deltaY = yDirection * interpolatedYRatio * Math.max(0f, (screenHeight - height)
+                / 2f - mWindowScaleMarginX);
         // Move the window along the Y axis.
         float top = (screenHeight - height) * 0.5f + deltaY;
         // Move the window along the X axis.
@@ -383,30 +431,36 @@ public class LauncherBackAnimationController {
         if (mLauncher.isDestroyed()) {
             return;
         }
-        // TODO: Catch the moment when launcher becomes visible after the top app
-        // un-occludes
-        // launcher and start animating afterwards. Currently we occasionally get a
-        // flicker from
-        // animating when launcher is still invisible.
+        LauncherTaskbarUIController taskbarUIController = mLauncher.getTaskbarUIController();
+        if (taskbarUIController != null) {
+            taskbarUIController.onLauncherVisibilityChanged(true);
+        }
+        // TODO: Catch the moment when launcher becomes visible after the top app un-occludes
+        //  launcher and start animating afterwards. Currently we occasionally get a flicker from
+        //  animating when launcher is still invisible.
         if (mLauncher.hasSomeInvisibleFlag(PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION)) {
             mLauncher.addForceInvisibleFlag(INVISIBLE_BY_PENDING_FLAGS);
             mLauncher.getStateManager().moveToRestState();
         }
 
         // Explicitly close opened floating views (which is typically called from
-        // Launcher#onResumed, but in the predictive back flow launcher is not resumed
-        // until
+        // Launcher#onResumed, but in the predictive back flow launcher is not resumed until
         // the transition is fully finished.)
         AbstractFloatingView.closeAllOpenViewsExcept(mLauncher, false, TYPE_REBIND_SAFE);
         float cornerRadius = Utilities.mapRange(
                 mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
-        Pair<RectFSpringAnim, AnimatorSet> pair = mQuickstepTransitionManager.createWallpaperOpenAnimations(
-                new RemoteAnimationTarget[] { mBackTarget },
-                new RemoteAnimationTarget[0],
-                false /* fromUnlock */,
-                mCurrentRect,
-                cornerRadius,
-                mBackInProgress /* fromPredictiveBack */);
+        final RectF resolveRectF = new RectF();
+        mQuickstepTransitionManager.transferRectToTargetCoordinate(
+                mBackTarget, mCurrentRect, true, resolveRectF);
+
+        Pair<RectFSpringAnim, AnimatorSet> pair =
+                mQuickstepTransitionManager.createWallpaperOpenAnimations(
+                    new RemoteAnimationTarget[]{mBackTarget},
+                    new RemoteAnimationTarget[0],
+                    false /* fromUnlock */,
+                    resolveRectF,
+                    cornerRadius,
+                    mBackInProgress /* fromPredictiveBack */);
         startTransitionAnimations(pair.first, pair.second);
         mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
     }
@@ -422,8 +476,7 @@ public class LauncherBackAnimationController {
         mInitialTouchPos.set(0, 0);
         mAnimatorSetInProgress = false;
         mSpringAnimationInProgress = false;
-        // We don't call customizeStatusBarAppearance here to prevent the status bar
-        // update with
+        // We don't call customizeStatusBarAppearance here to prevent the status bar update with
         // the legacy appearance. It should be refreshed after the transition done.
         mOverridingStatusBarFlags = false;
         if (mAnimationFinishedCallback != null) {
@@ -438,6 +491,9 @@ public class LauncherBackAnimationController {
             mScrimAlphaAnimator.cancel();
             mScrimAlphaAnimator = null;
         }
+        if (mScrimLayer != null) {
+            removeScrimLayer();
+        }
     }
 
     private void startTransitionAnimations(RectFSpringAnim springAnim, AnimatorSet anim) {
@@ -451,7 +507,8 @@ public class LauncherBackAnimationController {
                             mSpringAnimationInProgress = false;
                             tryFinishBackAnimation();
                         }
-                    });
+                    }
+            );
         }
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -460,10 +517,14 @@ public class LauncherBackAnimationController {
                 tryFinishBackAnimation();
             }
         });
+        if (mScrimLayer == null) {
+            // Scrim hasn't been attached yet. Let's attach it.
+            addScrimLayer();
+        }
         mScrimAlphaAnimator = new ValueAnimator().ofFloat(1, 0);
         mScrimAlphaAnimator.addUpdateListener(animation -> {
             float value = (Float) animation.getAnimatedValue();
-            if (mScrimLayer.isValid()) {
+            if (mScrimLayer != null && mScrimLayer.isValid()) {
                 mTransaction.setAlpha(mScrimLayer, value * mScrimAlpha);
                 mTransaction.apply();
             }
@@ -495,8 +556,9 @@ public class LauncherBackAnimationController {
         }
 
         mOverridingStatusBarFlags = overridingStatusBarFlags;
-        final boolean isBackgroundDark = (mLauncher.getWindow().getDecorView().getSystemUiVisibility()
-                & View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0;
+        final boolean isBackgroundDark =
+                (mLauncher.getWindow().getDecorView().getSystemUiVisibility()
+                        & View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0;
         final AppearanceRegion region = mOverridingStatusBarFlags
                 ? new AppearanceRegion(!isBackgroundDark ? APPEARANCE_LIGHT_STATUS_BARS : 0,
                         mBackTarget.windowConfiguration.getBounds())

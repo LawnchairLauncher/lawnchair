@@ -18,6 +18,7 @@ package com.android.quickstep.util;
 import static android.view.Display.DEFAULT_DISPLAY;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.ArrayMap;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -39,6 +40,12 @@ public class SystemWindowManagerProxy extends WindowManagerProxy {
 
     public SystemWindowManagerProxy(Context context) {
         super(true);
+    }
+
+    @Override
+    public Rect getCurrentBounds(Context displayInfoContext) {
+        return displayInfoContext.getResources().getConfiguration().windowConfiguration
+                .getMaxBounds();
     }
 
     @Override

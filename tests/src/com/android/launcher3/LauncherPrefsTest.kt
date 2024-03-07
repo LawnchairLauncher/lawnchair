@@ -33,7 +33,8 @@ import org.junit.runner.RunWith
 private val TEST_BOOLEAN_ITEM = LauncherPrefs.nonRestorableItem("1", false)
 private val TEST_STRING_ITEM = LauncherPrefs.nonRestorableItem("2", "( ͡❛ ͜ʖ ͡❛)")
 private val TEST_INT_ITEM = LauncherPrefs.nonRestorableItem("3", -1)
-private val TEST_CONTEXTUAL_ITEM = ContextualItem("4", true, { true }, false, Boolean::class.java)
+private val TEST_CONTEXTUAL_ITEM =
+    ContextualItem("4", true, { true }, EncryptionType.ENCRYPTED, Boolean::class.java)
 
 private const val TEST_DEFAULT_VALUE = "default"
 private const val TEST_PREF_KEY = "test_pref_key"
@@ -51,13 +52,13 @@ class LauncherPrefsTest {
         @BeforeClass
         @JvmStatic
         fun setup() {
-            isBootAwareStartupDataEnabled = true
+            moveStartupDataToDeviceProtectedStorageIsEnabled = true
         }
 
         @AfterClass
         @JvmStatic
         fun teardown() {
-            isBootAwareStartupDataEnabled = false
+            moveStartupDataToDeviceProtectedStorageIsEnabled = false
         }
     }
 
@@ -203,7 +204,11 @@ class LauncherPrefsTest {
     @Test
     fun put_bootAwareItem_updatesDeviceProtectedStorage() {
         val bootAwareItem =
-            LauncherPrefs.backedUpItem(TEST_PREF_KEY, TEST_DEFAULT_VALUE, isBootAware = true)
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.DEVICE_PROTECTED
+            )
 
         val bootAwarePrefs: SharedPreferences =
             context
@@ -220,7 +225,11 @@ class LauncherPrefsTest {
     @Test
     fun put_bootAwareItem_updatesEncryptedStorage() {
         val bootAwareItem =
-            LauncherPrefs.backedUpItem(TEST_PREF_KEY, TEST_DEFAULT_VALUE, isBootAware = true)
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
 
         val encryptedPrefs: SharedPreferences =
             context.getSharedPreferences(bootAwareItem.sharedPrefFile, Context.MODE_PRIVATE)
@@ -235,7 +244,11 @@ class LauncherPrefsTest {
     @Test
     fun remove_bootAwareItem_removesFromDeviceProtectedStorage() {
         val bootAwareItem =
-            LauncherPrefs.backedUpItem(TEST_PREF_KEY, TEST_DEFAULT_VALUE, isBootAware = true)
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
 
         val bootAwarePrefs: SharedPreferences =
             context
@@ -254,7 +267,11 @@ class LauncherPrefsTest {
     @Test
     fun remove_bootAwareItem_removesFromEncryptedStorage() {
         val bootAwareItem =
-            LauncherPrefs.backedUpItem(TEST_PREF_KEY, TEST_DEFAULT_VALUE, isBootAware = true)
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
 
         val encryptedPrefs: SharedPreferences =
             context.getSharedPreferences(bootAwareItem.sharedPrefFile, Context.MODE_PRIVATE)
@@ -271,7 +288,11 @@ class LauncherPrefsTest {
     @Test
     fun migrate_bootAwareItemsToDeviceProtectedStorage_worksAsIntended() {
         val bootAwareItem =
-            LauncherPrefs.backedUpItem(TEST_PREF_KEY, TEST_DEFAULT_VALUE, isBootAware = true)
+            LauncherPrefs.backedUpItem(
+                TEST_PREF_KEY,
+                TEST_DEFAULT_VALUE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         launcherPrefs.removeSync(bootAwareItem)
 
         val bootAwarePrefs: SharedPreferences =
@@ -303,7 +324,7 @@ class LauncherPrefsTest {
             LauncherPrefs.backedUpItem(
                 TEST_PREF_KEY + "_",
                 TEST_DEFAULT_VALUE + "_",
-                isBootAware = false
+                EncryptionType.ENCRYPTED
             )
 
         val bootAwarePrefs: SharedPreferences =

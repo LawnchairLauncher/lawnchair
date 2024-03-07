@@ -33,10 +33,10 @@ import app.lawnchair.font.FontManager;
 import java.util.HashSet;
 import java.util.Set;
 
+
 /**
  * The edit text that reports back when the back key has been pressed.
- * Note: AppCompatEditText doesn't fully support #displayCompletions and
- * #onCommitCompletion
+ * Note: AppCompatEditText doesn't fully support #displayCompletions and #onCommitCompletion
  */
 public class ExtendedEditText extends EditText {
     private static final String TAG = "ExtendedEditText";
@@ -93,20 +93,34 @@ public class ExtendedEditText extends EditText {
     /**
      * Synchronously shows the soft input method.
      *
-     * @param shouldFocus whether this EditText should also request focus.
-     * @return true if the keyboard is shown correctly and focus is given to this
-     *         view (if
-     *         applicable).
+     * @return true if the keyboard is shown correctly and focus is given to this view.
      */
-    public boolean showKeyboard(boolean shouldFocus) {
+    public boolean showKeyboard() {
         onKeyboardShown();
-        boolean focusResult = !shouldFocus || requestFocus();
-        return focusResult && showSoftInputInternal();
+        return requestFocus() && showSoftInputInternal();
+    }
+
+    /**
+     * Requests the framework to show the keyboard in order to ensure that an already registered
+     * controlled keyboard animation is triggered correctly.
+     * Must NEVER be called in any other case than to trigger a pre-registered controlled animation.
+     */
+    public void requestShowKeyboardForControlledAnimation() {
+        // We don't log the keyboard state, as that must happen only after the controlled animation
+        // has completed.
+        // We also must not request focus, as this triggers unwanted side effects.
+        showSoftInputInternal();
     }
 
     public void hideKeyboard() {
+        hideKeyboard(/* clearFocus= */ true);
+    }
+
+    public void hideKeyboard(boolean clearFocus) {
         ActivityContext.lookupContext(getContext()).hideKeyboard();
-        clearFocus();
+        if (clearFocus) {
+            clearFocus();
+        }
     }
 
     protected void onKeyboardShown() {
@@ -134,8 +148,7 @@ public class ExtendedEditText extends EditText {
 
     /**
      * Set to true when you want isSuggestionsEnabled to return false.
-     * Use this to disable the red underlines that appear under typos when
-     * suggestions is enabled.
+     * Use this to disable the red underlines that appear under typos when suggestions is enabled.
      */
     public void forceDisableSuggestions(boolean forceDisableSuggestions) {
         mForceDisableSuggestions = forceDisableSuggestions;
@@ -152,9 +165,17 @@ public class ExtendedEditText extends EditText {
         }
     }
 
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(text, type);
+        // With hardware keyboard, there is a possibility that the user types before edit
+        // text is visible during the transition.
+        // So move the cursor to the end of the text.
+        setSelection(getText().length());
+    }
+
     /**
-     * This method should be preferred to
-     * {@link #setOnFocusChangeListener(OnFocusChangeListener)},
+     * This method should be preferred to {@link #setOnFocusChangeListener(OnFocusChangeListener)},
      * as it allows for multiple listeners from different sources.
      */
     public void addOnFocusChangeListener(OnFocusChangeListener listener) {
@@ -162,8 +183,7 @@ public class ExtendedEditText extends EditText {
     }
 
     /**
-     * Removes the given listener from the set of registered focus listeners, or
-     * does nothing if it
+     * Removes the given listener from the set of registered focus listeners, or does nothing if it
      * wasn't registered in the first place.
      */
     public void removeOnFocusChangeListener(OnFocusChangeListener listener) {
@@ -179,15 +199,12 @@ public class ExtendedEditText extends EditText {
     }
 
     /**
-     * Save the input, suggestion, hint states when it's on focus, and set to
-     * unfocused states.
+     * Save the input, suggestion, hint states when it's on focus, and set to unfocused states.
      */
-    public void saveFocusedStateAndUpdateToUnfocusedState() {
-    }
+    public void saveFocusedStateAndUpdateToUnfocusedState() {}
 
     /**
      * Restore to the previous saved focused state.
      */
-    public void restoreToFocusedState() {
-    }
+    public void restoreToFocusedState() {}
 }

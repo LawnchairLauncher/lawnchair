@@ -189,7 +189,7 @@ class GridSizeMigrationUtilTest {
         intentIndex = c.getColumnIndex(INTENT)
         val cellXIndex = c.getColumnIndex(CELLX)
         val cellYIndex = c.getColumnIndex(CELLY)
-        val locMap = HashMap<String, Point>()
+        val locMap = HashMap<String?, Point>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 Point(c.getInt(cellXIndex), c.getInt(cellYIndex))
@@ -435,7 +435,7 @@ class GridSizeMigrationUtilTest {
         c.close()
     }
 
-    private fun parseLocMap(c: Cursor): Map<String, Triple<Int, Int, Int>> {
+    private fun parseLocMap(c: Cursor): Map<String?, Triple<Int, Int, Int>> {
         // Check workspace items
         val intentIndex = c.getColumnIndex(INTENT)
         val screenIndex = c.getColumnIndex(SCREEN)

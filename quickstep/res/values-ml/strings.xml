@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"സ്ക്രീൻഷോട്ട്"</string>
     <string name="action_split" msgid="2098009717623550676">"വിഭജിക്കുക"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"സ്പ്ലിറ്റ് സ്ക്രീനിന് മറ്റൊരു ആപ്പിൽ ടാപ്പ് ചെയ്യൂ"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"റദ്ദാക്കുക"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"സ്‌ക്രീൻ വിഭജന തിരഞ്ഞെടുപ്പിൽ നിന്ന് പുറത്തുകടക്കുക"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"സ്ക്രീൻ വിഭജന മോഡിന് മറ്റൊരു ആപ്പ് തിരഞ്ഞെടുക്കൂ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ഈ നടപടി എടുക്കുന്നത് ആപ്പോ നിങ്ങളുടെ സ്ഥാപനമോ അനുവദിക്കുന്നില്ല"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"വിജറ്റുകൾക്ക് നിലവിൽ പിന്തുണയില്ല, മറ്റൊരു ആപ്പ് തിരഞ്ഞെടുക്കുക"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"നാവിഗേഷൻ ട്യൂട്ടോറിയൽ ഒഴിവാക്കണോ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ആപ്പിൽ നിങ്ങൾക്ക് ഇത് പിന്നീട് കാണാനാകും"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"റദ്ദാക്കുക"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ഒരേ സമയം 2 ആപ്പുകൾ ഉപയോഗിക്കാൻ ഒരു ആപ്പ് വശത്തേക്ക് വലിച്ചിടൂ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ടാസ്‌ക്ബാർ ദൃശ്യമാക്കാൻ മുകളിലേക്ക് പതുക്കെ സ്വൈപ്പ് ചെയ്യൂ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"നിങ്ങളുടെ ദിനചര്യ അനുസരിച്ച് ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ടാസ്‌ക്‌ബാർ സ്വയമേവ മറയ്‌ക്കാൻ ക്രമീകരണത്തിൽ ജെസ്ച്ചർ നാവിഗേഷൻ ഓണാക്കുക"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ടാസ്‌ക്ബാർ പിൻ ചെയ്യാൻ ഡിവൈഡറിൽ ദീർഘനേരം അമർത്തുക"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ടാസ്‌ക്‌ബാർ ഉപയോഗിച്ച് കൂടുതൽ ചെയ്യുക"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"അടയ്ക്കുക"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"പൂർത്തിയായി"</string>

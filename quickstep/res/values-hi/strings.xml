@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट लें"</string>
     <string name="action_split" msgid="2098009717623550676">"स्प्लिट स्क्रीन मोड"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"स्प्लिट स्क्रीन के लिए दूसरे ऐप्लिकेशन पर टैप करें"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"अभी नहीं"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"स्प्लिट स्क्रीन मोड से बाहर निकलें"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"स्प्लिट स्क्रीन के लिए, दूसरा ऐप्लिकेशन चुनें"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ऐप्लिकेशन या आपका संगठन इस कार्रवाई की अनुमति नहीं देता"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"फ़िलहाल, विजेट काम नहीं कर रहें हैं. कृपया कोई दूसरा ऐप्लिकेशन चुनें"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"क्या आपको अभी नेविगेशन ट्यूटोरियल नहीं देखना है?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"इसे बाद में <xliff:g id="NAME">%1$s</xliff:g> ऐप्लिकेशन पर देखा जा सकता है"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"रद्द करें"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"किसी ऐप को किनारे की ओर ड्रैग करके 2 ऐप एक साथ इस्तेमाल करें"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार दिखाने के लिए, ऊपर की ओर धीरे से स्वाइप करें"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"डिवाइस के इस्तेमाल के आधार पर ऐप्लिकेशन के सुझाव पाएं"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"टास्कबार अपने-आप छिपाने वाली सुविधा के लिए, सेटिंग में जाकर जेस्चर वाला नेविगेशन चालू करें"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"टास्कबार को पिन करने के लिए डिवाइडर को दबाकर रखें"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार की मदद से कई और काम करें"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करें"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"हो गया"</string>

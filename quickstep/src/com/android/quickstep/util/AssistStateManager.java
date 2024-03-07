@@ -31,8 +31,28 @@ public class AssistStateManager implements ResourceBasedOverride {
 
     public AssistStateManager() {}
 
+    /** Whether search supports haptic on invocation. */
+    public boolean supportsCommitHaptic() {
+        return false;
+    }
+
     /** Whether search is available. */
     public boolean isSearchAvailable() {
+        return false;
+    }
+
+    /** Whether search recovery is available. */
+    public boolean isVisRecoveryEnabled() {
+        return false;
+    }
+
+    /** Whether search recovery is available. */
+    public boolean isOseRecoveryEnabled() {
+        return false;
+    }
+
+    /** Whether search recovery is available. */
+    public boolean isOseShowSessionEnabled() {
         return false;
     }
 

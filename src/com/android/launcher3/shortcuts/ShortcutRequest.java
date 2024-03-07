@@ -24,9 +24,10 @@ import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ShortcutQuery;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.android.launcher3.logging.FileLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,7 +102,7 @@ public class ShortcutRequest {
             return new QueryResult(mContext.getSystemService(LauncherApps.class)
                     .getShortcuts(mQuery, mUserHandle));
         } catch (SecurityException | IllegalStateException e) {
-            Log.e(TAG, "Failed to query for shortcuts", e);
+            FileLog.e(TAG, "Failed to query for shortcuts", e);
             return QueryResult.DEFAULT;
         }
     }

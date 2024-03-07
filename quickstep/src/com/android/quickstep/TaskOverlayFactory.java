@@ -34,8 +34,8 @@ import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -80,9 +80,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
         boolean isTablet = activity.getDeviceProfile().isTablet;
 
-        boolean isGridOnlyOverview = isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get();
-        // Add overview actions to the menu when in in-place rotate landscape mode, or
-        // in
+        boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
+        // Add overview actions to the menu when in in-place rotate landscape mode, or in
         // grid-only overview.
         if ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview) {
             // Add screenshot action to task menu.
@@ -92,8 +91,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 shortcuts.addAll(screenshotShortcuts);
             }
 
-            // Add modal action only if display orientation is the same as the device
-            // orientation,
+            // Add modal action only if display orientation is the same as the device orientation,
             // or in grid-only overview.
             if (orientedState.getDisplayRotation() == ROTATION_0 || isGridOnlyOverview) {
                 List<SystemShortcut> modalShortcuts = TaskShortcutFactory.MODAL
@@ -111,34 +109,27 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     }
 
     /**
-     * Subclasses can attach any system listeners in this method, must be paired
-     * with
+     * Subclasses can attach any system listeners in this method, must be paired with
      * {@link #removeListeners()}
      */
     public void initListeners() {
     }
 
     /**
-     * Subclasses should remove any system listeners in this method, must be paired
-     * with
+     * Subclasses should remove any system listeners in this method, must be paired with
      * {@link #initListeners()}
      */
     public void removeListeners() {
     }
 
     /**
-     * Clears any active state outside of the TaskOverlay lifecycle which might have
-     * built
+     * Clears any active state outside of the TaskOverlay lifecycle which might have built
      * up over time
      */
-    public void clearAllActiveState() {
-    }
+    public void clearAllActiveState() { }
 
-    /**
-     * Note that these will be shown in order from top to bottom, if available for
-     * the task.
-     */
-    private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[] {
+    /** Note that these will be shown in order from top to bottom, if available for the task. */
+    private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
             TaskShortcutFactory.APP_INFO,
             app.lawnchair.overview.TaskShortcutFactory.legacySplit,
             app.lawnchair.overview.TaskShortcutFactory.killApp,
@@ -201,6 +192,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         public void endLiveTileMode(@NonNull Runnable callback) {
             RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
+            // Task has already been dismissed
+            if (recentsView == null) return;
             recentsView.switchToScreenshot(
                     () -> recentsView.finishRecentsAnimation(true /* toRecents */,
                             false /* shouldPip */, callback));
@@ -221,6 +214,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
         private void enterSplitSelect() {
             RecentsView overviewPanel = mThumbnailView.getTaskView().getRecentsView();
+            // Task has already been dismissed
+            if (overviewPanel == null) return;
             overviewPanel.initiateSplitSelect(mThumbnailView.getTaskView());
         }
 
@@ -251,8 +246,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         /**
-         * Gets the system shortcut for the screenshot that will be added to the task
-         * menu.
+         * Gets the system shortcut for the screenshot that will be added to the task menu.
          */
         public SystemShortcut getScreenshotShortcut(BaseDraggingActivity activity,
                 ItemInfo iteminfo, View originalView) {
@@ -341,8 +335,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     }
 
     /**
-     * Callbacks the Ui can generate. This is the only way for a Ui to call methods
-     * on the
+     * Callbacks the Ui can generate. This is the only way for a Ui to call methods on the
      * controller.
      */
     public interface OverlayUICallbacks {
