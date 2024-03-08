@@ -291,13 +291,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         attachScrollbarToRecyclerView(currentRecyclerView);
     }
 
-    @Override
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    public void onBackProgressed(@NonNull BackEvent backEvent) {
-        super.onBackProgressed(backEvent);
-        mFastScroller.setVisibility(backEvent.getProgress() > 0 ? View.INVISIBLE : View.VISIBLE);
-    }
-
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
         recyclerView.bindFastScrollbar(mFastScroller);
         if (mCurrentWidgetsRecyclerView != recyclerView) {
@@ -860,6 +853,17 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                         && oldDp.isLandscape != newDp.isLandscape));
 
         return isFoldUnFold || useDifferentLayoutOnOrientationChange;
+    }
+
+    @Override
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onBackProgressed(@NonNull BackEvent backEvent) {
+        super.onBackProgressed(backEvent);
+        // In two pane picker, scroll bar is always hidden.
+        if (!isTwoPane()) {
+            mFastScroller.setVisibility(
+                    backEvent.getProgress() > 0 ? View.INVISIBLE : View.VISIBLE);
+        }
     }
 
     @Override
