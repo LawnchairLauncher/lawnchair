@@ -5164,6 +5164,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 && !mOverviewGridEnabled) {
             mTempRect.set(mLastComputedCarouselTaskSize);
         } else {
+            if (mLastComputedTaskSize.height() == 0 || mLastComputedTaskSize.width() == 0) {
+                getTaskSize(mLastComputedTaskSize);
+            }
             mTempRect.set(mLastComputedTaskSize);
         }
         return getPagedViewOrientedState().getFullScreenScaleAndPivot(
