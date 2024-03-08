@@ -76,17 +76,21 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class FallbackRecentsTest {
 
     private static final String FALLBACK_LAUNCHER_TITLE = "Test launcher";
+    private static final Pattern COMPONENT_INFO_REGEX = Pattern.compile("ComponentInfo\\{(.*)\\}");
 
     private final UiDevice mDevice;
     private final LauncherInstrumentation mLauncher;
@@ -253,7 +257,7 @@ public class FallbackRecentsTest {
     //@NavigationModeSwitch
     @Test
     @ScreenRecordRule.ScreenRecord // b/321775748
-    public void testOverview() {
+    public void testOverview() throws IOException {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
@@ -261,7 +265,10 @@ public class FallbackRecentsTest {
         Wait.atMost("Expected three apps in the task list",
                 () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
 
+        checkTestLauncher();
         BaseOverview overview = mLauncher.getLaunchedAppState().switchToOverview();
+        checkTestLauncher();
+
         executeOnRecents(recents -> {
             assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3);
         });
@@ -301,6 +308,17 @@ public class FallbackRecentsTest {
         pressHomeAndGoToOverview().dismissAllTasks();
         assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
+    }
+
+    private void checkTestLauncher() throws IOException {
+        final Matcher matcher = COMPONENT_INFO_REGEX.matcher(
+                mDevice.executeShellCommand("cmd shortcut get-default-launcher"));
+        assertTrue("Incorrect output from get-default-launcher", matcher.find());
+        assertEquals("Current Launcher activity is incorrect",
+                "com.google.android.apps.nexuslauncher.tests/com.android"
+                        + ".launcher3.testcomponent.TestLauncherActivity",
+                matcher.group(1)
+        );
     }
 
     private int getCurrentOverviewPage(RecentsActivity recents) {
