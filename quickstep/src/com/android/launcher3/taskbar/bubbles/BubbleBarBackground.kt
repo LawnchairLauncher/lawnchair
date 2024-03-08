@@ -19,6 +19,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
+import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import com.android.app.animation.Interpolators
@@ -122,14 +123,22 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
 
         // Draw background.
         val radius = backgroundHeight / 2f
-        val left = if (anchorLeft) 0f else canvas.width.toFloat() - width
-        val right = if (anchorLeft) width else canvas.width.toFloat()
-        canvas.drawRoundRect(left, 0f, right, canvas.height.toFloat(), radius, radius, paint)
+        val left = if (anchorLeft) 0f else bounds.width().toFloat() - width
+        val right = if (anchorLeft) width else bounds.width().toFloat()
+        canvas.drawRoundRect(
+            left,
+            pointerSize,
+            right,
+            bounds.height().toFloat(),
+            radius,
+            radius,
+            paint
+        )
 
         if (showingArrow) {
             // Draw arrow.
             val transX = arrowPositionX - pointerSize / 2f
-            canvas.translate(transX, -pointerSize)
+            canvas.translate(transX, 0f)
             arrowDrawable.draw(canvas)
         }
 
@@ -137,11 +146,20 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
     }
 
     override fun getOpacity(): Int {
-        return paint.alpha
+        return when (paint.alpha) {
+            255 -> PixelFormat.OPAQUE
+            0 -> PixelFormat.TRANSPARENT
+            else -> PixelFormat.TRANSLUCENT
+        }
     }
 
     override fun setAlpha(alpha: Int) {
         paint.alpha = alpha
+        arrowDrawable.paint.alpha = alpha
+    }
+
+    override fun getAlpha(): Int {
+        return paint.alpha
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {

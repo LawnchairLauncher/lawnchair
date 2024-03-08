@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar.bubbles;
 
 import static android.view.View.INVISIBLE;
-import static android.view.View.LAYOUT_DIRECTION_RTL;
 import static android.view.View.VISIBLE;
 
 import android.animation.Animator;
@@ -39,6 +38,7 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 
 /**
  * Handles properties/data collection, then passes the results to our stashed handle View to render.
@@ -119,14 +119,14 @@ public class BubbleStashedHandleViewController {
                 }, Executors.UI_HELPER_EXECUTOR);
 
         mStashedHandleView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
-                updateBounds());
+                updateBounds(mBarViewController.getBubbleBarLocation()));
     }
 
-    private void updateBounds() {
+    private void updateBounds(BubbleBarLocation bubbleBarLocation) {
         // As more bubbles get added, the icon bounds become larger. To ensure a consistent
         // handle bar position, we pin it to the edge of the screen.
         final int stashedCenterY = mStashedHandleView.getHeight() - mStashedTaskbarHeight / 2;
-        if (isOnLeft()) {
+        if (bubbleBarLocation.isOnLeft(mStashedHandleView.isLayoutRtl())) {
             final int left = mBarViewController.getHorizontalMargin();
             mStashedHandleBounds.set(
                     left,
@@ -147,11 +147,6 @@ public class BubbleStashedHandleViewController {
 
         mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
         mStashedHandleView.setPivotY(mStashedHandleView.getHeight() - mStashedTaskbarHeight / 2f);
-    }
-
-    private boolean isOnLeft() {
-        // TODO(b/313661121): set this based on bubble bar position and not LTR or RTL
-        return mStashedHandleView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
     public void onDestroy() {
@@ -300,5 +295,10 @@ public class BubbleStashedHandleViewController {
     /** Checks if the given x coordinate is within the stashed handle bounds. */
     public boolean containsX(int x) {
         return x >= mStashedHandleBounds.left && x <= mStashedHandleBounds.right;
+    }
+
+    /** Set a bubble bar location */
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        updateBounds(bubbleBarLocation);
     }
 }

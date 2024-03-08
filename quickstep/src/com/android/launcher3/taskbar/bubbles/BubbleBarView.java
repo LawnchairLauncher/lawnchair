@@ -15,21 +15,33 @@
  */
 package com.android.launcher3.taskbar.bubbles;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.LayoutDirection;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.dynamicanimation.animation.SpringForce;
+
 import com.android.launcher3.R;
+import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.views.ActivityContext;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -70,6 +82,18 @@ public class BubbleBarView extends FrameLayout {
     private static final int ARROW_POSITION_ANIMATION_DURATION_MS = 200;
     private static final int WIDTH_ANIMATION_DURATION_MS = 200;
 
+    private static final long FADE_OUT_ANIM_ALPHA_DURATION_MS = 50L;
+    private static final long FADE_OUT_ANIM_ALPHA_DELAY_MS = 50L;
+    private static final long FADE_OUT_ANIM_POSITION_DURATION_MS = 100L;
+    // During fade out animation we shift the bubble bar 1/80th of the screen width
+    private static final float FADE_OUT_ANIM_POSITION_SHIFT = 1 / 80f;
+
+    private static final long FADE_IN_ANIM_ALPHA_DURATION_MS = 100L;
+    // Use STIFFNESS_MEDIUMLOW which is not defined in the API constants
+    private static final float FADE_IN_ANIM_POSITION_SPRING_STIFFNESS = 400f;
+    // During fade in animation we shift the bubble bar 1/60th of the screen width
+    private static final float FADE_IN_ANIM_POSITION_SHIFT = 1 / 60f;
+
     private final BubbleBarBackground mBubbleBarBackground;
 
     /**
@@ -86,11 +110,13 @@ public class BubbleBarView extends FrameLayout {
     private final float mIconSize;
     // The elevation of the bubbles within the bar
     private final float mBubbleElevation;
+    private final int mPointerSize;
 
     // Whether the bar is expanded (i.e. the bubble activity is being displayed).
     private boolean mIsBarExpanded = false;
     // The currently selected bubble view.
     private BubbleView mSelectedBubbleView;
+    private BubbleBarLocation mBubbleBarLocation = BubbleBarLocation.DEFAULT;
     // The click listener when the bubble bar is collapsed.
     private View.OnClickListener mOnClickListener;
 
@@ -101,6 +127,9 @@ public class BubbleBarView extends FrameLayout {
     // An animator that represents the expansion state of the bubble bar, where 0 corresponds to the
     // collapsed state and 1 to the fully expanded state.
     private final ValueAnimator mWidthAnimator = ValueAnimator.ofFloat(0, 1);
+
+    @Nullable
+    private Animator mBubbleBarLocationAnimator = null;
 
     // We don't reorder the bubbles when they are expanded as it could be jarring for the user
     // this runnable will be populated with any reordering of the bubbles that should be applied
@@ -113,6 +142,8 @@ public class BubbleBarView extends FrameLayout {
 
     @Nullable
     private BubbleView mDraggedBubbleView;
+
+    private int mPreviousLayoutDirection = LayoutDirection.UNDEFINED;
 
     public BubbleBarView(Context context) {
         this(context, null);
@@ -136,6 +167,8 @@ public class BubbleBarView extends FrameLayout {
         mIconSpacing = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_spacing);
         mIconSize = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_size);
         mBubbleElevation = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_elevation);
+        mPointerSize = getResources().getDimensionPixelSize(R.dimen.bubblebar_pointer_size);
+
         setClipToPadding(false);
 
         mBubbleBarBackground = new BubbleBarBackground(activityContext,
@@ -184,7 +217,7 @@ public class BubbleBarView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         mBubbleBarBounds.left = left;
-        mBubbleBarBounds.top = top;
+        mBubbleBarBounds.top = top + mPointerSize;
         mBubbleBarBounds.right = right;
         mBubbleBarBounds.bottom = bottom;
 
@@ -199,24 +232,123 @@ public class BubbleBarView extends FrameLayout {
 
     @Override
     public void onRtlPropertiesChanged(int layoutDirection) {
-        // TODO(b/313661121): set this based on bubble bar position and not LTR or RTL
-        boolean onLeft = layoutDirection == LAYOUT_DIRECTION_RTL;
+        if (mBubbleBarLocation == BubbleBarLocation.DEFAULT
+                && mPreviousLayoutDirection != layoutDirection) {
+            Log.d(TAG, "BubbleBar RTL properties changed, new layoutDirection=" + layoutDirection
+                    + " previous layoutDirection=" + mPreviousLayoutDirection);
+            mPreviousLayoutDirection = layoutDirection;
+            onBubbleBarLocationChanged();
+        }
+    }
+
+    private void onBubbleBarLocationChanged() {
+        final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
         mBubbleBarBackground.setAnchorLeft(onLeft);
         mRelativePivotX = onLeft ? 0f : 1f;
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        if (layoutParams instanceof LayoutParams lp) {
+            lp.gravity = Gravity.BOTTOM | (onLeft ? Gravity.LEFT : Gravity.RIGHT);
+            setLayoutParams(lp);
+        }
+        invalidate();
     }
 
     /**
-     * @return <code>true</code> when bar is pinned to the left edge of the screen
+     * @return current {@link BubbleBarLocation}
      */
-    public boolean isOnLeft() {
-        return getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+    public BubbleBarLocation getBubbleBarLocation() {
+        return mBubbleBarLocation;
+    }
+
+    /**
+     * Update {@link BubbleBarLocation}
+     */
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation, boolean animate) {
+        if (animate) {
+            animateToBubbleBarLocation(bubbleBarLocation);
+        } else {
+            setBubbleBarLocationInternal(bubbleBarLocation);
+        }
+    }
+
+    private void setBubbleBarLocationInternal(BubbleBarLocation bubbleBarLocation) {
+        if (bubbleBarLocation != mBubbleBarLocation) {
+            mBubbleBarLocation = bubbleBarLocation;
+            onBubbleBarLocationChanged();
+            invalidate();
+        }
+    }
+
+    private void animateToBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        if (bubbleBarLocation == mBubbleBarLocation) {
+            // nothing to do, already at expected location
+            return;
+        }
+        if (mBubbleBarLocationAnimator != null && mBubbleBarLocationAnimator.isRunning()) {
+            mBubbleBarLocationAnimator.cancel();
+        }
+
+        // Location animation uses two separate animators.
+        // First animator hides the bar.
+        // After it completes, location update is sent to layout the bar in the new location.
+        // Second animator is started to show the bar.
+        mBubbleBarLocationAnimator = getLocationUpdateFadeOutAnimator();
+        mBubbleBarLocationAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Bubble bar is not visible, update the location
+                setBubbleBarLocationInternal(bubbleBarLocation);
+                // Animate it in
+                mBubbleBarLocationAnimator = getLocationUpdateFadeInAnimator();
+                mBubbleBarLocationAnimator.start();
+            }
+        });
+        mBubbleBarLocationAnimator.start();
+    }
+
+    private AnimatorSet getLocationUpdateFadeOutAnimator() {
+        final float shift =
+                getResources().getDisplayMetrics().widthPixels * FADE_OUT_ANIM_POSITION_SHIFT;
+        final float tx = mBubbleBarLocation.isOnLeft(isLayoutRtl()) ? shift : -shift;
+
+        ObjectAnimator positionAnim = ObjectAnimator.ofFloat(this, TRANSLATION_X, tx)
+                .setDuration(FADE_OUT_ANIM_POSITION_DURATION_MS);
+        positionAnim.setInterpolator(EMPHASIZED_ACCELERATE);
+
+        ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(this, ALPHA, 0f)
+                .setDuration(FADE_OUT_ANIM_ALPHA_DURATION_MS);
+        alphaAnim.setStartDelay(FADE_OUT_ANIM_ALPHA_DELAY_MS);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(positionAnim, alphaAnim);
+        return animatorSet;
+    }
+
+    private Animator getLocationUpdateFadeInAnimator() {
+        final float shift =
+                getResources().getDisplayMetrics().widthPixels * FADE_IN_ANIM_POSITION_SHIFT;
+        final float startTx = mBubbleBarLocation.isOnLeft(isLayoutRtl()) ? shift : -shift;
+
+        ValueAnimator positionAnim = new SpringAnimationBuilder(getContext())
+                .setStartValue(startTx)
+                .setEndValue(0)
+                .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                .setStiffness(FADE_IN_ANIM_POSITION_SPRING_STIFFNESS)
+                .build(this, VIEW_TRANSLATE_X);
+
+        ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(this, ALPHA, 1f)
+                .setDuration(FADE_IN_ANIM_ALPHA_DURATION_MS);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(positionAnim, alphaAnim);
+        return animatorSet;
     }
 
     /**
      * Updates the bounds with translation that may have been applied and returns the result.
      */
     public Rect getBubbleBarBounds() {
-        mBubbleBarBounds.top = getTop() + (int) getTranslationY();
+        mBubbleBarBounds.top = getTop() + (int) getTranslationY() + mPointerSize;
         mBubbleBarBounds.bottom = getBottom() + (int) getTranslationY();
         return mBubbleBarBounds;
     }
@@ -290,7 +422,7 @@ public class BubbleBarView extends FrameLayout {
         int bubbleCount = getChildCount();
         final float ty = (mBubbleBarBounds.height() - mIconSize) / 2f;
         final boolean animate = getVisibility() == VISIBLE;
-        final boolean onLeft = isOnLeft();
+        final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
         for (int i = 0; i < bubbleCount; i++) {
             BubbleView bv = (BubbleView) getChildAt(i);
             bv.setTranslationY(ty);
@@ -453,7 +585,7 @@ public class BubbleBarView extends FrameLayout {
     private float arrowPositionForSelectedWhenExpanded() {
         final int index = indexOfChild(mSelectedBubbleView);
         final int bubblePosition;
-        if (isOnLeft()) {
+        if (mBubbleBarLocation.isOnLeft(isLayoutRtl())) {
             // Bubble positions are reversed. First bubble is on the right.
             bubblePosition = getChildCount() - index - 1;
         } else {
@@ -465,7 +597,7 @@ public class BubbleBarView extends FrameLayout {
     private float arrowPositionForSelectedWhenCollapsed() {
         final int index = indexOfChild(mSelectedBubbleView);
         final int bubblePosition;
-        if (isOnLeft()) {
+        if (mBubbleBarLocation.isOnLeft(isLayoutRtl())) {
             // Bubble positions are reversed. First bubble may be shifted, if there are more
             // bubbles than the current bubble and overflow.
             bubblePosition = index == 0 && getChildCount() > 2 ? 1 : 0;
