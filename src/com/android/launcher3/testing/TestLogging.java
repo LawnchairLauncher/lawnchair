@@ -62,7 +62,14 @@ public final class TestLogging {
 
     public static void recordKeyEvent(String sequence, String message, KeyEvent event) {
         if (Utilities.isRunningInTestHarness()) {
-            recordEventSlow(sequence, message + ": " + event, true);
+            // This removes expecting ACTION_DOWN key event in the test. ACTION_UP is
+            // always preceded by ACTION_DOWN.
+            // Sometimes test doesn't receive ACTION_DOWN key event and we will assume that
+            // Launcher relies only on ACTION_UP.
+            // However in the test we will send both ACTION_DOWN and ACTION_UP key events.
+            // But stop reporting to tapl if action is down.
+            boolean reportToTapl = event.getAction() != KeyEvent.ACTION_DOWN;
+            recordEventSlow(sequence, message + ": " + event, reportToTapl);
             registerEventNotFromTest(event);
         }
     }

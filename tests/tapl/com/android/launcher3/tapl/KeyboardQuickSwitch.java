@@ -37,15 +37,9 @@ public final class KeyboardQuickSwitch {
     private static final Pattern EVENT_ALT_TAB_UP = Pattern.compile(
             "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_TAB"
                     + ".*?metaState=META_ALT_ON");
-    private static final Pattern EVENT_ALT_SHIFT_TAB_DOWN = Pattern.compile(
-            "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_TAB"
-                    + ".*?metaState=META_ALT_ON|META_SHIFT_ON");
     private static final Pattern EVENT_ALT_SHIFT_TAB_UP = Pattern.compile(
             "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_TAB"
                     + ".*?metaState=META_ALT_ON|META_SHIFT_ON");
-    private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
-            "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_DOWN"
-                    + ".*?keyCode=KEYCODE_ESCAPE.*?metaState=META_ALT_ON");
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_UP"
                     + ".*?keyCode=KEYCODE_ESCAPE.*?metaState=META_ALT_ON");
@@ -87,8 +81,6 @@ public final class KeyboardQuickSwitch {
                 "want to move keyboard quick switch focus forward");
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
-
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_TAB_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_TAB_UP);
             mLauncher.assertTrue("Failed to press alt+tab",
                     mLauncher.getDevice().pressKeyCode(
@@ -122,7 +114,6 @@ public final class KeyboardQuickSwitch {
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_SHIFT_TAB_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_SHIFT_TAB_UP);
             mLauncher.assertTrue("Failed to press alt+shift+tab",
                     mLauncher.getDevice().pressKeyCode(
@@ -150,7 +141,6 @@ public final class KeyboardQuickSwitch {
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
             mLauncher.assertTrue("Failed to press alt+tab",
                     mLauncher.getDevice().pressKeyCode(

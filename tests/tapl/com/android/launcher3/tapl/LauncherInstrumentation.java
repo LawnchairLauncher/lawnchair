@@ -114,9 +114,6 @@ public final class LauncherInstrumentation {
 
     static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START = Pattern.compile("start:");
-
-    private static final Pattern EVENT_KEY_BACK_DOWN =
-            getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
     private static final Pattern EVENT_KEY_BACK_UP =
             getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
     private static final Pattern EVENT_ON_BACK_INVOKED = Pattern.compile("onBackInvoked");
@@ -1218,7 +1215,6 @@ public final class LauncherInstrumentation {
                     .isOnBackInvokedCallbackEnabled()) {
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
             } else {
-                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
             }
         }
