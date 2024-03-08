@@ -123,6 +123,7 @@ public class WidgetItem extends ComponentKey {
         if (!Flags.enableGeneratedPreviews() || generatedPreviews == null) {
             return false;
         }
-        return generatedPreviews.contains(widgetCategory);
+        return generatedPreviews.contains(widgetCategory)
+                && generatedPreviews.get(widgetCategory) != null;
     }
 }

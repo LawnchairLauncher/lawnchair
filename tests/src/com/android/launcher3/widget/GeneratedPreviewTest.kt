@@ -111,6 +111,18 @@ class GeneratedPreviewTest {
     }
 
     @Test
+    @RequiresFlagsEnabled(FLAG_ENABLE_GENERATED_PREVIEWS)
+    fun widgetItem_hasGeneratedPreview_nullPreview() {
+        appWidgetProviderInfo.generatedPreviewCategories =
+            WIDGET_CATEGORY_HOME_SCREEN or WIDGET_CATEGORY_KEYGUARD
+        createWidgetItem()
+        assertThat(widgetItem.hasGeneratedPreview(WIDGET_CATEGORY_HOME_SCREEN)).isTrue()
+        // loadGeneratedPreview returns null for KEYGUARD, so this should still be false.
+        assertThat(widgetItem.hasGeneratedPreview(WIDGET_CATEGORY_KEYGUARD)).isFalse()
+        assertThat(widgetItem.hasGeneratedPreview(WIDGET_CATEGORY_SEARCHBOX)).isFalse()
+    }
+
+    @Test
     @RequiresFlagsDisabled(FLAG_ENABLE_GENERATED_PREVIEWS)
     fun widgetItem_hasGeneratedPreview_flagDisabled() {
         assertThat(widgetItem.hasGeneratedPreview(WIDGET_CATEGORY_HOME_SCREEN)).isFalse()
