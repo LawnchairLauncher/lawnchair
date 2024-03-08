@@ -72,7 +72,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class InvariantDeviceProfile {
@@ -576,45 +575,6 @@ public class InvariantDeviceProfile {
             throw new RuntimeException("No display option with canBeDefault=true");
         }
         return filteredProfiles;
-    }
-
-    /**
-     * Returns the GridOption associated to the given file name or null if the fileName is not
-     * supported.
-     * Ej, launcher.db -> "normal grid", launcher_4_by_4.db -> "practical grid"
-     */
-    public GridOption getGridOptionFromFileName(Context context, String fileName) {
-        return parseAllGridOptions(context).stream()
-                .filter(gridOption -> Objects.equals(gridOption.dbFile, fileName))
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Returns the name of the given size on the current device or empty string if the size is not
-     * supported. Ej. 4x4 -> normal, 5x4 -> practical, etc.
-     * (Note: the name of the grid can be different for the same grid size depending of
-     * the values of the InvariantDeviceProfile)
-     *
-     */
-    public String getGridNameFromSize(Context context, Point size) {
-        return parseAllGridOptions(context).stream()
-                .filter(gridOption -> gridOption.numColumns == size.x
-                        && gridOption.numRows == size.y)
-                .map(gridOption -> gridOption.name)
-                .findFirst()
-                .orElse("");
-    }
-
-    /**
-     * Returns the grid option for the given gridName on the current device (Note: the gridOption
-     * be different for the same gridName depending on the values of the InvariantDeviceProfile).
-     */
-    public GridOption getGridOptionFromName(Context context, String gridName) {
-        return parseAllGridOptions(context).stream()
-                .filter(gridOption -> Objects.equals(gridOption.name, gridName))
-                .findFirst()
-                .orElse(null);
     }
 
     /**
