@@ -138,7 +138,9 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
         if (showingArrow) {
             // Draw arrow.
             val transX = arrowPositionX - pointerSize / 2f
-            canvas.translate(transX, 0f)
+            // Shift arrow down by 1 pixel. Rounded rect has a 1 pixel border which will show up
+            // between background and arrow otherwise.
+            canvas.translate(transX, 1f)
             arrowDrawable.draw(canvas)
         }
 
