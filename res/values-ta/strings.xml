@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$sக்கான ஆப்ஸ் தகவல்கள்"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ஆப்ஸ் ஜோடியைச் சேமி"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"இந்தச் சாதனத்தில் இந்த ஆப்ஸ் ஜோடி ஆதரிக்கப்படவில்லை"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"இந்த ஆப்ஸ் ஜோடியைப் பயன்படுத்த சாதனத்தை விரியுங்கள்"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"விட்ஜெட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"விட்ஜெட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> நிறுவப்படுகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>ஐப் பதிவிறக்குகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>ஐ நிறுவுவதற்காகக் காத்திருக்கிறது"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> காப்பிடப்பட்டுள்ளது. பதிவிறக்க தட்டுங்கள்."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"ஆப்ஸைப் புதுப்பியுங்கள்"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"இந்த ஐகானுக்கான ஆப்ஸ் புதுப்பிக்கப்படவில்லை. இந்த ஷார்ட்கட்டை மீண்டும் இயக்கவோ ஐகானை அகற்றவோ நீங்களாகவே புதுப்பிக்கலாம்."</string>
     <string name="dialog_update" msgid="2178028071796141234">"புதுப்பி"</string>
