@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s සඳහා යෙදුම් තතු"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"යෙදුම් යුගල සුරකින්න"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"මෙම යෙදුම් යුගලය මෙම උපාංගයෙහි සහාය නොදක්වයි"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"මෙම යෙදුම් යුගලය භාවිතා කිරීමට උපාංගය දිගහරින්න"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"විජට් එකක් ගෙන යාමට ස්පර්ශ කර අල්ලා ගෙන සිටින්න."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"විජට් එකක් ගෙන යාමට හෝ අභිරුචි ක්‍රියා භාවිත කිරීමට දෙවරක් තට්ටු කර අල්ලා ගෙන සිටින්න."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ස්ථාපනය කරමින්, <xliff:g id="PROGRESS">%2$s</xliff:g> සම්පූර්ණයි"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> බාගත කරමින්, <xliff:g id="PROGRESS">%2$s</xliff:g> සම්පූර්ණයි"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ස්ථාපනය කිරීමට බලා සිටිමින්"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> ලේඛනාරක්ෂණය කර ඇත. බාගැනීමට තට්ටු කරන්න"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"යෙදුම් යාවත්කාලීනයක් අවශ්‍යයි"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"මෙම නිරූපකය සඳහා යෙදුම යාවත්කාලීන කර නැත. ඔබට මෙම කෙටි මඟ යළි සබල කිරීමට හෝ නිරූපකය ඉවත් කිරීමට හස්තීයව යාවත්කාලීන කළ හැකිය."</string>
     <string name="dialog_update" msgid="2178028071796141234">"යාවත්කාලීන කරන්න"</string>
