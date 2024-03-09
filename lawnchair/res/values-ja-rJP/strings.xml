@@ -276,6 +276,9 @@
     <string name="hide_hidden_apps_search">検索結果に表示しない</string>
     <string name="pref_all_apps_bulk_icon_loading_title">アプリの一括読み込み</string>
     <string name="pref_all_apps_bulk_icon_loading_description">アイコンを個別ではなく、一括で読み込んで表示します</string>
+    <string name="pref_all_apps_remember_position_title">Remember Position</string>
+    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">検索</string>
     <string name="show_app_search_bar">検索バーを表示</string>
     <string name="pref_search_auto_show_keyboard">キーボードを自動的に表示</string>

@@ -91,6 +91,7 @@
     <bool name="config_default_allow_widget_overlap">false</bool>
     <bool name="config_default_show_status_bar">true</bool>
     <bool name="config_default_remember_position">false</bool>
+    <bool name="config_default_show_scrollbar">true</bool>
     <bool name="config_default_show_top_shadow">true</bool>
     <bool name="config_default_lock_home_screen">false</bool>
     <bool name="config_default_lock_home_screen_on_popup">false</bool>
