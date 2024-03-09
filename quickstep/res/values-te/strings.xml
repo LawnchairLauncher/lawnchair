@@ -95,6 +95,8 @@
     <string name="action_share" msgid="2648470652637092375">"షేర్ చేయండి"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"స్క్రీన్‌షాట్"</string>
     <string name="action_split" msgid="2098009717623550676">"స్ప్లిట్ చేయండి"</string>
+    <!-- no translation found for action_save_app_pair (5974823919237645229) -->
+    <skip />
     <string name="toast_split_select_app" msgid="8464310533320556058">"స్ప్లిట్ స్క్రీన్ కోసం మరొక యాప్‌ను ట్యాప్ చేయండి"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"స్ప్లిట్ స్క్రీన్‌ను ఉపయోగించడానికి మరొక యాప్ ఎంచుకోండి"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"రద్దు చేయండి"</b></string>
@@ -113,8 +115,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"మీ రొటీన్ ఆధారంగా యాప్ సూచనలను పొందండి"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"టాస్క్‌బార్‌ను పిన్ చేయడానికి డివైడర్‌ను ఎక్కువసేపు నొక్కండి"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"టాస్క్‌బార్‌తో మరిన్ని చేయండి"</string>
-    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ఎల్లప్పుడూ టాస్క్‌బార్‌ని చూపించండి"</string>
-    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ఎల్లప్పుడూ మీ స్క్రీన్ దిగువున టాస్క్‌బార్‌ను చూపడానికి, డివైడర్‌ను తాకి, నొక్కి ఉంచండి"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"టాస్క్‌బార్‌ను నిరంతరం చూపండి"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"మీ స్క్రీన్ దిగువున టాస్క్‌బార్‌ను నిరంతరం చూపడానికి, డివైడర్‌ను తాకి, నొక్కి ఉంచండి"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"మూసివేయండి"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"పూర్తయింది"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"మొదటి ట్యాబ్"</string>
