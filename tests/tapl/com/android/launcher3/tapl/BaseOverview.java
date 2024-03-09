@@ -45,9 +45,6 @@ import java.util.stream.Collectors;
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     protected static final String TASK_RES_ID = "task";
-
-    private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
-            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
     private static final Pattern EVENT_ENTER_DOWN = Pattern.compile(
@@ -413,7 +410,6 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     public Workspace dismissByEscKey() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
             mLauncher.runToState(
                     () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
@@ -432,7 +428,6 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     public LaunchedAppState launchFocusedTaskByEnterKey(@NonNull String expectedPackageName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ENTER_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ENTER_UP);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
 

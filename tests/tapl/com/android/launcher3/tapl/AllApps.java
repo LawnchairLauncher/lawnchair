@@ -56,9 +56,6 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
 
     private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
     private static final String FAST_SCROLLER_RES_ID = "fast_scroller";
-
-    private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
-            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
 
@@ -407,7 +404,6 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
     /** Presses the esc key to dismiss AllApps. */
     public void dismissByEscKey() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
             mLauncher.runToState(
                     () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),

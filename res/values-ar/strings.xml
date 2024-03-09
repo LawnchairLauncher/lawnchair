@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏معلومات تطبيق %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"حفظ إعدادات ميزة \"استخدام تطبيقين في الوقت نفسه\""</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | ‏<xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"لا يمكن استخدام هذين التطبيقَين في الوقت نفسه على هذا الجهاز"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"افتح الجهاز لاستخدام هذين التطبيقَين في الوقت نفسه"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"انقر مع الاستمرار لنقل أداة."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"انقر مرتين مع تثبيت إصبعك لنقل أداة أو استخدام الإجراءات المخصّصة."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"جارٍ تثبيت <xliff:g id="NAME">%1$s</xliff:g>، مستوى التقدم: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"جارٍ تنزيل <xliff:g id="NAME">%1$s</xliff:g>، اكتمل <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> في انتظار التثبيت"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"تمت أرشفة تطبيق <xliff:g id="NAME">%1$s</xliff:g>. انقر للتنزيل."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"مطلوب تحديث التطبيق"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"لم يتمّ تحديث التطبيق الخاص بهذا الرمز. يمكنك تحديث التطبيق يدويًا لإعادة تفعيل هذا الاختصار أو إزالة الرمز."</string>
     <string name="dialog_update" msgid="2178028071796141234">"تحديث"</string>

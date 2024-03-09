@@ -95,6 +95,8 @@
     <string name="action_share" msgid="2648470652637092375">"শ্বেয়াৰ কৰক"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"স্ক্ৰীনশ্বট"</string>
     <string name="action_split" msgid="2098009717623550676">"বিভাজন কৰক"</string>
+    <!-- no translation found for action_save_app_pair (5974823919237645229) -->
+    <skip />
     <string name="toast_split_select_app" msgid="8464310533320556058">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপত টিপক"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপ্ বাছনি কৰক"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"বাতিল কৰক"</b></string>
@@ -113,8 +115,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"আপোনাৰ ৰুটিনৰ ওপৰত আধাৰিত এপৰ পৰামৰ্শ পাওক"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"টাস্কবাৰ পিন কৰিবলৈ বিভাজকত দীঘলীয়া সময় টিপি থাকক"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"টাস্কবাৰৰ জৰিয়তে অধিক কাৰ্য সম্পাদন কৰক"</string>
-    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"টাস্কবাৰটো সদায় দেখুৱাওক"</string>
-    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"আপোনাৰ স্ক্ৰীণৰ তলত সদায় টাস্কবাৰটো দেখুৱাবলৈ বিভাজকডাল স্পৰ্শ কৰি ধৰি ৰাখক"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"টাস্কবাৰডাল সদায় দেখুৱাওক"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"আপোনাৰ স্ক্ৰীনৰ তলত সদায় টাস্কবাৰডাল দেখুৱাবলৈ বিভাজকডাল স্পৰ্শ কৰি ধৰি ৰাখক"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ কৰক"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হ’ল"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"গৃহপৃষ্ঠা"</string>
