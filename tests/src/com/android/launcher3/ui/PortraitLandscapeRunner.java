@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.rules.TestRule;
@@ -45,17 +46,23 @@ public class PortraitLandscapeRunner implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 try {
-                    // we expect to begin unlocked...
-                    AbstractLauncherUiTest.verifyKeyguardInvisible();
+                    try {
+                        // we expect to begin unlocked...
+                        AbstractLauncherUiTest.verifyKeyguardInvisible();
 
-                    mTest.mDevice.pressHome();
-                    mTest.waitForLauncherCondition("Launcher activity wasn't created",
-                            launcher -> launcher != null,
-                            TimeUnit.SECONDS.toMillis(20));
+                        mTest.mDevice.pressHome();
+                        mTest.waitForLauncherCondition("Launcher activity wasn't created",
+                                launcher -> launcher != null,
+                                TimeUnit.SECONDS.toMillis(20));
 
-                    mTest.executeOnLauncher(launcher ->
-                            launcher.getRotationHelper().forceAllowRotationForTesting(
-                                    true));
+                        mTest.executeOnLauncher(launcher ->
+                                launcher.getRotationHelper().forceAllowRotationForTesting(
+                                        true));
+
+                    } catch (Throwable e) {
+                        FailureWatcher.onError(mTest.mLauncher, description, e);
+                        throw e;
+                    }
 
                     evaluateInPortrait();
                     evaluateInLandscape();
