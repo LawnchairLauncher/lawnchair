@@ -68,7 +68,7 @@ jobs:
           name: Release APK
           path: artifacts/release-apk
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tagName }}
           prerelease: ${{ github.events.inputs.prerelease }}
