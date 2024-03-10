@@ -169,7 +169,7 @@
     <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
     <string name="minus_one">Feed</string>
-    <string name="feed_provider">Recurso de distribución</string>
+    <string name="feed_provider">Proveedor del feed</string>
     <string name="feed_default">Predeterminado</string>
     <string name="wallpaper">Fondo de Pantalla</string>
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
@@ -185,8 +185,8 @@
     <string name="home_screen_locked">La pantalla de inicio está bloqueada.</string>
     <string name="show_dot_pagination_label">Mostrar paginación de puntos</string>
     <string name="show_dot_pagination_description">Habilitar la visualización de la paginación de puntos en el área de trabajo.</string>
-    <string name="show_material_u_popup_label">Mostrar emergente Material U</string>
-    <string name="show_material_u_popup_description">Habilitar emergente con rebote y ligeramente consolidado.</string>
+    <string name="show_material_u_popup_label">Mostrar menú de Material U</string>
+    <string name="show_material_u_popup_description">Habilitar el menú con rebote y ligeramente consolidado.</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo</string>
     <string name="show_system_settings_entry">Mostrar atajo a la configuración del sistema</string>
@@ -223,7 +223,7 @@
     <string name="smartspace_widget_placeholder_date">Vie, 3 mar</string>
     <string name="preview_label">Vista previa</string>
     <string name="smartspace_calendar">Calendario</string>
-    <string name="smartspace_date_and_time">Fecha &amp; Hora</string>
+    <string name="smartspace_date_and_time">Fecha y hora</string>
     <string name="smartspace_date">Fecha</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_format">Formato de hora</string>
@@ -276,9 +276,9 @@
     <string name="hide_hidden_apps_search">Ocultar en los resultados de búsqueda</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Cargar aplicaciones en conjunto</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Cargar y mostrar iconos en conjunto en lugar de cargar y mostrar iconos individualmente</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_remember_position_title">Recordar posición</string>
+    <string name="pref_all_apps_remember_position_description">Recuerda la posición de dónde la dejaste en vez de arriba</string>
+    <string name="pref_all_apps_show_scrollbar_title">Mostrar la barra de desplazamiento</string>
     <string name="pref_category_search">Buscar</string>
     <string name="show_app_search_bar">Mostrar Barra de Búsqueda</string>
     <string name="pref_search_auto_show_keyboard">Mostrar teclado automáticamente</string>
@@ -420,7 +420,7 @@
     <string name="all_apps_search_startpage_message">Buscar en <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No hay tienda de aplicaciones ni navegador instalado.</string>
     <string name="all_apps_search_result_suggestions">De internet</string>
-    <string name="all_apps_search_result_contacts_from_device">Tus contactos</string>
+    <string name="all_apps_search_result_contacts_from_device">De tus contactos</string>
     <string name="all_apps_search_result_files">De tus archivos</string>
     <string name="all_apps_search_result_settings_entry_from_device">De tu configuración</string>
     <string name="warn_contact_permission_content">Requiere acceso a tus contactos</string>
