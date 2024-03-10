@@ -1,6 +1,8 @@
 package app.lawnchair.compatlib.thirteen;
 
 import android.app.ActivityOptions;
+import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.RemoteAnimationAdapter;
 import android.window.RemoteTransition;
@@ -21,5 +23,27 @@ public class ActivityOptionsCompatVT extends ActivityOptionsCompatVS {
         Log.e(TAG, "makeRemoteAnimation: " + debugName);
         return ActivityOptions.makeRemoteAnimation(
                 remoteAnimationAdapter, (RemoteTransition) remoteTransition);
+    }
+
+    @NonNull
+    @Override
+    public ActivityOptions makeCustomAnimation(
+            @NonNull Context context,
+            int enterResId,
+            int exitResId,
+            @NonNull Handler callbackHandler,
+            Runnable callback,
+            Runnable finishedListener) {
+        return ActivityOptions.makeCustomTaskAnimation(
+                context,
+                enterResId,
+                exitResId,
+                callbackHandler,
+                elapsedRealTime -> {
+                    if (callback != null) {
+                        callbackHandler.post(callback);
+                    }
+                },
+                null /* finishedListener */);
     }
 }

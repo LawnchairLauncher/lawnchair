@@ -107,40 +107,8 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
         }
     }
 
-    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        ActivityManager.TaskSnapshot snapshot = null;
-        try {
-            snapshot = ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to retrieve task snapshot", e);
-        }
-        if (snapshot != null) {
-            return makeThumbnailData(snapshot);
-        } else {
-            return null;
-        }
-    }
-
-    public ThumbnailData takeScreenshot(
-            IRecentsAnimationController animationController, int taskId) {
-        try {
-            ActivityManager.TaskSnapshot snapshot = animationController.screenshotTask(taskId);
-            return snapshot != null ? makeThumbnailData(snapshot) : new ThumbnailData();
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to screenshot task", e);
-            return new ThumbnailData();
-        }
-    }
-
-    public ThumbnailData convertTaskSnapshotToThumbnailData(Object taskSnapshot) {
-        if (taskSnapshot != null) {
-            return makeThumbnailData((ActivityManager.TaskSnapshot) taskSnapshot);
-        } else {
-            return null;
-        }
-    }
-
-    private ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
+    @Override
+    public ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
         ThumbnailData data = new ThumbnailData();
         final GraphicBuffer buffer = snapshot.getSnapshot();
         if (buffer == null || (buffer.getUsage() & HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE) == 0) {
@@ -167,19 +135,5 @@ public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
         data.systemUiVisibility = snapshot.getSystemUiVisibility();
         data.snapshotId = snapshot.getId();
         return data;
-    }
-
-    public static class ThumbnailData {
-        public Bitmap thumbnail;
-        public int orientation;
-        public int rotation;
-        public Rect insets;
-        public boolean reducedResolution;
-        public boolean isRealSnapshot;
-        public boolean isTranslucent;
-        public int windowingMode;
-        public int systemUiVisibility;
-        public float scale;
-        public long snapshotId;
     }
 }

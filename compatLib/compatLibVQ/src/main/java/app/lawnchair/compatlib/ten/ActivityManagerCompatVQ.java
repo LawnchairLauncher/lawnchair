@@ -7,6 +7,7 @@ import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
 import android.app.WindowConfiguration;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.RemoteException;
 import android.util.Log;
@@ -113,5 +114,58 @@ public class ActivityManagerCompatVQ implements ActivityManagerCompat {
             Log.e(TAG, "Failed to get recent tasks", e);
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
+        ActivityManager.TaskSnapshot snapshot = null;
+        try {
+            snapshot = ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to retrieve task snapshot", e);
+        }
+        if (snapshot != null) {
+            return makeThumbnailData(snapshot);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public ThumbnailData takeScreenshot(
+            IRecentsAnimationController animationController, int taskId) {
+        try {
+            ActivityManager.TaskSnapshot snapshot = animationController.screenshotTask(taskId);
+            return snapshot != null ? makeThumbnailData(snapshot) : new ThumbnailData();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to screenshot task", e);
+            return new ThumbnailData();
+        }
+    }
+
+    @Override
+    public ThumbnailData convertTaskSnapshotToThumbnailData(Object taskSnapshot) {
+        if (taskSnapshot != null) {
+            return makeThumbnailData((ActivityManager.TaskSnapshot) taskSnapshot);
+        } else {
+            return null;
+        }
+    }
+
+    public ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
+        ThumbnailData data = new ThumbnailData();
+        data.thumbnail =
+                Bitmap.wrapHardwareBuffer(snapshot.getSnapshot(), snapshot.getColorSpace());
+        data.insets = new Rect(snapshot.getContentInsets());
+        data.orientation = snapshot.getOrientation();
+        data.reducedResolution = snapshot.isReducedResolution();
+        // TODO(b/149579527): Pass task size instead of computing scale.
+        // Assume width and height were scaled the same; compute scale only for width
+        data.scale = snapshot.getScale();
+        data.isRealSnapshot = snapshot.isRealSnapshot();
+        data.isTranslucent = snapshot.isTranslucent();
+        data.windowingMode = snapshot.getWindowingMode();
+        data.systemUiVisibility = snapshot.getSystemUiVisibility();
+        return data;
     }
 }
