@@ -20,8 +20,8 @@ import static android.app.ActivityManager.LOCK_TASK_MODE_LOCKED;
 import static android.app.ActivityManager.LOCK_TASK_MODE_NONE;
 import static android.app.ActivityTaskManager.getService;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -51,7 +51,6 @@ import com.android.internal.app.IVoiceInteractionManagerService;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -104,23 +103,10 @@ public class ActivityManagerWrapper {
      * @return the top running task filtering only for tasks that can be visible in the recent tasks
      * list (can be {@code null}).
      */
+    @Nullable
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
         return LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTask(filterOnlyVisibleRecents);
-    }
-
-    /**
-     * @see #getRunningTasks(boolean , int)
-     */
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        return LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
-    }
-
-    /**
-     * @return a list of the recents tasks.
-     */
-    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        return LawnchairQuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
     }
 
     /**
@@ -130,26 +116,31 @@ public class ActivityManagerWrapper {
      * out on one of the split apps
      *
      * @return an array of up to {@link #NUM_RECENT_ACTIVITIES_REQUEST} running tasks
-     *         filtering only for tasks that can be visible in the recent tasks list.
+     * filtering only for tasks that can be visible in the recent tasks list.
      */
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents,
-            int displayId) {
-        // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks = mAtm != null ?
-                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST,
-                        filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId) : new ArrayList<>();
-        return LawnchairQuickstepCompat.ATLEAST_U ? tasks.toArray(new RunningTaskInfo[tasks.size()])
-                : LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+    @NonNull
+    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
+        var tasks = LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTasks(filterOnlyVisibleRecents);
+        return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
+    }
+
+    /**
+     * @return a list of the recents tasks.
+     */
+    @NonNull
+    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
+        return LawnchairQuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
     }
 
     /**
      * @return a {@link ThumbnailData} with {@link TaskSnapshot} for the given {@param taskId}.
      *         The snapshot will be triggered if no cached {@link TaskSnapshot} exists.
      */
-    public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        if (!LawnchairQuickstepCompat.ATLEAST_S){
-            ActivityManagerCompatVR compat = ((ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat());
-            ActivityManagerCompatVR.ThumbnailData data = compat.getTaskThumbnail(taskId, isLowResolution);
+    @NonNull
+    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
+        if (!LawnchairQuickstepCompat.ATLEAST_S) {
+            var compat = LawnchairQuickstepCompat.getActivityManagerCompat();
+            var data = compat.getTaskThumbnail(taskId, isLowResolution);
             if (data != null) {
                 return new ThumbnailData(data);
             } else {
@@ -157,11 +148,7 @@ public class ActivityManagerWrapper {
             }
         }
         TaskSnapshot snapshot = LawnchairQuickstepCompat.getActivityManagerCompat().getTaskSnapshot(taskId, isLowResolution, true);
-        if (snapshot != null) {
-            return new ThumbnailData(snapshot);
-        } else {
-            return new ThumbnailData();
-        }
+        return snapshot != null ? new ThumbnailData(snapshot) : new ThumbnailData();
     }
 
     /**

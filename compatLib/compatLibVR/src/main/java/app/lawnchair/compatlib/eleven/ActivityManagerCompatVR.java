@@ -1,6 +1,5 @@
 package app.lawnchair.compatlib.eleven;
 
-import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 import static android.app.ActivityTaskManager.getService;
 import static android.graphics.Bitmap.Config.ARGB_8888;
 
@@ -19,20 +18,23 @@ import android.util.Log;
 import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
-import app.lawnchair.compatlib.ActivityManagerCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
-import java.util.ArrayList;
+import app.lawnchair.compatlib.ten.ActivityManagerCompatVQ;
+import java.util.Collections;
 import java.util.List;
 
-public class ActivityManagerCompatVR extends ActivityManagerCompat {
-
-    private static final String TAG = "ActivityManagerCompatVR";
+@RequiresApi(30)
+public class ActivityManagerCompatVR extends ActivityManagerCompatVQ {
 
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
         try {
             ActivityTaskManager.getService()
-                    .invalidateHomeTaskSnapshot(homeActivity.getActivityToken());
+                    .invalidateHomeTaskSnapshot(
+                            homeActivity == null ? null : homeActivity.getActivityToken());
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to invalidate home snapshot", e);
         }
@@ -78,6 +80,7 @@ public class ActivityManagerCompatVR extends ActivityManagerCompat {
         }
     }
 
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
@@ -93,59 +96,18 @@ public class ActivityManagerCompatVR extends ActivityManagerCompat {
         }
     }
 
+    @NonNull
     @Override
-    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
+    public List<ActivityManager.RunningTaskInfo> getRunningTasks(boolean filterOnlyVisibleRecents) {
         try {
             return ActivityTaskManager.getService()
-                    .getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId)
-                    .getList();
+                    .getFilteredTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
         } catch (RemoteException e) {
-            Log.e(TAG, "Failed to get recent tasks", e);
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 
     @Override
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        try {
-            List<ActivityManager.RunningTaskInfo> tasks =
-                    ActivityTaskManager.getService()
-                            .getFilteredTasks(
-                                    NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
-            if (tasks.isEmpty()) {
-                return null;
-            }
-            return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
-        } catch (RemoteException e) {
-            return null;
-        }
-    }
-
-    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        ActivityManager.TaskSnapshot snapshot = null;
-        try {
-            snapshot = ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to retrieve task snapshot", e);
-        }
-        if (snapshot != null) {
-            return makeThumbnailData(snapshot);
-        } else {
-            return null;
-        }
-    }
-
-    public ThumbnailData takeScreenshot(
-            IRecentsAnimationController animationController, int taskId) {
-        try {
-            ActivityManager.TaskSnapshot snapshot = animationController.screenshotTask(taskId);
-            return snapshot != null ? makeThumbnailData(snapshot) : new ThumbnailData();
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to screenshot task", e);
-            return new ThumbnailData();
-        }
-    }
-
     public ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
         ThumbnailData data = new ThumbnailData();
         final GraphicBuffer buffer = snapshot.getSnapshot();
@@ -173,28 +135,5 @@ public class ActivityManagerCompatVR extends ActivityManagerCompat {
         data.systemUiVisibility = snapshot.getSystemUiVisibility();
         data.snapshotId = snapshot.getId();
         return data;
-    }
-
-    public ThumbnailData convertTaskSnapshotToThumbnailData(Object taskSnapshot) {
-        if (taskSnapshot != null) {
-            return makeThumbnailData((ActivityManager.TaskSnapshot) taskSnapshot);
-        } else {
-            return null;
-        }
-    }
-
-    public static class ThumbnailData {
-
-        public Bitmap thumbnail;
-        public int orientation;
-        public int rotation;
-        public Rect insets;
-        public boolean reducedResolution;
-        public boolean isRealSnapshot;
-        public boolean isTranslucent;
-        public int windowingMode;
-        public int systemUiVisibility;
-        public float scale;
-        public long snapshotId;
     }
 }

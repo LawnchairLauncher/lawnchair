@@ -1,7 +1,6 @@
 package app.lawnchair.compatlib.twelve;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
-import static android.app.ActivityTaskManager.getService;
 
 import android.app.Activity;
 import android.app.ActivityClient;
@@ -15,15 +14,15 @@ import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.lawnchair.compatlib.ActivityManagerCompat;
+import androidx.annotation.RequiresApi;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
+import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 import java.util.List;
 
-public class ActivityManagerCompatVS extends ActivityManagerCompat {
-
-    private static final String TAG = "ActivityManagerCompatVS";
-    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
+@RequiresApi(31)
+public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
 
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
@@ -31,8 +30,8 @@ public class ActivityManagerCompatVS extends ActivityManagerCompat {
             ActivityClient.getInstance()
                     .invalidateHomeTaskSnapshot(
                             homeActivity == null ? null : homeActivity.getActivityToken());
-        } catch (Throwable e) {
-            Log.w(TAG, "Failed to invalidate home snapshot", e);
+        } catch (Throwable ignored) {
+            super.invalidateHomeTaskSnapshot(homeActivity);
         }
     }
 
@@ -41,7 +40,7 @@ public class ActivityManagerCompatVS extends ActivityManagerCompat {
     public TaskSnapshot getTaskSnapshot(
             int taskId, boolean isLowResolution, boolean takeSnapshotIfNeeded) {
         try {
-            return getService().getTaskSnapshot(taskId, isLowResolution);
+            return ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to getTaskSnapshot", e);
             return null;
@@ -82,31 +81,35 @@ public class ActivityManagerCompatVS extends ActivityManagerCompat {
                     };
         }
         try {
-            getService().startRecentsActivity(intent, eventTime, runner);
+            ActivityTaskManager.getService().startRecentsActivity(intent, eventTime, runner);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to cancel recents animation", e);
         }
     }
 
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks = mAtm.getTasks(1, filterOnlyVisibleRecents);
+        List<ActivityManager.RunningTaskInfo> tasks =
+                ActivityTaskManager.getInstance().getTasks(1, filterOnlyVisibleRecents);
         if (tasks.isEmpty()) {
             return null;
         }
         return tasks.get(0);
     }
 
+    @NonNull
     @Override
     public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        return mAtm.getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId);
+        return ActivityTaskManager.getInstance()
+                .getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId);
     }
 
+    @NonNull
     @Override
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-        List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
-        return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
+    public List<ActivityManager.RunningTaskInfo> getRunningTasks(boolean filterOnlyVisibleRecents) {
+        return ActivityTaskManager.getInstance()
+                .getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
     }
 }

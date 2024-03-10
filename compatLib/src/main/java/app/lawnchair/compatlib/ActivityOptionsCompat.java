@@ -4,17 +4,23 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
 import android.view.RemoteAnimationAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public abstract class ActivityOptionsCompat {
-    public abstract ActivityOptions makeCustomAnimation(
-            Context context,
+public interface ActivityOptionsCompat {
+
+    @NonNull
+    ActivityOptions makeCustomAnimation(
+            @NonNull Context context,
             int enterResId,
             int exitResId,
-            final Runnable callback,
-            final Handler callbackHandler);
+            @NonNull final Handler callbackHandler,
+            @Nullable final Runnable startedListener,
+            @Nullable final Runnable finishedListener);
 
-    public abstract ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName);
+    @NonNull
+    ActivityOptions makeRemoteAnimation(
+            @Nullable RemoteAnimationAdapter remoteAnimationAdapter,
+            @Nullable Object remoteTransition,
+            @Nullable String debugName);
 }

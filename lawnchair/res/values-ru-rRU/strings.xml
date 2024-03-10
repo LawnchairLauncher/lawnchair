@@ -33,7 +33,7 @@
     <string name="folders_label">Папки</string>
     <string name="folders_description">Количество строк и столбцов</string>
     <string name="gestures_label">Жесты</string>
-    <string name="gestures_description">Касания и свайпы</string>
+    <string name="gestures_description">Жесты</string>
     <string name="quickstep_label">Недавние</string>
     <string name="quickstep_description">Радиус углов, кнопка \"Очистить всё\"</string>
     <string name="about_label">О программе</string>
@@ -75,7 +75,7 @@
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
-    <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставте <xliff:g id="name" example="My App">%1$s</xliff:g> доступ к уведомлениям.</string>
+    <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставьте <xliff:g id="name" example="My App">%1$s</xliff:g> доступ к уведомлениям.</string>
     <string name="title_change_settings">Изменить параметры</string>
     <string name="colors">Цвета</string>
     <string name="theme_label">Тема</string>
@@ -125,12 +125,12 @@
     <string name="icon_shape_rounded_square">Скруглённый квадрат</string>
     <string name="icon_shape_sharp_square">Острый квадрат</string>
     <string name="icon_shape_square">Квадратный</string>
-    <string name="icon_shape_squircle">Квадрокруг</string>
+    <string name="icon_shape_squircle">Квадратный круг</string>
     <string name="icon_shape_teardrop">Капля</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF поддерживается.</string>
-    <string name="pref_fonts_missing_font">Шрифт не найден</string>
+    <string name="pref_fonts_missing_font">Шрифт не найден </string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">Экстра тонкий</string>
@@ -276,9 +276,9 @@
     <string name="hide_hidden_apps_search">Скрывать в результатах поиска</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Массовая загрузка приложений</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Массовая загрузка и отображение значков, вместо загрузки и отображения значков по отдельности</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_remember_position_title">Помнить позицию</string>
+    <string name="pref_all_apps_remember_position_description">Сохранять позицию приложений, которую вы указали, вместо отображения их в порядке сверху вниз</string>
+    <string name="pref_all_apps_show_scrollbar_title">Отображать полосу прокрутки</string>
     <string name="pref_category_search">Поиск</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
     <string name="pref_search_auto_show_keyboard">Автоматически выдвигать клавиатуру</string>

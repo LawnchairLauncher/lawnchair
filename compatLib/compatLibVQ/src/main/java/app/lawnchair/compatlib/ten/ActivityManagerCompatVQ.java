@@ -1,5 +1,7 @@
 package app.lawnchair.compatlib.ten;
 
+import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
@@ -8,42 +10,43 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.IRecentsAnimationController;
 import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
-import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
+@RequiresApi(29)
+public class ActivityManagerCompatVQ implements ActivityManagerCompat {
+    protected final String TAG = getClass().getCanonicalName();
 
     @Override
     public void invalidateHomeTaskSnapshot(Activity homeActivity) {
-        // do nothing ,android Q not support
+        // Do nothing, Android Q doesn't support this.
     }
 
+    @NonNull
     @Override
-    public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
-
+    public List<ActivityManager.RunningTaskInfo> getRunningTasks(boolean filterOnlyVisibleRecents) {
         int ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
         if (filterOnlyVisibleRecents) {
             ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_RECENTS;
         }
 
         try {
-
-            List<ActivityManager.RunningTaskInfo> tasks =
-                    ActivityTaskManager.getService()
-                            .getFilteredTasks(
-                                    NUM_RECENT_ACTIVITIES_REQUEST,
-                                    ignoreActivityType,
-                                    WindowConfiguration.WINDOWING_MODE_PINNED);
-            if (tasks.isEmpty()) {
-                return null;
-            }
-            return tasks.toArray(new ActivityManager.RunningTaskInfo[tasks.size()]);
+            return ActivityTaskManager.getService()
+                    .getFilteredTasks(
+                            NUM_RECENT_ACTIVITIES_REQUEST,
+                            ignoreActivityType,
+                            WindowConfiguration.WINDOWING_MODE_PINNED);
         } catch (RemoteException e) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -65,8 +68,6 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
                                     controller, apps, null, homeContentInsets, minimizedHomeBounds);
                         }
 
-                        public void reportAllDrawn() {}
-
                         @Override
                         public void onAnimationCanceled(boolean deferredWithScreenshot) {
                             runnerCompat.onAnimationCanceled(deferredWithScreenshot);
@@ -75,14 +76,13 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
         }
         try {
             ActivityTaskManager.getService().startRecentsActivity(intent, null, runner);
-        } catch (RemoteException e) {
-
+        } catch (RemoteException ignored) {
         }
     }
 
+    @Nullable
     @Override
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
-
         int ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
         if (filterOnlyVisibleRecents) {
             ignoreActivityType = WindowConfiguration.ACTIVITY_TYPE_RECENTS;
@@ -103,7 +103,55 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompatVR {
         }
     }
 
+    @NonNull
     @Override
+    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
+        try {
+            return ActivityTaskManager.getService()
+                    .getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId)
+                    .getList();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to get recent tasks", e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
+        ActivityManager.TaskSnapshot snapshot = null;
+        try {
+            snapshot = ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to retrieve task snapshot", e);
+        }
+        if (snapshot != null) {
+            return makeThumbnailData(snapshot);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public ThumbnailData takeScreenshot(
+            IRecentsAnimationController animationController, int taskId) {
+        try {
+            ActivityManager.TaskSnapshot snapshot = animationController.screenshotTask(taskId);
+            return snapshot != null ? makeThumbnailData(snapshot) : new ThumbnailData();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to screenshot task", e);
+            return new ThumbnailData();
+        }
+    }
+
+    @Override
+    public ThumbnailData convertTaskSnapshotToThumbnailData(Object taskSnapshot) {
+        if (taskSnapshot != null) {
+            return makeThumbnailData((ActivityManager.TaskSnapshot) taskSnapshot);
+        } else {
+            return null;
+        }
+    }
+
     public ThumbnailData makeThumbnailData(ActivityManager.TaskSnapshot snapshot) {
         ThumbnailData data = new ThumbnailData();
         data.thumbnail =

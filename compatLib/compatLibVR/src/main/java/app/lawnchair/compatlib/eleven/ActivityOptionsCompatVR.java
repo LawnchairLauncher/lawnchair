@@ -3,20 +3,23 @@ package app.lawnchair.compatlib.eleven;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
-import android.view.RemoteAnimationAdapter;
-import app.lawnchair.compatlib.ActivityOptionsCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import app.lawnchair.compatlib.ten.ActivityOptionsCompatVQ;
 
-public class ActivityOptionsCompatVR extends ActivityOptionsCompat {
-    private static final String TAG = "ActivityOptionsCompatVR";
+@RequiresApi(30)
+public class ActivityOptionsCompatVR extends ActivityOptionsCompatVQ {
 
+    @NonNull
     @Override
     public ActivityOptions makeCustomAnimation(
-            Context context,
+            @NonNull Context context,
             int enterResId,
             int exitResId,
-            Runnable callback,
-            Handler callbackHandler) {
+            @NonNull final Handler callbackHandler,
+            @Nullable final Runnable startedListener,
+            @Nullable final Runnable finishedListener) {
         return ActivityOptions.makeCustomAnimation(
                 context,
                 enterResId,
@@ -25,20 +28,18 @@ public class ActivityOptionsCompatVR extends ActivityOptionsCompat {
                 new ActivityOptions.OnAnimationStartedListener() {
                     @Override
                     public void onAnimationStarted() {
-                        if (callback != null) {
-                            callbackHandler.post(callback);
+                        if (startedListener != null) {
+                            startedListener.run();
                         }
                     }
                 },
-                null /* finishedListener */);
-    }
-
-    @Override
-    public ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName) {
-        Log.e(TAG, "makeRemoteAnimation: " + debugName);
-        return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter);
+                new ActivityOptions.OnAnimationFinishedListener() {
+                    @Override
+                    public void onAnimationFinished() {
+                        if (finishedListener != null) {
+                            finishedListener.run();
+                        }
+                    }
+                });
     }
 }
