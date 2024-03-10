@@ -973,16 +973,10 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     private ActivityOptions makeCustomAnimation(Context context, int enterResId,
             int exitResId, final Runnable callback, final Handler callbackHandler) {
-        if (!LawnchairQuickstepCompat.ATLEAST_T) {
-            return LawnchairQuickstepCompat.getActivityOptionsCompat().makeCustomAnimation(context, enterResId, exitResId, callback, callbackHandler);
+        if (Utilities.ATLEAST_Q) {
+            return LawnchairQuickstepCompat.getActivityOptionsCompat().makeCustomAnimation(context, enterResId, exitResId, callbackHandler, callback, null);
         }
-        return ActivityOptions.makeCustomTaskAnimation(context, enterResId, exitResId,
-                callbackHandler,
-                elapsedRealTime -> {
-                    if (callback != null) {
-                        callbackHandler.post(callback);
-                    }
-                }, null /* finishedListener */);
+        return ActivityOptions.makeBasic();
     }
 
     /**

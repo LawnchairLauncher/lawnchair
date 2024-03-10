@@ -418,6 +418,7 @@ spotless {
     java {
         target("compatLib/**/src/**/*.java")
         googleJavaFormat().aosp()
+        removeUnusedImports()
     }
     kotlin {
         target("lawnchair/src/**/*.kt")

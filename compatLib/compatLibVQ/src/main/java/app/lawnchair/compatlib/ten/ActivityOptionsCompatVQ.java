@@ -4,16 +4,24 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
 import android.view.RemoteAnimationAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
 
-public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
+@RequiresApi(29)
+public class ActivityOptionsCompatVQ implements ActivityOptionsCompat {
+    protected final String TAG = getClass().getCanonicalName();
+
+    @NonNull
     @Override
     public ActivityOptions makeCustomAnimation(
-            Context context,
+            @NonNull Context context,
             int enterResId,
             int exitResId,
-            Runnable callback,
-            Handler callbackHandler) {
+            @NonNull final Handler callbackHandler,
+            @Nullable final Runnable startedListener,
+            @Nullable final Runnable finishedListener) {
         return ActivityOptions.makeCustomAnimation(
                 context,
                 enterResId,
@@ -22,18 +30,19 @@ public class ActivityOptionsCompatVQ extends ActivityOptionsCompat {
                 new ActivityOptions.OnAnimationStartedListener() {
                     @Override
                     public void onAnimationStarted() {
-                        if (callback != null) {
-                            callbackHandler.post(callback);
+                        if (startedListener != null) {
+                            startedListener.run();
                         }
                     }
                 });
     }
 
+    @NonNull
     @Override
     public ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName) {
+            @Nullable RemoteAnimationAdapter remoteAnimationAdapter,
+            @Nullable Object remoteTransition,
+            @Nullable String debugName) {
         return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter);
     }
 }
