@@ -45,15 +45,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="font_picker_description">Some text remains unchanged</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
     <string name="always_reload_icons_label">Always Reload Icons</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using "Clear All"</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
 
     <!-- Relating to label/icon size -->
     <string name="icons">Icons</string>
@@ -63,7 +63,7 @@
 
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
-    <string name="home_screen_rotation_description">When device is rotated.</string>
+    <string name="home_screen_rotation_description">When device is rotated</string>
 
     <string name="font_label">Font (Experimental)</string>
     <string name="fontWorkspace">General</string>
@@ -93,7 +93,7 @@
 
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="missing_notification_access_description">Notification access needed</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Change Settings</string>
 
@@ -133,7 +133,7 @@
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">Home Screen</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs.</string>
+    <string name="lawnicons_not_installed_description">No supported icon packs</string>
 
     <!-- IconPickerPreference -->
     <string name="icon_shape_system">System</string>
@@ -152,13 +152,12 @@
 
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
 
-    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="pref_fonts_missing_font">Font not found</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
-
     <string name="font_weight_light">Light</string>
     <string name="font_weight_regular">Regular</string>
     <string name="font_weight_medium">Medium</string>
@@ -194,7 +193,7 @@
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
 
     <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
+    <string name="minus_one_unavailable">No feed apps installed</string>
     <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">Default</string>
@@ -202,20 +201,20 @@
     <string name="wallpaper">Wallpaper</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher.</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
 
     <string name="layout">Layout</string>
     <string name="home_screen_grid">Home Screen Grid</string>
     <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
     <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Home Screen is locked</string>
 
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number.</string>
-    <string name="show_material_u_popup_label">Show new popup style</string>
-    <string name="show_material_u_popup_description">Use the new Material You bouncy and slightly consolidated popup style.</string>
+    <string name="show_dot_pagination_label">Use dot pagination</string>
+    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_material_u_popup_label">Use new popup style</string>
+    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
 
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
@@ -279,7 +278,7 @@
     <string name="smartspace_preferences">Preferences</string>
 
     <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the "Lawnchair" widget.</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
 
     <string name="smartspace_mode_label">At a Glance Provider</string>
     <string name="smartspace_mode_lawnchair" translatable="false">Lawnchair</string>
@@ -322,7 +321,7 @@
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">App required</string>
 
     <!-- AppDrawerPrefences -->
 
@@ -336,7 +335,7 @@
     <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
 
     <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
+    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
     <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">Search</string>
     <string name="show_app_search_bar">Show Search Bar</string>
@@ -355,7 +354,7 @@
     <string name="pref_suggestion_label">Suggestions</string>
     <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
     <string name="pref_recent_suggestion_title">History</string>
 
     <string name="max_search_result_count_title">Max Search Result Count</string>
@@ -431,11 +430,6 @@
 
     <string name="support_and_pr">Support &amp; PR</string>
 
-      <!--
-      <string name="support" />
-      <string name="support_and_pr" />
-      -->
-
     <string name="acknowledgements">Acknowledgements</string>
     <string name="translate">Translate</string>
 
@@ -450,7 +444,7 @@
     <string name="all_apps_search_bar_hint">Search apps</string>
     <string name="settings_button_text">Home Settings</string>
 
-    <string name="item_removed">Item removed.</string>
+    <string name="item_removed">Item removed</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
 
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
@@ -468,7 +462,7 @@
     <string name="hide_from_drawer">Hide from App Drawer</string>
 
     <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
 
     <string name="n_percent" translatable="false">%1$d%%</string>
 
