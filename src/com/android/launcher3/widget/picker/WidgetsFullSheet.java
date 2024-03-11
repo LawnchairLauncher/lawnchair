@@ -107,7 +107,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             entry -> mCurrentUser.equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter;
     protected final boolean mHasWorkProfile;
-    protected boolean mHasRecommendedWidgets;
+    // Number of recommendations displayed
+    protected int mRecommendedWidgetsCount;
     protected final SparseArray<AdapterHolder> mAdapters = new SparseArray();
     @Nullable private ArrowTipView mLatestEducationalTip;
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
@@ -581,7 +582,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         if (enableCategorizedWidgetSuggestions()) {
-            mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
+            mRecommendedWidgetsCount = mWidgetRecommendationsView.setRecommendations(
                     mActivityContext.getPopupDataProvider().getCategorizedRecommendedWidgets(),
                     mDeviceProfile,
                     /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
@@ -589,7 +590,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     /* cellPadding= */ mWidgetCellHorizontalPadding
             );
         } else {
-            mHasRecommendedWidgets = mWidgetRecommendationsView.setRecommendations(
+            mRecommendedWidgetsCount = mWidgetRecommendationsView.setRecommendations(
                     mActivityContext.getPopupDataProvider().getRecommendedWidgets(),
                     mDeviceProfile,
                     /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
@@ -597,7 +598,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     /* cellPadding= */ mWidgetCellHorizontalPadding
             );
         }
-        mWidgetRecommendationsContainer.setVisibility(mHasRecommendedWidgets ? VISIBLE : GONE);
+        mWidgetRecommendationsContainer.setVisibility(
+                mRecommendedWidgetsCount > 0 ? VISIBLE : GONE);
     }
 
     @Px
@@ -790,7 +792,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     /** private the height, in pixel, + the vertical margins of a given view. */
-    private static int measureHeightWithVerticalMargins(View view) {
+    protected static int measureHeightWithVerticalMargins(View view) {
         if (view.getVisibility() != VISIBLE) {
             return 0;
         }
