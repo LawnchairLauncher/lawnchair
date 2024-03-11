@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.app.animation.Interpolators.EXAGGERATED_EASE;
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
@@ -46,6 +47,7 @@ import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.ScalingWorkspaceRevealAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.FloatingWidgetView;
@@ -296,9 +298,15 @@ public class LauncherSwipeHandlerV2 extends
 
         @Override
         public void playAtomicAnimation(float velocity) {
-            new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
-                    getViewIgnoredInWorkspaceRevealAnimation())
-                    .start();
+            if (enableScalingRevealHomeAnimation()) {
+                if (mActivity != null) {
+                    new ScalingWorkspaceRevealAnim(mActivity).start();
+                }
+            } else {
+                new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
+                        getViewIgnoredInWorkspaceRevealAnimation())
+                        .start();
+            }
         }
     }
 }

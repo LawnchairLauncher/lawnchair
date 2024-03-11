@@ -37,7 +37,6 @@ import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
-import static com.android.launcher3.QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getWorkspaceSpringScaleAnimator;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
@@ -59,6 +58,7 @@ import android.animation.ValueAnimator;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AllAppsSwipeController;
@@ -108,7 +108,8 @@ public class QuickstepAtomicAnimationFactory extends
 
             // We sync the scrim fade with the taskbar animation duration to avoid any flickers for
             // taskbar icons disappearing before hotseat icons show up.
-            float scrimUpperBoundFromSplit = TASKBAR_TO_HOME_DURATION / (float) config.duration;
+            float scrimUpperBoundFromSplit =
+                    QuickstepTransitionManager.getTaskbarToHomeDuration() / (float) config.duration;
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR, 0, 0.25f));
             config.setInterpolator(ANIM_SCRIM_FADE,
                     fromState == OVERVIEW_SPLIT_SELECT
@@ -136,7 +137,8 @@ public class QuickstepAtomicAnimationFactory extends
 
                 // Sync scroll so that it ends before or at the same time as the taskbar animation.
                 if (mActivity.getDeviceProfile().isTaskbarPresent) {
-                    config.duration = Math.min(config.duration, TASKBAR_TO_HOME_DURATION);
+                    config.duration = Math.min(
+                            config.duration, QuickstepTransitionManager.getTaskbarToHomeDuration());
                 }
                 overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
             } else {

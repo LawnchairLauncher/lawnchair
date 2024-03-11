@@ -16,6 +16,7 @@
 package com.android.launcher3.states
 
 import android.content.Context
+import com.android.launcher3.Flags.enableScalingRevealHomeAnimation
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
 import com.android.launcher3.logging.StatsLogManager
@@ -25,6 +26,8 @@ import com.android.launcher3.views.ActivityContext
 class EditModeState(id: Int) : LauncherState(id, StatsLogManager.LAUNCHER_STATE_HOME, STATE_FLAGS) {
 
     companion object {
+        const val DEPTH_15_PERCENT = 0.15f
+
         private val STATE_FLAGS =
             (FLAG_MULTI_PAGE or
                 FLAG_WORKSPACE_INACCESSIBLE or
@@ -40,7 +43,11 @@ class EditModeState(id: Int) : LauncherState(id, StatsLogManager.LAUNCHER_STATE_
     }
 
     override fun <T> getDepthUnchecked(context: T): Float where T : Context?, T : ActivityContext? {
-        return 0.5f
+        if (enableScalingRevealHomeAnimation()) {
+            return DEPTH_15_PERCENT
+        } else {
+            return 0.5f
+        }
     }
 
     override fun getWorkspaceScaleAndTranslation(launcher: Launcher): ScaleAndTranslation {
