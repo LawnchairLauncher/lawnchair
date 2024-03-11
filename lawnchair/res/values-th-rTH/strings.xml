@@ -75,7 +75,7 @@
     <!-- Notification popup -->
     <string name="missing_notification_access_label">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
     <string name="missing_notification_access_description">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
-    <string name="msg_missing_notification_access">เพื่อใช้ Notification Dots, กรุณาอนุญาตให้ <xliff:g id="name" example="My App">%1$s</xliff:g>เข้าถึงการแจ้งเตือน</string>
+    <string name="msg_missing_notification_access">เพื่อใช้จุดแสดงการแจ้งเตือน, กรุณาอนุญาตให้ <xliff:g id="name" example="My App">%1$s</xliff:g>เข้าถึงการแจ้งเตือน</string>
     <string name="title_change_settings">เปลี่ยนการตั้งค่า</string>
     <string name="colors">สี</string>
     <string name="theme_label">ธีม</string>
@@ -166,7 +166,7 @@
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">เพิ่มไอคอนแอปในหน้าจอหลัก</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_enable">แสดงฟีด</string>
     <string name="minus_one_unavailable">ยังไม่ได้ติดตั้ง Feed</string>
     <string name="minus_one">ฟีดข่าวสาร</string>
     <string name="feed_provider">ผู้ให้บริการข่าว</string>
@@ -190,7 +190,7 @@
     <string name="popup_menu">เมนูป็อปอัพ</string>
     <string name="home_screen_lock_toggle_from_home_popup">แสดงปุ่มล็อค</string>
     <string name="show_system_settings_entry">แสดงรายการตั้งค่าระบบ</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">แสดงปุ่มการแก้ไข</string>
     <string name="status_bar_label">แถบสถานะ</string>
     <string name="show_status_bar">แสดงแถบสถานะ</string>
     <string name="dark_status_bar_label">แถบสถานะสีดำ</string>
@@ -276,7 +276,7 @@
     <string name="hide_hidden_apps_search">ซ่อนในผลการค้นหา</string>
     <string name="pref_all_apps_bulk_icon_loading_title">โหลดแอปเป็นชุด</string>
     <string name="pref_all_apps_bulk_icon_loading_description">โหลดและแสดงไอคอนเป็นชุด แทนที่จะโหลดและแสดงไอคอนทีละตัว</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
+    <string name="pref_all_apps_remember_position_title">จำตำแหน่ง</string>
     <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
     <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">ค้นหา</string>
@@ -446,8 +446,8 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">ตั้งค่าระบบ</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">ปลดล็อค</string>
+    <string name="action_lock">ล็อค</string>
     <string name="recents_lock_unlock">Lock/Unlock</string>
     <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

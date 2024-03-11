@@ -35,12 +35,14 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.Routes
+import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
 import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
@@ -50,12 +52,16 @@ import com.android.launcher3.R
 @Composable
 fun PreferencesDashboard() {
     val context = LocalContext.current
+    SyncLiveInformation()
+
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
         verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu() },
     ) {
+        AnnouncementPreference()
+
         if (BuildConfig.DEBUG) PreferencesDebugWarning()
 
         if (!context.isDefaultLauncher()) {
@@ -188,7 +194,7 @@ fun PreferencesDebugWarning() {
     ) {
         WarningPreference(
             // Don't move to strings.xml, no need to translate this warning
-            text = "You are using a development build, which may contain bugs and broken features. Use at your own risk!",
+            text = "You are using a development build, which may contain bugs and broken features. Use at your own risk!"
         )
     }
 }

@@ -1,16 +1,13 @@
 package app.lawnchair.compatlib.eleven;
 
-import android.app.IApplicationThread;
-import android.window.IRemoteTransition;
-import android.window.RemoteTransition;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import app.lawnchair.compatlib.ActivityManagerCompat;
 import app.lawnchair.compatlib.ActivityOptionsCompat;
-import app.lawnchair.compatlib.QuickstepCompatFactory;
-import app.lawnchair.compatlib.RemoteTransitionCompat;
+import app.lawnchair.compatlib.ten.QuickstepCompatFactoryVQ;
 
-public class QuickstepCompatFactoryVR extends QuickstepCompatFactory {
+@RequiresApi(30)
+public class QuickstepCompatFactoryVR extends QuickstepCompatFactoryVQ {
 
     @NonNull
     @Override
@@ -22,19 +19,5 @@ public class QuickstepCompatFactoryVR extends QuickstepCompatFactory {
     @Override
     public ActivityOptionsCompat getActivityOptionsCompat() {
         return new ActivityOptionsCompatVR();
-    }
-
-    @NonNull
-    @Override
-    public RemoteTransitionCompat getRemoteTransitionCompat() {
-        return new RemoteTransitionCompat() {
-            @Override
-            public RemoteTransition getRemoteTransition(
-                    @NonNull IRemoteTransition remoteTransition,
-                    @Nullable IApplicationThread appThread,
-                    @Nullable String debugName) {
-                return new RemoteTransition(remoteTransition, appThread, debugName);
-            }
-        };
     }
 }

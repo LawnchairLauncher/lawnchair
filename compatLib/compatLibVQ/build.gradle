@@ -9,6 +9,5 @@ android {
 addFrameworkJar('framework-10.jar')
 
 dependencies {
-    implementation projects.compatLib
-    implementation projects.compatLib.compatLibVR
+    api projects.compatLib
 }

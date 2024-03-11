@@ -169,7 +169,7 @@
     <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Nenhum feed instalado.</string>
     <string name="minus_one">Feed</string>
-    <string name="feed_provider">Feed Provider</string>
+    <string name="feed_provider">Fornecedor de Feed</string>
     <string name="feed_default">Predefinido</string>
     <string name="wallpaper">Papel de Parede</string>
     <string name="wallpaper_scrolling_label">Rolar Papel de Parede</string>
@@ -274,11 +274,11 @@
     <string name="hidden_apps_label">Aplicações Ocultas</string>
     <string name="show_enable_smart_hide">Mostrar quando o Nome Completo é Escrito</string>
     <string name="hide_hidden_apps_search">Esconder nos Resultados de Pesquisa</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Carregar Apps em massa</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Carregar e mostrar ícones em massa em vez de carregar e exibir individualmente ícones</string>
+    <string name="pref_all_apps_remember_position_title">Lembrar Posição</string>
+    <string name="pref_all_apps_remember_position_description">Lembrar a posição de quando saiu em vez do topo</string>
+    <string name="pref_all_apps_show_scrollbar_title">Mostrar Barra de Navegação</string>
     <string name="pref_category_search">Pesquisar</string>
     <string name="show_app_search_bar">Mostrar Barra de Pesquisa</string>
     <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
@@ -342,14 +342,14 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">Estas configurações serão ignoradas pois o Lawnchair não está definido como provedor de recentes.</string>
     <string name="translucent_background">Fundo Translúcido</string>
     <string name="recents_actions_label">Ações Rápidas</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Partilhar</string>
     <string name="action_lens">Lente</string>
     <string name="recents_clear_all">Limpar Tudo</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Fechar forçadamente</string>
     <string name="window_corner_radius_label">Raio dos Cantos do Ecrã</string>
     <string name="override_window_corner_radius_label">Raio dos Cantos do Ecrã Personalizado</string>
     <string name="window_corner_radius_description">Quando deslizar para cima para abrir as aplicações Recentes, a aplicação atual segue o seu dedo, diminuindo num cartão. Utilize este controlo deslizante para ajustar o raio de curvatura do cartão quando este estiver quase em ecrã cheio, de modo a que corresponda aos cantos do seu ecrã.</string>

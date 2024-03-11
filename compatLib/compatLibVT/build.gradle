@@ -9,6 +9,5 @@ android {
 addFrameworkJar('framework-13.jar')
 
 dependencies {
-    implementation projects.compatLib
-    implementation projects.compatLib.compatLibVS
+    api projects.compatLib.compatLibVS
 }

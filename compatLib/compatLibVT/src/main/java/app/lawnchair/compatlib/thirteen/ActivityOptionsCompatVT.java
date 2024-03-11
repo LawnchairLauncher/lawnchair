@@ -6,29 +6,44 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.RemoteAnimationAdapter;
 import android.window.RemoteTransition;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import app.lawnchair.compatlib.twelve.ActivityOptionsCompatVS;
 
+@RequiresApi(33)
 public class ActivityOptionsCompatVT extends ActivityOptionsCompatVS {
 
-    private static final String TAG = "ActivityOptionsCompatVT";
-
-    @Override
-    public ActivityOptions makeCustomAnimation(
-            Context context,
-            int enterResId,
-            int exitResId,
-            Runnable callback,
-            Handler callbackHandler) {
-        return super.makeCustomAnimation(context, enterResId, exitResId, callback, callbackHandler);
-    }
-
+    @NonNull
     @Override
     public ActivityOptions makeRemoteAnimation(
-            RemoteAnimationAdapter remoteAnimationAdapter,
-            Object remoteTransition,
-            String debugName) {
+            @Nullable RemoteAnimationAdapter remoteAnimationAdapter,
+            @Nullable Object remoteTransition,
+            @Nullable String debugName) {
         Log.e(TAG, "makeRemoteAnimation: " + debugName);
         return ActivityOptions.makeRemoteAnimation(
                 remoteAnimationAdapter, (RemoteTransition) remoteTransition);
+    }
+
+    @NonNull
+    @Override
+    public ActivityOptions makeCustomAnimation(
+            @NonNull Context context,
+            int enterResId,
+            int exitResId,
+            @NonNull Handler callbackHandler,
+            Runnable callback,
+            Runnable finishedListener) {
+        return ActivityOptions.makeCustomTaskAnimation(
+                context,
+                enterResId,
+                exitResId,
+                callbackHandler,
+                elapsedRealTime -> {
+                    if (callback != null) {
+                        callbackHandler.post(callback);
+                    }
+                },
+                null /* finishedListener */);
     }
 }

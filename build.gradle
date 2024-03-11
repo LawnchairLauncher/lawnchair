@@ -401,7 +401,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.3.0'
+    implementation 'com.airbnb.android:lottie:6.4.0'
 
     // Smartspacer
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.6') {
@@ -419,11 +419,12 @@ spotless {
     java {
         target("compatLib/**/src/**/*.java")
         googleJavaFormat().aosp()
+        removeUnusedImports()
     }
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.3.11",
+            "io.nlopez.compose.rules:ktlint:0.3.12",
         ]).editorConfigOverride([
             "ktlint_compose_modifier-missing-check": "disabled",
             "ktlint_compose_compositionlocal-allowlist": "disabled",
