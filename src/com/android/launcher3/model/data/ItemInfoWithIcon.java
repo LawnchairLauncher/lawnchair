@@ -160,10 +160,6 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * and its install session is active
      */
     public boolean isPendingDownload() {
-        if (isArchived()) {
-            return this.getProgressLevel() == 0
-                    && (this.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0;
-        }
         return getProgressLevel() == 0;
     }
 
@@ -175,6 +171,11 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
             return false;
         }
         return (runtimeStatusFlags & FLAG_ARCHIVED) != 0;
+    }
+
+    /** Returns true if the app is archived and has an active install session. */
+    public boolean isActiveArchive() {
+        return isArchived() && (runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0;
     }
 
     /**

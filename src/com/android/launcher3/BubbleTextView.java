@@ -916,7 +916,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     /** Applies the given progress level to the this icon's progress bar. */
     @Nullable
     public PreloadIconDrawable applyProgressLevel() {
-        if (!(getTag() instanceof ItemInfoWithIcon)) {
+        if (!(getTag() instanceof ItemInfoWithIcon)
+                || !((ItemInfoWithIcon) getTag()).isActiveArchive()) {
             return null;
         }
 
@@ -972,6 +973,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public boolean isIconDisabled(ItemInfoWithIcon info) {
         return info.isDisabled() || info.isPendingDownload();
     }
+
 
     public void applyDotState(ItemInfo itemInfo, boolean animate) {
         if (mIcon instanceof FastBitmapDrawable) {
