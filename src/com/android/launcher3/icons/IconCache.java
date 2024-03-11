@@ -222,6 +222,7 @@ public class IconCache extends BaseIconCache {
      * Updates {@param application} only if a valid entry is found.
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
+        boolean preferPackageIcon = application.isArchived();
         CacheEntry entry = cacheLocked(application.componentName,
                 application.user, () -> null, mLauncherActivityInfoCachingLogic,
                 false, application.usingLowResIcon());
@@ -229,13 +230,12 @@ public class IconCache extends BaseIconCache {
             return;
         }
 
-        boolean preferPackageIcon = application.isArchived();
         if (preferPackageIcon) {
             String packageName = application.getTargetPackage();
             CacheEntry packageEntry =
                     cacheLocked(new ComponentName(packageName, packageName + EMPTY_CLASS_NAME),
                             application.user, () -> null, mLauncherActivityInfoCachingLogic,
-                            false, application.usingLowResIcon());
+                            true, application.usingLowResIcon());
             applyPackageEntry(packageEntry, application, entry);
         } else {
             applyCacheEntry(entry, application);
