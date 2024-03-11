@@ -119,7 +119,7 @@ public final class WidgetsListTableViewHolderBinder
                 widget.setVisibility(View.VISIBLE);
 
                 // When preview loads, notify adapter to rebind the item and possibly animate
-                widget.applyFromCellItem(widgetItem, 1f,
+                widget.applyFromCellItem(widgetItem,
                         bitmap -> holder.onPreviewLoaded(Pair.create(widgetItem, bitmap)),
                         holder.previewCache.get(widgetItem));
                 widget.requestLayout();

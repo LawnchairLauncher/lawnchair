@@ -63,6 +63,7 @@ public final class WidgetsTableUtilsTest {
     private static final String TEST_PACKAGE = "com.google.test";
 
     private static final int SPACE_SIZE = 10;
+    // Note - actual widget size includes SPACE_SIZE (border) + cell padding.
     private static final int CELL_SIZE = 50;
     private static final int NUM_OF_COLS = 5;
     private static final int NUM_OF_ROWS = 5;
@@ -105,7 +106,7 @@ public final class WidgetsTableUtilsTest {
 
 
     @Test
-    public void groupWidgetItemsIntoTableWithReordering_widgetsOnly_maxSpanPxPerRow220_cellPadding0_shouldGroupWidgetsInTable() {
+    public void groupWithReordering_widgetsOnly_maxSpanPxPerRow220_cellPadding0() {
         List<WidgetItem> widgetItems = List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4,
                 mWidget2x2);
 
@@ -113,17 +114,20 @@ public final class WidgetsTableUtilsTest {
                 WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(widgetItems, mContext,
                         mTestDeviceProfile, 220, 0);
 
-        // Row 0: 1x1(50px), 2x2(110px)
-        // Row 1: 2x3(110px), 2x4(110px)
-        // Row 2: 4x4(230px)
-        assertThat(widgetItemInTable).hasSize(3);
-        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1, mWidget2x2);
-        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3, mWidget2x4);
-        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget4x4);
+        // With reordering, rows displayed in order of increasing size.
+        // Row 0: 1x1(50px)
+        // Row 1: 2x2(in a 2x2 container - 110px)
+        // Row 2: 2x3(in a 2x3 container - 110px), 2x4(in a 2x3 container - 110px)
+        // Row 3: 4x4(in a 3x3 container in tablet - 170px; 4x3 on phone - 230px)
+        assertThat(widgetItemInTable).hasSize(4);
+        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x2);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x3, mWidget2x4);
+        assertThat(widgetItemInTable.get(3)).containsExactly(mWidget4x4);
     }
 
     @Test
-    public void groupWidgetItemsIntoTableWithReordering_widgetsOnly_maxSpanPxPerRow220_cellPadding10_shouldGroupWidgetsInTable() {
+    public void groupWithReordering_widgetsOnly_maxSpanPxPerRow220_cellPadding10() {
         List<WidgetItem> widgetItems = List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4,
                 mWidget2x2);
 
@@ -131,9 +135,13 @@ public final class WidgetsTableUtilsTest {
                 WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(widgetItems, mContext,
                         mTestDeviceProfile, 220, 10);
 
-        // Row 0: 1x1(50px), 2x2(110px)
-        // Row 1: 2x3(110px), 2x4(110px)
-        // Row 2: 4x4(230px)
+        // With reordering, but space taken up by cell padding, so, no grouping (even if 2x2 and 2x3
+        // use same preview container).
+        // Row 0: 1x1(50px)
+        // Row 1: 2x2(in a 2x2 container: 130px)
+        // Row 2: 2x3(in a 2x3 container: 130px)
+        // Row 3: 2x4(in a 2x3 container: 130px)
+        // Row 4: 4x4(in a 3x3 container in tablet - 190px; 4x3 on phone - 250px)
         assertThat(widgetItemInTable).hasSize(5);
         assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1);
         assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x2);
@@ -143,7 +151,29 @@ public final class WidgetsTableUtilsTest {
     }
 
     @Test
-    public void groupWidgetItemsIntoTableWithReordering_widgetsOnly_maxSpanPxPerRow350_cellPadding0_shouldGroupWidgetsInTable() {
+    public void groupWithReordering_widgetsOnly_maxSpanPxPerRow260_cellPadding10() {
+        List<WidgetItem> widgetItems = List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4,
+                mWidget2x2);
+
+        List<ArrayList<WidgetItem>> widgetItemInTable =
+                WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(widgetItems, mContext,
+                        mTestDeviceProfile, 260, 10);
+
+        // With reordering, even with cellPadding, enough space to group 2x3 and 2x4 (which also use
+        // same container)
+        // Row 0: 1x1(50px)
+        // Row 1: 2x2(in a 2x2 container: 130px)
+        // Row 2: 2x3(in a 2x3 container: 130px), 2x4(in a 2x3 container: 130px)
+        // Row 3: 4x4(in a 3x3 container in tablet - 190px; 4x3 on phone - 250px)
+        assertThat(widgetItemInTable).hasSize(4);
+        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x2);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x3, mWidget2x4);
+        assertThat(widgetItemInTable.get(3)).containsExactly(mWidget4x4);
+    }
+
+    @Test
+    public void groupWithReordering_widgetsOnly_maxSpanPxPerRow350_cellPadding0() {
         List<WidgetItem> widgetItems = List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4,
                 mWidget2x2);
 
@@ -151,17 +181,20 @@ public final class WidgetsTableUtilsTest {
                 WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(widgetItems, mContext,
                         mTestDeviceProfile, 350, 0);
 
-        // Row 0: 1x1(50px), 2x2(110px), 2x3(110px)
-        // Row 1: 2x4(110px)
-        // Row 2: 4x4(230px)
-        assertThat(widgetItemInTable).hasSize(3);
-        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1, mWidget2x2, mWidget2x3);
-        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x4);
-        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget4x4);
+        // With reordering, rows displayed in order of increasing size.
+        // Row 0: 1x1(50px)
+        // Row 1: 2x2(in a 2x2 container: 110px)
+        // Row 2: 2x3(in a 2x3 container: 110px), 2x4(in a 2x3 container: 110px)
+        // Row 3: 4x4(in a 3x3 container in tablet - 170px; 4x3 on phone - 230px)
+        assertThat(widgetItemInTable).hasSize(4);
+        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x2);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x3, mWidget2x4);
+        assertThat(widgetItemInTable.get(3)).containsExactly(mWidget4x4);
     }
 
     @Test
-    public void groupWidgetItemsIntoTableWithReordering_mixItems_maxSpanPxPerRow350_cellPadding0_shouldGroupWidgetsInTable() {
+    public void groupWithReordering_mixItems_maxSpanPxPerRow350_cellPadding0() {
         List<WidgetItem> widgetItems = List.of(mWidget4x4, mShortcut3, mWidget2x3, mShortcut1,
                 mWidget1x1, mShortcut2, mWidget2x4, mWidget2x2);
 
@@ -169,19 +202,22 @@ public final class WidgetsTableUtilsTest {
                 WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(widgetItems, mContext,
                         mTestDeviceProfile, 350, 0);
 
-        // Row 0: 1x1(50px), 2x2(110px), 2x3(110px)
-        // Row 1: 2x4(110px),
-        // Row 2: 4x4(230px)
-        // Row 3: shortcut3(50px), shortcut1(50px), shortcut2(50px)
-        assertThat(widgetItemInTable).hasSize(4);
-        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1, mWidget2x2, mWidget2x3);
-        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x4);
-        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget4x4);
-        assertThat(widgetItemInTable.get(3)).containsExactly(mShortcut3, mShortcut2, mShortcut1);
+        // With reordering - rows displays in order of increasing size:
+        // Row 0: 1x1(50px)
+        // Row 1: 2x2(110px)
+        // Row 2: 2x3 (in a 2x3 container 110px), 2x4 (in a 2x3 container 110px)
+        // Row 3: 4x4 (in a 3x3 container in tablet - 170px; 4x3 on phone - 230px)
+        // Row 4: shortcut3, shortcut1, shortcut2 (shortcuts are always displayed at bottom)
+        assertThat(widgetItemInTable).hasSize(5);
+        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x2);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x3, mWidget2x4);
+        assertThat(widgetItemInTable.get(3)).containsExactly(mWidget4x4);
+        assertThat(widgetItemInTable.get(4)).containsExactly(mShortcut3, mShortcut2, mShortcut1);
     }
 
     @Test
-    public void groupWidgetItemsIntoTableWithoutReordering_maxSpanPxPerRow220_cellPadding0_shouldMaintainTheOrder() {
+    public void groupWithoutReordering_maxSpanPxPerRow220_cellPadding0() {
         List<WidgetItem> widgetItems =
                 List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4, mWidget2x2);
 
@@ -189,13 +225,19 @@ public final class WidgetsTableUtilsTest {
                 WidgetsTableUtils.groupWidgetItemsUsingRowPxWithoutReordering(widgetItems, mContext,
                         mTestDeviceProfile, 220, 0);
 
-        // Row 0: 4x4(230px)
-        // Row 1: 2x3(110px), 1x1(50px)
-        // Row 2: 2x4(110px), 2x2(110px)
-        assertThat(widgetItemInTable).hasSize(3);
+        // Without reordering, widgets are grouped only if the next one fits and uses same preview
+        // container:
+        // Row 0: 4x4(in a 3x3 container in tablet - 170px; 4x3 on phone - 230px)
+        // Row 1: 2x3(in a 2x3 container - 110px)
+        // Row 2: 1x1(50px)
+        // Row 3: 2x4(in a 2x3 container - 110px)
+        // Row 4: 2x2(in a 2x2 container - 110px)
+        assertThat(widgetItemInTable).hasSize(5);
         assertThat(widgetItemInTable.get(0)).containsExactly(mWidget4x4);
-        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3, mWidget1x1);
-        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x4, mWidget2x2);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget1x1);
+        assertThat(widgetItemInTable.get(3)).containsExactly(mWidget2x4);
+        assertThat(widgetItemInTable.get(4)).containsExactly(mWidget2x2);
     }
 
     private void initDP() {

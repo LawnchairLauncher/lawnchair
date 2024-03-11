@@ -57,6 +57,8 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.picker.util.WidgetPreviewContainerSize;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.function.Consumer;
 
@@ -80,7 +82,7 @@ public class WidgetCell extends LinearLayout {
      * The requested scale of the preview container. It can be lower than this as well.
      */
     private float mPreviewContainerScale = 1f;
-
+    private Size mPreviewContainerSize = new Size(0, 0);
     private FrameLayout mWidgetImageContainer;
     private WidgetImageView mWidgetImage;
     private ImageView mWidgetBadge;
@@ -176,6 +178,8 @@ public class WidgetCell extends LinearLayout {
         mWidgetDims.setText(null);
         mWidgetDescription.setText(null);
         mWidgetDescription.setVisibility(GONE);
+        showDescription(true);
+        showDimensions(true);
 
         if (mActiveRequest != null) {
             mActiveRequest.cancel();
@@ -186,6 +190,7 @@ public class WidgetCell extends LinearLayout {
             mWidgetImageContainer.removeView(mAppWidgetHostViewPreview);
         }
         mAppWidgetHostViewPreview = null;
+        mPreviewContainerSize = new Size(0, 0);
         mAppWidgetHostViewScale = 1f;
         mPreviewContainerScale = 1f;
         mItem = null;
@@ -201,30 +206,21 @@ public class WidgetCell extends LinearLayout {
      * Applies the item to this view
      */
     public void applyFromCellItem(WidgetItem item) {
-        applyFromCellItem(item, 1f);
-    }
-
-    /**
-     * Applies the item to this view
-     */
-    public void applyFromCellItem(WidgetItem item, float previewScale) {
-        applyFromCellItem(item, previewScale, this::applyPreview, null);
+        applyFromCellItem(item, this::applyPreview, /*cachedPreview=*/null);
     }
 
     /**
      * Applies the item to this view
      * @param item item to apply
-     * @param previewScale factor to scale the preview
      * @param callback callback when preview is loaded in case the preview is being loaded or cached
      * @param cachedPreview previously cached preview bitmap is present
      */
-    public void applyFromCellItem(WidgetItem item, float previewScale,
-            @NonNull Consumer<Bitmap> callback, @Nullable Bitmap cachedPreview) {
-        mPreviewContainerScale = previewScale;
-
+    public void applyFromCellItem(WidgetItem item, @NonNull Consumer<Bitmap> callback,
+            @Nullable Bitmap cachedPreview) {
         Context context = getContext();
         mItem = item;
         mWidgetSize = getWidgetItemSizePx(getContext(), mActivity.getDeviceProfile(), mItem);
+        initPreviewContainerSizeAndScale();
 
         mWidgetName.setText(mItem.label);
         mWidgetName.setContentDescription(
@@ -276,6 +272,17 @@ public class WidgetCell extends LinearLayout {
                 mActiveRequest = mWidgetPreviewLoader.loadPreview(mItem, mWidgetSize, callback);
             }
         }
+    }
+
+    private void initPreviewContainerSizeAndScale() {
+        WidgetPreviewContainerSize previewSize = WidgetPreviewContainerSize.Companion.forItem(mItem,
+                mActivity.getDeviceProfile());
+        mPreviewContainerSize = WidgetSizes.getWidgetSizePx(mActivity.getDeviceProfile(),
+                previewSize.spanX, previewSize.spanY);
+
+        float scaleX = (float) mPreviewContainerSize.getWidth() / mWidgetSize.getWidth();
+        float scaleY = (float) mPreviewContainerSize.getHeight() / mWidgetSize.getHeight();
+        mPreviewContainerScale = Math.min(scaleX, scaleY);
     }
 
     private void setAppWidgetHostViewPreview(
@@ -384,6 +391,16 @@ public class WidgetCell extends LinearLayout {
     }
 
     /**
+     * Shows or hides the dimensions displayed below each widget.
+     *
+     * @param show a flag that shows the dimensions of the widget if {@code true}, hides it if
+     *             {@code false}.
+     */
+    public void showDimensions(boolean show) {
+        mWidgetDims.setVisibility(show ? VISIBLE : GONE);
+    }
+
+    /**
      * Set whether the app icon, for the app that provides the widget, should be shown next to the
      * title text of the widget.
      *
@@ -448,17 +465,22 @@ public class WidgetCell extends LinearLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         ViewGroup.LayoutParams containerLp = mWidgetImageContainer.getLayoutParams();
-
-        mAppWidgetHostViewScale = mPreviewContainerScale;
         int maxWidth = MeasureSpec.getSize(widthMeasureSpec);
-        containerLp.width = Math.round(mWidgetSize.getWidth() * mAppWidgetHostViewScale);
+
+        // mPreviewContainerScale ensures the needed scaling with respect to original widget size.
+        mAppWidgetHostViewScale = mPreviewContainerScale;
+        containerLp.width = mPreviewContainerSize.getWidth();
+        containerLp.height = mPreviewContainerSize.getHeight();
+
+        // If we don't have enough available width, scale the preview container to fit.
         if (containerLp.width > maxWidth) {
             containerLp.width = maxWidth;
-            mAppWidgetHostViewScale = (float) containerLp.width / mWidgetSize.getWidth();
+            mAppWidgetHostViewScale = (float) containerLp.width / mPreviewContainerSize.getWidth();
+            containerLp.height = Math.round(
+                    mPreviewContainerSize.getHeight() * mAppWidgetHostViewScale);
         }
-        containerLp.height = Math.round(mWidgetSize.getHeight() * mAppWidgetHostViewScale);
-        // No need to call mWidgetImageContainer.setLayoutParams as we are in measure pass
 
+        // No need to call mWidgetImageContainer.setLayoutParams as we are in measure pass
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 

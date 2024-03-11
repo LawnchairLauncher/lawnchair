@@ -176,7 +176,7 @@
 
     <!-- Widget tray -->
     <dimen name="widget_cell_vertical_padding">8dp</dimen>
-    <dimen name="widget_cell_horizontal_padding">16dp</dimen>
+    <dimen name="widget_cell_horizontal_padding">8dp</dimen>
     <dimen name="widget_cell_font_size">14sp</dimen>
     <dimen name="widget_cell_app_icon_size">24dp</dimen>
     <dimen name="widget_cell_app_icon_padding">8dp</dimen>
@@ -187,7 +187,6 @@
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
     <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
     <dimen name="widget_recommendations_table_vertical_padding">8dp</dimen>
-    <dimen name="widget_recommendations_table_horizontal_padding">16dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container without work profile -->
     <dimen name="search_and_recommended_widgets_container_bottom_margin">16dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container with work profile -->
@@ -198,7 +197,8 @@
 
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
-    <dimen name="widget_list_horizontal_margin">16dp</dimen>
+    <!-- Less margin on sides to let widgets table width be close to the workspace width. -->
+    <dimen name="widget_list_horizontal_margin">11dp</dimen>
     <!-- Margin applied to the recycler view with search bar & the list of widget apps below it. -->
     <dimen name="widget_list_left_pane_horizontal_margin">0dp</dimen>
     <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
