@@ -24,6 +24,7 @@ import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -40,10 +41,10 @@ import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 
-import kotlin.Unit;
-
 import java.util.HashMap;
 import java.util.function.Consumer;
+
+import kotlin.Unit;
 
 /**
  * TaskView that contains and shows thumbnails for not one, BUT TWO(!!) tasks
@@ -382,7 +383,11 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void setOverlayEnabled(boolean overlayEnabled) {
-        // Intentional no-op to prevent setting smart actions overlay on thumbnails
+        if (FeatureFlags.enableAppPairs()) {
+            super.setOverlayEnabled(overlayEnabled);
+        } else {
+            // Intentional no-op to prevent setting smart actions overlay on thumbnails
+        }
     }
 
     @Override
