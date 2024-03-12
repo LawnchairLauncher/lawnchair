@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static android.content.pm.ApplicationInfo.CATEGORY_PRODUCTIVITY;
+import static android.content.pm.ApplicationInfo.FLAG_INSTALLED;
 import static android.os.Process.myUserHandle;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
@@ -37,6 +39,8 @@ import android.app.prediction.AppTargetId;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherApps;
 import android.os.UserHandle;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.text.TextUtils;
@@ -81,6 +85,8 @@ public final class WidgetsPredicationUpdateTaskTest {
     private FakeBgDataModelCallback mCallback = new FakeBgDataModelCallback();
     private LauncherModelHelper mModelHelper;
     private UserHandle mUserHandle;
+    private LauncherApps mLauncherApps;
+
 
     @Before
     public void setup() throws Exception {
@@ -103,12 +109,18 @@ public final class WidgetsPredicationUpdateTaskTest {
         allWidgets = Arrays.asList(mApp1Provider1, mApp1Provider2, mApp2Provider1,
                 mApp4Provider1, mApp4Provider2, mApp5Provider1);
 
+        mLauncherApps = mModelHelper.sandboxContext.spyService(LauncherApps.class);
         doAnswer(i -> {
             String pkg = i.getArgument(0);
-            return ApplicationInfoBuilder.newBuilder().setPackageName(pkg).setName(
-                    "App " + pkg).build();
-        }).when(mModelHelper.sandboxContext.getPackageManager())
-                .getApplicationInfo(anyString(), anyInt());
+            ApplicationInfo applicationInfo = ApplicationInfoBuilder.newBuilder()
+                    .setPackageName(pkg)
+                    .setName("App " + pkg)
+                    .build();
+            applicationInfo.category = CATEGORY_PRODUCTIVITY;
+            applicationInfo.flags = FLAG_INSTALLED;
+            return applicationInfo;
+        }).when(mLauncherApps).getApplicationInfo(anyString(), anyInt(), any());
+
         AppWidgetManager manager = mModelHelper.sandboxContext.spyService(AppWidgetManager.class);
         doReturn(allWidgets).when(manager).getInstalledProviders();
         doReturn(allWidgets).when(manager).getInstalledProvidersForProfile(eq(myUserHandle()));

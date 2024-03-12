@@ -18,13 +18,13 @@ package com.android.launcher3.widget.picker;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.ResourceBasedOverride;
 
@@ -54,6 +54,7 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
      * to display the recommendation grouped by categories.
      */
     @WorkerThread
+    @Nullable
     public WidgetRecommendationCategory getWidgetRecommendationCategory(Context context,
             WidgetItem item) {
         // This is a default implementation that uses application category to derive the category to
@@ -61,17 +62,16 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
         // via the overridden WidgetRecommendationCategoryProvider resource.
 
         Preconditions.assertWorkerThread();
-        PackageManager pm = context.getPackageManager();
+        PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         if (item.widgetInfo != null && item.widgetInfo.getComponent() != null) {
             String widgetComponentName = item.widgetInfo.getComponent().getClassName();
-            try {
-                int predictionCategory = pm.getApplicationInfo(
-                        item.widgetInfo.getComponent().getPackageName(), 0 /* flags */).category;
+            ApplicationInfo applicationInfo = pmHelper.getApplicationInfo(
+                    item.widgetInfo.getComponent().getPackageName(), item.widgetInfo.getUser(),
+                    0 /* flags */);
+            if (applicationInfo != null) {
+                int predictionCategory = applicationInfo.category;
                 return getCategoryFromApplicationCategory(context, predictionCategory,
                         widgetComponentName);
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.e(TAG, "Failed to retrieve application category when determining the "
-                        + "widget category for " + widgetComponentName, e);
             }
         }
         return null;
@@ -112,17 +112,22 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
                     R.string.news_widget_recommendation_category_label, /*order=*/1);
         }
 
-        if (applicationCategory == ApplicationInfo.CATEGORY_SOCIAL
-                || applicationCategory == ApplicationInfo.CATEGORY_AUDIO
+        if (applicationCategory == ApplicationInfo.CATEGORY_SOCIAL) {
+            return new WidgetRecommendationCategory(
+                    R.string.social_widget_recommendation_category_label,
+                    /*order=*/5);
+        }
+
+        if (applicationCategory == ApplicationInfo.CATEGORY_AUDIO
                 || applicationCategory == ApplicationInfo.CATEGORY_VIDEO
                 || applicationCategory == ApplicationInfo.CATEGORY_IMAGE) {
             return new WidgetRecommendationCategory(
-                    R.string.social_and_entertainment_widget_recommendation_category_label,
-                    /*order=*/4);
+                    R.string.entertainment_widget_recommendation_category_label,
+                    /*order=*/6);
         }
 
         return new WidgetRecommendationCategory(
-                R.string.others_widget_recommendation_category_label, /*order=*/5);
+                R.string.others_widget_recommendation_category_label, /*order=*/4);
     }
 
 }
