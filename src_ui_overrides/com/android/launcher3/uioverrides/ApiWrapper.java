@@ -108,6 +108,13 @@ public class ApiWrapper {
     }
 
     /**
+     * Returns an intent which can be used to open Private Space Settings.
+     */
+    public static Intent getPrivateSpaceSettingsIntent(Context context) {
+        return null;
+    }
+
+    /**
      * Checks if an activity is flagged as non-resizeable.
      */
     public static boolean isNonResizeableActivity(LauncherActivityInfo lai) {

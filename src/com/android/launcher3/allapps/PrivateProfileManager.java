@@ -30,8 +30,6 @@ import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_L
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.UserHandle;
 import android.os.UserManager;
 
@@ -59,10 +57,6 @@ import java.util.function.Predicate;
  * logic in the Personal tab.
  */
 public class PrivateProfileManager extends UserProfileManager {
-
-    // TODO (b/324573634): Fix the intent string.
-    public static final Intent PRIVATE_SPACE_INTENT = new
-            Intent("com.android.settings.action.PRIVATE_SPACE_SETUP_FLOW");
 
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
@@ -162,7 +156,8 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Opens the Private Space Settings Page. */
     public void openPrivateSpaceSettings() {
         if (mPrivateSpaceSettingsAvailable) {
-            mAllApps.getContext().startActivity(PRIVATE_SPACE_INTENT);
+            mAllApps.getContext()
+                    .startActivity(ApiWrapper.getPrivateSpaceSettingsIntent(mAllApps.getContext()));
         }
     }
 
@@ -194,9 +189,8 @@ public class PrivateProfileManager extends UserProfileManager {
 
     private void initializePrivateSpaceSettingsState() {
         Preconditions.assertNonUiThread();
-        ResolveInfo resolveInfo = mAllApps.getContext().getPackageManager()
-                .resolveActivity(PRIVATE_SPACE_INTENT, PackageManager.MATCH_SYSTEM_ONLY);
-        setPrivateSpaceSettingsAvailable(resolveInfo != null);
+        Intent psSettingsIntent = ApiWrapper.getPrivateSpaceSettingsIntent(mAllApps.getContext());
+        setPrivateSpaceSettingsAvailable(psSettingsIntent != null);
     }
 
     private void setPreInstalledSystemPackages() {
