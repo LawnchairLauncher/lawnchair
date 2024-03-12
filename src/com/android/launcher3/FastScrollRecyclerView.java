@@ -155,7 +155,7 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      * <p>Override in each subclass of this base class.
      */
-    public abstract String scrollToPositionAtProgress(float touchFraction);
+    public abstract CharSequence scrollToPositionAtProgress(float touchFraction);
 
     /**
      * Updates the bounds for the scrollbar.
@@ -192,15 +192,5 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
             mScrollbar.reattachThumbToScroll();
         }
         scrollToPosition(0);
-    }
-
-    /**
-     * Scrolls this recycler view to the bottom with easing and duration.
-     */
-    public void scrollToBottomWithMotion(int duration) {
-        if (mScrollbar != null) {
-            mScrollbar.reattachThumbToScroll();
-        }
-        smoothScrollBy(0, getAvailableScrollHeight(), Interpolators.EMPHASIZED, duration);
     }
 }
