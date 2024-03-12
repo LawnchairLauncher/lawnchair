@@ -210,6 +210,12 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
     }
 
     @Override
+    public int getTaskMenuHeight(float taskInsetMargin, DeviceProfile deviceProfile,
+            float taskMenuX, float taskMenuY) {
+        return (int) (deviceProfile.availableHeightPx - taskInsetMargin - taskMenuY);
+    }
+
+    @Override
     public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
             LinearLayout taskMenuLayout, int dividerSpacing,
             ShapeDrawable dividerDrawable) {

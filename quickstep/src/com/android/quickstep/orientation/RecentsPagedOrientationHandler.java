@@ -176,6 +176,9 @@ public interface RecentsPagedOrientationHandler extends PagedOrientationHandler 
             View taskMenuView, float taskInsetMargin, View taskViewIcon);
     int getTaskMenuWidth(View thumbnailView, DeviceProfile deviceProfile,
             @StagePosition int stagePosition);
+
+    int getTaskMenuHeight(float taskInsetMargin, DeviceProfile deviceProfile, float taskMenuX,
+            float taskMenuY);
     /**
      * Sets linear layout orientation for {@link com.android.launcher3.popup.SystemShortcut} items
      * inside task menu view.
