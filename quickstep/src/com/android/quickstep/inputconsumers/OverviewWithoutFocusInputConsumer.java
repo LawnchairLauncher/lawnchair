@@ -51,7 +51,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
         mGestureState = gestureState;
         mInputMonitor = inputMonitor;
         mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, disableHorizontalSwipe,
-                deviceState.getNavBarPosition(), this::onInterceptTouch, this);
+                deviceState.getNavBarPosition(), this);
     }
 
     @Override
@@ -69,7 +69,8 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
         mTriggerSwipeUpTracker.onMotionEvent(ev);
     }
 
-    private void onInterceptTouch() {
+    @Override
+    public void onSwipeUpTouchIntercepted() {
         if (mInputMonitor != null) {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
             mInputMonitor.pilferPointers();
@@ -93,7 +94,4 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
                         .build())
                 .log(LAUNCHER_HOME_GESTURE);
     }
-
-    @Override
-    public void onSwipeUpCancelled() {}
 }
