@@ -900,12 +900,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
 
         // Only update the following flags when system gesture is not in progress.
+        updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
         setStashedImeState();
     }
 
     private void setStashedImeState() {
         boolean shouldStashForIme = shouldStashForIme();
-        updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
         if (hasAnyFlag(FLAG_STASHED_IN_APP_IME) != shouldStashForIme) {
             updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme);
             applyState(TASKBAR_STASH_DURATION_FOR_IME, getTaskbarStashStartDelayForIme());
