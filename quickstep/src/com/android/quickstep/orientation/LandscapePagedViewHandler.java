@@ -305,6 +305,12 @@ public class LandscapePagedViewHandler implements RecentsPagedOrientationHandler
     }
 
     @Override
+    public int getTaskMenuHeight(float taskInsetMargin, DeviceProfile deviceProfile,
+            float taskMenuX, float taskMenuY) {
+        return (int) (taskMenuX - taskInsetMargin);
+    }
+
+    @Override
     public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
             LinearLayout taskMenuLayout, int dividerSpacing,
             ShapeDrawable dividerDrawable) {
