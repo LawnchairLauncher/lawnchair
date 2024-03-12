@@ -37,6 +37,9 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.DesktopAppSelectView;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Controls the visibility of the workspace and the resumed / paused state when desktop mode
  * is enabled.
@@ -48,6 +51,7 @@ public class DesktopVisibilityController {
     private static final boolean IS_STASHING_ENABLED = SystemProperties.getBoolean(
             "persist.wm.debug.desktop_stashing", false);
     private final Launcher mLauncher;
+    private final Set<DesktopVisibilityListener> mDesktopVisibilityListeners = new HashSet<>();
 
     private int mVisibleDesktopTasksCount;
     private boolean mInOverviewState;
@@ -127,6 +131,16 @@ public class DesktopVisibilityController {
         return mVisibleDesktopTasksCount;
     }
 
+    /** Registers a listener for Desktop Mode visibility updates. */
+    public void registerDesktopVisibilityListener(DesktopVisibilityListener listener) {
+        mDesktopVisibilityListeners.add(listener);
+    }
+
+    /** Removes a previously registered Desktop Mode visibility listener. */
+    public void unregisterDesktopVisibilityListener(DesktopVisibilityListener listener) {
+        mDesktopVisibilityListeners.remove(listener);
+    }
+
     /**
      * Sets the number of desktop windows that are visible and updates launcher visibility based on
      * it.
@@ -140,7 +154,12 @@ public class DesktopVisibilityController {
         if (visibleTasksCount != mVisibleDesktopTasksCount) {
             final boolean wasVisible = mVisibleDesktopTasksCount > 0;
             final boolean isVisible = visibleTasksCount > 0;
+            final boolean wereDesktopTasksVisibleBefore = areDesktopTasksVisible();
             mVisibleDesktopTasksCount = visibleTasksCount;
+            final boolean areDesktopTasksVisibleNow = areDesktopTasksVisible();
+            if (wereDesktopTasksVisibleBefore != areDesktopTasksVisibleNow) {
+                notifyDesktopVisibilityListeners(areDesktopTasksVisibleNow);
+            }
 
             if (!enableDesktopWindowingWallpaperActivity() && wasVisible != isVisible) {
                 // TODO: b/333533253 - Remove after flag rollout
@@ -179,20 +198,36 @@ public class DesktopVisibilityController {
                     + " currentValue=" + mInOverviewState);
         }
         if (overviewStateEnabled != mInOverviewState) {
+            final boolean wereDesktopTasksVisibleBefore = areDesktopTasksVisible();
             mInOverviewState = overviewStateEnabled;
+            final boolean areDesktopTasksVisibleNow = areDesktopTasksVisible();
+            if (wereDesktopTasksVisibleBefore != areDesktopTasksVisibleNow) {
+                notifyDesktopVisibilityListeners(areDesktopTasksVisibleNow);
+            }
+
             if (enableDesktopWindowingWallpaperActivity()) {
                 return;
             }
             // TODO: b/333533253 - Clean up after flag rollout
+
             if (mInOverviewState) {
                 setLauncherViewsVisibility(View.VISIBLE);
                 markLauncherResumed();
-            } else if (areDesktopTasksVisible() && !mGestureInProgress) {
+            } else if (areDesktopTasksVisibleNow && !mGestureInProgress) {
                 // Switching out of overview state and gesture finished.
                 // If desktop tasks are still visible, hide launcher again.
                 setLauncherViewsVisibility(View.INVISIBLE);
                 markLauncherPaused();
             }
+        }
+    }
+
+    private void notifyDesktopVisibilityListeners(boolean areDesktopTasksVisible) {
+        if (DEBUG) {
+            Log.d(TAG, "notifyDesktopVisibilityListeners: visible=" + areDesktopTasksVisible);
+        }
+        for (DesktopVisibilityListener listener : mDesktopVisibilityListeners) {
+            listener.onDesktopVisibilityChanged(areDesktopTasksVisible);
         }
     }
 
@@ -358,5 +393,15 @@ public class DesktopVisibilityController {
         }
         mSelectAppToast.hide();
         mSelectAppToast = null;
+    }
+
+    /** A listener for when the user enters/exits Desktop Mode. */
+    public interface DesktopVisibilityListener {
+        /**
+         * Callback for when the user enters or exits Desktop Mode
+         *
+         * @param visible whether Desktop Mode is now visible
+         */
+        void onDesktopVisibilityChanged(boolean visible);
     }
 }
