@@ -5169,9 +5169,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public float getMaxScaleForFullScreen() {
         if (enableGridOnlyOverview() && mActivity.getDeviceProfile().isTablet
                 && !mOverviewGridEnabled) {
+            if (mLastComputedCarouselTaskSize.isEmpty()) {
+                mSizeStrategy.calculateCarouselTaskSize(mActivity, mActivity.getDeviceProfile(),
+                        mLastComputedCarouselTaskSize, getPagedOrientationHandler());
+            }
             mTempRect.set(mLastComputedCarouselTaskSize);
         } else {
-            if (mLastComputedTaskSize.height() == 0 || mLastComputedTaskSize.width() == 0) {
+            if (mLastComputedTaskSize.isEmpty()) {
                 getTaskSize(mLastComputedTaskSize);
             }
             mTempRect.set(mLastComputedTaskSize);
