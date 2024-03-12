@@ -4022,11 +4022,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mActionsView.updateForGroupedTask(isCurrentSplit);
         // Update flags to see if actions bar should show buttons for tablets or phones.
         mActionsView.updateForSmallScreen(!mActivity.getDeviceProfile().isTablet);
+        // Update flags for 1p/3p launchers
+        mActionsView.updateFor3pLauncher(!supportsAppPairs());
 
         if (isDesktopModeSupported()) {
             boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
             mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
         }
+    }
+
+    /** Returns if app pairs are supported in this launcher. Overridden in subclasses. */
+    public boolean supportsAppPairs() {
+        return true;
     }
 
     /**
@@ -5162,9 +5169,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public float getMaxScaleForFullScreen() {
         if (enableGridOnlyOverview() && mActivity.getDeviceProfile().isTablet
                 && !mOverviewGridEnabled) {
+            if (mLastComputedCarouselTaskSize.isEmpty()) {
+                mSizeStrategy.calculateCarouselTaskSize(mActivity, mActivity.getDeviceProfile(),
+                        mLastComputedCarouselTaskSize, getPagedOrientationHandler());
+            }
             mTempRect.set(mLastComputedCarouselTaskSize);
         } else {
-            if (mLastComputedTaskSize.height() == 0 || mLastComputedTaskSize.width() == 0) {
+            if (mLastComputedTaskSize.isEmpty()) {
                 getTaskSize(mLastComputedTaskSize);
             }
             mTempRect.set(mLastComputedTaskSize);

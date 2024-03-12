@@ -30,6 +30,8 @@ import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncest
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
+import static com.android.launcher3.testing.shared.TestProtocol.SUCCESSFUL_GESTURE_MISMATCH_EVENTS;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -861,6 +863,7 @@ public class TaskView extends FrameLayout implements Reusable {
     @Nullable
     public RunnableList launchTaskAnimated() {
         if (mTask != null) {
+            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "TaskView.launchTaskAnimated");
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
@@ -909,6 +912,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
         if (mTask != null) {
+            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "TaskView.launchTaskAnimated");
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
 
