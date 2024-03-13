@@ -152,7 +152,12 @@ public class LauncherDbUtils {
             }
 
             ShortcutInfo info = infoBuilder.build();
-            if (!PinRequestHelper.createRequestForShortcut(context, info).accept()) {
+            try {
+                if (!PinRequestHelper.createRequestForShortcut(context, info).accept()) {
+                    deletedShortcuts.add(lc.id);
+                    continue;
+                }
+            } catch (Exception e) {
                 deletedShortcuts.add(lc.id);
                 continue;
             }
