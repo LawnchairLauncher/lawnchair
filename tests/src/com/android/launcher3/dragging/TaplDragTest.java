@@ -96,6 +96,21 @@ public class TaplDragTest extends AbstractLauncherUiTest {
                 MAPS_APP_NAME);
     }
 
+    /**
+     * Adds two icons to the Workspace and combines them into a folder, then makes sure we are able
+     * to remove an icon from the folder and that the folder ceases to exist since it only has one
+     * icon left.
+     */
+    @Test
+    public void testDragOutOfFolder() {
+        final HomeAppIcon playStoreIcon = createShortcutIfNotExist(STORE_APP_NAME, 0, 1);
+        final HomeAppIcon photosIcon = createShortcutInCenterIfNotExist(PHOTOS_APP_NAME);
+        FolderIcon folderIcon = photosIcon.dragToIcon(playStoreIcon);
+        Folder folder = folderIcon.open();
+        folder.getAppIcon(STORE_APP_NAME).internalDragToWorkspace(false, false);
+        assertNotNull(mLauncher.getWorkspace().tryGetWorkspaceAppIcon(STORE_APP_NAME));
+        assertNotNull(mLauncher.getWorkspace().tryGetWorkspaceAppIcon(PHOTOS_APP_NAME));
+    }
 
     /** Drags a shortcut from a long press menu into the workspace.
      * 1. Open all apps and wait for load complete.
