@@ -5,10 +5,10 @@ import android.appwidget.AppWidgetHostView
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.core.view.descendants
 import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.qsb.ThemingMethod
 import app.lawnchair.util.pendingIntent
-import app.lawnchair.util.recursiveChildren
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
@@ -57,7 +57,7 @@ data object Google : QsbSearchProvider(
             View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY),
             View.MeasureSpec.makeMeasureSpec(100, View.MeasureSpec.EXACTLY),
         )
-        return view.recursiveChildren
+        return view.descendants
             .filter { it.pendingIntent != null }
             .sortedByDescending { it.measuredWidth * it.measuredHeight }
             .firstOrNull()

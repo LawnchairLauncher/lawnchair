@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
+import androidx.core.view.descendants
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.HeadlessWidgetsManager
@@ -26,7 +27,6 @@ import app.lawnchair.qsb.providers.GoogleGo
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.util.pendingIntent
-import app.lawnchair.util.recursiveChildren
 import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
@@ -144,7 +144,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             MeasureSpec.makeMeasureSpec(1000, MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(100, MeasureSpec.EXACTLY),
         )
-        searchPendingIntent = view.recursiveChildren
+        searchPendingIntent = view.descendants
             .filter { it.pendingIntent != null }
             .sortedByDescending { it.measuredWidth * it.measuredHeight }
             .firstOrNull()

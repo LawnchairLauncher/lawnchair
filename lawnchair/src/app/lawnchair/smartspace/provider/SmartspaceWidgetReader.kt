@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.descendants
 import app.lawnchair.BlankActivity
 import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.smartspace.model.SmartspaceAction
@@ -20,7 +21,6 @@ import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.util.Temperature
 import app.lawnchair.util.pendingIntent
-import app.lawnchair.util.recursiveChildren
 import com.android.launcher3.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -57,9 +57,9 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
     }
 
     private fun extractWidgetLayout(appWidgetHostView: ViewGroup): List<SmartspaceTarget> {
-        val children = appWidgetHostView.recursiveChildren
-        val texts = children.filterIsInstance<TextView>().filter { !it.text.isNullOrEmpty() }.toList()
-        val images = children.filterIsInstance<ImageView>().toList().filter { it.drawable != null && it.drawable is BitmapDrawable }
+        val descendants = appWidgetHostView.descendants
+        val texts = descendants.filterIsInstance<TextView>().filter { !it.text.isNullOrEmpty() }.toList()
+        val images = descendants.filterIsInstance<ImageView>().toList().filter { it.drawable != null && it.drawable is BitmapDrawable }
         var weatherIconView: ImageView? = null
         var cardIconView: ImageView? = null
         var title: TextView? = null
