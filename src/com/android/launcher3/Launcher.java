@@ -2365,7 +2365,8 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Similar to {@link #getFirstMatch} but optimized to finding a suitable view for the app close
      * animation.
      *
-     * @param preferredItemId The id of the preferred item to match to if it exists.
+     * @param preferredItemId The id of the preferred item to match to if it exists,
+     *                        or ItemInfo#NO_MATCHING_ID if you want to not match by item id
      * @param packageName The package name of the app to match.
      * @param user The user of the app to match.
      * @param supportsAllAppsState If true and we are in All Apps state, looks for view in All Apps.
