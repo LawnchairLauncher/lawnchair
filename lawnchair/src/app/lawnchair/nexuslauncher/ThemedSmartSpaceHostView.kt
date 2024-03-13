@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
+import androidx.core.view.descendants
 import app.lawnchair.font.FontManager
-import app.lawnchair.util.recursiveChildren
 import com.android.launcher3.R
 import com.android.launcher3.icons.ShadowGenerator
 import com.android.launcher3.testing.shared.ResourceUtils
@@ -38,7 +38,7 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
 
     private fun overrideStyles(parent: ViewGroup) {
         val images = mutableListOf<ImageView>()
-        for (child in parent.recursiveChildren) {
+        for (child in parent.descendants) {
             when (child) {
                 is TextView -> overrideTextView(child)
                 is ImageView -> images.add(child)
