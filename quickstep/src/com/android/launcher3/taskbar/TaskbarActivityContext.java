@@ -1554,4 +1554,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public float getStashedTaskbarScale() {
         return mControllers.stashedHandleViewController.getStashedHandleHintScale().value;
     }
+
+    /** Closes the KeyboardQuickSwitchView without an animation if open. */
+    public void closeKeyboardQuickSwitchView() {
+        mControllers.keyboardQuickSwitchController.closeQuickSwitchView(false);
+    }
 }
