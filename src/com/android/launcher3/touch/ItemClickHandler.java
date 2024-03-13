@@ -369,8 +369,8 @@ public class ItemClickHandler {
                 intent = ApiWrapper.getAppMarketActivityIntent(launcher,
                         itemInfoWithIcon.getTargetComponent().getPackageName(),
                         Process.myUserHandle());
-            } else if ((itemInfoWithIcon.runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_PRIVATE_SPACE_INSTALL_APP) != 0) {
+            } else if (itemInfoWithIcon.itemType
+                    == LauncherSettings.Favorites.ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON) {
                 intent = ApiWrapper.getAppMarketActivityIntent(launcher,
                         BuildConfig.APPLICATION_ID,
                         launcher.getAppsView().getPrivateProfileManager().getProfileUser());
