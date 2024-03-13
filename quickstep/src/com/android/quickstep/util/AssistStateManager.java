@@ -52,11 +52,6 @@ public class AssistStateManager implements ResourceBasedOverride {
         return Optional.empty();
     }
 
-    /** Whether search recovery is available. */
-    public boolean isVisRecoveryEnabled() {
-        return false;
-    }
-
     /** Return {@code true} if the Settings toggle is enabled. */
     public boolean isSettingsNavHandleEnabled() {
         return false;
