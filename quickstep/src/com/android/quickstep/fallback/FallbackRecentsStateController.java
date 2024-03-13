@@ -49,6 +49,7 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.ClearAllButton;
+import com.android.quickstep.views.RecentsView;
 
 /**
  * State controller for fallback recents activity
@@ -125,7 +126,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
             setter.add(pa.buildAnim());
         }
 
-        Pair<FloatProperty, FloatProperty> taskViewsFloat =
+        Pair<FloatProperty<RecentsView>, FloatProperty<RecentsView>> taskViewsFloat =
                 mRecentsView.getPagedOrientationHandler().getSplitSelectTaskOffset(
                         TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
                         mActivity.getDeviceProfile());

@@ -133,7 +133,7 @@ public final class RecentsViewStateController extends
         // Create transition animations to split select
         RecentsPagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
-        Pair<FloatProperty, FloatProperty> taskViewsFloat =
+        Pair<FloatProperty<RecentsView>, FloatProperty<RecentsView>> taskViewsFloat =
                 orientationHandler.getSplitSelectTaskOffset(
                         TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
                         mLauncher.getDeviceProfile());
