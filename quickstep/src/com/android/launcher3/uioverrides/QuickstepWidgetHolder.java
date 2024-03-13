@@ -26,10 +26,10 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WidgetsModel;
@@ -265,6 +265,14 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         }
     }
 
+    /**
+     * Clears all the internal widget views excluding the update listeners
+     */
+    @Override
+    public void clearWidgetViews() {
+        mViews.clear();
+    }
+
     private static class QuickstepWidgetHolderListener
             implements AppWidgetHost.AppWidgetHostListener {
 
@@ -288,21 +296,21 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         }
 
         @Override
-        @WorkerThread
+        @AnyThread
         public void onUpdateProviderInfo(@Nullable AppWidgetProviderInfo info) {
             mRemoteViews = null;
             executeOnMainExecutor(KEY_PROVIDER_UPDATE, info);
         }
 
         @Override
-        @WorkerThread
+        @AnyThread
         public void updateAppWidget(@Nullable RemoteViews views) {
             mRemoteViews = views;
             executeOnMainExecutor(KEY_VIEWS_UPDATE, mRemoteViews);
         }
 
         @Override
-        @WorkerThread
+        @AnyThread
         public void onViewDataChanged(int viewId) {
             executeOnMainExecutor(KEY_VIEW_DATA_CHANGED, viewId);
         }

@@ -63,7 +63,8 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.dragController.cancelDrag()
         launcher.workspace.clearDropTargets()
         launcher.workspace.removeAllWorkspaceScreens()
-        launcher.appWidgetHolder.clearViews()
+        // Avoid clearing the widget update listeners for staying up-to-date with widget info
+        launcher.appWidgetHolder.clearWidgetViews()
         launcher.hotseat?.resetLayout(launcher.deviceProfile.isVerticalBarLayout)
         TraceHelper.INSTANCE.endSection()
     }

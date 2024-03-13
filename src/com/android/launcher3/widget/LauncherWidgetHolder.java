@@ -103,7 +103,7 @@ public class LauncherWidgetHolder {
         if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return;
         }
-        setListeningFlag(true);
+
         try {
             mWidgetHost.startListening();
         } catch (Exception e) {
@@ -115,6 +115,8 @@ public class LauncherWidgetHolder {
             // have been established by this point, and we will end up populating the
             // widgets upon bind anyway. See issue 14255011 for more context.
         }
+        // TODO: Investigate why widgetHost.startListening() always return non-empty updates
+        setListeningFlag(true);
 
         updateDeferredView();
     }
@@ -439,6 +441,13 @@ public class LauncherWidgetHolder {
         LauncherAppWidgetHost tempHost = (LauncherAppWidgetHost) mWidgetHost;
         tempHost.clearViews();
         mViews.clear();
+    }
+
+    /**
+     * Clears all the internal widget views
+     */
+    public void clearWidgetViews() {
+        clearViews();
     }
 
     /**
