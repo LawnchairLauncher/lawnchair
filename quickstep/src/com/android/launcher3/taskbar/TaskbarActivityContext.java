@@ -944,10 +944,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         if (landscapePhoneButtonNav) {
             mWindowLayoutParams.width = size;
-            mWindowLayoutParams.paramsForRotation[getDisplay().getRotation()].width = size;
+            for (int rot = Surface.ROTATION_0; rot <= Surface.ROTATION_270; rot++) {
+                mWindowLayoutParams.paramsForRotation[rot].width = size;
+            }
         } else {
             mWindowLayoutParams.height = size;
-            mWindowLayoutParams.paramsForRotation[getDisplay().getRotation()].height = size;
+            for (int rot = Surface.ROTATION_0; rot <= Surface.ROTATION_270; rot++) {
+                mWindowLayoutParams.paramsForRotation[rot].height = size;
+            }
         }
         mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         notifyUpdateLayoutParams();
