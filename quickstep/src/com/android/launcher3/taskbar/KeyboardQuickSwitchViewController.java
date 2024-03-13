@@ -238,8 +238,7 @@ public class KeyboardQuickSwitchViewController {
         }
 
         void launchTaskAt(int index) {
-            mCurrentFocusIndex = Utilities.boundToRange(
-                    index, 0, mKeyboardQuickSwitchView.getChildCount() - 1);
+            mCurrentFocusIndex = index;
             mControllers.taskbarActivityContext.launchKeyboardFocusedTask();
         }
 
