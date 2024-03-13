@@ -40,7 +40,6 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_MOVE;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_UP;
-import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.RECENTS_ANIMATION_START_PENDING;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER;
@@ -734,15 +733,17 @@ public class TouchInteractionService extends Service {
         // an ACTION_HOVER_ENTER will fire as well.
         boolean isHoverActionWithoutConsumer = enableCursorHoverStates()
                 && isHoverActionWithoutConsumer(event);
-        if (mTaskAnimationManager.isRecentsAnimationStartPending()
-                && (action == ACTION_DOWN || isHoverActionWithoutConsumer)) {
-            ActiveGestureLog.INSTANCE.addLog(
-                    new CompoundString("TIS.onInputEvent: ")
-                            .append("Cannot process input event: a recents animation has been ")
-                            .append("requested, but hasn't started."),
-                    RECENTS_ANIMATION_START_PENDING);
-            return;
-        }
+
+        // TODO(b/285636175): Uncomment this once WM can properly guarantee all animation callbacks
+//        if (mTaskAnimationManager.isRecentsAnimationStartPending()
+//                && (action == ACTION_DOWN || isHoverActionWithoutConsumer)) {
+//            ActiveGestureLog.INSTANCE.addLog(
+//                    new CompoundString("TIS.onInputEvent: ")
+//                            .append("Cannot process input event: a recents animation has been ")
+//                            .append("requested, but hasn't started."),
+//                    RECENTS_ANIMATION_START_PENDING);
+//            return;
+//        }
 
         SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
 
