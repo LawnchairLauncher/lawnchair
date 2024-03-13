@@ -82,15 +82,27 @@ public class WidgetImageView extends View {
     private void updateDstRectF() {
         float myWidth = getWidth();
         float myHeight = getHeight();
-        float bitmapWidth = mDrawable.getIntrinsicWidth();
+        final float bitmapWidth = mDrawable.getIntrinsicWidth();
+        final float bitmapHeight = mDrawable.getIntrinsicHeight();
+        final float bitmapAspectRatio = bitmapWidth / bitmapHeight;
+        final float containerAspectRatio = myWidth / myHeight;
 
-        final float scale = bitmapWidth > myWidth ? myWidth / bitmapWidth : 1;
-        float scaledWidth = bitmapWidth * scale;
-        float scaledHeight = mDrawable.getIntrinsicHeight() * scale;
+        // Scale by width if image has larger aspect ratio than the container else by height; and
+        // avoid cropping the previews
+        final float scale = bitmapAspectRatio > containerAspectRatio ? myWidth / bitmapWidth
+                : myHeight / bitmapHeight;
 
-        mDstRectF.left = (myWidth - scaledWidth) / 2;
-        mDstRectF.right = (myWidth + scaledWidth) / 2;
+        final float scaledWidth = bitmapWidth * scale;
+        final float scaledHeight = bitmapHeight * scale;
 
+        // Avoid cropping by checking bounds after scaling.
+        if (scaledWidth > myWidth) {
+            mDstRectF.left = 0;
+            mDstRectF.right = scaledWidth;
+        } else {
+            mDstRectF.left = (myWidth - scaledWidth) / 2;
+            mDstRectF.right = (myWidth + scaledWidth) / 2;
+        }
         if (scaledHeight > myHeight) {
             mDstRectF.top = 0;
             mDstRectF.bottom = scaledHeight;

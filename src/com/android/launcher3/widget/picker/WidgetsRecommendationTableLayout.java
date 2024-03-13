@@ -17,11 +17,13 @@ package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+import static com.android.launcher3.widget.util.WidgetSizes.getWidgetSizePx;
+import static com.android.launcher3.widget.util.WidgetsTableUtils.WIDGETS_TABLE_ROW_SIZE_COMPARATOR;
+
+import static java.lang.Math.max;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.Size;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,26 +32,23 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.Px;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.WidgetCell;
-import com.android.launcher3.widget.util.WidgetSizes;
+import com.android.launcher3.widget.picker.util.WidgetPreviewContainerSize;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** A {@link TableLayout} for showing recommended widgets. */
 public final class WidgetsRecommendationTableLayout extends TableLayout {
-    private static final String TAG = "WidgetsRecommendationTableLayout";
-    private static final float DOWN_SCALE_RATIO = 0.9f;
-    private static final float MAX_DOWN_SCALE_RATIO = 0.5f;
     private final float mWidgetsRecommendationTableVerticalPadding;
     private final float mWidgetCellVerticalPadding;
     private final float mWidgetCellTextViewsHeight;
 
-    private float mRecommendationTableMaxHeight = Float.MAX_VALUE;
     @Nullable private OnLongClickListener mWidgetCellOnLongClickListener;
     @Nullable private OnClickListener mWidgetCellOnClickListener;
 
@@ -82,47 +81,40 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
      * desired {@code recommendationTableMaxHeight}.
      *
      * <p>If the content can't fit {@code recommendationTableMaxHeight}, this view will remove a
-     * last row from the {@code recommendedWidgets} until it fits or only one row left. If the only
-     * row still doesn't fit, we scale down the preview image.
+     * last row from the {@code recommendedWidgets} until it fits or only one row left.
      *
      * <p>Returns {@code false} if none of the widgets could fit</p>
      */
-    public boolean setRecommendedWidgets(List<ArrayList<WidgetItem>> recommendedWidgets,
-            DeviceProfile deviceProfile,
-            float recommendationTableMaxHeight) {
-        mRecommendationTableMaxHeight = recommendationTableMaxHeight;
-        RecommendationTableData data = fitRecommendedWidgetsToTableSpace(/* previewScale= */ 1f,
-                deviceProfile,
-                recommendedWidgets);
-        bindData(data);
-        return !data.mRecommendationTable.isEmpty();
+    public int setRecommendedWidgets(List<ArrayList<WidgetItem>> recommendedWidgets,
+            DeviceProfile deviceProfile, float recommendationTableMaxHeight) {
+        List<ArrayList<WidgetItem>> rows = selectRowsThatFitInAvailableHeight(recommendedWidgets,
+                recommendationTableMaxHeight, deviceProfile);
+        bindData(rows);
+        return rows.stream().mapToInt(ArrayList::size).sum();
     }
 
-    private void bindData(RecommendationTableData data) {
-        if (data.mRecommendationTable.isEmpty()) {
+    private void bindData(List<ArrayList<WidgetItem>> recommendationTable) {
+        if (recommendationTable.isEmpty()) {
             setVisibility(GONE);
             return;
         }
 
         removeAllViews();
 
-        for (int i = 0; i < data.mRecommendationTable.size(); i++) {
-            List<WidgetItem> widgetItems = data.mRecommendationTable.get(i);
+        for (int i = 0; i < recommendationTable.size(); i++) {
+            List<WidgetItem> widgetItems = recommendationTable.get(i);
             TableRow tableRow = new TableRow(getContext());
-            if (enableCategorizedWidgetSuggestions()) {
-                // Vertically center align items, so that even if they don't fill bounds, they can
-                // look organized when placed together in a row.
-                tableRow.setGravity(Gravity.CENTER_VERTICAL);
-            } else {
-                tableRow.setGravity(Gravity.TOP);
-            }
+            // Vertically center align items, so that even if they don't fill bounds, they can
+            // look organized when placed together in a row.
+            tableRow.setGravity(Gravity.CENTER_VERTICAL);
             for (WidgetItem widgetItem : widgetItems) {
                 WidgetCell widgetCell = addItemCell(tableRow);
-                widgetCell.applyFromCellItem(widgetItem, data.mPreviewScale);
+                widgetCell.applyFromCellItem(widgetItem);
                 widgetCell.showAppIconInWidgetTitle(true);
                 widgetCell.showBadge();
                 if (enableCategorizedWidgetSuggestions()) {
                     widgetCell.showDescription(false);
+                    widgetCell.showDimensions(false);
                 }
             }
             addView(tableRow);
@@ -144,58 +136,32 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         return widget;
     }
 
-    private RecommendationTableData fitRecommendedWidgetsToTableSpace(
-            float previewScale,
-            DeviceProfile deviceProfile,
-            List<ArrayList<WidgetItem>> recommendedWidgetsInTable) {
-        if (previewScale < MAX_DOWN_SCALE_RATIO) {
-            Log.w(TAG, "Hide recommended widgets. Can't down scale previews to " + previewScale);
-            return new RecommendationTableData(List.of(), previewScale);
-        }
+    private List<ArrayList<WidgetItem>> selectRowsThatFitInAvailableHeight(
+            List<ArrayList<WidgetItem>> recommendedWidgets, @Px float recommendationTableMaxHeight,
+            DeviceProfile deviceProfile) {
+        List<ArrayList<WidgetItem>> filteredRows = new ArrayList<>();
         // A naive estimation of the widgets recommendation table height without inflation.
         float totalHeight = mWidgetsRecommendationTableVerticalPadding;
-        for (int i = 0; i < recommendedWidgetsInTable.size(); i++) {
-            List<WidgetItem> widgetItems = recommendedWidgetsInTable.get(i);
+
+        for (int i = 0; i < recommendedWidgets.size(); i++) {
+            List<WidgetItem> widgetItems = recommendedWidgets.get(i);
             float rowHeight = 0;
             for (int j = 0; j < widgetItems.size(); j++) {
                 WidgetItem widgetItem = widgetItems.get(j);
-                Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile,
-                        widgetItem);
-                float previewHeight = widgetSize.getHeight() * previewScale;
-                rowHeight = Math.max(rowHeight,
-                        previewHeight + mWidgetCellTextViewsHeight + mWidgetCellVerticalPadding);
+                WidgetPreviewContainerSize previewContainerSize =
+                        WidgetPreviewContainerSize.Companion.forItem(widgetItem, deviceProfile);
+                float widgetItemHeight = getWidgetSizePx(deviceProfile, previewContainerSize.spanX,
+                        previewContainerSize.spanY).getHeight();
+                rowHeight = max(rowHeight,
+                        widgetItemHeight + mWidgetCellTextViewsHeight + mWidgetCellVerticalPadding);
             }
-            totalHeight += rowHeight;
+            if (totalHeight + rowHeight <= recommendationTableMaxHeight) {
+                totalHeight += rowHeight;
+                filteredRows.add(new ArrayList<>(widgetItems));
+            }
         }
 
-        if (totalHeight < mRecommendationTableMaxHeight) {
-            return new RecommendationTableData(recommendedWidgetsInTable, previewScale);
-        }
-
-        if (recommendedWidgetsInTable.size() > 1) {
-            // We don't want to scale down widgets preview unless we really need to. Reduce the
-            // num of row by 1 to see if it fits.
-            return fitRecommendedWidgetsToTableSpace(
-                    previewScale,
-                    deviceProfile,
-                    recommendedWidgetsInTable.subList(/* fromIndex= */0,
-                            /* toIndex= */recommendedWidgetsInTable.size() - 1));
-        }
-
-        float nextPreviewScale = previewScale * DOWN_SCALE_RATIO;
-        return fitRecommendedWidgetsToTableSpace(nextPreviewScale, deviceProfile,
-                recommendedWidgetsInTable);
-    }
-
-    /** Data class for the widgets recommendation table and widgets preview scaling. */
-    private class RecommendationTableData {
-        private final List<ArrayList<WidgetItem>> mRecommendationTable;
-        private final float mPreviewScale;
-
-        RecommendationTableData(List<ArrayList<WidgetItem>> recommendationTable,
-                float previewScale) {
-            mRecommendationTable = recommendationTable;
-            mPreviewScale = previewScale;
-        }
+        // Perform re-ordering once we have filtered out recommendations that fit.
+        return filteredRows.stream().sorted(WIDGETS_TABLE_ROW_SIZE_COMPARATOR).toList();
     }
 }
