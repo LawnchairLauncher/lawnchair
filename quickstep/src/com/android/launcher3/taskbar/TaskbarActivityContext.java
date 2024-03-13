@@ -1320,8 +1320,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * Called when we want to unstash taskbar when user performs swipes up gesture.
      */
     public void onSwipeToUnstashTaskbar() {
-        VibratorWrapper.INSTANCE.get(this).vibrateForTaskbarUnstash();
+        boolean wasStashed = mControllers.taskbarStashController.isStashed();
         mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(/* stash= */ false);
+        boolean isStashed = mControllers.taskbarStashController.isStashed();
+        if (isStashed != wasStashed) {
+            VibratorWrapper.INSTANCE.get(this).vibrateForTaskbarUnstash();
+        }
         mControllers.taskbarEduTooltipController.hide();
     }
 
