@@ -139,6 +139,11 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_SEARCH_ACTION = 9;
 
         /**
+         * Private space install app button.
+         */
+        public static final int ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON = 11;
+
+        /**
          * The custom icon bitmap.
          * <P>Type: BLOB</P>
          */
@@ -206,6 +211,8 @@ public class LauncherSettings {
                 case ITEM_TYPE_TASK: return "TASK";
                 case ITEM_TYPE_QSB: return "QSB";
                 case ITEM_TYPE_APP_PAIR: return "APP_PAIR";
+                case ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON:
+                    return "PRIVATE_SPACE_INSTALL_APP_BUTTON";
                 default: return String.valueOf(type);
             }
         }

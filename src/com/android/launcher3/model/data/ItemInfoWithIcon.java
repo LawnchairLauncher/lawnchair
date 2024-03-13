@@ -121,11 +121,6 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_ARCHIVED = 1 << 14;
 
     /**
-     * Flag indicating it's the Private Space Install App icon.
-     */
-    public static final int FLAG_PRIVATE_SPACE_INSTALL_APP = 1 << 15;
-
-    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */

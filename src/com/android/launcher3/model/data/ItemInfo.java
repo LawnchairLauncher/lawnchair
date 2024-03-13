@@ -94,6 +94,10 @@ public class ItemInfo {
      * {@link Favorites#ITEM_TYPE_APP_PAIR},
      * {@link Favorites#ITEM_TYPE_APPWIDGET} or
      * {@link Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
+     * {@link Favorites#ITEM_TYPE_TASK}.
+     * {@link Favorites#ITEM_TYPE_QSB}.
+     * {@link Favorites#ITEM_TYPE_SEARCH_ACTION}.
+     * {@link Favorites#ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON}.
      */
     public int itemType;
 

@@ -167,7 +167,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     @Override
     public void onWidgetsBound() {
         super.onWidgetsBound();
-        if (!mHasRecommendedWidgets && mSelectedHeader == null) {
+        if (mRecommendedWidgetsCount == 0 && mSelectedHeader == null) {
             mAdapters.get(mActivePage).mWidgetsListAdapter.selectFirstHeaderEntry();
             mAdapters.get(mActivePage).mWidgetsRecyclerView.scrollToTop();
         }
@@ -177,7 +177,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     public void onRecommendedWidgetsBound() {
         super.onRecommendedWidgetsBound();
 
-        if (mSuggestedWidgetsContainer == null && mHasRecommendedWidgets) {
+        if (mSuggestedWidgetsContainer == null && mRecommendedWidgetsCount > 0) {
             setupSuggestedWidgets(LayoutInflater.from(getContext()));
             mSuggestedWidgetsHeader.callOnClick();
         }
@@ -209,8 +209,9 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         packageItemInfo.title = suggestionsHeaderTitle;
         WidgetsListHeaderEntry widgetsListHeaderEntry = WidgetsListHeaderEntry.create(
                         packageItemInfo,
-                        suggestionsHeaderTitle,
-                        mActivityContext.getPopupDataProvider().getRecommendedWidgets())
+                        /*titleSectionName=*/ suggestionsHeaderTitle,
+                        /*items=*/ mActivityContext.getPopupDataProvider().getRecommendedWidgets(),
+                        /*visibleWidgetsCount=*/ mRecommendedWidgetsCount)
                 .withWidgetListShown();
 
         mSuggestedWidgetsHeader.applyFromItemInfoWithIcon(widgetsListHeaderEntry);
@@ -233,7 +234,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     @Override
     @Px
     protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
-        return Float.MAX_VALUE;
+        return mContent.getMeasuredHeight() - measureHeightWithVerticalMargins(mHeaderTitle);
     }
 
     @Override

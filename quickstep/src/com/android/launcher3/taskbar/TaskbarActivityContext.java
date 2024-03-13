@@ -529,52 +529,26 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     /**
      * Creates {@link WindowManager.LayoutParams} for Taskbar, and also sets LP.paramsForRotation
-     * for taskbar showing as navigation bar
+     * for taskbar
      */
     private WindowManager.LayoutParams createAllWindowParams() {
         final int windowType =
                 ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL;
         WindowManager.LayoutParams windowLayoutParams =
                 createDefaultWindowLayoutParams(windowType, TaskbarActivityContext.WINDOW_TITLE);
-        if (!isPhoneButtonNavMode()) {
-            return windowLayoutParams;
-        }
 
-        // Provide WM layout params for all rotations to cache, see NavigationBar#getBarLayoutParams
-        int width = WindowManager.LayoutParams.MATCH_PARENT;
-        int height = WindowManager.LayoutParams.MATCH_PARENT;
-        int gravity = Gravity.BOTTOM;
         windowLayoutParams.paramsForRotation = new WindowManager.LayoutParams[4];
         for (int rot = Surface.ROTATION_0; rot <= Surface.ROTATION_270; rot++) {
             WindowManager.LayoutParams lp =
                     createDefaultWindowLayoutParams(windowType,
                             TaskbarActivityContext.WINDOW_TITLE);
-            switch (rot) {
-                case Surface.ROTATION_0, Surface.ROTATION_180 -> {
-                    // Defaults are fine
-                    width = WindowManager.LayoutParams.MATCH_PARENT;
-                    height = mLastRequestedNonFullscreenSize;
-                    gravity = Gravity.BOTTOM;
-                }
-                case Surface.ROTATION_90 -> {
-                    width = mLastRequestedNonFullscreenSize;
-                    height = WindowManager.LayoutParams.MATCH_PARENT;
-                    gravity = Gravity.END;
-                }
-                case Surface.ROTATION_270 -> {
-                    width = mLastRequestedNonFullscreenSize;
-                    height = WindowManager.LayoutParams.MATCH_PARENT;
-                    gravity = Gravity.START;
-                }
-
+            if (isPhoneButtonNavMode()) {
+                populatePhoneButtonNavModeWindowLayoutParams(rot, lp);
             }
-            lp.width = width;
-            lp.height = height;
-            lp.gravity = gravity;
             windowLayoutParams.paramsForRotation[rot] = lp;
         }
 
-        // Override current layout params
+        // Override with current layout params
         WindowManager.LayoutParams currentParams =
                 windowLayoutParams.paramsForRotation[getDisplay().getRotation()];
         windowLayoutParams.width = currentParams.width;
@@ -582,6 +556,32 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         windowLayoutParams.gravity = currentParams.gravity;
 
         return windowLayoutParams;
+    }
+
+    /**
+     * Update {@link WindowManager.LayoutParams} with values specific to phone and 3 button
+     * navigation users
+     */
+    private void populatePhoneButtonNavModeWindowLayoutParams(int rot,
+            WindowManager.LayoutParams lp) {
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.gravity = Gravity.BOTTOM;
+
+        // Override with per-rotation specific values
+        switch (rot) {
+            case Surface.ROTATION_0, Surface.ROTATION_180 -> {
+                lp.height = mLastRequestedNonFullscreenSize;
+            }
+            case Surface.ROTATION_90 -> {
+                lp.width = mLastRequestedNonFullscreenSize;
+                lp.gravity = Gravity.END;
+            }
+            case Surface.ROTATION_270 -> {
+                lp.width = mLastRequestedNonFullscreenSize;
+                lp.gravity = Gravity.START;
+            }
+        }
     }
 
     public void onConfigurationChanged(@Config int configChanges) {
@@ -944,8 +944,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         if (landscapePhoneButtonNav) {
             mWindowLayoutParams.width = size;
+            for (int rot = Surface.ROTATION_0; rot <= Surface.ROTATION_270; rot++) {
+                mWindowLayoutParams.paramsForRotation[rot].width = size;
+            }
         } else {
             mWindowLayoutParams.height = size;
+            for (int rot = Surface.ROTATION_0; rot <= Surface.ROTATION_270; rot++) {
+                mWindowLayoutParams.paramsForRotation[rot].height = size;
+            }
         }
         mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         notifyUpdateLayoutParams();

@@ -50,8 +50,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -121,7 +123,48 @@ public class RestoreDbTask {
         // executed again.
         LauncherPrefs.get(context).removeSync(RESTORE_DEVICE);
 
-        idp.reinitializeAfterRestore(context);
+        if (Flags.narrowGridRestore()) {
+            String oldPhoneFileName = idp.dbFile;
+            removeOldDBs(context, oldPhoneFileName);
+            trySettingPreviousGidAsCurrent(context, idp, oldPhoneFileName);
+        } else {
+            idp.reinitializeAfterRestore(context);
+        }
+    }
+
+    /**
+     * Try setting the gird used in the previous phone to the new one. If the current device doesn't
+     * support the previous grid option it will not be set.
+     */
+    private static void trySettingPreviousGidAsCurrent(Context context, InvariantDeviceProfile idp,
+            String oldPhoneDbFileName) {
+        InvariantDeviceProfile.GridOption gridOption = idp.getGridOptionFromFileName(context,
+                oldPhoneDbFileName);
+        if (gridOption != null) {
+            /*
+             * We do this because in some cases different devices have different names for grid
+             * options, in one device the grid option "normal" can be 4x4 while in other it
+             * could be "practical". Calling this changes the current device grid to the same
+             * we had in the other phone, in the case the current phone doesn't support the grid
+             * option we use the default and migrate the db to the default. Migration occurs on
+             * {@code GridSizeMigrationUtil#migrateGridIfNeeded}
+             */
+            idp.setCurrentGrid(context, gridOption.name);
+        }
+    }
+
+    /**
+     * Only keep the last database used on the previous device.
+     */
+    private static void removeOldDBs(Context context, String oldPhoneDbFileName) {
+        // At this point idp.dbFile contains the name of the dbFile from the previous phone
+        LauncherFiles.GRID_DB_FILES.stream()
+                .filter(dbName -> !dbName.equals(oldPhoneDbFileName))
+                .forEach(dbName -> {
+                    if (context.getDatabasePath(dbName).delete()) {
+                        FileLog.d(TAG, "Removed old grid db file: " + dbName);
+                    }
+                });
     }
 
     private static boolean performRestore(Context context, ModelDbController controller) {

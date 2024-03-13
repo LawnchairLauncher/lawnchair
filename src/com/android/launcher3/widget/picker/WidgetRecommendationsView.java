@@ -93,18 +93,19 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * @param availableWidth     width in px that the recommendations should display in
      * @param cellPadding        padding in px that should be applied to each widget in the
      *                           recommendations
-     * @return {@code false} if no recommendations could fit in the available space.
+     * @return number of recommendations that could fit in the available space.
      */
-    public boolean setRecommendations(
+    public int setRecommendations(
             List<WidgetItem> recommendedWidgets, DeviceProfile deviceProfile,
             final @Px float availableHeight, final @Px int availableWidth,
             final @Px int cellPadding) {
         this.mAvailableHeight = availableHeight;
-        removeAllViews();
+        clear();
 
-        maybeDisplayInTable(recommendedWidgets, deviceProfile, availableWidth, cellPadding);
+        int displayedWidgets = maybeDisplayInTable(recommendedWidgets, deviceProfile,
+                availableWidth, cellPadding);
         updateTitleAndIndicator();
-        return getChildCount() > 0;
+        return displayedWidgets;
     }
 
     /**
@@ -118,9 +119,9 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * @param availableWidth  width in px that the recommendations should display in
      * @param cellPadding     padding in px that should be applied to each widget in the
      *                        recommendations
-     * @return {@code false} if no recommendations could fit in the available space.
+     * @return number of recommendations that could fit in the available space.
      */
-    public boolean setRecommendations(
+    public int setRecommendations(
             Map<WidgetRecommendationCategory, List<WidgetItem>> recommendations,
             DeviceProfile deviceProfile,
             final @Px float availableHeight, final @Px int availableWidth,
@@ -128,19 +129,23 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         this.mAvailableHeight = availableHeight;
         Context context = getContext();
         mPageIndicator.setPauseScroll(true, deviceProfile.isTwoPanels);
-        removeAllViews();
+        clear();
 
         int displayedCategories = 0;
+        int totalDisplayedWidgets = 0;
 
         // Render top MAX_CATEGORIES in separate tables. Each table becomes a page.
         for (Map.Entry<WidgetRecommendationCategory, List<WidgetItem>> entry :
                 new TreeMap<>(recommendations).entrySet()) {
             // If none of the recommendations for the category could fit in the mAvailableHeight, we
             // don't want to add that category; and we look for the next one.
-            if (maybeDisplayInTable(entry.getValue(), deviceProfile, availableWidth, cellPadding)) {
+            int displayedCount = maybeDisplayInTable(entry.getValue(), deviceProfile,
+                    availableWidth, cellPadding);
+            if (displayedCount > 0) {
                 mCategoryTitles.add(
                         context.getResources().getString(entry.getKey().categoryTitleRes));
                 displayedCategories++;
+                totalDisplayedWidgets += displayedCount;
             }
 
             if (displayedCategories == MAX_CATEGORIES) {
@@ -150,7 +155,12 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
 
         updateTitleAndIndicator();
         mPageIndicator.setPauseScroll(false, deviceProfile.isTwoPanels);
-        return getChildCount() > 0;
+        return totalDisplayedWidgets;
+    }
+
+    private void clear() {
+        mCategoryTitles.clear();
+        removeAllViews();
     }
 
     /** Displays the page title and paging indicator if there are multiple pages. */
@@ -199,21 +209,8 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
                 measureChild(child, widthMeasureSpec, heightMeasureSpec);
-                if (mAvailableHeight == Float.MAX_VALUE) {
-                    // When we are not limited by height, use currentPage's height. This is the case
-                    // when the paged layout is placed in a scrollable container. We cannot use
-                    // height
-                    // of tallest child in such case, as it will display a scrollbar even for
-                    // smaller
-                    // pages that don't have more content.
-                    if (i == mCurrentPage) {
-                        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-                        desiredHeight = Math.max(parentHeight, child.getMeasuredHeight());
-                    }
-                } else {
-                    // Use height of tallest child when we are limited to a certain height.
-                    desiredHeight = Math.max(desiredHeight, child.getMeasuredHeight());
-                }
+                // Use height of tallest child as we have limited height.
+                desiredHeight = Math.max(desiredHeight, child.getMeasuredHeight());
             }
 
             int finalHeight = resolveSizeAndState(desiredHeight, heightMeasureSpec, 0);
@@ -228,12 +225,14 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * fits.
      * <p>Returns false if none of the recommendations could fit.</p>
      */
-    private boolean maybeDisplayInTable(List<WidgetItem> recommendedWidgets,
+    private int maybeDisplayInTable(List<WidgetItem> recommendedWidgets,
             DeviceProfile deviceProfile,
             final @Px int availableWidth, final @Px int cellPadding) {
         Context context = getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
+        // Since we are limited by space, we don't sort recommendations - to show most relevant
+        // (if possible).
         List<ArrayList<WidgetItem>> rows = groupWidgetItemsUsingRowPxWithoutReordering(
                 recommendedWidgets,
                 context,
@@ -249,13 +248,13 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         recommendationsTable.setWidgetCellOnClickListener(mWidgetCellOnClickListener);
         recommendationsTable.setWidgetCellLongClickListener(mWidgetCellOnLongClickListener);
 
-        boolean displayedAtLeastOne = recommendationsTable.setRecommendedWidgets(rows,
+        int displayedCount = recommendationsTable.setRecommendedWidgets(rows,
                 deviceProfile, mAvailableHeight);
-        if (displayedAtLeastOne) {
+        if (displayedCount > 0) {
             addView(recommendationsTable);
         }
 
-        return displayedAtLeastOne;
+        return displayedCount;
     }
 
     /** Returns location of a widget cell for displaying the "touch and hold" education tip. */
