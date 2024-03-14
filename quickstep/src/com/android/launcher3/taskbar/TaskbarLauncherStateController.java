@@ -193,7 +193,7 @@ public class TaskbarLauncherStateController {
                     updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, true);
                     if (!mShouldDelayLauncherStateAnim) {
                         if (toState == LauncherState.NORMAL) {
-                            applyState(QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION);
+                            applyState(QuickstepTransitionManager.getTaskbarToHomeDuration());
                         } else {
                             applyState();
                         }

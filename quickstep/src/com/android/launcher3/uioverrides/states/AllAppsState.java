@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 
 import android.content.Context;
@@ -28,6 +29,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.util.BaseDepthController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 /**
@@ -105,8 +107,14 @@ public class AllAppsState extends LauncherState {
             return context.getDeviceProfile().bottomSheetDepth;
         } else {
             // The scrim fades in at approximately 50% of the swipe gesture.
-            // This means that the depth should be greater than 1, in order to fully zoom out.
-            return 2f;
+            if (enableScalingRevealHomeAnimation()) {
+                // This means that the depth should be twice of what we want, in order to fully zoom
+                // out during the visible portion of the animation.
+                return BaseDepthController.DEPTH_60_PERCENT;
+            } else {
+                // This means that the depth should be greater than 1, in order to fully zoom out.
+                return 2f;
+            }
         }
     }
 

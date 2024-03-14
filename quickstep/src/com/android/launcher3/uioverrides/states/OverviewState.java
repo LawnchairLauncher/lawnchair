@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.wm.shell.Flags.enableSplitContextual;
 
@@ -29,6 +30,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Themes;
+import com.android.quickstep.util.BaseDepthController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -186,8 +188,14 @@ public class OverviewState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        //TODO revert when b/178661709 is fixed
-        return SystemProperties.getBoolean("ro.launcher.depth.overview", true) ? 1 : 0;
+        // TODO(178661709): revert to always scaled
+        if (enableScalingRevealHomeAnimation()) {
+            return SystemProperties.getBoolean("ro.launcher.depth.overview", true)
+                    ? BaseDepthController.DEPTH_70_PERCENT
+                    : BaseDepthController.DEPTH_0_PERCENT;
+        } else {
+            return SystemProperties.getBoolean("ro.launcher.depth.overview", true) ? 1 : 0;
+        }
     }
 
     @Override
