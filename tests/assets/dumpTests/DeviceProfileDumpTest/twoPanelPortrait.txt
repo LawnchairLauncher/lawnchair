@@ -123,7 +123,7 @@ DeviceProfile:
 	dropTargetBarBottomMarginPx: 84.0px (32.0dp)
 	getCellLayoutSpringLoadShrunkTop(): 364.0px (138.66667dp)
 	getCellLayoutSpringLoadShrunkBottom(): 1773.0px (675.4286dp)
-	workspaceSpringLoadedMinNextPageVisiblePx: 63.0px (24.0dp)
+	workspaceSpringLoadedMinNextPageVisiblePx: 126.0px (48.0dp)
 	getWorkspaceSpringLoadScale(): 0.81871px (0.31188953dp)
 	getCellLayoutHeight(): 1721.0px (655.619dp)
 	getCellLayoutWidth(): 899.0px (342.4762dp)
