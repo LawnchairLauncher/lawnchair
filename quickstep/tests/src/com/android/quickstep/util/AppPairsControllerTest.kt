@@ -105,7 +105,7 @@ class AppPairsControllerTest {
         whenever(mockTopTaskTracker.getCachedTopTask(any())).thenReturn(mockCachedTaskInfo)
         whenever(mockTask1.getKey()).thenReturn(mockTaskKey1)
         whenever(mockTask2.getKey()).thenReturn(mockTaskKey2)
-        doNothing().whenever(spyAppPairsController).launchAppPair(any())
+        doNothing().whenever(spyAppPairsController).launchAppPair(any(), any())
         doNothing()
             .whenever(spyAppPairsController)
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
@@ -210,7 +210,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchAppPair and launchToSide were never called
-        verify(spyAppPairsController, never()).launchAppPair(any())
+        verify(spyAppPairsController, never()).launchAppPair(any(), any())
         verify(spyAppPairsController, never())
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
@@ -234,7 +234,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchToSide was called with the correct arguments
-        verify(spyAppPairsController, never()).launchAppPair(any())
+        verify(spyAppPairsController, never()).launchAppPair(any(), any())
         verify(spyAppPairsController, times(1))
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), eq(STAGE_POSITION_BOTTOM_OR_RIGHT))
     }
@@ -258,7 +258,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchToSide was called with the correct arguments
-        verify(spyAppPairsController, never()).launchAppPair(any())
+        verify(spyAppPairsController, never()).launchAppPair(any(), any())
         verify(spyAppPairsController, times(1))
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), eq(STAGE_POSITION_TOP_OR_LEFT))
     }
@@ -282,7 +282,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchToSide was called with the correct arguments
-        verify(spyAppPairsController, never()).launchAppPair(any())
+        verify(spyAppPairsController, never()).launchAppPair(any(), any())
         verify(spyAppPairsController, times(1))
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), eq(STAGE_POSITION_BOTTOM_OR_RIGHT))
     }
@@ -306,7 +306,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchToSide was called with the correct arguments
-        verify(spyAppPairsController, never()).launchAppPair(any())
+        verify(spyAppPairsController, never()).launchAppPair(any(), any())
         verify(spyAppPairsController, times(1))
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), eq(STAGE_POSITION_TOP_OR_LEFT))
     }
@@ -330,7 +330,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchAppPair was called
-        verify(spyAppPairsController, times(1)).launchAppPair(any())
+        verify(spyAppPairsController, times(1)).launchAppPair(any(), any())
         verify(spyAppPairsController, never())
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
@@ -354,7 +354,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchToSide was called with the correct arguments
-        verify(spyAppPairsController, never()).launchAppPair(any())
+        verify(spyAppPairsController, never()).launchAppPair(any(), any())
         verify(spyAppPairsController, times(1))
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), eq(STAGE_POSITION_BOTTOM_OR_RIGHT))
     }
@@ -378,7 +378,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchToSide was called with the correct arguments
-        verify(spyAppPairsController, never()).launchAppPair(any())
+        verify(spyAppPairsController, never()).launchAppPair(any(), any())
         verify(spyAppPairsController, times(1))
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), eq(STAGE_POSITION_TOP_OR_LEFT))
     }
@@ -402,7 +402,7 @@ class AppPairsControllerTest {
         callback.accept(arrayOf(mockTask1, mockTask2))
 
         // Verify that launchAppPair was called
-        verify(spyAppPairsController, times(1)).launchAppPair(any())
+        verify(spyAppPairsController, times(1)).launchAppPair(any(), any())
         verify(spyAppPairsController, never())
             .launchToSide(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
