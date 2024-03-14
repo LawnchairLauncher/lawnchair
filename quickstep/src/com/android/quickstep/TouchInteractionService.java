@@ -31,6 +31,7 @@ import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
@@ -59,14 +60,12 @@ import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_SP
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_STARTING_WINDOW;
 
 import android.app.PendingIntent;
-import android.app.RemoteAction;
 import android.app.Service;
 import android.content.IIntentReceiver;
 import android.content.IIntentSender;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Region;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
@@ -77,7 +76,6 @@ import android.view.Choreographer;
 import android.view.InputDevice;
 import android.view.InputEvent;
 import android.view.MotionEvent;
-import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
@@ -88,7 +86,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ConstantItem;
 import com.android.launcher3.EncryptionType;
 import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -101,7 +98,6 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.flags.FlagsFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ScreenOnTracker;
@@ -488,6 +484,7 @@ public class TouchInteractionService extends Service {
 
     private TaskbarManager mTaskbarManager;
     private Function<GestureState, AnimatedFloat> mSwipeUpProxyProvider = i -> null;
+    private AllAppsActionManager mAllAppsActionManager;
 
     @Override
     public void onCreate() {
@@ -497,7 +494,9 @@ public class TouchInteractionService extends Service {
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
-        mTaskbarManager = new TaskbarManager(this);
+        mAllAppsActionManager = new AllAppsActionManager(
+                this, UI_HELPER_EXECUTOR, this::createAllAppsPendingIntent);
+        mTaskbarManager = new TaskbarManager(this, mAllAppsActionManager);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         BootAwarePreloader.start(this);
@@ -590,16 +589,7 @@ public class TouchInteractionService extends Service {
     }
 
     private void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
-        Executors.UI_HELPER_EXECUTOR.execute(() -> {
-            AccessibilityManager am = getSystemService(AccessibilityManager.class);
-
-            if (isHomeAndOverviewSame) {
-                am.registerSystemAction(
-                        createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-            } else {
-                am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
-            }
-        });
+        mAllAppsActionManager.setHomeAndOverviewSame(isHomeAndOverviewSame);
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
                 .getCreatedActivity();
@@ -609,13 +599,12 @@ public class TouchInteractionService extends Service {
         mTISBinder.onOverviewTargetChange();
     }
 
-    private RemoteAction createAllAppsAction() {
+    private PendingIntent createAllAppsPendingIntent() {
         final Intent homeIntent = new Intent(mOverviewComponentObserver.getHomeIntent())
                 .setAction(INTENT_ACTION_ALL_APPS_TOGGLE);
-        final PendingIntent actionPendingIntent;
 
         if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
-            actionPendingIntent = new PendingIntent(new IIntentSender.Stub() {
+            return new PendingIntent(new IIntentSender.Stub() {
                 @Override
                 public void send(int code, Intent intent, String resolvedType,
                         IBinder allowlistToken, IIntentReceiver finishedReceiver,
@@ -624,18 +613,12 @@ public class TouchInteractionService extends Service {
                 }
             });
         } else {
-            actionPendingIntent = PendingIntent.getActivity(
+            return PendingIntent.getActivity(
                     this,
                     GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS,
                     homeIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
-
-        return new RemoteAction(
-                Icon.createWithResource(this, R.drawable.ic_apps),
-                getString(R.string.all_apps_label),
-                getString(R.string.all_apps_label),
-                actionPendingIntent);
     }
 
     @UiThread
@@ -678,8 +661,7 @@ public class TouchInteractionService extends Service {
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).clearProxy();
 
-        getSystemService(AccessibilityManager.class)
-                .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+        mAllAppsActionManager.onDestroy();
 
         mTaskbarManager.destroy();
         sConnected = false;
