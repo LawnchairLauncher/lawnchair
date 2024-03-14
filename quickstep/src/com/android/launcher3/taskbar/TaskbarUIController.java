@@ -197,6 +197,11 @@ public class TaskbarUIController {
         return false;
     }
 
+    /** Returns {@code true} if Home All Apps available instead of Taskbar All Apps. */
+    protected boolean canToggleHomeAllApps() {
+        return false;
+    }
+
     @CallSuper
     protected void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(String.format(
