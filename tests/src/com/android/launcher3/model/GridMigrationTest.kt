@@ -85,7 +85,7 @@ class GridMigrationTest {
 
     @Before
     fun setup() {
-        setFlagsRule.setFlags(false, Flags.FLAG_GRID_MIGRATION_FIX)
+        setFlagsRule.setFlags(false, Flags.FLAG_ENABLE_GRID_MIGRATION_FIX)
     }
 
     private fun migrate(src: GridMigrationData, dst: GridMigrationData) {
@@ -223,7 +223,7 @@ class GridMigrationTest {
 
     @Test
     fun `flagged 5x5 to 5x8`() {
-        setFlagsRule.setFlags(true, Flags.FLAG_GRID_MIGRATION_FIX)
+        setFlagsRule.setFlags(true, Flags.FLAG_ENABLE_GRID_MIGRATION_FIX)
         runTest(
             src = GridMigrationData(DB_FILE, DeviceGridState(5, 5, 5, TYPE_PHONE, DB_FILE)),
             dst =
