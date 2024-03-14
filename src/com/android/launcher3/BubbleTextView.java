@@ -285,9 +285,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
-        if (FeatureFlags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
-            setMaxLines(1);
-        }
 
         setTag(null);
         if (mIconLoadRequest != null) {
@@ -299,6 +296,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setAlpha(1);
         setScaleY(1);
         setTranslationY(0);
+        setMaxLines(1);
         setVisibility(VISIBLE);
     }
 
@@ -428,10 +426,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      * Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return FeatureFlags.enableTwolineAllapps() && isCurrentLanguageEnglish()
-                && (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW)
-                && (!Flags.enableTwolineToggle() || (Flags.enableTwolineToggle()
-                && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(getContext())));
+        return isCurrentLanguageEnglish() && (mDisplay == DISPLAY_ALL_APPS
+                || mDisplay == DISPLAY_PREDICTION_ROW) && (Flags.enableTwolineToggle()
+                && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(getContext()));
     }
 
     protected boolean isCurrentLanguageEnglish() {
