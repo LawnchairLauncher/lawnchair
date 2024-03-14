@@ -301,12 +301,6 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     @Override
-    public void onBackInvoked() {
-        super.onBackInvoked();
-        animateSlideInViewToNoScale();
-    }
-
-    @Override
     public void onBackCancelled() {
         super.onBackCancelled();
         animateSlideInViewToNoScale();
