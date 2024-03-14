@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEAS
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.internal.jank.Cuj.CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_WORKSPACE;
 import static com.android.launcher3.Flags.enablePredictiveBackGesture;
 import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.PENDING_SPLIT_SELECT_INFO;
@@ -1347,7 +1348,8 @@ public class QuickstepLauncher extends Launcher {
      * Launches two apps as an app pair.
      */
     public void launchAppPair(AppPairIcon appPairIcon) {
-        mSplitSelectStateController.getAppPairsController().launchAppPair(appPairIcon);
+        mSplitSelectStateController.getAppPairsController().launchAppPair(appPairIcon,
+                CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_WORKSPACE);
     }
 
     public boolean canStartHomeSafely() {
