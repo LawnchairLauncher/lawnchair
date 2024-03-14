@@ -65,7 +65,7 @@ public class StaggeredWorkspaceAnim {
     // Should be used for animations running alongside this StaggeredWorkspaceAnim.
     public static final int DURATION_MS = 250;
     public static final int DURATION_TASKBAR_MS =
-            QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION;
+            QuickstepTransitionManager.getTaskbarToHomeDuration();
 
     private static final float MAX_VELOCITY_PX_PER_S = 22f;
 

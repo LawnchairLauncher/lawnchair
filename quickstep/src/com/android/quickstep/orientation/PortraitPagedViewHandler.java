@@ -795,7 +795,7 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
     }
 
     @Override
-    public Float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp) {
+    public float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp) {
         return dp.isLeftRightSplit
                 ? floatingTask.getTranslationX()
                 : floatingTask.getTranslationY();

@@ -48,7 +48,7 @@ class BackupAndRestoreDBSelectionTest {
 
     @Before
     fun setUp() {
-        setFlagsRule.setFlags(true, Flags.FLAG_NARROW_GRID_RESTORE)
+        setFlagsRule.setFlags(true, Flags.FLAG_ENABLE_NARROW_GRID_RESTORE)
     }
 
     @Test

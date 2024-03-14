@@ -38,17 +38,17 @@ import com.android.launcher3.util.rule.setFlags
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
 import com.google.common.truth.Truth
+import org.junit.Rule
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.whenever
 import java.io.BufferedReader
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
-import org.junit.Rule
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.whenever
 
 /**
  * This is an abstract class for DeviceProfile tests that create an InvariantDeviceProfile based on
@@ -274,7 +274,8 @@ abstract class AbstractDeviceProfileTest {
         isGestureMode: Boolean = true,
         densityDpi: Int
     ) {
-        setFlagsRule.setFlags(false, Flags.FLAG_ENABLE_TWOLINE_TOGGLE)
+        setFlagsRule.setFlags(true, Flags.FLAG_ENABLE_TWOLINE_TOGGLE)
+        LauncherPrefs.get(testContext).put(LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE, true)
         val windowsBounds = perDisplayBoundsCache[displayInfo]!!
         val realBounds = windowsBounds[rotation]
         whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)

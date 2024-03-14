@@ -90,6 +90,9 @@ flag {
     namespace: "launcher"
     description: "Enables full width two pane widget picker for tablets in landscape and portrait"
     bug: "315055849"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {
@@ -175,9 +178,6 @@ flag {
   namespace: "launcher"
   description: "When adding app widget through config activity, directly add it to workspace to reduce flicker"
   bug: "284236964"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
 }
 
 flag {
@@ -188,21 +188,30 @@ flag {
 }
 
 flag {
-    name: "grid_migration_fix"
+    name: "enable_grid_migration_fix"
     namespace: "launcher"
     description: "Keep items in place when migrating to a bigger grid"
     bug: "325286145"
+    is_fixed_read_only: true
     metadata {
       purpose: PURPOSE_BUGFIX
     }
 }
 
 flag {
-    name: "narrow_grid_restore"
+    name: "enable_narrow_grid_restore"
     namespace: "launcher"
     description: "Using only the most recent workspace when restoring to avoid confusion."
+    is_fixed_read_only: true
     bug: "325285743"
     metadata {
       purpose: PURPOSE_BUGFIX
     }
+}
+
+flag {
+    name: "enable_scaling_reveal_home_animation"
+    namespace: "launcher"
+    description: "Enables the Home gesture animation"
+    bug: "308801666"
 }

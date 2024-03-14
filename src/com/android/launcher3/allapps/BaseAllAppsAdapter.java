@@ -223,10 +223,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ICON:
-                int layout = (FeatureFlags.enableTwolineAllapps() &&
-                        (!Flags.enableTwolineToggle() || (Flags.enableTwolineToggle()
-                                && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(
-                                        mActivityContext.getApplicationContext()))))
+                int layout = (Flags.enableTwolineToggle()
+                        && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(
+                                mActivityContext.getApplicationContext()))
                         ? R.layout.all_apps_icon_twoline : R.layout.all_apps_icon;
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         layout, parent, false);

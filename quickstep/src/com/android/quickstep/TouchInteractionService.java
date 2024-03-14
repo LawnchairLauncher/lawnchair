@@ -754,6 +754,10 @@ public class TouchInteractionService extends Service {
 
             boolean isOneHandedModeActive = mDeviceState.isOneHandedModeActive();
             boolean isInSwipeUpTouchRegion = mRotationTouchHelper.isInSwipeUpTouchRegion(event);
+            TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
+            if (isInSwipeUpTouchRegion && tac != null) {
+                tac.closeKeyboardQuickSwitchView();
+            }
             if ((!isOneHandedModeActive && isInSwipeUpTouchRegion)
                     || isHoverActionWithoutConsumer) {
                 reasonString.append(!isOneHandedModeActive && isInSwipeUpTouchRegion

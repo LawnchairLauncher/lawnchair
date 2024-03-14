@@ -193,10 +193,14 @@ public final class KeyboardQuickSwitchController implements
     }
 
     void closeQuickSwitchView() {
+        closeQuickSwitchView(true);
+    }
+
+    void closeQuickSwitchView(boolean animate) {
         if (mQuickSwitchViewController == null) {
             return;
         }
-        mQuickSwitchViewController.closeQuickSwitchView(true);
+        mQuickSwitchViewController.closeQuickSwitchView(animate);
     }
 
     /**

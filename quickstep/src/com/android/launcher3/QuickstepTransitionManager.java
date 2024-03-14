@@ -43,6 +43,7 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -215,7 +216,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public static final int TASKBAR_TO_APP_DURATION = 600;
     // TODO(b/236145847): Tune TASKBAR_TO_HOME_DURATION to 383 after conflict with unlock animation
     // is solved.
-    public static final int TASKBAR_TO_HOME_DURATION = 300;
+    private static final int TASKBAR_TO_HOME_DURATION_FAST = 300;
+    private static final int TASKBAR_TO_HOME_DURATION_SLOW = 1000;
     protected static final int CONTENT_SCALE_DURATION = 350;
     protected static final int CONTENT_SCRIM_DURATION = 350;
 
@@ -1702,6 +1704,14 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         return new Pair(rectFSpringAnim, anim);
+    }
+
+    public static int getTaskbarToHomeDuration() {
+        if (enableScalingRevealHomeAnimation()) {
+            return TASKBAR_TO_HOME_DURATION_SLOW;
+        } else {
+            return TASKBAR_TO_HOME_DURATION_FAST;
+        }
     }
 
     /**

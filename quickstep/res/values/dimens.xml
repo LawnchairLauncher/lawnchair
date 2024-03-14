@@ -441,8 +441,7 @@
     <dimen name="keyboard_quick_switch_border_width">4dp</dimen>
     <dimen name="keyboard_quick_switch_taskview_width">104dp</dimen>
     <dimen name="keyboard_quick_switch_taskview_height">134dp</dimen>
-    <dimen name="keyboard_quick_switch_taskview_icon_size">28dp</dimen>
-    <dimen name="keyboard_quick_switch_taskview_icon_margin">4dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_icon_size">52dp</dimen>
     <dimen name="keyboard_quick_switch_recents_icon_size">20dp</dimen>
     <dimen name="keyboard_quick_switch_margin_top">56dp</dimen>
     <dimen name="keyboard_quick_switch_margin_ends">16dp</dimen>

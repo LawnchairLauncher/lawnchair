@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Flags.enableOverviewIconMenu;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE;
@@ -436,7 +437,11 @@ public class DeviceProfile {
             if (isMultiDisplay && !ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH.get()) {
                 // TODO(b/259893832): Revert to use maxWallpaperScale to calculate bottomSheetDepth
                 // when screen recorder bug is fixed.
-                bottomSheetDepth = 1f;
+                if (enableScalingRevealHomeAnimation()) {
+                    bottomSheetDepth = 0.3f;
+                } else {
+                    bottomSheetDepth = 1f;
+                }
             } else {
                 // The goal is to set wallpaper to zoom at workspaceContentScale when in AllApps.
                 // When depth is 0, wallpaper zoom is set to maxWallpaperScale.
@@ -1233,9 +1238,8 @@ public class DeviceProfile {
         if (isVerticalLayout && !mIsResponsiveGrid) {
             hideWorkspaceLabelsIfNotEnoughSpace();
         }
-        if (FeatureFlags.enableTwolineAllapps()
-                && (!Flags.enableTwolineToggle() || (Flags.enableTwolineToggle()
-                && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(context)))) {
+        if ((Flags.enableTwolineToggle()
+                && LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(context))) {
             // Add extra textHeight to the existing allAppsCellHeight.
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }

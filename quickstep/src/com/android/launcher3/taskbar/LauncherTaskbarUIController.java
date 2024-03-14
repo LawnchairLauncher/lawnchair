@@ -191,7 +191,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                         ? TRANSIENT_TASKBAR_TRANSITION_DURATION
                         : (!isVisible
                                 ? QuickstepTransitionManager.TASKBAR_TO_APP_DURATION
-                                : QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION));
+                                : QuickstepTransitionManager.getTaskbarToHomeDuration()));
     }
 
     @Nullable
