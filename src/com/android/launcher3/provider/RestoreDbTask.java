@@ -123,7 +123,7 @@ public class RestoreDbTask {
         // executed again.
         LauncherPrefs.get(context).removeSync(RESTORE_DEVICE);
 
-        if (Flags.narrowGridRestore()) {
+        if (Flags.enableNarrowGridRestore()) {
             String oldPhoneFileName = idp.dbFile;
             removeOldDBs(context, oldPhoneFileName);
             trySettingPreviousGidAsCurrent(context, idp, oldPhoneFileName);
