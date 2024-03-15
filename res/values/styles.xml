@@ -52,8 +52,8 @@
         <item name="workspaceAmbientShadowColor">#40000000</item>
         <item name="workspaceKeyShadowColor">#89000000</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+        <item name="pageIndicatorDotColor">@color/page_indicator_dot_color_light</item>
         <item name="focusOutlineColor">@color/material_color_on_secondary_container</item>
-        <item name="folderPaginationColor">@color/folder_pagination_color_light</item>
         <item name="folderPreviewColor">@color/folder_preview_light</item>
         <item name="folderBackgroundColor">@color/folder_background_light</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
@@ -164,7 +164,7 @@
         <item name="popupShadeThird">@color/popup_shade_third_dark</item>
         <item name="notificationDotColor">@color/notification_dot_color_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
-        <item name="folderPaginationColor">@color/folder_pagination_color_dark</item>
+        <item name="pageIndicatorDotColor">@color/page_indicator_dot_color_dark</item>
         <item name="folderPreviewColor">@color/folder_preview_dark</item>
         <item name="folderBackgroundColor">@color/folder_background_dark</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
