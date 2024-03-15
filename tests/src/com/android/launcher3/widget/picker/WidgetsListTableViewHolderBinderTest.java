@@ -29,6 +29,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.UserHandle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -96,7 +97,8 @@ public final class WidgetsListTableViewHolderBinderTest {
 
         mViewHolderBinder = new WidgetsListTableViewHolderBinder(
                 mContext,
-                LayoutInflater.from(mContext),
+                LayoutInflater.from(new ContextThemeWrapper(mContext,
+                        com.android.launcher3.R.style.WidgetContainerTheme)),
                 mOnIconClickListener,
                 mOnLongClickListener);
     }

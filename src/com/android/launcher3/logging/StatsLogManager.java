@@ -751,6 +751,9 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + " metric.")
         LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED(1612),
 
+        @UiEvent(doc = "User tapped add widget button in widget sheet.")
+        LAUNCHER_WIDGET_ADD_BUTTON_TAP(1622),
+
         // ADD MORE
         ;
 

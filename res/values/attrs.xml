@@ -72,6 +72,8 @@
     <attr name="widgetPickerSelectedTabTextColor" format="color"/>
     <attr name="widgetPickerUnselectedTabTextColor" format="color"/>
     <attr name="widgetPickerCollapseHandleColor" format="color"/>
+    <attr name="widgetPickerAddButtonBackgroundColor" format="color"/>
+    <attr name="widgetPickerAddButtonTextColor" format="color"/>
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
