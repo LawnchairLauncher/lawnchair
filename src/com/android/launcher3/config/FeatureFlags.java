@@ -184,11 +184,6 @@ public final class FeatureFlags {
             "SECONDARY_DRAG_N_DROP_TO_PIN", DISABLED,
             "Enable dragging and dropping to pin apps within secondary display");
 
-    // TODO(Block 7): Clean up flags
-    public static final BooleanFlag ENABLE_FORCED_MONO_ICON = getDebugFlag(270396209,
-            "ENABLE_FORCED_MONO_ICON", DISABLED,
-            "Enable the ability to generate monochromatic icons, if it is not provided by the app");
-
     // TODO(Block 8): Clean up flags
 
     // TODO(Block 9): Clean up flags

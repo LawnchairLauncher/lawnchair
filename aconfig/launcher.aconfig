@@ -171,6 +171,13 @@ flag {
 }
 
 flag {
+  name: "force_monochrome_app_icons"
+  namespace: "launcher"
+  description: "Enable the ability to generate monochromatic icons, if it is not provided by the app"
+  bug: "270396209"
+}
+
+flag {
   name: "enable_add_app_widget_via_config_activity_v2"
   namespace: "launcher"
   description: "When adding app widget through config activity, directly add it to workspace to reduce flicker"
