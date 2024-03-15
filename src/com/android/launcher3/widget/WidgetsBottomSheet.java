@@ -190,9 +190,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
                 mWidgetCellHorizontalPadding)
                 .forEach(row -> {
                     TableRow tableRow = new TableRow(getContext());
-                    // Vertically center align items, so that even if they don't fill bounds,
-                    // they can look organized when placed together in a row.
-                    tableRow.setGravity(Gravity.CENTER_VERTICAL);
+                    tableRow.setGravity(Gravity.TOP);
                     row.forEach(widgetItem -> {
                         WidgetCell widget = addItemCell(tableRow);
                         widget.applyFromCellItem(widgetItem);

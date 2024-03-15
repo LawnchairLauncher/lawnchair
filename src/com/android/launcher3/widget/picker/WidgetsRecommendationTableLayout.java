@@ -104,9 +104,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         for (int i = 0; i < recommendationTable.size(); i++) {
             List<WidgetItem> widgetItems = recommendationTable.get(i);
             TableRow tableRow = new TableRow(getContext());
-            // Vertically center align items, so that even if they don't fill bounds, they can
-            // look organized when placed together in a row.
-            tableRow.setGravity(Gravity.CENTER_VERTICAL);
+            tableRow.setGravity(Gravity.TOP);
             for (WidgetItem widgetItem : widgetItems) {
                 WidgetCell widgetCell = addItemCell(tableRow);
                 widgetCell.applyFromCellItem(widgetItem);
