@@ -42,12 +42,21 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Legg til på startskjermen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>-modulen er lagt til på startskjermen"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Forslag"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Viktige apper for dagliglivet"</string>
-    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Nyheter for deg"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
+    <skip />
+    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
+    <skip />
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Avslappingssonen din"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Nå treningsmålene dine"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Hold deg i forkant av været"</string>
-    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Kanskje du også liker"</string>
+    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
+    <skip />
+    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
+    <skip />
+    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
+    <skip />
+    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
+    <skip />
+    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
+    <skip />
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> moduler til høyre, søk og alternativer til venstre"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# modul}other{# moduler}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# snarvei}other{# snarveier}}"</string>

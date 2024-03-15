@@ -42,12 +42,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ホーム画面に追加"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"「<xliff:g id="WIDGET_NAME">%1$s</xliff:g>」ウィジェットをホーム画面に追加しました"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"候補"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"生活必需品"</string>
-    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"あなたへのおすすめニュース"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"基本"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ニュース＆雑誌"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"休憩エリア"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"フィットネスの目標を達成"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"天気予報"</string>
-    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"あなたへのおすすめ"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"エンタメ"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"ソーシャル"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"健康＆フィットネス"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"天気"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"おすすめ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> のウィジェットは右側に、検索とオプションは左側にあります"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# 件のウィジェット}other{# 件のウィジェット}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# 件のショートカット}other{# 件のショートカット}}"</string>

@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ପାଇଁ ଆପ ସୂଚନା"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ଆପ ପେୟାର ସେଭ କରନ୍ତୁ"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ଏହି ଆପ ପେୟାର ଏ ଡିଭାଇସରେ ସମର୍ଥିତ ନୁହେଁ"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"ଏହି ଆପ ପେୟାରକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ଡିଭାଇସକୁ ଅନଫୋଲ୍ଡ କରନ୍ତୁ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ଏକ ୱିଜେଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ଏକ ୱିଜେଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ଦୁଇଥର-ଟାପ୍ କରି ଧରି ରଖନ୍ତୁ କିମ୍ବା କଷ୍ଟମ୍ କାର୍ଯ୍ୟଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -44,12 +42,21 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ହୋମ ସ୍କ୍ରିନରେ ଯୋଗ କରନ୍ତୁ"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>ର ୱିଜେଟ ହୋମ ସ୍କ୍ରିନରେ ଯୋଡ଼ାଗଲା"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ପରାମର୍ଶଗୁଡ଼ିକ"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"ଆପଣଙ୍କ ଦୈନନ୍ଦିନ ଅତ୍ୟାବଶ୍ୟକୀୟ"</string>
-    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"ଆପଣଙ୍କ ପାଇଁ ନ୍ୟୁଜ"</string>
+    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
+    <skip />
+    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
+    <skip />
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ଆପଣଙ୍କ ଚିଲ ଜୋନ"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"ଆପଣଙ୍କ ଫିଟନେସ ଲକ୍ଷ୍ୟରେ ପହଞ୍ଚନ୍ତୁ"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"ପାଣିପାଗ ବିଷୟରେ ଆଗୁଆ ସୂଚନା ପାଆନ୍ତୁ"</string>
-    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"ଆପଣ ମଧ୍ୟ ପସନ୍ଦ କରିପାରନ୍ତି"</string>
+    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
+    <skip />
+    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
+    <skip />
+    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
+    <skip />
+    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
+    <skip />
+    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
+    <skip />
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"ଡାହାଣରେ <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ୱିଜେଟଗୁଡ଼ିକ ଅଛି, ବାମରେ ସର୍ଚ୍ଚ ଓ ବିକଳ୍ପଗୁଡ଼ିକ ଅଛି"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ୱିଜେଟ}other{# ୱିଜେଟ}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{#ଟି ସର୍ଟକଟ୍}other{#ଟି ସର୍ଟକଟ୍}}"</string>
@@ -137,8 +144,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ଇନଷ୍ଟଲ୍ କରାଯାଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ଡାଉନଲୋଡ୍‌ ହେଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ଇନଷ୍ଟଲ୍‌ ହେବାକୁ ଅପେକ୍ଷା କରିଛି"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g>କୁ ଆର୍କାଇଭ କରାଯାଇଛି। ଡାଉନଲୋଡ୍ କରିବା ପାଇଁ ଟାପ୍‌ କରନ୍ତୁ।"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"ଆପକୁ ଅପଡେଟ କରିବା ଆବଶ୍ୟକ"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"ଏହି ଆଇକନ ପାଇଁ ଆପକୁ ଅପଡେଟ କରାଯାଇନାହିଁ। ଏହି ସର୍ଟକଟକୁ ପୁଣି-ସକ୍ଷମ କରିବା ପାଇଁ ଆପଣ ମାନୁଆଲୀ ଅପଡେଟ କରିପାରିବେ କିମ୍ବା ଆଇକନଟିକୁ କାଢ଼ି ଦେଇପାରିବେ।"</string>
     <string name="dialog_update" msgid="2178028071796141234">"ଅପଡେଟ କରନ୍ତୁ"</string>
