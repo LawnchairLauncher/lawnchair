@@ -24,6 +24,8 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.Utilities.restoreClipChildrenOnViewTree;
+import static com.android.launcher3.Utilities.setClipChildrenOnViewTree;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_BOTTOM_SHEET_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
@@ -38,12 +40,9 @@ import android.animation.ValueAnimator;
 import android.util.FloatProperty;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
-import androidx.annotation.Nullable;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
@@ -420,79 +419,6 @@ public class AllAppsTransitionController
         mAppsViewAlpha.setUpdateVisibility(true);
         mAppsViewTranslationY = new MultiPropertyFactory<>(
                 mAppsView, VIEW_TRANSLATE_Y, APPS_VIEW_INDEX_COUNT, Float::sum);
-    }
-
-    /**
-     * Recursively call {@link ViewGroup#setClipChildren(boolean)} from {@link View} to ts parent
-     * (direct or indirect) inclusive. This method will also save the old clipChildren value on each
-     * view with {@link View#setTag(int, Object)}, which can be restored in
-     * {@link #restoreClipChildrenOnViewTree(View, ViewParent)}.
-     *
-     * Note that if parent is null or not a parent of the view, this method will be applied all the
-     * way to root view.
-     *
-     * @param v child view
-     * @param parent direct or indirect parent of child view
-     * @param clipChildren whether we should clip children
-     */
-    private static void setClipChildrenOnViewTree(
-            @Nullable View v,
-            @Nullable ViewParent parent,
-            boolean clipChildren) {
-        if (v == null) {
-            return;
-        }
-
-        if (v instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) v;
-            boolean oldClipChildren = viewGroup.getClipChildren();
-            if (oldClipChildren != clipChildren) {
-                v.setTag(R.id.saved_clip_children_tag_id, oldClipChildren);
-                viewGroup.setClipChildren(clipChildren);
-            }
-        }
-
-        if (v == parent) {
-            return;
-        }
-
-        if (v.getParent() instanceof View) {
-            setClipChildrenOnViewTree((View) v.getParent(), parent, clipChildren);
-        }
-    }
-
-    /**
-     * Recursively call {@link ViewGroup#setClipChildren(boolean)} to restore clip children value
-     * set in {@link #setClipChildrenOnViewTree(View, ViewParent, boolean)} on view to its parent
-     * (direct or indirect) inclusive.
-     *
-     * Note that if parent is null or not a parent of the view, this method will be applied all the
-     * way to root view.
-     *
-     * @param v child view
-     * @param parent direct or indirect parent of child view
-     */
-    private static void restoreClipChildrenOnViewTree(
-            @Nullable View v, @Nullable ViewParent parent) {
-        if (v == null) {
-            return;
-        }
-        if (v instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) v;
-            Object viewTag = viewGroup.getTag(R.id.saved_clip_children_tag_id);
-            if (viewTag instanceof Boolean) {
-                viewGroup.setClipChildren((boolean) viewTag);
-                viewGroup.setTag(R.id.saved_clip_children_tag_id, null);
-            }
-        }
-
-        if (v == parent) {
-            return;
-        }
-
-        if (v.getParent() instanceof View) {
-            restoreClipChildrenOnViewTree((View) v.getParent(), parent);
-        }
     }
 
     /**
