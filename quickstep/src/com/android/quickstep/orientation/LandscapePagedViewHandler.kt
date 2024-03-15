@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.orientation
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Point
 import android.graphics.PointF
@@ -33,6 +34,7 @@ import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.annotation.VisibleForTesting
 import androidx.core.util.component1
 import androidx.core.util.component2
 import com.android.launcher3.DeviceProfile
@@ -44,7 +46,11 @@ import com.android.launcher3.touch.PagedOrientationHandler.ChildBounds
 import com.android.launcher3.touch.PagedOrientationHandler.Float2DAction
 import com.android.launcher3.touch.PagedOrientationHandler.Int2DAction
 import com.android.launcher3.touch.SingleAxisSwipeDetector
-import com.android.launcher3.util.SplitConfigurationOptions.*
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition
 import com.android.launcher3.views.BaseDragLayer
@@ -451,13 +457,8 @@ open class LandscapePagedViewHandler : RecentsPagedOrientationHandler {
         // (portrait bottom) and secondary is on the right (portrait top)
         val spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx
         val totalThumbnailHeight = parentHeight - spaceAboveSnapshot
-        val dividerBar =
-            Math.round(
-                totalThumbnailHeight *
-                    if (splitBoundsConfig.appsStackedVertically)
-                        splitBoundsConfig.dividerHeightPercent
-                    else splitBoundsConfig.dividerWidthPercent
-            )
+        val dividerBar = getDividerBarSize(totalThumbnailHeight, splitBoundsConfig)
+
         val (taskViewFirst, taskViewSecond) =
             getGroupedTaskViewSizes(dp, splitBoundsConfig, parentWidth, parentHeight)
 
@@ -482,13 +483,8 @@ open class LandscapePagedViewHandler : RecentsPagedOrientationHandler {
     ): Pair<Point, Point> {
         val spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx
         val totalThumbnailHeight = parentHeight - spaceAboveSnapshot
-        val dividerBar =
-            Math.round(
-                totalThumbnailHeight *
-                    if (splitBoundsConfig.appsStackedVertically)
-                        splitBoundsConfig.dividerHeightPercent
-                    else splitBoundsConfig.dividerWidthPercent
-            )
+        val dividerBar = getDividerBarSize(totalThumbnailHeight, splitBoundsConfig)
+
         val taskPercent =
             if (splitBoundsConfig.appsStackedVertically) {
                 splitBoundsConfig.topTaskPercent
@@ -569,64 +565,22 @@ open class LandscapePagedViewHandler : RecentsPagedOrientationHandler {
         deviceProfile: DeviceProfile,
         splitConfig: SplitBounds
     ) {
-        val primaryIconParams = primaryIconView.layoutParams as FrameLayout.LayoutParams
-        val secondaryIconParams =
-            if (Flags.enableOverviewIconMenu())
-                secondaryIconView.layoutParams as FrameLayout.LayoutParams
-            else FrameLayout.LayoutParams(primaryIconParams)
+        val spaceAboveSnapshot = deviceProfile.overviewTaskThumbnailTopMarginPx
+        val totalThumbnailHeight = groupedTaskViewHeight - spaceAboveSnapshot
+        val dividerBar: Int = getDividerBarSize(totalThumbnailHeight, splitConfig)
 
-        // We calculate the "midpoint" of the thumbnail area, and place the icons there.
-        // This is the place where the thumbnail area splits by default, in a near-50/50 split.
-        // It is usually not exactly 50/50, due to insets/screen cutouts.
-        val fullscreenInsetThickness = (deviceProfile.insets.top - deviceProfile.insets.bottom)
-        val fullscreenMidpointFromBottom = ((deviceProfile.heightPx - fullscreenInsetThickness) / 2)
-        val midpointFromBottomPct = fullscreenMidpointFromBottom.toFloat() / deviceProfile.heightPx
-        val insetPct = fullscreenInsetThickness.toFloat() / deviceProfile.heightPx
-        val spaceAboveSnapshots = deviceProfile.overviewTaskThumbnailTopMarginPx
-        val overviewThumbnailAreaThickness = groupedTaskViewHeight - spaceAboveSnapshots
-        val bottomToMidpointOffset =
-            (overviewThumbnailAreaThickness * midpointFromBottomPct).toInt()
-        val insetOffset = (overviewThumbnailAreaThickness * insetPct).toInt()
-        if (Flags.enableOverviewIconMenu()) {
-            val gravity = if (isRtl) Gravity.BOTTOM or Gravity.START else Gravity.TOP or Gravity.END
-            primaryIconParams.gravity = gravity
-            secondaryIconParams.gravity = gravity
-        } else {
-            primaryIconParams.gravity = Gravity.BOTTOM or if (isRtl) Gravity.START else Gravity.END
-            secondaryIconParams.gravity =
-                Gravity.BOTTOM or if (isRtl) Gravity.START else Gravity.END
-        }
-        primaryIconView.translationX = 0f
-        secondaryIconView.translationX = 0f
-        when {
-            Flags.enableOverviewIconMenu() -> {
-                val primaryAppChipView = primaryIconView as IconAppChipView
-                val secondaryAppChipView = secondaryIconView as IconAppChipView
-                if (primaryIconView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-                    secondaryAppChipView.setSplitTranslationY(-primarySnapshotHeight.toFloat())
-                    primaryAppChipView.setSplitTranslationY(0f)
-                } else {
-                    val secondarySnapshotHeight = groupedTaskViewHeight - primarySnapshotHeight
-                    primaryAppChipView.setSplitTranslationY(secondarySnapshotHeight.toFloat())
-                }
-            }
-            splitConfig.initiatedFromSeascape -> {
-                // if the split was initiated from seascape,
-                // the task on the right (secondary) is slightly larger
-                primaryIconView.translationY = (-bottomToMidpointOffset - insetOffset).toFloat()
-                secondaryIconView.translationY =
-                    (-bottomToMidpointOffset - insetOffset + taskIconHeight).toFloat()
-            }
-            else -> {
-                // if not,
-                // the task on the left (primary) is slightly larger
-                primaryIconView.translationY = -bottomToMidpointOffset.toFloat()
-                secondaryIconView.translationY =
-                    (-bottomToMidpointOffset + taskIconHeight).toFloat()
-            }
-        }
-        primaryIconView.layoutParams = primaryIconParams
-        secondaryIconView.layoutParams = secondaryIconParams
+        val (topLeftY, bottomRightY) =
+            getSplitIconsPosition(
+                taskIconHeight,
+                primarySnapshotHeight,
+                totalThumbnailHeight,
+                isRtl,
+                deviceProfile.overviewTaskMarginPx,
+                dividerBar
+            )
+
+        updateSplitIconsPosition(primaryIconView, topLeftY, isRtl)
+        updateSplitIconsPosition(secondaryIconView, bottomRightY, isRtl)
     }
 
     override fun getDefaultSplitPosition(deviceProfile: DeviceProfile): Int {
@@ -656,4 +610,91 @@ open class LandscapePagedViewHandler : RecentsPagedOrientationHandler {
 
     override fun getFloatingTaskPrimaryTranslation(floatingTask: View, dp: DeviceProfile): Float =
         floatingTask.translationY
+
+    /**
+     * Retrieves split icons position
+     *
+     * @param taskIconHeight The height of the task icon.
+     * @param primarySnapshotHeight The height for the primary snapshot (i.e., top-left snapshot).
+     * @param totalThumbnailHeight The total height for the group task view.
+     * @param isRtl Whether the layout direction is RTL (or false for LTR).
+     * @param overviewTaskMarginPx The space under the focused task icon provided by Device Profile.
+     * @param dividerSize The size of the divider for the group task view.
+     * @return The top-left and right-bottom positions for the icon views.
+     */
+    @VisibleForTesting
+    open fun getSplitIconsPosition(
+        taskIconHeight: Int,
+        primarySnapshotHeight: Int,
+        totalThumbnailHeight: Int,
+        isRtl: Boolean,
+        overviewTaskMarginPx: Int,
+        dividerSize: Int,
+    ): SplitIconPositions {
+        return if (Flags.enableOverviewIconMenu()) {
+            if (isRtl) {
+                SplitIconPositions(0, -(totalThumbnailHeight - primarySnapshotHeight))
+            } else {
+                SplitIconPositions(0, primarySnapshotHeight + dividerSize)
+            }
+        } else {
+            val topLeftY = primarySnapshotHeight + overviewTaskMarginPx
+            SplitIconPositions(
+                topLeftY = topLeftY,
+                bottomRightY = topLeftY + dividerSize + taskIconHeight
+            )
+        }
+    }
+
+    /**
+     * Updates icon view gravity and translation for split tasks
+     *
+     * @param iconView View to be updated
+     * @param translationY the translationY that should be applied
+     * @param isRtl Whether the layout direction is RTL (or false for LTR).
+     */
+    @SuppressLint("RtlHardcoded")
+    @VisibleForTesting
+    open fun updateSplitIconsPosition(iconView: View, translationY: Int, isRtl: Boolean) {
+        val layoutParams = iconView.layoutParams as FrameLayout.LayoutParams
+
+        if (Flags.enableOverviewIconMenu()) {
+            val appChipView = iconView as IconAppChipView
+            layoutParams.gravity =
+                if (isRtl) Gravity.BOTTOM or Gravity.START else Gravity.TOP or Gravity.END
+            appChipView.layoutParams = layoutParams
+            appChipView.setSplitTranslationX(0f)
+            appChipView.setSplitTranslationY(translationY.toFloat())
+        } else {
+            layoutParams.gravity = Gravity.TOP or Gravity.RIGHT
+            layoutParams.topMargin = translationY
+            iconView.translationX = 0f
+            iconView.translationY = 0f
+            iconView.layoutParams = layoutParams
+        }
+    }
+
+    /**
+     * It calculates the divider's size in the group task view.
+     *
+     * @param totalThumbnailHeight The total height for the group task view
+     * @param splitConfig Contains information about sizes and proportions for split task.
+     * @return The divider size for the group task view.
+     */
+    protected fun getDividerBarSize(totalThumbnailHeight: Int, splitConfig: SplitBounds): Int {
+        return Math.round(
+            totalThumbnailHeight *
+                if (splitConfig.appsStackedVertically) splitConfig.dividerHeightPercent
+                else splitConfig.dividerWidthPercent
+        )
+    }
+
+    /**
+     * Data structure to keep the y position to be used for the split task icon views translation.
+     *
+     * @param topLeftY The y-axis position for the task view position on the Top or Left side.
+     * @param bottomRightY The y-axis position for the task view position on the Bottom or Right
+     *   side.
+     */
+    data class SplitIconPositions(val topLeftY: Int, val bottomRightY: Int)
 }
