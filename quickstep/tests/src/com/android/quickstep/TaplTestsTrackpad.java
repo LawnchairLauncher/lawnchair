@@ -19,7 +19,6 @@ package com.android.quickstep;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import android.app.Instrumentation;
@@ -28,7 +27,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.Flags;
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
@@ -69,7 +67,6 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @NavigationModeSwitch(mode = ZERO_BUTTON)
     public void pressBack() throws Exception {
         assumeTrue(mLauncher.isTablet());
-        assumeFalse(Flags.enablePredictiveBackGesture());
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
 
         try {
