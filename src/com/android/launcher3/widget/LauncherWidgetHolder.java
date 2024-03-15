@@ -349,7 +349,13 @@ public class LauncherWidgetHolder {
     @NonNull
     public final AppWidgetHostView attachViewToHostAndGetAttachedView(
             @NonNull LauncherAppWidgetHostView view) {
-        if (mViews.get(view.getAppWidgetId()) != view) {
+
+        // Binder can also inflate placeholder widgets in case of backup-restore. Skip
+        // attaching such widgets
+        boolean isRealWidget = ((view instanceof PendingAppWidgetHostView pw)
+                ? pw.isDeferredWidget() : true)
+                && view.getAppWidgetInfo() != null;
+        if (isRealWidget && mViews.get(view.getAppWidgetId()) != view) {
             view = recycleExistingView(view);
             mViews.put(view.getAppWidgetId(), view);
         }
