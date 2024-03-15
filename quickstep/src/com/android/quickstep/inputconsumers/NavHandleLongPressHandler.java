@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.quickstep.NavHandle;
 
 /**
  * Class for extending nav handle long press behavior
@@ -42,19 +43,26 @@ public class NavHandleLongPressHandler implements ResourceBasedOverride {
      * A Runnable is returned here to ensure the InputConsumer can call
      * {@link android.view.InputMonitor#pilferPointers()} before invoking the long press behavior
      * since pilfering can break the long press behavior.
+     *
+     * @param navHandle to handle this long press
      */
-    public @Nullable Runnable getLongPressRunnable() {
+    public @Nullable Runnable getLongPressRunnable(NavHandle navHandle) {
         return null;
     }
 
     /**
      * Called when nav handle gesture starts.
+     *
+     * @param navHandle to handle the animation for this touch
      */
-    public void onTouchStarted() {}
+    public void onTouchStarted(NavHandle navHandle) {}
 
     /**
      * Called when nav handle gesture is finished by the user lifting their finger or the system
      * cancelling the touch for some other reason.
+     *
+     * @param navHandle to handle the animation for this touch
+     * @param reason why the touch ended
      */
-    public void onTouchFinished(String reason) {}
+    public void onTouchFinished(NavHandle navHandle, String reason) {}
 }
