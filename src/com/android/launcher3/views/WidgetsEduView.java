@@ -59,6 +59,7 @@ public class WidgetsEduView extends AbstractSlideInView<BaseActivity> implements
         mContent = findViewById(R.id.edu_view);
         findViewById(R.id.edu_close_button)
                 .setOnClickListener(v -> close(/* animate= */ true));
+        setContentBackgroundWithParent(mContent.getBackground(), mContent);
     }
 
     @Override
@@ -66,6 +67,12 @@ public class WidgetsEduView extends AbstractSlideInView<BaseActivity> implements
         mInsets.set(insets);
         mContent.setPadding(mContent.getPaddingStart(),
                 mContent.getPaddingTop(), mContent.getPaddingEnd(), insets.bottom);
+    }
+
+    @Override
+    protected void onScaleProgressChanged() {
+        super.onScaleProgressChanged();
+        setTranslationY(getMeasuredHeight() * (1 - mSlideInViewScale.value) / 2);
     }
 
     private void show() {
