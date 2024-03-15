@@ -42,12 +42,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Idagdag sa home screen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Idinagdag sa home screen ang widget na <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Mga Suhestyon"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Ang Pang-araw-araw Mong Mga Essential"</string>
-    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Balita para sa Iyo"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Mga essential"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Balita at mga magazine"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Ang Iyong Chill Zone"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Makamit ang Iyong Mga Layunin sa Fitness"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Manatiling Handa sa Lagay ng Panahon"</string>
-    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Baka Magustuhan Mo Rin"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Entertainment"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Social"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Kalusugan at fitness"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Lagay ng panahon"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Iminumungkahi para sa iyo"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Mga widget ng <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> sa kanan, paghahanap at mga opsyon sa kaliwa"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}one{# widget}other{# na widget}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# shortcut}one{# shortcut}other{# na shortcut}}"</string>
