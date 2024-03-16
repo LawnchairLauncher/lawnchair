@@ -182,7 +182,6 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
             // Since the title is outside the paging scroll, we update the title on page switch.
             mRecommendationPageTitle.setText(mCategoryTitles.get(getNextPage()));
             super.notifyPageSwitchListener(prevPage);
-            requestLayout();
         }
     }
 

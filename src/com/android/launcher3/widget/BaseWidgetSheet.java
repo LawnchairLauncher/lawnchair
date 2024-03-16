@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
+import static com.android.launcher3.Flags.enableWidgetTapToAdd;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_TIP_SEEN;
 
 import android.content.Context;
@@ -41,8 +42,10 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -72,6 +75,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     private final Paint mNavBarScrimPaint;
 
     private boolean mDisableNavBarScrim = false;
+
+    @Nullable private WidgetCell mWidgetCellWithAddButton = null;
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -123,11 +128,47 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     @Override
     public final void onClick(View v) {
-        if (v instanceof WidgetCell) {
-            mActivityContext.getItemOnClickListener().onClick(v);
-        } else if (v.getParent() instanceof WidgetCell wc) {
+        WidgetCell wc;
+        if (v instanceof WidgetCell view) {
+            wc = view;
+        }  else if (v.getParent() instanceof WidgetCell parent) {
+            wc = parent;
+        } else {
+            return;
+        }
+
+        if (enableWidgetTapToAdd()) {
+            if (mWidgetCellWithAddButton != null) {
+                // If there is a add button currently showing, hide it.
+                mWidgetCellWithAddButton.hideAddButton(/* animate= */ true);
+            }
+
+            if (mWidgetCellWithAddButton != wc) {
+                // If click is on a cell not showing an add button, show it now.
+                final PendingAddItemInfo info = (PendingAddItemInfo) wc.getTag();
+                if (mActivityContext instanceof Launcher) {
+                    wc.showAddButton((view) -> addWidget(info));
+                } else {
+                    wc.showAddButton((view) -> mActivityContext.getItemOnClickListener()
+                            .onClick(wc));
+                }
+            }
+
+            mWidgetCellWithAddButton = mWidgetCellWithAddButton != wc ? wc : null;
+        } else {
             mActivityContext.getItemOnClickListener().onClick(wc);
         }
+    }
+
+    /**
+     * Click handler for tap to add button.
+     */
+    public void addWidget(PendingAddItemInfo info) {
+        mActivityContext.getStatsLogManager().logger().withItemInfo(info).log(
+                StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP);
+        handleClose(true);
+        Launcher.getLauncher(mActivityContext).getAccessibilityDelegate()
+                .addToWorkspace(info, /*accessibility=*/ false);
     }
 
     @Override

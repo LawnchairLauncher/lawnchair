@@ -64,6 +64,12 @@
     <!-- Spoken text for a screen reader. The placeholder text is the widget name.
          [CHAR_LIMIT=none]-->
     <string name="widget_preview_context_description"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
+    <!-- Spoken text for a screen reader. The first placeholder text is the widget name, the
+         remaining placeholders are for the widget dimensions.
+         [CHAR_LIMIT=none]-->
+    <string name="widget_preview_name_and_dims_content_description">
+        <xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget, %2$d wide by %3$d high
+    </string>
     <!-- Message to tell the user to press and hold a widget/icon to add it to the home screen.
          [CHAR LIMIT=NONE]  -->
     <string name="add_item_request_drag_hint">Touch &amp; hold the widget to move it around the home screen</string>
@@ -124,6 +130,12 @@
 
     <!-- A widget category label for grouping widgets related to note taking. [CHAR_LIMIT=30] -->
     <string name="widget_category_note_taking">Note-taking</string>
+
+    <!-- Text on the button that adds a widget to the home screen. [CHAR_LIMIT=15] -->
+    <string name="widget_add_button_label">Add</string>
+    <!-- Accessibility content description for the button that adds a widget to the home screen. The
+         placeholder text is the widget name. [CHAR_LIMIT=none] -->
+    <string name="widget_add_button_content_description">Add <xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
 
     <!-- Title of a dialog. This dialog lets a user know how they can use widgets on their phone.
          [CHAR_LIMIT=NONE] -->

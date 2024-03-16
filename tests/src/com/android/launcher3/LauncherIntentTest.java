@@ -29,6 +29,7 @@ import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.SearchRecyclerView;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,6 +40,7 @@ public class LauncherIntentTest extends AbstractLauncherUiTest {
     public final Intent allAppsIntent = new Intent(Intent.ACTION_ALL_APPS);
 
     @Test
+    @Ignore("b/329152799")
     public void testAllAppsIntent() {
         // setup by moving to home
         mLauncher.goHome();

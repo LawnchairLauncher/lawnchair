@@ -148,9 +148,7 @@ public final class WidgetsListTableViewHolderBinder
                 tableRow = (TableRow) table.getChildAt(i);
             } else {
                 tableRow = new TableRow(table.getContext());
-                // Vertically center align items, so that even if they don't fill bounds, they
-                // can look organized when placed together in a row.
-                tableRow.setGravity(Gravity.CENTER_VERTICAL);
+                tableRow.setGravity(Gravity.TOP);
                 table.addView(tableRow);
             }
             if (tableRow.getChildCount() > widgetItems.size()) {
