@@ -402,6 +402,11 @@ public final class LauncherInstrumentation {
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    private boolean isPredictiveBackSwipeEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_IS_PREDICTIVE_BACK_SWIPE_ENABLED)
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     public boolean isTaskbarNavbarUnificationEnabled() {
         return getTestInfo(TestProtocol.REQUEST_ENABLE_TASKBAR_NAVBAR_UNIFICATION)
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
@@ -1211,8 +1216,7 @@ public final class LauncherInstrumentation {
             waitForNavigationUiObject("back").click();
         }
         if (launcherVisible) {
-            if (InstrumentationRegistry.getTargetContext().getApplicationInfo()
-                    .isOnBackInvokedCallbackEnabled()) {
+            if (isPredictiveBackSwipeEnabled()) {
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
             } else {
                 expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);

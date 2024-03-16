@@ -296,14 +296,10 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         float scaleProgress = mSlideInViewScale.value;
         SCALE_PROPERTY.set(this, scaleProgress);
         setClipChildren(!mIsBackProgressing);
+        setClipToPadding(!mIsBackProgressing);
         mContent.setClipChildren(!mIsBackProgressing);
+        mContent.setClipToPadding(!mIsBackProgressing);
         invalidate();
-    }
-
-    @Override
-    public void onBackInvoked() {
-        super.onBackInvoked();
-        animateSlideInViewToNoScale();
     }
 
     @Override

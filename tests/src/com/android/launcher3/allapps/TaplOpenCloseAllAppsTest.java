@@ -20,7 +20,6 @@ import static com.android.launcher3.util.TestUtil.expectFail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
@@ -29,7 +28,6 @@ import android.platform.test.annotations.PlatinumTest;
 import androidx.test.filters.FlakyTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
@@ -199,7 +197,6 @@ public class TaplOpenCloseAllAppsTest extends AbstractLauncherUiTest {
     public void testPressBackFromAllAppsToHome() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity(
                 READ_DEVICE_CONFIG_PERMISSION);
-        assumeFalse(Flags.enablePredictiveBackGesture());
         mLauncher
                 .getWorkspace()
                 .switchToAllApps()

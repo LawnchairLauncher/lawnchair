@@ -102,6 +102,7 @@ public class DeviceProfile {
     public final boolean transposeLayoutWithOrientation;
     public final boolean isMultiDisplay;
     public final boolean isTwoPanels;
+    public boolean isPredictiveBackSwipe;
     public final boolean isQsbInline;
 
     // Device properties in current orientation

@@ -315,5 +315,6 @@
     <style name="WidgetPickerActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="pageIndicatorDotColor">@color/page_indicator_dot_color_light</item>
     </style>
 </resources>

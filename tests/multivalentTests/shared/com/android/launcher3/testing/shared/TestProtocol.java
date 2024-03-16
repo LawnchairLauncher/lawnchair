@@ -120,6 +120,8 @@ public final class TestProtocol {
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_HOTSEAT_ICON_NAMES = "get-hotseat-icon-names";
     public static final String REQUEST_IS_TABLET = "is-tablet";
+    public static final String REQUEST_IS_PREDICTIVE_BACK_SWIPE_ENABLED =
+            "is-predictive-back-swipe-enabled";
     public static final String REQUEST_ENABLE_TASKBAR_NAVBAR_UNIFICATION =
             "enable-taskbar-navbar-unification";
     public static final String REQUEST_NUM_ALL_APPS_COLUMNS = "num-all-apps-columns";

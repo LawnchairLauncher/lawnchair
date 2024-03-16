@@ -42,12 +42,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Dodaj do ekranu głównego"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widżet <xliff:g id="WIDGET_NAME">%1$s</xliff:g> został dodany do ekranu głównego"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Sugestie"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Niezbędne na co dzień"</string>
-    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Wiadomości dla Ciebie"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Niezbędne"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Wiadomości i czasopisma"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Strefa relaksu"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Zadbaj o swoją formę"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Nie daj się zaskoczyć pogodzie"</string>
-    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"To też może Cię zainteresować"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Rozrywka"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Społecznościowe"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Zdrowie i fitness"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Pogoda"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Proponowane dla Ciebie"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Widżety (<xliff:g id="SELECTED_HEADER">%1$s</xliff:g>) po prawej, wyszukiwanie i opcje po lewej"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widżet}few{# widżety}many{# widżetów}other{# widżetu}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# skrót}few{# skróty}many{# skrótów}other{# skrótu}}"</string>
