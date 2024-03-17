@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">انقر فوق هذه البطاقة لتعيين Lawnchair كمشغل افتراضي لك.</string>
+    <string name="set_default_launcher_tip">انقر هنا لتعيين Lawnchair كمشغل آساسي لك.</string>
     <string name="settings">الإعدادات</string>
     <string name="general_label">عام</string>
     <string name="general_description">الألوان، حزمة الأيقونة، نقاط الإشعار</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">بحث جوجل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">قائمة البرامج المفضله</string>
     <string name="hotseat_mode_label">واجهة شريط البحث</string>
     <string name="hotseat_mode_disabled">معطلة</string>
     <string name="hotseat_mode_lawnchair">كرسي حديقة</string>
@@ -276,9 +276,9 @@
     <string name="hide_hidden_apps_search">إخفاء في نتائج البحث</string>
     <string name="pref_all_apps_bulk_icon_loading_title">تحميل التطبيقات بكميات كبيرة</string>
     <string name="pref_all_apps_bulk_icon_loading_description">تحميل و عرض علامات البرامج معا بدلاً من تحميل كل علامة على حدة</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
+    <string name="pref_all_apps_remember_position_title">تذكر المكان</string>
     <string name="pref_all_apps_remember_position_description">تذكر الوضع كما تُرك بدلا من الرجوع الى الاعلى</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_show_scrollbar_title">إظهار شريط التمرير</string>
     <string name="pref_category_search">البحث</string>
     <string name="show_app_search_bar">إظهار شريط البحث</string>
     <string name="pref_search_auto_show_keyboard">إظهار لوحة المفاتيح تلقائياً</string>
@@ -353,7 +353,7 @@
     <string name="action_share">مشاركة</string>
     <string name="action_lens">عدسة</string>
     <string name="recents_clear_all">محو الكل</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">الإغلاق إجباريا</string>
     <string name="window_corner_radius_label">نصف قطر زاوية الشاشة</string>
     <string name="override_window_corner_radius_label">نصف قطر مخصص لزاوية الشاشة</string>
     <string name="window_corner_radius_description">عند السحب لأعلى لفتح التطبيقات الحديثة، يتبع التطبيق الحالي إصبعك، ويتقلص إلى بطاقة. استخدم شريط التمرير هذا لضبط تحدب الزاوية في البطاقة عندما تكون ملء الشاشة تقريباً بحيث تطابق تحدب زوايا الشاشة.</string>
@@ -419,7 +419,7 @@
     <string name="label_search">البحث</string>
     <string name="label_lens">عدسة جوجل</string>
     <string name="label_voice_search">البحث الصوتي</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">مدخل الإعدادات</string>
     <string name="all_apps_search_market_message">البحث عن مزيد من التطبيقات</string>
     <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">لا يوجد متجر تطبيقات أو متصفح مثبت.</string>
@@ -451,8 +451,8 @@
     <string name="x_by_y">%١$d × %٢$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">إعدادات النظام</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">إلغاء القُفْل</string>
+    <string name="action_lock">قُفْل</string>
+    <string name="recents_lock_unlock">فتح/قفل</string>
+    <string name="recents_lock_unlock_description">منع تطبيق من إستخدام \"مسح الكل\"</string>
 </resources>
