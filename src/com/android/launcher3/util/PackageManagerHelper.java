@@ -107,6 +107,7 @@ public class PackageManagerHelper {
     /**
      * Returns whether the target app is archived for a given user
      */
+    @SuppressWarnings("NewApi")
     public boolean isAppArchivedForUser(@NonNull final String packageName,
             @NonNull final UserHandle user) {
         if (!Utilities.enableSupportForArchiving()) {
