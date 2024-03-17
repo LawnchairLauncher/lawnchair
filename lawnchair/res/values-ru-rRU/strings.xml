@@ -130,7 +130,7 @@
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF поддерживается.</string>
-    <string name="pref_fonts_missing_font">Шрифт не найден </string>
+    <string name="pref_fonts_missing_font">Шрифт не найден</string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">Экстра тонкий</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_mode_google_search">Поиск Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Показать док-бар</string>
+    <string name="show_hotseat_title">Показать док-панель</string>
     <string name="hotseat_mode_label">Виджет поиска</string>
     <string name="hotseat_mode_disabled">Отключено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
@@ -299,7 +299,7 @@
     <string name="perform_wide_search_title">Поиск устройств</string>
     <string name="perform_wide_search_file">Файл</string>
     <string name="pref_suggestion_label">Рекомендации</string>
-    <string name="pref_suggestion_title">Веб-подсказки (через start page <xliff:g id="startpage"></xliff:g>)</string>
+    <string name="pref_suggestion_title">Веб-подсказки (с помощью <xliff:g id="startpage">Startpage</xliff:g>)</string>
     <string name="pref_advance_search_category">Расширенный поиск</string>
     <string name="perform_wide_search_description">Поиск контактов, файлов и настроек в меню приложений.</string>
     <string name="pref_recent_suggestion_title">История</string>
@@ -328,8 +328,8 @@
     <!-- GesturePreference -->
     <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Двойное нажатие</string>
-    <string name="gesture_swipe_up">Свайп вверх</string>
-    <string name="gesture_swipe_down">Свайп вниз</string>
+    <string name="gesture_swipe_up">Жест: вверх</string>
+    <string name="gesture_swipe_down">Жест: вниз</string>
     <string name="gesture_home_tap">Кнопка \"Домой\"</string>
     <string name="gesture_back_tap">Кнопка \"Назад\"</string>
     <string name="gesture_handler_no_op">Ничего</string>
@@ -384,10 +384,10 @@
     <string name="item_removed">Элемент удален.</string>
     <string name="all_apps_no_search_results">Не найдено приложений по запросу “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
-    <string name="dt2s_admin_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair как приложение администратора устройства. Для этого откройте Настройки, потом нажмите на \"Активировать приложение администратора устройства.\"</string>
+    <string name="dt2s_admin_hint">Чтобы использовать спящий режим по двойному нажатию, назначьте Lawnchair администратором устройства. Для этого: откройте Настройки, потом нажмите на \"Активировать приложение администратора устройства.\"</string>
     <string name="dt2s_admin_warning">Двойное нажатие для блокировки будет отключен.</string>
     <string name="dt2s_a11y_hint_title">Требуются спец. возможности</string>
-    <string name="dt2s_a11y_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair в меню спец. возможностей. Для этого откройте Настройки, потом выберите \"Lawnchair\" и нажмите \"Использовать Lawnchair\".</string>
+    <string name="dt2s_a11y_hint">Чтобы использовать спящий режим по двойному нажатию, включите Lawnchair в меню спец. возможностей. Для этого: откройте Настройки, потом выберите \"Lawnchair\" и нажмите \"Использовать Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">Открыть настройки</string>
     <string name="loading">Загрузка…</string>
     <string name="system">Система</string>
