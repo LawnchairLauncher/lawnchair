@@ -22,8 +22,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ButtonDropTarget;
 import com.android.launcher3.CellLayout;
@@ -60,7 +58,6 @@ import com.android.launcher3.widget.util.WidgetSizes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Launcher> {
 
@@ -176,7 +173,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         } else if (action == MOVE) {
             return beginAccessibleDrag(host, item, fromKeyboard);
         } else if (action == ADD_TO_WORKSPACE) {
-            return addToWorkspace(item, true /*accessibility*/, null /*finishCallback*/);
+            return addToWorkspace(item, true);
         } else if (action == MOVE_TO_WORKSPACE) {
             return moveToWorkspace(item);
         } else if (action == RESIZE) {
@@ -387,19 +384,13 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
      * @param item item to be added
      * @param accessibility true if the first item to be added to the workspace
      *     should be focused for accessibility.
-     * @param finishCallback Callback which will be run after this item has been added
-     *                       and the view has been transitioned to the workspace, or on failure.
      *
      * @return true if the item could be successfully added
      */
-    public boolean addToWorkspace(ItemInfo item, boolean accessibility,
-            @Nullable Consumer<Boolean> finishCallback) {
+    public boolean addToWorkspace(ItemInfo item, boolean accessibility) {
         final int[] coordinates = new int[2];
         final int screenId = findSpaceOnWorkspace(item, coordinates);
         if (screenId == -1) {
-            if (finishCallback != null) {
-                finishCallback.accept(false /*success*/);
-            }
             return false;
         }
         mContext.getStateManager().goToState(NORMAL, true, forSuccessCallback(() -> {
@@ -409,7 +400,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
 
-                bindItem(item, accessibility, finishCallback);
+                bindItem(item, accessibility);
                 announceConfirmation(R.string.item_added_to_workspace);
             } else if (item instanceof PendingAddItemInfo) {
                 PendingAddItemInfo info = (PendingAddItemInfo) item;
@@ -422,7 +413,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                 mContext.getModelWriter().addItemToDatabase(info,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
-                bindItem(info, accessibility, finishCallback);
+                bindItem(info, accessibility);
             } else if (item instanceof FolderInfo fi) {
                 Workspace<?> workspace = mContext.getWorkspace();
                 workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
@@ -432,30 +423,23 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                 fi.contents.forEach(member -> {
                     mContext.getModelWriter().addItemToDatabase(member, fi.id, -1, -1, -1);
                 });
-                bindItem(fi, accessibility, finishCallback);
+                bindItem(fi, accessibility);
             }
         }));
         return true;
     }
 
-    private void bindItem(ItemInfo item, boolean focusForAccessibility,
-            @Nullable Consumer<Boolean> finishCallback) {
+    private void bindItem(ItemInfo item, boolean focusForAccessibility) {
         View view = mContext.getItemInflater().inflateItem(item, mContext.getModelWriter());
         if (view == null) {
-            if (finishCallback != null) {
-                finishCallback.accept(false /*success*/);
-            }
             return;
         }
-        AnimatorSet anim = new AnimatorSet();
-        anim.addListener(forEndCallback((success) -> {
-            if (focusForAccessibility) {
-                view.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
-            }
-            if (finishCallback != null) {
-                finishCallback.accept(success);
-            }
-        }));
+        AnimatorSet anim = null;
+        if (focusForAccessibility) {
+            anim = new AnimatorSet();
+            anim.addListener(forEndCallback(
+                    () -> view.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)));
+        }
         mContext.bindInflatedItems(Collections.singletonList(Pair.create(item, view)), anim);
     }
 
