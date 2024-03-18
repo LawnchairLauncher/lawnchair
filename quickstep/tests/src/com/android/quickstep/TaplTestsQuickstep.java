@@ -501,6 +501,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
+    @ScreenRecord // b/326839375
     public void testOverviewDeadzones() throws Exception {
         startTestAppsWithCheck();
 
