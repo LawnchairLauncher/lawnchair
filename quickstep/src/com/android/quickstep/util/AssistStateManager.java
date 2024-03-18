@@ -52,6 +52,16 @@ public class AssistStateManager implements ResourceBasedOverride {
         return Optional.empty();
     }
 
+    /** Get the Launcher overridden long press duration to trigger Assistant. */
+    public Optional<Long> getLPNHDurationMillis() {
+        return Optional.empty();
+    }
+
+    /** Get the Launcher overridden long press touch slop multiplier to trigger Assistant. */
+    public Optional<Long> getLPNHCustomSlopMultiplier() {
+        return Optional.empty();
+    }
+
     /** Return {@code true} if the Settings toggle is enabled. */
     public boolean isSettingsAllEntrypointsEnabled() {
         return false;
