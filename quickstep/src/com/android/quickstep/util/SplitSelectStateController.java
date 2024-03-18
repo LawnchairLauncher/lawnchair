@@ -104,6 +104,7 @@ import com.android.quickstep.views.SplitInstructionsView;
 import com.android.systemui.animation.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 import com.android.wm.shell.splitscreen.ISplitSelectListener;
 
@@ -150,6 +151,12 @@ public class SplitSelectStateController {
 
     /** True when the first selected split app is being launched in fullscreen. */
     private boolean mLaunchingFirstAppFullscreen;
+
+    /**
+     * Should be a constant from {@link com.android.internal.jank.Cuj} or -1, does not need to be
+     * set for all launches.
+     */
+    private int mLaunchCuj = -1;
 
     private FloatingTaskView mFirstFloatingTaskView;
     private SplitInstructionsView mSplitInstructionsView;
@@ -707,6 +714,10 @@ public class SplitSelectStateController {
         return mSplitAnimationController;
     }
 
+    public void setLaunchingCuj(int launchCuj) {
+        mLaunchCuj = launchCuj;
+    }
+
     /**
      * Requires Shell Transitions
      */
@@ -849,6 +860,11 @@ public class SplitSelectStateController {
         mFirstFloatingTaskView = null;
         mSplitInstructionsView = null;
         mLaunchingFirstAppFullscreen = false;
+
+        if (mLaunchCuj != -1) {
+            InteractionJankMonitorWrapper.end(mLaunchCuj);
+        }
+        mLaunchCuj = -1;
 
         if (mSessionInstanceIds != null) {
             mStatsLogManager.logger()
