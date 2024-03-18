@@ -19,7 +19,6 @@ package com.android.quickstep.util;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
-import static com.android.internal.jank.Cuj.CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_TASKBAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_LAUNCH;
 import static com.android.launcher3.model.data.AppInfo.PACKAGE_KEY_COMPARATOR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -41,7 +40,6 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.internal.jank.Cuj;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
@@ -64,7 +62,6 @@ import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 
 import java.util.Arrays;
@@ -115,7 +112,6 @@ public class AppPairsController {
      * well on trampoline apps).
      */
     public void saveAppPair(GroupedTaskView gtv) {
-        InteractionJankMonitorWrapper.begin(gtv, Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
         TaskView.TaskIdAttributeContainer[] attributes = gtv.getTaskIdAttributeContainers();
         WorkspaceItemInfo recentsInfo1 = attributes[0].getItemInfo();
         WorkspaceItemInfo recentsInfo2 = attributes[1].getItemInfo();
@@ -172,13 +168,7 @@ public class AppPairsController {
                 LauncherAccessibilityDelegate delegate =
                         Launcher.getLauncher(mContext).getAccessibilityDelegate();
                 if (delegate != null) {
-                    delegate.addToWorkspace(newAppPair, true, (success) -> {
-                        if (success) {
-                            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
-                        } else {
-                            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
-                        }
-                    });
+                    delegate.addToWorkspace(newAppPair, true);
                     mStatsLogManager.logger().withItemInfo(newAppPair)
                             .log(StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_SAVE);
                 }
@@ -189,18 +179,12 @@ public class AppPairsController {
     /**
      * Launches an app pair by searching the RecentsModel for running instances of each app, and
      * staging either those running instances or launching the apps as new Intents.
-     *
-     * @param cuj Should be an integer from {@link Cuj} or -1 if no CUJ needs to be logged for jank
-     *            monitoring
      */
-    public void launchAppPair(AppPairIcon appPairIcon, int cuj) {
+    public void launchAppPair(AppPairIcon appPairIcon) {
         WorkspaceItemInfo app1 = appPairIcon.getInfo().contents.get(0);
         WorkspaceItemInfo app2 = appPairIcon.getInfo().contents.get(1);
         ComponentKey app1Key = new ComponentKey(app1.getTargetComponent(), app1.user);
         ComponentKey app2Key = new ComponentKey(app2.getTargetComponent(), app2.user);
-        mSplitSelectStateController.setLaunchingCuj(cuj);
-        InteractionJankMonitorWrapper.begin(appPairIcon, cuj);
-
         mSplitSelectStateController.findLastActiveTasksAndRunCallback(
                 Arrays.asList(app1Key, app2Key),
                 false /* findExactPairMatch */,
@@ -359,8 +343,7 @@ public class AppPairsController {
                                 && !lastActiveTasksOfAppPair.contains(runningTaskId2)) {
                             // Neither A nor B are on screen, so just launch a new app pair
                             // normally.
-                            launchAppPair(launchingIconView,
-                                    CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_TASKBAR);
+                            launchAppPair(launchingIconView);
                         } else {
                             // Exactly one app (A or B) is on-screen, so we have to launch the other
                             // on the appropriate side.
@@ -405,8 +388,7 @@ public class AppPairsController {
 
                         if (!task1IsOnScreen && !task2IsOnScreen) {
                             // Neither App A nor App B are on-screen, launch the app pair normally.
-                            launchAppPair(launchingIconView,
-                                    CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_TASKBAR);
+                            launchAppPair(launchingIconView);
                         } else {
                             // Either A or B is on-screen, so launch the other on the appropriate
                             // side.
