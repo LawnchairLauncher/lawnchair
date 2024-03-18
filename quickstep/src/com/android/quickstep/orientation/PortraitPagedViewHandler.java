@@ -75,6 +75,7 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
     public <T> T getSecondaryValue(T x, T y) {
         return y;
     }
+
     @Override
     public boolean isLayoutNaturalToLauncher() {
         return true;
