@@ -18,7 +18,7 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -92,7 +92,8 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        if (isDesktopModeSupported() && Launcher.getLauncher(context).areFreeformTasksVisible()) {
+        if (enableDesktopWindowingMode()
+                && Launcher.getLauncher(context).areFreeformTasksVisible()) {
             // Don't blur the background while freeform tasks are visible
             return BaseDepthController.DEPTH_0_PERCENT;
         } else if (enableScalingRevealHomeAnimation()) {

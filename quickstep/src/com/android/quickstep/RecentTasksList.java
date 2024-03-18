@@ -20,7 +20,7 @@ import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.util.SplitScreenUtils.convertShellSplitBoundsToLauncher;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 import static com.android.wm.shell.util.GroupedRecentTaskInfo.TYPE_FREEFORM;
 
 import android.app.ActivityManager;
@@ -270,7 +270,7 @@ public class RecentTasksList {
 
         int numVisibleTasks = 0;
         for (GroupedRecentTaskInfo rawTask : rawTasks) {
-            if (isDesktopModeSupported() && rawTask.getType() == TYPE_FREEFORM) {
+            if (enableDesktopWindowingMode() && rawTask.getType() == TYPE_FREEFORM) {
                 GroupTask desktopTask = createDesktopTask(rawTask);
                 allTasks.add(desktopTask);
                 continue;

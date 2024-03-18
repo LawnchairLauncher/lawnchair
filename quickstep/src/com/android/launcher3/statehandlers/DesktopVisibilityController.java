@@ -19,7 +19,7 @@ import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.os.Debug;
 import android.os.SystemProperties;
@@ -136,7 +136,7 @@ public class DesktopVisibilityController {
             Log.d(TAG, "setVisibleFreeformTasksCount: visibleTasksCount=" + visibleTasksCount
                     + " currentValue=" + mVisibleFreeformTasksCount);
         }
-        if (!isDesktopModeSupported()) {
+        if (!enableDesktopWindowingMode()) {
             return;
         }
 
@@ -180,7 +180,7 @@ public class DesktopVisibilityController {
             Log.d(TAG, "setOverviewStateEnabled: enabled=" + overviewStateEnabled
                     + " currentValue=" + mInOverviewState);
         }
-        if (!isDesktopModeSupported()) {
+        if (!enableDesktopWindowingMode()) {
             return;
         }
         if (overviewStateEnabled != mInOverviewState) {
@@ -202,7 +202,7 @@ public class DesktopVisibilityController {
             Log.d(TAG, "setBackgroundStateEnabled: enabled=" + backgroundStateEnabled
                     + " currentValue=" + mBackgroundStateEnabled);
         }
-        if (!isDesktopModeSupported()) {
+        if (!enableDesktopWindowingMode()) {
             return;
         }
         if (backgroundStateEnabled != mBackgroundStateEnabled) {
@@ -229,7 +229,7 @@ public class DesktopVisibilityController {
      * Notify controller that recents gesture has started.
      */
     public void setRecentsGestureStart() {
-        if (!isDesktopModeSupported()) {
+        if (!enableDesktopWindowingMode()) {
             return;
         }
         if (DEBUG) {
@@ -243,7 +243,7 @@ public class DesktopVisibilityController {
      * {@link com.android.quickstep.GestureState.GestureEndTarget}
      */
     public void setRecentsGestureEnd(@Nullable GestureState.GestureEndTarget endTarget) {
-        if (!isDesktopModeSupported()) {
+        if (!enableDesktopWindowingMode()) {
             return;
         }
         if (DEBUG) {

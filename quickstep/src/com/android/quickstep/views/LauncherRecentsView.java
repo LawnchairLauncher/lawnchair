@@ -26,7 +26,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -268,7 +268,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         DesktopVisibilityController desktopVisibilityController = null;
         boolean showDesktopApps = false;
         GestureState.GestureEndTarget endTarget = null;
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             desktopVisibilityController = mActivity.getDesktopVisibilityController();
             endTarget = mCurrentGestureEndTarget;
             if (endTarget == GestureState.GestureEndTarget.LAST_TASK
