@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.os.Process;
 import android.os.UserHandle;
+import android.text.TextUtils;
 
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
@@ -64,7 +65,7 @@ public class AppInfoComparator implements Comparator<AppInfo> {
     }
 
     private String getSortingTitle(AppInfo info) {
-        if (info.appTitle != null) {
+        if (!TextUtils.isEmpty(info.appTitle)) {
             return info.appTitle.toString();
         }
         if (info.title != null) {
