@@ -1270,6 +1270,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     final SurfaceTransaction showTransaction = new SurfaceTransaction();
                     for (int i = apps.length - 1; i >= 0; --i) {
                         showTransaction.getTransaction().show(apps[i].leash);
+                        showTransaction.forSurface(apps[i].leash).setLayer(
+                                Integer.MAX_VALUE - 1000 + apps[i].prefixOrderIndex);
                     }
                     surfaceApplier.scheduleApply(showTransaction);
                 }
