@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.orientation
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Point
 import android.graphics.PointF
@@ -32,7 +33,12 @@ import com.android.launcher3.Flags
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.touch.SingleAxisSwipeDetector
-import com.android.launcher3.util.SplitConfigurationOptions.*
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.views.IconAppChipView
 
@@ -255,97 +261,6 @@ class SeascapePagedViewHandler : LandscapePagedViewHandler() {
         iconAppChipView.setRotation(degreesRotated)
     }
 
-    override fun setSplitIconParams(
-        primaryIconView: View,
-        secondaryIconView: View,
-        taskIconHeight: Int,
-        primarySnapshotWidth: Int,
-        primarySnapshotHeight: Int,
-        groupedTaskViewHeight: Int,
-        groupedTaskViewWidth: Int,
-        isRtl: Boolean,
-        deviceProfile: DeviceProfile,
-        splitConfig: SplitBounds
-    ) {
-        super.setSplitIconParams(
-            primaryIconView,
-            secondaryIconView,
-            taskIconHeight,
-            primarySnapshotWidth,
-            primarySnapshotHeight,
-            groupedTaskViewHeight,
-            groupedTaskViewWidth,
-            isRtl,
-            deviceProfile,
-            splitConfig
-        )
-        val primaryIconParams = primaryIconView.layoutParams as FrameLayout.LayoutParams
-        val secondaryIconParams = secondaryIconView.layoutParams as FrameLayout.LayoutParams
-
-        // We calculate the "midpoint" of the thumbnail area, and place the icons there.
-        // This is the place where the thumbnail area splits by default, in a near-50/50 split.
-        // It is usually not exactly 50/50, due to insets/screen cutouts.
-        val fullscreenInsetThickness = (deviceProfile.insets.top - deviceProfile.insets.bottom)
-        val fullscreenMidpointFromBottom = (deviceProfile.heightPx - fullscreenInsetThickness) / 2
-        val midpointFromBottomPct = fullscreenMidpointFromBottom.toFloat() / deviceProfile.heightPx
-        val insetPct = fullscreenInsetThickness.toFloat() / deviceProfile.heightPx
-        val spaceAboveSnapshots = deviceProfile.overviewTaskThumbnailTopMarginPx
-        val overviewThumbnailAreaThickness = groupedTaskViewHeight - spaceAboveSnapshots
-        val bottomToMidpointOffset =
-            (overviewThumbnailAreaThickness * midpointFromBottomPct).toInt()
-        val insetOffset = (overviewThumbnailAreaThickness * insetPct).toInt()
-        val gravity = if (isRtl) Gravity.TOP or Gravity.END else Gravity.BOTTOM or Gravity.START
-        primaryIconParams.gravity = gravity
-        secondaryIconParams.gravity = gravity
-        primaryIconView.translationX = 0f
-        secondaryIconView.translationX = 0f
-        when {
-            Flags.enableOverviewIconMenu() -> {
-                val primaryAppChipView = primaryIconView as IconAppChipView
-                val secondaryAppChipView = secondaryIconView as IconAppChipView
-                if (isRtl) {
-                    primaryAppChipView.setSplitTranslationY(
-                        (groupedTaskViewHeight - primarySnapshotHeight).toFloat()
-                    )
-                    secondaryAppChipView.setSplitTranslationY(0f)
-                } else {
-                    secondaryAppChipView.setSplitTranslationY(-primarySnapshotHeight.toFloat())
-                    primaryAppChipView.setSplitTranslationY(0f)
-                }
-            }
-            splitConfig.initiatedFromSeascape -> {
-                // if the split was initiated from seascape,
-                // the task on the right (secondary) is slightly larger
-                if (isRtl) {
-                    primaryIconView.translationY =
-                        (bottomToMidpointOffset - insetOffset + taskIconHeight).toFloat()
-                    secondaryIconView.translationY =
-                        (bottomToMidpointOffset - insetOffset).toFloat()
-                } else {
-                    primaryIconView.translationY =
-                        (-bottomToMidpointOffset - insetOffset + taskIconHeight).toFloat()
-                    secondaryIconView.translationY =
-                        (-bottomToMidpointOffset - insetOffset).toFloat()
-                }
-            }
-            else -> {
-                // if not,
-                // the task on the left (primary) is slightly larger
-                if (isRtl) {
-                    primaryIconView.translationY =
-                        (bottomToMidpointOffset + taskIconHeight).toFloat()
-                    secondaryIconView.translationY = bottomToMidpointOffset.toFloat()
-                } else {
-                    primaryIconView.translationY =
-                        (-bottomToMidpointOffset + taskIconHeight).toFloat()
-                    secondaryIconView.translationY = -bottomToMidpointOffset.toFloat()
-                }
-            }
-        }
-        primaryIconView.layoutParams = primaryIconParams
-        secondaryIconView.layoutParams = secondaryIconParams
-    }
-
     override fun measureGroupedTaskViewThumbnailBounds(
         primarySnapshot: View,
         secondarySnapshot: View,
@@ -366,13 +281,8 @@ class SeascapePagedViewHandler : LandscapePagedViewHandler() {
         // (portrait bottom) and secondary is on the right (portrait top)
         val spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx
         val totalThumbnailHeight = parentHeight - spaceAboveSnapshot
-        val dividerBar =
-            Math.round(
-                totalThumbnailHeight *
-                    if (splitBoundsConfig.appsStackedVertically)
-                        splitBoundsConfig.dividerHeightPercent
-                    else splitBoundsConfig.dividerWidthPercent
-            )
+        val dividerBar = getDividerBarSize(totalThumbnailHeight, splitBoundsConfig)
+
         val (taskViewFirst, taskViewSecond) =
             getGroupedTaskViewSizes(dp, splitBoundsConfig, parentWidth, parentHeight)
         secondarySnapshot.translationY = 0f
@@ -398,13 +308,8 @@ class SeascapePagedViewHandler : LandscapePagedViewHandler() {
         // (portrait bottom) and secondary is on the right (portrait top)
         val spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx
         val totalThumbnailHeight = parentHeight - spaceAboveSnapshot
-        val dividerBar =
-            Math.round(
-                totalThumbnailHeight *
-                    if (splitBoundsConfig.appsStackedVertically)
-                        splitBoundsConfig.dividerHeightPercent
-                    else splitBoundsConfig.dividerWidthPercent
-            )
+        val dividerBar = getDividerBarSize(totalThumbnailHeight, splitBoundsConfig)
+
         val taskPercent =
             if (splitBoundsConfig.appsStackedVertically) {
                 splitBoundsConfig.topTaskPercent
@@ -430,4 +335,64 @@ class SeascapePagedViewHandler : LandscapePagedViewHandler() {
 
     override fun getTaskDragDisplacementFactor(isRtl: Boolean): Int = if (isRtl) -1 else 1
     /* -------------------- */
+
+    override fun getSplitIconsPosition(
+        taskIconHeight: Int,
+        primarySnapshotHeight: Int,
+        totalThumbnailHeight: Int,
+        isRtl: Boolean,
+        overviewTaskMarginPx: Int,
+        dividerSize: Int,
+    ): SplitIconPositions {
+        return if (Flags.enableOverviewIconMenu()) {
+            if (isRtl) {
+                SplitIconPositions(
+                    topLeftY = totalThumbnailHeight - primarySnapshotHeight,
+                    bottomRightY = 0
+                )
+            } else {
+                SplitIconPositions(
+                    topLeftY = 0,
+                    bottomRightY = -(primarySnapshotHeight + dividerSize)
+                )
+            }
+        } else {
+            // In seascape, the icons are initially placed at the bottom start of the
+            // display (portrait locked). The values defined here are used to translate the icons
+            // from the bottom to the almost-center of the screen using the bottom margin.
+            // The primary snapshot is placed at the bottom, thus we translate the icons using
+            // the size of the primary snapshot minus the icon size for the top-left icon.
+            SplitIconPositions(
+                topLeftY = primarySnapshotHeight - taskIconHeight,
+                bottomRightY = primarySnapshotHeight + dividerSize
+            )
+        }
+    }
+
+    /**
+     * Updates icon view gravity and translation for split tasks
+     *
+     * @param iconView View to be updated
+     * @param translationY the translationY that should be applied
+     * @param isRtl Whether the layout direction is RTL (or false for LTR).
+     */
+    @SuppressLint("RtlHardcoded")
+    override fun updateSplitIconsPosition(iconView: View, translationY: Int, isRtl: Boolean) {
+        val layoutParams = iconView.layoutParams as FrameLayout.LayoutParams
+
+        if (Flags.enableOverviewIconMenu()) {
+            val appChipView = iconView as IconAppChipView
+            layoutParams.gravity =
+                if (isRtl) Gravity.TOP or Gravity.END else Gravity.BOTTOM or Gravity.START
+            appChipView.layoutParams = layoutParams
+            appChipView.setSplitTranslationX(0f)
+            appChipView.setSplitTranslationY(translationY.toFloat())
+        } else {
+            layoutParams.gravity = Gravity.BOTTOM or Gravity.LEFT
+            iconView.translationX = 0f
+            iconView.translationY = 0f
+            layoutParams.bottomMargin = translationY
+            iconView.layoutParams = layoutParams
+        }
+    }
 }

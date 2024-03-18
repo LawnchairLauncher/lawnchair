@@ -16,14 +16,13 @@
 
 package com.android.launcher3.icons;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_FORCED_MONO_ICON;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.LauncherPreviewRenderer;
@@ -103,7 +102,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     @Override
     protected Drawable getMonochromeDrawable(Drawable base) {
         Drawable mono = super.getMonochromeDrawable(base);
-        if (mono != null || !ENABLE_FORCED_MONO_ICON.get()) {
+        if (mono != null || !Flags.forceMonochromeAppIcons()) {
             return mono;
         }
         if (mMonochromeIconFactory == null) {

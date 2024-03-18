@@ -463,7 +463,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final Rect mLastComputedTaskSize = new Rect();
     protected final Rect mLastComputedGridSize = new Rect();
     protected final Rect mLastComputedGridTaskSize = new Rect();
-    protected final Rect mLastComputedDesktopTaskSize = new Rect();
     private TaskView mSelectedTask = null;
     // How much a task that is directly offscreen will be pushed out due to RecentsView scale/pivot.
     @Nullable
@@ -1658,15 +1657,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         removeView(runningTaskView);
         mMovingTaskView = null;
         runningTaskView.resetPersistentViewTransforms();
-        int frontTaskIndex = 0;
-        if (isDesktopModeSupported() && mDesktopTaskView != null
-                && !runningTaskView.isDesktopTask()) {
-            // If desktop mode is enabled, desktop task view is pinned at first position if present.
-            // Move running task to position 1.
-            frontTaskIndex = 1;
-        }
-        addView(runningTaskView, frontTaskIndex);
-        setCurrentPage(frontTaskIndex);
+        addView(runningTaskView, 0);
+        setCurrentPage(0);
 
         updateTaskSize();
     }
@@ -1743,7 +1735,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Clear out desktop view if it is set
         mDesktopTaskView = null;
-        DesktopTask desktopTask = null;
 
         // Add views as children based on whether it's grouped or single task. Looping through
         // taskGroups backwards populates the thumbnail grid from least recent to most recent.
@@ -1751,12 +1742,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             GroupTask groupTask = taskGroups.get(i);
             boolean isRemovalNeeded = stagedTaskIdToBeRemovedFromGrid != INVALID_TASK_ID
                     && groupTask.containsTask(stagedTaskIdToBeRemovedFromGrid);
-
-            if (groupTask instanceof DesktopTask) {
-                desktopTask = (DesktopTask) groupTask;
-                // Desktop task will be added separately in the end
-                continue;
-            }
 
             TaskView taskView;
             if (isRemovalNeeded && groupTask.hasMultipleTasks()) {
@@ -1788,6 +1773,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
                 ((GroupedTaskView) taskView).bind(leftTopTask, rightBottomTask, mOrientationState,
                         groupTask.mSplitBounds);
+            } else if (taskView instanceof DesktopTaskView) {
+                ((DesktopTaskView) taskView).bind(((DesktopTask) groupTask).tasks,
+                        mOrientationState);
+                mDesktopTaskView = (DesktopTaskView) taskView;
             } else {
                 taskView.bind(groupTask.task1, mOrientationState);
             }
@@ -1800,19 +1789,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         if (!taskGroups.isEmpty()) {
             addView(mClearAllButton);
-            if (isDesktopModeSupported()) {
-                // Check if we have apps on the desktop
-                if (desktopTask != null && !desktopTask.tasks.isEmpty()) {
-                    // If we are actively choosing apps for split, skip the desktop tile
-                    if (!getSplitSelectController().isSplitSelectActive()) {
-                        mDesktopTaskView = (DesktopTaskView) getTaskViewFromPool(
-                                TaskView.Type.DESKTOP);
-                        // Always add a desktop task to the first position
-                        addView(mDesktopTaskView, 0);
-                        mDesktopTaskView.bind(desktopTask.tasks, mOrientationState);
-                    }
-                }
-            }
         }
 
         // Keep same previous focused task
@@ -1820,12 +1796,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // If the list changed, maybe the focused task doesn't exist anymore
         if (newFocusedTaskView == null && getTaskViewCount() > 0) {
             newFocusedTaskView = getTaskViewAt(0);
-            // Check if the first task is the desktop.
-            // If first task is desktop, try to find another task to set as the focused task
-            if (newFocusedTaskView != null && newFocusedTaskView.isDesktopTask()
-                    && getTaskViewCount() > 1) {
-                newFocusedTaskView = getTaskViewAt(1);
-            }
         }
         mFocusedTaskViewId = newFocusedTaskView != null && !enableGridOnlyOverview()
                 ? newFocusedTaskView.getTaskViewId() : INVALID_TASK_ID;
@@ -1869,12 +1839,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (hasAnyValidTaskIds(runningTaskId)) {
                 targetPage = indexOfChild(newRunningTaskView);
             } else if (getTaskViewCount() > 0) {
-                TaskView taskView = requireTaskViewAt(0);
-                // If first task id desktop, try to find another task to set the target page
-                if (taskView.isDesktopTask() && getTaskViewCount() > 1) {
-                    taskView = requireTaskViewAt(1);
-                }
-                targetPage = indexOfChild(taskView);
+                targetPage = indexOfChild(requireTaskViewAt(0));
             }
         }
         if (targetPage != -1 && mCurrentPage != targetPage) {
@@ -2119,9 +2084,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSizeStrategy.calculateGridSize(dp, mActivity, mLastComputedGridSize);
         mSizeStrategy.calculateGridTaskSize(mActivity, dp, mLastComputedGridTaskSize,
                 getPagedOrientationHandler());
-        if (isDesktopModeSupported()) {
-            mSizeStrategy.calculateDesktopTaskSize(mActivity, dp, mLastComputedDesktopTaskSize);
-        }
         if (enableGridOnlyOverview()) {
             mSizeStrategy.calculateCarouselTaskSize(mActivity, dp, mLastComputedCarouselTaskSize,
                     getPagedOrientationHandler());
@@ -2220,11 +2182,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public Rect getLastComputedGridTaskSize() {
         return mLastComputedGridTaskSize;
-    }
-
-    /** Gets the last computed desktop task size */
-    public Rect getLastComputedDesktopTaskSize() {
-        return mLastComputedDesktopTaskSize;
     }
 
     public Rect getLastComputedCarouselTaskSize() {
@@ -2977,8 +2934,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         TaskView homeTaskView = getHomeTaskView();
         TaskView nextFocusedTaskView = null;
 
-        int desktopTaskIndex = Integer.MAX_VALUE;
-
         if (!isTaskDismissal) {
             mTopRowIdSet.clear();
         }
@@ -3005,21 +2960,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     // If focused task is snapped, the row width is just task width and spacing.
                     snappedTaskRowWidth = taskWidthAndSpacing;
                 }
-            } else if (taskView.isDesktopTask()) {
-                // Desktop task was not focused. Pin it to the right of focused
-                desktopTaskIndex = i;
-                if (taskView.getVisibility() == View.GONE) {
-                    // Desktop task view is hidden, skip it from grid calculations
-                    continue;
-                }
-                if (!enableGridOnlyOverview()) {
-                    // Only apply x-translation when using legacy overview grid
-                    gridTranslations[i] += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
-                }
-
-                // Center view vertically in case it's from different orientation.
-                taskView.setGridTranslationY((mLastComputedDesktopTaskSize.height() + taskTopMargin
-                        - taskView.getLayoutParams().height) / 2f);
             } else {
                 if (i > focusedTaskIndex) {
                     // For tasks after the focused task, shift by focused task's width and spacing.
@@ -3060,7 +3000,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     // Move horizontally into empty space.
                     float widthOffset = 0;
                     for (int j = i - 1; !topSet.contains(j) && j >= 0; j--) {
-                        if (j == focusedTaskIndex || j == desktopTaskIndex) {
+                        if (j == focusedTaskIndex) {
                             continue;
                         }
                         widthOffset += requireTaskViewAt(j).getLayoutParams().width + mPageSpacing;
@@ -3079,7 +3019,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     // Move horizontally into empty space.
                     float widthOffset = 0;
                     for (int j = i - 1; !bottomSet.contains(j) && j >= 0; j--) {
-                        if (j == focusedTaskIndex || j == desktopTaskIndex) {
+                        if (j == focusedTaskIndex) {
                             continue;
                         }
                         widthOffset += requireTaskViewAt(j).getLayoutParams().width + mPageSpacing;
@@ -5545,10 +5485,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private int getFirstViewIndex() {
-        if (isDesktopModeSupported() && mDesktopTaskView != null) {
-            // Desktop task is at position 0, that is the first view
-            return 0;
-        }
         TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
         return focusedTaskView != null ? indexOfChild(focusedTaskView) : 0;
     }

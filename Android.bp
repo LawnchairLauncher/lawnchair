@@ -201,6 +201,8 @@ android_library {
         "Launcher3ResLib",
         "launcher-testing-shared",
         "animationlib",
+        "kotlinx_coroutines_android",
+        "kotlinx_coroutines",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
         "android.appwidget.flags-aconfig-java",

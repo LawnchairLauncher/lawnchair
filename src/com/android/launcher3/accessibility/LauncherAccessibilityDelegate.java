@@ -405,7 +405,9 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             } else if (item instanceof PendingAddItemInfo) {
                 PendingAddItemInfo info = (PendingAddItemInfo) item;
                 Workspace<?> workspace = mContext.getWorkspace();
-                workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
+                workspace.post(
+                        () -> workspace.snapToPage(workspace.getPageIndexForScreenId(screenId))
+                );
                 mContext.addPendingItem(info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates, info.spanX, info.spanY);
             } else if (item instanceof WorkspaceItemInfo) {
