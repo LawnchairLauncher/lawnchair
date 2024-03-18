@@ -1566,4 +1566,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void closeKeyboardQuickSwitchView() {
         mControllers.keyboardQuickSwitchController.closeQuickSwitchView(false);
     }
+
+    boolean canToggleHomeAllApps() {
+        return mControllers.uiController.canToggleHomeAllApps();
+    }
 }
