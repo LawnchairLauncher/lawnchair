@@ -215,11 +215,15 @@ public class InstallSessionHelper {
                 && SessionCommitReceiver.isEnabled(mAppContext, getUserHandle(sessionInfo))
                 && verifySessionInfo(sessionInfo)
                 && !promiseIconAddedForId(sessionInfo.getSessionId())) {
-            FileLog.d(LOG, "Adding package name to install queue: "
-                    + sessionInfo.getAppPackageName());
+            // In case of unarchival, we do not want to add a workspace promise icon if one is
+            // not already present. For general app installations however, we do support it.
+            if (!Utilities.enableSupportForArchiving() || !sessionInfo.isUnarchival()) {
+                FileLog.d(LOG, "Adding package name to install queue: "
+                        + sessionInfo.getAppPackageName());
 
-            ItemInstallQueue.INSTANCE.get(mAppContext)
-                    .queueItem(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
+                ItemInstallQueue.INSTANCE.get(mAppContext)
+                        .queueItem(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
+            }
 
             getPromiseIconIds().add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();
