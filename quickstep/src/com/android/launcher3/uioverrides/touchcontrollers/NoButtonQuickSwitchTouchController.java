@@ -49,7 +49,6 @@ import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
@@ -176,10 +175,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         }
         int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
         if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0) {
-            return false;
-        }
-        if (isDesktopModeSupported()) {
-            // TODO(b/268075592): add support for quickswitch to/from desktop
             return false;
         }
         if (isTrackpadMultiFingerSwipe(ev)) {
