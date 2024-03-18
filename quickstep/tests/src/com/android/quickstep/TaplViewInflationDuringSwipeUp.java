@@ -190,16 +190,14 @@ public class TaplViewInflationDuringSwipeUp extends AbstractQuickStepTest {
             info.spanX = 2;
             info.spanY = 2;
             AtomicInteger widgetId = new AtomicInteger();
-            new FavoriteItemsTransaction(mTargetContext)
+
+            commitTransactionAndLoadHome(new FavoriteItemsTransaction(mTargetContext)
                     .addItem(() -> {
                         LauncherAppWidgetInfo item = createWidgetInfo(info, mTargetContext, true);
                         item.screenId = FIRST_SCREEN_ID;
                         widgetId.set(item.appWidgetId);
                         return item;
-                    })
-                    .commitAndLoadHome(mLauncher);
-
-
+                    }));
 
             assertTrue("Widget is not present",
                     mLauncher.goHome().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);

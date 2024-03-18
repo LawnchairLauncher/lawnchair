@@ -56,7 +56,7 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
     @ScreenRecord // b/316910614
     public void testDragIcon() throws Throwable {
         mLauncher.enableDebugTracing(); // b/289161193
-        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
+        commitTransactionAndLoadHome(new FavoriteItemsTransaction(mTargetContext));
 
         waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
 
@@ -92,7 +92,7 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
         // TODO(b/322820039): Enable test for tablets - the picker UI has changed and test needs to
         //  be updated to look for appropriate UI elements.
         Assume.assumeFalse(mLauncher.isTablet());
-        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
+        commitTransactionAndLoadHome(new FavoriteItemsTransaction(mTargetContext));
 
         mLauncher.getWorkspace().openAllWidgets()
                 .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
@@ -108,7 +108,7 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
     @Test
     @ScreenRecord // b/316910614
     public void testResizeWidget() throws Throwable {
-        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
+        commitTransactionAndLoadHome(new FavoriteItemsTransaction(mTargetContext));
 
         waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
 

@@ -56,6 +56,7 @@ import androidx.test.uiautomator.Until;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.celllayout.FavoriteItemsTransaction;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -684,5 +685,13 @@ public abstract class AbstractLauncherUiTest {
             homeAppIcon = mLauncher.getWorkspace().getWorkspaceAppIcon(name);
         }
         return homeAppIcon;
+    }
+
+    protected void commitTransactionAndLoadHome(FavoriteItemsTransaction transaction) {
+        transaction.commit();
+
+        // Launch the home activity
+        UiDevice.getInstance(getInstrumentation()).pressHome();
+        mLauncher.waitForLauncherInitialized();
     }
 }

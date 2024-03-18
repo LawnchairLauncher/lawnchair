@@ -251,22 +251,20 @@ public class TaplBindWidgetTest extends AbstractLauncherUiTest {
     private void addPendingItemToScreen(LauncherAppWidgetInfo item, int restoreStatus) {
         item.restoreStatus = restoreStatus;
         item.screenId = FIRST_SCREEN_ID;
-        new FavoriteItemsTransaction(mTargetContext)
-                .addItem(() -> item)
-                .commitAndLoadHome(mLauncher);
+        commitTransactionAndLoadHome(
+                new FavoriteItemsTransaction(mTargetContext).addItem(() -> item));
     }
 
     private LauncherAppWidgetProviderInfo addWidgetToScreen(boolean hasConfigureScreen,
             boolean bindWidget, Consumer<LauncherAppWidgetInfo> itemOverride) {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(hasConfigureScreen);
-        new FavoriteItemsTransaction(mTargetContext)
+        commitTransactionAndLoadHome(new FavoriteItemsTransaction(mTargetContext)
                 .addItem(() -> {
                     LauncherAppWidgetInfo item = createWidgetInfo(info, mTargetContext, bindWidget);
                     item.screenId = FIRST_SCREEN_ID;
                     itemOverride.accept(item);
                     return item;
-                })
-                .commitAndLoadHome(mLauncher);
+                }));
         return info;
     }
 

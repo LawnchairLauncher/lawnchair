@@ -15,16 +15,12 @@
  */
 package com.android.launcher3.celllayout;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
 
 import android.content.Context;
-
-import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -33,7 +29,6 @@ import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
-import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ModelTestExtensions;
 
@@ -105,16 +100,5 @@ public class FavoriteItemsTransaction {
         // Reload model
         runOnExecutorSync(MAIN_EXECUTOR, model::forceReload);
         ModelTestExtensions.INSTANCE.loadModelSync(model);
-    }
-
-    /**
-     * Commits the transaction and waits for home load
-     */
-    public void commitAndLoadHome(LauncherInstrumentation inst) {
-        commit();
-
-        // Launch the home activity
-        UiDevice.getInstance(getInstrumentation()).pressHome();
-        inst.waitForLauncherInitialized();
     }
 }
