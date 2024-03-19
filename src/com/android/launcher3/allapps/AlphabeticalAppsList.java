@@ -18,6 +18,8 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_PREINSTALLED_APPS_COUNT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_USER_INSTALLED_APPS_COUNT;
 
 import android.content.Context;
 
@@ -342,6 +344,20 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         Map<Boolean, List<AppInfo>> split = mPrivateApps.stream()
                 .collect(Collectors.partitioningBy(mPrivateProviderManager
                                 .splitIntoUserInstalledAndSystemApps()));
+
+        // TODO(b/329688630): switch to the pulled LayoutStaticSnapshot atom
+        mActivityContext
+                .getStatsLogManager()
+                .logger()
+                .withCardinality(split.get(true).size())
+                .log(LAUNCHER_PRIVATE_SPACE_USER_INSTALLED_APPS_COUNT);
+
+        mActivityContext
+                .getStatsLogManager()
+                .logger()
+                .withCardinality(split.get(false).size())
+                .log(LAUNCHER_PRIVATE_SPACE_PREINSTALLED_APPS_COUNT);
+
         // Add user installed apps
         position = addAppsWithSections(split.get(true), position);
         // Add system apps separator.
