@@ -205,13 +205,7 @@ public class TaskbarLauncherStateController {
                     mLauncherState = finalState;
                     updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
                     applyState();
-                    boolean disallowLongClick =
-                            FeatureFlags.enableSplitContextually()
-                                    ? mLauncher.isSplitSelectionActive()
-                                    : finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
-                    com.android.launcher3.taskbar.Utilities.setOverviewDragState(
-                            mControllers, finalState.disallowTaskbarGlobalDrag(),
-                            disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
+                    updateOverviewDragState(finalState);
                 }
             };
 
@@ -256,6 +250,7 @@ public class TaskbarLauncherStateController {
 
         mCanSyncViews = true;
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
+        updateOverviewDragState(mLauncherState);
     }
 
     public void onDestroy() {
@@ -328,7 +323,7 @@ public class TaskbarLauncherStateController {
         updateStateForSysuiFlags(systemUiStateFlags, /* applyState */ true);
     }
 
-    private  void updateStateForSysuiFlags(int systemUiStateFlags, boolean applyState) {
+    private void updateStateForSysuiFlags(int systemUiStateFlags, boolean applyState) {
         final boolean prevIsAwake = hasAnyFlag(FLAG_AWAKE);
         final boolean currIsAwake = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_AWAKE);
 
@@ -355,6 +350,21 @@ public class TaskbarLauncherStateController {
         if (applyState) {
             applyState();
         }
+    }
+
+    /**
+     * Updates overview drag state on various controllers based on {@link #mLauncherState}.
+     *
+     * @param launcherState The current state launcher is in
+     */
+    private void updateOverviewDragState(LauncherState launcherState) {
+        boolean disallowLongClick =
+                FeatureFlags.enableSplitContextually()
+                        ? mLauncher.isSplitSelectionActive()
+                        : launcherState == LauncherState.OVERVIEW_SPLIT_SELECT;
+        com.android.launcher3.taskbar.Utilities.setOverviewDragState(
+                mControllers, launcherState.disallowTaskbarGlobalDrag(),
+                disallowLongClick, launcherState.allowTaskbarInitialSplitSelection());
     }
 
     /**
