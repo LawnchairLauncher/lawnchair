@@ -53,6 +53,7 @@ import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.views.OptionsPopupView.OptionItem;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
@@ -404,6 +405,10 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                 announceConfirmation(R.string.item_added_to_workspace);
             } else if (item instanceof PendingAddItemInfo) {
                 PendingAddItemInfo info = (PendingAddItemInfo) item;
+                if (info instanceof PendingAddWidgetInfo widgetInfo
+                        && widgetInfo.bindOptions == null) {
+                    widgetInfo.bindOptions = widgetInfo.getDefaultSizeOptions(mContext);
+                }
                 Workspace<?> workspace = mContext.getWorkspace();
                 workspace.post(
                         () -> workspace.snapToPage(workspace.getPageIndexForScreenId(screenId))
