@@ -96,7 +96,6 @@ import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.provider.Settings.Global;
-import android.util.Log;
 import android.util.Pair;
 import android.util.Size;
 import android.view.CrossWindowBlurListeners;
@@ -1776,7 +1775,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 RemoteAnimationTarget[] wallpaperTargets,
                 RemoteAnimationTarget[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result) {
-            Log.d("b/318394698", "AppLaunchAnimationRunner: onAnimationStart");
             AnimatorSet anim = new AnimatorSet();
             boolean launcherClosing =
                     launcherIsATargetWithMode(appTargets, MODE_CLOSING);
@@ -1812,7 +1810,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         @Override
         public void onAnimationCancelled() {
-            Log.d("b/318394698", "AppLaunchAnimationRunner: onAnimationCancelled");
             mOnEndCallback.executeAllAndDestroy();
         }
     }

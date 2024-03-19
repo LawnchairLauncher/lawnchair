@@ -29,7 +29,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +80,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         SystemShortcut.Factory<QuickstepLauncher>, DeviceProfile.OnDeviceProfileChangeListener,
         DragSource, ViewGroup.OnHierarchyChangeListener {
 
-    private static final String TAG = "HotseatPredictionController";
     private static final int FLAG_UPDATE_PAUSED = 1 << 0;
     private static final int FLAG_DRAG_IN_PROGRESS = 1 << 1;
     private static final int FLAG_FILL_IN_PROGRESS = 1 << 2;
@@ -190,7 +188,6 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate) {
-        Log.d(TAG, "fillGapsWithPrediction flags: " + getStateString(mPauseFlags));
         if (mPauseFlags != 0) {
             return;
         }
@@ -215,16 +212,12 @@ public class HotseatPredictionController implements DragController.DragListener,
             View child = mHotseat.getChildAt(
                     mHotseat.getCellXFromOrder(rank),
                     mHotseat.getCellYFromOrder(rank));
-            Log.d(TAG, "Hotseat app child is: " + child + " and isPredictedIcon() evaluates to"
-                    + ": " + isPredictedIcon(child));
 
             if (child != null && !isPredictedIcon(child)) {
                 continue;
             }
             if (mPredictedItems.size() <= predictionIndex) {
                 // Remove predicted apps from the past
-                Log.d(TAG, "Remove predicted apps from the past\nPrediction Index: "
-                        + predictionIndex);
                 if (isPredictedIcon(child)) {
                     mHotseat.removeView(child);
                 }
@@ -232,11 +225,6 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
             WorkspaceItemInfo predictedItem =
                     (WorkspaceItemInfo) mPredictedItems.get(predictionIndex++);
-            Log.d(TAG, "Predicted item is: " + predictedItem);
-            if (child != null) {
-                Log.d(TAG, "Predicted item is enabled: " + child.isEnabled());
-            }
-
             if (isPredictedIcon(child) && child.isEnabled()) {
                 PredictedAppIcon icon = (PredictedAppIcon) child;
                 boolean animateIconChange = icon.shouldAnimateIconChange(predictedItem);
@@ -256,7 +244,6 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void bindItems(List<WorkspaceItemInfo> itemsToAdd, boolean animate) {
-        Log.d(TAG, "bindItems to hotseat: " + itemsToAdd);
         AnimatorSet animationSet = new AnimatorSet();
         for (WorkspaceItemInfo item : itemsToAdd) {
             PredictedAppIcon icon = PredictedAppIcon.createIcon(mHotseat, item);
@@ -296,7 +283,6 @@ public class HotseatPredictionController implements DragController.DragListener,
      * start and pauses predicted apps update on the hotseat
      */
     public void setPauseUIUpdate(boolean paused) {
-        Log.d(TAG, "setPauseUIUpdate parameter `paused` is " + paused);
         mPauseFlags = paused
                 ? (mPauseFlags | FLAG_UPDATE_PAUSED)
                 : (mPauseFlags & ~FLAG_UPDATE_PAUSED);
@@ -311,10 +297,8 @@ public class HotseatPredictionController implements DragController.DragListener,
     public void setPredictedItems(FixedContainerItems items) {
         mPredictedItems = new ArrayList(items.items);
         if (mPredictedItems.isEmpty()) {
-            Log.d(TAG, "Predicted items is initially empty");
             HotseatRestoreHelper.restoreBackup(mLauncher);
         }
-        Log.d(TAG, "Predicted items: " + mPredictedItems);
         fillGapsWithPrediction();
     }
 
