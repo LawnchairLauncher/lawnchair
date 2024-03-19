@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.os.Trace.TRACE_TAG_APP;
+import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
@@ -1214,7 +1215,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     .handleAppPairLaunchInApp((AppPairIcon) launchingIconView, itemInfos);
         } else {
             // Tapped a single app, nothing complicated here.
-            startItemInfoActivity(itemInfos.get(0));
+            startItemInfoActivity(itemInfos.get(0), null /*foundTask*/);
         }
     }
 
@@ -1255,19 +1256,37 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         recents.getSplitSelectController().getAppPairsController().launchAppPair(
                                 (AppPairIcon) launchingIconView);
                     } else {
-                        startItemInfoActivity(itemInfos.get(0));
+                        startItemInfoActivity(itemInfos.get(0), foundTask);
                     }
                 }
         );
     }
 
-    private void startItemInfoActivity(ItemInfo info) {
+    /**
+     * Starts an activity with the information provided by the "info" param. However, if
+     * taskInRecents is present, it will prioritize re-launching an existing instance via
+     * {@link ActivityManagerWrapper#startActivityFromRecents(int, ActivityOptions)}
+     */
+    private void startItemInfoActivity(ItemInfo info, @Nullable Task taskInRecents) {
         Intent intent = new Intent(info.getIntent())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: taskbarAppIcon");
             if (info.user.equals(Process.myUserHandle())) {
                 // TODO(b/216683257): Use startActivityForResult for search results that require it.
+                if (taskInRecents != null) {
+                    // Re launch instance from recents
+                    ActivityOptionsWrapper opts = getActivityLaunchOptions(null, info);
+                    opts.options.setLaunchDisplayId(
+                            getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
+                    if (ActivityManagerWrapper.getInstance()
+                            .startActivityFromRecents(taskInRecents.key, opts.options)) {
+                        mControllers.uiController.getRecentsView()
+                                .addSideTaskLaunchCallback(opts.onEndCallback);
+                        return;
+                    }
+                }
+
                 startActivity(intent);
             } else {
                 getSystemService(LauncherApps.class).startMainActivity(
@@ -1565,5 +1584,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     /** Closes the KeyboardQuickSwitchView without an animation if open. */
     public void closeKeyboardQuickSwitchView() {
         mControllers.keyboardQuickSwitchController.closeQuickSwitchView(false);
+    }
+
+    boolean canToggleHomeAllApps() {
+        return mControllers.uiController.canToggleHomeAllApps();
     }
 }

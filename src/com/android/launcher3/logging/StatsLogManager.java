@@ -754,6 +754,12 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped add widget button in widget sheet.")
         LAUNCHER_WIDGET_ADD_BUTTON_TAP(1622),
 
+        @UiEvent(doc = "Number of user installed Private profile apps, shown above separator line")
+        LAUNCHER_PRIVATE_SPACE_USER_INSTALLED_APPS_COUNT(1672),
+
+        @UiEvent(doc = "Number of preinstalled Private profile apps, shown under separator line")
+        LAUNCHER_PRIVATE_SPACE_PREINSTALLED_APPS_COUNT(1673)
+
         // ADD MORE
         ;
 

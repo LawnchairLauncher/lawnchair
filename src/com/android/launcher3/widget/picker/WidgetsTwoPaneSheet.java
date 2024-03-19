@@ -17,6 +17,10 @@ package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
+import static com.android.launcher3.Utilities.restoreClipChildrenOnViewTree;
+import static com.android.launcher3.Utilities.restoreClipToPaddingOnViewTree;
+import static com.android.launcher3.Utilities.setClipChildrenOnViewTree;
+import static com.android.launcher3.Utilities.setClipToPaddingOnViewTree;
 
 import android.content.Context;
 import android.graphics.Outline;
@@ -27,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -60,10 +65,13 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     private FrameLayout mSuggestedWidgetsContainer;
     private WidgetsListHeader mSuggestedWidgetsHeader;
     private PackageUserKey mSuggestedWidgetsPackageUserKey;
+    private View mPrimaryWidgetListView;
     private LinearLayout mRightPane;
 
     private ScrollView mRightPaneScrollView;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
+
+    private boolean mOldIsBackSwipeProgressing;
     private int mActivePage = -1;
     private PackageUserKey mSelectedHeader;
 
@@ -124,6 +132,12 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         mRightPane.setOutlineProvider(mViewOutlineProviderRightPane);
         mRightPaneScrollView = mContent.findViewById(R.id.right_pane_scroll_view);
         mRightPaneScrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        mRightPaneScrollView.setOutlineProvider(mViewOutlineProvider);
+        mRightPaneScrollView.setClipToOutline(true);
+
+        mPrimaryWidgetListView = findViewById(R.id.primary_widgets_list_view);
+        mPrimaryWidgetListView.setOutlineProvider(mViewOutlineProvider);
+        mPrimaryWidgetListView.setClipToOutline(true);
 
         onRecommendedWidgetsBound();
         onWidgetsBound();
@@ -131,6 +145,25 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         // Set the fast scroller as not visible for two pane layout.
         mFastScroller.setVisibility(GONE);
+    }
+
+    @Override
+    protected void onScaleProgressChanged() {
+        super.onScaleProgressChanged();
+        boolean isBackSwipeProgressing = mSlideInViewScale.value > 0;
+        if (isBackSwipeProgressing == mOldIsBackSwipeProgressing) {
+            return;
+        }
+        mOldIsBackSwipeProgressing = isBackSwipeProgressing;
+        if (isBackSwipeProgressing) {
+            setClipChildrenOnViewTree(mPrimaryWidgetListView, (ViewParent) mContent, false);
+            setClipChildrenOnViewTree(mRightPaneScrollView, (ViewParent) mContent, false);
+            setClipToPaddingOnViewTree(mRightPaneScrollView, (ViewParent) mContent, false);
+        } else {
+            restoreClipChildrenOnViewTree(mPrimaryWidgetListView, mContent);
+            restoreClipChildrenOnViewTree(mRightPaneScrollView, mContent);
+            restoreClipToPaddingOnViewTree(mRightPaneScrollView, mContent);
+        }
     }
 
     @Override

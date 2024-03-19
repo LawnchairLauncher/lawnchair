@@ -40,6 +40,7 @@
     <item type="id" name="cache_entry_tag_id" />
 
     <item type="id" name="saved_clip_children_tag_id" />
+    <item type="id" name="saved_clip_to_padding_tag_id" />
 
     <item type="id" name="saved_floating_widget_foreground" />
     <item type="id" name="saved_floating_widget_background" />
