@@ -16,7 +16,6 @@ import app.lawnchair.util.isHidden
 import app.lawnchair.util.isRegularFile
 import app.lawnchair.util.kotlinxJson
 import app.lawnchair.util.mimeType2Extension
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.lang.reflect.Modifier
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +29,7 @@ import okio.Path.Companion.toPath
 import org.json.JSONArray
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.create
 
 private val retrofit = Retrofit.Builder()

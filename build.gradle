@@ -388,8 +388,9 @@ dependencies {
     implementation "com.patrykmichalik.opto:core:$optoVersion"
     implementation "com.patrykmichalik.opto:compose:$optoVersion"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
+    def retrofitVersion = "2.10.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion"
 
     def roomVersion = '2.6.1'
     implementation "androidx.room:room-runtime:$roomVersion"

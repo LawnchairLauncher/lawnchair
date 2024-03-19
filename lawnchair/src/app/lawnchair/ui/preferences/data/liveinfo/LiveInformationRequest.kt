@@ -3,7 +3,6 @@ package app.lawnchair.ui.preferences.data.liveinfo
 import android.util.Log
 import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
 import app.lawnchair.util.kotlinxJson
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -11,6 +10,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.create
 
 private val retrofit = Retrofit.Builder()
