@@ -1254,7 +1254,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     if (findExactPairMatch) {
                         // We did not find the app pair we were looking for, so launch one.
                         recents.getSplitSelectController().getAppPairsController().launchAppPair(
-                                (AppPairIcon) launchingIconView);
+                                (AppPairIcon) launchingIconView, -1 /*cuj*/);
                     } else {
                         startItemInfoActivity(itemInfos.get(0), foundTask);
                     }
