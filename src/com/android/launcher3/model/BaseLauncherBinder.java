@@ -311,9 +311,16 @@ public abstract class BaseLauncherBinder {
             // Bind workspace screens
             executeCallbacksTask(c -> c.bindScreens(mOrderedScreenIds), mUiExecutor);
 
+            ItemInflater inflater = mCallbacks.getItemInflater();
+
             // Load items on the current page.
-            bindItemsInChunks(currentWorkspaceItems, ITEMS_CHUNK, mUiExecutor);
-            bindItemsInChunks(currentAppWidgets, 1, mUiExecutor);
+            if (enableWorkspaceInflation() && inflater != null) {
+                inflateAsyncAndBind(currentWorkspaceItems, inflater, mUiExecutor);
+                inflateAsyncAndBind(currentAppWidgets, inflater, mUiExecutor);
+            } else {
+                bindItemsInChunks(currentWorkspaceItems, ITEMS_CHUNK, mUiExecutor);
+                bindItemsInChunks(currentAppWidgets, 1, mUiExecutor);
+            }
             if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
                 mExtraItems.forEach(item ->
                         executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
@@ -323,7 +330,6 @@ public abstract class BaseLauncherBinder {
             Executor pendingExecutor = pendingTasks::add;
 
             RunnableList onCompleteSignal = new RunnableList();
-            ItemInflater inflater = mCallbacks.getItemInflater();
 
             if (enableWorkspaceInflation() && inflater != null) {
                 MODEL_EXECUTOR.execute(() ->  {
