@@ -631,6 +631,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Px
     private float getMaxAvailableHeightForRecommendations() {
+        // There isn't enough space to show recommendations in landscape orientation on phones with
+        // a full sheet design. Tablets use a two pane picker.
+        if (!isTwoPane() && mDeviceProfile.isLandscape) {
+            return 0f;
+        }
+
         return (mDeviceProfile.heightPx - mDeviceProfile.bottomSheetTopPadding)
                 * getRecommendationSectionHeightRatio();
     }
