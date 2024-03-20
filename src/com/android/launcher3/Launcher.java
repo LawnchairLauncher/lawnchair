@@ -259,6 +259,7 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
+import com.android.launcher3.widget.util.WidgetSizes;
 import com.android.systemui.plugins.LauncherOverlayPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
@@ -829,7 +830,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 announceForAccessibility(R.string.item_added_to_workspace);
                 break;
             case REQUEST_CREATE_APPWIDGET:
-                completeAddAppWidget(appWidgetId, info, null, null, false, null);
+                completeAddAppWidget(appWidgetId, info, null, null, false, true, null);
                 break;
             case REQUEST_RECONFIGURE_APPWIDGET:
                 getStatsLogManager().logger().withItemInfo(info).log(LAUNCHER_WIDGET_RECONFIGURED);
@@ -1027,7 +1028,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                             requestArgs.getWidgetHandler().getProviderInfo(this));
             boundWidget = layout;
             onCompleteRunnable = () -> {
-                completeAddAppWidget(appWidgetId, requestArgs, layout, null, false, null);
+                completeAddAppWidget(appWidgetId, requestArgs, layout, null, false, true, null);
                 if (!isInState(EDIT_MODE)) {
                     mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
                 }
@@ -1458,7 +1459,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Thunk
     void completeAddAppWidget(int appWidgetId, ItemInfo itemInfo,
             @Nullable AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo,
-            boolean showPendingWidget, @Nullable Bitmap widgetPreviewBitmap) {
+            boolean showPendingWidget, boolean updateWidgetSize,
+            @Nullable Bitmap widgetPreviewBitmap) {
 
         if (appWidgetInfo == null) {
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId,
@@ -1499,7 +1501,13 @@ public class Launcher extends StatefulActivity<LauncherState>
                     reInflatedHostView,
                     (LauncherAppWidgetInfo) reInflatedHostView.getTag(),
                     presenterPos);
+            // We always update widget size after re-inflating PendingAppWidgetHostView
+            WidgetSizes.updateWidgetSizeRanges(
+                    reInflatedHostView, this, itemInfo.spanX, itemInfo.spanY);
             return;
+        }
+        if (updateWidgetSize) {
+            WidgetSizes.updateWidgetSizeRanges(hostView, this, itemInfo.spanX, itemInfo.spanY);
         }
         if (itemInfo instanceof PendingAddWidgetInfo) {
             launcherInfo.sourceContainer = ((PendingAddWidgetInfo) itemInfo).sourceContainer;
@@ -1839,7 +1847,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 : () -> mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
         completeAddAppWidget(appWidgetId, info, boundWidget,
                 addFlowHandler.getProviderInfo(this), addFlowHandler.needsConfigure(),
-                widgetPreviewBitmap);
+                false, widgetPreviewBitmap);
         mWorkspace.removeExtraEmptyScreenDelayed(delay, false, onComplete);
     }
 
