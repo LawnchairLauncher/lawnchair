@@ -17,10 +17,10 @@ package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
-import static com.android.launcher3.Utilities.restoreClipChildrenOnViewTree;
-import static com.android.launcher3.Utilities.restoreClipToPaddingOnViewTree;
-import static com.android.launcher3.Utilities.setClipChildrenOnViewTree;
-import static com.android.launcher3.Utilities.setClipToPaddingOnViewTree;
+import static com.android.launcher3.UtilitiesKt.CLIP_CHILDREN_FALSE_MODIFIER;
+import static com.android.launcher3.UtilitiesKt.CLIP_TO_PADDING_FALSE_MODIFIER;
+import static com.android.launcher3.UtilitiesKt.modifyAttributesOnViewTree;
+import static com.android.launcher3.UtilitiesKt.restoreAttributesOnViewTree;
 
 import android.content.Context;
 import android.graphics.Outline;
@@ -162,13 +162,15 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         }
         mOldIsBackSwipeProgressing = isBackSwipeProgressing;
         if (isBackSwipeProgressing) {
-            setClipChildrenOnViewTree(mPrimaryWidgetListView, (ViewParent) mContent, false);
-            setClipChildrenOnViewTree(mRightPaneScrollView, (ViewParent) mContent, false);
-            setClipToPaddingOnViewTree(mRightPaneScrollView, (ViewParent) mContent, false);
+            modifyAttributesOnViewTree(mPrimaryWidgetListView, (ViewParent) mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER);
+            modifyAttributesOnViewTree(mRightPaneScrollView,  (ViewParent) mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER, CLIP_TO_PADDING_FALSE_MODIFIER);
         } else {
-            restoreClipChildrenOnViewTree(mPrimaryWidgetListView, mContent);
-            restoreClipChildrenOnViewTree(mRightPaneScrollView, mContent);
-            restoreClipToPaddingOnViewTree(mRightPaneScrollView, mContent);
+            restoreAttributesOnViewTree(mPrimaryWidgetListView, mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER);
+            restoreAttributesOnViewTree(mRightPaneScrollView, mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER, CLIP_TO_PADDING_FALSE_MODIFIER);
         }
     }
 
