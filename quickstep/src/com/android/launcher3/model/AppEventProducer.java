@@ -41,6 +41,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
 import static com.android.launcher3.model.PredictionHelper.isTrackedForHotseatPrediction;
 import static com.android.launcher3.model.PredictionHelper.isTrackedForWidgetPrediction;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -184,6 +185,10 @@ public class AppEventProducer implements StatsLogConsumer {
             sendEvent(target, atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
         } else if (event == LAUNCHER_DISMISS_PREDICTION_UNDO) {
             sendEvent(atomInfo, ACTION_UNDISMISS, CONTAINER_HOTSEAT_PREDICTION);
+        } else if (event == LAUNCHER_WIDGET_ADD_BUTTON_TAP) {
+            if (isTrackedForWidgetPrediction(atomInfo)) {
+                sendEvent(atomInfo, ACTION_PIN, CONTAINER_WIDGETS_PREDICTION);
+            }
         }
     }
 

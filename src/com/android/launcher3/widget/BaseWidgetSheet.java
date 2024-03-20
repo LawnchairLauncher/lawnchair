@@ -164,11 +164,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
      * Click handler for tap to add button.
      */
     public void addWidget(PendingAddItemInfo info) {
-        mActivityContext.getStatsLogManager().logger().withItemInfo(info).log(
-                StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP);
         handleClose(true);
         Launcher.getLauncher(mActivityContext).getAccessibilityDelegate()
                 .addToWorkspace(info, /*accessibility=*/ false, /*finishCallback=*/ null);
+        mActivityContext.getStatsLogManager().logger().withItemInfo(info).log(
+                StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP);
     }
 
     @Override
