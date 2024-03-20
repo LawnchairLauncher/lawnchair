@@ -39,6 +39,7 @@ import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.ModelTestExtensions;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.After;
@@ -236,6 +237,7 @@ public class TaplReorderWidgetsTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecordRule.ScreenRecord // b/330019521
     public void simpleReorder() throws Exception {
         runTestCaseMap(getTestMap("ReorderWidgets/simple_reorder_case"),
                 "push_reorder_case");
