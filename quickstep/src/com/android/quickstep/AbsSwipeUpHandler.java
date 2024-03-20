@@ -1255,7 +1255,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return LAST_TASK;
         }
 
-        if (isDesktopModeSupported() && endTarget == NEW_TASK) {
+        if (((mRecentsView.getNextPageTaskView() != null
+                && mRecentsView.getNextPageTaskView().isDesktopTask())
+                || (mRecentsView.getCurrentPageTaskView() != null
+                && mRecentsView.getCurrentPageTaskView().isDesktopTask()))
+                && endTarget == NEW_TASK) {
             // TODO(b/268075592): add support for quickswitch to/from desktop
             return LAST_TASK;
         }
@@ -1416,9 +1420,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED);
             setClampScrollOffset(false);
         };
-        if (mRecentsView != null) {
+        if (mRecentsView != null && (mRecentsView.getCurrentPageTaskView() != null
+                && !mRecentsView.getCurrentPageTaskView().isDesktopTask())) {
             ActiveGestureLog.INSTANCE.trackEvent(ActiveGestureErrorDetector.GestureEvent
                     .SET_ON_PAGE_TRANSITION_END_CALLBACK);
+            // TODO(b/268075592): add support for quickswitch to/from desktop
             mRecentsView.setOnPageTransitionEndCallback(onPageTransitionEnd);
         } else {
             onPageTransitionEnd.run();
@@ -2231,6 +2237,15 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsView.setRecentsAnimationTargets(
                     mRecentsAnimationController, mRecentsAnimationTargets);
         });
+
+        if ((mRecentsView.getNextPageTaskView() != null
+                && mRecentsView.getNextPageTaskView().isDesktopTask())
+                || (mRecentsView.getCurrentPageTaskView() != null
+                && mRecentsView.getCurrentPageTaskView().isDesktopTask())) {
+            // TODO(b/268075592): add support for quickswitch to/from desktop
+            mRecentsViewScrollLinked = false;
+            return;
+        }
 
         // Disable scrolling in RecentsView for trackpad 3-finger swipe up gesture.
         if (!mGestureState.isThreeFingerTrackpadGesture()) {

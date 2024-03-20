@@ -23,11 +23,20 @@ filegroup {
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
-        "multivalentTests/src/**/*.java",
-        "multivalentTests/src/**/*.kt",
+        ":launcher3-robo-src",
     ],
     exclude_srcs: [
         ":launcher-non-quickstep-tests-src",
+    ],
+}
+
+filegroup {
+    name: "launcher3-robo-src",
+    // multivalentTests directory is a shared folder for not only robolectric converted test
+    // classes but also shared helper classes.
+    srcs: [
+        "multivalentTests/src/**/*.java",
+        "multivalentTests/src/**/*.kt",
     ],
 }
 
@@ -222,11 +231,8 @@ android_library {
 android_robolectric_test {
     enabled: true,
     name: "Launcher3RoboTests",
-    // multivalentTests directory is a shared folder for not only robolectric converted test
-    // classes but also shared helper classes.
     srcs: [
-        "multivalentTests/src/**/*.java",
-        "multivalentTests/src/**/*.kt",
+        ":launcher3-robo-src",
 
         // Test util classes
         ":launcher-testing-helpers",

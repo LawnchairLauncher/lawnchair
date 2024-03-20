@@ -25,6 +25,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
@@ -256,6 +257,23 @@ public final class OverviewTask {
 
     private UiObject2 findObjectInTask(String resName) {
         return mTask.findObject(mLauncher.getOverviewObjectSelector(resName));
+    }
+
+    /**
+     * Returns whether the given String is contained in this Task's contentDescription. Also returns
+     * true if both Strings are null.
+     *
+     * TODO(b/326565120): remove Nullable support once the bug causing it to be null is fixed.
+     */
+    public boolean containsContentDescription(@Nullable String expected) {
+        String actual = mTask.getContentDescription();
+        if (actual == null && expected == null) {
+            return true;
+        }
+        if (actual == null || expected == null) {
+            return false;
+        }
+        return actual.contains(expected);
     }
 
     /**

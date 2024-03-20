@@ -52,5 +52,6 @@ filegroup {
         "tests/src/com/android/quickstep/TaplOverviewIconTest.java",
         "tests/src/com/android/quickstep/TaplTestsQuickstep.java",
         "tests/src/com/android/quickstep/TaplTestsSplitscreen.java",
+        "tests/src/com/android/launcher3/testcomponent/ExcludeFromRecentsTestActivity.java"
     ],
 }

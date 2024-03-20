@@ -24,8 +24,9 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.Utilities.restoreClipChildrenOnViewTree;
-import static com.android.launcher3.Utilities.setClipChildrenOnViewTree;
+import static com.android.launcher3.UtilitiesKt.CLIP_CHILDREN_FALSE_MODIFIER;
+import static com.android.launcher3.UtilitiesKt.modifyAttributesOnViewTree;
+import static com.android.launcher3.UtilitiesKt.restoreAttributesOnViewTree;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_BOTTOM_SHEET_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
@@ -305,9 +306,11 @@ public class AllAppsTransitionController
         if (hasScaleEffect != mHasScaleEffect) {
             mHasScaleEffect = hasScaleEffect;
             if (mHasScaleEffect) {
-                setClipChildrenOnViewTree(rv, mLauncher.getAppsView(), false);
+                modifyAttributesOnViewTree(rv, mLauncher.getAppsView(),
+                        CLIP_CHILDREN_FALSE_MODIFIER);
             } else {
-                restoreClipChildrenOnViewTree(rv, mLauncher.getAppsView());
+                restoreAttributesOnViewTree(rv, mLauncher.getAppsView(),
+                        CLIP_CHILDREN_FALSE_MODIFIER);
             }
         }
     }

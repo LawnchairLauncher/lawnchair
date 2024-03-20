@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static android.view.View.MeasureSpec.makeMeasureSpec;
-
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
@@ -30,6 +28,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
@@ -67,6 +66,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.UserManagerState;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -81,7 +81,9 @@ import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -98,8 +100,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     // The widget recommendation table can easily take over the entire screen on devices with small
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
-    // the table can display.
-    private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.75f;
+    // the table can display with respect to bottom sheet's height.
+    private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.45f;
+    private static final String RECOMMENDATIONS_SAVED_STATE_KEY =
+            "widgetsFullSheet:mRecommendationsCurrentPage";
+    private static final String SUPER_SAVED_STATE_KEY = "widgetsFullSheet:superHierarchyState";
     private final UserCache mUserCache;
     private final UserManagerState mUserManagerState = new UserManagerState();
     private final UserHandle mCurrentUser = Process.myUserHandle();
@@ -109,8 +114,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected final boolean mHasWorkProfile;
     // Number of recommendations displayed
     protected int mRecommendedWidgetsCount;
+    private List<WidgetItem> mRecommendedWidgets = new ArrayList<>();
+    private Map<WidgetRecommendationCategory, List<WidgetItem>> mRecommendedWidgetsMap =
+            new HashMap<>();
+    protected int mRecommendationsCurrentPage = 0;
     protected final SparseArray<AdapterHolder> mAdapters = new SparseArray();
-    @Nullable private ArrowTipView mLatestEducationalTip;
+    @Nullable
+    private ArrowTipView mLatestEducationalTip;
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
             new OnLayoutChangeListener() {
                 @Override
@@ -156,14 +166,19 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 }
             };
 
-    @Px private final int mTabsHeight;
+    @Px
+    private final int mTabsHeight;
 
-    @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
-    @Nullable private WidgetsRecyclerView mCurrentTouchEventRecyclerView;
-    @Nullable PersonalWorkPagedView mViewPager;
+    @Nullable
+    private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
+    @Nullable
+    private WidgetsRecyclerView mCurrentTouchEventRecyclerView;
+    @Nullable
+    PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
-    @Px protected int mMaxSpanPerRow;
+    @Px
+    protected int mMaxSpanPerRow;
     protected DeviceProfile mDeviceProfile;
 
     protected TextView mNoWidgetsView;
@@ -227,13 +242,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 R.id.widget_recommendations_container);
         mWidgetRecommendationsView = mSearchScrollView.findViewById(
                 R.id.widget_recommendations_view);
+        // To save the currently displayed page, so that, it can be requested when rebinding
+        // recommendations with different size constraints.
+        mWidgetRecommendationsView.addPageSwitchListener(
+                newPage -> mRecommendationsCurrentPage = newPage);
         mWidgetRecommendationsView.initParentViews(mWidgetRecommendationsContainer);
         mWidgetRecommendationsView.setWidgetCellLongClickListener(this);
         mWidgetRecommendationsView.setWidgetCellOnClickListener(this);
 
         mHeaderTitle = mSearchScrollView.findViewById(R.id.title);
 
-        onRecommendedWidgetsBound();
         onWidgetsBound();
         setUpEducationViewsIfNeeded();
     }
@@ -354,7 +372,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onAttachedToWindow();
         LauncherAppState.getInstance(mActivityContext).getModel()
                 .refreshAndBindWidgetsAndShortcuts(null);
-        onRecommendedWidgetsBound();
     }
 
     @Override
@@ -582,16 +599,26 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         if (enableCategorizedWidgetSuggestions()) {
+            // We avoid applying new recommendations when some are already displayed.
+            if (mRecommendedWidgetsMap.isEmpty()) {
+                mRecommendedWidgetsMap =
+                        mActivityContext.getPopupDataProvider().getCategorizedRecommendedWidgets();
+            }
             mRecommendedWidgetsCount = mWidgetRecommendationsView.setRecommendations(
-                    mActivityContext.getPopupDataProvider().getCategorizedRecommendedWidgets(),
+                    mRecommendedWidgetsMap,
                     mDeviceProfile,
                     /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
                     /* availableWidth= */ mMaxSpanPerRow,
-                    /* cellPadding= */ mWidgetCellHorizontalPadding
+                    /* cellPadding= */ mWidgetCellHorizontalPadding,
+                    /* requestedPage= */ mRecommendationsCurrentPage
             );
         } else {
+            if (mRecommendedWidgets.isEmpty()) {
+                mRecommendedWidgets =
+                        mActivityContext.getPopupDataProvider().getRecommendedWidgets();
+            }
             mRecommendedWidgetsCount = mWidgetRecommendationsView.setRecommendations(
-                    mActivityContext.getPopupDataProvider().getRecommendedWidgets(),
+                    mRecommendedWidgets,
                     mDeviceProfile,
                     /* availableHeight= */ getMaxAvailableHeightForRecommendations(),
                     /* availableWidth= */ mMaxSpanPerRow,
@@ -604,23 +631,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Px
     private float getMaxAvailableHeightForRecommendations() {
-        float noWidgetsViewHeight = 0;
-        if (mIsNoWidgetsViewNeeded) {
-            // Make sure recommended section leaves enough space for noWidgetsView.
-            Rect noWidgetsViewTextBounds = new Rect();
-            mNoWidgetsView.getPaint()
-                    .getTextBounds(mNoWidgetsView.getText().toString(), /* start= */ 0,
-                            mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
-            noWidgetsViewHeight = noWidgetsViewTextBounds.height();
-        }
-        if (!isTwoPane()) {
-            doMeasure(
-                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
-                            MeasureSpec.EXACTLY),
-                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
-                            MeasureSpec.EXACTLY));
-        }
-        return getMaxTableHeight(noWidgetsViewHeight);
+        return (mDeviceProfile.heightPx - mDeviceProfile.bottomSheetTopPadding)
+                * getRecommendationSectionHeightRatio();
     }
 
     /** b/209579563: "Widgets" header should be focused first. */
@@ -629,12 +641,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return mHeaderTitle;
     }
 
+    /**
+     * Ratio of recommendations section with respect to bottom sheet's height on scale of 0 to 1.
+     */
     @Px
-    protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
-        return (mContent.getMeasuredHeight()
-                - mTabsHeight - getHeaderViewHeight()
-                - noWidgetsViewHeight)
-                * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+    protected float getRecommendationSectionHeightRatio() {
+        return RECOMMENDATION_TABLE_HEIGHT_RATIO;
     }
 
     private void open(boolean animate) {
@@ -703,6 +715,27 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         sheet.mIsOpen = true;
         sheet.open(animate);
         return sheet;
+    }
+
+    @Override
+    public void saveHierarchyState(SparseArray<Parcelable> sparseArray) {
+        Bundle bundle = new Bundle();
+        // With widget picker open, when we open shade to switch theme, Launcher re-creates the
+        // picker and calls save/restore hierarchy state. We save the state of recommendations
+        // across those updates.
+        bundle.putInt(RECOMMENDATIONS_SAVED_STATE_KEY, mRecommendationsCurrentPage);
+        SparseArray<Parcelable> superState = new SparseArray<>();
+        super.saveHierarchyState(superState);
+        bundle.putSparseParcelableArray(SUPER_SAVED_STATE_KEY, superState);
+        sparseArray.put(0, bundle);
+    }
+
+    @Override
+    public void restoreHierarchyState(SparseArray<Parcelable> sparseArray) {
+        Bundle state = (Bundle) sparseArray.get(0);
+        mRecommendationsCurrentPage = state.getInt(
+                RECOMMENDATIONS_SAVED_STATE_KEY, /*defaultValue=*/0);
+        super.restoreHierarchyState(state.getSparseParcelableArray(SUPER_SAVED_STATE_KEY));
     }
 
     private static int getWidgetSheetId(BaseActivity activity) {
@@ -793,7 +826,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     /** private the height, in pixel, + the vertical margins of a given view. */
     protected static int measureHeightWithVerticalMargins(View view) {
-        if (view.getVisibility() != VISIBLE) {
+        if (view == null || view.getVisibility() != VISIBLE) {
             return 0;
         }
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) view.getLayoutParams();
@@ -828,6 +861,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             saveHierarchyState(widgetsState);
             handleClose(false);
             WidgetsFullSheet sheet = show(BaseActivity.fromContext(getContext()), false);
+            sheet.restoreRecommendations(mRecommendedWidgets, mRecommendedWidgetsMap);
             sheet.restoreHierarchyState(widgetsState);
             sheet.restorePreviousAdapterHolderType(getCurrentAdapterHolderType());
         } else if (!isTwoPane()) {
@@ -836,6 +870,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         mDeviceProfile = dp;
+    }
+
+    private void restoreRecommendations(List<WidgetItem> recommendedWidgets,
+            Map<WidgetRecommendationCategory, List<WidgetItem>> recommendedWidgetsMap) {
+        mRecommendedWidgets = recommendedWidgets;
+        mRecommendedWidgetsMap = recommendedWidgetsMap;
     }
 
     /**
@@ -887,7 +927,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     }
 
-    @Nullable private View getViewToShowEducationTip() {
+    @Nullable
+    private View getViewToShowEducationTip() {
         if (mWidgetRecommendationsContainer.getVisibility() == VISIBLE) {
             return mWidgetRecommendationsView.getViewForEducationTip();
         }

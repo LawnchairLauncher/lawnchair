@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 /**
  * A {@link PagedView} that displays widget recommendations in categories with dots as paged
@@ -45,10 +46,12 @@ import java.util.TreeMap;
  */
 public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots> {
     private @Px float mAvailableHeight = Float.MAX_VALUE;
-
     private static final int MAX_CATEGORIES = 3;
     private TextView mRecommendationPageTitle;
     private final List<String> mCategoryTitles = new ArrayList<>();
+
+    /** Callbacks to run when page changes */
+    private final List<Consumer<Integer>> mPageSwitchListeners = new ArrayList<>();
 
     @Nullable
     private OnLongClickListener mWidgetCellOnLongClickListener;
@@ -84,6 +87,13 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
     }
 
     /**
+     * Add a callback to run when the current displayed page changes.
+     */
+    public void addPageSwitchListener(Consumer<Integer> pageChangeListener) {
+        mPageSwitchListeners.add(pageChangeListener);
+    }
+
+    /**
      * Displays all the provided recommendations in a single table if they fit.
      *
      * @param recommendedWidgets list of widgets to be displayed in recommendation section.
@@ -104,7 +114,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
 
         int displayedWidgets = maybeDisplayInTable(recommendedWidgets, deviceProfile,
                 availableWidth, cellPadding);
-        updateTitleAndIndicator();
+        updateTitleAndIndicator(/* requestedPage= */ 0);
         return displayedWidgets;
     }
 
@@ -119,16 +129,18 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * @param availableWidth  width in px that the recommendations should display in
      * @param cellPadding     padding in px that should be applied to each widget in the
      *                        recommendations
+     * @param requestedPage   page number to display initially.
      * @return number of recommendations that could fit in the available space.
      */
     public int setRecommendations(
             Map<WidgetRecommendationCategory, List<WidgetItem>> recommendations,
-            DeviceProfile deviceProfile,
-            final @Px float availableHeight, final @Px int availableWidth,
-            final @Px int cellPadding) {
+            DeviceProfile deviceProfile, final @Px float availableHeight,
+            final @Px int availableWidth, final @Px int cellPadding, final int requestedPage) {
         this.mAvailableHeight = availableHeight;
         Context context = getContext();
-        mPageIndicator.setPauseScroll(true, deviceProfile.isTwoPanels);
+        // For purpose of recommendations section, we don't want paging dots to be halved in two
+        // pane display, so, we always provide isTwoPanels = "false".
+        mPageIndicator.setPauseScroll(/*pause=*/true, /*isTwoPanels=*/ false);
         clear();
 
         int displayedCategories = 0;
@@ -153,26 +165,33 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
             }
         }
 
-        updateTitleAndIndicator();
-        mPageIndicator.setPauseScroll(false, deviceProfile.isTwoPanels);
+        updateTitleAndIndicator(requestedPage);
+        // For purpose of recommendations section, we don't want paging dots to be halved in two
+        // pane display, so, we always provide isTwoPanels = "false".
+        mPageIndicator.setPauseScroll(/*pause=*/false, /*isTwoPanels=*/false);
         return totalDisplayedWidgets;
     }
 
     private void clear() {
         mCategoryTitles.clear();
         removeAllViews();
+        setCurrentPage(0);
+        mPageIndicator.setActiveMarker(0);
     }
 
     /** Displays the page title and paging indicator if there are multiple pages. */
-    private void updateTitleAndIndicator() {
+    private void updateTitleAndIndicator(int requestedPage) {
         boolean showPaginatedView = getPageCount() > 1;
         int titleAndIndicatorVisibility = showPaginatedView ? View.VISIBLE : View.GONE;
         mRecommendationPageTitle.setVisibility(titleAndIndicatorVisibility);
         mPageIndicator.setVisibility(titleAndIndicatorVisibility);
         if (showPaginatedView) {
-            mPageIndicator.setActiveMarker(0);
-            setCurrentPage(0);
-            mRecommendationPageTitle.setText(mCategoryTitles.get(0));
+            if (requestedPage <= 0 || requestedPage >= getPageCount()) {
+                requestedPage = 0;
+            }
+            setCurrentPage(requestedPage);
+            mPageIndicator.setActiveMarker(requestedPage);
+            mRecommendationPageTitle.setText(mCategoryTitles.get(requestedPage));
         }
     }
 
@@ -180,7 +199,9 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
     protected void notifyPageSwitchListener(int prevPage) {
         if (getPageCount() > 1) {
             // Since the title is outside the paging scroll, we update the title on page switch.
-            mRecommendationPageTitle.setText(mCategoryTitles.get(getNextPage()));
+            int nextPage = getNextPage();
+            mRecommendationPageTitle.setText(mCategoryTitles.get(nextPage));
+            mPageSwitchListeners.forEach(listener -> listener.accept(nextPage));
             super.notifyPageSwitchListener(prevPage);
         }
     }

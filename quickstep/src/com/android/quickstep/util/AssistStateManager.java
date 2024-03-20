@@ -53,12 +53,7 @@ public class AssistStateManager implements ResourceBasedOverride {
     }
 
     /** Return {@code true} if the Settings toggle is enabled. */
-    public boolean isSettingsNavHandleEnabled() {
-        return false;
-    }
-
-    /** Return {@code true} if the Settings toggle is enabled. */
-    public boolean isSettingsHomeButtonEnabled() {
+    public boolean isSettingsAllEntrypointsEnabled() {
         return false;
     }
 

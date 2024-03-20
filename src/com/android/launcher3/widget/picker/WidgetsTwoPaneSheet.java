@@ -17,10 +17,10 @@ package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
-import static com.android.launcher3.Utilities.restoreClipChildrenOnViewTree;
-import static com.android.launcher3.Utilities.restoreClipToPaddingOnViewTree;
-import static com.android.launcher3.Utilities.setClipChildrenOnViewTree;
-import static com.android.launcher3.Utilities.setClipToPaddingOnViewTree;
+import static com.android.launcher3.UtilitiesKt.CLIP_CHILDREN_FALSE_MODIFIER;
+import static com.android.launcher3.UtilitiesKt.CLIP_TO_PADDING_FALSE_MODIFIER;
+import static com.android.launcher3.UtilitiesKt.modifyAttributesOnViewTree;
+import static com.android.launcher3.UtilitiesKt.restoreAttributesOnViewTree;
 
 import android.content.Context;
 import android.graphics.Outline;
@@ -62,6 +62,9 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     private static final int MAXIMUM_WIDTH_LEFT_PANE_FOLDABLE_DP = 395;
     private static final String SUGGESTIONS_PACKAGE_NAME = "widgets_list_suggestions_entry";
 
+    // This ratio defines the max percentage of content area that the recommendations can display
+    // with respect to the bottom sheet's height.
+    private static final float RECOMMENDATION_SECTION_HEIGHT_RATIO_TWO_PANE = 0.75f;
     private FrameLayout mSuggestedWidgetsContainer;
     private WidgetsListHeader mSuggestedWidgetsHeader;
     private PackageUserKey mSuggestedWidgetsPackageUserKey;
@@ -126,6 +129,10 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         mWidgetRecommendationsView.initParentViews(mWidgetRecommendationsContainer);
         mWidgetRecommendationsView.setWidgetCellLongClickListener(this);
         mWidgetRecommendationsView.setWidgetCellOnClickListener(this);
+        // To save the currently displayed page, so that, it can be requested when rebinding
+        // recommendations with different size constraints.
+        mWidgetRecommendationsView.addPageSwitchListener(
+                newPage -> mRecommendationsCurrentPage = newPage);
 
         mHeaderTitle = mContent.findViewById(R.id.title);
         mRightPane = mContent.findViewById(R.id.right_pane);
@@ -139,7 +146,6 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         mPrimaryWidgetListView.setOutlineProvider(mViewOutlineProvider);
         mPrimaryWidgetListView.setClipToOutline(true);
 
-        onRecommendedWidgetsBound();
         onWidgetsBound();
         setUpEducationViewsIfNeeded();
 
@@ -156,13 +162,15 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         }
         mOldIsBackSwipeProgressing = isBackSwipeProgressing;
         if (isBackSwipeProgressing) {
-            setClipChildrenOnViewTree(mPrimaryWidgetListView, (ViewParent) mContent, false);
-            setClipChildrenOnViewTree(mRightPaneScrollView, (ViewParent) mContent, false);
-            setClipToPaddingOnViewTree(mRightPaneScrollView, (ViewParent) mContent, false);
+            modifyAttributesOnViewTree(mPrimaryWidgetListView, (ViewParent) mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER);
+            modifyAttributesOnViewTree(mRightPaneScrollView,  (ViewParent) mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER, CLIP_TO_PADDING_FALSE_MODIFIER);
         } else {
-            restoreClipChildrenOnViewTree(mPrimaryWidgetListView, mContent);
-            restoreClipChildrenOnViewTree(mRightPaneScrollView, mContent);
-            restoreClipToPaddingOnViewTree(mRightPaneScrollView, mContent);
+            restoreAttributesOnViewTree(mPrimaryWidgetListView, mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER);
+            restoreAttributesOnViewTree(mRightPaneScrollView, mContent,
+                    CLIP_CHILDREN_FALSE_MODIFIER, CLIP_TO_PADDING_FALSE_MODIFIER);
         }
     }
 
@@ -240,11 +248,13 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         String suggestionsRightPaneTitle = getContext().getString(
                 R.string.widget_picker_right_pane_accessibility_title, suggestionsHeaderTitle);
         packageItemInfo.title = suggestionsHeaderTitle;
+        // Suggestions may update at run time. The widgets count on suggestions doesn't add any
+        // value, so, we don't show the count.
         WidgetsListHeaderEntry widgetsListHeaderEntry = WidgetsListHeaderEntry.create(
                         packageItemInfo,
                         /*titleSectionName=*/ suggestionsHeaderTitle,
                         /*items=*/ mActivityContext.getPopupDataProvider().getRecommendedWidgets(),
-                        /*visibleWidgetsCount=*/ mRecommendedWidgetsCount)
+                        /*visibleWidgetsCount=*/ 0)
                 .withWidgetListShown();
 
         mSuggestedWidgetsHeader.applyFromItemInfoWithIcon(widgetsListHeaderEntry);
@@ -266,8 +276,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     @Override
     @Px
-    protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
-        return mContent.getMeasuredHeight() - measureHeightWithVerticalMargins(mHeaderTitle);
+    protected float getRecommendationSectionHeightRatio() {
+        return RECOMMENDATION_SECTION_HEIGHT_RATIO_TWO_PANE;
     }
 
     @Override
