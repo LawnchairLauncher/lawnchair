@@ -7,10 +7,10 @@ plugins {
     id 'com.android.library' version "8.3.1" apply false
     id 'com.android.test' version '8.3.1' apply false
     id 'androidx.baselineprofile' version '1.2.3'
-    id 'org.jetbrains.kotlin.android' version "1.9.22"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.22"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.22"
-    id "com.google.devtools.ksp" version "1.9.22-1.0.18"
+    id 'org.jetbrains.kotlin.android' version "1.9.23"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.23"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.23"
+    id "com.google.devtools.ksp" version "1.9.23-1.0.19"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.9.1"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -177,7 +177,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
