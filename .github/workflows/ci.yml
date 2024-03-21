@@ -203,6 +203,36 @@ jobs:
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: for f in "./Debug APK/lawnWithQuickstepMarket/debug/*"; do echo "$f" ; done
+        run: for f in './Debug APK/lawnWithQuickstepMarket/debug/*'; do echo "$f" ; done
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release if exist then create release
+        if: ${{ always() }}
+        run: for f in ./Debug APK/lawnWithQuickstepMarket/debug/*; do echo "$f" ; done
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release if exist then create release
+        if: ${{ always() }}
+        run: for f in "Debug APK/lawnWithQuickstepMarket/debug/*.apk"; do echo "$f" ; done
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release if exist then create release
+        if: ${{ always() }}
+        run: for f in 'Debug APK/lawnWithQuickstepMarket/debug/*.apk'; do echo "$f" ; done
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release if exist then create release
+        if: ${{ always() }}
+        run: for f in ./*.apk; do ; echo "$f" done
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release if exist then create release
+        if: ${{ always() }}
+        run: for f in ./Debug APK/lawnWithQuickstepMarket/debug/*.apk; do ; echo "$f" done
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
