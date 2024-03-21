@@ -118,3 +118,25 @@ jobs:
         run: |
           gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
           gh pr merge $PR_URL --auto --squash --delete-branch
+
+  nightly-release:
+    runs-on: ubuntu-latest
+    needs: build-debug-apk
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+    
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - run: unzip debug.zip
+
+      - name: Delete release if exist then create release
+        id: delete-release
+        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create NightlyBuild (get-item ./*.apk) -p --generate-notes 
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
