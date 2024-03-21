@@ -59,7 +59,6 @@ public class GestureSandboxActivity extends FragmentActivity {
 
     @Nullable private TutorialType[] mTutorialSteps;
     private GestureSandboxFragment mCurrentFragment;
-    private GestureSandboxFragment mPendingFragment;
 
     private int mCurrentStep;
     private int mNumSteps;
@@ -177,22 +176,16 @@ public class GestureSandboxActivity extends FragmentActivity {
                     && getResources().getConfiguration().orientation
                     == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
-            GestureSandboxFragment recreatedFragment =
-                    showRotationPrompt || mPendingFragment == null
-                            ? null : mPendingFragment.recreateFragment();
             showFragment(showRotationPrompt
                     ? new RotationPromptFragment()
-                    : recreatedFragment == null
-                            ? mCurrentFragment : recreatedFragment);
+                    : mCurrentFragment.canRecreateFragment()
+                            ? mCurrentFragment.recreateFragment() : mCurrentFragment);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
     private void showFragment(@NonNull GestureSandboxFragment fragment) {
-        if (mCurrentFragment.recreateFragment() != null) {
-            mPendingFragment = mCurrentFragment;
-        }
         mCurrentFragment = fragment;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.gesture_tutorial_fragment_container, mCurrentFragment)
