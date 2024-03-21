@@ -132,65 +132,7 @@ jobs:
     
       - name: Download artifacts
         uses: actions/download-artifact@v4
-
-      - name: Check
-        run: |
-          echo $PWD
-          echo $(pwd)
-          
-      - run: find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -name '*.apk' -exec echo {} \;
-      - run: find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname '*.apk'  -exec echo {} \;
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: gh release create NightlyBuild $( find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname '*.apk' ) -p --generate-notes
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: gh release create NightlyBuild '$( find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname '*.apk' )' -p --generate-notes
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: gh release create NightlyBuild "$( find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname '*.apk' )" -p --generate-notes
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: for f in ./*.apk; do echo "$f" ; done
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: |
-          cd "./Debug APK/lawnWithQuickstepMarket/debug/"
-          for f in *.apk; do gh release create NightlyBuild '${f}' -p --generate-notes; done;
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: for f in *.apk; do gh release create NightlyBuild ${f} -p --generate-notes; done;
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: for f in *.apk; do gh release create NightlyBuild '${f}' -p --generate-notes; done;
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
-        run: for f in *.apk; do gh release create NightlyBuild "${f}" -p --generate-notes; done;
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - run: find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -name '*.apk' -exec echo {} \;
-      - run: find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname '*.apk'  -exec echo {} \;
-          $( ... )
+        with:
+          name: my-artifact
+      - name: Display structure of downloaded files
+        run: ls -R
