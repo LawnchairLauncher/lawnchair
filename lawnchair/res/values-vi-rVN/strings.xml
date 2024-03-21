@@ -278,7 +278,7 @@
     <string name="pref_all_apps_bulk_icon_loading_description">Load và hiện thị các biểu tượng hàng loạt thay vì tải và hiển thị các biểu tượng riêng lẻ</string>
     <string name="pref_all_apps_remember_position_title">Nhớ vị trí</string>
     <string name="pref_all_apps_remember_position_description">Nhớ vị trí khi bạn rời khỏi thay vì trên cùng</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_show_scrollbar_title">Hiển thị thanh cuộn</string>
     <string name="pref_category_search">Tìm kiếm</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>

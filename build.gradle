@@ -3,14 +3,14 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.3.0"
-    id 'com.android.library' version "8.3.0" apply false
-    id 'com.android.test' version '8.3.0' apply false
+    id 'com.android.application' version "8.3.1"
+    id 'com.android.library' version "8.3.1" apply false
+    id 'com.android.test' version '8.3.1' apply false
     id 'androidx.baselineprofile' version '1.2.3'
-    id 'org.jetbrains.kotlin.android' version "1.9.22"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.22"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.22"
-    id "com.google.devtools.ksp" version "1.9.22-1.0.18"
+    id 'org.jetbrains.kotlin.android' version "1.9.23"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.23"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.23"
+    id "com.google.devtools.ksp" version "1.9.23-1.0.19"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.9.1"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -41,7 +41,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '3.25.3'
+        def protocVersion = '4.26.0'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -176,7 +176,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -356,7 +356,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2024.02.02")
+    implementation platform("androidx.compose:compose-bom:2024.03.00")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -388,8 +388,9 @@ dependencies {
     implementation "com.patrykmichalik.opto:core:$optoVersion"
     implementation "com.patrykmichalik.opto:compose:$optoVersion"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
+    def retrofitVersion = "2.10.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion"
 
     def roomVersion = '2.6.1'
     implementation "androidx.room:room-runtime:$roomVersion"

@@ -9,7 +9,6 @@ import android.widget.Space
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.RecentHelper
 import app.lawnchair.util.isDefaultLauncher
@@ -29,7 +28,7 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
 ) : OverviewActionsView<TaskOverlayFactoryImpl.OverlayUICallbacks>(context, attrs, defStyleAttr) {
 
     private val prefs = PreferenceManager.getInstance(context)
-    private val launcher: Launcher? = context.launcherNullable
+    private val launcher: Launcher? = if (context.isDefaultLauncher()) Launcher.getLauncher(context) else null
     private lateinit var container: LinearLayout
     private lateinit var screenshotAction: Button
     private lateinit var shareAction: Button

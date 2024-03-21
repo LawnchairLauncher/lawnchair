@@ -183,10 +183,10 @@
     <string name="home_screen_unlock">Ana Ekranın Kilidini Aç</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Ana Ekran kilitli.</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_dot_pagination_label">Nokta sayfalandırmasını göster</string>
+    <string name="show_dot_pagination_description">Çalışma alanında nokta sayfalamandırmasını etkinleştir.</string>
     <string name="show_material_u_popup_label">Material you popup göster</string>
-    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
+    <string name="show_material_u_popup_description">Kabarık ve hafif konsolide pop-up\'u etkinleştir.</string>
     <string name="popup_menu">Açılır menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Kilit tuşunu göster</string>
     <string name="show_system_settings_entry">Sistem ayarları girişini göster</string>
@@ -256,7 +256,7 @@
     <string name="corner_radius_label">Köşe Yarıçapı</string>
     <string name="apply_accent_color_label">Vurgu Rengini Uygula</string>
     <string name="search_provider">Arama Sağlayıcısı</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
+    <string name="hotseat_bottom_space_label">Alt dolgu</string>
     <string name="grid">Izgara</string>
     <string name="dock_icons">Alt Sıra Simgeleri</string>
     <!-- SearchProviderPreferences -->
@@ -275,27 +275,27 @@
     <string name="show_enable_smart_hide">Tam adı Yazıldığında Göster</string>
     <string name="hide_hidden_apps_search">Arama Sonuçlarında gizle</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Uygulamaları toplu olarak yükle</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Tek tek simgeleri yükleyip göstermek yerine hepsini birden yükle ve göster</string>
+    <string name="pref_all_apps_remember_position_title">Posizyonu hatırla</string>
+    <string name="pref_all_apps_remember_position_description">Baştan başlamak yerine kaldığın pozisyonu hatırla</string>
+    <string name="pref_all_apps_show_scrollbar_title">Kaydırma çubuğunu göster</string>
     <string name="pref_category_search">Ara</string>
     <string name="show_app_search_bar">Arama Çubuğunu Göster</string>
     <string name="pref_search_auto_show_keyboard">Klavyeyi Otomatik Göster</string>
     <string name="fuzzy_search_title">Yaklaşık Arama</string>
     <string name="fuzzy_search_desc">Uygulama aramaları için yaklaşık eşleştirme.</string>
     <string name="max_search_result_count_title">Maksimum Arama Sonucu Sayısı</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
+    <string name="max_people_result_count_title">Maksimum kişi sonucu sayısı</string>
+    <string name="max_file_result_count_title">Maksimum dosya sonucu sayısı</string>
+    <string name="max_suggestion_result_count_title">Maksimum öneri sonucu sayısı</string>
+    <string name="max_settings_entry_result_count_title">Maksimum ayar sonucu sayısı</string>
+    <string name="max_recent_result_count_title">Maksimum geçmiş sonucu sayısı</string>
+    <string name="max_web_suggestion_delay">Maksimum web öneri gecikmesi</string>
     <string name="clear_history">Geçmişi temizle</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Uygulama Çekmecesi Sütunları</string>
     <string name="row_height_label">Satır yüksekliği</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="app_drawer_indent_label">Yatay dolgu</string>
     <string name="perform_wide_search_title">Yerel arama</string>
     <string name="perform_wide_search_file">Dosya arama</string>
     <string name="pref_suggestion_label">Öneriler</string>
@@ -415,7 +415,7 @@
     <string name="label_search">Ara</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Sesli Arama</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_entry_title">Ayarlar maddesi</string>
     <string name="all_apps_search_market_message">Daha Fazla Uygulama İçin Ara</string>
     <string name="all_apps_search_startpage_message"><xliff:g id="startpage">Startpage</xliff:g> \'da ara</string>
     <string name="error_no_market_or_browser_installed">Ne uygulama mağazası ne de tarayıcı yüklü değil.</string>
@@ -426,7 +426,7 @@
     <string name="warn_contact_permission_content">Kişilere erişim izni gerektirir</string>
     <string name="warn_files_permission_content">Depolama izni gerektirir</string>
     <string name="all_apps_search_result_files_description">Medya, belgeler, dosyalar vb.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="all_apps_search_result_contacts_description">Kişiler ve fazlası</string>
     <string name="quickstep_incompatible">Uyumsuz Sistem Entegrasyonu</string>
     <string name="quickstep_incompatible_description">Cihazınız %1$s tarafından sağlanan sistem hareketlerine (Quickstep olarak bilinir) sahip olacak şekilde yapılandırılmış, ancak %1$s ürününün bu sürümü Android sürümünüzle uyumlu değil. Cihazınızı kullanmaya devam etmek için lütfen %1$s güncellemelerini kaldırın veya sistem hareketi sağlayıcısı olarak %1$s\'yi devre dışı bırakın.</string>
     <string name="delete">Sil</string>
@@ -450,5 +450,5 @@
     <string name="action_unlock">Kilidi aç</string>
     <string name="action_lock">Kilitle</string>
     <string name="recents_lock_unlock">Kilitle/Kilidi aç</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="recents_lock_unlock_description">\"Hepsini temizle\"yi kullanırken seçili uygulamanın temizlenmesini önle</string>
 </resources>
