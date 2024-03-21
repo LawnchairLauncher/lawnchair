@@ -139,6 +139,8 @@ jobs:
         run: |
           echo $PWD
           echo $(pwd)
+          find "./artifacts/debug-apk/Debug APK/lawnWithQuickstepMarket/debug/*.apk" -type f -exec echo {} \;
+          find "./artifacts/debug-apk/Debug APK/lawnWithQuickstepMarket/debug/" -type f -name "*.apk" -exec echo "--- {}:" \; -exec cat {} \;
 
       - name: Delete release if exist then create release
         id: delete-release
