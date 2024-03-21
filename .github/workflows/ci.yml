@@ -135,8 +135,14 @@ jobs:
         with:
           path: artifacts/debug-apk
 
+      - name: Check
+        run: |
+          echo $PWD
+          echo $(pwd)
+
+
       - name: Delete release if exist then create release
         id: delete-release
-        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create NightlyBuild artifacts/debug-apk/lawnWithQuickstepGithub/*.apk -p --generate-notes 
+        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; find / -iname '*.apk' -exec gh release create NightlyBuild {} -p --generate-notes 
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
