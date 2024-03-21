@@ -138,12 +138,12 @@ jobs:
           echo $PWD
           echo $(pwd)
           
-      - run: find  -name '*.apk' -type f -exec echo {} \;
-      - run: find "Debug APK/lawnWithQuickstepMarket/debug/" -iname '' -type f -exec echo {} \;
+      - run: find "Debug APK/lawnWithQuickstepMarket/debug/" -type f -name '*.apk' -exec echo {} \;
+      - run: find "Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname ''  -exec echo {} \;
 
       - name: Get Name of Artifact
         run: |
-          ARTIFACT_PATHNAME=$(ls "Debug APK/lawnWithQuickstepMarket/debug/*.apk" | head -n 1)
+          ARTIFACT_PATHNAME=$(find "Debug APK/lawnWithQuickstepMarket/debug/" -type f -name '*.apk')
           ARTIFACT_NAME=$(basename $ARTIFACT_PATHNAME)
           echo ::set-env name=ARTIFACT_NAME::${ARTIFACT_NAME}
           echo ::set-env name=ARTIFACT_PATHNAME::${ARTIFACT_PATHNAME}
