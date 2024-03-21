@@ -185,12 +185,6 @@ jobs:
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ${{ {} }} -p --generate-notes \;
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete release if exist then create release
-        if: ${{ always() }}
         run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ${{ '{}' }} -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
