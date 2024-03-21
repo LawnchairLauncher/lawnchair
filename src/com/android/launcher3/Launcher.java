@@ -2730,7 +2730,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private void updateDisallowBack() {
         if (Flags.enableDesktopWindowingMode()) {
-            // Do not disable back in launcher when prototype behavior is enabled
+            // TODO(b/330183377) disable back in launcher when when we productionize
             return;
         }
         LauncherRootView rv = getRootView();

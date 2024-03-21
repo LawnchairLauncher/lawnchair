@@ -38,7 +38,6 @@ import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURA
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.quickstep.util.AnimUtils.clampToDuration;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -183,7 +182,7 @@ public final class TaskViewUtils {
             // Re-use existing handles
             remoteTargetHandles = recentsViewHandles;
         } else {
-            boolean forDesktop = isDesktopModeSupported() && v instanceof DesktopTaskView;
+            boolean forDesktop = v instanceof DesktopTaskView;
             RemoteTargetGluer gluer = new RemoteTargetGluer(v.getContext(),
                     recentsView.getSizeStrategy(), targets, forDesktop);
             if (forDesktop) {
