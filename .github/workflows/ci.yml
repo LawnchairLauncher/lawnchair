@@ -143,6 +143,6 @@ jobs:
 
       - name: Delete release if exist then create release
         id: delete-release
-        run: gh release view NightlyBuild && gh release delete NightlyBuild -y --cleanup-tag ; find 'Debug APK/lawnWithQuickstepMarket/debug/' -type f -name '*.apk' -exec gh release create NightlyBuild {} -p --generate-notes \;
+        run: gh release view NightlyBuild && gh release delete NightlyBuild -y --cleanup-tag ; find 'Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild '{}' -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
