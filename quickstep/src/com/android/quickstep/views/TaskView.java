@@ -863,7 +863,8 @@ public class TaskView extends FrameLayout implements Reusable {
     @Nullable
     public RunnableList launchTaskAnimated() {
         if (mTask != null) {
-            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "TaskView.launchTaskAnimated");
+            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
+                    "TaskView.launchTaskAnimated: startActivityFromRecentsAsync");
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
@@ -912,7 +913,8 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
         if (mTask != null) {
-            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "TaskView.launchTaskAnimated");
+            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
+                    "TaskView.launchTask: startActivityFromRecentsAsync");
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
 
@@ -1006,6 +1008,8 @@ public class TaskView extends FrameLayout implements Reusable {
             if (targets == null) {
                 // If the recents animation is cancelled somehow between the parent if block and
                 // here, try to launch the task as a non live tile task.
+                testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
+                        "TaskView.java - launchTasks: recents animation is cancelled");
                 RunnableList runnableList = launchTaskAnimated();
                 if (runnableList == null) {
                     Log.e(TAG, "Recents animation cancelled and cannot launch task as non-live tile"
@@ -1026,6 +1030,8 @@ public class TaskView extends FrameLayout implements Reusable {
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     if (mTask != null && mTask.key.displayId != getRootViewDisplayId()) {
+                        testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
+                                "TaskView.java - launchTasks: onAnimationEnd");
                         launchTaskAnimated();
                     }
                     mIsClickableAsLiveTile = true;
@@ -1045,6 +1051,9 @@ public class TaskView extends FrameLayout implements Reusable {
             recentsView.onTaskLaunchedInLiveTileMode();
             return runnableList;
         } else {
+            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
+                    "TaskView.java - launchTasks: isRunningTask=" + isRunningTask() + "||"
+                            + "remoteTargetHandles == null?" + (remoteTargetHandles == null));
             return launchTaskAnimated();
         }
     }
