@@ -144,15 +144,12 @@ jobs:
       - name: Get Name of Artifact
         run: |
           ARTIFACT_PATHNAME=$(find "Debug APK/lawnWithQuickstepMarket/debug/" -type f -name '*.apk')
-          ARTIFACT_NAME=$(basename $ARTIFACT_PATHNAME)
-          echo ::set-env name=ARTIFACT_NAME::${ARTIFACT_NAME}
           echo ::set-env name=ARTIFACT_PATHNAME::${ARTIFACT_PATHNAME}
 
       - run: echo ${{ env.ARTIFACT_PATHNAME }}
-      - run: echo ${{ env.ARTIFACT_NAME }}
 
       - name: Delete release if exist then create release
         id: delete-release
-        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create "NightlyBuild" ${{ env.ARTIFACT_PATHNAME }} -p --generate-notes 
+        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create "NightlyBuild" "${{ env.ARTIFACT_PATHNAME }}" -p --generate-notes 
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
