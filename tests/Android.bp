@@ -206,6 +206,7 @@ android_robolectric_test {
         "androidx.test.uiautomator_uiautomator",
         "androidx.core_core-animation-testing",
         "androidx.test.ext.junit",
+        "androidx.test.rules",
         "mockito-robolectric-prebuilt",
         "mockito-kotlin2",
         "platform-parametric-runner-lib",
