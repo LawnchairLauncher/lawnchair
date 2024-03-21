@@ -138,60 +138,60 @@ jobs:
           echo $PWD
           echo $(pwd)
           
-      - run: find "/Debug APK/lawnWithQuickstepMarket/debug/" -type f -name '*.apk' -exec echo {} \;
-      - run: find "/Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname '*.apk'  -exec echo {} \;
+      - run: find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -name '*.apk' -exec echo {} \;
+      - run: find "./Debug APK/lawnWithQuickstepMarket/debug/" -type f -iname '*.apk'  -exec echo {} \;
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: gh release view NightlyBuild && gh release delete NightlyBuild -y --cleanup-tag ; find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild '{}' -p --generate-notes \;
+        run: gh release view NightlyBuild && gh release delete NightlyBuild -y --cleanup-tag ; find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild '{}' -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild '{}' -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild '{}' -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild "{}" -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild "{}" -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ""{}"" -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ""{}"" -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild $'{}' -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild $'{}' -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild $"{}" -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild $"{}" -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild a$'{}' -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild a$'{}' -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ${{ {} }} -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ${{ {} }} -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release if exist then create release
         if: ${{ always() }}
-        run: find '/Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ${{ '{}' }} -p --generate-notes \;
+        run: find './Debug APK/lawnWithQuickstepMarket/debug/' -type f -iname '*.apk' -exec gh release create NightlyBuild ${{ '{}' }} -p --generate-notes \;
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
