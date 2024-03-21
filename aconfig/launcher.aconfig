@@ -90,9 +90,6 @@ flag {
     namespace: "launcher"
     description: "Enables full width two pane widget picker for tablets in landscape and portrait"
     bug: "315055849"
-    metadata {
-      purpose: PURPOSE_BUGFIX
-    }
 }
 
 flag {
@@ -185,6 +182,9 @@ flag {
   namespace: "launcher"
   description: "When adding app widget through config activity, directly add it to workspace to reduce flicker"
   bug: "284236964"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
 }
 
 flag {
