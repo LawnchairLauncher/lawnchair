@@ -74,7 +74,8 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
     private static final Rect sTempRect2 = new Rect();
 
     private final View mContainer;
-    protected final Paint mPaint;
+    protected final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mInnerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final int mMaxAlpha;
 
     private final Rect mDirtyRect = new Rect();
@@ -93,24 +94,31 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
     private ObjectAnimator mCurrentAnimation;
     private float mAlpha;
     private float mRadius;
+    private float mInnerRadius;
 
-    public ItemFocusIndicatorHelper(View container, int color) {
+    public ItemFocusIndicatorHelper(View container, int... colors) {
         mContainer = container;
 
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(0xFF000000 | color);
-        if (Flags.enableFocusOutline()) {
+        mPaint.setColor(0xFF000000 | colors[0]);
+        if (Flags.enableFocusOutline() && colors.length > 1) {
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(container.getResources().getDimensionPixelSize(
                     R.dimen.focus_outline_stroke_width));
             mRadius = container.getResources().getDimensionPixelSize(
                     R.dimen.focus_outline_radius);
+
+            mInnerPaint.setStyle(Paint.Style.STROKE);
+            mInnerPaint.setColor(0xFF000000 | colors[1]);
+            mInnerPaint.setStrokeWidth(container.getResources().getDimensionPixelSize(
+                    R.dimen.focus_outline_stroke_width));
+            mInnerRadius = container.getResources().getDimensionPixelSize(
+                    R.dimen.focus_inner_outline_radius);
         } else {
             mPaint.setStyle(Paint.Style.FILL);
             mRadius = container.getResources().getDimensionPixelSize(
                     R.dimen.grid_visualization_rounding_radius);
         }
-        mMaxAlpha = Color.alpha(color);
+        mMaxAlpha = Color.alpha(colors[0]);
 
         setAlpha(0);
         mShift = 0;
@@ -119,6 +127,7 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
     protected void setAlpha(float alpha) {
         mAlpha = alpha;
         mPaint.setAlpha((int) (mAlpha * mMaxAlpha));
+        mInnerPaint.setAlpha((int) (mAlpha * mMaxAlpha));
     }
 
     @Override
@@ -147,11 +156,18 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
         Rect newRect = getDrawRect();
         if (newRect != null) {
             if (Flags.enableFocusOutline()) {
-                // Stroke is drawn with half outside and half inside the view. Inset by half
-                // stroke width to move the whole stroke inside the view and avoid other views
-                // occluding it
-                int halfStrokeWidth = (int) mPaint.getStrokeWidth() / 2;
-                newRect.inset(halfStrokeWidth, halfStrokeWidth);
+                int strokeWidth = (int) mPaint.getStrokeWidth();
+                // Inset for inner outline. Stroke is drawn with half outside and half inside
+                // the view. Inset by half stroke width to move the whole stroke inside the view
+                // and avoid other views occluding it. Inset one more stroke width to leave space
+                // for outer outline.
+                newRect.inset((int) (strokeWidth * 1.5), (int) (strokeWidth * 1.5));
+                c.drawRoundRect((float) newRect.left, (float) newRect.top,
+                        (float) newRect.right, (float) newRect.bottom,
+                        mInnerRadius, mInnerRadius, mInnerPaint);
+
+                // Inset outward for drawing outer outline
+                newRect.inset(-strokeWidth, -strokeWidth);
             }
             mDirtyRect.set(newRect);
             c.drawRoundRect((float) mDirtyRect.left, (float) mDirtyRect.top,

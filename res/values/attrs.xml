@@ -43,6 +43,7 @@
     <attr name="popupNotificationDotColor" format="color" />
     <attr name="notificationDotColor" format="color" />
     <attr name="focusOutlineColor" format="color" />
+    <attr name="focusInnerOutlineColor" format="color" />
 
     <attr name="pageIndicatorDotColor" format="color" />
     <attr name="folderPreviewColor" format="color" />
