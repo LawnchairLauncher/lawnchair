@@ -22,7 +22,6 @@ import static com.android.launcher3.ui.TestViewHelpers.findWidgetProvider;
 import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Process;
@@ -32,11 +31,6 @@ import android.util.Log;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.celllayout.FavoriteItemsTransaction;
-import com.android.launcher3.celllayout.board.CellLayoutBoard;
-import com.android.launcher3.celllayout.board.CellType;
-import com.android.launcher3.celllayout.board.FolderPoint;
-import com.android.launcher3.celllayout.board.IconPoint;
-import com.android.launcher3.celllayout.board.WidgetRect;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -56,12 +50,10 @@ public class TestWorkspaceBuilder {
     private UserHandle mMyUser;
 
     private Context mContext;
-    private ContentResolver mResolver;
 
     public TestWorkspaceBuilder(Context context) {
         mMyUser = Process.myUserHandle();
         mContext = context;
-        mResolver = mContext.getContentResolver();
     }
 
     /**

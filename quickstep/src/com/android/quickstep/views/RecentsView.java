@@ -61,7 +61,7 @@ import static com.android.quickstep.util.TaskGridNavHelper.DIRECTION_RIGHT;
 import static com.android.quickstep.util.TaskGridNavHelper.DIRECTION_TAB;
 import static com.android.quickstep.util.TaskGridNavHelper.DIRECTION_UP;
 import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_ACTIONS_IN_MENU;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_DESKTOP;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
@@ -2791,7 +2791,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private boolean hasDesktopTask(Task[] runningTasks) {
-        if (!isDesktopModeSupported()) {
+        if (!enableDesktopWindowingMode()) {
             return false;
         }
         for (Task task : runningTasks) {
@@ -3967,7 +3967,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Update flags for 1p/3p launchers
         mActionsView.updateFor3pLauncher(!supportsAppPairs());
 
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
             mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
         }
@@ -4692,7 +4692,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setAnimateCurrentTaskDismissal(
                 true /*animateCurrentTaskDismissal*/);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             updateDesktopTaskVisibility(false /* visible */);
         }
     }
@@ -4716,7 +4716,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
                 splitSelectSource.position.stagePosition, splitSelectSource.itemInfo,
                 splitSelectSource.splitEvent, splitSelectSource.alreadyRunningTaskId);
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             updateDesktopTaskVisibility(false /* visible */);
         }
     }
@@ -4922,7 +4922,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE, INVALID_TASK_ID);
             mSplitHiddenTaskView = null;
         }
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             updateDesktopTaskVisibility(true /* visible */);
         }
     }
@@ -5312,7 +5312,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         RemoteTargetGluer gluer;
-        if (isDesktopModeSupported() && recentsAnimationTargets.hasDesktopTasks()) {
+        if (recentsAnimationTargets.hasDesktopTasks()) {
             gluer = new RemoteTargetGluer(getContext(), getSizeStrategy(), recentsAnimationTargets,
                     true /* forDesktop */);
             mRemoteTargetHandles = gluer.assignTargetsForDesktop(recentsAnimationTargets);

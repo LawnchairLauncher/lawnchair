@@ -451,7 +451,11 @@
     <dimen name="split_instructions_start_margin_cancel">8dp</dimen>
 
     <dimen name="focus_outline_radius">16dp</dimen>
-    <dimen name="focus_outline_stroke_width">3dp</dimen>
+    <dimen name="focus_inner_outline_radius">14dp</dimen>
+    <dimen name="focus_outline_stroke_width">2dp</dimen>
+    <!-- -4dp for double stroke focus outlines, -2dp for padding between outline and widget,
+    make it negative to outset the rect and leave space for drawing focus outline and padding -->
+    <dimen name="focus_rect_widget_outsets">-6dp</dimen>
 
     <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">16dp</dimen>

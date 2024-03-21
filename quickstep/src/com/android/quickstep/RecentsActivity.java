@@ -27,7 +27,7 @@ import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_O
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -144,7 +144,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                         systemUiProxy, RecentsModel.INSTANCE.get(this),
                         null /*activityBackCallback*/);
         mDragLayer.recreateControllers();
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             mDesktopRecentsTransitionController = new DesktopRecentsTransitionController(
                     getStateManager(), systemUiProxy, getIApplicationThread(),
                     null /* depthController */

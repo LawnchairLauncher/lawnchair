@@ -27,6 +27,7 @@ import com.android.launcher3.PagedView;
 public class ViewGroupFocusHelper extends FocusIndicatorHelper {
 
     private final View mContainer;
+    private static final Rect sTempRect = new Rect();
 
     public ViewGroupFocusHelper(View container) {
         super(container);
@@ -35,18 +36,22 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
 
     @Override
     public void viewToRect(View v, Rect outRect) {
-        outRect.left = 0;
-        outRect.top = 0;
+        // Using FocusedRect here allows views to provide their custom rect for drawing outline,
+        // e.g. making the Rect bigger than the content to leave some padding between view and
+        // outline
+        v.getFocusedRect(sTempRect);
+        outRect.left = sTempRect.left;
+        outRect.top = sTempRect.top;
 
         computeLocationRelativeToContainer(v, outRect);
 
         // If a view is scaled, its position will also shift accordingly. For optimization, only
         // consider this for the last node.
-        outRect.left += (1 - v.getScaleX()) * v.getWidth() / 2;
-        outRect.top += (1 - v.getScaleY()) * v.getHeight() / 2;
+        outRect.left = (int) (outRect.left + (1 - v.getScaleX()) * sTempRect.width() / 2);
+        outRect.top = (int) (outRect.top + (1 - v.getScaleY()) * sTempRect.height() / 2);
 
-        outRect.right = outRect.left + (int) (v.getScaleX() * v.getWidth());
-        outRect.bottom = outRect.top + (int) (v.getScaleY() * v.getHeight());
+        outRect.right = outRect.left + (int) (v.getScaleX() * sTempRect.width());
+        outRect.bottom = outRect.top + (int) (v.getScaleY() * sTempRect.height());
     }
 
     private void computeLocationRelativeToContainer(View child, Rect outRect) {

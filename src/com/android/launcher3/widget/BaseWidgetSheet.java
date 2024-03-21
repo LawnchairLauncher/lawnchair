@@ -168,7 +168,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
                 StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP);
         handleClose(true);
         Launcher.getLauncher(mActivityContext).getAccessibilityDelegate()
-                .addToWorkspace(info, /*accessibility=*/ false);
+                .addToWorkspace(info, /*accessibility=*/ false, /*finishCallback=*/ null);
     }
 
     @Override

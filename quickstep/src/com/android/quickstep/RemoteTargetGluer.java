@@ -17,7 +17,7 @@
 package com.android.quickstep;
 
 import static com.android.quickstep.util.SplitScreenUtils.convertShellSplitBoundsToLauncher;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 import static com.android.wm.shell.util.SplitBounds.KEY_EXTRA_SPLIT_BOUNDS;
 
 import android.app.WindowConfiguration;
@@ -68,7 +68,7 @@ public class RemoteTargetGluer {
      * running tasks
      */
     public RemoteTargetGluer(Context context, BaseActivityInterface sizingStrategy) {
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             DesktopVisibilityController desktopVisibilityController =
                     LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
             if (desktopVisibilityController != null) {

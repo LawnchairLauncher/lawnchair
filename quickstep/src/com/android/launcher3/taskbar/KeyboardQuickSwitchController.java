@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
@@ -113,7 +113,7 @@ public final class KeyboardQuickSwitchController implements
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                isDesktopModeSupported()
+                enableDesktopWindowingMode()
                         && desktopController != null
                         && desktopController.areFreeformTasksVisible();
 
@@ -154,7 +154,7 @@ public final class KeyboardQuickSwitchController implements
 
         // Hide all desktop tasks and show them on the hidden tile
         int hiddenDesktopTasks = 0;
-        if (isDesktopModeSupported()) {
+        if (enableDesktopWindowingMode()) {
             DesktopTask desktopTask = findDesktopTask(tasks);
             if (desktopTask != null) {
                 hiddenDesktopTasks = desktopTask.tasks.size();

@@ -105,8 +105,16 @@ class TaskbarNavLayoutter(
                     contextualMargin, Gravity.START)
 
             if (imeSwitcher != null) {
+                val imeStartMargin = resources.getDimensionPixelSize(
+                        R.dimen.taskbar_ime_switcher_button_margin_start)
                 startContextualContainer.addView(imeSwitcher)
-                imeSwitcher.layoutParams = getParamsToCenterView()
+                val imeSwitcherButtonParams = FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                imeSwitcherButtonParams.apply {
+                    marginStart = imeStartMargin
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                imeSwitcher.layoutParams = imeSwitcherButtonParams
             }
             if (a11yButton != null) {
                 endContextualContainer.addView(a11yButton)

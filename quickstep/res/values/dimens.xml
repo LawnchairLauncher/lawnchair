@@ -326,6 +326,7 @@
     <dimen name="taskbar_nav_buttons_size">44dp</dimen>
     <dimen name="taskbar_split_instructions_margin">48dp</dimen>
     <dimen name="taskbar_contextual_button_margin">120dp</dimen>
+    <dimen name="taskbar_ime_switcher_button_margin_start">40dp</dimen>
     <dimen name="taskbar_suw_insets">48dp</dimen>
     <dimen name="taskbar_suw_frame">48dp</dimen>
     <dimen name="taskbar_hotseat_nav_spacing">24dp</dimen>

@@ -51,7 +51,6 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.window.flags.Flags;
 
 import kotlin.Unit;
 
@@ -87,11 +86,6 @@ public class DesktopTaskView extends TaskView {
     private View mBackgroundView;
 
     private int mChildCountAtInflation;
-
-    /** Check whether desktop windowing is enabled */
-    public static boolean isDesktopModeSupported() {
-        return Flags.enableDesktopWindowingMode();
-    }
 
     public DesktopTaskView(Context context) {
         this(context, null);

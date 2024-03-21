@@ -35,7 +35,7 @@ import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_SINGLE_TASK
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_PENDINGINTENT;
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_SHORTCUT;
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_TASK;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 import static com.android.wm.shell.common.split.SplitScreenConstants.KEY_EXTRA_WIDGET_INTENT;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
 
@@ -104,6 +104,7 @@ import com.android.quickstep.views.SplitInstructionsView;
 import com.android.systemui.animation.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 import com.android.wm.shell.splitscreen.ISplitSelectListener;
 
@@ -150,6 +151,12 @@ public class SplitSelectStateController {
 
     /** True when the first selected split app is being launched in fullscreen. */
     private boolean mLaunchingFirstAppFullscreen;
+
+    /**
+     * Should be a constant from {@link com.android.internal.jank.Cuj} or -1, does not need to be
+     * set for all launches.
+     */
+    private int mLaunchCuj = -1;
 
     private FloatingTaskView mFirstFloatingTaskView;
     private SplitInstructionsView mSplitInstructionsView;
@@ -707,6 +714,10 @@ public class SplitSelectStateController {
         return mSplitAnimationController;
     }
 
+    public void setLaunchingCuj(int launchCuj) {
+        mLaunchCuj = launchCuj;
+    }
+
     /**
      * Requires Shell Transitions
      */
@@ -850,6 +861,11 @@ public class SplitSelectStateController {
         mSplitInstructionsView = null;
         mLaunchingFirstAppFullscreen = false;
 
+        if (mLaunchCuj != -1) {
+            InteractionJankMonitorWrapper.end(mLaunchCuj);
+        }
+        mLaunchCuj = -1;
+
         if (mSessionInstanceIds != null) {
             mStatsLogManager.logger()
                     .withInstanceId(mSessionInstanceIds.second)
@@ -950,7 +966,7 @@ public class SplitSelectStateController {
                 @Override
                 public boolean onRequestSplitSelect(ActivityManager.RunningTaskInfo taskInfo,
                         int splitPosition, Rect taskBounds) {
-                    if (!isDesktopModeSupported()) return false;
+                    if (!enableDesktopWindowingMode()) return false;
                     MAIN_EXECUTOR.execute(() -> enterSplitSelect(taskInfo, splitPosition,
                             taskBounds));
                     return true;

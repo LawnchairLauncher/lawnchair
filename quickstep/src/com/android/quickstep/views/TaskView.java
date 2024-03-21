@@ -40,7 +40,6 @@ import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventFo
 import static com.android.quickstep.TaskOverlayFactory.getEnabledShortcuts;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.EXPECTING_TASK_APPEARED;
 import static com.android.quickstep.util.BorderAnimator.DEFAULT_BORDER_COLOR;
-import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -426,8 +425,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
-        boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
-                || isDesktopModeSupported();
+        boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get();
         boolean cursorHoverStatesEnabled = enableCursorHoverStates();
 
         setWillNotDraw(!keyboardFocusHighlightEnabled && !cursorHoverStatesEnabled);

@@ -128,7 +128,7 @@ public class TaplRequestPinItemTest extends AbstractLauncherUiTest {
 
     private void runTest(String activityMethod, boolean isWidget, ItemOperator itemMatcher,
             Intent... commandIntents) throws Throwable {
-        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
+        commitTransactionAndLoadHome(new FavoriteItemsTransaction(mTargetContext));
 
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(

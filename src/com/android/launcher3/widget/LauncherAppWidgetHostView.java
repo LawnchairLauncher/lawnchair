@@ -92,6 +92,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     private boolean mTrackingWidgetUpdate = false;
 
+    private int mFocusRectOutsets = 0;
+
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mActivityContext = ActivityContext.lookupContext(context);
@@ -100,6 +102,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
         if (Flags.enableFocusOutline()) {
             setDefaultFocusHighlightEnabled(false);
+            mFocusRectOutsets = context.getResources().getDimensionPixelSize(
+                    R.dimen.focus_rect_widget_outsets);
         }
 
         if (Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText)) {
@@ -266,6 +270,13 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
                     + " LauncherAppWidgetProviderInfo");
         }
         return info;
+    }
+
+    @Override
+    public void getFocusedRect(Rect r) {
+        super.getFocusedRect(r);
+        // Outset to a larger rect for drawing a padding between focus outline and widget
+        r.inset(mFocusRectOutsets, mFocusRectOutsets);
     }
 
     @Override

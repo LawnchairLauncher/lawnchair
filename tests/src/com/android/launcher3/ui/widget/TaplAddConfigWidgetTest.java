@@ -87,7 +87,7 @@ public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest {
      * @param acceptConfig accept the config activity
      */
     private void runTest(boolean acceptConfig) throws Throwable {
-        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
+        commitTransactionAndLoadHome(new FavoriteItemsTransaction(mTargetContext));
 
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();

@@ -233,6 +233,10 @@ public class BubbleBarViewController {
         if (mHiddenForNoBubbles != hidden) {
             mHiddenForNoBubbles = hidden;
             updateVisibilityForStateChange();
+            if (hidden) {
+                mBarView.setAlpha(0);
+                mBarView.setExpanded(false);
+            }
             mActivity.bubbleBarVisibilityChanged(!hidden);
         }
     }
@@ -259,8 +263,6 @@ public class BubbleBarViewController {
             mBarView.setVisibility(VISIBLE);
         } else {
             mBarView.setVisibility(INVISIBLE);
-            mBarView.setAlpha(0);
-            mBarView.setExpanded(false);
         }
     }
 
