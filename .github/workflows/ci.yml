@@ -142,6 +142,6 @@ jobs:
 
       - name: Delete release if exist then create release
         id: delete-release
-        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create NightlyBuild "./artifacts/debug-apk/Debug APK/lawnWithQuickstepMarket/debug/*.apk" -p --generate-notes
+        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create NightlyBuild (get-item "./artifacts/debug-apk/Debug APK/lawnWithQuickstepMarket/debug/*.apk") -p --generate-notes
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
