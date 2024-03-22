@@ -122,17 +122,17 @@ jobs:
   nightly-release:
     runs-on: windows-latest
     needs: build-debug-apk
+    continue-on-error: true
     permissions:
       contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
     
       - name: Download artifacts
         uses: actions/download-artifact@v4
 
+      # Rename because # symbol cause error in gh release command
       - name: Rename .apk file
         run: (get-item "./Debug APK/lawnWithQuickstepGithub/debug/*.apk") | Rename-Item -NewName "debug.apk"
 
