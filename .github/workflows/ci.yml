@@ -133,8 +133,11 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
 
+      - name: Rename .apk file
+        run: (get-item "./Debug APK/lawnWithQuickstepGithub/debug/*.apk") | Rename-Item -NewName "debug.apk"
+
       - name: Delete release if exist then create release
         id: delete-release
-        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create "NightlyBuild" (get-item "./Debug APK/lawnWithQuickstepGithub/debug/*.apk") -p --generate-notes 
+        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create "NightlyBuild" "./Debug APK/lawnWithQuickstepGithub/debug/debug.apk" -p --generate-notes 
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
