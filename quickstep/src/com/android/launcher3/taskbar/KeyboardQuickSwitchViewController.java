@@ -138,7 +138,7 @@ public class KeyboardQuickSwitchViewController {
         // views have been added in the KeyboardQuickSwitchView.
         GroupTask task = mControllerCallbacks.getTaskAt(index);
         if (task == null) {
-            return Math.max(0, index);
+            return mOnDesktop ? 1 : Math.max(0, index);
         }
         if (mControllerCallbacks.isTaskRunning(task)) {
             // Ignore attempts to run the selected task if it is already running.
