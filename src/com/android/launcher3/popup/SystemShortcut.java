@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.AbstractFloatingViewHelper;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.SecondaryDropTarget;
@@ -61,23 +62,23 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
     protected final ItemInfo mItemInfo;
     protected final View mOriginalView;
 
+    private final AbstractFloatingViewHelper mAbstractFloatingViewHelper;
+
     public SystemShortcut(int iconResId, int labelResId, T target, ItemInfo itemInfo,
             View originalView) {
+        this(iconResId, labelResId, target, itemInfo, originalView,
+                new AbstractFloatingViewHelper());
+    }
+
+    public SystemShortcut(int iconResId, int labelResId, T target, ItemInfo itemInfo,
+            View originalView, AbstractFloatingViewHelper abstractFloatingViewHelper) {
         mIconResId = iconResId;
         mLabelResId = labelResId;
         mAccessibilityActionId = labelResId;
         mTarget = target;
         mItemInfo = itemInfo;
         mOriginalView = originalView;
-    }
-
-    public SystemShortcut(SystemShortcut<T> other) {
-        mIconResId = other.mIconResId;
-        mLabelResId = other.mLabelResId;
-        mAccessibilityActionId = other.mAccessibilityActionId;
-        mTarget = other.mTarget;
-        mItemInfo = other.mItemInfo;
-        mOriginalView = other.mOriginalView;
+        mAbstractFloatingViewHelper = abstractFloatingViewHelper;
     }
 
     public void setIconAndLabelFor(View iconView, TextView labelView) {
@@ -178,7 +179,7 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             Rect sourceBounds = Utilities.getViewBounds(view);
             new PackageManagerHelper(view.getContext()).startDetailsActivityForInfo(
                     mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
@@ -327,7 +328,7 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             mTarget.getStatsLogManager().logger()
                     .withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP);
@@ -370,7 +371,7 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             SecondaryDropTarget.performUninstall(view.getContext(), mComponentName, mItemInfo);
             mTarget.getStatsLogManager()
                     .logger()
@@ -379,8 +380,8 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
         }
     }
 
-    public static <T extends ActivityContext> void dismissTaskMenuView(T activity) {
-        AbstractFloatingView.closeOpenViews(activity, true,
+    protected void dismissTaskMenuView() {
+        mAbstractFloatingViewHelper.closeOpenViews(mTarget, true,
                 AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }

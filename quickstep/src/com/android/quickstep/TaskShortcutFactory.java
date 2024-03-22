@@ -145,7 +145,7 @@ public interface TaskShortcutFactory {
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             ((RecentsView) mTarget.getOverviewPanel())
                     .getSplitSelectController().getAppPairsController().saveAppPair(mTaskView);
         }
@@ -174,7 +174,7 @@ public interface TaskShortcutFactory {
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             RecentsView rv = mTarget.getOverviewPanel();
             rv.switchToScreenshot(() -> {
                 rv.finishRecentsAnimation(true /* toRecents */, false /* shouldPip */, () -> {
@@ -420,7 +420,7 @@ public interface TaskShortcutFactory {
                 SystemUiProxy.INSTANCE.get(mTarget).startScreenPinning(
                         mTaskView.getTask().key.id);
             }
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
                     .log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP);
         }

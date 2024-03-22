@@ -6200,6 +6200,27 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         UI_HELPER_EXECUTOR.post(() -> mActivity.setLocusContext(id, Bundle.EMPTY));
     }
 
+    /**
+     * Moves the provided task into desktop mode, and invoke {@code successCallback} if succeeded.
+     */
+    public void moveTaskToDesktop(TaskIdAttributeContainer taskContainer,
+            Runnable successCallback) {
+        if (!enableDesktopWindowingMode()) {
+            return;
+        }
+        switchToScreenshot(() -> finishRecentsAnimation(/* toRecents= */true, /* shouldPip= */false,
+                () -> moveTaskToDesktopInternal(taskContainer, successCallback)));
+    }
+
+    private void moveTaskToDesktopInternal(TaskIdAttributeContainer taskContainer,
+            Runnable successCallback) {
+        if (mDesktopRecentsTransitionController == null) {
+            return;
+        }
+        mDesktopRecentsTransitionController.moveToDesktop(taskContainer.getTask().key.id);
+        successCallback.run();
+    }
+
     public interface TaskLaunchListener {
         void onTaskLaunched();
     }

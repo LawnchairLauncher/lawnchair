@@ -136,6 +136,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.PIN,
             TaskShortcutFactory.INSTALL,
             TaskShortcutFactory.FREE_FORM,
+            DesktopSystemShortcut.Companion.createFactory(),
             TaskShortcutFactory.WELLBEING,
             TaskShortcutFactory.SAVE_APP_PAIR
     };
@@ -315,7 +316,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             @Override
             public void onClick(View view) {
                 saveScreenshot(mThumbnailView.getTaskView().getTask());
-                dismissTaskMenuView(mActivity);
+                dismissTaskMenuView();
             }
         }
 

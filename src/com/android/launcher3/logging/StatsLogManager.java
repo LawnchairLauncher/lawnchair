@@ -218,6 +218,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped on free form icon on a task menu.")
         LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP(519),
 
+        @UiEvent(doc = "User tapped on desktop icon on a task menu.")
+        LAUNCHER_SYSTEM_SHORTCUT_DESKTOP_TAP(1706),
+
         @UiEvent(doc = "User tapped on pause app system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP(521),
 
