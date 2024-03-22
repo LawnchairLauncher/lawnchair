@@ -2651,6 +2651,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         mModel.dumpState(prefix, fd, writer, args);
         mOverlayManager.dump(prefix, writer);
+        ACTIVITY_TRACKER.dump(prefix, writer);
     }
 
     /**

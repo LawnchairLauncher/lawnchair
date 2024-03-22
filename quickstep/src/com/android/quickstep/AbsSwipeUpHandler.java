@@ -1002,7 +1002,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         ActiveGestureLog.INSTANCE.addLog(
                 /* event= */ "cancelRecentsAnimation",
                 /* gestureEvent= */ CANCEL_RECENTS_ANIMATION);
-        mActivityInitListener.unregister();
+        mActivityInitListener.unregister("AbsSwipeUpHandler.onRecentsAnimationCanceled");
         // Cache the recents animation controller so we can defer its cleanup to after having
         // properly cleaned up the screenshot without accidentally using it.
         mDeferredCleanupRecentsAnimationController = mRecentsAnimationController;
@@ -1964,7 +1964,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         // Cleanup when switching handlers
         mInputConsumerProxy.unregisterOnTouchDownCallback();
-        mActivityInitListener.unregister();
+        mActivityInitListener.unregister("AbsSwipeUpHandler.cancelCurrentAnimation");
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
                 mActivityRestartListener);
         mTaskSnapshotCache.clear();
@@ -1982,7 +1982,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mGestureEndCallback.run();
         }
 
-        mActivityInitListener.unregister();
+        mActivityInitListener.unregister("AbsSwipeUpHandler.invalidateHandler");
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
                 mActivityRestartListener);
         mTaskSnapshotCache.clear();
@@ -2486,11 +2486,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     /**
      * Registers a callback to run when the activity is ready.
      */
-    public void initWhenReady() {
+    public void initWhenReady(String reasonString) {
         // Preload the plan
         RecentsModel.INSTANCE.get(mContext).getTasks(null);
 
-        mActivityInitListener.register();
+        mActivityInitListener.register(reasonString);
     }
 
     private boolean shouldFadeOutTargetsForKeyboardQuickSwitch(

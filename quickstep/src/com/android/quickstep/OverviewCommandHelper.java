@@ -310,7 +310,7 @@ public class OverviewCommandHelper {
                 .newHandler(gestureState, cmd.createTime);
         interactionHandler.setGestureEndCallback(
                 () -> onTransitionComplete(cmd, interactionHandler));
-        interactionHandler.initWhenReady();
+        interactionHandler.initWhenReady("OverviewCommandHelper: cmd.type=" + cmd.type);
 
         RecentsAnimationListener recentAnimListener = new RecentsAnimationListener() {
             @Override
