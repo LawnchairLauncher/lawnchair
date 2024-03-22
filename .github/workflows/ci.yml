@@ -122,8 +122,6 @@ jobs:
   nightly-release:
     runs-on: ubuntu-latest
     needs: build-debug-apk
-    outputs:
-      output1: ${{ steps.step1.outputs.test }}
     permissions:
       contents: write
     steps:
@@ -139,9 +137,5 @@ jobs:
         id: step1
         run: ls -R
         
-
       - name: Display structure of downloaded files
-        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1 >> "$GITHUB_OUTPUT"
-
-      - name: action_with_output
-        run: echo ${{outputs.output1}}
+        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1 | gh release create "NightlyBuild" -p --generate-notes 
