@@ -25,22 +25,30 @@ import android.content.pm.PackageInstaller
 import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import android.util.LongSparseArray
+import com.android.dx.mockito.inline.extended.ExtendedMockito
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FOLDER
+import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.EMPTY_PERSON_ARRAY
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError.Companion.MISSING_INFO
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError.Companion.PROFILE_DELETED
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.IconRequestInfo
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG
+import com.android.launcher3.model.data.LauncherAppWidgetInfo.FLAG_UI_NOT_READY
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.util.PackageUserKey
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.android.launcher3.widget.WidgetInflater
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
@@ -71,28 +79,30 @@ class WorkspaceItemProcessorTest {
     @Mock private lateinit var mockUserManagerState: UserManagerState
     @Mock private lateinit var mockWidgetInflater: WidgetInflater
 
-    private lateinit var userHandle: UserHandle
-    private lateinit var iconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>>
-    private lateinit var componentName: ComponentName
-    private lateinit var unlockedUsersArray: LongSparseArray<Boolean>
-    private lateinit var keyToPinnedShortcutsMap: MutableMap<ShortcutKey, ShortcutInfo>
-    private lateinit var installingPkgs: HashMap<PackageUserKey, PackageInstaller.SessionInfo>
-    private lateinit var allDeepShortcuts: MutableList<ShortcutInfo>
+    private var mUserHandle: UserHandle = UserHandle(0)
+    private var mIconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>> = mutableListOf()
+    private var mComponentName: ComponentName = ComponentName("package", "class")
+    private var mUnlockedUsersArray: LongSparseArray<Boolean> = LongSparseArray()
+    private var mKeyToPinnedShortcutsMap: MutableMap<ShortcutKey, ShortcutInfo> = mutableMapOf()
+    private var mInstallingPkgs: HashMap<PackageUserKey, PackageInstaller.SessionInfo> = hashMapOf()
+    private var mAllDeepShortcuts: MutableList<ShortcutInfo> = mutableListOf()
+    private var mWidgetProvidersMap: MutableMap<ComponentKey, AppWidgetProviderInfo?> =
+        mutableMapOf()
+    private var mPendingPackages: MutableSet<PackageUserKey> = mutableSetOf()
 
     private lateinit var itemProcessorUnderTest: WorkspaceItemProcessor
 
     @Before
     fun setup() {
-        userHandle = UserHandle(0)
+        mUserHandle = UserHandle(0)
         mockIconRequestInfo = mock<IconRequestInfo<WorkspaceItemInfo>>()
-        iconRequestInfos = mutableListOf(mockIconRequestInfo)
         mockWorkspaceInfo = mock<WorkspaceItemInfo>()
         mockBgDataModel = mock<BgDataModel>()
-        componentName = ComponentName("package", "class")
-        unlockedUsersArray = LongSparseArray<Boolean>(1).apply { put(101, true) }
+        mComponentName = ComponentName("package", "class")
+        mUnlockedUsersArray = LongSparseArray<Boolean>(1).apply { put(101, true) }
         mockIntent =
             mock<Intent>().apply {
-                whenever(component).thenReturn(componentName)
+                whenever(component).thenReturn(mComponentName)
                 whenever(`package`).thenReturn("pkg")
                 whenever(getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID)).thenReturn("")
             }
@@ -109,17 +119,17 @@ class WorkspaceItemProcessorTest {
             }
         mockPmHelper =
             mock<PackageManagerHelper>().apply {
-                whenever(getAppLaunchIntent(componentName.packageName, userHandle))
+                whenever(getAppLaunchIntent(mComponentName.packageName, mUserHandle))
                     .thenReturn(mockIntent)
             }
         mockLauncherApps =
             mock<LauncherApps>().apply {
-                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
-                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(true)
+                whenever(isPackageEnabled("package", mUserHandle)).thenReturn(true)
+                whenever(isActivityEnabled(mComponentName, mUserHandle)).thenReturn(true)
             }
         mockCursor =
             mock(LoaderCursor::class.java, RETURNS_DEEP_STUBS).apply {
-                user = userHandle
+                user = mUserHandle
                 itemType = ITEM_TYPE_APPLICATION
                 id = 1
                 restoreFlag = 1
@@ -134,9 +144,12 @@ class WorkspaceItemProcessorTest {
             }
         mockUserManagerState = mock<UserManagerState>()
         mockWidgetInflater = mock<WidgetInflater>()
-        keyToPinnedShortcutsMap = mutableMapOf()
-        installingPkgs = hashMapOf()
-        allDeepShortcuts = mutableListOf()
+        mKeyToPinnedShortcutsMap = mutableMapOf()
+        mInstallingPkgs = hashMapOf()
+        mAllDeepShortcuts = mutableListOf()
+        mWidgetProvidersMap = mutableMapOf()
+        mIconRequestInfos = mutableListOf()
+        mPendingPackages = mutableSetOf()
     }
 
     /**
@@ -149,18 +162,18 @@ class WorkspaceItemProcessorTest {
         memoryLogger: LoaderMemoryLogger? = null,
         userManagerState: UserManagerState = mockUserManagerState,
         launcherApps: LauncherApps = mockLauncherApps,
-        shortcutKeyToPinnedShortcuts: Map<ShortcutKey, ShortcutInfo> = keyToPinnedShortcutsMap,
+        shortcutKeyToPinnedShortcuts: Map<ShortcutKey, ShortcutInfo> = mKeyToPinnedShortcutsMap,
         app: LauncherAppState = mockAppState,
         bgDataModel: BgDataModel = mockBgDataModel,
-        widgetProvidersMap: MutableMap<ComponentKey, AppWidgetProviderInfo?> = mutableMapOf(),
+        widgetProvidersMap: MutableMap<ComponentKey, AppWidgetProviderInfo?> = mWidgetProvidersMap,
         widgetInflater: WidgetInflater = mockWidgetInflater,
         pmHelper: PackageManagerHelper = mockPmHelper,
-        iconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>> = mutableListOf(),
+        iconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>> = mIconRequestInfos,
         isSdCardReady: Boolean = false,
-        pendingPackages: MutableSet<PackageUserKey> = mutableSetOf(),
-        unlockedUsers: LongSparseArray<Boolean> = unlockedUsersArray,
-        installingPkgs: HashMap<PackageUserKey, PackageInstaller.SessionInfo> = hashMapOf(),
-        allDeepShortcuts: MutableList<ShortcutInfo> = mutableListOf()
+        pendingPackages: MutableSet<PackageUserKey> = mPendingPackages,
+        unlockedUsers: LongSparseArray<Boolean> = mUnlockedUsersArray,
+        installingPkgs: HashMap<PackageUserKey, PackageInstaller.SessionInfo> = mInstallingPkgs,
+        allDeepShortcuts: MutableList<ShortcutInfo> = mAllDeepShortcuts
     ) =
         WorkspaceItemProcessor(
             c = cursor,
@@ -227,8 +240,8 @@ class WorkspaceItemProcessorTest {
     fun `When app has empty String target package then mark deleted`() {
 
         // Given
-        componentName = ComponentName("", "")
-        whenever(mockIntent.component).thenReturn(componentName)
+        mComponentName = ComponentName("", "")
+        whenever(mockIntent.component).thenReturn(mComponentName)
         whenever(mockCursor.parseIntent()).thenReturn(mockIntent)
         itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
 
@@ -255,7 +268,7 @@ class WorkspaceItemProcessorTest {
             .isEqualTo(0)
         // currently gets marked restored twice, although markRestore() has check for restoreFlag
         verify(mockCursor, times(2)).markRestored()
-        assertThat(iconRequestInfos).containsExactly(mockIconRequestInfo)
+        assertThat(mIconRequestInfos).containsExactly(mockIconRequestInfo)
         verify(mockCursor).checkAndAddItem(mockWorkspaceInfo, mockBgDataModel, null)
     }
 
@@ -265,12 +278,12 @@ class WorkspaceItemProcessorTest {
         // Given
         mockLauncherApps =
             mock<LauncherApps>().apply {
-                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
-                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(false)
+                whenever(isPackageEnabled("package", mUserHandle)).thenReturn(true)
+                whenever(isActivityEnabled(mComponentName, mUserHandle)).thenReturn(false)
             }
         mockPmHelper =
             mock<PackageManagerHelper>().apply {
-                whenever(getAppLaunchIntent(componentName.packageName, userHandle))
+                whenever(getAppLaunchIntent(mComponentName.packageName, mUserHandle))
                     .thenReturn(mockIntent)
             }
         itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
@@ -283,7 +296,7 @@ class WorkspaceItemProcessorTest {
             .that(mockCursor.restoreFlag)
             .isEqualTo(0)
         verify(mockCursor.updater().put(Favorites.INTENT, mockIntent.toUri(0))).commit()
-        assertThat(iconRequestInfos).containsExactly(mockIconRequestInfo)
+        assertThat(mIconRequestInfos).containsExactly(mockIconRequestInfo)
         verify(mockCursor).checkAndAddItem(mockWorkspaceInfo, mockBgDataModel, null)
     }
 
@@ -293,12 +306,13 @@ class WorkspaceItemProcessorTest {
         // Given
         mockLauncherApps =
             mock<LauncherApps>().apply {
-                whenever(isPackageEnabled("package", userHandle)).thenReturn(true)
-                whenever(isActivityEnabled(componentName, userHandle)).thenReturn(false)
+                whenever(isPackageEnabled("package", mUserHandle)).thenReturn(true)
+                whenever(isActivityEnabled(mComponentName, mUserHandle)).thenReturn(false)
             }
         mockPmHelper =
             mock<PackageManagerHelper>().apply {
-                whenever(getAppLaunchIntent(componentName.packageName, userHandle)).thenReturn(null)
+                whenever(getAppLaunchIntent(mComponentName.packageName, mUserHandle))
+                    .thenReturn(null)
             }
         itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
 
@@ -337,10 +351,9 @@ class WorkspaceItemProcessorTest {
                 whenever(persons).thenReturn(EMPTY_PERSON_ARRAY)
             }
         val shortcutKey = ShortcutKey.fromIntent(mockIntent, mockCursor.user)
-        keyToPinnedShortcutsMap[shortcutKey] = expectedShortcutInfo
-        iconRequestInfos = mutableListOf()
+        mKeyToPinnedShortcutsMap[shortcutKey] = expectedShortcutInfo
         itemProcessorUnderTest =
-            createWorkspaceItemProcessorUnderTest(allDeepShortcuts = allDeepShortcuts)
+            createWorkspaceItemProcessorUnderTest(allDeepShortcuts = mAllDeepShortcuts)
 
         // When
         itemProcessorUnderTest.processItem()
@@ -349,8 +362,8 @@ class WorkspaceItemProcessorTest {
         assertWithMessage("item restoreFlag should be set to 0")
             .that(mockCursor.restoreFlag)
             .isEqualTo(0)
-        assertThat(iconRequestInfos).isEmpty()
-        assertThat(allDeepShortcuts).containsExactly(expectedShortcutInfo)
+        assertThat(mIconRequestInfos).isEmpty()
+        assertThat(mAllDeepShortcuts).containsExactly(expectedShortcutInfo)
         verify(mockCursor).markRestored()
         verify(mockCursor).checkAndAddItem(any(), any(), anyOrNull())
     }
@@ -360,8 +373,6 @@ class WorkspaceItemProcessorTest {
 
         // Given
         mockCursor.itemType = ITEM_TYPE_DEEP_SHORTCUT
-        iconRequestInfos = mutableListOf()
-        keyToPinnedShortcutsMap = hashMapOf()
         itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
 
         // When
@@ -371,7 +382,7 @@ class WorkspaceItemProcessorTest {
         assertWithMessage("item restoreFlag should be set to 0")
             .that(mockCursor.restoreFlag)
             .isEqualTo(0)
-        assertThat(iconRequestInfos).isEmpty()
+        assertThat(mIconRequestInfos).isEmpty()
         verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
         verify(mockCursor)
             .markDeleted(
@@ -426,5 +437,190 @@ class WorkspaceItemProcessorTest {
         assertThat(actualFolderInfo.spanY).isEqualTo(expectedFolderInfo.spanY)
         assertThat(actualFolderInfo.options).isEqualTo(expectedFolderInfo.options)
         verify(mockCursor).checkAndAddItem(actualFolderInfo, mockBgDataModel, null)
+    }
+
+    @Test
+    fun `When valid Widget then checkAndAddItem`() {
+
+        // Given
+        mockCursor =
+            mock<LoaderCursor>().apply {
+                itemType = ITEM_TYPE_APPWIDGET
+                id = 1
+                user = UserHandle(1)
+                restoreFlag = FLAG_DIRECT_CONFIG
+                container = CONTAINER_DESKTOP
+                whenever(isOnWorkspaceOrHotseat).thenCallRealMethod()
+                whenever(appWidgetProvider)
+                    .thenReturn("com.google.android.testApp/com.android.testApp.testAppProvider")
+                whenever(appWidgetId).thenReturn(0)
+                whenever(spanX).thenReturn(2)
+                whenever(spanY).thenReturn(1)
+                whenever(options).thenReturn(0)
+                whenever(appWidgetSource).thenReturn(20)
+                whenever(applyCommonProperties(any())).thenCallRealMethod()
+            }
+        val mockProviderInfo =
+            mock<LauncherAppWidgetProviderInfo>().apply {
+                provider = mock()
+                whenever(user).thenReturn(UserHandle(1))
+            }
+        val inflationResult =
+            WidgetInflater.InflationResult(
+                type = WidgetInflater.TYPE_REAL,
+                widgetInfo = mockProviderInfo
+            )
+        mockWidgetInflater =
+            mock<WidgetInflater>().apply {
+                whenever(inflateAppWidget(any())).thenReturn(inflationResult)
+            }
+        itemProcessorUnderTest =
+            createWorkspaceItemProcessorUnderTest(widgetProvidersMap = mWidgetProvidersMap)
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertThat(
+                mWidgetProvidersMap[ComponentKey(mockProviderInfo.provider, mockProviderInfo.user)]
+            )
+            .isEqualTo(inflationResult.widgetInfo)
+        verify(mockCursor).checkAndAddItem(any(), any())
+    }
+
+    @Test
+    fun `When valid Pending Widget then checkAndAddItem`() {
+
+        // Given
+        mockCursor =
+            mock<LoaderCursor>().apply {
+                itemType = ITEM_TYPE_APPWIDGET
+                id = 1
+                user = UserHandle(1)
+                restoreFlag = FLAG_UI_NOT_READY
+                container = CONTAINER_DESKTOP
+                whenever(isOnWorkspaceOrHotseat).thenCallRealMethod()
+                whenever(appWidgetProvider)
+                    .thenReturn("com.google.android.testApp/com.android.testApp.testAppProvider")
+                whenever(appWidgetId).thenReturn(0)
+                whenever(spanX).thenReturn(2)
+                whenever(spanY).thenReturn(1)
+                whenever(options).thenReturn(0)
+                whenever(appWidgetSource).thenReturn(20)
+                whenever(applyCommonProperties(any())).thenCallRealMethod()
+            }
+        val mockProviderInfo =
+            mock<LauncherAppWidgetProviderInfo>().apply {
+                provider = mock()
+                whenever(user).thenReturn(UserHandle(1))
+            }
+        val inflationResult =
+            WidgetInflater.InflationResult(
+                type = WidgetInflater.TYPE_PENDING,
+                widgetInfo = mockProviderInfo
+            )
+        mockWidgetInflater =
+            mock<WidgetInflater>().apply {
+                whenever(inflateAppWidget(any())).thenReturn(inflationResult)
+            }
+        itemProcessorUnderTest =
+            createWorkspaceItemProcessorUnderTest(widgetProvidersMap = mWidgetProvidersMap)
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        verify(mockCursor).checkAndAddItem(any(), any())
+    }
+
+    @Test
+    fun `When Unrestored Pending App Widget then mark deleted`() {
+
+        // Given
+        val expectedProvider = "com.google.android.testApp/com.android.testApp.testAppProvider"
+        mockCursor =
+            mock<LoaderCursor>().apply {
+                itemType = ITEM_TYPE_APPWIDGET
+                id = 1
+                user = UserHandle(1)
+                restoreFlag = FLAG_UI_NOT_READY
+                container = CONTAINER_DESKTOP
+                whenever(isOnWorkspaceOrHotseat).thenCallRealMethod()
+                whenever(appWidgetProvider).thenReturn(expectedProvider)
+                whenever(appWidgetId).thenReturn(0)
+                whenever(spanX).thenReturn(2)
+                whenever(spanY).thenReturn(1)
+                whenever(options).thenReturn(0)
+                whenever(appWidgetSource).thenReturn(20)
+                whenever(applyCommonProperties(any())).thenCallRealMethod()
+            }
+        mInstallingPkgs = hashMapOf()
+        val inflationResult =
+            WidgetInflater.InflationResult(type = WidgetInflater.TYPE_PENDING, widgetInfo = null)
+        mockWidgetInflater =
+            mock<WidgetInflater>().apply {
+                whenever(inflateAppWidget(any())).thenReturn(inflationResult)
+            }
+        itemProcessorUnderTest =
+            createWorkspaceItemProcessorUnderTest(widgetProvidersMap = mWidgetProvidersMap)
+        val expectedComponentName = ComponentName.unflattenFromString(expectedProvider)
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        verify(mockCursor)
+            .markDeleted(
+                "Unrestored widget removed: $expectedComponentName",
+                LauncherRestoreEventLogger.RestoreError.APP_NOT_INSTALLED
+            )
+    }
+
+    @Test
+    fun `When Archived Pending App Widget then checkAndAddItem`() {
+
+        // Given
+        val expectedProvider = "com.google.android.testApp/com.android.testApp.testAppProvider"
+        val expectedComponentName = ComponentName.unflattenFromString(expectedProvider)
+        val expectedPackage = expectedComponentName!!.packageName
+        val mockitoSession =
+            ExtendedMockito.mockitoSession().mockStatic(Utilities::class.java).startMocking()
+        whenever(Utilities.enableSupportForArchiving()).thenReturn(true)
+        mockPmHelper =
+            mock<PackageManagerHelper>().apply {
+                whenever(isAppArchived(expectedPackage)).thenReturn(true)
+            }
+        mockCursor =
+            mock<LoaderCursor>().apply {
+                itemType = ITEM_TYPE_APPWIDGET
+                id = 1
+                user = UserHandle(1)
+                restoreFlag = FLAG_UI_NOT_READY
+                container = CONTAINER_DESKTOP
+                whenever(isOnWorkspaceOrHotseat).thenCallRealMethod()
+                whenever(appWidgetProvider).thenReturn(expectedProvider)
+                whenever(appWidgetId).thenReturn(0)
+                whenever(spanX).thenReturn(2)
+                whenever(spanY).thenReturn(1)
+                whenever(options).thenReturn(0)
+                whenever(appWidgetSource).thenReturn(20)
+                whenever(applyCommonProperties(any())).thenCallRealMethod()
+            }
+        mInstallingPkgs = hashMapOf()
+        val inflationResult =
+            WidgetInflater.InflationResult(type = WidgetInflater.TYPE_PENDING, widgetInfo = null)
+        mockWidgetInflater =
+            mock<WidgetInflater>().apply {
+                whenever(inflateAppWidget(any())).thenReturn(inflationResult)
+            }
+        itemProcessorUnderTest =
+            createWorkspaceItemProcessorUnderTest(widgetProvidersMap = mWidgetProvidersMap)
+
+        // When
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        mockitoSession.finishMocking()
+        verify(mockCursor).checkAndAddItem(any(), any())
     }
 }
