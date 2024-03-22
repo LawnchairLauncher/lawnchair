@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.Flags.enableExpandingPauseWorkButton;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_DISABLED_CARD;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_EDU_CARD;
 import static com.android.launcher3.config.FeatureFlags.ALL_APPS_GONE_VISIBILITY;
@@ -97,6 +98,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -158,6 +160,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             };
     private final Paint mNavBarScrimPaint;
     private final int mHeaderProtectionColor;
+    private final int mPrivateSpaceBottomExtraSpace;
     private final Path mTmpPath = new Path();
     private final RectF mTmpRectF = new RectF();
     protected AllAppsPagedView mViewPager;
@@ -222,6 +225,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 this,
                 mActivityContext.getStatsLogManager(),
                 UserCache.INSTANCE.get(mActivityContext));
+        mPrivateSpaceBottomExtraSpace = context.getResources().getDimensionPixelSize(
+                R.dimen.ps_extra_bottom_padding);
         mAH = Arrays.asList(null, null, null);
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getNavBarScrimColor(mActivityContext));
@@ -1566,6 +1571,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 int bottomOffset = 0;
                 if (isWork() && mWorkManager.getWorkModeSwitch() != null) {
                     bottomOffset = mInsets.bottom + mWorkManager.getWorkModeSwitch().getHeight();
+                } else if (isMain() && mPrivateProfileManager != null) {
+                    Optional<AdapterItem> privateSpaceHeaderItem = mAppsList.getAdapterItems()
+                            .stream()
+                            .filter(item -> item.viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER)
+                            .findFirst();
+                    if (privateSpaceHeaderItem.isPresent()) {
+                        bottomOffset = mPrivateSpaceBottomExtraSpace;
+                    }
                 }
                 if (isSearchBarFloating()) {
                     bottomOffset += mSearchContainer.getHeight();
@@ -1581,6 +1594,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
         private boolean isSearch() {
             return mType == SEARCH;
+        }
+
+        private boolean isMain() {
+            return mType == MAIN;
         }
     }
 }
