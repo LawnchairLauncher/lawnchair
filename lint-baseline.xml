@@ -3,13 +3,13 @@
 
     <issue
         id="NewApi"
-        message="Call requires API level 29 (current min is 26): `android.content.res.Resources#getFloat`"
-        errorLine1="        return mContext.getResources().getFloat(resId);"
-        errorLine2="                                       ~~~~~~~~">
+        message="`@android:dimen/system_app_widget_background_radius` requires API level 31 (current min is 26)"
+        errorLine1='    &lt;corners android:radius="@android:dimen/system_app_widget_background_radius" /&gt;'
+        errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/util/DynamicResource.java"
-            line="73"
-            column="40"/>
+            file="packages/apps/Launcher3/res/drawable/widget_resize_frame.xml"
+            line="20"
+            column="14"/>
     </issue>
 
     <issue
@@ -32,138 +32,6 @@
             file="packages/apps/Launcher3/src/com/android/launcher3/graphics/LauncherPreviewRenderer.java"
             line="433"
             column="18"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 28 (current min is 26): `android.app.Person#getKey`"
-        errorLine1="        return people.stream().filter(person -&gt; person.getKey() != null)"
-        errorLine2="                                                       ~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/notification/NotificationKeyData.java"
-            line="72"
-            column="56"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Method reference requires API level 28 (current min is 26): `Person::getKey`"
-        errorLine1="                .map(Person::getKey).sorted().toArray(String[]::new);"
-        errorLine2="                     ~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/notification/NotificationKeyData.java"
-            line="73"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_LEFT`"
-        errorLine1="                AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1814"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_RIGHT`"
-        errorLine1="                : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT);"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1815"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_RIGHT`"
-        errorLine1="                AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1823"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_LEFT`"
-        errorLine1="                : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT);"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1824"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.graphics.Outline#setPath`"
-        errorLine1="        outline.setPath(mPath);"
-        errorLine2="                ~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/popup/RoundedArrowDrawable.java"
-            line="114"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 28 (current min is 26): `android.appwidget.AppWidgetProviderInfo#widgetFeatures`"
-        errorLine1="        int featureFlags = mProviderInfo.widgetFeatures;"
-        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/WidgetAddFlowHandler.java"
-            line="93"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.view.View#getWindowInsetsController`"
-        errorLine1="        WindowInsetsController insetsController = getWindowInsetsController();"
-        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/picker/WidgetsFullSheet.java"
-            line="820"
-            column="51"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.view.WindowInsets.Type#ime`"
-        errorLine1="            insetsController.hide(WindowInsets.Type.ime());"
-        errorLine2="                                                    ~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/picker/WidgetsFullSheet.java"
-            line="822"
-            column="53"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.view.WindowInsetsController#hide`"
-        errorLine1="            insetsController.hide(WindowInsets.Type.ime());"
-        errorLine2="                             ~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/picker/WidgetsFullSheet.java"
-            line="822"
-            column="30"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Method reference requires API level 28 (current min is 26): `Person::getKey`"
-        errorLine1="            : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);"
-        errorLine2="                                         ~~~~~~~~~~~~~~">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/model/data/WorkspaceItemInfo.java"
-            line="194"
-            column="42"/>
     </issue>
 
 </issues>
