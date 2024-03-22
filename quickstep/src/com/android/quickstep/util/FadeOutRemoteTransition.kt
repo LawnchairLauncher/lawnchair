@@ -37,12 +37,7 @@ class FadeOutRemoteTransition : IRemoteTransition.Stub() {
         mergeTarget: IBinder,
         finishCB: IRemoteTransitionFinishedCallback
     ) {
-
-        try {
-            finishCB.onTransitionFinished(null, Transaction())
-        } catch (e: RemoteException) {
-            // Ignore
-        }
+        // Do not report finish if we don't know how to handle this transition.
     }
 
     override fun startAnimation(
