@@ -120,7 +120,7 @@ jobs:
           gh pr merge $PR_URL --auto --squash --delete-branch
 
   nightly-release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build-debug-apk
     permissions:
       contents: write
@@ -133,13 +133,8 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
 
-      - name: Display structure of downloaded files
-        id: step1
-        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1
-        
-      - name: Display structure of downloaded files
-        run: |
-          logfile=$(ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1)
-          gh release create "NightlyBuild" '$logfile' -p --generate-notes
+      - name: Delete release if exist then create release
+        id: delete-release
+        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create "NightlyBuild" (get-item ./Debug APK/lawnWithQuickstepGithub/debug/*.zip) -p --generate-notes 
         env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}         
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
