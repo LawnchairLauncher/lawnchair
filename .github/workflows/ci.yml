@@ -138,6 +138,8 @@ jobs:
         run: ls -R
         
       - name: Display structure of downloaded files
-        run: logfile=$(ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1) | gh release create "NightlyBuild" $logfile -p --generate-notes 
+        run: |
+          logfile=$(ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1)
+          gh release create "NightlyBuild" $logfile -p --generate-notes
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}         
