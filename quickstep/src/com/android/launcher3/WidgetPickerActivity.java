@@ -35,23 +35,31 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.dragndrop.SimpleDragLayer;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.WidgetPredictionsRequester;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /** An Activity that can host Launcher's widget picker. */
 public class WidgetPickerActivity extends BaseActivity {
     private static final String TAG = "WidgetPickerActivity";
-
     /**
      * Name of the extra that indicates that a widget being dragged.
      *
@@ -64,14 +72,33 @@ public class WidgetPickerActivity extends BaseActivity {
     // the intent, then widgets will not be filtered for size.
     private static final String EXTRA_DESIRED_WIDGET_WIDTH = "desired_widget_width";
     private static final String EXTRA_DESIRED_WIDGET_HEIGHT = "desired_widget_height";
-
+    /**
+     * Widgets currently added by the user in the UI surface.
+     * <p>This allows widget picker to exclude existing widgets from suggestions.</p>
+     */
+    private static final String EXTRA_ADDED_APP_WIDGETS = "added_app_widgets";
+    /**
+     * A unique identifier of the surface hosting the widgets;
+     * <p>"widgets" is reserved for home screen surface.</p>
+     * <p>"widgets_hub" is reserved for glanceable hub surface.</p>
+     */
+    private static final String EXTRA_UI_SURFACE = "ui_surface";
+    private static final Pattern UI_SURFACE_PATTERN =
+            Pattern.compile("^(widgets|widgets_hub)$");
     private SimpleDragLayer<WidgetPickerActivity> mDragLayer;
     private WidgetsModel mModel;
+    private LauncherAppState mApp;
+    private WidgetPredictionsRequester mWidgetPredictionsRequester;
     private final PopupDataProvider mPopupDataProvider = new PopupDataProvider(i -> {});
 
     private int mDesiredWidgetWidth;
     private int mDesiredWidgetHeight;
     private int mWidgetCategoryFilter;
+    @Nullable
+    private String mUiSurface;
+    // Widgets existing on the host surface.
+    @NonNull
+    private List<AppWidgetProviderInfo> mAddedWidgets = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +107,8 @@ public class WidgetPickerActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
 
-        LauncherAppState app = LauncherAppState.getInstance(this);
-        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
-
+        mApp = LauncherAppState.getInstance(this);
+        InvariantDeviceProfile idp = mApp.getInvariantDeviceProfile();
         mDeviceProfile = idp.getDeviceProfile(this);
         mModel = new WidgetsModel();
 
@@ -97,6 +123,11 @@ public class WidgetPickerActivity extends BaseActivity {
         widgetSheet.disableNavBarScrim(true);
         widgetSheet.addOnCloseListener(this::finish);
 
+        parseIntentExtras();
+        refreshAndBindWidgets();
+    }
+
+    private void parseIntentExtras() {
         // A value of 0 for either size means that no filtering will occur in that dimension. If
         // both values are 0, then no size filtering will occur.
         mDesiredWidgetWidth =
@@ -108,7 +139,15 @@ public class WidgetPickerActivity extends BaseActivity {
         mWidgetCategoryFilter =
                 getIntent().getIntExtra(AppWidgetManager.EXTRA_CATEGORY_FILTER, 0);
 
-        refreshAndBindWidgets();
+        String uiSurfaceParam = getIntent().getStringExtra(EXTRA_UI_SURFACE);
+        if (uiSurfaceParam != null && UI_SURFACE_PATTERN.matcher(uiSurfaceParam).matches()) {
+            mUiSurface = uiSurfaceParam;
+        }
+        ArrayList<AppWidgetProviderInfo> addedWidgets = getIntent().getParcelableArrayListExtra(
+                EXTRA_ADDED_APP_WIDGETS, AppWidgetProviderInfo.class);
+        if (addedWidgets != null) {
+            mAddedWidgets = addedWidgets;
+        }
     }
 
     @NonNull
@@ -179,11 +218,12 @@ public class WidgetPickerActivity extends BaseActivity {
         };
     }
 
+    /** Updates the model with widgets and provides them after applying the provided filter. */
     private void refreshAndBindWidgets() {
         MODEL_EXECUTOR.execute(() -> {
             LauncherAppState app = LauncherAppState.getInstance(this);
             mModel.update(app, null);
-            final ArrayList<WidgetsListBaseEntry> widgets =
+            final List<WidgetsListBaseEntry> allWidgets =
                     mModel.getFilteredWidgetsListForPicker(
                             app.getContext(),
                             /*widgetItemFilter=*/ widget -> {
@@ -193,8 +233,35 @@ public class WidgetPickerActivity extends BaseActivity {
                                 return verdict.isAcceptable;
                             }
                     );
-            MAIN_EXECUTOR.execute(() -> mPopupDataProvider.setAllWidgets(widgets));
+            bindWidgets(allWidgets);
+            if (mUiSurface != null) {
+                Map<PackageUserKey, List<WidgetItem>> allWidgetsMap = allWidgets.stream()
+                        .filter(WidgetsListHeaderEntry.class::isInstance)
+                        .collect(Collectors.toMap(
+                                entry -> PackageUserKey.fromPackageItemInfo(entry.mPkgItem),
+                                entry -> entry.mWidgets)
+                        );
+                mWidgetPredictionsRequester = new WidgetPredictionsRequester(app.getContext(),
+                        mUiSurface, allWidgetsMap);
+                mWidgetPredictionsRequester.request(mAddedWidgets, this::bindRecommendedWidgets);
+            }
         });
+    }
+
+    private void bindWidgets(List<WidgetsListBaseEntry> widgets) {
+        MAIN_EXECUTOR.execute(() -> mPopupDataProvider.setAllWidgets(widgets));
+    }
+
+    private void bindRecommendedWidgets(List<ItemInfo> recommendedWidgets) {
+        MAIN_EXECUTOR.execute(() -> mPopupDataProvider.setRecommendedWidgets(recommendedWidgets));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mWidgetPredictionsRequester != null) {
+            mWidgetPredictionsRequester.clear();
+        }
     }
 
     private WidgetAcceptabilityVerdict isWidgetAcceptable(WidgetItem widget) {
