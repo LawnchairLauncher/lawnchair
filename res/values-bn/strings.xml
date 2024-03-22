@@ -118,7 +118,7 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"হোম স্ক্রিন রোটেট করার অনুমতি দিন"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"যখন ফোনটি ঘোরানো হয়"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"বিজ্ঞপ্তি ডট"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"চালু"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"চালু করা আছে"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"বন্ধ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"বিজ্ঞপ্তিতে অ্যাক্সেস প্রয়োজন"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"বিজ্ঞপ্তির ডটগুলি দেখানোর জন্য, <xliff:g id="NAME">%1$s</xliff:g> এর অ্যাপ বিজ্ঞপ্তি চালু করুন"</string>
