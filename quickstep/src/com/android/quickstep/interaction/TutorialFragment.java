@@ -114,6 +114,11 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         return newInstance(tutorialType, isGestureComplete(), mFromTutorialMenu);
     }
 
+    @Override
+    boolean canRecreateFragment() {
+        return true;
+    }
+
     @NonNull
     abstract TutorialType getDefaultTutorialType();
 
