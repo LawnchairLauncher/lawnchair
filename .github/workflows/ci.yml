@@ -135,11 +135,11 @@ jobs:
 
       - name: Display structure of downloaded files
         id: step1
-        run: ls -R
+        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1
         
       - name: Display structure of downloaded files
         run: |
           logfile=$(ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1)
-          gh release create "NightlyBuild" $logfile -p --generate-notes
+          gh release create "NightlyBuild" '$logfile' -p --generate-notes
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}         
