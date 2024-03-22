@@ -144,4 +144,4 @@ jobs:
         run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1 >> "$GITHUB_OUTPUT"
 
       - name: action_with_output
-        run: echo ${{nightly-release.outputs.output1}}
+        run: echo ${{outputs.output1}}
