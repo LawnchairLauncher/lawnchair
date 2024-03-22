@@ -38,25 +38,19 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौड़ाई गुणा %2$d ऊंचाई"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट. यह %2$d चौड़ा और %3$d लंबा है"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"विजेट को होम स्क्रीन पर इधर-उधर ले जाने के लिए, उसे दबाकर रखें"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"होम स्क्रीन पर जोड़ें"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट को होम स्क्रीन पर जोड़ा गया"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"सुझाव"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
-    <skip />
-    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ज़रूरी ऐप्लिकेशन"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"खबरों और पत्रिकाओं वाले ऐप्लिकेशन"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"आपके मनोरंजन के लिए"</string>
-    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
-    <skip />
-    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
-    <skip />
-    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
-    <skip />
-    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
-    <skip />
-    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
-    <skip />
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"मनोरंजन वाले ऐप्लिकेशन"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"सोशल"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"हेल्थ और फ़िटनेस वाले ऐप्लिकेशन"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"मौसम"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"आपके लिए सुझाए गए ऐप्लिकेशन"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> के विजेट दाईं ओर, खोज का विजेट और अन्य विकल्प बाईं ओर"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}one{# विजेट}other{# विजेट}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# शॉर्टकट}one{# शॉर्टकट}other{# शॉर्टकट}}"</string>
@@ -70,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"वर्क विजेट"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"बातचीत"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"नोट बनाने से जुड़े विजेट"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"जोड़ें"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट जोड़ें"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"काम की जानकारी आसानी से पाएं"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"ऐप्लिकेशन को खोले बिना उनकी जानकारी पाने के लिए, होम स्क्रीन पर विजेट जोड़े जा सकते हैं"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट की सेटिंग में बदलाव करने के लिए टैप करें"</string>

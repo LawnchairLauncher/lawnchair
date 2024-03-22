@@ -38,6 +38,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d и височина %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> приспособление"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"Приспособлението „<xliff:g id="WIDGET_NAME">%1$s</xliff:g>“ е широко %2$d и високо %3$d"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Докоснете приспособлението и го задръжте, за да го местите на началния екран"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Добавяне към началния екран"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Приспособлението <xliff:g id="WIDGET_NAME">%1$s</xliff:g> е добавено към началния екран"</string>
@@ -63,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Служебни"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Разговори"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Водене на бележки"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Добавяне"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"Добавяне на приспособлението „<xliff:g id="WIDGET_NAME">%1$s</xliff:g>“"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Лесен достъп до полезна информация"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"За да получавате информация, без да отваряте приложенията, можете да добавите приспособления към началния екран"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Докоснете, за да промените настройките на приспособлението"</string>

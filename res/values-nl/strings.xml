@@ -38,25 +38,19 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breed en %2$d hoog"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, %2$d breed bij %3$d hoog"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Tik op de widget en houd vast om deze te verplaatsen op het startscherm"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Toevoegen aan startscherm"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> toegevoegd aan startscherm"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Suggesties"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
-    <skip />
-    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Essentials"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Nieuws en tijdschriften"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Je chillzone"</string>
-    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
-    <skip />
-    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
-    <skip />
-    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
-    <skip />
-    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
-    <skip />
-    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
-    <skip />
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Entertainment"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Sociaal"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Gezondheid en fitness"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Weer"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Voorgesteld voor jou"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g>-widgets aan de rechterkant, zoeken en opties aan de linkerkant"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# snelkoppeling}other{# snelkoppelingen}}"</string>
@@ -70,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Werk"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Gesprekken"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Aantekeningen maken"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Toevoegen"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> toevoegen"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Nuttige informatie binnen handbereik"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Als je informatie wilt krijgen zonder apps te openen, kun je widgets toevoegen aan je startscherm"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tik om de widgetinstellingen te wijzigen"</string>
@@ -134,7 +130,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Instellingen wijzigen"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Toon meldingsstipjes"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Ontwikkelaarsopties"</string>
-    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"App-iconen toevoegen aan startscherm"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"App-iconen op startscherm"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Voor nieuwe apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwijderen"</string>

@@ -38,25 +38,19 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौडाइ गुणा %2$d उचाइ"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट, %2$d चौडाइ र %3$d उचाइ"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"विजेटलाई होम स्क्रिनमा यताउता सार्न त्यसमा टच एन्ड होल्ड गर्नुहोस्"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"होम स्क्रिनमा राख्नुहोस्"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"होम स्क्रिनमा <xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट हालियो"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"सुझावहरू"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
-    <skip />
-    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"अत्यावश्यक कुराहरू"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"समाचार तथा पत्रपत्रिकाहरू"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"तपाईंको Chill Zone"</string>
-    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
-    <skip />
-    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
-    <skip />
-    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
-    <skip />
-    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
-    <skip />
-    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
-    <skip />
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"मनोरञ्जन"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"सोसल मिडिया"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"स्वास्थ्य तथा तन्दुरुस्ती"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"मौसम"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"तपाईंका लागि सिफारिस गरिएका"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"दायाँ भागमा <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> विजेटहरू, बायाँ भागमा खोज र विकल्पहरू"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}other{# वटा विजेट}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# सर्टकट}other{# वटा सर्टकट}}"</string>
@@ -70,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"कामसम्बन्धी"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"वार्तालापहरू"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"नोट लेख्ने कार्य"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"हाल्नुहोस्"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट हाल्नुहोस्"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"उपयोगी जानकारी सजिलै प्राप्त गर्नुहोस्"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"एपहरू नखोलिकनै जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
@@ -126,13 +122,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"तपाईँको प्रशासकद्वारा असक्षम गरिएको"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रिन रोटेट हुन दिइयोस्"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन घुमाउँदा"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाको प्रतीक जनाउने थोप्लाहरू"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"नोटिफिकेसन डट"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सक्रिय"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"निष्क्रिय"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनासम्बन्धी पहुँच आवश्यक हुन्छ"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को एपसम्बन्धी सूचनाहरूलाई अन गर्नुहोस्"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"नोटिफिकेसन डट देखाउन <xliff:g id="NAME">%1$s</xliff:g> को एपसम्बन्धी सूचनाहरूलाई अन गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"नोटिफिकेसन डट देखाउनुहोस्"</string>
     <string name="developer_options_title" msgid="700788437593726194">"विकासकर्ताका लागि उपलब्ध विकल्पहरू"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"एपका आइकनहरू होम स्क्रिनमा राखियोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ एपका लागि"</string>

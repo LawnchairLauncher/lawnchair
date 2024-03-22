@@ -38,25 +38,19 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d bred gånger %2$d hög"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget för <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"Widgeten <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, %2$d i bredd och %3$d i höjd"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Tryck länge på widgeten om du vill flytta den på startskärmen"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Lägg till på startskärmen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget för <xliff:g id="WIDGET_NAME">%1$s</xliff:g> har lagts till på startskärmen"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Förslag"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
-    <skip />
-    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Favoriter"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Nyheter och tidskrifter"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Koppla av"</string>
-    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
-    <skip />
-    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
-    <skip />
-    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
-    <skip />
-    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
-    <skip />
-    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
-    <skip />
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Underhållning"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Socialt"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Hälsa och träning"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Väder"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Våra förslag"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Widgetar för <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> till höger, sökning och alternativ till vänster"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgetar}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# genväg}other{# genvägar}}"</string>
@@ -70,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Arbete"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Konversationer"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Anteckna"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Lägg till"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"Lägg till widgeten <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Användbar information nära till hands"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Om du vill ha information utan att öppna appar kan du lägga till widgetar på startskärmen"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tryck för att ändra inställningarna för widgeten"</string>
@@ -125,7 +121,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"Startinställningar"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inaktiverat av administratören"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Tillåt rotering av startskärmen"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"När mobilen vrids"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"När telefonen vrids"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Aviseringsprickar"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"På"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Av"</string>
