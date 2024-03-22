@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import androidx.test.filters.LargeTest;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
@@ -49,7 +50,7 @@ import java.util.Queue;
  * Note running these tests will clear the workspace on the device.
  */
 @LargeTest
-public class TaplThemeIconsTest extends AbstractLauncherUiTest {
+public class TaplThemeIconsTest extends AbstractLauncherUiTest<Launcher> {
 
     private static final String APP_NAME = "IconThemedActivity";
     private static final String SHORTCUT_NAME = "Shortcut 1";
