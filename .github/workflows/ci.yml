@@ -122,6 +122,8 @@ jobs:
   nightly-release:
     runs-on: ubuntu-latest
     needs: build-debug-apk
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
     permissions:
       contents: write
     steps:
@@ -134,7 +136,12 @@ jobs:
         uses: actions/download-artifact@v4
 
       - name: Display structure of downloaded files
+        id: step1
         run: ls -R
+        
 
       - name: Display structure of downloaded files
-        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1
+        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1 >> "$GITHUB_OUTPUT"
+
+      - name: action_with_output
+        run: echo ${{nightly-release.outputs.output1}}
