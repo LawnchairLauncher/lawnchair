@@ -20,6 +20,8 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_TASKBAR;
+import static com.android.launcher3.BubbleTextView.DISPLAY_WORKSPACE;
 import static com.android.launcher3.DeviceProfile.DEFAULT_SCALE;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
@@ -388,12 +390,14 @@ public class LauncherPreviewRenderer extends ContextWrapper
     }
 
     private void inflateAndAddCollectionIcon(FolderInfo info) {
-        CellLayout screen = info.container == Favorites.CONTAINER_DESKTOP
+        boolean isOnDesktop = info.container == Favorites.CONTAINER_DESKTOP;
+        CellLayout screen = isOnDesktop
                 ? mWorkspaceScreens.get(info.screenId)
                 : mHotseat;
         FrameLayout folderIcon = info.itemType == Favorites.ITEM_TYPE_FOLDER
                 ? FolderIcon.inflateIcon(R.layout.folder_icon, this, screen, info)
-                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, info);
+                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, info,
+                        isOnDesktop ? DISPLAY_WORKSPACE : DISPLAY_TASKBAR);
         addInScreenFromBind(folderIcon, info);
     }
 
