@@ -176,13 +176,10 @@ public class SectionDecorationHandler {
         /**
          * Expands decoration bounds to include child {@link PrivateAppsSectionDecorator}
          */
-        public void addChild(SectionDecorationHandler child, View view, boolean applyBackground) {
+        public void addChild(SectionDecorationHandler child, View view) {
             int scaledHeight = (int) (view.getHeight() * view.getScaleY());
             mBounds.union(view.getLeft(), view.getY(),
                     view.getRight(), view.getY() + scaledHeight);
-            if (applyBackground) {
-                applyBackground(view, mContext, null, false);
-            }
             mIsBottomRound |= child.mIsBottomRound;
             mIsBottomLeftRound |= child.mIsBottomLeftRound;
             mIsBottomRightRound |= child.mIsBottomRightRound;

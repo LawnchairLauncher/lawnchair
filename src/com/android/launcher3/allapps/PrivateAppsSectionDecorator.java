@@ -56,7 +56,7 @@ public class PrivateAppsSectionDecorator extends RecyclerView.ItemDecoration {
                                 new SectionDecorationHandler.UnionDecorationHandler(
                                         decorationHandler, parent.getPaddingLeft(),
                                         parent.getPaddingRight()));
-                unionHandler.addChild(decorationHandler, view, true /* applyBackground */);
+                unionHandler.addChild(decorationHandler, view);
                 deferredDecorations.put(PRIVATE_APP_SECTION, unionHandler);
             } else {
                 decorationHandler.onFocusDraw(c, view);
