@@ -104,6 +104,7 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest {
     /**
      * Test dragging a widget to the workspace and resize it.
      */
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/316910614
     @PlatinumTest(focusArea = "launcher")
     @Test
     @ScreenRecord // b/316910614
