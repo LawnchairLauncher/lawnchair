@@ -38,25 +38,19 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"กว้าง %1$d x สูง %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"วิดเจ็ต <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"วิดเจ็ต <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, กว้าง %2$d สูง %3$d"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"แตะวิดเจ็ตค้างไว้เพื่อย้ายไปรอบๆ หน้าจอหลัก"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"เพิ่มลงในหน้าจอหลัก"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"เพิ่มวิดเจ็ต <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ลงในหน้าจอหลักแล้ว"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"คำแนะนำ"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
-    <skip />
-    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"รายการที่ห้ามพลาด"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ข่าวสารและนิตยสาร"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"พื้นที่สบายๆ ของคุณ"</string>
-    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
-    <skip />
-    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
-    <skip />
-    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
-    <skip />
-    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
-    <skip />
-    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
-    <skip />
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ความบันเทิง"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"โซเชียล"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"สุขภาพและการออกกำลังกาย"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"สภาพอากาศ"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"แนะนำให้คุณ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"วิดเจ็ต<xliff:g id="SELECTED_HEADER">%1$s</xliff:g>ทางด้านขวา การค้นหาและตัวเลือกทางด้านซ้าย"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{วิดเจ็ต # รายการ}other{วิดเจ็ต # รายการ}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{ทางลัด # รายการ}other{ทางลัด # รายการ}}"</string>
@@ -70,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"งาน"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"การสนทนา"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"การจดบันทึก"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"เพิ่ม"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"เพิ่มวิดเจ็ต <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"เข้าถึงข้อมูลที่เป็นประโยชน์ได้จากปลายนิ้ว"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"หากต้องการรับข้อมูลโดยไม่เปิดแอป ให้เพิ่มวิดเจ็ตลงในหน้าจอหลัก"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"แตะเพื่อเปลี่ยนการตั้งค่าวิดเจ็ต"</string>

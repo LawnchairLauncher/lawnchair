@@ -38,25 +38,19 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"ກວ້າງ %1$d ຄູນສູງ %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"ວິດເຈັດ <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"ວິດເຈັດ <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, ກວ້າງ %2$d ສູງ %3$d"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"ແຕະໃສ່ວິດເຈັດຄ້າງໄວ້ເພື່ອຍ້າຍມັນໄປມາຢູ່ໂຮມສະກຣີນ"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"ເພີ່ມໃສ່ໂຮມສະກຣີນ"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"ເພີ່ມວິດເຈັດ <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ໃສ່ໂຮມສະກຣີນແລ້ວ"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ການແນະນຳ"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
-    <skip />
-    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ສິ່ງຈຳເປັນ"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ຂ່າວ ແລະ ວາລະສານ"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ພື້ນທີ່ພັກຜ່ອນຂອງທ່ານ"</string>
-    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
-    <skip />
-    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
-    <skip />
-    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
-    <skip />
-    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
-    <skip />
-    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
-    <skip />
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ຄວາມບັນເທີງ"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"ສັງຄົມ"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍ"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"ສະພາບອາກາດ"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"ແນະນຳສຳລັບທ່ານ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"ວິດເຈັດ <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ຢູ່ທາງຂວາ, ການຊອກຫາ ແລະ ຕົວເລືອກຢູ່ທາງຊ້າຍ"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ວິດເຈັດ}other{# ວິດເຈັດ}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ທາງລັດ}other{# ທາງລັດ}}"</string>
@@ -70,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ວຽກ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ການສົນທະນາ"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"ການຈົດບັນທຶກ"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"ເພີ່ມ"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"ເພີ່ມວິດເຈັດ <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ຂໍ້ມູນທີ່ເປັນປະໂຫຍດຢູ່ປາຍນິ້ວຂອງທ່ານ"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"ເພື່ອຮັບຂໍ້ມູນໂດຍບໍ່ຕ້ອງເປີດແອັບ, ທ່ານສາມາດເພີ່ມວິດເຈັດໃສ່ໂຮມສະກຣີນຂອງທ່ານໄດ້"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ແຕະເພື່ອປ່ຽນການຕັ້ງຄ່າວິດເຈັດ"</string>
