@@ -72,7 +72,7 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"स्क्रिनबाट औँला उठाउनुअघि एपको विन्डोमा केही बेर छोइराख्नुहोस्"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"सीधै माथितिर स्वाइप गर्नुहोस् अनि रोकिनुहोस्"</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"तपाईंले इसाराहरू प्रयोग गर्ने तरिका सिक्नुभयो। इसारा अफ गर्न सेटिङमा जानुहोस्।"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"तपाईंले जेस्चरहरू प्रयोग गर्ने तरिका सिक्नुभयो। इसारा अफ गर्न सेटिङमा जानुहोस्।"</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"तपाईंले \"एउटा एपबाट अर्को एपमा जानुहोस्\" नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एउटा एपबाट अर्कोमा जान स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
