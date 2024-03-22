@@ -139,3 +139,5 @@ jobs:
         
       - name: Display structure of downloaded files
         run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | head -1 | gh release create "NightlyBuild" -p --generate-notes 
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}         
