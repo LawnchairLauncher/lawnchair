@@ -137,4 +137,4 @@ jobs:
         run: ls -R
 
       - name: Display structure of downloaded files
-        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug"
+        run: ls -Q "./Debug APK/lawnWithQuickstepGithub/debug" | print $1
