@@ -15,11 +15,15 @@
  */
 package com.android.launcher3.model;
 
+import static android.provider.BaseColumns._ID;
 import static android.util.Base64.NO_PADDING;
 import static android.util.Base64.NO_WRAP;
 
 import static com.android.launcher3.DefaultLayoutParser.RES_PARTNER_DEFAULT_LAYOUT;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
+import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
@@ -385,6 +389,68 @@ public class ModelDbController {
             }
             t.commit();
             return folderIds;
+        } catch (SQLException ex) {
+            Log.e(TAG, ex.getMessage(), ex);
+            return new IntArray();
+        }
+    }
+
+    /**
+     * Deletes any app pair that doesn't contain 2 member apps from the DB.
+     * @return Ids of deleted app pairs.
+     */
+    @WorkerThread
+    public IntArray deleteBadAppPairs() {
+        createDbIfNotExists();
+
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            // Select all entries with ITEM_TYPE = ITEM_TYPE_APP_PAIR whose id does not appear
+            // exactly twice in the CONTAINER column.
+            String selection =
+                    ITEM_TYPE + " = " + ITEM_TYPE_APP_PAIR
+                            + " AND " + _ID +  " NOT IN"
+                            + " (SELECT " + CONTAINER + " FROM " + TABLE_NAME
+                            + " GROUP BY " + CONTAINER + " HAVING COUNT(*) = 2)";
+
+            IntArray appPairIds = LauncherDbUtils.queryIntArray(false, db, TABLE_NAME,
+                    _ID, selection, null, null);
+            if (!appPairIds.isEmpty()) {
+                db.delete(TABLE_NAME, Utilities.createDbSelectionQuery(
+                        _ID, appPairIds), null);
+            }
+            t.commit();
+            return appPairIds;
+        } catch (SQLException ex) {
+            Log.e(TAG, ex.getMessage(), ex);
+            return new IntArray();
+        }
+    }
+
+    /**
+     * Deletes any app with a container id that doesn't exist.
+     * @return Ids of deleted apps.
+     */
+    @WorkerThread
+    public IntArray deleteUnparentedApps() {
+        createDbIfNotExists();
+
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            // Select all entries whose container id does not appear in the database.
+            String selection =
+                    CONTAINER + " >= 0"
+                            + " AND " + CONTAINER + " NOT IN"
+                            + " (SELECT " + _ID + " FROM " + TABLE_NAME + ")";
+
+            IntArray appIds = LauncherDbUtils.queryIntArray(false, db, TABLE_NAME,
+                    _ID, selection, null, null);
+            if (!appIds.isEmpty()) {
+                db.delete(TABLE_NAME, Utilities.createDbSelectionQuery(
+                        _ID, appIds), null);
+            }
+            t.commit();
+            return appIds;
         } catch (SQLException ex) {
             Log.e(TAG, ex.getMessage(), ex);
             return new IntArray();

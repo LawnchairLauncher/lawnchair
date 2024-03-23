@@ -37,7 +37,7 @@ import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -275,7 +275,7 @@ public class ModelWriter {
     public void deleteItemsFromDatabase(@NonNull final Predicate<ItemInfo> matcher,
             @Nullable final String reason) {
         deleteItemsFromDatabase(StreamSupport.stream(mBgDataModel.itemsIdMap.spliterator(), false)
-                        .filter(matcher).collect(Collectors.toList()), reason);
+                .filter(matcher).collect(Collectors.toList()), reason);
     }
 
     /**
@@ -302,15 +302,15 @@ public class ModelWriter {
     /**
      * Remove the specified folder and all its contents from the database.
      */
-    public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
+    public void deleteCollectionAndContentsFromDatabase(final CollectionInfo info) {
         ModelVerifier verifier = new ModelVerifier();
         notifyDelete(Collections.singleton(info));
 
         enqueueDeleteRunnable(newModelTask(() -> {
             mModel.getModelDbController().delete(Favorites.TABLE_NAME,
                     Favorites.CONTAINER + "=" + info.id, null);
-            mBgDataModel.removeItem(mContext, info.contents);
-            info.contents.clear();
+            mBgDataModel.removeItem(mContext, info.getContents());
+            info.getContents().clear();
 
             mModel.getModelDbController().delete(Favorites.TABLE_NAME,
                     Favorites._ID + "=" + info.id, null);
@@ -458,12 +458,12 @@ public class ModelWriter {
 
                 if (item.container != Favorites.CONTAINER_DESKTOP &&
                         item.container != Favorites.CONTAINER_HOTSEAT) {
-                    // Item is in a folder, make sure this folder exists
-                    if (!mBgDataModel.folders.containsKey(item.container)) {
+                    // Item is in a collection, make sure this collection exists
+                    if (!mBgDataModel.collections.containsKey(item.container)) {
                         // An items container is being set to a that of an item which is not in
                         // the list of Folders.
                         String msg = "item: " + item + " container being set to: " +
-                                item.container + ", not in the list of folders";
+                                item.container + ", not in the list of collections";
                         Log.e(TAG, msg);
                     }
                 }

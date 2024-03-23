@@ -89,6 +89,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -1082,19 +1083,19 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key,
                     ActivityOptions.makeBasic());
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
-        } else if (tag instanceof FolderInfo fi && fi.itemType == Favorites.ITEM_TYPE_FOLDER) {
+        } else if (tag instanceof FolderInfo) {
             // Tapping an expandable folder icon on Taskbar
             shouldCloseAllOpenViews = false;
             expandFolder((FolderIcon) view);
-        } else if (tag instanceof FolderInfo fi && fi.itemType == Favorites.ITEM_TYPE_APP_PAIR) {
+        } else if (tag instanceof AppPairInfo api) {
             // Tapping an app pair icon on Taskbar
             if (recents != null && recents.isSplitSelectionActive()) {
                 Toast.makeText(this, "Unable to split with an app pair. Select another app.",
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Else launch the selected app pair
-                launchFromTaskbar(recents, view, fi.contents);
-                mControllers.uiController.onTaskbarIconLaunched(fi);
+                launchFromTaskbar(recents, view, api.getContents());
+                mControllers.uiController.onTaskbarIconLaunched(api);
                 mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
             }
         } else if (tag instanceof WorkspaceItemInfo) {

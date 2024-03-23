@@ -65,17 +65,8 @@ public abstract class ItemInfoMatcher {
      * Returns a matcher for items within folders.
      */
     public static Predicate<ItemInfo> forFolderMatch(Predicate<ItemInfo> childOperator) {
-        return info -> info instanceof FolderInfo && ((FolderInfo) info).contents.stream()
+        return info -> info instanceof FolderInfo && ((FolderInfo) info).getContents().stream()
                 .anyMatch(childOperator);
-    }
-
-    /**
-     * Returns a matcher for items within app pairs.
-     */
-    public static Predicate<ItemInfo> forAppPairMatch(Predicate<ItemInfo> childOperator) {
-        Predicate<ItemInfo> isAppPair = info ->
-                info instanceof FolderInfo fi && fi.itemType == Favorites.ITEM_TYPE_APP_PAIR;
-        return isAppPair.and(forFolderMatch(childOperator));
     }
 
     /**

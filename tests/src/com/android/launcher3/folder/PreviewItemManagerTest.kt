@@ -28,6 +28,7 @@ import com.android.launcher3.LauncherPrefs.Companion.get
 import com.android.launcher3.icons.BaseIconFactory
 import com.android.launcher3.icons.FastBitmapDrawable
 import com.android.launcher3.icons.UserBadgeDrawable
+import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.FlagOp
@@ -71,8 +72,8 @@ class PreviewItemManagerTest {
                     .build()
             )
             .loadModelSync()
-        folderItems = modelHelper.bgDataModel.folders.valueAt(0).contents
-        folderIcon.mInfo = modelHelper.bgDataModel.folders.valueAt(0)
+        folderItems = modelHelper.bgDataModel.collections.valueAt(0).contents
+        folderIcon.mInfo = modelHelper.bgDataModel.collections.valueAt(0) as FolderInfo
         folderIcon.mInfo.contents = folderItems
 
         // Set first icon to be themed.

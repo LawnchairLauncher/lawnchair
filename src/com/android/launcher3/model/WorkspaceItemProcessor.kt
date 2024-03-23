@@ -32,6 +32,8 @@ import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.Utilities
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError
 import com.android.launcher3.logging.FileLog
+import com.android.launcher3.model.data.AppPairInfo
+import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.IconRequestInfo
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
@@ -360,25 +362,40 @@ class WorkspaceItemProcessor(
     }
 
     /**
-     * Loads the folder information from the database and formats it into a FolderInfo. Some of the
-     * processing for folder content items is done in LoaderTask after all the items in the
-     * workspace have been loaded. The loaded FolderInfos are stored in the BgDataModel.
+     * Loads CollectionInfo information from the database and formats it. This function runs while
+     * LoaderTask is still active; some of the processing for folder content items is done after all
+     * the items in the workspace have been loaded. The loaded and formatted CollectionInfo is then
+     * stored in the BgDataModel.
      */
     private fun processFolderOrAppPair() {
-        val folderInfo =
-            bgDataModel.findOrMakeFolder(c.id).apply {
-                c.applyCommonProperties(this)
-                itemType = c.itemType
-                // Do not trim the folder label, as is was set by the user.
-                title = c.getString(c.mTitleIndex)
-                spanX = 1
-                spanY = 1
-                options = c.options
-            }
+        var collection = bgDataModel.findOrMakeFolder(c.id)
+        // If we generated a placeholder Folder before this point, it may need to be replaced with
+        // an app pair.
+        if (c.itemType == Favorites.ITEM_TYPE_APP_PAIR && collection is FolderInfo) {
+            val folderInfo: FolderInfo = collection
+            val newAppPair = AppPairInfo()
+            // Move the placeholder's contents over to the new app pair.
+            folderInfo.contents.forEach(newAppPair::add)
+            collection = newAppPair
+            // Remove the placeholder and add the app pair into the data model.
+            bgDataModel.collections.remove(c.id)
+            bgDataModel.collections.put(c.id, collection)
+        }
 
-        // no special handling required for restored folders
+        c.applyCommonProperties(collection)
+        // Do not trim the folder label, as is was set by the user.
+        collection.title = c.getString(c.mTitleIndex)
+        collection.spanX = 1
+        collection.spanY = 1
+        if (collection is FolderInfo) {
+            collection.options = c.options
+        } else {
+            // An app pair may be inside another folder, so it needs to preserve rank information.
+            collection.rank = c.rank
+        }
+
         c.markRestored()
-        c.checkAndAddItem(folderInfo, bgDataModel, memoryLogger)
+        c.checkAndAddItem(collection, bgDataModel, memoryLogger)
     }
 
     /**

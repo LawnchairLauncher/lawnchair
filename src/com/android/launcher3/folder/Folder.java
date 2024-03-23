@@ -493,7 +493,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mInfo = info;
         mFromTitle = info.title;
         mFromLabelState = info.getFromLabelState();
-        ArrayList<WorkspaceItemInfo> children = info.contents;
+        ArrayList<WorkspaceItemInfo> children = info.getContents();
         Collections.sort(children, ITEM_POS_COMPARATOR);
         updateItemLocationsInDatabaseBatch(true);
 
@@ -626,7 +626,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // onDropComplete. Perform cleanup once drag-n-drop ends.
         mDragController.addDragListener(this);
 
-        ArrayList<WorkspaceItemInfo> items = new ArrayList<>(mInfo.contents);
+        ArrayList<WorkspaceItemInfo> items = new ArrayList<>(mInfo.getContents());
         mEmptyCellRank = items.size();
         items.add(null);    // Add an empty spot at the end
 
@@ -639,7 +639,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is played.
      */
     public void animateOpen() {
-        animateOpen(mInfo.contents, 0);
+        animateOpen(mInfo.getContents(), 0);
     }
 
     /**
@@ -1097,9 +1097,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mActivityContext.getDeviceProfile()).setFolderInfo(mInfo);
 
         ArrayList<ItemInfo> items = new ArrayList<>();
-        int total = mInfo.contents.size();
+        int total = mInfo.getContents().size();
         for (int i = 0; i < total; i++) {
-            WorkspaceItemInfo itemInfo = mInfo.contents.get(i);
+            WorkspaceItemInfo itemInfo = mInfo.getContents().get(i);
             if (verifier.updateRankAndPos(itemInfo, i)) {
                 items.add(itemInfo);
             }
@@ -1113,7 +1113,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 FolderNameInfos nameInfos = new FolderNameInfos();
                 FolderNameProvider fnp = FolderNameProvider.newInstance(getContext());
                 fnp.getSuggestedFolderName(
-                        getContext(), mInfo.contents, nameInfos);
+                        getContext(), mInfo.getContents(), nameInfos);
                 mInfo.suggestedFolderNames = nameInfos;
             });
         }
@@ -1217,7 +1217,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     public int getItemCount() {
-        return mInfo.contents.size();
+        return mInfo.getContents().size();
     }
 
     void replaceFolderWithFinalItem() {
