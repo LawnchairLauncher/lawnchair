@@ -95,6 +95,7 @@ import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -3313,7 +3314,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     }
                 } else if (child instanceof FolderIcon) {
                     FolderInfo folderInfo = (FolderInfo) info;
-                    List<WorkspaceItemInfo> matches = folderInfo.contents.stream()
+                    List<WorkspaceItemInfo> matches = folderInfo.getContents().stream()
                             .filter(matcher)
                             .collect(Collectors.toList());
                     if (!matches.isEmpty()) {
@@ -3321,6 +3322,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                         if (((FolderIcon) child).getFolder().isOpen()) {
                             ((FolderIcon) child).getFolder().close(false /* animate */);
                         }
+                    }
+                } else if (info instanceof AppPairInfo api) {
+                    // If an app pair's member apps are being removed, delete the whole app pair.
+                    if (api.anyMatch(matcher)) {
+                        mLauncher.removeItem(child, info, true);
                     }
                 }
             }
@@ -3373,9 +3379,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 }
             } else if (info instanceof FolderInfo && v instanceof FolderIcon) {
                 FolderInfo fi = (FolderInfo) info;
-                if (fi.contents.stream().anyMatch(matcher)) {
+                if (fi.anyMatch(matcher)) {
                     FolderDotInfo folderDotInfo = new FolderDotInfo();
-                    for (WorkspaceItemInfo si : fi.contents) {
+                    for (WorkspaceItemInfo si : fi.getContents()) {
                         folderDotInfo.addDotInfo(mLauncher.getDotInfoForItem(si));
                     }
                     ((FolderIcon) v).setDotInfo(folderDotInfo);

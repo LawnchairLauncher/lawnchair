@@ -23,12 +23,12 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.FrameLayout
+import androidx.annotation.OpenForTesting
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener
 import com.android.launcher3.icons.BitmapInfo
 import com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter
-import com.android.launcher3.model.data.FolderInfo
-import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.model.data.AppPairInfo
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 
@@ -36,29 +36,32 @@ import com.android.launcher3.views.ActivityContext
  * A FrameLayout marking the area on an [AppPairIcon] where the visual icon will be drawn. One of
  * two child UI elements on an [AppPairIcon], along with a BubbleTextView holding the text title.
  */
-class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+@OpenForTesting
+open class AppPairIconGraphic
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null) :
     FrameLayout(context, attrs), OnDeviceProfileChangeListener {
     private val TAG = "AppPairIconGraphic"
 
     companion object {
-        /** Composes a drawable for this icon, consisting of a background and 2 app icons. */
+        /**
+         * Composes a drawable for this icon, consisting of a background and 2 app icons. The app
+         * pair will draw as "disabled" if either of the following is true:
+         * 1) One of the member WorkspaceItemInfos is disabled (i.e. the app software itself is
+         *    paused or can't be launched for some other reason).
+         * 2) One of the member apps can't be launched due to screen size requirements.
+         */
         @JvmStatic
-        fun composeDrawable(appPairInfo: FolderInfo, p: AppPairIconDrawingParams): Drawable {
+        fun composeDrawable(appPairInfo: AppPairInfo, p: AppPairIconDrawingParams): Drawable {
             // Generate new icons, using themed flag if needed.
             val flags = if (Themes.isThemedIconEnabled(p.context)) BitmapInfo.FLAG_THEMED else 0
-            val appIcon1 = appPairInfo.contents[0].newIcon(p.context, flags)
-            val appIcon2 = appPairInfo.contents[1].newIcon(p.context, flags)
+            val appIcon1 = appPairInfo.getFirstApp().newIcon(p.context, flags)
+            val appIcon2 = appPairInfo.getSecondApp().newIcon(p.context, flags)
             appIcon1.setBounds(0, 0, p.memberIconSize.toInt(), p.memberIconSize.toInt())
             appIcon2.setBounds(0, 0, p.memberIconSize.toInt(), p.memberIconSize.toInt())
 
-            // Check disabled status.
-            val activity: ActivityContext = ActivityContext.lookupContext(p.context)
-            val isLaunchableAtScreenSize =
-                activity.deviceProfile.isTablet ||
-                    appPairInfo.contents.stream().noneMatch { wii: WorkspaceItemInfo ->
-                        wii.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE)
-                    }
-            val shouldDrawAsDisabled = appPairInfo.isDisabled || !isLaunchableAtScreenSize
+            val shouldDrawAsDisabled =
+                appPairInfo.isDisabled || !appPairInfo.isLaunchable(p.context)
 
             // Set disabled status on icons.
             appIcon1.setIsDisabled(shouldDrawAsDisabled)
@@ -124,7 +127,6 @@ class AppPairIconGraphic @JvmOverloads constructor(context: Context, attrs: Attr
      */
     fun getIconBounds(outBounds: Rect) {
         outBounds.set(0, 0, drawParams.backgroundSize.toInt(), drawParams.backgroundSize.toInt())
-
         outBounds.offset(
             // x-coordinate in parent's coordinate system
             ((parentIcon.width - drawParams.backgroundSize) / 2).toInt(),

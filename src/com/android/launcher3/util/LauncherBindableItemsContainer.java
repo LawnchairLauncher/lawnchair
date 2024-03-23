@@ -23,6 +23,7 @@ import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -59,7 +60,7 @@ public interface LauncherBindableItemsContainer {
                                 : null);
             } else if (info instanceof FolderInfo && v instanceof FolderIcon) {
                 ((FolderIcon) v).updatePreviewItems(updates::contains);
-            } else if (info instanceof FolderInfo && v instanceof AppPairIcon appPairIcon) {
+            } else if (info instanceof AppPairInfo && v instanceof AppPairIcon appPairIcon) {
                 appPairIcon.maybeRedrawForWorkspaceUpdate(updates::contains);
             }
 
@@ -89,7 +90,7 @@ public interface LauncherBindableItemsContainer {
                 ((PendingAppWidgetHostView) v).applyState();
             } else if (v instanceof FolderIcon && info instanceof FolderInfo) {
                 ((FolderIcon) v).updatePreviewItems(updates::contains);
-            } else if (info instanceof FolderInfo && v instanceof AppPairIcon appPairIcon) {
+            } else if (info instanceof AppPairInfo && v instanceof AppPairIcon appPairIcon) {
                 appPairIcon.maybeRedrawForWorkspaceUpdate(updates::contains);
             }
             // process all the shortcuts

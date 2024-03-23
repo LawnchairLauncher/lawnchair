@@ -87,7 +87,7 @@ public class DefaultLayoutProviderTest {
         assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
         ItemInfo info = mModelHelper.getBgDataModel().workspaceItems.get(0);
         assertEquals(LauncherSettings.Favorites.ITEM_TYPE_FOLDER, info.itemType);
-        assertEquals(3, ((FolderInfo) info).contents.size());
+        assertEquals(3, ((FolderInfo) info).getContents().size());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class DefaultLayoutProviderTest {
         assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
         ItemInfo info = mModelHelper.getBgDataModel().workspaceItems.get(0);
         assertEquals(LauncherSettings.Favorites.ITEM_TYPE_FOLDER, info.itemType);
-        assertEquals(3, ((FolderInfo) info).contents.size());
+        assertEquals(3, ((FolderInfo) info).getContents().size());
         assertEquals("CustomFolder", info.title.toString());
     }
 
@@ -154,11 +154,11 @@ public class DefaultLayoutProviderTest {
         // Verify folder
         assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
         FolderInfo info = (FolderInfo) mModelHelper.getBgDataModel().workspaceItems.get(0);
-        assertEquals(3, info.contents.size());
+        assertEquals(3, info.getContents().size());
 
         // Verify last icon
         assertEquals(LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT,
-                info.contents.get(info.contents.size() - 1).itemType);
+                info.getContents().get(info.getContents().size() - 1).itemType);
     }
 
     private void writeLayoutAndLoad(LauncherLayoutBuilder builder) throws Exception {

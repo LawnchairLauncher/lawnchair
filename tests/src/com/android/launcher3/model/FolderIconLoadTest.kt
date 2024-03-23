@@ -165,11 +165,11 @@ class FolderIconLoadTest {
         // Reload again with correct icon state
         app.model.forceReload()
         modelHelper.loadModelSync()
-        val folders = modelHelper.getBgDataModel().folders
+        val collections = modelHelper.getBgDataModel().collections
 
-        assertThat(folders.size()).isEqualTo(1)
-        assertThat(folders.valueAt(0).contents.size).isEqualTo(itemCount)
-        return folders.valueAt(0).contents
+        assertThat(collections.size()).isEqualTo(1)
+        assertThat(collections.valueAt(0).contents.size).isEqualTo(itemCount)
+        return collections.valueAt(0).contents
     }
 
     private fun verifyHighRes(items: ArrayList<WorkspaceItemInfo>, vararg indices: Int) {
