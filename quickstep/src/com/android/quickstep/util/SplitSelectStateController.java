@@ -772,7 +772,9 @@ public class SplitSelectStateController {
         @Override
         public void mergeAnimation(IBinder transition, TransitionInfo info,
                 SurfaceControl.Transaction t, IBinder mergeTarget,
-                IRemoteTransitionFinishedCallback finishedCallback) { }
+                IRemoteTransitionFinishedCallback finishedCallback) {
+            // Do not report finish if we don't know how to handle this transition.
+        }
 
         @Override
         public void onTransitionConsumed(IBinder transition, boolean aborted)

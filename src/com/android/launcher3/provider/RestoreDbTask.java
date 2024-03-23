@@ -456,7 +456,7 @@ public class RestoreDbTask {
         logDatabaseWidgetInfo(controller);
 
         for (int i = 0; i < oldWidgetIds.length; i++) {
-            FileLog.i(TAG, "Widget state restore id " + oldWidgetIds[i] + " => " + newWidgetIds[i]);
+            FileLog.i(TAG, "migrating appWidgetId: " + oldWidgetIds[i] + " => " + newWidgetIds[i]);
 
             final AppWidgetProviderInfo provider = widgets.getAppWidgetInfo(newWidgetIds[i]);
             final int state;

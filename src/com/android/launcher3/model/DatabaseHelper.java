@@ -333,7 +333,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
             for (int widgetId : allWidgets) {
                 if (!validWidgets.contains(widgetId)) {
                     try {
-                        FileLog.d(TAG, "Deleting invalid widget " + widgetId);
+                        FileLog.d(TAG, "Deleting widget not found in db: appWidgetId=" + widgetId);
                         holder.deleteAppWidgetId(widgetId);
                         isAnyWidgetRemoved = true;
                     } catch (RuntimeException e) {
@@ -342,15 +342,17 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                 }
             }
             if (isAnyWidgetRemoved) {
-                final String allWidgetsIds = Arrays.stream(allWidgets).mapToObj(String::valueOf)
+                final String allLauncherHostWidgetIds = Arrays.stream(allWidgets)
+                        .mapToObj(String::valueOf)
                         .collect(Collectors.joining(",", "[", "]"));
-                final String validWidgetsIds = Arrays.stream(
+                final String allValidLauncherDbWidgetIds = Arrays.stream(
                                 validWidgets.getArray().toArray()).mapToObj(String::valueOf)
                         .collect(Collectors.joining(",", "[", "]"));
                 FileLog.d(TAG,
-                        "One or more widgets was removed. db_path=" + db.getPath()
-                                + " allWidgetsIds=" + allWidgetsIds
-                                + ", validWidgetsIds=" + validWidgetsIds);
+                        "One or more widgets was removed: "
+                                + " allLauncherHostWidgetIds=" + allLauncherHostWidgetIds
+                                + ", allValidLauncherDbWidgetIds=" + allValidLauncherDbWidgetIds
+                );
             }
         } finally {
             holder.destroy();

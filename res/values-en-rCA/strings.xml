@@ -38,6 +38,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d wide by %2$d high"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget, %2$d wide by %3$d high"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Touch and hold the widget to move it around the home screen"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Add to home screen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget added to home screen"</string>
@@ -63,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Work"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversations"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Note-taking"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Add"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"Add <xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Useful info at your fingertips"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"To get info without opening apps, you can add widgets to your home screen"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tap to change widget settings"</string>

@@ -410,14 +410,21 @@ class WorkspaceItemProcessor(
         appWidgetInfo.restoreStatus = c.restoreFlag
         if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
             c.markDeleted(
-                "Widget has invalid size: ${appWidgetInfo.spanX}x${appWidgetInfo.spanY}",
+                "processWidget: Widget has invalid size: ${appWidgetInfo.spanX}x${appWidgetInfo.spanY}" +
+                    ", id=${c.id}," +
+                    ", appWidgetId=${c.appWidgetId}," +
+                    ", component=${component}",
                 RestoreError.INVALID_LOCATION
             )
             return
         }
         if (!c.isOnWorkspaceOrHotseat) {
             c.markDeleted(
-                "Widget found where container != CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!",
+                "processWidget: invalid Widget container != CONTAINER_DESKTOP nor CONTAINER_HOTSEAT." +
+                    " id=${c.id}," +
+                    ", appWidgetId=${c.appWidgetId}," +
+                    ", component=${component}," +
+                    ", container=${c.container}",
                 RestoreError.INVALID_LOCATION
             )
             return
@@ -428,7 +435,12 @@ class WorkspaceItemProcessor(
         val inflationResult = widgetInflater.inflateAppWidget(appWidgetInfo)
         var shouldUpdate = inflationResult.isUpdate
         val lapi = inflationResult.widgetInfo
-
+        FileLog.d(
+            TAG,
+            "processWidget: id=${c.id}" +
+                ", appWidgetId=${c.appWidgetId}" +
+                ", inflationResult=$inflationResult"
+        )
         when (inflationResult.type) {
             WidgetInflater.TYPE_DELETE -> {
                 c.markDeleted(inflationResult.reason, inflationResult.restoreErrorType)
@@ -448,7 +460,11 @@ class WorkspaceItemProcessor(
                 ) {
                     // Restore never started
                     c.markDeleted(
-                        "Unrestored widget removed: $component",
+                        "processWidget: Unrestored Pending widget removed:" +
+                            " id=${c.id}" +
+                            ", appWidgetId=${c.appWidgetId}" +
+                            ", component=${component}" +
+                            ", restoreFlag:=${c.restoreFlag}",
                         RestoreError.APP_NOT_INSTALLED
                     )
                     return
@@ -491,7 +507,10 @@ class WorkspaceItemProcessor(
             if (appWidgetInfo.spanX < lapi.minSpanX || appWidgetInfo.spanY < lapi.minSpanY) {
                 FileLog.d(
                     TAG,
-                    "Widget ${lapi.component} minSizes not meet: span=${appWidgetInfo.spanX}x${appWidgetInfo.spanY} minSpan=${lapi.minSpanX}x${lapi.minSpanY}"
+                    " processWidget: Widget ${lapi.component} minSizes not met: span=${appWidgetInfo.spanX}x${appWidgetInfo.spanY} minSpan=${lapi.minSpanX}x${lapi.minSpanY}," +
+                        " id: ${c.id}," +
+                        " appWidgetId: ${c.appWidgetId}," +
+                        " component=${component}"
                 )
                 logWidgetInfo(app.invariantDeviceProfile, lapi)
             }

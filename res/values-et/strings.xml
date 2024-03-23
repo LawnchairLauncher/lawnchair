@@ -38,25 +38,19 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d lai ja %2$d kõrge"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"Vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, %2$d lai ja %3$d kõrge"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Vidina teisaldamiseks avakuval puudutage vidinat pikalt"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Lisa avakuvale"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g> lisati avakuvale"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Soovitused"</string>
-    <!-- no translation found for productivity_widget_recommendation_category_label (3811812719618323750) -->
-    <skip />
-    <!-- no translation found for news_widget_recommendation_category_label (6756167867113741310) -->
-    <skip />
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Alustalad"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Uudised ja ajakirjad"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Teie lõõgastumiskoht"</string>
-    <!-- no translation found for entertainment_widget_recommendation_category_label (3973107268630717874) -->
-    <skip />
-    <!-- no translation found for social_widget_recommendation_category_label (689147679536384717) -->
-    <skip />
-    <!-- no translation found for fitness_widget_recommendation_category_label (2756483898236585324) -->
-    <skip />
-    <!-- no translation found for weather_widget_recommendation_category_label (3059715991930798039) -->
-    <skip />
-    <!-- no translation found for others_widget_recommendation_category_label (5555987036267226245) -->
-    <skip />
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Meelelahutus"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Suhtlus"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Tervis ja vormisolek"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Ilm"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Teile soovitatud"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Teenuse <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> vidinad paremal, otsing ja valikud vasakul"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# vidin}other{# vidinat}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# otsetee}other{# otseteed}}"</string>
@@ -70,6 +64,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Töö"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Vestlused"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Märkmete tegemine"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Lisa"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"Lisa vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Kasulik teave on teie käeulatuses"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Teabe saamiseks rakendusi avamata võite oma avakuvale lisada vidinaid"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Puudutage vidina seadete muutmiseks"</string>
