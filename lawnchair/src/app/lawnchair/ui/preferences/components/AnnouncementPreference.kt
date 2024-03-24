@@ -62,19 +62,20 @@ fun AnnouncementPreference(
     announcements: ImmutableList<Announcement>,
 ) {
     Column {
-        announcements.forEach { announcement ->
-            AnnouncementItem(announcement)
-            Spacer(modifier = Modifier.height(16.dp))
+        announcements.forEachIndexed { index, announcement ->
+            var show by remember { mutableStateOf(true) }
+            AnnouncementItem(show, { show = false }, announcement)
+            if (index != announcements.lastIndex && show) Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
 private fun AnnouncementItem(
+    show: Boolean,
+    onClose: () -> Unit,
     announcement: Announcement,
 ) {
-    var show by remember { mutableStateOf(true) }
-
     ExpandAndShrink(
         visible = show && announcement.active &&
             announcement.text.isNotBlank() &&
@@ -83,7 +84,7 @@ private fun AnnouncementItem(
         AnnouncementItemContent(
             text = announcement.text,
             url = announcement.url,
-            onClose = { show = false },
+            onClose = onClose,
         )
     }
 }
