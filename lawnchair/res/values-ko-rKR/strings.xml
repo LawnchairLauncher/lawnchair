@@ -276,9 +276,9 @@
     <string name="hide_hidden_apps_search">검색 결과에서 숨기기</string>
     <string name="pref_all_apps_bulk_icon_loading_title">대량 앱 로드</string>
     <string name="pref_all_apps_bulk_icon_loading_description">아이콘을 개별적으로가 아닌 대량으로 로드하고 표시합니다</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_remember_position_title">위치 기억</string>
+    <string name="pref_all_apps_remember_position_description">맨 위가 아닌, 마지막 위치를 기억</string>
+    <string name="pref_all_apps_show_scrollbar_title">스크롤바 표시</string>
     <string name="pref_category_search">검색</string>
     <string name="show_app_search_bar">검색 창 활성화</string>
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>

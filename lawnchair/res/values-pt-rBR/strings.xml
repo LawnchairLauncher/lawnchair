@@ -262,7 +262,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Pesquisa de aplicativos</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair tem um acordo de participação na receita.\n\nPesquisar com %1$s ajuda a apoiar o Lawnchair.</string>
     <string name="app_label">Aplicativo</string>
     <string name="website_label">Site da Internet</string>
     <string name="qsb_search_provider_app_required">Aplicativo necessário.</string>
@@ -276,9 +276,9 @@
     <string name="hide_hidden_apps_search">Ocultar nos Resultados da Pesquisa</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Carregar Apps em massa</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Carregar e exibir ícones em massa em vez de carregar e exibir ícones individualmente</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_remember_position_title">Lembrar da posição</string>
+    <string name="pref_all_apps_remember_position_description">Lembrar a posição de onde você parou, em vez de retornar ao topo</string>
+    <string name="pref_all_apps_show_scrollbar_title">Mostrar a barra de rolagem</string>
     <string name="pref_category_search">Pesquisar</string>
     <string name="show_app_search_bar">Exibir Barra de Pesquisa</string>
     <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
@@ -290,7 +290,7 @@
     <string name="max_suggestion_result_count_title">Contagem máxima de resultados de sugestões</string>
     <string name="max_settings_entry_result_count_title">Contagem máxima de resultados de entradas de configurações</string>
     <string name="max_recent_result_count_title">Contagem máxima de resultados do histórico</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
+    <string name="max_web_suggestion_delay">Atraso máximo de sugestões da Web</string>
     <string name="clear_history">Limpar</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Colunas na Gaveta de Aplicativos</string>
@@ -342,14 +342,14 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">Estas configurações serão ignoradas, já que o Lawnchair não está definido como o provedor de recentes.</string>
     <string name="translucent_background">Fundo Desfocado</string>
     <string name="recents_actions_label">Ações Rápidas</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Compartilhar</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Limpar tudo</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">Forçar fechamento</string>
     <string name="window_corner_radius_label">Raio dos Cantos da Tela</string>
     <string name="override_window_corner_radius_label">Raio Personalizado dos Cantos da Tela</string>
     <string name="window_corner_radius_description">Ao deslizar para cima para abrir as mudanças recentes, o aplicativo atual segue o seu dedo, diminuindo em um cartão. Utilize este controle deslizante para ajustar o raio de curvatura do cartão quando este estiver quase em tela cheia, de modo a que corresponda aos cantos da sua tela.</string>
@@ -447,8 +447,8 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Definições de Sistema</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
+    <string name="action_unlock">Desbloquear</string>
+    <string name="action_lock">Bloquear</string>
+    <string name="recents_lock_unlock">Bloquear/Desbloquear</string>
+    <string name="recents_lock_unlock_description">Impedir que o aplicativo selecionado limpe ao usar \"Limpar Tudo\"</string>
 </resources>
