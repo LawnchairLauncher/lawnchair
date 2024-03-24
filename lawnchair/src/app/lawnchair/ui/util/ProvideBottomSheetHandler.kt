@@ -16,6 +16,9 @@
 
 package app.lawnchair.ui.util
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsIgnoringVisibility
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
@@ -29,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 internal val LocalBottomSheetHandler = staticCompositionLocalOf { BottomSheetHandler() }
@@ -76,12 +80,16 @@ fun ProvideBottomSheetHandler(
 
     CompositionLocalProvider(LocalBottomSheetHandler provides bottomSheetHandler) {
         content()
+
+        val windowInsets = if (bottomSheetState.isVisible) WindowInsets.navigationBars else WindowInsets(0.dp)
+
         if (showBottomSheet) {
             ModalBottomSheet(
                 sheetState = bottomSheetState,
                 onDismissRequest = {
                     showBottomSheet = false
                 },
+                windowInsets = windowInsets
             ) {
                 bottomSheetContent.content()
             }

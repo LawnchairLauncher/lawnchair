@@ -16,10 +16,13 @@
 
 package app.lawnchair.ui.preferences
 
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
@@ -47,6 +50,7 @@ import app.lawnchair.ui.preferences.destinations.quickstepGraph
 import app.lawnchair.ui.preferences.destinations.selectIconGraph
 import app.lawnchair.ui.preferences.destinations.smartspaceGraph
 import app.lawnchair.ui.preferences.destinations.smartspaceWidgetGraph
+import app.lawnchair.ui.theme.isSelectedThemeDark
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
 import app.lawnchair.util.ProvideLifecycleState
 import soup.compose.material.motion.animation.materialSharedAxisXIn
