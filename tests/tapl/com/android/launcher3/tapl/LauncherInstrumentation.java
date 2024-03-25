@@ -1919,17 +1919,21 @@ public final class LauncherInstrumentation {
     }
 
     private static MotionEvent getMotionEvent(long downTime, long eventTime, int action,
-            float x, float y, int source) {
+            float x, float y, int source, int toolType) {
         return MotionEvent.obtain(downTime, eventTime, action, 1,
-                new MotionEvent.PointerProperties[]{getPointerProperties(0)},
+                new MotionEvent.PointerProperties[]{getPointerProperties(0, toolType)},
                 new MotionEvent.PointerCoords[]{getPointerCoords(x, y)},
                 0, 0, 1.0f, 1.0f, 0, 0, source, 0);
     }
 
     private static MotionEvent.PointerProperties getPointerProperties(int pointerId) {
+        return getPointerProperties(pointerId, Configurator.getInstance().getToolType());
+    }
+
+    private static MotionEvent.PointerProperties getPointerProperties(int pointerId, int toolType) {
         MotionEvent.PointerProperties properties = new MotionEvent.PointerProperties();
         properties.id = pointerId;
-        properties.toolType = Configurator.getInstance().getToolType();
+        properties.toolType = toolType;
         return properties;
     }
 
@@ -1975,6 +1979,19 @@ public final class LauncherInstrumentation {
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope, int source, boolean isRightClick) {
+        sendPointer(
+                downTime,
+                currentTime,
+                action,
+                point,
+                gestureScope,
+                source,
+                isRightClick,
+                Configurator.getInstance().getToolType());
+    }
+
+    public void sendPointer(long downTime, long currentTime, int action, Point point,
+            GestureScope gestureScope, int source, boolean isRightClick, int toolType) {
         final boolean hasTIS = hasTIS();
         int pointerCount = mPointerCount;
 
@@ -2009,13 +2026,13 @@ public final class LauncherInstrumentation {
                 ? getTrackpadMotionEvent(
                 downTime, currentTime, action, point.x, point.y, pointerCount,
                 mTrackpadGestureType)
-                : getMotionEvent(downTime, currentTime, action, point.x, point.y, source);
+                : getMotionEvent(downTime, currentTime, action, point.x, point.y, source, toolType);
         if (action == MotionEvent.ACTION_BUTTON_PRESS
                 || action == MotionEvent.ACTION_BUTTON_RELEASE) {
             event.setActionButton(MotionEvent.BUTTON_PRIMARY);
         }
         if (isRightClick) {
-            event.setButtonState(event.getButtonState() & MotionEvent.BUTTON_SECONDARY);
+            event.setButtonState(event.getButtonState() | MotionEvent.BUTTON_SECONDARY);
         }
         injectEvent(event);
     }
@@ -2114,15 +2131,19 @@ public final class LauncherInstrumentation {
             @NonNull final UiObject2 target, @NonNull String resName, Pattern longClickEvent) {
         final Point targetCenter = target.getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
+        // Use stylus secondary button press to prevent using the exteded long press timeout rule
+        // unnecessarily
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter,
-                GestureScope.DONT_EXPECT_PILFER);
+                GestureScope.DONT_EXPECT_PILFER, InputDevice.SOURCE_TOUCHSCREEN,
+                /* isRightClick= */ true, MotionEvent.TOOL_TYPE_STYLUS);
         try {
             expectEvent(TestProtocol.SEQUENCE_MAIN, longClickEvent);
             final UiObject2 result = waitForLauncherObject(resName);
             return result;
         } finally {
             sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter,
-                    GestureScope.DONT_EXPECT_PILFER);
+                    GestureScope.DONT_EXPECT_PILFER, InputDevice.SOURCE_TOUCHSCREEN,
+                    /* isRightClick= */ true, MotionEvent.TOOL_TYPE_STYLUS);
         }
     }
 

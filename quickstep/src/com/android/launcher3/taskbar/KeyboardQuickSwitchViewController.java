@@ -94,8 +94,12 @@ public class KeyboardQuickSwitchViewController {
                 mViewCallbacks);
     }
 
+    boolean isCloseAnimationRunning() {
+        return mCloseAnimation != null;
+    }
+
     protected void closeQuickSwitchView(boolean animate) {
-        if (mCloseAnimation != null) {
+        if (isCloseAnimationRunning()) {
             // Let currently-running animation finish.
             if (!animate) {
                 mCloseAnimation.end();
@@ -130,7 +134,7 @@ public class KeyboardQuickSwitchViewController {
     }
 
     private int launchTaskAt(int index) {
-        if (mCloseAnimation != null) {
+        if (isCloseAnimationRunning()) {
             // Ignore taps on task views and alt key unpresses while the close animation is running.
             return -1;
         }
@@ -138,7 +142,7 @@ public class KeyboardQuickSwitchViewController {
         // views have been added in the KeyboardQuickSwitchView.
         GroupTask task = mControllerCallbacks.getTaskAt(index);
         if (task == null) {
-            return Math.max(0, index);
+            return mOnDesktop ? 1 : Math.max(0, index);
         }
         if (mControllerCallbacks.isTaskRunning(task)) {
             // Ignore attempts to run the selected task if it is already running.
@@ -186,7 +190,7 @@ public class KeyboardQuickSwitchViewController {
         pw.println(prefix + "KeyboardQuickSwitchViewController:");
 
         pw.println(prefix + "\thasFocus=" + mKeyboardQuickSwitchView.hasFocus());
-        pw.println(prefix + "\tcloseAnimationRunning=" + (mCloseAnimation != null));
+        pw.println(prefix + "\tisCloseAnimationRunning=" + isCloseAnimationRunning());
         pw.println(prefix + "\tmCurrentFocusIndex=" + mCurrentFocusIndex);
     }
 

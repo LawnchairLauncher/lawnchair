@@ -17,7 +17,7 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-min_launcher3_sdk_version = "26"
+min_launcher3_sdk_version = "30"
 
 // Common source files used to build launcher (java and kotlin)
 // All sources are split so they can be reused in many other libraries/apps in other folders
@@ -66,22 +66,6 @@ filegroup {
     srcs: [
         "src_ui_overrides/**/*.java",
         "src_ui_overrides/**/*.kt",
-    ],
-}
-
-filegroup {
-    name: "launcher-ext_tests",
-    srcs: [
-        "ext_tests/**/*.java",
-        "ext_tests/**/*.kt",
-    ],
-}
-
-filegroup {
-    name: "launcher-quickstep-ext_tests",
-    srcs: [
-        "quickstep/ext_tests/**/*.java",
-        "quickstep/ext_tests/**/*.kt",
     ],
 }
 
@@ -186,7 +170,7 @@ android_library {
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
     lint: {
-        baseline_filename: "lint-baseline2.xml",
+        baseline_filename: "lint-baseline.xml",
     },
 }
 
@@ -212,7 +196,7 @@ android_library {
     min_sdk_version: min_launcher3_sdk_version,
     manifest: "AndroidManifest-common.xml",
     lint: {
-        baseline_filename: "lint-baseline2.xml",
+        baseline_filename: "lint-baseline.xml",
     },
 }
 
@@ -229,11 +213,8 @@ android_app {
         ":launcher-src",
         ":launcher-src_shortcuts_overrides",
         ":launcher-src_ui_overrides",
-        ":launcher-ext_tests",
     ],
-    resource_dirs: [
-        "ext_tests/res",
-    ],
+
     optimize: {
         proguard_flags_files: ["proguard.flags"],
         // Proguard is disable for testing. Derivarive prjects to keep proguard enabled

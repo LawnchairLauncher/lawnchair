@@ -97,7 +97,11 @@ public final class KeyboardQuickSwitchController implements
 
     private void openQuickSwitchView(int currentFocusedIndex) {
         if (mQuickSwitchViewController != null) {
-            return;
+            if (!mQuickSwitchViewController.isCloseAnimationRunning()) {
+                return;
+            }
+            // Allow the KQS to be reopened during the close animation to make it more responsive
+            closeQuickSwitchView(false);
         }
         TaskbarOverlayContext overlayContext =
                 mControllers.taskbarOverlayController.requestWindow();
