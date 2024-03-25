@@ -50,10 +50,10 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
+import com.android.launcher3.model.BaseLauncherBinder;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.GridSizeMigrationUtil;
-import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -244,7 +244,7 @@ public class PreviewSurfaceRenderer {
                     /* bgAllAppsList= */ null,
                     bgModel,
                     LauncherAppState.getInstance(previewContext).getModel().getModelDelegate(),
-                    new LauncherBinder(LauncherAppState.getInstance(previewContext), bgModel,
+                    new BaseLauncherBinder(LauncherAppState.getInstance(previewContext), bgModel,
                             /* bgAllAppsList= */ null, new Callbacks[0])) {
 
                 @Override

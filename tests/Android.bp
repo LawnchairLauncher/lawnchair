@@ -168,20 +168,6 @@ filegroup {
     ],
 }
 
-android_library {
-    name: "Launcher3Lib",
-    srcs: [
-        ":launcher-src",
-        ":launcher-src_shortcuts_overrides",
-        ":launcher-src_ui_overrides",
-    ],
-    static_libs: [
-        "Launcher3CommonDepsLib",
-    ],
-    // TODO(b/319712088): re-enable use_resource_processor
-    use_resource_processor: false,
-}
-
 android_robolectric_test {
     enabled: true,
     name: "Launcher3RoboTests",

@@ -52,7 +52,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.uioverrides.flags.DeveloperOptionsUI;
 import com.android.launcher3.util.DisplayController;
@@ -238,7 +237,7 @@ public class SettingsActivity extends FragmentActivity
         protected boolean initPreference(Preference preference) {
             switch (preference.getKey()) {
                 case NOTIFICATION_DOTS_PREFERENCE_KEY:
-                    return !WidgetsModel.GO_DISABLE_NOTIFICATION_DOTS;
+                    return BuildConfig.NOTIFICATION_DOTS_ENABLED;
 
                 case ALLOW_ROTATION_PREFERENCE_KEY:
                     DisplayController.Info info =

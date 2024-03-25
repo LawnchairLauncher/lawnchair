@@ -17,11 +17,11 @@
 package com.android.launcher3.widget
 
 import android.content.Context
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError
 import com.android.launcher3.logging.FileLog
-import com.android.launcher3.model.WidgetsModel
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.qsb.QsbContainerView
 
@@ -55,7 +55,7 @@ class WidgetInflater(private val context: Context) {
             // The widget id is not valid. Try to find the widget based on the provider info.
             appWidgetInfo = widgetHelper.findProvider(item.providerName, item.user)
             if (appWidgetInfo == null) {
-                if (WidgetsModel.GO_DISABLE_WIDGETS) {
+                if (!BuildConfig.WIDGETS_ENABLED) {
                     removalReason = "widgets are disabled on go device."
                     logReason = RestoreError.WIDGETS_DISABLED
                 } else {

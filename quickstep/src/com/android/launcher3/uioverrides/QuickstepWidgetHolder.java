@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -32,7 +33,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -101,7 +101,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
                                     new ArrayList<>(h.mProviderChangedListeners).forEach(
                                     ProviderChangedListener::notifyWidgetProvidersChanged))),
                     UI_HELPER_EXECUTOR.getLooper());
-            if (!WidgetsModel.GO_DISABLE_WIDGETS) {
+            if (WIDGETS_ENABLED) {
                 sWidgetHost.startListening();
             }
         }
@@ -195,7 +195,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
      */
     @Override
     public void stopListening() {
-        if (WidgetsModel.GO_DISABLE_WIDGETS) {
+        if (!WIDGETS_ENABLED) {
             return;
         }
 

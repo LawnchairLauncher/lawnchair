@@ -16,7 +16,7 @@
 
 package com.android.launcher3.icons;
 
-import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -101,7 +101,7 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
      * Launcher specific checks
      */
     public static Drawable getIcon(Context context, ShortcutInfo shortcutInfo, int density) {
-        if (GO_DISABLE_WIDGETS) {
+        if (!WIDGETS_ENABLED) {
             return null;
         }
         try {

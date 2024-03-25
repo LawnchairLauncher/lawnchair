@@ -18,9 +18,9 @@ package com.android.launcher3.model;
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY;
 
 import static com.android.launcher3.BuildConfig.QSB_ON_FIRST_SCREEN;
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
-import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -305,7 +305,7 @@ public class BgDataModel {
      * shortcuts and unpinning any extra shortcuts.
      */
     public synchronized void updateShortcutPinnedState(Context context, UserHandle user) {
-        if (GO_DISABLE_WIDGETS) {
+        if (!WIDGETS_ENABLED) {
             return;
         }
 
