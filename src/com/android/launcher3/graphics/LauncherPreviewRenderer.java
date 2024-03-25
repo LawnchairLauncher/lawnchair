@@ -86,7 +86,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.uioverrides.PredictedAppIconInflater;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
@@ -453,10 +452,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void inflateAndAddPredictedIcon(WorkspaceItemInfo info) {
         CellLayout screen = mWorkspaceScreens.get(info.screenId);
-        View view = PredictedAppIconInflater.inflate(mHomeElementInflater, screen, info);
-        if (view != null) {
-            addInScreenFromBind(view, info);
-        }
+        BubbleTextView icon = (BubbleTextView) mHomeElementInflater.inflate(
+                R.layout.predicted_app_icon, screen, false);
+        icon.applyFromWorkspaceItem(info);
+        addInScreenFromBind(icon, info);
     }
 
     private void dispatchVisibilityAggregated(View view, boolean isVisible) {
