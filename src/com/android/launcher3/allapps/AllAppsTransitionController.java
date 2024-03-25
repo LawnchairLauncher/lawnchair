@@ -295,9 +295,6 @@ public class AllAppsTransitionController
         mLauncher.getScrimView().setScrimHeaderScale(scaleProgress);
 
         AllAppsRecyclerView rv = mLauncher.getAppsView().getActiveRecyclerView();
-        if (rv != null && rv.getScrollbar() != null) {
-            rv.getScrollbar().setVisibility(scaleProgress < 1f ? View.INVISIBLE : View.VISIBLE);
-        }
 
         // Disable view clipping from all apps' RecyclerView up to all apps view during scale
         // animation, and vice versa. The goal is to display extra roll(s) app icons (rendered in
