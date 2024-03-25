@@ -332,11 +332,13 @@ public interface TaskShortcutFactory {
             // - the task in question is a single task
             // - at least one app in app pair is unpinnable
             // - the Overview Actions Button should be visible
+            // - the task is not a GroupedTaskView
             if (!FeatureFlags.enableAppPairs()
                     || !recentsView.supportsAppPairs()
                     || !taskView.containsMultipleTasks()
                     || hasUnpinnableApp
-                    || shouldShowActionsButtonInstead) {
+                    || shouldShowActionsButtonInstead
+                    || !(taskView instanceof GroupedTaskView)) {
                 return null;
             }
 
