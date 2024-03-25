@@ -37,14 +37,12 @@ import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
-import static com.android.launcher3.taskbar.TaskbarDragLayerController.TASKBAR_REAPPEAR_DELAY_MS;
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
 import static com.android.quickstep.util.AnimUtils.completeRunnableListCallback;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
 
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
@@ -82,7 +80,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.config.FeatureFlags;
@@ -1430,23 +1427,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 bubbleControllers.bubbleStashController.showBubbleBar(false);
             }
         });
-    }
-
-    public void hideTaskbarWhenFolding() {
-        AnimatedFloat alphaAnim = mControllers.taskbarDragLayerController.getTaskbarAlpha();
-        alphaAnim.cancelAnimation();
-        alphaAnim.updateValue(0);
-        ObjectAnimator animator = alphaAnim.animateToValue(1).setDuration(0);
-        animator.setStartDelay(TASKBAR_REAPPEAR_DELAY_MS);
-        animator.start();
-    }
-
-    public void cancelHideTaskbarWhenFolding() {
-        mControllers.taskbarDragLayerController.getTaskbarAlpha().cancelAnimation();
-    }
-
-    public void resetHideTaskbarWhenUnfolding() {
-        mControllers.taskbarDragLayerController.getTaskbarAlpha().updateValue(1);
     }
 
     protected boolean isUserSetupComplete() {
