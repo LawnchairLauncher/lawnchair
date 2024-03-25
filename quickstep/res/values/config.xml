@@ -38,6 +38,7 @@
     <string name="nav_handle_long_press_handler_class" translatable="false"></string>
     <string name="assist_utils_class" translatable="false"></string>
     <string name="assist_state_manager_class" translatable="false"></string>
+    <string name="api_wrapper_class" translatable="false">com.android.launcher3.uioverrides.SystemApiWrapper</string>
 
     <!-- The number of thumbnails and icons to keep in the cache. The thumbnail cache size also
          determines how many thumbnails will be fetched in the background. -->

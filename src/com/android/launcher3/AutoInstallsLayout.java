@@ -52,7 +52,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
@@ -203,7 +203,7 @@ public class AutoInstallsLayout {
         mIdp = LauncherAppState.getIDP(context);
         mRowCount = mIdp.numRows;
         mColumnCount = mIdp.numColumns;
-        mActivityOverride = ApiWrapper.getActivityOverrides(context);
+        mActivityOverride = ApiWrapper.INSTANCE.get(context).getActivityOverrides();
     }
 
     /**

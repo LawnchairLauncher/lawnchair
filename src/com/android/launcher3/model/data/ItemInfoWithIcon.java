@@ -28,7 +28,7 @@ import com.android.launcher3.icons.BitmapInfo.DrawableCreationFlags;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 
 /**
  * Represents an ItemInfo which also holds an icon.
@@ -251,8 +251,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         String targetPackage = getTargetPackage();
 
         return targetPackage != null
-                ? ApiWrapper.getAppMarketActivityIntent(
-                context, targetPackage, Process.myUserHandle())
+                ? ApiWrapper.INSTANCE.get(context).getAppMarketActivityIntent(
+                        targetPackage, Process.myUserHandle())
                 : null;
     }
 

@@ -63,7 +63,7 @@ import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.Snackbar;
@@ -234,7 +234,7 @@ public class ItemClickHandler {
                 }
             }
             // Fallback to using custom market intent.
-            Intent intent = ApiWrapper.getAppMarketActivityIntent(launcher,
+            Intent intent = ApiWrapper.INSTANCE.get(launcher).getAppMarketActivityIntent(
                     packageName, Process.myUserHandle());
             launcher.startActivitySafely(v, intent, item);
         };
@@ -372,12 +372,12 @@ public class ItemClickHandler {
         if (item instanceof ItemInfoWithIcon itemInfoWithIcon) {
             if ((itemInfoWithIcon.runtimeStatusFlags
                     & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-                intent = ApiWrapper.getAppMarketActivityIntent(launcher,
+                intent = ApiWrapper.INSTANCE.get(launcher).getAppMarketActivityIntent(
                         itemInfoWithIcon.getTargetComponent().getPackageName(),
                         Process.myUserHandle());
             } else if (itemInfoWithIcon.itemType
                     == LauncherSettings.Favorites.ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON) {
-                intent = ApiWrapper.getAppMarketActivityIntent(launcher,
+                intent = ApiWrapper.INSTANCE.get(launcher).getAppMarketActivityIntent(
                         BuildConfig.APPLICATION_ID,
                         launcher.getAppsView().getPrivateProfileManager().getProfileUser());
                 launcher.getStatsLogManager().logger().log(

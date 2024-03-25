@@ -70,7 +70,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
@@ -560,9 +560,8 @@ public class RestoreDbTask {
 
     protected static void maybeOverrideShortcuts(Context context, ModelDbController controller,
             SQLiteDatabase db, long currentUser) {
-        Map<String, LauncherActivityInfo> activityOverrides = ApiWrapper.getActivityOverrides(
-                context);
-
+        Map<String, LauncherActivityInfo> activityOverrides =
+                ApiWrapper.INSTANCE.get(context).getActivityOverrides();
         if (activityOverrides == null || activityOverrides.isEmpty()) {
             return;
         }

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
+
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -46,7 +48,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.uioverrides.ApiWrapper;
 
 import java.util.List;
 import java.util.Objects;
@@ -169,11 +170,9 @@ public class PackageManagerHelper {
      * Starts the details activity for {@code info}
      */
     public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
-        if (info instanceof ItemInfoWithIcon
-                && (((ItemInfoWithIcon) info).runtimeStatusFlags
-                & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-            ItemInfoWithIcon appInfo = (ItemInfoWithIcon) info;
-            mContext.startActivity(ApiWrapper.getAppMarketActivityIntent(mContext,
+        if (info instanceof ItemInfoWithIcon appInfo
+                && (appInfo.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+            mContext.startActivity(ApiWrapper.INSTANCE.get(mContext).getAppMarketActivityIntent(
                     appInfo.getTargetComponent().getPackageName(), Process.myUserHandle()));
             return;
         }
