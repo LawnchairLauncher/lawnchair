@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -174,21 +175,23 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
             return;
         }
         if (updateFunction == null) {
-            applyThumbnail(thumbnailView, task.thumbnail);
+            applyThumbnail(thumbnailView, task.colorBackground, task.thumbnail);
             return;
         }
-        updateFunction.updateThumbnailInBackground(
-                task, thumbnailData -> applyThumbnail(thumbnailView, thumbnailData));
+        updateFunction.updateThumbnailInBackground(task, thumbnailData ->
+                applyThumbnail(thumbnailView, task.colorBackground, thumbnailData));
     }
 
     private void applyThumbnail(
             @NonNull ImageView thumbnailView,
-            ThumbnailData thumbnailData) {
+            @ColorInt int backgroundColor,
+            @Nullable ThumbnailData thumbnailData) {
         Bitmap bm = thumbnailData == null ? null : thumbnailData.thumbnail;
 
         if (thumbnailView.getVisibility() != VISIBLE) {
             thumbnailView.setVisibility(VISIBLE);
         }
+        thumbnailView.getBackground().setTint(bm == null ? backgroundColor : Color.TRANSPARENT);
         thumbnailView.setImageDrawable(new BlurredBitmapDrawable(bm, THUMBNAIL_BLUR_RADIUS));
     }
 
