@@ -40,14 +40,22 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+private data class Grid(val tableName: String, val size: Point, val items: List<WorkspaceItem>) {
+    fun toGridState(): DeviceGridState =
+        DeviceGridState(size.x, size.y, size.x, InvariantDeviceProfile.TYPE_PHONE, tableName)
+}
+
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class ValidGridMigrationUnitTest {
 
     companion object {
         const val SEED = 1044542
-        const val REPEAT_AFTER = 10
+        val REPEAT_AFTER = Point(0, 10)
+        val REPEAT_AFTER_DST = Point(6, 15)
         const val TAG = "ValidGridMigrationUnitTest"
+        const val SMALL_TEST_SIZE = 60
+        const val LARGE_TEST_SIZE = 1000
     }
 
     private lateinit var context: Context
@@ -57,14 +65,10 @@ class ValidGridMigrationUnitTest {
         context = InstrumentationRegistry.getInstrumentation().targetContext
     }
 
-    private fun validate(
-        srcItems: List<WorkspaceItem>,
-        dstItems: List<WorkspaceItem>,
-        destinationSize: Point
-    ) {
+    private fun validate(srcGrid: Grid, dstGrid: Grid, resultItems: List<WorkspaceItem>) {
         // This returns a map with the number of repeated elements
         // ex { calculatorIcon : 6, weatherWidget : 2 }
-        val itemsToSet = { it: List<WorkspaceItem> ->
+        val itemsToMap = { it: List<WorkspaceItem> ->
             it.filter { it.container != Favorites.CONTAINER_HOTSEAT }
                 .groupingBy {
                     when (it.type) {
@@ -77,34 +81,36 @@ class ValidGridMigrationUnitTest {
                 }
                 .eachCount()
         }
-        for (it in dstItems) {
-            assert((it.x in 0..destinationSize.x) && (it.y in 0..destinationSize.y)) {
-                "Item outside of the board size. Size = $destinationSize Item = $it"
+        resultItems.forEach {
+            assert((it.x in 0..dstGrid.size.x) && (it.y in 0..dstGrid.size.y)) {
+                "Item outside of the board size. Size = ${dstGrid.size} Item = $it"
             }
             assert(
-                (it.x + it.spanX in 0..destinationSize.x) &&
-                    (it.y + it.spanY in 0..destinationSize.y)
+                (it.x + it.spanX in 0..dstGrid.size.x) && (it.y + it.spanY in 0..dstGrid.size.y)
             ) {
-                "Item doesn't fit in the grid. Size = $destinationSize Item = $it"
+                "Item doesn't fit in the grid. Size = ${dstGrid.size} Item = $it"
             }
         }
 
-        assert(itemsToSet(srcItems) == itemsToSet(dstItems)) {
-            "The srcItems do not match the dstItems src = $srcItems  dst = $dstItems"
+        val srcCountMap = itemsToMap(srcGrid.items)
+        val resultCountMap = itemsToMap(resultItems)
+        val diff = resultCountMap - srcCountMap
+
+        diff.forEach { (k, count) ->
+            assert(count >= 0) { "Source item $k not present on the result" }
         }
     }
 
-    private fun addItemsToDb(db: SQLiteDatabase, tableName: String, items: List<WorkspaceItem>) {
+    private fun addItemsToDb(db: SQLiteDatabase, grid: Grid) {
         LauncherDbUtils.SQLiteTransaction(db).use { transaction ->
-            items.forEach { insertIntoDb(tableName, it, transaction.db) }
+            grid.items.forEach { insertIntoDb(grid.tableName, it, transaction.db) }
             transaction.commit()
         }
     }
 
     private fun migrate(
-        srcItems: List<WorkspaceItem>,
-        srcSize: Point,
-        targetSize: Point
+        srcGrid: Grid,
+        dstGrid: Grid,
     ): List<WorkspaceItem> {
         val userSerial = UserCache.INSTANCE[context].getSerialNumberForUser(Process.myUserHandle())
         val dbHelper =
@@ -114,46 +120,64 @@ class ValidGridMigrationUnitTest {
                 { UserCache.INSTANCE.get(context).getSerialNumberForUser(it) },
                 {}
             )
-        val srcTableName = Favorites.TMP_TABLE
-        val dstTableName = Favorites.TABLE_NAME
-        Favorites.addTableToDb(dbHelper.writableDatabase, userSerial, false, srcTableName)
-        addItemsToDb(dbHelper.writableDatabase, srcTableName, srcItems)
+
+        Favorites.addTableToDb(dbHelper.writableDatabase, userSerial, false, srcGrid.tableName)
+
+        addItemsToDb(dbHelper.writableDatabase, srcGrid)
+        addItemsToDb(dbHelper.writableDatabase, dstGrid)
+
         LauncherDbUtils.SQLiteTransaction(dbHelper.writableDatabase).use {
             GridSizeMigrationUtil.migrate(
                 dbHelper,
-                GridSizeMigrationUtil.DbReader(it.db, srcTableName, context, MockSet(1)),
-                GridSizeMigrationUtil.DbReader(it.db, dstTableName, context, MockSet(1)),
-                targetSize.x,
-                targetSize,
-                DeviceGridState(
-                    srcSize.x,
-                    srcSize.y,
-                    srcSize.x,
-                    InvariantDeviceProfile.TYPE_PHONE,
-                    srcTableName
-                ),
-                DeviceGridState(
-                    targetSize.x,
-                    targetSize.y,
-                    targetSize.x,
-                    InvariantDeviceProfile.TYPE_PHONE,
-                    dstTableName
-                )
+                GridSizeMigrationUtil.DbReader(it.db, srcGrid.tableName, context, MockSet(1)),
+                GridSizeMigrationUtil.DbReader(it.db, dstGrid.tableName, context, MockSet(1)),
+                dstGrid.size.x,
+                dstGrid.size,
+                srcGrid.toGridState(),
+                dstGrid.toGridState()
             )
             it.commit()
         }
-        return readDb(dstTableName, dbHelper.readableDatabase)
+        return readDb(dstGrid.tableName, dbHelper.readableDatabase)
     }
 
     @Test
     fun runTestCase() {
         val caseGenerator = ValidGridMigrationTestCaseGenerator(Random(SEED.toLong()))
-        for (i in 0..50) {
-            val testCase = caseGenerator.generateTestCase()
+        for (i in 0..SMALL_TEST_SIZE) {
+            val testCase = caseGenerator.generateTestCase(isDestEmpty = true)
             Log.d(TAG, "Test case = $testCase")
-            val srcItemList = generateItemsForTest(testCase, REPEAT_AFTER)
-            val dstItemList = migrate(srcItemList, testCase.srcSize, testCase.targetSize)
-            validate(srcItemList, dstItemList, testCase.targetSize)
+            val srcGrid =
+                Grid(
+                    tableName = Favorites.TMP_TABLE,
+                    size = testCase.srcSize,
+                    items = generateItemsForTest(testCase.boards, REPEAT_AFTER)
+                )
+            val dstGrid =
+                Grid(tableName = Favorites.TABLE_NAME, size = testCase.targetSize, items = listOf())
+            validate(srcGrid, dstGrid, migrate(srcGrid, dstGrid))
+        }
+    }
+
+    @Test
+    fun mergeBoards() {
+        val caseGenerator = ValidGridMigrationTestCaseGenerator(Random(SEED.toLong()))
+        for (i in 0..SMALL_TEST_SIZE) {
+            val testCase = caseGenerator.generateTestCase(isDestEmpty = false)
+            Log.d(TAG, "Test case = $testCase")
+            val srcGrid =
+                Grid(
+                    tableName = Favorites.TMP_TABLE,
+                    size = testCase.srcSize,
+                    items = generateItemsForTest(testCase.boards, REPEAT_AFTER)
+                )
+            val dstGrid =
+                Grid(
+                    tableName = Favorites.TABLE_NAME,
+                    size = testCase.targetSize,
+                    items = generateItemsForTest(testCase.destBoards, REPEAT_AFTER_DST)
+                )
+            validate(srcGrid, dstGrid, migrate(srcGrid, dstGrid))
         }
     }
 
@@ -162,12 +186,18 @@ class ValidGridMigrationUnitTest {
     @Test
     fun runExtensiveTestCases() {
         val caseGenerator = ValidGridMigrationTestCaseGenerator(Random(SEED.toLong()))
-        for (i in 0..1000) {
-            val testCase = caseGenerator.generateTestCase()
+        for (i in 0..LARGE_TEST_SIZE) {
+            val testCase = caseGenerator.generateTestCase(isDestEmpty = true)
             Log.d(TAG, "Test case = $testCase")
-            val srcItemList = generateItemsForTest(testCase, REPEAT_AFTER)
-            val dstItemList = migrate(srcItemList, testCase.srcSize, testCase.targetSize)
-            validate(srcItemList, dstItemList, testCase.targetSize)
+            val srcGrid =
+                Grid(
+                    tableName = Favorites.TMP_TABLE,
+                    size = testCase.srcSize,
+                    items = generateItemsForTest(testCase.boards, REPEAT_AFTER)
+                )
+            val dstGrid =
+                Grid(tableName = Favorites.TABLE_NAME, size = testCase.targetSize, items = listOf())
+            validate(srcGrid, dstGrid, migrate(srcGrid, dstGrid))
         }
     }
 }

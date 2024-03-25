@@ -49,6 +49,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
+import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -674,6 +675,11 @@ public class GridSizeMigrationUtil {
         private String mProvider;
         private Map<String, Set<Integer>> mFolderItems = new HashMap<>();
 
+        /**
+         * Id of the specific widget.
+         */
+        public int appWidgetId = NO_ID;
+
         /** Comparator according to the reading order */
         @Override
         public int compareTo(DbEntry another) {
@@ -707,6 +713,18 @@ public class GridSizeMigrationUtil {
             values.put(LauncherSettings.Favorites.SPANY, spanY);
         }
 
+        @Override
+        public void writeToValues(@NonNull ContentWriter writer) {
+            super.writeToValues(writer);
+            writer.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
+        }
+
+        @Override
+        public void readFromValues(@NonNull ContentValues values) {
+            super.readFromValues(values);
+            appWidgetId = values.getAsInteger(LauncherSettings.Favorites.APPWIDGET_ID);
+        }
+
         /** This id is not used in the DB is only used while doing the migration and it identifies
          * an entry on each workspace. For example two calculator icons would have the same
          * migration id even thought they have different database ids.
@@ -717,7 +735,10 @@ public class GridSizeMigrationUtil {
                 case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
                     return getFolderMigrationId();
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                    return mProvider;
+                    // mProvider is the app the widget belongs to and appWidgetId it's the unique
+                    // is of the widget, we need both because if you remove a widget and then add it
+                    // again, then it can change and the WidgetProvider would not know the widget.
+                    return mProvider + appWidgetId;
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                     final String intentStr = cleanIntentString(mIntent);
                     try {
