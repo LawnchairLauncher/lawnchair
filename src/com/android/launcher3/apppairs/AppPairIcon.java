@@ -16,12 +16,13 @@
 
 package com.android.launcher3.apppairs;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
+
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -37,7 +38,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
@@ -61,6 +61,9 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
     private BubbleTextView mAppPairName;
     // The underlying ItemInfo that stores info about the app pair members, etc.
     private FolderInfo mInfo;
+    // The containing element that holds this icon: workspace, taskbar, folder, etc. Affects certain
+    // aspects of how the icon is drawn.
+    private int mContainer;
 
     // Required for Reorderable -- handles translation and bouncing movements
     private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
@@ -78,7 +81,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
      * Builds an AppPairIcon to be added to the Launcher.
      */
     public static AppPairIcon inflateIcon(int resId, ActivityContext activity,
-            @Nullable ViewGroup group, FolderInfo appPairInfo) {
+            @Nullable ViewGroup group, FolderInfo appPairInfo, int container) {
         DeviceProfile grid = activity.getDeviceProfile();
         LayoutInflater inflater = (group != null)
                 ? LayoutInflater.from(group.getContext())
@@ -86,31 +89,32 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         AppPairIcon icon = (AppPairIcon) inflater.inflate(resId, group, false);
 
         // Sort contents, so that left-hand app comes first
-        Collections.sort(appPairInfo.contents, Comparator.comparingInt(a -> a.rank));
+        appPairInfo.contents.sort(Comparator.comparingInt(a -> a.rank));
 
-        icon.setClipToPadding(false);
         icon.setTag(appPairInfo);
         icon.setOnClickListener(activity.getItemOnClickListener());
         icon.mInfo = appPairInfo;
-
-        // TODO (b/326664798): Delete this check, instead check at launcher load time
-        if (icon.mInfo.contents.size() != 2) {
-            Log.wtf(TAG, "AppPair contents not 2, size: " + icon.mInfo.contents.size());
-            return icon;
-        }
+        icon.mContainer = container;
 
         // Set up icon drawable area
         icon.mIconGraphic = icon.findViewById(R.id.app_pair_icon_graphic);
-        icon.mIconGraphic.init(activity, icon);
+        icon.mIconGraphic.init(icon, container);
 
         icon.checkDisabledState();
 
         // Set up app pair title
         icon.mAppPairName = icon.findViewById(R.id.app_pair_icon_name);
-        icon.mAppPairName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp =
                 (FrameLayout.LayoutParams) icon.mAppPairName.getLayoutParams();
-        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        // Shift the title text down to leave room for the icon graphic. Since the icon graphic is
+        // a separate element (and not set as a CompoundDrawable on the BubbleTextView), we need to
+        // shift the text down manually.
+        lp.topMargin = container == DISPLAY_FOLDER
+                ? grid.folderChildIconSizePx + grid.folderChildDrawablePaddingPx
+                : grid.iconSizePx + grid.iconDrawablePaddingPx;
+        // For some reason, app icons have setIncludeFontPadding(false) inside folders, so we set it
+        // here to match that.
+        icon.mAppPairName.setIncludeFontPadding(container != DISPLAY_FOLDER);
         icon.mAppPairName.setText(appPairInfo.title);
 
         // Set up accessibility
@@ -174,7 +178,11 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         return mInfo;
     }
 
-    public View getIconDrawableArea() {
+    public BubbleTextView getTitleTextView() {
+        return mAppPairName;
+    }
+
+    public AppPairIconGraphic getIconDrawableArea() {
         return mIconGraphic;
     }
 
@@ -195,8 +203,8 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         mIsLaunchableAtScreenSize =
                 dp.isTablet || getInfo().contents.stream().noneMatch(
                         wii -> wii.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE));
-        // Call applyIcons to check and update icons
-        mIconGraphic.applyIcons();
+        // Invalidate to update icons
+        mIconGraphic.redraw();
     }
 
     /**
@@ -207,7 +215,25 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         // updated apps), redraw the icon graphic (icon background and both icons).
         if (getInfo().contents.stream().anyMatch(itemCheck)) {
             checkDisabledState();
-            mIconGraphic.invalidate();
         }
+    }
+
+    /**
+     * Inside folders, icons are vertically centered in their rows. See
+     * {@link BubbleTextView#onMeasure(int, int)} for comparison.
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mContainer == DISPLAY_FOLDER) {
+            int height = MeasureSpec.getSize(heightMeasureSpec);
+            ActivityContext activity = ActivityContext.lookupContext(getContext());
+            Paint.FontMetrics fm = mAppPairName.getPaint().getFontMetrics();
+            int cellHeightPx = activity.getDeviceProfile().folderChildIconSizePx
+                    + activity.getDeviceProfile().folderChildDrawablePaddingPx
+                    + (int) Math.ceil(fm.bottom - fm.top);
+            setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
+                    getPaddingBottom());
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }
