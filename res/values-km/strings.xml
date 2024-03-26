@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"ព័ត៌មានកម្មវិធី​សម្រាប់ %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"រក្សាទុកគូកម្មវិធី"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"មិនអាចប្រើគូកម្មវិធីនេះនៅលើឧបករណ៍នេះបានទេ"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"លាឧបករណ៍ ដើម្បីប្រើគូកម្មវិធីនេះ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ចុចឱ្យជាប់​ដើម្បីផ្លាស់ទី​ធាតុក្រាហ្វិក​។"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ចុចពីរដង រួចសង្កត់ឱ្យជាប់ ដើម្បីផ្លាស់ទី​ធាតុក្រាហ្វិក ឬប្រើ​សកម្មភាព​តាមបំណង​។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"កំពុង​ដំឡើង <xliff:g id="NAME">%1$s</xliff:g>, បាន​បញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"កំពុងដោនឡូត <xliff:g id="NAME">%1$s</xliff:g> បានបញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> កំពុងរង់ចាំការដំឡើង"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> ត្រូវបានទុក​ក្នុង​បណ្ណសារ។ សូមចុចដើម្បីទាញយក។"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"តម្រូវឱ្យមាន​កំណែកម្មវិធីថ្មី"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"កម្មវិធីសម្រាប់​រូបតំណាងនេះ​មិនត្រូវបានដំឡើងកំណែ​ទេ។ អ្នកអាច​ដំឡើងកំណែ​ដោយផ្ទាល់ ដើម្បីបើក​ផ្លូវកាត់នេះឡើងវិញ ឬលុបរូបតំណាងនេះ។"</string>
     <string name="dialog_update" msgid="2178028071796141234">"ដំឡើងកំណែ"</string>
