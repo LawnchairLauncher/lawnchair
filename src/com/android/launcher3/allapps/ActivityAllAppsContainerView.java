@@ -511,7 +511,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             switchToTab(ActivityAllAppsContainerView.AdapterHolder.MAIN);
             // Scroll to bottom
             if (mPrivateProfileManager != null) {
-                mPrivateProfileManager.scrollForViewToBeVisibleInContainer(
+                mPrivateProfileManager.scrollForHeaderToBeVisibleInContainer(
                         getActiveAppsRecyclerView(),
                         getPersonalAppList().getAdapterItems(),
                         mPrivateProfileManager.getPsHeaderHeight(),
