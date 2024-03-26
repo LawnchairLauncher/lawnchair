@@ -20,7 +20,6 @@ import android.content.res.Resources
 import android.view.Surface.ROTATION_90
 import android.view.Surface.Rotation
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
@@ -56,18 +55,18 @@ class NavButtonLayoutFactory {
          * @param isThreeButtonNav are no-ops when taskbar is present/showing
          */
         fun getUiLayoutter(
-                deviceProfile: DeviceProfile,
-                navButtonsView: NearestTouchFrame,
-                imeSwitcher: ImageView?,
-                rotationButton: RotationButton?,
-                a11yButton: ImageView?,
-                space: Space?,
-                resources: Resources,
-                isKidsMode: Boolean,
-                isInSetup: Boolean,
-                isThreeButtonNav: Boolean,
-                phoneMode: Boolean,
-                @Rotation surfaceRotation: Int
+            deviceProfile: DeviceProfile,
+            navButtonsView: NearestTouchFrame,
+            imeSwitcher: ImageView?,
+            rotationButton: RotationButton?,
+            a11yButton: ImageView?,
+            space: Space?,
+            resources: Resources,
+            isKidsMode: Boolean,
+            isInSetup: Boolean,
+            isThreeButtonNav: Boolean,
+            phoneMode: Boolean,
+            @Rotation surfaceRotation: Int
         ): NavButtonLayoutter {
             val navButtonContainer =
                 navButtonsView.requireViewById<LinearLayout>(ID_END_NAV_BUTTONS)
@@ -82,43 +81,6 @@ class NavButtonLayoutFactory {
                     if (!deviceProfile.isLandscape) {
                         navButtonsView.setIsVertical(false)
                         PhonePortraitNavLayoutter(
-                                resources,
-                                navButtonContainer,
-                                endContextualContainer,
-                                startContextualContainer,
-                                imeSwitcher,
-                                rotationButton,
-                                a11yButton,
-                                space
-                        )
-                    } else if (surfaceRotation == ROTATION_90) {
-                        navButtonsView.setIsVertical(true)
-                        PhoneLandscapeNavLayoutter(
-                                resources,
-                                navButtonContainer,
-                                endContextualContainer,
-                                startContextualContainer,
-                                imeSwitcher,
-                                rotationButton,
-                                a11yButton,
-                                space
-                        )
-                    } else {
-                        navButtonsView.setIsVertical(true)
-                        PhoneSeascapeNavLayoutter(
-                                resources,
-                                navButtonContainer,
-                                endContextualContainer,
-                                startContextualContainer,
-                                imeSwitcher,
-                                rotationButton,
-                                a11yButton,
-                                space
-                        )
-                    }
-                }
-                isPhoneGestureMode ->{
-                    PhoneGestureLayoutter(
                             resources,
                             navButtonContainer,
                             endContextualContainer,
@@ -127,44 +89,82 @@ class NavButtonLayoutFactory {
                             rotationButton,
                             a11yButton,
                             space
+                        )
+                    } else if (surfaceRotation == ROTATION_90) {
+                        navButtonsView.setIsVertical(true)
+                        PhoneLandscapeNavLayoutter(
+                            resources,
+                            navButtonContainer,
+                            endContextualContainer,
+                            startContextualContainer,
+                            imeSwitcher,
+                            rotationButton,
+                            a11yButton,
+                            space
+                        )
+                    } else {
+                        navButtonsView.setIsVertical(true)
+                        PhoneSeascapeNavLayoutter(
+                            resources,
+                            navButtonContainer,
+                            endContextualContainer,
+                            startContextualContainer,
+                            imeSwitcher,
+                            rotationButton,
+                            a11yButton,
+                            space
+                        )
+                    }
+                }
+                isPhoneGestureMode -> {
+                    PhoneGestureLayoutter(
+                        resources,
+                        navButtonContainer,
+                        endContextualContainer,
+                        startContextualContainer,
+                        imeSwitcher,
+                        rotationButton,
+                        a11yButton,
+                        space
                     )
                 }
                 deviceProfile.isTaskbarPresent -> {
                     return when {
                         isInSetup -> {
                             SetupNavLayoutter(
-                                    resources,
-                                    navButtonContainer,
-                                    endContextualContainer,
-                                    startContextualContainer,
-                                    imeSwitcher,
-                                    rotationButton,
-                                    a11yButton,
-                                    space
+                                resources,
+                                navButtonsView,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer,
+                                imeSwitcher,
+                                rotationButton,
+                                a11yButton,
+                                space
                             )
                         }
                         isKidsMode -> {
                             KidsNavLayoutter(
-                                    resources,
-                                    navButtonContainer,
-                                    endContextualContainer,
-                                    startContextualContainer,
-                                    imeSwitcher,
-                                    rotationButton,
-                                    a11yButton,
-                                    space
+                                resources,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer,
+                                imeSwitcher,
+                                rotationButton,
+                                a11yButton,
+                                space
                             )
                         }
                         else ->
                             TaskbarNavLayoutter(
-                                    resources,
-                                    navButtonContainer,
-                                    endContextualContainer,
-                                    startContextualContainer,
-                                    imeSwitcher,
-                                    rotationButton,
-                                    a11yButton,
-                                    space
+                                resources,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer,
+                                imeSwitcher,
+                                rotationButton,
+                                a11yButton,
+                                space
                             )
                     }
                 }
