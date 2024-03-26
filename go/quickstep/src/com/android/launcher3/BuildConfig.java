@@ -37,7 +37,7 @@ public final class BuildConfig {
     public static final boolean IS_DEBUG_DEVICE = false;
 
     // Flag to control widgets support in Launcher
-    public static final boolean WIDGETS_ENABLED = true;
+    public static final boolean WIDGETS_ENABLED = false;
     // Flag to control notification dots support in Launcher
-    public static final boolean NOTIFICATION_DOTS_ENABLED = true;
+    public static final boolean NOTIFICATION_DOTS_ENABLED = false;
 }

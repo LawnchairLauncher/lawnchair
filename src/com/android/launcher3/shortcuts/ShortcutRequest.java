@@ -16,7 +16,7 @@
 
 package com.android.launcher3.shortcuts;
 
-import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,7 +47,7 @@ public class ShortcutRequest {
             | ShortcutQuery.FLAG_MATCH_MANIFEST;
     public static final int PINNED = ShortcutQuery.FLAG_MATCH_PINNED;
 
-    private final ShortcutQuery mQuery = GO_DISABLE_WIDGETS ? null : new ShortcutQuery();
+    private final ShortcutQuery mQuery = !WIDGETS_ENABLED ? null : new ShortcutQuery();
 
     private final Context mContext;
     private final UserHandle mUserHandle;
@@ -74,7 +74,7 @@ public class ShortcutRequest {
      * @return A list of ShortcutInfo's associated with the given package.
      */
     public ShortcutRequest forPackage(String packageName, @Nullable List<String> shortcutIds) {
-        if (!GO_DISABLE_WIDGETS && packageName != null) {
+        if (WIDGETS_ENABLED && packageName != null) {
             mQuery.setPackage(packageName);
             mQuery.setShortcutIds(shortcutIds);
         }
@@ -82,7 +82,7 @@ public class ShortcutRequest {
     }
 
     public ShortcutRequest withContainer(@Nullable ComponentName activity) {
-        if (!GO_DISABLE_WIDGETS) {
+        if (WIDGETS_ENABLED) {
             if (activity == null) {
                 mFailed = true;
             } else {
@@ -93,7 +93,7 @@ public class ShortcutRequest {
     }
 
     public QueryResult query(int flags) {
-        if (GO_DISABLE_WIDGETS || mFailed) {
+        if (!WIDGETS_ENABLED || mFailed) {
             return QueryResult.DEFAULT;
         }
         mQuery.setQueryFlags(flags);
@@ -109,7 +109,7 @@ public class ShortcutRequest {
 
     public static class QueryResult extends ArrayList<ShortcutInfo> {
 
-        static final QueryResult DEFAULT = new QueryResult(GO_DISABLE_WIDGETS);
+        static final QueryResult DEFAULT = new QueryResult(!WIDGETS_ENABLED);
 
         private final boolean mWasSuccess;
 

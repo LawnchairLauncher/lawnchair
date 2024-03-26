@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 import static com.android.launcher3.Flags.enableWorkspaceInflation;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
@@ -43,6 +44,7 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInflater;
@@ -50,10 +52,12 @@ import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +69,7 @@ import java.util.stream.Collectors;
 /**
  * Binds the results of {@link com.android.launcher3.model.LoaderTask} to the Callbacks objects.
  */
-public abstract class BaseLauncherBinder {
+public class BaseLauncherBinder {
 
     protected static final String TAG = "LauncherBinder";
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
@@ -81,8 +85,8 @@ public abstract class BaseLauncherBinder {
     private int mMyBindingId;
 
     public BaseLauncherBinder(LauncherAppState app, BgDataModel dataModel,
-            AllAppsList allAppsList, Callbacks[] callbacksList, LooperExecutor uiExecutor) {
-        mUiExecutor = uiExecutor;
+            AllAppsList allAppsList, Callbacks[] callbacksList) {
+        mUiExecutor = MAIN_EXECUTOR;
         mApp = app;
         mBgDataModel = dataModel;
         mBgAllAppsList = allAppsList;
@@ -158,7 +162,16 @@ public abstract class BaseLauncherBinder {
     /**
      * BindDeepShortcuts is abstract because it is a no-op for the go launcher.
      */
-    public abstract void bindDeepShortcuts();
+    public void bindDeepShortcuts() {
+        if (!WIDGETS_ENABLED) {
+            return;
+        }
+        final HashMap<ComponentKey, Integer> shortcutMapCopy;
+        synchronized (mBgDataModel) {
+            shortcutMapCopy = new HashMap<>(mBgDataModel.deepShortcutMap);
+        }
+        executeCallbacksTask(c -> c.bindDeepShortcutMap(shortcutMapCopy), mUiExecutor);
+    }
 
     /**
      * Binds the all apps results from LoaderTask to the callbacks UX.
@@ -178,12 +191,24 @@ public abstract class BaseLauncherBinder {
     /**
      * bindWidgets is abstract because it is a no-op for the go launcher.
      */
-    public abstract void bindWidgets();
+    public void bindWidgets() {
+        if (!WIDGETS_ENABLED) {
+            return;
+        }
+        final List<WidgetsListBaseEntry> widgets =
+                mBgDataModel.widgetsModel.getWidgetsListForPicker(mApp.getContext());
+        executeCallbacksTask(c -> c.bindAllWidgets(widgets), mUiExecutor);
+    }
 
     /**
      * bindWidgets is abstract because it is a no-op for the go launcher.
      */
-    public abstract void bindSmartspaceWidget();
+    public void bindSmartspaceWidget() {
+        if (!WIDGETS_ENABLED) {
+            return;
+        }
+        executeCallbacksTask(c -> c.bindSmartspaceWidget(), mUiExecutor);
+    }
 
     /**
      * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to right)

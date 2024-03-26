@@ -3,6 +3,7 @@ package com.android.launcher3.model;
 
 import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
 
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 import static com.android.launcher3.pm.ShortcutConfigActivityInfo.queryList;
 import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
 
@@ -44,6 +45,7 @@ import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -58,10 +60,6 @@ import java.util.function.Predicate;
  * <p> The widgets and shortcuts are organized using package name as its index.
  */
 public class WidgetsModel {
-
-    // True is the widget support is disabled.
-    public static final boolean GO_DISABLE_WIDGETS = false;
-    public static final boolean GO_DISABLE_NOTIFICATION_DOTS = false;
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;
@@ -79,6 +77,9 @@ public class WidgetsModel {
     public synchronized ArrayList<WidgetsListBaseEntry> getFilteredWidgetsListForPicker(
             Context context,
             Predicate<WidgetItem> widgetItemFilter) {
+        if (!WIDGETS_ENABLED) {
+            return new ArrayList<>();
+        }
         ArrayList<WidgetsListBaseEntry> result = new ArrayList<>();
         AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
 
@@ -111,6 +112,9 @@ public class WidgetsModel {
 
     /** Returns a mapping of packages to their widgets without static shortcuts. */
     public synchronized Map<PackageUserKey, List<WidgetItem>> getAllWidgetsWithoutShortcuts() {
+        if (!WIDGETS_ENABLED) {
+            return Collections.emptyMap();
+        }
         Map<PackageUserKey, List<WidgetItem>> packagesToWidgets = new HashMap<>();
         mWidgetsList.forEach((packageItemInfo, widgetsAndShortcuts) -> {
             List<WidgetItem> widgets = widgetsAndShortcuts.stream()
@@ -131,6 +135,9 @@ public class WidgetsModel {
      */
     public List<ComponentWithLabelAndIcon> update(
             LauncherAppState app, @Nullable PackageUserKey packageUser) {
+        if (!WIDGETS_ENABLED) {
+            return Collections.emptyList();
+        }
         Preconditions.assertWorkerThread();
 
         Context context = app.getContext();
@@ -207,6 +214,9 @@ public class WidgetsModel {
 
     public void onPackageIconsUpdated(Set<String> packageNames, UserHandle user,
             LauncherAppState app) {
+        if (!WIDGETS_ENABLED) {
+            return;
+        }
         WidgetManagerHelper widgetManager = new WidgetManagerHelper(app.getContext());
         for (Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
             if (packageNames.contains(entry.getKey().packageName)) {
@@ -231,6 +241,9 @@ public class WidgetsModel {
 
     public WidgetItem getWidgetProviderInfoByProviderName(
             ComponentName providerName, UserHandle user) {
+        if (!WIDGETS_ENABLED) {
+            return null;
+        }
         List<WidgetItem> widgetsList = mWidgetsList.get(
                 new PackageItemInfo(providerName.getPackageName(), user));
         if (widgetsList == null) {

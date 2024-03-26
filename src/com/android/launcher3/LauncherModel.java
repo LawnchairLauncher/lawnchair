@@ -47,12 +47,12 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.AllAppsList;
+import com.android.launcher3.model.BaseLauncherBinder;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ItemInstallQueue;
-import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.ModelDelegate;
@@ -365,7 +365,7 @@ public class LauncherModel implements InstallSessionTracker.Callback {
                     MAIN_EXECUTOR.execute(cb::clearPendingBinds);
                 }
 
-                LauncherBinder launcherBinder = new LauncherBinder(
+                BaseLauncherBinder launcherBinder = new BaseLauncherBinder(
                         mApp, mBgDataModel, mBgAllAppsList, callbacksList);
                 if (bindDirectly) {
                     // Divide the set of loaded items into those that we are binding synchronously,

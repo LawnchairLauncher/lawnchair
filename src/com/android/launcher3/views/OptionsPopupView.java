@@ -17,6 +17,7 @@ package com.android.launcher3.views;
 
 import static androidx.core.content.ContextCompat.getColorStateList;
 
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
@@ -47,7 +48,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -207,7 +207,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
                 R.drawable.ic_palette,
                 IGNORE,
                 OptionsPopupView::startWallpaperPicker));
-        if (!WidgetsModel.GO_DISABLE_WIDGETS) {
+        if (WIDGETS_ENABLED) {
             options.add(new OptionItem(launcher,
                     R.string.widget_button_text,
                     R.drawable.ic_widget,

@@ -132,7 +132,7 @@ public class LoaderTask implements Runnable {
     private FirstScreenBroadcast mFirstScreenBroadcast;
 
     @NonNull
-    private final LauncherBinder mLauncherBinder;
+    private final BaseLauncherBinder mLauncherBinder;
 
     private final LauncherApps mLauncherApps;
     private final UserManager mUserManager;
@@ -153,13 +153,13 @@ public class LoaderTask implements Runnable {
     private String mDbName;
 
     public LoaderTask(@NonNull LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel bgModel,
-            ModelDelegate modelDelegate, @NonNull LauncherBinder launcherBinder) {
+            ModelDelegate modelDelegate, @NonNull BaseLauncherBinder launcherBinder) {
         this(app, bgAllAppsList, bgModel, modelDelegate, launcherBinder, new UserManagerState());
     }
 
     @VisibleForTesting
     LoaderTask(@NonNull LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel bgModel,
-            ModelDelegate modelDelegate, @NonNull LauncherBinder launcherBinder,
+            ModelDelegate modelDelegate, @NonNull BaseLauncherBinder launcherBinder,
             UserManagerState userManagerState) {
         mApp = app;
         mBgAllAppsList = bgAllAppsList;
