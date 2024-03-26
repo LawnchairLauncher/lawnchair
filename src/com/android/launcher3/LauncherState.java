@@ -424,20 +424,29 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return TestProtocol.stateOrdinalToString(ordinal);
     }
 
-    public void onBackPressed(Launcher launcher) {
+    /** Called when predictive back gesture is started. */
+    public void onBackStarted(Launcher launcher) {}
+
+    /**
+     * Called when back action is invoked. This can happen when:
+     * 1. back button is pressed in 3-button navigation.
+     * 2. when back is committed during back swiped (predictive or non-predictive).
+     * 3. when we programmatically perform back action.
+     */
+    public void onBackInvoked(Launcher launcher) {
         if (this != NORMAL) {
             StateManager<LauncherState> lsm = launcher.getStateManager();
             LauncherState lastState = lsm.getLastState();
-            lsm.goToState(lastState, forEndCallback(this::onBackPressCompleted));
+            lsm.goToState(lastState, forEndCallback(this::onBackAnimationCompleted));
         }
     }
 
     /**
-     * To be called if back press is completed in a launcher state.
+     * To be called if back animation is completed in a launcher state.
      *
-     * @param success whether back press animation was successful or canceled.
+     * @param success whether back animation was successful or canceled.
      */
-    protected void onBackPressCompleted(boolean success) {
+    protected void onBackAnimationCompleted(boolean success) {
         // Do nothing. To be overridden by child class.
     }
 
