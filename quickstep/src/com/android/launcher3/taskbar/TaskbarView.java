@@ -270,7 +270,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mAllAppsButton.setHapticFeedbackEnabled(
                     mControllerCallbacks.isAllAppsButtonHapticFeedbackEnabled());
         }
-        if (mTaskbarDivider != null) {
+        if (mTaskbarDivider != null && !mActivityContext.isThreeButtonNav()) {
             mTaskbarDivider.setOnLongClickListener(
                     mControllerCallbacks.getTaskbarDividerLongClickListener());
             mTaskbarDivider.setOnTouchListener(
