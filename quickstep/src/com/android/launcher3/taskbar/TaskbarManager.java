@@ -23,7 +23,6 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
 import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
@@ -67,6 +66,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.quickstep.AllAppsActionManager;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
@@ -155,6 +155,8 @@ public class TaskbarManager {
     private final SimpleBroadcastReceiver mTaskbarBroadcastReceiver =
             new SimpleBroadcastReceiver(this::showTaskbarFromBroadcast);
 
+    private final AllAppsActionManager mAllAppsActionManager;
+
     private final Runnable mActivityOnDestroyCallback = new Runnable() {
         @Override
         public void run() {
@@ -205,12 +207,14 @@ public class TaskbarManager {
             };
 
     @SuppressLint("WrongConstant")
-    public TaskbarManager(TouchInteractionService service) {
+    public TaskbarManager(
+            TouchInteractionService service, AllAppsActionManager allAppsActionManager) {
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         mContext = service.createWindowContext(display,
                 ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL,
                 null);
+        mAllAppsActionManager = allAppsActionManager;
         mNavigationBarPanelContext = ENABLE_TASKBAR_NAVBAR_UNIFICATION
                 ? service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null)
                 : null;
@@ -261,10 +265,10 @@ public class TaskbarManager {
                     recreateTaskbar();
                 } else {
                     // Config change might be handled without re-creating the taskbar
-                    if (dp != null && !isTaskbarPresent(dp)) {
+                    if (dp != null && !isTaskbarEnabled(dp)) {
                         destroyExistingTaskbar();
                     } else {
-                        if (dp != null && isTaskbarPresent(dp)) {
+                        if (dp != null && isTaskbarEnabled(dp)) {
                             if (ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
                                 // Re-initialize for screen size change? Should this be done
                                 // by looking at screen-size change flag in configDiff in the
@@ -319,7 +323,7 @@ public class TaskbarManager {
         }
         DeviceProfile dp = mUserUnlocked ?
                 LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
-        if (dp == null || !isTaskbarPresent(dp)) {
+        if (dp == null || !isTaskbarEnabled(dp)) {
             removeTaskbarRootViewFromWindow();
         }
     }
@@ -339,20 +343,11 @@ public class TaskbarManager {
      * @param homeAllAppsIntent Intent used if Taskbar is not enabled or Launcher is resumed.
      */
     public void toggleAllApps(Intent homeAllAppsIntent) {
-        if (mTaskbarActivityContext == null) {
+        if (mTaskbarActivityContext == null || mTaskbarActivityContext.canToggleHomeAllApps()) {
             mContext.startActivity(homeAllAppsIntent);
-            return;
+        } else {
+            mTaskbarActivityContext.toggleAllAppsSearch();
         }
-
-        if (mActivity != null
-                && mActivity.isResumed()
-                && !mActivity.isInState(OVERVIEW)
-                && !(mActivity instanceof QuickstepLauncher l && l.areFreeformTasksVisible())) {
-            mContext.startActivity(homeAllAppsIntent);
-            return;
-        }
-
-        mTaskbarActivityContext.toggleAllAppsSearch();
     }
 
     /**
@@ -447,9 +442,12 @@ public class TaskbarManager {
             DeviceProfile dp = mUserUnlocked ?
                 LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
 
+            // All Apps action is unrelated to navbar unification, so we only need to check DP.
+            mAllAppsActionManager.setTaskbarPresent(dp != null && dp.isTaskbarPresent);
+
             destroyExistingTaskbar();
 
-            boolean isTaskbarEnabled = dp != null && isTaskbarPresent(dp);
+            boolean isTaskbarEnabled = dp != null && isTaskbarEnabled(dp);
             debugWhyTaskbarNotDestroyed("recreateTaskbar: isTaskbarEnabled=" + isTaskbarEnabled
                 + " [dp != null (i.e. mUserUnlocked)]=" + (dp != null)
                 + " FLAG_HIDE_NAVBAR_WINDOW=" + ENABLE_TASKBAR_NAVBAR_UNIFICATION
@@ -514,7 +512,7 @@ public class TaskbarManager {
         }
     }
 
-    private static boolean isTaskbarPresent(DeviceProfile deviceProfile) {
+    private static boolean isTaskbarEnabled(DeviceProfile deviceProfile) {
         return ENABLE_TASKBAR_NAVBAR_UNIFICATION || deviceProfile.isTaskbarPresent;
     }
 
