@@ -414,6 +414,13 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    protected boolean canToggleHomeAllApps() {
+        return mLauncher.isResumed()
+                && !mTaskbarLauncherStateController.isInOverview()
+                && !mLauncher.areFreeformTasksVisible();
+    }
+
+    @Override
     public RecentsView getRecentsView() {
         return mLauncher.getOverviewPanel();
     }
