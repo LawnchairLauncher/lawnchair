@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2023 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2023 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,9 +12,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.IconButtonView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.views.IconButtonView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/BaseIcon.Workspace.Taskbar"
     android:layout_width="@dimen/taskbar_icon_min_touch_size"
     android:layout_height="@dimen/taskbar_icon_min_touch_size"
-    android:contentDescription="@string/taskbar_divider_a11y_title"
-    android:backgroundTint="@android:color/transparent" />
+    android:backgroundTint="@android:color/transparent"
+    android:contentDescription="@string/taskbar_divider_a11y_title" />
