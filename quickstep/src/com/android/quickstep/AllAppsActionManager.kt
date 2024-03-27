@@ -81,6 +81,7 @@ class AllAppsActionManager(
     }
 
     fun onDestroy() {
+        isActionRegistered = false
         context
             .getSystemService(AccessibilityManager::class.java)
             ?.unregisterSystemAction(
