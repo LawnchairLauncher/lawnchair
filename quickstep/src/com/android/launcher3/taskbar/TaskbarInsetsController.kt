@@ -162,6 +162,10 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 setProviderInsets(provider, layoutParams.gravity, rotation)
             }
         }
+        // Also set the parent providers (i.e. not in paramsForRotation).
+        for (provider in windowLayoutParams.providedInsets) {
+            setProviderInsets(provider, windowLayoutParams.gravity, context.display.rotation)
+        }
         context.notifyUpdateLayoutParams()
     }
 
