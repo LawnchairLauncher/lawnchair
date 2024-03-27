@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar.bubbles
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -27,12 +28,10 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.mapToRange
 import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
-import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.wm.shell.common.TriangleShape
 
 /** Drawable for the background of the bubble bar. */
-class BubbleBarBackground(context: TaskbarActivityContext, private val backgroundHeight: Float) :
-    Drawable() {
+class BubbleBarBackground(context: Context, private val backgroundHeight: Float) : Drawable() {
 
     private val DARK_THEME_SHADOW_ALPHA = 51f
     private val LIGHT_THEME_SHADOW_ALPHA = 25f
@@ -46,6 +45,7 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
 
     var arrowPositionX: Float = 0f
         private set
+
     private var showingArrow: Boolean = false
     private var arrowDrawable: ShapeDrawable
 

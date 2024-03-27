@@ -34,6 +34,7 @@ import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarInsetsController;
 import com.android.launcher3.taskbar.TaskbarStashController;
+import com.android.launcher3.taskbar.bubbles.animation.BubbleBarViewAnimator;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.SystemUiProxy;
@@ -81,6 +82,8 @@ public class BubbleBarViewController {
     private boolean mHiddenForNoBubbles = true;
     private boolean mShouldShowEducation;
 
+    private BubbleBarViewAnimator mBubbleBarViewAnimator;
+
     public BubbleBarViewController(TaskbarActivityContext activity, BubbleBarView barView) {
         mActivity = activity;
         mBarView = barView;
@@ -113,6 +116,8 @@ public class BubbleBarViewController {
         mBarView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
                 mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
         );
+
+        mBubbleBarViewAnimator = new BubbleBarViewAnimator(mBarView, mBubbleStashController);
     }
 
     private void onBubbleClicked(View v) {
@@ -316,6 +321,12 @@ public class BubbleBarViewController {
                     new FrameLayout.LayoutParams(mIconSize, mIconSize, Gravity.LEFT));
             b.getView().setOnClickListener(mBubbleClickListener);
             mBubbleDragController.setupBubbleView(b.getView());
+
+            boolean isStashedOrGone =
+                    mBubbleStashController.isStashed() || mBarView.getVisibility() != VISIBLE;
+            if (b instanceof BubbleBarBubble && isStashedOrGone) {
+                mBubbleBarViewAnimator.animateBubbleInForStashed((BubbleBarBubble) b);
+            }
         } else {
             Log.w(TAG, "addBubble, bubble was null!");
         }

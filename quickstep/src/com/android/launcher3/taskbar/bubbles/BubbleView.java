@@ -145,7 +145,7 @@ public class BubbleView extends ConstraintLayout {
     }
 
     /** Sets the bubble being rendered in this view. */
-    void setBubble(BubbleBarBubble bubble) {
+    public void setBubble(BubbleBarBubble bubble) {
         mBubble = bubble;
         mBubbleIcon.setImageBitmap(bubble.getIcon());
         mAppIcon.setImageBitmap(bubble.getBadge());
@@ -159,7 +159,7 @@ public class BubbleView extends ConstraintLayout {
      * the list of bubbles. It doesn't show an app icon because it is part of system UI / doesn't
      * come from an app.
      */
-    void setOverflow(BubbleBarOverflow overflow, Bitmap bitmap) {
+    public void setOverflow(BubbleBarOverflow overflow, Bitmap bitmap) {
         mBubble = overflow;
         mBubbleIcon.setImageBitmap(bitmap);
         mAppIcon.setVisibility(GONE); // Overflow doesn't show the app badge
@@ -168,7 +168,7 @@ public class BubbleView extends ConstraintLayout {
 
     /** Returns the bubble being rendered in this view. */
     @Nullable
-    BubbleBarItem getBubble() {
+    public BubbleBarItem getBubble() {
         return mBubble;
     }
 
