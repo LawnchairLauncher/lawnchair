@@ -134,8 +134,9 @@ public interface TaskShortcutFactory {
     class SaveAppPairSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
         private final GroupedTaskView mTaskView;
 
-        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, GroupedTaskView taskView) {
-            super(R.drawable.ic_save_app_pair, R.string.save_app_pair, activity,
+        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, GroupedTaskView taskView,
+                int iconResId) {
+            super(iconResId, R.string.save_app_pair, activity,
                     taskView.getItemInfo(), taskView);
             mTaskView = taskView;
         }
@@ -332,8 +333,12 @@ public interface TaskShortcutFactory {
                 return null;
             }
 
+            int iconResId = deviceProfile.isLeftRightSplit
+                    ? R.drawable.ic_save_app_pair_left_right
+                    : R.drawable.ic_save_app_pair_up_down;
+
             return Collections.singletonList(
-                    new SaveAppPairSystemShortcut(activity, (GroupedTaskView) taskView));
+                    new SaveAppPairSystemShortcut(activity, (GroupedTaskView) taskView, iconResId));
         }
 
         @Override
