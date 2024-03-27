@@ -480,7 +480,7 @@
     <!-- Private space tile label -->
     <string name="private_space_label">Private space</string>
     <!-- Private space tile secondary label -->
-    <string name="private_space_secondary_label">Keep private apps locked and hidden</string>
+    <string name="private_space_secondary_label">Tap to set up or open</string>
     <!-- Title for Private Space Container shown at the bottom of all apps drawer -->
     <string name="ps_container_title">Private</string>
     <!-- Description for Private Space Settings button -->
