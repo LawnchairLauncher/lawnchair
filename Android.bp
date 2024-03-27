@@ -21,6 +21,8 @@ min_launcher3_sdk_version = "30"
 
 // Common source files used to build launcher (java and kotlin)
 // All sources are split so they can be reused in many other libraries/apps in other folders
+
+// Main Launcher source, excluding the build config
 filegroup {
     name: "launcher-src",
     srcs: [
@@ -29,6 +31,7 @@ filegroup {
     ],
 }
 
+// Source code for quickstep build, on top of launcher-src
 filegroup {
     name: "launcher-quickstep-src",
     srcs: [
@@ -37,35 +40,20 @@ filegroup {
     ],
 }
 
+// Alternate source when quickstep is not included
 filegroup {
-    name: "launcher-go-src",
+    name: "launcher-src_no_quickstep",
     srcs: [
-        "go/src/**/*.java",
-        "go/src/**/*.kt",
+        "src_no_quickstep/**/*.java",
+        "src_no_quickstep/**/*.kt",
     ],
 }
 
+// Default build config for Launcher3
 filegroup {
-    name: "launcher-go-quickstep-src",
+    name: "launcher-build-config",
     srcs: [
-        "go/quickstep/src/**/*.java",
-        "go/quickstep/src/**/*.kt",
-    ],
-}
-
-filegroup {
-    name: "launcher-src_shortcuts_overrides",
-    srcs: [
-        "src_shortcuts_overrides/**/*.java",
-        "src_shortcuts_overrides/**/*.kt",
-    ],
-}
-
-filegroup {
-    name: "launcher-src_ui_overrides",
-    srcs: [
-        "src_ui_overrides/**/*.java",
-        "src_ui_overrides/**/*.kt",
+        "src_build_config/**/*.java",
     ],
 }
 
@@ -165,36 +153,16 @@ android_library {
         "iconloader_base",
         "view_capture",
         "animationlib",
-    ],
-    manifest: "AndroidManifest-common.xml",
-    sdk_version: "current",
-    min_sdk_version: min_launcher3_sdk_version,
-    lint: {
-        baseline_filename: "lint-baseline.xml",
-    },
-}
-
-//
-// Build rule for Launcher3 dependencies lib.
-//
-android_library {
-    name: "Launcher3CommonDepsLib",
-    srcs: ["src_build_config/**/*.java"],
-    static_libs: [
         "SystemUI-statsd",
-        "Launcher3ResLib",
         "launcher-testing-shared",
-        "animationlib",
-        "kotlinx_coroutines_android",
-        "kotlinx_coroutines",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
         "android.appwidget.flags-aconfig-java",
         "com.android.window.flags.window-aconfig-java",
     ],
+    manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
-    manifest: "AndroidManifest-common.xml",
     lint: {
         baseline_filename: "lint-baseline.xml",
     },
@@ -207,12 +175,12 @@ android_app {
     name: "Launcher3",
 
     static_libs: [
-        "Launcher3CommonDepsLib",
+        "Launcher3ResLib",
     ],
     srcs: [
         ":launcher-src",
-        ":launcher-src_shortcuts_overrides",
-        ":launcher-src_ui_overrides",
+        ":launcher-src_no_quickstep",
+        ":launcher-build-config",
     ],
 
     optimize: {
@@ -259,24 +227,21 @@ android_library {
         "lottie",
         "SystemUISharedLib",
         "SettingsLibSettingsTheme",
-        "SystemUI-statsd",
-        "animationlib",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     min_sdk_version: "current",
 }
 
-// Library with all the dependencies for building Launcher Go
+// Library with all the source code and dependencies for building Launcher Go
 android_library {
-    name: "LauncherGoResLib",
+    name: "Launcher3GoLib",
     srcs: [
         ":launcher-src",
         ":launcher-quickstep-src",
-        ":launcher-go-src",
-        ":launcher-go-quickstep-src",
+        "go/quickstep/src/**/*.java",
+        "go/quickstep/src/**/*.kt",
     ],
     resource_dirs: [
-        "go/res",
         "go/quickstep/res",
     ],
     // Note the ordering here is important when it comes to resource
@@ -284,7 +249,6 @@ android_library {
     // in QuickstepResLib to take precendece, so it should be the final
     // dependency. See b/205278434 for how this can go wrong.
     static_libs: [
-        "Launcher3CommonDepsLib",
         "QuickstepResLib",
         "androidx.room_room-runtime",
     ],
@@ -299,13 +263,13 @@ android_library {
     use_resource_processor: false,
 }
 
-// Build rule for Quickstep library
+// Library with all the source code and dependencies for building Quickstep
 android_library {
     name: "Launcher3QuickStepLib",
     srcs: [
         ":launcher-src",
         ":launcher-quickstep-src",
-        ":launcher-src_shortcuts_overrides",
+        ":launcher-build-config",
     ],
     resource_dirs: [],
     libs: [
@@ -317,59 +281,13 @@ android_library {
     // dependency. See b/208647810 for how this can go wrong.
     static_libs: [
         "SystemUI-statsd",
-        "SystemUISharedLib",
-        "Launcher3CommonDepsLib",
         "QuickstepResLib",
-        "animationlib",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
     min_sdk_version: "current",
     // TODO(b/319712088): re-enable use_resource_processor
     use_resource_processor: false,
-}
-
-// Build rule for Launcher3 Go app for Android Go devices.
-android_app {
-    name: "Launcher3Go",
-
-    static_libs: ["Launcher3CommonDepsLib"],
-
-    srcs: [
-        ":launcher-src",
-        ":launcher-go-src",
-        ":launcher-src_ui_overrides",
-    ],
-
-    resource_dirs: ["go/res"],
-
-    optimize: {
-        proguard_flags_files: ["proguard.flags"],
-    },
-
-    sdk_version: "current",
-    min_sdk_version: "current",
-    target_sdk_version: "current",
-    privileged: true,
-    system_ext_specific: true,
-    overrides: [
-        "Home",
-        "Launcher2",
-        "Launcher3",
-        "Launcher3QuickStep",
-    ],
-    required: ["privapp_whitelist_com.android.launcher3"],
-
-    additional_manifests: [
-        "AndroidManifest.xml",
-        "AndroidManifest-common.xml",
-    ],
-
-    manifest: "go/AndroidManifest.xml",
-    jacoco: {
-        include_filter: ["com.android.launcher3.*"],
-    },
-
 }
 
 // Build rule for Quickstep app.
@@ -408,27 +326,18 @@ android_app {
 
 }
 
-// Build rule for Launcher3 Go app with quickstep for Android Go devices.
-android_app {
-    name: "Launcher3QuickStepGo",
 
-    static_libs: [
-        "SystemUI-statsd",
-        "SystemUISharedLib",
-        "LauncherGoResLib",
-    ],
+// Build rule for Launcher3 Go app with quickstep for Android Go devices.
+// Note that the following two rules are exactly same, and should
+// eventually be merged into a single target
+android_app {
+    name: "Launcher3Go",
+
+    static_libs: ["Launcher3GoLib"],
 
     platform_apis: true,
     min_sdk_version: "current",
     target_sdk_version: "current",
-
-    srcs: [],
-
-    resource_dirs: [
-        "go/quickstep/res",
-        "go/res",
-        "quickstep/res",
-    ],
 
     optimize: {
         proguard_flags_files: ["proguard.flags"],
@@ -455,5 +364,39 @@ android_app {
     jacoco: {
         include_filter: ["com.android.launcher3.*"],
     },
+}
+android_app {
+    name: "Launcher3QuickStepGo",
 
+    static_libs: ["Launcher3GoLib"],
+
+    platform_apis: true,
+    min_sdk_version: "current",
+    target_sdk_version: "current",
+
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+        enabled: true,
+    },
+
+    privileged: true,
+    system_ext_specific: true,
+    overrides: [
+        "Home",
+        "Launcher2",
+        "Launcher3",
+        "Launcher3QuickStep",
+    ],
+    required: ["privapp_whitelist_com.android.launcher3"],
+
+    additional_manifests: [
+        "go/AndroidManifest.xml",
+        "go/AndroidManifest-launcher.xml",
+        "AndroidManifest-common.xml",
+    ],
+
+    manifest: "quickstep/AndroidManifest.xml",
+    jacoco: {
+        include_filter: ["com.android.launcher3.*"],
+    },
 }

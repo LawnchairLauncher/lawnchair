@@ -16,6 +16,8 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
+
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -31,7 +33,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.PackageUserKey;
@@ -87,7 +88,7 @@ public class WidgetManagerHelper {
      */
     @TargetApi(Build.VERSION_CODES.O)
     public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
-        if (WidgetsModel.GO_DISABLE_WIDGETS) {
+        if (!WIDGETS_ENABLED) {
             return Collections.emptyList();
         }
 
@@ -112,7 +113,7 @@ public class WidgetManagerHelper {
      */
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {
-        if (WidgetsModel.GO_DISABLE_WIDGETS) {
+        if (!WIDGETS_ENABLED) {
             return false;
         }
         if (appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
@@ -123,7 +124,7 @@ public class WidgetManagerHelper {
     }
 
     public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandle user) {
-        if (WidgetsModel.GO_DISABLE_WIDGETS) {
+        if (!WIDGETS_ENABLED) {
             return null;
         }
         for (AppWidgetProviderInfo info :
@@ -139,8 +140,8 @@ public class WidgetManagerHelper {
      * Returns if a AppWidgetProvider has marked a widget restored
      */
     public boolean isAppWidgetRestored(int appWidgetId) {
-        return !WidgetsModel.GO_DISABLE_WIDGETS && mAppWidgetManager.getAppWidgetOptions(
-                appWidgetId).getBoolean(WIDGET_OPTION_RESTORE_COMPLETED);
+        return WIDGETS_ENABLED && mAppWidgetManager.getAppWidgetOptions(appWidgetId)
+                .getBoolean(WIDGET_OPTION_RESTORE_COMPLETED);
     }
 
 

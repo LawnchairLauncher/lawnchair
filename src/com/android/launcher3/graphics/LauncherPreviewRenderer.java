@@ -20,6 +20,8 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_TASKBAR;
+import static com.android.launcher3.BubbleTextView.DISPLAY_WORKSPACE;
 import static com.android.launcher3.DeviceProfile.DEFAULT_SCALE;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
@@ -86,7 +88,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.uioverrides.PredictedAppIconInflater;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
@@ -388,12 +389,14 @@ public class LauncherPreviewRenderer extends ContextWrapper
     }
 
     private void inflateAndAddCollectionIcon(FolderInfo info) {
-        CellLayout screen = info.container == Favorites.CONTAINER_DESKTOP
+        boolean isOnDesktop = info.container == Favorites.CONTAINER_DESKTOP;
+        CellLayout screen = isOnDesktop
                 ? mWorkspaceScreens.get(info.screenId)
                 : mHotseat;
         FrameLayout folderIcon = info.itemType == Favorites.ITEM_TYPE_FOLDER
                 ? FolderIcon.inflateIcon(R.layout.folder_icon, this, screen, info)
-                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, info);
+                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, info,
+                        isOnDesktop ? DISPLAY_WORKSPACE : DISPLAY_TASKBAR);
         addInScreenFromBind(folderIcon, info);
     }
 
@@ -453,10 +456,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void inflateAndAddPredictedIcon(WorkspaceItemInfo info) {
         CellLayout screen = mWorkspaceScreens.get(info.screenId);
-        View view = PredictedAppIconInflater.inflate(mHomeElementInflater, screen, info);
-        if (view != null) {
-            addInScreenFromBind(view, info);
-        }
+        BubbleTextView icon = (BubbleTextView) mHomeElementInflater.inflate(
+                R.layout.predicted_app_icon, screen, false);
+        icon.applyFromWorkspaceItem(info);
+        addInScreenFromBind(icon, info);
     }
 
     private void dispatchVisibilityAggregated(View view, boolean isVisible) {

@@ -46,7 +46,7 @@ class LoaderTaskTest {
     @Mock private lateinit var app: LauncherAppState
     @Mock private lateinit var bgAllAppsList: AllAppsList
     @Mock private lateinit var modelDelegate: ModelDelegate
-    @Mock private lateinit var launcherBinder: LauncherBinder
+    @Mock private lateinit var launcherBinder: BaseLauncherBinder
     @Mock private lateinit var launcherModel: LauncherModel
     @Mock private lateinit var transaction: LoaderTransaction
     @Mock private lateinit var iconCache: IconCache

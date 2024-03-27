@@ -258,7 +258,7 @@ public class AddItemActivity extends BaseActivity
                         .addCategory(Intent.CATEGORY_HOME)
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Launcher.ACTIVITY_TRACKER.registerCallback(listener);
+        Launcher.ACTIVITY_TRACKER.registerCallback(listener, "AddItemActivity.onLongClick");
         startActivity(homeIntent, ApiWrapper.createFadeOutAnimOptions(this).toBundle());
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED);
         mFinishOnPause = true;
