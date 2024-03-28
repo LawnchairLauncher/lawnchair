@@ -38,7 +38,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏العرض %1$d الطول %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"أداة <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"انقر مع الاستمرار على التطبيق المصغّر لنقله إلى الشاشة الرئيسية."</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"انقر مع الاستمرار على التطبيق المصغّر لنقله إلى الشاشة الرئيسية"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"إضافة إلى الشاشة الرئيسية"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"تمت إضافة الأداة <xliff:g id="WIDGET_NAME">%1$s</xliff:g> إلى الشاشة الرئيسية."</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"اقتراحات"</string>
