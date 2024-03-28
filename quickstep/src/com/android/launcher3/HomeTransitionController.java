@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SystemUiProxy;
-import com.android.wm.shell.transition.IHomeTransitionListener;
+import com.android.wm.shell.shared.IHomeTransitionListener;
 
 /**
  * Controls launcher response to home activity visibility changing.
