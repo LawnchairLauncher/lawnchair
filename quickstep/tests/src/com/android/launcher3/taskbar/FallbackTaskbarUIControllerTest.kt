@@ -24,11 +24,11 @@ import com.android.quickstep.fallback.RecentsState
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Mock
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(AndroidJUnit4::class)
 class FallbackTaskbarUIControllerTest : TaskbarBaseTestCase() {
@@ -36,8 +36,8 @@ class FallbackTaskbarUIControllerTest : TaskbarBaseTestCase() {
     lateinit var fallbackTaskbarUIController: FallbackTaskbarUIController
     lateinit var stateListener: StateManager.StateListener<RecentsState>
 
-    @Mock lateinit var recentsActivity: RecentsActivity
-    @Mock lateinit var stateManager: StateManager<RecentsState>
+    private val recentsActivity: RecentsActivity = mock()
+    private val stateManager: StateManager<RecentsState> = mock()
 
     @Before
     override fun setup() {
@@ -46,10 +46,10 @@ class FallbackTaskbarUIControllerTest : TaskbarBaseTestCase() {
         fallbackTaskbarUIController = FallbackTaskbarUIController(recentsActivity)
 
         // Capture registered state listener to send events to in our tests
-        val captor = ArgumentCaptor.forClass(StateManager.StateListener::class.java)
+        val captor = argumentCaptor<StateManager.StateListener<RecentsState>>()
         fallbackTaskbarUIController.init(taskbarControllers)
         verify(stateManager).addStateListener(captor.capture())
-        stateListener = captor.value as StateManager.StateListener<RecentsState>
+        stateListener = captor.lastValue
     }
 
     @Test

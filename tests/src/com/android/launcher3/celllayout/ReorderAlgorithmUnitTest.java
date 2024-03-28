@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -31,6 +31,13 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.MultipageCellLayout;
+import com.android.launcher3.celllayout.board.CellLayoutBoard;
+import com.android.launcher3.celllayout.board.IconPoint;
+import com.android.launcher3.celllayout.board.PermutedBoardComparator;
+import com.android.launcher3.celllayout.board.WidgetRect;
+import com.android.launcher3.celllayout.testgenerator.RandomBoardGenerator;
+import com.android.launcher3.celllayout.testgenerator.RandomMultiBoardGenerator;
 import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
@@ -50,10 +57,25 @@ import java.util.Random;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class ReorderAlgorithmUnitTest {
+
+    private static final String TAG = "ReorderAlgorithmUnitTest";
+    private static final char MAIN_WIDGET_TYPE = 'z';
+
+    // There is nothing special about this numbers, the random seed is just to be able to reproduce
+    // the test cases and the height and width is a random number similar to what users expect on
+    // their devices
+    private static final int SEED = 897;
+    private static final int MAX_BOARD_SIZE = 13;
+
+    private static final int TOTAL_OF_CASES_GENERATED = 300;
     private Context mApplicationContext;
 
     private int mPrevNumColumns, mPrevNumRows;
 
+    /**
+     * This test reads existing test cases and makes sure the CellLayout produces the same
+     * output for each of them for a given input.
+     */
     @Test
     public void testAllCases() throws IOException {
         List<ReorderAlgorithmUnitTestCase> testCases = getTestCases(
@@ -62,7 +84,7 @@ public class ReorderAlgorithmUnitTest {
         List<Integer> failingCases = new ArrayList<>();
         for (int i = 0; i < testCases.size(); i++) {
             try {
-                evaluateTestCase(testCases.get(i));
+                evaluateTestCase(testCases.get(i), false);
             } catch (AssertionError e) {
                 e.printStackTrace();
                 failingCases.add(i);
@@ -70,6 +92,47 @@ public class ReorderAlgorithmUnitTest {
         }
         assertEquals("Some test cases failed " + Arrays.toString(failingCases.toArray()), 0,
                 failingCases.size());
+    }
+
+    /**
+     * This test generates random CellLayout configurations and then try to reorder it and makes
+     * sure the result is a valid board meaning it didn't remove any widget or icon.
+     */
+    @Test
+    public void generateValidTests() {
+        Random generator = new Random(SEED);
+        mApplicationContext = new ActivityContextWrapper(getApplicationContext());
+        for (int i = 0; i < TOTAL_OF_CASES_GENERATED; i++) {
+            // Using a new seed so that we can replicate the same test cases.
+            int seed = generator.nextInt();
+            Log.d(TAG, "Seed = " + seed);
+            ReorderAlgorithmUnitTestCase testCase = generateRandomTestCase(
+                    new RandomBoardGenerator(new Random(seed))
+            );
+            Log.d(TAG, "testCase = " + testCase);
+            assertTrue("invalid case " + i,
+                    validateIntegrity(testCase.startBoard, testCase.endBoard, testCase));
+        }
+    }
+
+    /**
+     * Same as above but testing the Multipage CellLayout.
+     */
+    @Test
+    public void generateValidTests_Multi() {
+        Random generator = new Random(SEED);
+        mApplicationContext = new ActivityContextWrapper(getApplicationContext());
+        for (int i = 0; i < TOTAL_OF_CASES_GENERATED; i++) {
+            // Using a new seed so that we can replicate the same test cases.
+            int seed = generator.nextInt();
+            Log.d(TAG, "Seed = " + seed);
+            ReorderAlgorithmUnitTestCase testCase = generateRandomTestCase(
+                    new RandomMultiBoardGenerator(new Random(seed))
+            );
+            Log.d(TAG, "testCase = " + testCase);
+            assertTrue("invalid case " + i,
+                    validateIntegrity(testCase.startBoard, testCase.endBoard, testCase));
+        }
     }
 
     private void addViewInCellLayout(CellLayout cellLayout, int cellX, int cellY, int spanX,
@@ -81,15 +144,16 @@ public class ReorderAlgorithmUnitTest {
                 (CellLayoutLayoutParams) cell.getLayoutParams(), true);
     }
 
-    public CellLayout createCellLayout(int width, int height) {
+    public CellLayout createCellLayout(int width, int height, boolean isMulti) {
         Context c = mApplicationContext;
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(c).getDeviceProfile(c).copy(c);
         // modify the device profile.
-        dp.inv.numColumns = width;
+        dp.inv.numColumns = isMulti ? width / 2 : width;
         dp.inv.numRows = height;
         dp.cellLayoutBorderSpacePx = new Point(0, 0);
 
-        CellLayout cl = new CellLayout(getWrappedContext(c, dp));
+        CellLayout cl = isMulti ? new MultipageCellLayout(getWrappedContext(c, dp))
+                : new CellLayout(getWrappedContext(c, dp));
         // I put a very large number for width and height so that all the items can fit, it doesn't
         // need to be exact, just bigger than the sum of cell border
         cl.measure(View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.EXACTLY),
@@ -105,52 +169,66 @@ public class ReorderAlgorithmUnitTest {
         };
     }
 
-    public CellLayout.ItemConfiguration solve(CellLayoutBoard board, int x, int y, int spanX,
-            int spanY, int minSpanX, int minSpanY) {
-        CellLayout cl = createCellLayout(board.getWidth(), board.getHeight());
+    public ItemConfiguration solve(CellLayoutBoard board, int x, int y, int spanX,
+            int spanY, int minSpanX, int minSpanY, boolean isMulti) {
+        CellLayout cl = createCellLayout(board.getWidth(), board.getHeight(), isMulti);
 
         // The views have to be sorted or the result can vary
         board.getIcons()
                 .stream()
-                .map(CellLayoutBoard.IconPoint::getCoord)
+                .map(IconPoint::getCoord)
                 .sorted(Comparator.comparing(p -> ((Point) p).x).thenComparing(p -> ((Point) p).y))
                 .forEach(p -> addViewInCellLayout(cl, p.x, p.y, 1, 1, false));
-        board.getWidgets().stream()
-                .sorted(Comparator.comparing(CellLayoutBoard.WidgetRect::getCellX)
-                        .thenComparing(CellLayoutBoard.WidgetRect::getCellY))
-                .forEach(widget -> addViewInCellLayout(cl, widget.getCellX(), widget.getCellY(),
-                        widget.getSpanX(), widget.getSpanY(), true));
+        board.getWidgets()
+                .stream()
+                .sorted(Comparator
+                        .comparing(WidgetRect::getCellX)
+                        .thenComparing(WidgetRect::getCellY)
+                ).forEach(
+                        widget -> addViewInCellLayout(cl, widget.getCellX(), widget.getCellY(),
+                                widget.getSpanX(), widget.getSpanY(), true)
+                );
 
         int[] testCaseXYinPixels = new int[2];
         cl.regionToCenterPoint(x, y, spanX, spanY, testCaseXYinPixels);
-        CellLayout.ItemConfiguration solution = cl.createReorderAlgorithm().calculateReorder(
+        ItemConfiguration solution = cl.createReorderAlgorithm().calculateReorder(
                 testCaseXYinPixels[0], testCaseXYinPixels[1], minSpanX, minSpanY, spanX, spanY,
                 null);
         if (solution == null) {
-            solution = new CellLayout.ItemConfiguration();
+            solution = new ItemConfiguration();
+            solution.isSolution = false;
+        }
+        if (!solution.isSolution) {
+            cl.copyCurrentStateToSolution(solution);
+            if (cl instanceof MultipageCellLayout) {
+                solution =
+                        ((MultipageCellLayout) cl).createReorderAlgorithm().removeSeamFromSolution(
+                                solution);
+            }
             solution.isSolution = false;
         }
         return solution;
     }
 
-    public CellLayoutBoard boardFromSolution(CellLayout.ItemConfiguration solution, int width,
+    public CellLayoutBoard boardFromSolution(ItemConfiguration solution, int width,
             int height) {
         // Update the views with solution value
         solution.map.forEach((key, val) -> key.setLayoutParams(
                 new CellLayoutLayoutParams(val.cellX, val.cellY, val.spanX, val.spanY)));
         CellLayoutBoard board = CellLayoutTestUtils.viewsToBoard(
                 new ArrayList<>(solution.map.keySet()), width, height);
-        board.addWidget(solution.cellX, solution.cellY, solution.spanX, solution.spanY,
-                'z');
+        if (solution.isSolution) {
+            board.addWidget(solution.cellX, solution.cellY, solution.spanX, solution.spanY,
+                    MAIN_WIDGET_TYPE);
+        }
         return board;
     }
 
-    public void evaluateTestCase(ReorderAlgorithmUnitTestCase testCase) {
-        CellLayout.ItemConfiguration solution = solve(testCase.startBoard, testCase.x,
-                testCase.y, testCase.spanX, testCase.spanY, testCase.minSpanX,
-                testCase.minSpanY);
-        assertEquals("should be a valid solution", solution.isSolution,
-                testCase.isValidSolution);
+    public void evaluateTestCase(ReorderAlgorithmUnitTestCase testCase, boolean isMultiCellLayout) {
+        ItemConfiguration solution = solve(testCase.startBoard, testCase.x, testCase.y,
+                testCase.spanX, testCase.spanY, testCase.minSpanX, testCase.minSpanY,
+                isMultiCellLayout);
+        assertEquals("should be a valid solution", solution.isSolution, testCase.isValidSolution);
         if (testCase.isValidSolution) {
             CellLayoutBoard finishBoard = boardFromSolution(solution,
                     testCase.startBoard.getWidth(), testCase.startBoard.getHeight());
@@ -175,35 +253,34 @@ public class ReorderAlgorithmUnitTest {
         dp.inv.numRows = mPrevNumRows;
     }
 
-    @SuppressWarnings("UnusedMethod")
-    /**
-     * Utility function used to generate all the test cases
-     */
-    private ReorderAlgorithmUnitTestCase generateRandomTestCase() {
+    private ReorderAlgorithmUnitTestCase generateRandomTestCase(
+            RandomBoardGenerator boardGenerator) {
         ReorderAlgorithmUnitTestCase testCase = new ReorderAlgorithmUnitTestCase();
 
-        int width = getRandom(3, 8);
-        int height = getRandom(3, 8);
+        boolean isMultiCellLayout = boardGenerator instanceof RandomMultiBoardGenerator;
 
-        int targetWidth = getRandom(1, width - 2);
-        int targetHeight = getRandom(1, height - 2);
+        int width = isMultiCellLayout
+                ? boardGenerator.getRandom(3, MAX_BOARD_SIZE / 2) * 2
+                : boardGenerator.getRandom(3, MAX_BOARD_SIZE);
+        int height = boardGenerator.getRandom(3, MAX_BOARD_SIZE);
 
-        int minTargetWidth = getRandom(1, targetWidth);
-        int minTargetHeight = getRandom(1, targetHeight);
+        int targetWidth = boardGenerator.getRandom(1, width - 2);
+        int targetHeight = boardGenerator.getRandom(1, height - 2);
 
-        int x = getRandom(0, width - targetWidth);
-        int y = getRandom(0, height - targetHeight);
+        int minTargetWidth = boardGenerator.getRandom(1, targetWidth);
+        int minTargetHeight = boardGenerator.getRandom(1, targetHeight);
 
-        CellLayoutBoard board = generateBoard(new CellLayoutBoard(width, height),
-                new Rect(0, 0, width, height), targetWidth * targetHeight);
+        int x = boardGenerator.getRandom(0, width - targetWidth);
+        int y = boardGenerator.getRandom(0, height - targetHeight);
 
-        CellLayout.ItemConfiguration solution = solve(board, x, y, targetWidth, targetHeight,
-                minTargetWidth, minTargetHeight);
+        CellLayoutBoard board = boardGenerator.generateBoard(width, height,
+                targetWidth * targetHeight);
 
-        CellLayoutBoard finishBoard = solution.isSolution ? boardFromSolution(solution,
-                board.getWidth(), board.getHeight()) : new CellLayoutBoard(board.getWidth(),
+        ItemConfiguration solution = solve(board, x, y, targetWidth, targetHeight,
+                minTargetWidth, minTargetHeight, isMultiCellLayout);
+
+        CellLayoutBoard finishBoard = boardFromSolution(solution, board.getWidth(),
                 board.getHeight());
-
 
         testCase.startBoard = board;
         testCase.endBoard = finishBoard;
@@ -219,39 +296,24 @@ public class ReorderAlgorithmUnitTest {
         return testCase;
     }
 
-    private int getRandom(int start, int end) {
-        int random = end == 0 ? 0 : new Random().nextInt(end);
-        return start + random;
-    }
-
-    private CellLayoutBoard generateBoard(CellLayoutBoard board, Rect area,
-            int emptySpaces) {
-        if (area.height() * area.width() <= 0) return board;
-
-        int width = getRandom(1, area.width() - 1);
-        int height = getRandom(1, area.height() - 1);
-
-        int x = area.left + getRandom(0, area.width() - width);
-        int y = area.top + getRandom(0, area.height() - height);
-
-        if (emptySpaces > 0) {
-            emptySpaces -= width * height;
-        } else if (width * height > 1) {
-            board.addWidget(x, y, width, height);
-        } else {
-            board.addIcon(x, y);
+    /**
+     * Makes sure the final solution has valid integrity meaning that the number and sizes of
+     * widgets is the expect and there are no missing widgets.
+     */
+    public boolean validateIntegrity(CellLayoutBoard startBoard, CellLayoutBoard finishBoard,
+            ReorderAlgorithmUnitTestCase testCase) {
+        if (!testCase.isValidSolution) {
+            // if we couldn't place the widget then the solution should be identical to the board
+            return startBoard.compareTo(finishBoard) == 0;
         }
-
-        generateBoard(board,
-                new Rect(area.left, area.top, area.right, y), emptySpaces);
-        generateBoard(board,
-                new Rect(area.left, y, x, area.bottom), emptySpaces);
-        generateBoard(board,
-                new Rect(x, y + height, area.right, area.bottom), emptySpaces);
-        generateBoard(board,
-                new Rect(x + width, y, area.right, y + height), emptySpaces);
-
-        return board;
+        WidgetRect addedWidget = finishBoard.getWidgetOfType(MAIN_WIDGET_TYPE);
+        finishBoard.removeItem(MAIN_WIDGET_TYPE);
+        Comparator<CellLayoutBoard> comparator = new PermutedBoardComparator();
+        if (comparator.compare(startBoard, finishBoard) != 0) {
+            return false;
+        }
+        return addedWidget.getSpanX() >= testCase.minSpanX
+                && addedWidget.getSpanY() >= testCase.minSpanY;
     }
 
     private static List<ReorderAlgorithmUnitTestCase> getTestCases(String testPath)

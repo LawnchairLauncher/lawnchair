@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Modifications copyright 2021, Lawnchair
  */
 
 package com.android.launcher3.qsb;
@@ -21,6 +19,8 @@ package com.android.launcher3.qsb;
 import static android.appwidget.AppWidgetManager.ACTION_APPWIDGET_BIND;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_PROVIDER;
+
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -300,7 +300,7 @@ public class QsbContainerView extends FrameLayout {
         }
 
         public boolean isQsbEnabled() {
-            return FeatureFlags.topQsbOnFirstScreenEnabled(getContext());
+            return FeatureFlags.topQsbOnFirstScreenEnabled(getContext()) && !shouldShowFirstPageWidget();
         }
 
         protected Bundle createBindOptions() {
@@ -316,17 +316,21 @@ public class QsbContainerView extends FrameLayout {
                 requestQsbCreate();
                 View setupButton = v.findViewById(R.id.btn_qsb_setup);
                 setupButton.setVisibility(View.VISIBLE);
-                setupButton.setOnClickListener((v2) -> requestQsbCreate());
+                setupButton.setOnClickListener((v2) -> startActivityForResult(
+                        new Intent(ACTION_APPWIDGET_BIND)
+                                .putExtra(EXTRA_APPWIDGET_ID, mQsbWidgetHost.allocateAppWidgetId())
+                                .putExtra(EXTRA_APPWIDGET_PROVIDER, mWidgetInfo.provider),
+                        REQUEST_BIND_QSB));
             }
             return v;
         }
 
         void requestQsbCreate() {
             startActivityForResult(
-                    new Intent(ACTION_APPWIDGET_BIND)
-                            .putExtra(EXTRA_APPWIDGET_ID, mQsbWidgetHost.allocateAppWidgetId())
-                            .putExtra(EXTRA_APPWIDGET_PROVIDER, mWidgetInfo.provider),
-                    REQUEST_BIND_QSB);
+                new Intent(ACTION_APPWIDGET_BIND)
+                    .putExtra(EXTRA_APPWIDGET_ID, mQsbWidgetHost.allocateAppWidgetId())
+                    .putExtra(EXTRA_APPWIDGET_PROVIDER, mWidgetInfo.provider),
+                REQUEST_BIND_QSB);
         }
 
         /**

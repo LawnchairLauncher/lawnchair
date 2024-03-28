@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ಸ್ಕ್ರೀನ್‌ಶಾಟ್"</string>
     <string name="action_split" msgid="2098009717623550676">"ವಿಭಜಿಸಿ"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್ ಬಳಸಲು ಬೇರೆ ಆ್ಯಪ್ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"ರದ್ದುಮಾಡಿ"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್ ಆಯ್ಕೆಯಿಂದ ನಿರ್ಗಮಿಸಿ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"\"ಪರದೆ ಬೇರ್ಪಡಿಸಿ\" ಬಳಸಲು ಬೇರೆ ಆ್ಯಪ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ಆ್ಯಪ್ ಅಥವಾ ನಿಮ್ಮ ಸಂಸ್ಥೆಯು ಈ ಕ್ರಿಯೆಯನ್ನು ಅನುಮತಿಸುವುದಿಲ್ಲ"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"ವಿಜೆಟ್‌ಗಳು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ, ಮತ್ತೊಂದು ಆ್ಯಪ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ನ್ಯಾವಿಗೇಶನ್ ಟ್ಯುಟೋರಿಯಲ್ ಸ್ಕಿಪ್ ಮಾಡಬೇಕೇ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ಆ್ಯಪ್‌ನಲ್ಲಿ ಇದನ್ನು ನಂತರ ಕಾಣಬಹುದು"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ರದ್ದುಮಾಡಿ"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ಒಂದೇ ಬಾರಿಗೆ 2 ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲು ಆ್ಯಪ್ ಅನ್ನು ಬದಿಗೆ ಎಳೆಯಿರಿ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ತೋರಿಸಲು ನಿಧಾನವಾಗಿ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ನಿಮ್ಮ ದಿನಚರಿಯ ಆಧಾರದ ಮೇಲೆ ಆ್ಯಪ್ ಸಲಹೆಗಳನ್ನು ಪಡೆಯಿರಿ"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ಸ್ವಯಂ-ಮರೆಮಾಡಲು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಗೆಸ್ಚರ್ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಆನ್ ಮಾಡಿ"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ಟಾಸ್ಕ್ ಬಾರ್ ಅನ್ನು ಪಿನ್ ಮಾಡಲು ಡಿವೈಡರ್ ಮೇಲೆ ದೀರ್ಘಕಾಲ ಒತ್ತಿರಿ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ಟಾಸ್ಕ್‌ಬಾರ್ ಮೂಲಕ ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಆಯಿತು"</string>

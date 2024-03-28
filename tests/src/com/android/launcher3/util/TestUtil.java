@@ -24,12 +24,15 @@ import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_TAG;
 
+import static org.junit.Assert.assertTrue;
+
 import android.app.Instrumentation;
 import android.app.blob.BlobHandle;
 import android.app.blob.BlobStoreManager;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -46,6 +49,9 @@ import androidx.test.uiautomator.UiDevice;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
 import com.android.launcher3.config.FeatureFlags.IntFlag;
+import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.Workspace;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Assert;
 
@@ -121,6 +127,28 @@ public class TestUtil {
             return Integer.parseInt(result.trim());
         } catch (NumberFormatException e) {
             return 0;
+        }
+    }
+
+    /**
+     * @return Grid coordinates from the center and corners of the Workspace. Those are not pixels.
+     * See {@link Workspace#getIconGridDimensions()}
+     */
+    public static Point[] getCornersAndCenterPositions(LauncherInstrumentation launcher) {
+        final Point dimensions = launcher.getWorkspace().getIconGridDimensions();
+        if (TestStabilityRule.isPresubmit()) {
+            // Return only center in presubmit to fit under the presubmit SLO.
+            return new Point[]{
+                    new Point(dimensions.x / 2, dimensions.y / 2)
+            };
+        } else {
+            return new Point[]{
+                    new Point(0, 1),
+                    new Point(0, dimensions.y - 2),
+                    new Point(dimensions.x - 1, 1),
+                    new Point(dimensions.x - 1, dimensions.y - 2),
+                    new Point(dimensions.x / 2, dimensions.y / 2)
+            };
         }
     }
 
@@ -224,6 +252,17 @@ public class TestUtil {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Please don't add negative test cases for methods that fail only after a long wait.
+    public static void expectFail(String message, Runnable action) {
+        boolean failed = false;
+        try {
+            action.run();
+        } catch (AssertionError e) {
+            failed = true;
+        }
+        assertTrue(message, failed);
     }
 
     /** Interface to indicate a runnable which can throw any exception. */

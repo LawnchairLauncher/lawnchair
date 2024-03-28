@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Split"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Mag-tap ng ibang app para gamitin ang split screen"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Kanselahin"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Lumabas sa pagpili ng split screen"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Pumili ng ibang app para gamitin ang split screen"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Hindi pinapayagan ng app o ng iyong organisasyon ang pagkilos na ito"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Kasalukuyang hindi sinusuportahan ang mga widget, pumili ng ibang app"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Laktawan ang tutorial sa pag-navigate?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Makikita mo ito sa <xliff:g id="NAME">%1$s</xliff:g> app sa ibang pagkakataon"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Kanselahin"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Mag-drag ng app sa gilid para makagamit ng 2 app nang sabay"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Mag-swipe nang mabagal pataas para ipakita ang Taskbar"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Makakuha ng mga iminumungkahing app batay sa iyong routine"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"I-on ang navigation gamit ang galaw sa Mga Setting para i-auto hide ang Taskbar"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Pumindot nang matagal sa divider para i-pin ang Taskbar"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Mas maraming magawa gamit ang Taskbar"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Isara"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Tapos na"</string>

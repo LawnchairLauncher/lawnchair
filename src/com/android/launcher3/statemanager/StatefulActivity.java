@@ -126,16 +126,8 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
 
     @Override
     public void reapplyUi() {
-        reapplyUi(true /* cancelCurrentAnimation */);
-    }
-
-    /**
-     * Re-applies if any state transition is not running, optionally cancelling
-     * the transition if requested.
-     */
-    public void reapplyUi(boolean cancelCurrentAnimation) {
         getRootView().dispatchInsets();
-        getStateManager().reapplyState(cancelCurrentAnimation);
+        getStateManager().reapplyState(true /* cancelCurrentAnimation */);
     }
 
     @Override

@@ -44,6 +44,8 @@
 
     <!-- App pairs -->
     <string name="save_app_pair">Save app pair</string>
+    <!-- App pair default title -->
+    <string name="app_pair_default_title"><xliff:g id="app1" example="Chrome">%1$s</xliff:g> | <xliff:g id="app2" example="YouTube">%2$s</xliff:g></string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
@@ -248,6 +250,10 @@
     <!-- Folder name format when folder has 4 or more items shown in preview-->
     <string name="folder_name_format_overflow">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g>, <xliff:g id="size" example="2">%2$d</xliff:g> or more items</string>
 
+    <!-- App pair accessibility -->
+    <!-- App pair name -->
+    <string name="app_pair_name_format">App pair: <xliff:g id="app1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app2" example="YouTube">%2$s</xliff:g></string>
+
     <!-- Strings for the customization mode -->
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
@@ -433,7 +439,7 @@
     <!-- button string shown to dismiss work tab education -->
     <string name="work_apps_paused_edu_accept">Got it</string>
 
-    <!-- button string shown pause work profile -->
+    <!-- button string shown pause work profile [CHAR LIMIT=28] -->
     <string name="work_apps_pause_btn_text">Pause work apps</string>
     <!-- button string shown enable work profile -->
     <string name="work_apps_enable_btn_text">Unpause</string>
@@ -441,10 +447,22 @@
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>
 
-    <!-- Title for preference screen show in Home Settings related to smart search preferences. [CHAR LIMIT=50]-->
-    <string name="search_pref_screen_title">Search your phone</string>
-    <!-- Title for preference screen show in Home Settings related to smart search preferences. [CHAR LIMIT=50]-->
-    <string name="search_pref_screen_title_tablet">Search your tablet</string>
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
+
+    <!-- Strings for Private Space -->
+    <!-- Private space label -->
+    <string name="private_space_label">Private space</string>
+    <!-- Title for Private Space Container shown at the bottom of all apps drawer -->
+    <string name="ps_container_title">Private</string>
+    <!-- Description for Private Space Settings button -->
+    <string name="ps_container_settings">Private Space Settings</string>
+    <!-- Description for Private Space Lock/Unlock button -->
+    <string name="ps_container_lock_unlock_button">Lock/Unlock Private Space</string>
+    <!-- Description for Private Space Transition button -->
+    <string name="ps_container_transition">Private Space Transitioning</string>
+
+    <!-- Strings for bubble bar -->
+    <!-- content description for the overflow bubble [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_overflow_description">Overflow</string>
 </resources>

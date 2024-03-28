@@ -84,6 +84,17 @@ public class LauncherModelHelper {
     public static final String TEST_ACTIVITY = "com.android.launcher3.tests.Activity2";
     public static final String TEST_ACTIVITY2 = "com.android.launcher3.tests.Activity3";
     public static final String TEST_ACTIVITY3 = "com.android.launcher3.tests.Activity4";
+    public static final String TEST_ACTIVITY4 = "com.android.launcher3.tests.Activity5";
+    public static final String TEST_ACTIVITY5 = "com.android.launcher3.tests.Activity6";
+    public static final String TEST_ACTIVITY6 = "com.android.launcher3.tests.Activity7";
+    public static final String TEST_ACTIVITY7 = "com.android.launcher3.tests.Activity8";
+    public static final String TEST_ACTIVITY8 = "com.android.launcher3.tests.Activity9";
+    public static final String TEST_ACTIVITY9 = "com.android.launcher3.tests.Activity10";
+    public static final String TEST_ACTIVITY10 = "com.android.launcher3.tests.Activity11";
+    public static final String TEST_ACTIVITY11 = "com.android.launcher3.tests.Activity12";
+    public static final String TEST_ACTIVITY12 = "com.android.launcher3.tests.Activity13";
+    public static final String TEST_ACTIVITY13 = "com.android.launcher3.tests.Activity14";
+    public static final String TEST_ACTIVITY14 = "com.android.launcher3.tests.Activity15";
 
     // Authority for providing a test default-workspace-layout data.
     private static final String TEST_PROVIDER_AUTHORITY =

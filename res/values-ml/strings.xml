@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"സ്‌ക്രീൻ വിഭജന മോഡ്"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s എന്നതിന്റെ ആപ്പ് വിവരങ്ങൾ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ആപ്പ് ജോടി സംരക്ഷിക്കുക"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"വിജറ്റ് നീക്കാൻ സ്‌പർശിച്ച് പിടിക്കുക."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"വിജറ്റ് നീക്കാൻ ഡബിൾ ടാപ്പ് ചെയ്യൂ, ഹോൾഡ് ചെയ്യൂ അല്ലെങ്കിൽ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കൂ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -99,6 +100,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ഫോൾഡറിന്റെ പേര് <xliff:g id="NAME">%1$s</xliff:g> എന്നായി മാറ്റി"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ഇനങ്ങൾ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> അല്ലെങ്കിൽ അതിലധികം ഇനങ്ങൾ"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"ആപ്പ് ജോടി: <xliff:g id="APP1">%1$s</xliff:g>, <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"വാൾപേപ്പറും സ്‌റ്റൈലും"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ഹോം സ്‌ക്രീൻ എഡിറ്റ് ചെയ്യുക"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ഹോം ക്രമീകരണം"</string>
@@ -170,7 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ഔദ്യോഗിക ആപ്പുകൾ താൽക്കാലികമായി നിർത്തുക"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"താൽക്കാലികമായി നിർത്തിയത് മാറ്റുക"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ഫിൽട്ടർ ചെയ്യുക"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"നിങ്ങളുടെ ഫോണിലുള്ളവ തിരയുക"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"നിങ്ങളുടെ ടാബ്‌ലെറ്റിലുള്ളവ തിരയുക"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"പരാജയപ്പെട്ടു: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"സ്വകാര്യ സ്പേസ്"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"സ്വകാര്യം"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"സ്വകാര്യ സ്‌പേസ് ക്രമീകരണം"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"സ്വകാര്യ സ്‌പേസ് ലോക്ക് ചെയ്യുക/അൺലോക്ക് ചെയ്യുക"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"പ്രൈവറ്റ് സ്‌പേസ് ട്രാൻസിഷനിംഗ്"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ഓവർഫ്ലോ"</string>
 </resources>

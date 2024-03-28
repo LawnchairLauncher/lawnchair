@@ -20,23 +20,32 @@ import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
+import com.android.systemui.shared.rotation.RotationButton
 
 class SetupNavLayoutter(
-    resources: Resources,
-    navButtonContainer: LinearLayout,
-    endContextualContainer: ViewGroup,
-    startContextualContainer: ViewGroup
+        resources: Resources,
+        navButtonContainer: LinearLayout,
+        endContextualContainer: ViewGroup,
+        startContextualContainer: ViewGroup,
+        imeSwitcher: ImageView?,
+        rotationButton: RotationButton?,
+        a11yButton: ImageView?
 ) :
     AbstractNavButtonLayoutter(
-        resources,
-        navButtonContainer,
-        endContextualContainer,
-        startContextualContainer
+            resources,
+            navButtonContainer,
+            endContextualContainer,
+            startContextualContainer,
+            imeSwitcher,
+            rotationButton,
+            a11yButton
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
+    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
         // Since setup wizard only has back button enabled, it looks strange to be
         // end-aligned, so start-align instead.
         val navButtonsLayoutParams = navButtonContainer.layoutParams as FrameLayout.LayoutParams
@@ -46,5 +55,25 @@ class SetupNavLayoutter(
             gravity = Gravity.START
         }
         navButtonContainer.requestLayout()
+
+        endContextualContainer.removeAllViews()
+        startContextualContainer.removeAllViews()
+
+        val contextualMargin = resources.getDimensionPixelSize(
+                R.dimen.taskbar_contextual_button_padding)
+        repositionContextualContainer(endContextualContainer, 0, Gravity.END)
+        repositionContextualContainer(startContextualContainer, contextualMargin, Gravity.START)
+
+        if (imeSwitcher != null) {
+            startContextualContainer.addView(imeSwitcher)
+            imeSwitcher.layoutParams = getParamsToCenterView()
+        }
+        if (a11yButton != null) {
+            endContextualContainer.addView(a11yButton)
+        }
+        if (rotationButton != null) {
+            endContextualContainer.addView(rotationButton.currentView)
+            rotationButton.currentView.layoutParams = getParamsToCenterView()
+        }
     }
 }

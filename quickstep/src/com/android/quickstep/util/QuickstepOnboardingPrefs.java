@@ -22,9 +22,12 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
+import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_COUNT;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_DISCOVERY_TIP_COUNT;
 
-import android.content.SharedPreferences;
-
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -34,30 +37,30 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.views.AllAppsEduView;
 
 /**
- * Extends {@link OnboardingPrefs} for quickstep-specific onboarding data.
+ * Class to setup onboarding behavior for quickstep launcher
  */
-public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher> {
+public class QuickstepOnboardingPrefs {
 
-    public QuickstepOnboardingPrefs(QuickstepLauncher launcher, SharedPreferences sharedPrefs) {
-        super(launcher, sharedPrefs);
-
+    /**
+     * Sets up the initial onboarding behavior for the launcher
+     */
+    public static void setup(QuickstepLauncher launcher) {
         StateManager<LauncherState> stateManager = launcher.getStateManager();
-        if (!getBoolean(HOME_BOUNCE_SEEN)) {
+        if (!HOME_BOUNCE_SEEN.get(launcher)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     boolean swipeUpEnabled =
-                            DisplayController.getNavigationMode(mLauncher).hasGestures;
+                            DisplayController.getNavigationMode(launcher).hasGestures;
                     LauncherState prevState = stateManager.getLastState();
 
                     if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
                             && finalState == ALL_APPS && prevState == NORMAL) ||
-                            hasReachedMaxCount(HOME_BOUNCE_COUNT))) {
-                        mSharedPrefs.edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
+                            HOME_BOUNCE_COUNT.hasReachedMax(launcher))) {
+                        LauncherPrefs.get(launcher).put(HOME_BOUNCE_SEEN, true);
                         stateManager.removeStateListener(this);
                     }
                 }
@@ -65,21 +68,21 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
         }
 
         if (!Utilities.isRunningInTestHarness()
-                && !hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
+                && !HOTSEAT_DISCOVERY_TIP_COUNT.hasReachedMax(launcher)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 boolean mFromAllApps = false;
 
                 @Override
                 public void onStateTransitionStart(LauncherState toState) {
-                    mFromAllApps = mLauncher.getStateManager().getCurrentStableState() == ALL_APPS;
+                    mFromAllApps = launcher.getStateManager().getCurrentStableState() == ALL_APPS;
                 }
 
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
-                    HotseatPredictionController client = mLauncher.getHotseatPredictionController();
+                    HotseatPredictionController client = launcher.getHotseatPredictionController();
                     if (mFromAllApps && finalState == NORMAL && client.hasPredictions()) {
-                        if (!mLauncher.getDeviceProfile().isTablet
-                                && incrementEventCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
+                        if (!launcher.getDeviceProfile().isTablet
+                                && HOTSEAT_DISCOVERY_TIP_COUNT.increment(launcher)) {
                             client.showEdu();
                             stateManager.removeStateListener(this);
                         }
@@ -109,7 +112,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
                 public void onStateTransitionComplete(LauncherState finalState) {
                     if (finalState == NORMAL) {
                         if (mCount >= MAX_NUM_SWIPES_TO_TRIGGER_EDU) {
-                            if (getOpenView(mLauncher, TYPE_ALL_APPS_EDU) == null) {
+                            if (getOpenView(launcher, TYPE_ALL_APPS_EDU) == null) {
                                 AllAppsEduView.show(launcher);
                             }
                             mCount = 0;
@@ -124,7 +127,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
                     }
 
                     if (finalState == ALL_APPS) {
-                        AllAppsEduView view = getOpenView(mLauncher, TYPE_ALL_APPS_EDU);
+                        AllAppsEduView view = getOpenView(launcher, TYPE_ALL_APPS_EDU);
                         if (view != null) {
                             view.close(false);
                         }
@@ -133,20 +136,20 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
             });
         }
 
-        if (!hasReachedMaxCount(ALL_APPS_VISITED_COUNT)) {
-            mLauncher.getStateManager().addStateListener(new StateListener<LauncherState>() {
+        if (!ALL_APPS_VISITED_COUNT.hasReachedMax(launcher)) {
+            launcher.getStateManager().addStateListener(new StateListener<LauncherState>() {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     if (finalState == ALL_APPS) {
-                        incrementEventCount(ALL_APPS_VISITED_COUNT);
+                        ALL_APPS_VISITED_COUNT.increment(launcher);
                         return;
                     }
 
-                    boolean hasReachedMaxCount = hasReachedMaxCount(ALL_APPS_VISITED_COUNT);
-                    mLauncher.getAppsView().getFloatingHeaderView().findFixedRowByType(
+                    boolean hasReachedMaxCount = ALL_APPS_VISITED_COUNT.hasReachedMax(launcher);
+                    launcher.getAppsView().getFloatingHeaderView().findFixedRowByType(
                             AppsDividerView.class).setShowAllAppsLabel(!hasReachedMaxCount);
                     if (hasReachedMaxCount) {
-                        mLauncher.getStateManager().removeStateListener(this);
+                        launcher.getStateManager().removeStateListener(this);
                     }
                 }
             });

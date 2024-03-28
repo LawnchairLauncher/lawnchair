@@ -38,4 +38,8 @@ public class LauncherBinder extends BaseLauncherBinder {
     @Override
     public void bindWidgets() {
     }
+
+    @Override
+    public void bindSmartspaceWidget() {
+    }
 }

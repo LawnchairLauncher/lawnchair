@@ -24,12 +24,16 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_ITEM_LONG_PRESSED;
 
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 
-import com.android.launcher3.CellLayout;
+import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.celllayout.CellInfo;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
@@ -39,6 +43,10 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.NavigableAppWidgetHostView;
+import com.android.launcher3.widget.PendingItemDragHelper;
+import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetImageView;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
@@ -85,12 +93,51 @@ public class ItemLongClickListener {
             }
         }
 
-        CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info,
+        CellInfo longClickCellInfo = new CellInfo(v, info,
                 launcher.getCellPosMapper().mapModelToPresenter(info));
         launcher.getWorkspace().startDrag(longClickCellInfo, dragOptions);
     }
 
+    private static boolean onWidgetItemLongClick(WidgetCell v) {
+        // Get the widget preview as the drag representation
+        WidgetImageView image = v.getWidgetView();
+        Launcher launcher = Launcher.getLauncher(v.getContext());
+        DragSource dragSource = (target, dragObject, success) -> { };
+
+        // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
+        // we abort the drag.
+        if (image.getDrawable() == null && v.getAppWidgetHostViewPreview() == null) {
+            return false;
+        }
+
+        PendingItemDragHelper dragHelper = new PendingItemDragHelper(v);
+        // RemoteViews are being rendered in AppWidgetHostView in WidgetCell. And thus, the scale of
+        // RemoteViews is equivalent to the AppWidgetHostView scale.
+        dragHelper.setRemoteViewsPreview(v.getRemoteViewsPreview(), v.getAppWidgetHostViewScale());
+        dragHelper.setAppWidgetHostViewPreview(v.getAppWidgetHostViewPreview());
+
+        if (image.getDrawable() != null) {
+            int[] loc = new int[2];
+            launcher.getDragLayer().getLocationInDragLayer(image, loc);
+
+            dragHelper.startDrag(image.getBitmapBounds(), image.getDrawable().getIntrinsicWidth(),
+                    image.getWidth(), new Point(loc[0], loc[1]), dragSource, new DragOptions());
+        } else {
+            NavigableAppWidgetHostView preview = v.getAppWidgetHostViewPreview();
+            int[] loc = new int[2];
+            launcher.getDragLayer().getLocationInDragLayer(preview, loc);
+            Rect r = new Rect();
+            preview.getWorkspaceVisualDragBounds(r);
+            dragHelper.startDrag(r, preview.getMeasuredWidth(), preview.getMeasuredWidth(),
+                    new Point(loc[0], loc[1]), dragSource, new DragOptions());
+        }
+        return true;
+    }
+
     private static boolean onAllAppsItemLongClick(View view) {
+        if (view instanceof WidgetCell wc) {
+            return onWidgetItemLongClick(wc);
+        }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onAllAppsItemLongClick");
         view.cancelLongPress();
         View v = (view instanceof BubbleTextHolder)
@@ -136,6 +183,10 @@ public class ItemLongClickListener {
         if (launcher.isWorkspaceLocked()) return false;
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
         if (launcher.getDragController().isDragging()) return false;
+        // Return early if user is in the middle of selecting split-screen apps
+        if (FeatureFlags.enableSplitContextually() && launcher.isSplitSelectionEnabled()) {
+            return false;
+        }
 
         return true;
     }

@@ -67,6 +67,9 @@ public final class PredictionHelper {
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return new AppTarget.Builder(new AppTargetId("folder:" + info.id),
                     context.getPackageName(), info.user).build();
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR) {
+            return new AppTarget.Builder(new AppTargetId("app_pair:" + info.id),
+                    context.getPackageName(), info.user).build();
         }
         return null;
     }

@@ -35,8 +35,6 @@ import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -51,8 +49,7 @@ import com.android.launcher3.views.ArrowTipView;
  */
 public class TaskbarHoverToolTipController implements View.OnHoverListener {
 
-    @VisibleForTesting protected static final int HOVER_TOOL_TIP_REVEAL_START_DELAY = 400;
-    private static final int HOVER_TOOL_TIP_REVEAL_DURATION = 300;
+    private static final int HOVER_TOOL_TIP_REVEAL_DURATION = 250;
     private static final int HOVER_TOOL_TIP_EXIT_DURATION = 150;
 
     private final Handler mHoverToolTipHandler = new Handler(Looper.getMainLooper());
@@ -84,6 +81,12 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
                 R.style.ArrowTipTaskbarStyle);
         mHoverToolTipView = new ArrowTipView(arrowContextWrapper, /* isPointingUp = */ false,
                 R.layout.arrow_toast);
+        int verticalPadding = arrowContextWrapper.getResources().getDimensionPixelSize(
+                R.dimen.taskbar_tooltip_vertical_padding);
+        int horizontalPadding = arrowContextWrapper.getResources().getDimensionPixelSize(
+                R.dimen.taskbar_tooltip_horizontal_padding);
+        mHoverToolTipView.findViewById(R.id.text).setPadding(horizontalPadding, verticalPadding,
+                horizontalPadding, verticalPadding);
 
         AnimatorSet hoverCloseAnimator = new AnimatorSet();
         ObjectAnimator textCloseAnimator = ObjectAnimator.ofInt(mHoverToolTipView, TEXT_ALPHA, 0);
@@ -101,17 +104,18 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
         mHoverToolTipView.setCustomCloseAnimation(hoverCloseAnimator);
 
         AnimatorSet hoverOpenAnimator = new AnimatorSet();
-        ObjectAnimator textOpenAnimator = ObjectAnimator.ofInt(mHoverToolTipView, TEXT_ALPHA, 255);
-        textOpenAnimator.setInterpolator(Interpolators.clampToProgress(LINEAR, 0.33f, 1f));
-        ObjectAnimator scaleOpenAnimator = ObjectAnimator.ofFloat(mHoverToolTipView, SCALE_Y, 1f);
+        ObjectAnimator textOpenAnimator =
+                ObjectAnimator.ofInt(mHoverToolTipView, TEXT_ALPHA, 0, 255);
+        textOpenAnimator.setInterpolator(Interpolators.clampToProgress(LINEAR, 0.15f, 0.75f));
+        ObjectAnimator scaleOpenAnimator =
+                ObjectAnimator.ofFloat(mHoverToolTipView, SCALE_Y, 0f, 1f);
         scaleOpenAnimator.setInterpolator(Interpolators.EMPHASIZED);
-        ObjectAnimator alphaOpenAnimator = ObjectAnimator.ofFloat(mHoverToolTipView, ALPHA, 1f);
-        alphaOpenAnimator.setInterpolator(Interpolators.clampToProgress(LINEAR, 0.1f, 0.33f));
+        ObjectAnimator alphaOpenAnimator = ObjectAnimator.ofFloat(mHoverToolTipView, ALPHA, 0f, 1f);
+        alphaOpenAnimator.setInterpolator(Interpolators.clampToProgress(LINEAR, 0f, 0.33f));
         hoverOpenAnimator.playTogether(
                 scaleOpenAnimator,
                 textOpenAnimator,
                 alphaOpenAnimator);
-        hoverOpenAnimator.setStartDelay(HOVER_TOOL_TIP_REVEAL_START_DELAY);
         hoverOpenAnimator.setDuration(HOVER_TOOL_TIP_REVEAL_DURATION);
         mHoverToolTipView.setCustomOpenAnimation(hoverOpenAnimator);
 
@@ -120,8 +124,6 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
                     mHoverToolTipView.setPivotY(bottom);
                     mHoverToolTipView.setY(mTaskbarView.getTop() - (bottom - top));
                 });
-        mHoverToolTipView.setScaleY(0f);
-        mHoverToolTipView.setAlpha(0f);
     }
 
     @Override
@@ -147,8 +149,7 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
     }
 
     private void startRevealHoverToolTip() {
-        mHoverToolTipHandler.postDelayed(mRevealHoverToolTipRunnable,
-                HOVER_TOOL_TIP_REVEAL_START_DELAY);
+        mHoverToolTipHandler.post(mRevealHoverToolTipRunnable);
     }
 
     private void revealHoverToolTip() {
@@ -158,14 +159,12 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
         if (mHoverView instanceof FolderIcon && !((FolderIcon) mHoverView).getIconVisible()) {
             return;
         }
-        mActivity.setTaskbarWindowFullscreen(true);
         Rect iconViewBounds = Utilities.getViewBounds(mHoverView);
         mHoverToolTipView.showAtLocation(mToolTipText, iconViewBounds.centerX(),
                 mTaskbarView.getTop(), /* shouldAutoClose= */ false);
     }
 
     private void startHideHoverToolTip() {
-        mHoverToolTipHandler.removeCallbacks(mRevealHoverToolTipRunnable);
         int accessibilityHideTimeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(
                 mActivity, /* originalTimeout= */ 0, FLAG_CONTENT_TEXT);
         mHoverToolTipHandler.postDelayed(mHideHoverToolTipRunnable, accessibilityHideTimeout);

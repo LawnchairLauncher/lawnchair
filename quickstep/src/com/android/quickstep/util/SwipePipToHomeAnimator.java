@@ -145,6 +145,12 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             sourceRectHint = null;
         }
 
+        if (sourceRectHint != null && !appBounds.contains(sourceRectHint)) {
+            // This is a situation in which the source hint rect is outside the app bounds, so it is
+            // not a valid rectangle to use for cropping app surface
+            sourceRectHint = null;
+        }
+
         if (sourceRectHint == null) {
             mSourceRectHint.setEmpty();
             mSourceHintRectInsets = null;
@@ -153,8 +159,8 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
             // the cleanup.
             mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
-                    mAppBounds, new IconProvider(context).getIcon(mActivityInfo),
-                    appIconSizePx);
+                    mAppBounds, mDestinationBounds,
+                    new IconProvider(context).getIcon(mActivityInfo), appIconSizePx);
             final SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
             mPipContentOverlay.attach(tx, mLeash);
         } else {
@@ -257,6 +263,10 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
 
     public Rect getDestinationBounds() {
         return mDestinationBounds;
+    }
+
+    public Rect getAppBounds() {
+        return mAppBounds;
     }
 
     @Nullable

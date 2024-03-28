@@ -64,34 +64,14 @@ public class PopupPopulatorTest {
                 MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
     }
 
-    @Test
-    public void testDeDupeShortcutId() {
-        // Successfully remove one of the shortcuts
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 2, 0, generateId(true, 1));
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 3), 0, 2, generateId(false, 1));
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 2, 1, generateId(false, 1));
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 1, 2, generateId(true, 1));
-        // Successfully keep all shortcuts when id doesn't exist
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 3, 0, generateId(false, 1));
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 3, 0, generateId(true, 4));
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 2, 2, generateId(false, 4));
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 2, 2, generateId(true, 4));
-    }
-
     private String generateId(boolean isStatic, int rank) {
         return (isStatic ? "static" : "dynamic") + rank;
     }
 
     private void filterShortcutsAndAssertNumStaticAndDynamic(
             List<ShortcutInfo> shortcuts, int expectedStatic, int expectedDynamic) {
-        filterShortcutsAndAssertNumStaticAndDynamic(shortcuts, expectedStatic, expectedDynamic, null);
-    }
-
-    private void filterShortcutsAndAssertNumStaticAndDynamic(List<ShortcutInfo> shortcuts,
-            int expectedStatic, int expectedDynamic, String shortcutIdToRemove) {
         Collections.shuffle(shortcuts);
-        List<ShortcutInfo> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(
-                shortcuts, shortcutIdToRemove);
+        List<ShortcutInfo> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts);
         assertIsSorted(filteredShortcuts);
 
         int numStatic = 0;

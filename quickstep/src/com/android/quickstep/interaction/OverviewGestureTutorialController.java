@@ -53,13 +53,13 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
         // Set the Lottie animation colors specifically for the Overview gesture
         if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mAnimatedGestureDemonstration,
                     Map.of(".onSurfaceOverview", fragment.mRootView.mColorOnSurfaceOverview,
                             ".surfaceOverview", fragment.mRootView.mColorSurfaceOverview,
                             ".secondaryOverview", fragment.mRootView.mColorSecondaryOverview));
 
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mCheckmarkAnimation,
                     Map.of(".checkmark",
                             Utilities.isDarkTheme(mContext)

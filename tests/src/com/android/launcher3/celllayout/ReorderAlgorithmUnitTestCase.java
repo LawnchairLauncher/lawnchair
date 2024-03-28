@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.celllayout;
 
+import com.android.launcher3.celllayout.board.CellLayoutBoard;
+
 import java.util.Iterator;
 
 /**

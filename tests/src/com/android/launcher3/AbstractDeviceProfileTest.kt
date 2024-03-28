@@ -24,8 +24,10 @@ import android.view.Surface
 import androidx.test.core.app.ApplicationProvider
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.DisplayController
+import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
 import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.WindowBounds
+import com.android.launcher3.util.rule.TestStabilityRule
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
 import java.io.BufferedReader
@@ -34,11 +36,11 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
-import org.junit.After
-import org.junit.Before
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when` as whenever
+import org.junit.Rule
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.whenever
 
 /**
  * This is an abstract class for DeviceProfile tests that create an InvariantDeviceProfile based on
@@ -47,27 +49,13 @@ import org.mockito.Mockito.`when` as whenever
  * For an implementation that mocks InvariantDeviceProfile, use [FakeInvariantDeviceProfileTest]
  */
 abstract class AbstractDeviceProfileTest {
-    protected var context: Context? = null
+    protected lateinit var context: SandboxContext
     protected open val runningContext: Context = ApplicationProvider.getApplicationContext()
-    private var displayController: DisplayController = mock(DisplayController::class.java)
-    private var windowManagerProxy: WindowManagerProxy = mock(WindowManagerProxy::class.java)
-    private lateinit var originalDisplayController: DisplayController
-    private lateinit var originalWindowManagerProxy: WindowManagerProxy
+    private val displayController: DisplayController = mock()
+    private val windowManagerProxy: WindowManagerProxy = mock()
+    private val launcherPrefs: LauncherPrefs = mock()
 
-    @Before
-    open fun setUp() {
-        val appContext: Context = ApplicationProvider.getApplicationContext()
-        originalWindowManagerProxy = WindowManagerProxy.INSTANCE.get(appContext)
-        originalDisplayController = DisplayController.INSTANCE.get(appContext)
-        WindowManagerProxy.INSTANCE.initializeForTesting(windowManagerProxy)
-        DisplayController.INSTANCE.initializeForTesting(displayController)
-    }
-
-    @After
-    open fun tearDown() {
-        WindowManagerProxy.INSTANCE.initializeForTesting(originalWindowManagerProxy)
-        DisplayController.INSTANCE.initializeForTesting(originalDisplayController)
-    }
+    @Rule @JvmField val testStabilityRule = TestStabilityRule()
 
     class DeviceSpec(
         val naturalSize: Pair<Int, Int>,
@@ -283,11 +271,11 @@ abstract class AbstractDeviceProfileTest {
     ) {
         val windowsBounds = perDisplayBoundsCache[displayInfo]!!
         val realBounds = windowsBounds[rotation]
-        whenever(windowManagerProxy.getDisplayInfo(ArgumentMatchers.any())).thenReturn(displayInfo)
-        whenever(windowManagerProxy.getRealBounds(ArgumentMatchers.any(), ArgumentMatchers.any()))
-            .thenReturn(realBounds)
-        whenever(windowManagerProxy.getRotation(ArgumentMatchers.any())).thenReturn(rotation)
-        whenever(windowManagerProxy.getNavigationMode(ArgumentMatchers.any()))
+        whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)
+        whenever(windowManagerProxy.getRealBounds(any(), any())).thenReturn(realBounds)
+        whenever(windowManagerProxy.getCurrentBounds(any())).thenReturn(realBounds.bounds)
+        whenever(windowManagerProxy.getRotation(any())).thenReturn(rotation)
+        whenever(windowManagerProxy.getNavigationMode(any()))
             .thenReturn(
                 if (isGestureMode) NavigationMode.NO_BUTTON else NavigationMode.THREE_BUTTONS
             )
@@ -300,11 +288,22 @@ abstract class AbstractDeviceProfileTest {
                 screenHeightDp = (realBounds.bounds.height() / density).toInt()
                 smallestScreenWidthDp = min(screenWidthDp, screenHeightDp)
             }
-        context = runningContext.createConfigurationContext(config)
+        val configurationContext = runningContext.createConfigurationContext(config)
+        context =
+            SandboxContext(
+                configurationContext,
+                DisplayController.INSTANCE,
+                WindowManagerProxy.INSTANCE,
+                LauncherPrefs.INSTANCE
+            )
+        context.putObject(DisplayController.INSTANCE, displayController)
+        context.putObject(WindowManagerProxy.INSTANCE, windowManagerProxy)
+        context.putObject(LauncherPrefs.INSTANCE, launcherPrefs)
 
-        val info = DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache)
+        whenever(launcherPrefs.get(LauncherPrefs.TASKBAR_PINNING)).thenReturn(false)
+        val info = spy(DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache))
         whenever(displayController.info).thenReturn(info)
-        whenever(displayController.isTransientTaskbar).thenReturn(isGestureMode)
+        whenever(info.isTransientTaskbar).thenReturn(isGestureMode)
     }
 
     /** Create a new dump of DeviceProfile, saves to a file in the device and returns it */

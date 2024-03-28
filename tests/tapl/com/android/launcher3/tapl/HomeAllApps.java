@@ -23,7 +23,6 @@ import androidx.test.uiautomator.UiObject2;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 public class HomeAllApps extends AllApps {
-    private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
 
     HomeAllApps(LauncherInstrumentation launcher) {
         super(launcher);
@@ -98,25 +97,6 @@ public class HomeAllApps extends AllApps {
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    /**
-     * Taps outside bottom sheet to dismiss and return to workspace. Available on tablets only.
-     * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
-     */
-    public Workspace dismissByTappingOutsideForTablet(boolean tapRight) {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "want to tap outside AllApps bottom sheet on the "
-                             + (tapRight ? "right" : "left"))) {
-            final UiObject2 allAppsBottomSheet =
-                    mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
-            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
-            try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
-                    "tapped outside AllApps bottom sheet")) {
-                return mLauncher.getWorkspace();
-            }
-        }
-    }
-
     @NonNull
     @Override
     public Qsb getQsb() {
@@ -127,5 +107,28 @@ public class HomeAllApps extends AllApps {
     protected int getAllAppsScroll() {
         return mLauncher.getTestInfo(TestProtocol.REQUEST_APPS_LIST_SCROLL_Y)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    @Override
+    protected void verifyVisibleContainerOnDismiss() {
+        mLauncher.getWorkspace();
+    }
+
+    @Override
+    public boolean isHomeState() {
+        return true;
+    }
+
+    /** Send the "back" gesture to go to workspace. */
+    public Workspace pressBackToWorkspace() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to press back from all apps to workspace")) {
+            mLauncher.runToState(
+                    () -> mLauncher.pressBackImpl(),
+                    NORMAL_STATE_ORDINAL,
+                    "pressing back");
+            return new Workspace(mLauncher);
+        }
     }
 }

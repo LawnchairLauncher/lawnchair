@@ -175,7 +175,7 @@ public class LoaderCursorTest {
 
         // Item outside screen bounds are not placed
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1), true));
     }
 
     @Test
@@ -186,22 +186,22 @@ public class LoaderCursorTest {
 
         // Overlapping mItems are not placed
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1), true));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1), true));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2), true));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2), true));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1), true));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1)));
+                newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1), true));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1)));
+                newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1), true));
     }
 
     @Test
@@ -212,12 +212,12 @@ public class LoaderCursorTest {
 
         // Hotseat mItems are only placed based on screenId
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1)));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1), true));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2)));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2), true));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3)));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3), true));
     }
 
     private ItemInfo newItemInfo(int cellX, int cellY, int spanX, int spanY,

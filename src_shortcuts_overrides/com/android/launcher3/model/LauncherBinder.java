@@ -51,4 +51,9 @@ public class LauncherBinder extends BaseLauncherBinder {
                 mBgDataModel.widgetsModel.getWidgetsListForPicker(mApp.getContext());
         executeCallbacksTask(c -> c.bindAllWidgets(widgets), mUiExecutor);
     }
+
+    @Override
+    public void bindSmartspaceWidget() {
+        executeCallbacksTask(c -> c.bindSmartspaceWidget(), mUiExecutor);
+    }
 }

@@ -29,11 +29,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.tapl.Overview;
+import com.android.launcher3.tapl.Taskbar;
+import com.android.launcher3.tapl.TaskbarAppIcon;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
+import com.android.wm.shell.Flags;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,7 +57,7 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
 
         if (mLauncher.isTablet()) {
             mLauncher.enableBlockTimeout(true);
@@ -108,7 +111,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
 
     @Test
     public void testSaveAppPairMenuItemExistsOnSplitPair() throws Exception {
-        assumeTrue(FeatureFlags.ENABLE_APP_PAIRS.get());
+        assumeTrue("App pairs feature is currently not enabled, no test needed",
+                Flags.enableAppPairs());
 
         createAndLaunchASplitPair();
 
@@ -122,7 +126,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
 
     @Test
     public void testSaveAppPairMenuItemDoesNotExistOnSingleTask() throws Exception {
-        assumeTrue(FeatureFlags.ENABLE_APP_PAIRS.get());
+        assumeTrue("App pairs feature is currently not enabled, no test needed",
+                Flags.enableAppPairs());
 
         startAppFast(CALCULATOR_APP_PACKAGE);
 
@@ -134,11 +139,36 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
                         .hasMenuItem("Save app pair"));
     }
 
+    @Test
+    public void testSplitSingleTaskFromTaskbar() {
+        // Currently only tablets have Taskbar in Overview, so test is only active on tablets
+        assumeTrue(mLauncher.isTablet());
+
+        if (!mLauncher.getRecentTasks().isEmpty()) {
+            // Clear all recent tasks
+            mLauncher.goHome().switchToOverview().dismissAllTasks();
+        }
+
+        startAppFast(getAppPackageName());
+
+        Overview overview = mLauncher.goHome().switchToOverview();
+        if (mLauncher.isGridOnlyOverviewEnabled()) {
+            overview.getCurrentTask().tapMenu().tapSplitMenuItem();
+        } else {
+            overview.getOverviewActions().clickSplit();
+        }
+
+        Taskbar taskbar = overview.getTaskbar();
+        String firstAppName = taskbar.getIconNames().get(0);
+        TaskbarAppIcon firstApp = taskbar.getAppIcon(firstAppName);
+        firstApp.launchIntoSplitScreen();
+    }
+
     private void createAndLaunchASplitPair() {
         startTestActivity(2);
         startTestActivity(3);
 
-        if (mLauncher.isTablet()) {
+        if (mLauncher.isTablet() && !mLauncher.isGridOnlyOverviewEnabled()) {
             mLauncher.goHome().switchToOverview().getOverviewActions()
                     .clickSplit()
                     .getTestActivityTask(2)

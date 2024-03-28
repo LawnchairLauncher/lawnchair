@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट"</string>
     <string name="action_split" msgid="2098009717623550676">"स्प्लिट"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"स्प्लिट स्क्रीन वापरण्यासाठी दुसऱ्या ॲपवर टॅप करा"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"रद्द करा"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"स्प्लिट स्क्रीन निवडीतून बाहेर पडा"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"स्प्लिट स्क्रीन वापरण्यासाठी दुसरे ॲप निवडा"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"अ‍ॅप किंवा तुमच्या संस्थेद्वारे ही क्रिया करण्याची अनुमती नाही"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"विजेटना सध्या सपोर्ट नाही, कृपया दुसरे अ‍ॅप निवडा"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेव्हिगेशन ट्यूटोरियल वगळायचे आहे का?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"तुम्हाला हे नंतर <xliff:g id="NAME">%1$s</xliff:g> ॲपमध्ये मिळेल"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"रद्द करा"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"दोन ॲप्स एकत्र वापरण्यासाठी एक अ‍ॅप बाजूला ड्रॅग करा"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार दाखवण्यासाठी थोडे हळू वरती स्वाइप करा"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"तुमच्या दिनक्रमावर आधारित ॲप सूचना मिळवा"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"टास्कबार ऑटो हाइड करण्यासाठी सेटिंग्ज मधून जेश्चर नेव्हिगेशन सुरू करा"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"टास्कबार पिन करण्यासाठी विभाजकावर प्रेस करून ठेवा"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार चा पुरेपूर वापर करा"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करा"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"पूर्ण झाले"</string>

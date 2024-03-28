@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
+
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 
@@ -28,7 +30,6 @@ import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -109,7 +110,7 @@ public final class KeyboardQuickSwitchController implements
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED
+                isDesktopModeSupported()
                         && desktopController != null
                         && desktopController.areFreeformTasksVisible();
 
@@ -136,7 +137,7 @@ public final class KeyboardQuickSwitchController implements
 
         // Hide all desktop tasks and show them on the hidden tile
         int hiddenDesktopTasks = 0;
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+        if (isDesktopModeSupported()) {
             DesktopTask desktopTask = findDesktopTask(tasks);
             if (desktopTask != null) {
                 hiddenDesktopTasks = desktopTask.tasks.size();

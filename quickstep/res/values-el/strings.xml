@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Στιγμιότυπο οθόνης"</string>
     <string name="action_split" msgid="2098009717623550676">"Διαχωρισμός"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Πατήστε άλλη εφαρμογή για διαχωρισμό οθόνης"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Ακύρωση"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Έξοδος από την επιλογή διαχωρισμού οθόνης"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Επιλέξτε άλλη εφαρμογή για διαχωρισμό οθόνης"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Αυτή η ενέργεια δεν επιτρέπεται από την εφαρμογή ή τον οργανισμό σας."</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Προς το παρόν, τα γραφικά στοιχεία δεν υποστηρίζονται. Επιλέξτε άλλη εφαρμογή"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Παράβλεψη οδηγού πλοήγησης;"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Βρείτε τον αργότερα στην εφαρμογή <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Ακύρωση"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Σύρετε μια εφαρμ. στην άκρη για χρήση δύο εφαρμ. ταυτόχρονα"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Σύρετε αργά προς τα πάνω για εμφάνιση της Γραμμής εργαλείων"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Λάβετε προτεινόμενες εφαρμογές με βάση τη ρουτίνα σας"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Ενεργοπ. την πλοήγηση με κινήσεις στις Ρυθμίσεις για αυτόμ. απόκρυψη της Γραμμής εργαλείων"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Παρατετ. πάτημα στο διαχωρ. για καρφ. της Γραμμής εργαλείων"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Κάντε περισσότερα με τη Γραμμή εργαλείων"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Κλείσιμο"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Τέλος"</string>

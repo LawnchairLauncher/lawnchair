@@ -41,13 +41,13 @@ final class BackGestureTutorialController extends TutorialController {
         super(fragment, tutorialType);
         // Set the Lottie animation colors specifically for the Back gesture
         if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mAnimatedGestureDemonstration,
                     Map.of(".onSurfaceBack", fragment.mRootView.mColorOnSurfaceBack,
                             ".surfaceBack", fragment.mRootView.mColorSurfaceBack,
                             ".secondaryBack", fragment.mRootView.mColorSecondaryBack));
 
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mCheckmarkAnimation,
                     Map.of(".checkmark",
                             Utilities.isDarkTheme(mContext)

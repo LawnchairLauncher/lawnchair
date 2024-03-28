@@ -48,6 +48,14 @@ public abstract class DelegateInputConsumer implements InputConsumer {
      */
     protected abstract String getDelegatorName();
 
+    @Override
+    public <T extends InputConsumer> T getInputConsumerOfClass(Class<T> c) {
+        if (getClass().equals(c)) {
+            return c.cast(this);
+        }
+        return mDelegate.getInputConsumerOfClass(c);
+    }
+
     protected void setActive(MotionEvent ev) {
         ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(getDelegatorName())
                 .append(" became active"));

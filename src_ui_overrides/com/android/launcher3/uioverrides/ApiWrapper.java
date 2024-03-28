@@ -21,10 +21,16 @@ import android.app.Person;
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.ShortcutInfo;
+import android.graphics.drawable.ColorDrawable;
+import android.os.UserHandle;
+import android.os.UserManager;
+import android.util.ArrayMap;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.UserIconInfo;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,5 +53,42 @@ public class ApiWrapper {
      */
     public static ActivityOptions createFadeOutAnimOptions(Context context) {
         return ActivityOptions.makeCustomAnimation(context, 0, android.R.anim.fade_out);
+    }
+
+    /**
+     * Returns a map of all users on the device to their corresponding UI properties
+     */
+    public static Map<UserHandle, UserIconInfo> queryAllUsers(Context context) {
+        UserManager um = context.getSystemService(UserManager.class);
+        Map<UserHandle, UserIconInfo> users = new ArrayMap<>();
+        List<UserHandle> usersActual = um.getUserProfiles();
+        if (usersActual != null) {
+            for (UserHandle user : usersActual) {
+                long serial = um.getSerialNumberForUser(user);
+
+                // Simple check to check if the provided user is work profile
+                // TODO: Migrate to a better platform API
+                NoopDrawable d = new NoopDrawable();
+                boolean isWork = (d != context.getPackageManager().getUserBadgedIcon(d, user));
+                UserIconInfo info = new UserIconInfo(
+                        user,
+                        isWork ? UserIconInfo.TYPE_WORK : UserIconInfo.TYPE_MAIN,
+                        serial);
+                users.put(user, info);
+            }
+        }
+        return users;
+    }
+
+    private static class NoopDrawable extends ColorDrawable {
+        @Override
+        public int getIntrinsicHeight() {
+            return 1;
+        }
+
+        @Override
+        public int getIntrinsicWidth() {
+            return 1;
+        }
     }
 }

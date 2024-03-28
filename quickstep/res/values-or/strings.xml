@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ସ୍କ୍ରିନସଟ୍"</string>
     <string name="action_split" msgid="2098009717623550676">"ସ୍ପ୍ଲିଟ୍"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"ସ୍ପ୍ଲିଟସ୍କ୍ରିନ ବ୍ୟବହାର କରିବାକୁ ଅନ୍ୟ ଏକ ଆପରେ ଟାପ କର"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"ବାତିଲ କରନ୍ତୁ"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ଚୟନରୁ ବାହାରି ଯାଆନ୍ତୁ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ବ୍ୟବହାର କରିବାକୁ ଅନ୍ୟ ଏକ ଆପ ବାଛନ୍ତୁ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ଆପ୍ କିମ୍ବା ଆପଣଙ୍କ ସଂସ୍ଥା ଦ୍ୱାରା ଏହି କାର୍ଯ୍ୟକୁ ଅନୁମତି ଦିଆଯାଇ ନାହିଁ"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"ୱିଜେଟଗୁଡ଼ିକ ବର୍ତ୍ତମାନ ସମର୍ଥିତ ନୁହେଁ, ଦୟାକରି ଅନ୍ୟ ଏକ ଆପ ଚୟନ କରନ୍ତୁ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ନାଭିଗେସନ୍ ଟ୍ୟୁଟୋରିଆଲକୁ ବାଦ୍ ଦେବେ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ଆପଣ ପରେ ଏହାକୁ <xliff:g id="NAME">%1$s</xliff:g> ଆପରେ ପାଇପାରିବେ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ବାତିଲ କରନ୍ତୁ"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ଥରକେ 2ଟି ଆପ୍ସ ବ୍ୟବହାର କରିବା ପାଇଁ ଏକ ଆପକୁ ପାର୍ଶ୍ୱକୁ ଡ୍ରାଗ କର"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ଟାସ୍କବାର ଦେଖାଇବା ପାଇଁ ଉପରକୁ ଧୀରେ-ସ୍ୱାଇପ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ଆପଣଙ୍କ ରୁଟିନ ଆଧାରରେ ଆପ ପରାମର୍ଶଗୁଡ଼ିକୁ ପାଆନ୍ତୁ"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ଟାସ୍କବାରକୁ ସ୍ୱତଃ-ଲୁଚାଇବା ପାଇଁ ସେଟିଂସରେ ଜେଶ୍ଚର ନାଭିଗେସନକୁ ଚାଲୁ କରନ୍ତୁ"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ଟାସ୍କବାର ପିନ କରିବା ପାଇଁ ଡିଭାଇଡରକୁ ଅଧିକ ସମୟ ଦବାନ୍ତୁ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ଟାସ୍କବାର ମାଧ୍ୟମରେ ଆହୁରି ଅନେକ କିଛି କରନ୍ତୁ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ହୋଇଗଲା"</string>

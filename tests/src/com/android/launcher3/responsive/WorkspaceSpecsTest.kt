@@ -21,6 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
+import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.tests.R as TestR
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
@@ -32,22 +33,30 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     override val runningContext: Context = InstrumentationRegistry.getInstrumentation().context
+    val deviceSpec = deviceSpecs["phone"]!!
+    val aspectRatio = deviceSpec.naturalSize.first.toFloat() / deviceSpec.naturalSize.second
 
     @Before
     fun setup() {
-        initializeVarsForPhone(deviceSpecs["phone"]!!)
+        initializeVarsForPhone(deviceSpec)
     }
 
     @Test
     fun parseValidFile() {
         val workspaceSpecs =
-            WorkspaceSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
-        assertThat(workspaceSpecs.heightSpecs.size).isEqualTo(3)
-        assertThat(workspaceSpecs.heightSpecs[0].toString())
+            ResponsiveSpecsProvider.create(
+                TestResourceHelper(context, TestR.xml.valid_workspace_file),
+                ResponsiveSpecType.Workspace
+            )
+
+        val specs = workspaceSpecs.getSpecsByAspectRatio(aspectRatio)
+        assertThat(specs.heightSpecs.size).isEqualTo(3)
+        assertThat(specs.heightSpecs[0].toString())
             .isEqualTo(
-                "WorkspaceSpec(" +
+                "ResponsiveSpec(" +
                     "maxAvailableSize=1533, " +
-                    "specType=HEIGHT, " +
+                    "dimensionType=HEIGHT, " +
+                    "specType=Workspace, " +
                     "startPadding=SizeSpec(fixedSize=0.0, " +
                     "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0, " +
@@ -70,11 +79,12 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                     "maxSize=2147483647)" +
                     ")"
             )
-        assertThat(workspaceSpecs.heightSpecs[1].toString())
+        assertThat(specs.heightSpecs[1].toString())
             .isEqualTo(
-                "WorkspaceSpec(" +
+                "ResponsiveSpec(" +
                     "maxAvailableSize=1607, " +
-                    "specType=HEIGHT, " +
+                    "dimensionType=HEIGHT, " +
+                    "specType=Workspace, " +
                     "startPadding=SizeSpec(fixedSize=0.0, " +
                     "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0, " +
@@ -97,11 +107,12 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                     "maxSize=2147483647)" +
                     ")"
             )
-        assertThat(workspaceSpecs.heightSpecs[2].toString())
+        assertThat(specs.heightSpecs[2].toString())
             .isEqualTo(
-                "WorkspaceSpec(" +
+                "ResponsiveSpec(" +
                     "maxAvailableSize=26247, " +
-                    "specType=HEIGHT, " +
+                    "dimensionType=HEIGHT, " +
+                    "specType=Workspace, " +
                     "startPadding=SizeSpec(fixedSize=21.0, " +
                     "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0, " +
@@ -124,12 +135,13 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                     "maxSize=2147483647)" +
                     ")"
             )
-        assertThat(workspaceSpecs.widthSpecs.size).isEqualTo(1)
-        assertThat(workspaceSpecs.widthSpecs[0].toString())
+        assertThat(specs.widthSpecs.size).isEqualTo(1)
+        assertThat(specs.widthSpecs[0].toString())
             .isEqualTo(
-                "WorkspaceSpec(" +
+                "ResponsiveSpec(" +
                     "maxAvailableSize=26247, " +
-                    "specType=WIDTH, " +
+                    "dimensionType=WIDTH, " +
+                    "specType=Workspace, " +
                     "startPadding=SizeSpec(fixedSize=58.0, " +
                     "ofAvailableSpace=0.0, " +
                     "ofRemainderSpace=0.0, " +
@@ -156,29 +168,33 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_missingTag_throwsError() {
-        WorkspaceSpecs.create(
-            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_1)
+        ResponsiveSpecsProvider.create(
+            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_1),
+            ResponsiveSpecType.Workspace
         )
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_moreThanOneValuePerTag_throwsError() {
-        WorkspaceSpecs.create(
-            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_2)
+        ResponsiveSpecsProvider.create(
+            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_2),
+            ResponsiveSpecType.Workspace
         )
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_valueBiggerThan1_throwsError() {
-        WorkspaceSpecs.create(
-            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_3)
+        ResponsiveSpecsProvider.create(
+            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_3),
+            ResponsiveSpecType.Workspace
         )
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_matchWorkspace_true_throwsError() {
-        WorkspaceSpecs.create(
-            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_4)
+        ResponsiveSpecsProvider.create(
+            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_4),
+            ResponsiveSpecType.Workspace
         )
     }
 }

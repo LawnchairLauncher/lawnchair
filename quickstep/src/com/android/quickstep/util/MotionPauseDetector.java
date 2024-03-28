@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.testing.shared.TestProtocol.PAUSE_DETECTED_MESSAGE;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
@@ -201,7 +203,8 @@ public class MotionPauseDetector {
             ActiveGestureLog.INSTANCE.addLog(logString);
             boolean isFirstDetectedPause = !mHasEverBeenPaused && mIsPaused;
             if (mIsPaused) {
-                AccessibilityManagerCompat.sendPauseDetectedEventToTest(mContext);
+                AccessibilityManagerCompat.sendTestProtocolEventToTest(mContext,
+                        PAUSE_DETECTED_MESSAGE);
                 mHasEverBeenPaused = true;
             }
             if (mOnMotionPauseListener != null) {

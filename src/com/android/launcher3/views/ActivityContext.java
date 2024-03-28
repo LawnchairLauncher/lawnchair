@@ -34,6 +34,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -84,8 +86,7 @@ import com.android.launcher3.util.ViewCache;
 import java.util.List;
 
 /**
- * An interface to be used along with a context for various activities in
- * Launcher. This allows a
+ * An interface to be used along with a context for various activities in Launcher. This allows a
  * generic class to depend on Context subclass instead of an Activity.
  */
 public interface ActivityContext {
@@ -101,14 +102,11 @@ public interface ActivityContext {
     }
 
     /**
-     * For items with tree hierarchy, notifies the activity to invalidate the parent
-     * when a root
+     * For items with tree hierarchy, notifies the activity to invalidate the parent when a root
      * is invalidated
-     * 
      * @param info info associated with a root node.
      */
-    default void invalidateParent(ItemInfo info) {
-    }
+    default void invalidateParent(ItemInfo info) { }
 
     default AccessibilityDelegate getAccessibilityDelegate() {
         return null;
@@ -119,29 +117,21 @@ public interface ActivityContext {
     }
 
     /**
-     * After calling {@link #getFolderBoundingBox()}, we calculate a (left, top)
-     * position for a
-     * Folder of size width x height to be within those bounds. However, the chosen
-     * position may
-     * not be visually ideal (e.g. uncanny valley of centeredness), so here's a
-     * chance to update it.
-     * 
-     * @param inOutPosition A 2-size array where the first element is the left
-     *                      position of the open
-     *                      folder and the second element is the top position.
-     *                      Should be updated in place if desired.
-     * @param bounds        The bounds that the open folder should fit inside.
-     * @param width         The width of the open folder.
-     * @param height        The height of the open folder.
+     * After calling {@link #getFolderBoundingBox()}, we calculate a (left, top) position for a
+     * Folder of size width x height to be within those bounds. However, the chosen position may
+     * not be visually ideal (e.g. uncanny valley of centeredness), so here's a chance to update it.
+     * @param inOutPosition A 2-size array where the first element is the left position of the open
+     *     folder and the second element is the top position. Should be updated in place if desired.
+     * @param bounds The bounds that the open folder should fit inside.
+     * @param width The width of the open folder.
+     * @param height The height of the open folder.
      */
     default void updateOpenFolderPosition(int[] inOutPosition, Rect bounds, int width, int height) {
     }
 
     /**
-     * Returns a LayoutInflater that is cloned in this Context, so that Views
-     * inflated by it will
-     * have the same Context. (i.e. {@link #lookupContext(Context)} will find this
-     * ActivityContext.)
+     * Returns a LayoutInflater that is cloned in this Context, so that Views inflated by it will
+     * have the same Context. (i.e. {@link #lookupContext(Context)} will find this ActivityContext.)
      */
     default LayoutInflater getLayoutInflater() {
         if (this instanceof Context) {
@@ -155,6 +145,15 @@ public interface ActivityContext {
     default void startSplitSelection(
             SplitConfigurationOptions.SplitSelectSource splitSelectSource) {
         // Overridden, intentionally empty
+    }
+
+    /**
+     * @return {@code true} if user has selected the first split app and is in the process of
+     *         selecting the second
+     */
+    default boolean isSplitSelectionEnabled() {
+        // Overridden
+        return false;
     }
 
     /**
@@ -223,8 +222,7 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns {@code true} if popups can use a range of color shades instead of a
-     * singular color.
+     * Returns {@code true} if popups can use a range of color shades instead of a singular color.
      */
     default boolean canUseMultipleShadesForPopup() {
         return true;
@@ -233,18 +231,15 @@ public interface ActivityContext {
     /**
      * Called just before logging the given item.
      */
-    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) {
-    }
+    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
 
     /** Onboarding preferences for any onboarding data within this context. */
     @Nullable
     default OnboardingPrefs<?> getOnboardingPrefs() {
         return null;
     }
-
-    /**
-     * Returns {@code true} if items are currently being bound within this context.
-     */
+    
+    /** Returns {@code true} if items are currently being bound within this context. */
     default boolean isBindingItems() {
         return false;
     }
@@ -280,23 +275,28 @@ public interface ActivityContext {
         }
         if (Utilities.ATLEAST_R) {
             Preconditions.assertUIThread();
-            // Hide keyboard with WindowInsetsController if could. In case
-            // hideSoftInputFromWindow may get ignored by input connection being finished
-            // when the screen is off.
+            //  Hide keyboard with WindowInsetsController if could. In case
+            //  hideSoftInputFromWindow may get ignored by input connection being finished
+            //  when the screen is off.
             //
-            // In addition, inside IMF, the keyboards are closed asynchronously that
-            // launcher no
+            // In addition, inside IMF, the keyboards are closed asynchronously that launcher no
             // longer need to post to the message queue.
             final WindowInsetsController wic = root.getWindowInsetsController();
             WindowInsets insets = root.getRootWindowInsets();
             boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
-            if (wic != null && isImeShown) {
-                StatsLogManager slm = getStatsLogManager();
-                slm.keyboardStateManager().setKeyboardState(HIDE);
+            if (wic != null) {
+                // Only hide the keyboard if it is actually showing.
+                if (isImeShown) {
+                    StatsLogManager slm = getStatsLogManager();
+                    slm.keyboardStateManager().setKeyboardState(HIDE);
 
-                // this method cannot be called cross threads
-                wic.hide(WindowInsets.Type.ime());
-                slm.logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
+                    // this method cannot be called cross threads
+                    wic.hide(WindowInsets.Type.ime());
+                    slm.logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
+                }
+
+                // If the WindowInsetsController is not null, we end here regardless of whether we
+                // hid the keyboard or not.
                 return;
             }
         }
@@ -307,20 +307,47 @@ public interface ActivityContext {
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (imm.hideSoftInputFromWindow(token, 0)) {
                     // log keyboard close event only when keyboard is actually closed
-                    MAIN_EXECUTOR.execute(() -> getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED));
+                    MAIN_EXECUTOR.execute(() ->
+                            getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED));
                 }
             });
         }
     }
 
     /**
+     * Returns if the connected keyboard is a hardware keyboard.
+     */
+    default boolean isHardwareKeyboard() {
+        return Configuration.KEYBOARD_QWERTY
+                == ((Context) this).getResources().getConfiguration().keyboard;
+    }
+
+    /**
+     * Returns if the software keyboard is hidden. Hardware keyboards do not display on screen by
+     * default.
+     */
+    default boolean isSoftwareKeyboardHidden() {
+        if (isHardwareKeyboard()) {
+            return true;
+        } else {
+            View dragLayer = getDragLayer();
+            WindowInsets insets = dragLayer.getRootWindowInsets();
+            if (insets == null) {
+                return false;
+            }
+            WindowInsetsCompat insetsCompat =
+                    WindowInsetsCompat.toWindowInsetsCompat(insets, dragLayer);
+            return !insetsCompat.isVisible(WindowInsetsCompat.Type.ime());
+        }
+    }
+
+    /**
      * Sends a pending intent animating from a view.
      *
-     * @param v      View to animate.
+     * @param v View to animate.
      * @param intent The pending intent being launched.
-     * @param item   Item associated with the view.
-     * @return RunnableList for listening for animation finish if the activity was
-     *         properly
+     * @param item Item associated with the view.
+     * @return RunnableList for listening for animation finish if the activity was properly
      *         or started, {@code null} if the launch finished
      */
     default RunnableList sendPendingIntentWithAnimation(
@@ -345,11 +372,10 @@ public interface ActivityContext {
     /**
      * Safely starts an activity.
      *
-     * @param v      View starting the activity.
+     * @param v View starting the activity.
      * @param intent Base intent being launched.
-     * @param item   Item associated with the view.
-     * @return RunnableList for listening for animation finish if the activity was
-     *         properly
+     * @param item Item associated with the view.
+     * @return RunnableList for listening for animation finish if the activity was properly
      *         or started, {@code null} if the launch finished
      */
     default RunnableList startActivitySafely(
@@ -369,8 +395,7 @@ public interface ActivityContext {
         }
         ActivityOptionsWrapper options = v != null ? getActivityLaunchOptions(v, item)
                 : makeDefaultActivityOptions(item != null && item.animationType == DEFAULT_NO_ICON
-                        ? SPLASH_SCREEN_STYLE_SOLID_COLOR
-                        : -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */);
+                        ? SPLASH_SCREEN_STYLE_SOLID_COLOR : -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */);
         UserHandle user = item == null ? null : item.user;
         Bundle optsBundle = options.toBundle();
         // Prepare intent
@@ -420,7 +445,7 @@ public interface ActivityContext {
     /**
      * Returns launch options for an Activity.
      *
-     * @param v    View initiating a launch.
+     * @param v View initiating a launch.
      * @param item Item associated with the view.
      */
     default ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
@@ -437,7 +462,8 @@ public interface ActivityContext {
                 height = bounds.height();
             }
         }
-        ActivityOptions options = allowBGLaunch(ActivityOptions.makeClipRevealAnimation(v, left, top, width, height));
+        ActivityOptions options =
+                allowBGLaunch(ActivityOptions.makeClipRevealAnimation(v, left, top, width, height));
         options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
@@ -446,8 +472,7 @@ public interface ActivityContext {
     }
 
     /**
-     * Creates a default activity option and we do not want association with any
-     * launcher element.
+     * Creates a default activity option and we do not want association with any launcher element.
      */
     default ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
@@ -458,12 +483,22 @@ public interface ActivityContext {
     }
 
     default CellPosMapper getCellPosMapper() {
-        return CellPosMapper.DEFAULT;
+        DeviceProfile dp = getDeviceProfile();
+        return new CellPosMapper(dp.isVerticalBarLayout(), dp.numShownHotseatIcons);
+    }
+
+    /** Whether bubbles are enabled. */
+    default boolean isBubbleBarEnabled() {
+        return false;
+    }
+
+    /** Whether the bubble bar has bubbles. */
+    default boolean hasBubbles() {
+        return false;
     }
 
     /**
-     * Returns the ActivityContext associated with the given Context, or throws an
-     * exception if
+     * Returns the ActivityContext associated with the given Context, or throws an exception if
      * the Context is not associated with any ActivityContext.
      */
     static <T extends Context & ActivityContext> T lookupContext(Context context) {

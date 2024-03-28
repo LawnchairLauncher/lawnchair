@@ -381,12 +381,26 @@ class SplitSelectDataHolderTest {
     }
 
     @Test
-    fun clearState() {
+    fun clearState_task() {
         splitSelectDataHolder.setInitialTaskSelect(
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             null,
             null
+        )
+        splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser)
+        splitSelectDataHolder.resetState()
+        assertFalse(splitSelectDataHolder.isSplitSelectActive())
+    }
+
+    @Test
+    fun clearState_intent() {
+        splitSelectDataHolder.setInitialTaskSelect(
+                sampleIntent,
+                STAGE_POSITION_TOP_OR_LEFT,
+                sampleItemInfo,
+                null,
+                INVALID_TASK_ID
         )
         splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser)
         splitSelectDataHolder.resetState()

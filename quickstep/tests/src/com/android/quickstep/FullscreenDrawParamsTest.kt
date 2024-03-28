@@ -16,17 +16,13 @@
 package com.android.quickstep
 
 import android.content.Context
-import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.FakeInvariantDeviceProfileTest
 import com.android.quickstep.util.TaskCornerRadius
 import com.android.quickstep.views.TaskView.FullscreenDrawParams
-import com.android.systemui.shared.recents.model.ThumbnailData
-import com.android.systemui.shared.recents.utilities.PreviewPositionHelper
 import com.android.systemui.shared.system.QuickStepContract
 import com.google.common.truth.Truth.assertThat
-import kotlin.math.roundToInt
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,10 +35,6 @@ import org.mockito.Mockito.spy
 @RunWith(AndroidJUnit4::class)
 class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
 
-    private val TASK_SCALE = 0.7f
-    private var mThumbnailData: ThumbnailData = mock(ThumbnailData::class.java)
-
-    private val mPreviewPositionHelper = PreviewPositionHelper()
     private lateinit var params: FullscreenDrawParams
 
     @Before
@@ -53,32 +45,11 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
     @Test
     fun setStartProgress_correctCornerRadiusForTablet() {
         initializeVarsForTablet()
-        val dp = newDP()
-        val previewRect = Rect(0, 0, 100, 100)
-        val canvasWidth = (dp.widthPx * TASK_SCALE).roundToInt()
-        val canvasHeight = (dp.heightPx * TASK_SCALE).roundToInt()
-        val currentRotation = 0
-        val isRtl = false
 
-        mPreviewPositionHelper.updateThumbnailMatrix(
-            previewRect,
-            mThumbnailData,
-            canvasWidth,
-            canvasHeight,
-            dp.widthPx,
-            dp.heightPx,
-            dp.taskbarHeight,
-            dp.isTablet,
-            currentRotation,
-            isRtl
-        )
         params.setProgress(
             /* fullscreenProgress= */ 0f,
             /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-            /* previewWidth= */ 0,
-            dp,
-            mPreviewPositionHelper
+            /* taskViewScale= */ 1.0f
         )
 
         val expectedRadius = TaskCornerRadius.get(context)
@@ -88,32 +59,11 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
     @Test
     fun setFullProgress_correctCornerRadiusForTablet() {
         initializeVarsForTablet()
-        val dp = newDP()
-        val previewRect = Rect(0, 0, 100, 100)
-        val canvasWidth = (dp.widthPx * TASK_SCALE).roundToInt()
-        val canvasHeight = (dp.heightPx * TASK_SCALE).roundToInt()
-        val currentRotation = 0
-        val isRtl = false
 
-        mPreviewPositionHelper.updateThumbnailMatrix(
-            previewRect,
-            mThumbnailData,
-            canvasWidth,
-            canvasHeight,
-            dp.widthPx,
-            dp.heightPx,
-            dp.taskbarHeight,
-            dp.isTablet,
-            currentRotation,
-            isRtl
-        )
         params.setProgress(
             /* fullscreenProgress= */ 1.0f,
             /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-            /* previewWidth= */ 0,
-            dp,
-            mPreviewPositionHelper
+            /* taskViewScale= */ 1.0f
         )
 
         val expectedRadius = QuickStepContract.getWindowCornerRadius(context)
@@ -123,32 +73,11 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
     @Test
     fun setStartProgress_correctCornerRadiusForPhone() {
         initializeVarsForPhone()
-        val dp = newDP()
-        val previewRect = Rect(0, 0, 100, 100)
-        val canvasWidth = (dp.widthPx * TASK_SCALE).roundToInt()
-        val canvasHeight = (dp.heightPx * TASK_SCALE).roundToInt()
-        val currentRotation = 0
-        val isRtl = false
 
-        mPreviewPositionHelper.updateThumbnailMatrix(
-            previewRect,
-            mThumbnailData,
-            canvasWidth,
-            canvasHeight,
-            dp.widthPx,
-            dp.heightPx,
-            dp.taskbarHeight,
-            dp.isTablet,
-            currentRotation,
-            isRtl
-        )
         params.setProgress(
             /* fullscreenProgress= */ 0f,
             /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-            /* previewWidth= */ 0,
-            dp,
-            mPreviewPositionHelper
+            /* taskViewScale= */ 1.0f
         )
 
         val expectedRadius = TaskCornerRadius.get(context)
@@ -158,32 +87,11 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
     @Test
     fun setFullProgress_correctCornerRadiusForPhone() {
         initializeVarsForPhone()
-        val dp = newDP()
-        val previewRect = Rect(0, 0, 100, 100)
-        val canvasWidth = (dp.widthPx * TASK_SCALE).roundToInt()
-        val canvasHeight = (dp.heightPx * TASK_SCALE).roundToInt()
-        val currentRotation = 0
-        val isRtl = false
 
-        mPreviewPositionHelper.updateThumbnailMatrix(
-            previewRect,
-            mThumbnailData,
-            canvasWidth,
-            canvasHeight,
-            dp.widthPx,
-            dp.heightPx,
-            dp.taskbarHeight,
-            dp.isTablet,
-            currentRotation,
-            isRtl
-        )
         params.setProgress(
             /* fullscreenProgress= */ 1.0f,
             /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-            /* previewWidth= */ 0,
-            dp,
-            mPreviewPositionHelper
+            /* taskViewScale= */ 1.0f
         )
 
         val expectedRadius = QuickStepContract.getWindowCornerRadius(context)
@@ -207,10 +115,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
         spyParams.setProgress(
             /* fullscreenProgress= */ 0f,
             /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-            /* unused previewWidth= */ -1,
-            /* unusedDp= */ null,
-            /* unused previewPositionHelper= */ null
+            /* taskViewScale= */ 1.0f
         )
         assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display1TaskRadius)
 
@@ -218,10 +123,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
         spyParams.setProgress(
             /* fullscreenProgress= */ 0f,
             /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-            /* unused previewWidth= */ -1,
-            /* unusedDp= */ null,
-            /* unused previewPositionHelper= */ null
+            /* taskViewScale= */ 1.0f
         )
         assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display2TaskRadius)
     }
@@ -243,10 +145,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
         spyParams.setProgress(
             /* fullscreenProgress= */ 1.0f,
             /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-            /* unused previewWidth= */ -1,
-            /* unusedDp= */ null,
-            /* unused previewPositionHelper= */ null
+            /* taskViewScale= */ 1.0f
         )
         assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display1WindowRadius)
 
@@ -255,9 +154,6 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
             /* fullscreenProgress= */ 1.0f,
             /* parentScale= */ 1.0f,
             /* taskViewScale= */ 1.0f,
-            /* unused previewWidth= */ -1,
-            /* unusedDp= */ null,
-            /* unused previewPositionHelper= */ null
         )
         assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display2WindowRadius)
     }

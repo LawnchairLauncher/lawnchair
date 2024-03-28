@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<RelativeLayout
+        android:id="@+id/ps_header_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ps_header_height"
+        android:background="@drawable/bg_ps_header"
+        android:clipToOutline="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/ps_lock_unlock_button"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/ps_header_image_height"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:layout_marginEnd="@dimen/ps_header_layout_margin"
+        android:contentDescription="@string/ps_container_lock_unlock_button" />
+
+    <ImageButton
+        android:id="@+id/ps_settings_button"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/ps_header_image_height"
+        android:layout_toStartOf="@+id/ps_lock_unlock_button"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:layout_marginEnd="@dimen/ps_header_settings_icon_margin_end"
+        android:src="@drawable/bg_ps_settings_button"
+        android:contentDescription="@string/ps_container_settings" />
+
+    <ImageView
+        android:id="@+id/ps_transition_image"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/ps_header_image_height"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:layout_marginEnd="@dimen/ps_header_layout_margin"
+        android:src="@drawable/bg_ps_transition_image"
+        android:contentDescription="@string/ps_container_transition" />
+
+    <TextView
+        android:id="@+id/ps_container_header"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/ps_header_text_height"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/ps_header_layout_margin"
+        android:text="@string/ps_container_title"
+        android:theme="@style/PrivateSpaceHeaderTextStyle"/>
+
+</RelativeLayout>

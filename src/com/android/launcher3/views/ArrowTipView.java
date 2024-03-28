@@ -155,7 +155,7 @@ public class ArrowTipView extends AbstractFloatingView {
         setOrientation(LinearLayout.VERTICAL);
 
         mArrowView = findViewById(R.id.arrow);
-        updateArrowTipInView();
+        updateArrowTipInView(mIsPointingUp);
         setAlpha(0);
 
         // Create default open animator.
@@ -364,17 +364,18 @@ public class ArrowTipView extends AbstractFloatingView {
 
             // Adjust the tooltip vertically.
             @Px int viewHeight = getHeight();
+            boolean isPointingUp = mIsPointingUp;
             if (mIsPointingUp
                     ? (yCoordUpPointingTip + viewHeight > parentViewHeight)
                     : (yCoordDownPointingTip - viewHeight < 0)) {
                 // Flip the view if it exceeds the vertical bounds of screen.
-                mIsPointingUp = !mIsPointingUp;
-                updateArrowTipInView();
+                isPointingUp = !mIsPointingUp;
             }
+            updateArrowTipInView(isPointingUp);
             // Place the tooltip such that its top is at yCoordUpPointingTip if arrow is displayed
             // pointing upwards, otherwise place it such that its bottom is at
             // yCoordDownPointingTip.
-            setY(mIsPointingUp ? yCoordUpPointingTip : yCoordDownPointingTip - viewHeight);
+            setY(isPointingUp ? yCoordUpPointingTip : yCoordDownPointingTip - viewHeight);
 
             // Adjust the arrow's relative position on tooltip to make sure the actual position of
             // arrow's pointed tip is always at arrowXCoord.
@@ -391,10 +392,10 @@ public class ArrowTipView extends AbstractFloatingView {
         return this;
     }
 
-    private void updateArrowTipInView() {
+    private void updateArrowTipInView(boolean isPointingUp) {
         ViewGroup.LayoutParams arrowLp = mArrowView.getLayoutParams();
         ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
-                arrowLp.width, arrowLp.height, mIsPointingUp));
+                arrowLp.width, arrowLp.height, isPointingUp));
         Paint arrowPaint = arrowDrawable.getPaint();
         @Px int arrowTipRadius = getContext().getResources()
                 .getDimensionPixelSize(R.dimen.arrow_toast_corner_radius);
@@ -403,7 +404,7 @@ public class ArrowTipView extends AbstractFloatingView {
         mArrowView.setBackground(arrowDrawable);
         // Add negative margin so that the rounded corners on base of arrow are not visible.
         removeView(mArrowView);
-        if (mIsPointingUp) {
+        if (isPointingUp) {
             addView(mArrowView, 0);
             ((ViewGroup.MarginLayoutParams) arrowLp).setMargins(0, 0, 0, -1 * arrowTipRadius);
         } else {

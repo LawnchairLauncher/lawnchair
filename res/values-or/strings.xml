@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"ସ୍କ୍ରିନ‌କୁ ସ୍ପ୍ଲିଟ କରନ୍ତୁ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ପାଇଁ ଆପ ସୂଚନା"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ଆପ ପେୟାର ସେଭ କରନ୍ତୁ"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ଏକ ୱିଜେଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ଏକ ୱିଜେଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ଦୁଇଥର-ଟାପ୍ କରି ଧରି ରଖନ୍ତୁ କିମ୍ବା କଷ୍ଟମ୍ କାର୍ଯ୍ୟଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -99,6 +100,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ଫୋଲ୍ଡରର ନାମ <xliff:g id="NAME">%1$s</xliff:g>କୁ ବଦଳାଗଲା"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ଆଇଟମଗୁଡ଼ିକ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> କିମ୍ବା ଅଧିକ ଆଇଟମ୍"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"ଆପ ପେୟାର: <xliff:g id="APP1">%1$s</xliff:g> ଏବଂ <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ୱାଲପେପର ଏବଂ ଷ୍ଟାଇଲ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ହୋମ ସ୍କ୍ରିନକୁ ଏଡିଟ କରନ୍ତୁ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ହୋମ ସେଟିଂସ"</string>
@@ -170,7 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ୱାର୍କ ଆପ୍ସ ବିରତ କରନ୍ତୁ"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ପୁଣି ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ଫିଲ୍ଟର୍"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"ଆପଣଙ୍କ ଫୋନରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ଆପଣଙ୍କ ଟାବଲେଟରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ବିଫଳ ହୋଇଛି: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"ପ୍ରାଇଭେଟ ସ୍ପେସ"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"ପ୍ରାଇଭେଟ"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"ପ୍ରାଇଭେଟ ସ୍ପେସ ସେଟିଂସ"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ପ୍ରାଇଭେଟ ସ୍ପେସକୁ ଲକ/ଅନଲକ କରନ୍ତୁ"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"ପ୍ରାଇଭେଟ ସ୍ପେସ ଟ୍ରାଞ୍ଜିସନିଂ"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ଓଭରଫ୍ଲୋ"</string>
 </resources>

@@ -84,4 +84,5 @@
 
     <dimen name="keyboard_quick_switch_taskview_width">205dp</dimen>
     <dimen name="keyboard_quick_switch_taskview_height">119dp</dimen>
+
 </resources>

@@ -32,6 +32,8 @@ class TestResourceHelper(private val context: Context, specsFileId: Int) :
                 styleId.contentEquals(R.styleable.WorkspaceSpec) -> TestR.styleable.WorkspaceSpec
                 styleId.contentEquals(R.styleable.FolderSpec) -> TestR.styleable.FolderSpec
                 styleId.contentEquals(R.styleable.AllAppsSpec) -> TestR.styleable.AllAppsSpec
+                styleId.contentEquals(R.styleable.ResponsiveSpecGroup) ->
+                    TestR.styleable.ResponsiveSpecGroup
                 else -> styleId.clone()
             }
 

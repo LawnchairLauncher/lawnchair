@@ -74,22 +74,18 @@ public class ModelWriter {
     @Nullable
     private final Callbacks mOwner;
 
-    private final boolean mHasVerticalHotseat;
     private final boolean mVerifyChanges;
 
-    // Keep track of delete operations that occur when an Undo option is present; we
-    // may not commit.
+    // Keep track of delete operations that occur when an Undo option is present; we may not commit.
     private final List<ModelTask> mDeleteRunnables = new ArrayList<>();
     private boolean mPreparingToUndo;
     private final CellPosMapper mCellPosMapper;
 
     public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
-            boolean hasVerticalHotseat, boolean verifyChanges, CellPosMapper cellPosMapper,
-            @Nullable Callbacks owner) {
+            boolean verifyChanges, CellPosMapper cellPosMapper, @Nullable Callbacks owner) {
         mContext = context;
         mModel = model;
         mBgDataModel = dataModel;
-        mHasVerticalHotseat = hasVerticalHotseat;
         mVerifyChanges = verifyChanges;
         mOwner = owner;
         mCellPosMapper = cellPosMapper;
@@ -107,9 +103,7 @@ public class ModelWriter {
         // position
         // in the hotseat
         if (container == Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = mHasVerticalHotseat
-                    ? LauncherAppState.getIDP(mContext).numDatabaseHotseatIcons - cellY - 1
-                    : cellX;
+            item.screenId = cellX;
         } else {
             item.screenId = modelPos.screenId;
         }
@@ -175,17 +169,17 @@ public class ModelWriter {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
         notifyItemModified(item);
 
-        enqueueDeleteRunnable(new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
-                .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
-                .put(Favorites.RANK, item.rank)
-                .put(Favorites.SCREEN, item.screenId)));
+        enqueueDeleteRunnable(new UpdateItemRunnable(item, () ->
+                new ContentWriter(mContext)
+                        .put(Favorites.CONTAINER, item.container)
+                        .put(Favorites.CELLX, item.cellX)
+                        .put(Favorites.CELLY, item.cellY)
+                        .put(Favorites.RANK, item.rank)
+                        .put(Favorites.SCREEN, item.screenId)));
     }
 
     /**
-     * Move items in the DB to a new <container, screen, cellX, cellY>. We assume
-     * that the
+     * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
      * cellX, cellY have already been updated on the ItemInfos.
      */
     public void moveItemsInDatabase(final ArrayList<ItemInfo> items, int container, int screen) {
@@ -210,8 +204,7 @@ public class ModelWriter {
     }
 
     /**
-     * Move and/or resize item in the DB to a new <container, screen, cellX, cellY,
-     * spanX, spanY>
+     * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
      */
     public void modifyItemInDatabase(final ItemInfo item,
             int container, int screenId, int cellX, int cellY, int spanX, int spanY) {
@@ -219,14 +212,15 @@ public class ModelWriter {
         item.spanX = spanX;
         item.spanY = spanY;
         notifyItemModified(item);
-        new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
-                .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
-                .put(Favorites.RANK, item.rank)
-                .put(Favorites.SPANX, item.spanX)
-                .put(Favorites.SPANY, item.spanY)
-                .put(Favorites.SCREEN, item.screenId))
+        new UpdateItemRunnable(item, () ->
+                new ContentWriter(mContext)
+                        .put(Favorites.CONTAINER, item.container)
+                        .put(Favorites.CELLX, item.cellX)
+                        .put(Favorites.CELLY, item.cellY)
+                        .put(Favorites.RANK, item.rank)
+                        .put(Favorites.SPANX, item.spanX)
+                        .put(Favorites.SPANY, item.spanY)
+                        .put(Favorites.SCREEN, item.screenId))
                 .executeOnModelThread();
     }
 
@@ -247,8 +241,7 @@ public class ModelWriter {
     }
 
     /**
-     * Add an item to the database in a specified container. Sets the container,
-     * screen, cellX and
+     * Add an item to the database in a specified container. Sets the container, screen, cellX and
      * cellY fields of the item. Also assigns an ID to the item.
      */
     public void addItemToDatabase(final ItemInfo item,
@@ -261,8 +254,7 @@ public class ModelWriter {
         ModelVerifier verifier = new ModelVerifier();
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         newModelTask(() -> {
-            // Write the item on background thread, as some properties might have been
-            // updated in
+            // Write the item on background thread, as some properties might have been updated in
             // the background.
             final ContentWriter writer = new ContentWriter(mContext);
             item.onAddToDatabase(writer);
@@ -290,7 +282,7 @@ public class ModelWriter {
     public void deleteItemsFromDatabase(@NonNull final Predicate<ItemInfo> matcher,
             @Nullable final String reason) {
         deleteItemsFromDatabase(StreamSupport.stream(mBgDataModel.itemsIdMap.spliterator(), false)
-                .filter(matcher).collect(Collectors.toList()), reason);
+                        .filter(matcher).collect(Collectors.toList()), reason);
     }
 
     /**
@@ -301,9 +293,8 @@ public class ModelWriter {
         ModelVerifier verifier = new ModelVerifier();
         FileLog.d(TAG, "removing items from db " + items.stream().map(
                 (item) -> item.getTargetComponent() == null ? ""
-                        : item.getTargetComponent().getPackageName())
-                .collect(
-                        Collectors.joining(","))
+                        : item.getTargetComponent().getPackageName()).collect(
+                Collectors.joining(","))
                 + ". Reason: [" + (TextUtils.isEmpty(reason) ? "unknown" : reason) + "]");
         notifyDelete(items);
         enqueueDeleteRunnable(newModelTask(() -> {
@@ -354,10 +345,8 @@ public class ModelWriter {
     }
 
     /**
-     * Delete operations tracked using {@link #enqueueDeleteRunnable} will only be
-     * called
-     * if {@link #commitDelete} is called. Note that one of {@link #commitDelete()}
-     * or
+     * Delete operations tracked using {@link #enqueueDeleteRunnable} will only be called
+     * if {@link #commitDelete} is called. Note that one of {@link #commitDelete()} or
      * {@link #abortDelete} MUST be called after this method, or else all delete
      * operations will remain uncommitted indefinitely.
      */
@@ -372,10 +361,8 @@ public class ModelWriter {
     }
 
     /**
-     * If {@link #prepareToUndoDelete} has been called, we store the Runnable to be
-     * run when
-     * {@link #commitDelete()} is called (or abandoned if {@link #abortDelete} is
-     * called).
+     * If {@link #prepareToUndoDelete} has been called, we store the Runnable to be run when
+     * {@link #commitDelete()} is called (or abandoned if {@link #abortDelete} is called).
      * Otherwise, we run the Runnable immediately.
      */
     private void enqueueDeleteRunnable(ModelTask r) {
@@ -398,17 +385,14 @@ public class ModelWriter {
     public void abortDelete() {
         mPreparingToUndo = false;
         mDeleteRunnables.clear();
-        // We do a full reload here instead of just a rebind because Folders change
-        // their internal
-        // state when dragging an item out, which clobbers the rebind unless we load
-        // from the DB.
+        // We do a full reload here instead of just a rebind because Folders change their internal
+        // state when dragging an item out, which clobbers the rebind unless we load from the DB.
         mModel.forceReload();
     }
 
     private void notifyOtherCallbacks(CallbackTask task) {
         if (mOwner == null) {
-            // If the call is happening from a model, it will take care of updating the
-            // callbacks
+            // If the call is happening from a model, it will take care of updating the callbacks
             return;
         }
         mUiExecutor.execute(() -> {
@@ -548,8 +532,7 @@ public class ModelWriter {
     }
 
     /**
-     * Utility class to verify model updates are propagated properly to the
-     * callback.
+     * Utility class to verify model updates are propagated properly to the callback.
      */
     public class ModelVerifier {
 

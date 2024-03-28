@@ -1,0 +1,130 @@
+DeviceProfile:
+	1 dp = 2.625 px
+	isTablet:false
+	isPhone:true
+	transposeLayoutWithOrientation:true
+	isGestureMode:true
+	isLandscape:true
+	isMultiWindowMode:false
+	isTwoPanels:false
+	isLeftRightSplit:true
+	windowX: 0.0px (0.0dp)
+	windowY: 0.0px (0.0dp)
+	widthPx: 2400.0px (914.2857dp)
+	heightPx: 1080.0px (411.42856dp)
+	availableWidthPx: 2282.0px (869.3333dp)
+	availableHeightPx: 943.0px (359.2381dp)
+	mInsets.left: 118.0px (44.95238dp)
+	mInsets.top: 74.0px (28.190475dp)
+	mInsets.right: 0.0px (0.0dp)
+	mInsets.bottom: 63.0px (24.0dp)
+	aspectRatio:2.2222223
+	isResponsiveGrid:false
+	isScalableGrid:false
+	inv.numRows: 5
+	inv.numColumns: 5
+	inv.numSearchContainerColumns: 5
+	minCellSize: PointF(0.0, 0.0)dp
+	cellWidthPx: 152.0px (57.904762dp)
+	cellHeightPx: 166.0px (63.238094dp)
+	getCellSize().x: 393.0px (149.71428dp)
+	getCellSize().y: 180.0px (68.57143dp)
+	cellLayoutBorderSpacePx Horizontal: 0.0px (0.0dp)
+	cellLayoutBorderSpacePx Vertical: 0.0px (0.0dp)
+	cellLayoutPaddingPx.left: 53.0px (20.190475dp)
+	cellLayoutPaddingPx.top: 0.0px (0.0dp)
+	cellLayoutPaddingPx.right: 53.0px (20.190475dp)
+	cellLayoutPaddingPx.bottom: 40.0px (15.238095dp)
+	iconSizePx: 147.0px (56.0dp)
+	iconTextSizePx: 0.0px (0.0dp)
+	iconDrawablePaddingPx: 0.0px (0.0dp)
+	numFolderRows: 4
+	numFolderColumns: 4
+	folderCellWidthPx: 163.0px (62.095238dp)
+	folderCellHeightPx: 192.0px (73.14286dp)
+	folderChildIconSizePx: 123.0px (46.857143dp)
+	folderChildTextSizePx: 32.0px (12.190476dp)
+	folderChildDrawablePaddingPx: 3.0px (1.1428572dp)
+	folderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)
+	folderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)
+	folderContentPaddingLeftRight: 21.0px (8.0dp)
+	folderTopPadding: 53.0px (20.190475dp)
+	folderFooterHeight: 123.0px (46.857143dp)
+	bottomSheetTopPadding: 114.0px (43.42857dp)
+	bottomSheetOpenDuration: 267
+	bottomSheetCloseDuration: 267
+	bottomSheetWorkspaceScale: 1.0
+	bottomSheetDepth: 0.0
+	allAppsShiftRange: 788.0px (300.1905dp)
+	allAppsOpenDuration: 600
+	allAppsCloseDuration: 300
+	allAppsIconSizePx: 147.0px (56.0dp)
+	allAppsIconTextSizePx: 38.0px (14.476191dp)
+	allAppsIconDrawablePaddingPx: 21.0px (8.0dp)
+	allAppsCellHeightPx: 372.0px (141.71428dp)
+	allAppsCellWidthPx: 189.0px (72.0dp)
+	allAppsBorderSpacePxX: 42.0px (16.0dp)
+	allAppsBorderSpacePxY: 42.0px (16.0dp)
+	numShownAllAppsColumns: 5
+	allAppsPadding.top: 0.0px (0.0dp)
+	allAppsPadding.left: 0.0px (0.0dp)
+	allAppsPadding.right: 0.0px (0.0dp)
+	allAppsLeftRightMargin: 0.0px (0.0dp)
+	hotseatBarSizePx: 252.0px (96.0dp)
+	inv.hotseatColumnSpan: 5
+	hotseatCellHeightPx: 166.0px (63.238094dp)
+	hotseatBarBottomSpacePx: 0.0px (0.0dp)
+	mHotseatBarEdgePaddingPx: 63.0px (24.0dp)
+	mHotseatBarWorkspaceSpacePx: 42.0px (16.0dp)
+	hotseatBarEndOffset: 0.0px (0.0dp)
+	hotseatQsbSpace: 0.0px (0.0dp)
+	hotseatQsbHeight: 0.0px (0.0dp)
+	springLoadedHotseatBarTopMarginPx: 118.0px (44.95238dp)
+	getHotseatLayoutPadding(context).top: 64.0px (24.380953dp)
+	getHotseatLayoutPadding(context).bottom: 112.0px (42.666668dp)
+	getHotseatLayoutPadding(context).left: 42.0px (16.0dp)
+	getHotseatLayoutPadding(context).right: 63.0px (24.0dp)
+	numShownHotseatIcons: 5
+	hotseatBorderSpace: 0.0px (0.0dp)
+	isQsbInline: false
+	hotseatQsbWidth: 0.0px (0.0dp)
+	isTaskbarPresent:false
+	isTaskbarPresentInApps:false
+	taskbarHeight: 0.0px (0.0dp)
+	stashedTaskbarHeight: 0.0px (0.0dp)
+	taskbarBottomMargin: 0.0px (0.0dp)
+	taskbarIconSize: 0.0px (0.0dp)
+	desiredWorkspaceHorizontalMarginPx: 0.0px (0.0dp)
+	workspacePadding.left: 10.0px (3.8095238dp)
+	workspacePadding.top: 0.0px (0.0dp)
+	workspacePadding.right: 199.0px (75.809525dp)
+	workspacePadding.bottom: 0.0px (0.0dp)
+	iconScale: 1.0px (0.3809524dp)
+	cellScaleToFit : 1.0px (0.3809524dp)
+	extraSpace: 73.0px (27.809525dp)
+	unscaled extraSpace: 73.0px (27.809525dp)
+	maxEmptySpace: 0.0px (0.0dp)
+	workspaceTopPadding: 0.0px (0.0dp)
+	workspaceBottomPadding: 0.0px (0.0dp)
+	overviewTaskMarginPx: 0.0px (0.0dp)
+	overviewTaskIconSizePx: 0.0px (0.0dp)
+	overviewTaskIconDrawableSizePx: 0.0px (0.0dp)
+	overviewTaskIconDrawableSizeGridPx: 0.0px (0.0dp)
+	overviewTaskIconAppChipMenuDrawableSizePx: 0.0px (0.0dp)
+	overviewTaskThumbnailTopMarginPx: 0.0px (0.0dp)
+	overviewActionsTopMarginPx: 0.0px (0.0dp)
+	overviewActionsHeight: 0.0px (0.0dp)
+	overviewActionsClaimedSpaceBelow: 63.0px (24.0dp)
+	overviewActionsButtonSpacing: 0.0px (0.0dp)
+	overviewPageSpacing: 0.0px (0.0dp)
+	overviewRowSpacing: 0.0px (0.0dp)
+	overviewGridSideMargin: 0.0px (0.0dp)
+	dropTargetBarTopMarginPx: 16.0px (6.095238dp)
+	dropTargetBarSizePx: 95.0px (36.190475dp)
+	dropTargetBarBottomMarginPx: 16.0px (6.095238dp)
+	getCellLayoutSpringLoadShrunkTop(): 201.0px (76.57143dp)
+	getCellLayoutSpringLoadShrunkBottom(): 952.0px (362.66666dp)
+	workspaceSpringLoadedMinNextPageVisiblePx: 63.0px (24.0dp)
+	getWorkspaceSpringLoadScale(): 0.79639447px (0.30338836dp)
+	getCellLayoutHeight(): 943.0px (359.2381dp)
+	getCellLayoutWidth(): 2073.0px (789.7143dp)

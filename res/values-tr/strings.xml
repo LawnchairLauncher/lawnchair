@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Bölünmüş ekran"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s uygulama bilgileri"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Uygulama çiftini kaydedin"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Widget\'ı taşımak için dokunup basılı tutun."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Widget\'ı taşımak veya özel işlemleri kullanmak için iki kez dokunup basılı tutun."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -99,6 +100,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Klasörün adı <xliff:g id="NAME">%1$s</xliff:g> olarak değiştirildi"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Klasör: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> öğe"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Klasör: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> veya daha fazla öğe"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"Uygulama çifti: <xliff:g id="APP1">%1$s</xliff:g> ve <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Duvar kağıdı ve stil"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Ana ekranı düzenleyin"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ana ekran ayarları"</string>
@@ -170,7 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"İş uygulamalarını duraklat"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Devam ettir"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtre"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"telefonunuzda arama yapmak"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Tabletinizde arama yapma"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Başarısız: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Gizli alan"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Gizli"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"Gizli Alan Ayarları"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Gizli Alanı Kilitleyin/Kilidini Açın"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Gizli Alana Geçiş"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Taşma"</string>
 </resources>

@@ -21,6 +21,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
+import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
+import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 import com.android.launcher3.tests.R as TestR
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
@@ -40,6 +42,7 @@ class CalculatedAllAppsSpecTest : AbstractDeviceProfileTest() {
     @Test
     fun normalPhone_copiesFromWorkspace() {
         val deviceSpec = deviceSpecs["phone"]!!
+        val aspectRatio = deviceSpec.naturalSize.first.toFloat() / deviceSpec.naturalSize.second
         initializeVarsForPhone(deviceSpec)
 
         val availableWidth = deviceSpec.naturalSize.first
@@ -48,14 +51,30 @@ class CalculatedAllAppsSpecTest : AbstractDeviceProfileTest() {
         val availableHeight = deviceSpec.naturalSize.second - deviceSpec.statusBarNaturalPx - 495
 
         val workspaceSpecs =
-            WorkspaceSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
-        val widthSpec = workspaceSpecs.getCalculatedWidthSpec(4, availableWidth)
-        val heightSpec = workspaceSpecs.getCalculatedHeightSpec(5, availableHeight)
+            ResponsiveSpecsProvider.create(
+                TestResourceHelper(context, TestR.xml.valid_workspace_file),
+                ResponsiveSpecType.Workspace
+            )
+        val widthSpec =
+            workspaceSpecs.getCalculatedSpec(aspectRatio, DimensionType.WIDTH, 4, availableWidth)
+        val heightSpec =
+            workspaceSpecs.getCalculatedSpec(aspectRatio, DimensionType.HEIGHT, 5, availableHeight)
 
         val allAppsSpecs =
-            AllAppsSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_all_apps_file))
+            ResponsiveSpecsProvider.create(
+                TestResourceHelper(context, TestR.xml.valid_all_apps_file),
+                ResponsiveSpecType.AllApps
+            )
 
-        with(allAppsSpecs.getCalculatedWidthSpec(4, availableWidth, widthSpec)) {
+        with(
+            allAppsSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.WIDTH,
+                4,
+                availableWidth,
+                widthSpec
+            )
+        ) {
             assertThat(availableSpace).isEqualTo(availableWidth)
             assertThat(cells).isEqualTo(4)
             assertThat(startPaddingPx).isEqualTo(widthSpec.startPaddingPx)
@@ -64,7 +83,15 @@ class CalculatedAllAppsSpecTest : AbstractDeviceProfileTest() {
             assertThat(cellSizePx).isEqualTo(widthSpec.cellSizePx)
         }
 
-        with(allAppsSpecs.getCalculatedHeightSpec(5, availableHeight, heightSpec)) {
+        with(
+            allAppsSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.HEIGHT,
+                5,
+                availableHeight,
+                heightSpec
+            )
+        ) {
             assertThat(availableSpace).isEqualTo(availableHeight)
             assertThat(cells).isEqualTo(5)
             assertThat(startPaddingPx).isEqualTo(0)

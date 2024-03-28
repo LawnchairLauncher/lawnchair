@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import android.graphics.Color;
 
@@ -25,7 +26,6 @@ import com.android.launcher3.R;
 
 import app.lawnchair.theme.color.ColorTokens;
 import com.android.launcher3.util.Themes;
-import com.android.quickstep.views.DesktopTaskView;
 
 /**
  * State to indicate we are about to launch a recent task. Note that this state
@@ -51,7 +51,7 @@ public class QuickSwitchState extends BackgroundAppState {
 
     @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+        if (isDesktopModeSupported()) {
             if (launcher.areFreeformTasksVisible()) {
                 // No scrim while freeform tasks are visible
                 return Color.TRANSPARENT;

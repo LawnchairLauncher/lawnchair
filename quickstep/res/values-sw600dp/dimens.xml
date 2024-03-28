@@ -33,6 +33,10 @@
     <dimen name="overview_page_spacing">36dp</dimen>
     <!--  The space to the left and to the right of the "Clear all" button  -->
     <dimen name="overview_grid_side_margin">64dp</dimen>
+    <!-- The top margin above the top row of tasks in grid only overview -->
+    <dimen name="overview_top_margin_grid_only">80dp</dimen>
+    <!-- The bottom margin above the bottom row of tasks in grid only overview -->
+    <dimen name="overview_bottom_margin_grid_only">80dp</dimen>
     <!--  Overview actions  -->
     <dimen name="overview_actions_top_margin">24dp</dimen>
 

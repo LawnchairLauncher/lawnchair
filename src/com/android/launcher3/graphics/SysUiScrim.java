@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Modifications copyright 2022, Lawnchair
  */
 package com.android.launcher3.graphics;
 
@@ -66,8 +64,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
         @Override
         public void onUserPresent() {
-            // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case
-            // where
+            // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
             // the user unlocked and the Launcher is not in the foreground.
             mAnimateScrimOnNextDraw = false;
         }
@@ -77,7 +74,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     private static final int ALPHA_MASK_BITMAP_WIDTH_DP = 2;
 
     private static final int BOTTOM_MASK_HEIGHT_DP = 200;
-    private static final int TOP_MASK_HEIGHT_DP = 100;
+    private static final int TOP_MASK_HEIGHT_DP = 70;
 
     private boolean mDrawTopScrim, mDrawBottomScrim;
 
@@ -93,7 +90,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     private final View mRoot;
     private final BaseDraggingActivity mActivity;
-    private boolean mHideSysUiScrim;
+    private final boolean mHideSysUiScrim;
     private boolean mSkipScrimAnimationForTest = false;
 
     private boolean mAnimateScrimOnNextDraw = false;
@@ -109,15 +106,13 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         mBottomMaskHeight = ResourceUtils.pxFromDp(BOTTOM_MASK_HEIGHT_DP, dm);
         mHideSysUiScrim = Themes.getAttrBoolean(view.getContext(), R.attr.isWorkspaceDarkText);
 
-        mTopMaskBitmap = mHideSysUiScrim ? null
-                : createDitheredAlphaMask(mTopMaskHeight,
-                        new int[] { 0x50FFFFFF, 0x0AFFFFFF, 0x00FFFFFF },
-                        new float[] { 0f, 0.7f, 1f });
+        mTopMaskBitmap = mHideSysUiScrim ? null : createDitheredAlphaMask(mTopMaskHeight,
+                new int[]{0x3DFFFFFF, 0x0AFFFFFF, 0x00FFFFFF},
+                new float[]{0f, 0.7f, 1f});
         mTopMaskPaint.setColor(0xFF222222);
-        mBottomMaskBitmap = mHideSysUiScrim ? null
-                : createDitheredAlphaMask(mBottomMaskHeight,
-                        new int[] { 0x00FFFFFF, 0x2FFFFFFF },
-                        new float[] { 0f, 1f });
+        mBottomMaskBitmap = mHideSysUiScrim ? null : createDitheredAlphaMask(mBottomMaskHeight,
+                new int[]{0x00FFFFFF, 0x2FFFFFFF},
+                new float[]{0f, 1f});
 
         if (!KEYGUARD_ANIMATION.get() && !mHideSysUiScrim) {
             view.addOnAttachStateChangeListener(this);
@@ -167,8 +162,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     }
 
     /**
-     * Returns the sysui multiplier property for controlling fade in/out of the
-     * scrim
+     * Returns the sysui multiplier property for controlling fade in/out of the scrim
      */
     public AnimatedFloat getSysUIMultiplier() {
         return mSysUiAnimMultiplier;
@@ -184,10 +178,8 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     /**
      * Determines whether to draw the top and/or bottom scrim based on new insets.
      *
-     * In order for the bottom scrim to be drawn this 3 condition should be meet at
-     * the same time:
-     * the device is in 3 button navigation, the taskbar is not present and the
-     * Hotseat is
+     * In order for the bottom scrim to be drawn this 3 condition should be meet at the same time:
+     * the device is in 3 button navigation, the taskbar is not present and the Hotseat is
      * horizontal
      */
     public void onInsetsChanged(Rect insets) {
@@ -232,8 +224,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     private void reapplySysUiAlphaNoInvalidate() {
         float factor = mSysUiProgress.value * mSysUiAnimMultiplier.value;
-        if (mSkipScrimAnimationForTest)
-            factor = 1f;
+        if (mSkipScrimAnimationForTest) factor = 1f;
         mBottomMaskPaint.setAlpha(Math.round(MAX_SYSUI_SCRIM_ALPHA * factor));
         mTopMaskPaint.setAlpha(Math.round(MAX_SYSUI_SCRIM_ALPHA * factor));
     }

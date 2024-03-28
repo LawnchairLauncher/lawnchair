@@ -67,6 +67,7 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
@@ -155,20 +156,21 @@ public class FallbackSwipeHandler extends
             return new FallbackPipToHomeAnimationFactory();
         }
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
-        startHomeIntent(mActiveAnimationFactory, runningTaskTarget);
+        startHomeIntent(mActiveAnimationFactory, runningTaskTarget, "FallbackSwipeHandler-home");
         return mActiveAnimationFactory;
     }
 
     private void startHomeIntent(
             @Nullable FallbackHomeAnimationFactory gestureContractAnimationFactory,
-            @Nullable RemoteAnimationTarget runningTaskTarget) {
+            @Nullable RemoteAnimationTarget runningTaskTarget,
+            @NonNull String reason) {
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());
         var runningTask = TopTaskTracker.INSTANCE.get(mContext).getCachedTopTask(true);
         if (gestureContractAnimationFactory != null && runningTaskTarget != null && runningTask.getTaskId() == runningTaskTarget.taskId) {
             gestureContractAnimationFactory.addGestureContract(intent, runningTask.mAllCachedTasks.get(0));
         }
-        startHomeIntentSafely(mContext, intent, options.toBundle());
+        startHomeIntentSafely(mContext, intent, options.toBundle(), reason);
     }
 
     @Override
@@ -190,8 +192,8 @@ public class FallbackSwipeHandler extends
             // the PiP task appearing.
             recentsCallback = () -> {
                 callback.run();
-                startHomeIntent(
-                        null /* gestureContractAnimationFactory */, null /* runningTaskTarget */);
+                startHomeIntent(null /* gestureContractAnimationFactory */,
+                        null /* runningTaskTarget */, "FallbackSwipeHandler-resumeLauncher");
             };
         } else {
             recentsCallback = callback;
