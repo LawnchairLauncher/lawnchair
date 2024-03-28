@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
+import androidx.annotation.Nullable;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
@@ -166,6 +167,8 @@ public class AllAppsTransitionController
     private final Launcher mLauncher;
     private final AnimatedFloat mAllAppScale = new AnimatedFloat(this::onScaleProgressChanged);
     private final int mNavScrimFlag;
+
+    @Nullable private Animator.AnimatorListener mAllAppsSearchBackAnimationListener;
 
     private boolean mIsVerticalLayout;
 
@@ -312,11 +315,25 @@ public class AllAppsTransitionController
         }
     }
 
-    /** Animate all apps view to 1f scale. */
+    /** Set {@link Animator.AnimatorListener} for scaling all apps scale to 1 animation. */
+    public void setAllAppsSearchBackAnimationListener(Animator.AnimatorListener listener) {
+        mAllAppsSearchBackAnimationListener = listener;
+    }
+
+    /**
+     * Animate all apps view to 1f scale. This is called when backing (exiting) from all apps
+     * search view to all apps view.
+     */
     public void animateAllAppsToNoScale() {
-        mAllAppScale.animateToValue(1f)
-                .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS)
-                .start();
+        if (mAllAppScale.isAnimating()) {
+            return;
+        }
+        Animator animator = mAllAppScale.animateToValue(1f)
+                .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS);
+        if (mAllAppsSearchBackAnimationListener != null) {
+            animator.addListener(mAllAppsSearchBackAnimationListener);
+        }
+        animator.start();
     }
 
     /**

@@ -85,6 +85,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.recyclerview.AllAppsRecyclerViewPool;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
@@ -1364,6 +1365,18 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     public void setTranslationY(float translationY) {
         super.setTranslationY(translationY);
         invalidateHeader();
+    }
+
+    /**
+     * Set {@link Animator.AnimatorListener} on {@link mAllAppsTransitionController} to observe
+     * animation of backing out of all apps search view to all apps view.
+     */
+    public void setAllAppsSearchBackAnimatorListener(Animator.AnimatorListener listener) {
+        Preconditions.assertNotNull(mAllAppsTransitionController);
+        if (mAllAppsTransitionController == null) {
+            return;
+        }
+        mAllAppsTransitionController.setAllAppsSearchBackAnimationListener(listener);
     }
 
     public void setScrimView(ScrimView scrimView) {

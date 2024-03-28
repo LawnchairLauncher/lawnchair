@@ -68,10 +68,13 @@ public class AllAppsState extends LauncherState {
     @Override
     public void onBackInvoked(Launcher launcher) {
         // In predictive back swipe, onBackInvoked() will be called after onBackStarted().
-        // Because the 2nd InteractionJankMonitor.begin() will be ignore within timeout, it's safe
-        // to call InteractionJankMonitorWrapper.begin here.
-        InteractionJankMonitorWrapper.begin(launcher.getAppsView(),
-                Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK);
+        // In 3 button mode, onBackStarted() is not called but onBackInvoked() will be called.
+        // Thus In onBackInvoked(), we should only begin instrumenting if we didn't call
+        // onBackStarted() to start instrumenting CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK.
+        if (!InteractionJankMonitorWrapper.isInstrumenting(Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK)) {
+            InteractionJankMonitorWrapper.begin(
+                    launcher.getAppsView(), Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK);
+        }
         super.onBackInvoked(launcher);
     }
 
