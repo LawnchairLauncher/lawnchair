@@ -39,6 +39,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:background="?android:attr/selectableItemBackground"
+        android:longClickable="false"
         android:textStyle="bold"
         android:textSize="@dimen/snackbar_max_text_size"
         android:textColor="?android:attr/colorAccent"
