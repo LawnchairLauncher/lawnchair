@@ -86,6 +86,7 @@ android_library {
         "mockito-target-extended-minus-junit4",
         "launcher_log_protos_lite",
         "truth",
+        "kotlinx_coroutines_test",
         "platform-test-rules",
         "testables",
         "com_android_launcher3_flags_lib",
