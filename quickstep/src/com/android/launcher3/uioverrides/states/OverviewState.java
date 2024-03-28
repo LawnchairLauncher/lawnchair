@@ -199,7 +199,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public void onBackPressed(Launcher launcher) {
+    public void onBackInvoked(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
         TaskView taskView = recentsView.getRunningTaskView();
         if (taskView != null) {
@@ -209,7 +209,7 @@ public class OverviewState extends LauncherState {
                 recentsView.snapToPage(recentsView.indexOfChild(taskView));
             }
         } else {
-            super.onBackPressed(launcher);
+            super.onBackInvoked(launcher);
         }
     }
 

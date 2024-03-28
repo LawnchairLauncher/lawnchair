@@ -28,7 +28,6 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.WORKSPACE_SIZE
 import com.android.launcher3.LauncherSettings.Favorites.*
-import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.model.GridSizeMigrationUtil.DbReader
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils
@@ -98,10 +97,7 @@ class GridSizeMigrationUtilTest {
         modelHelper.destroy()
     }
 
-    /**
-     * Old migration logic, should be modified once [FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC] is not
-     * needed anymore
-     */
+    /** Old migration logic, should be modified once is not needed anymore */
     @Test
     @Throws(Exception::class)
     fun testMigration() {
@@ -208,10 +204,7 @@ class GridSizeMigrationUtilTest {
         assertThat(locMap[testPackage9]).isEqualTo(Point(0, 2))
     }
 
-    /**
-     * Old migration logic, should be modified once [FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC] is not
-     * needed anymore
-     */
+    /** Old migration logic, should be modified once is not needed anymore */
     @Test
     @Throws(Exception::class)
     fun testMigrationBackAndForth() {
@@ -603,68 +596,6 @@ class GridSizeMigrationUtilTest {
         assertThat(c.getString(intentIndex)).contains(testPackage4)
 
         c.close()
-    }
-
-    /**
-     * Migrating from a smaller grid to a large one should keep the pages if the column difference
-     * is less than 2
-     */
-    @Test
-    @Throws(Exception::class)
-    fun migrateFromSmallerGridSmallDifference() {
-        enableNewMigrationLogic("4,4")
-
-        // Setup src grid
-        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 2, testPackage1, 5, TMP_TABLE)
-        addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 3, testPackage2, 6, TMP_TABLE)
-        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 3, 1, testPackage3, 7, TMP_TABLE)
-        addItem(ITEM_TYPE_APPLICATION, 1, CONTAINER_DESKTOP, 3, 2, testPackage4, 8, TMP_TABLE)
-        addItem(ITEM_TYPE_APPLICATION, 2, CONTAINER_DESKTOP, 3, 3, testPackage5, 9, TMP_TABLE)
-
-        idp.numDatabaseHotseatIcons = 4
-        idp.numColumns = 6
-        idp.numRows = 5
-
-        val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
-        val destReader = DbReader(db, TABLE_NAME, context, validPackages)
-        GridSizeMigrationUtil.migrate(
-            dbHelper,
-            srcReader,
-            destReader,
-            idp.numDatabaseHotseatIcons,
-            Point(idp.numColumns, idp.numRows),
-            DeviceGridState(context),
-            DeviceGridState(idp)
-        )
-
-        // Get workspace items
-        val c =
-            db.query(
-                TABLE_NAME,
-                arrayOf(INTENT, SCREEN),
-                "container=$CONTAINER_DESKTOP",
-                null,
-                null,
-                null,
-                null
-            )
-                ?: throw IllegalStateException()
-        val intentIndex = c.getColumnIndex(INTENT)
-        val screenIndex = c.getColumnIndex(SCREEN)
-
-        // Get in which screen the icon is
-        val locMap = HashMap<String?, Int>()
-        while (c.moveToNext()) {
-            locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
-                c.getInt(screenIndex)
-        }
-        c.close()
-        assertThat(locMap.size).isEqualTo(5)
-        assertThat(locMap[testPackage1]).isEqualTo(0)
-        assertThat(locMap[testPackage2]).isEqualTo(0)
-        assertThat(locMap[testPackage3]).isEqualTo(1)
-        assertThat(locMap[testPackage4]).isEqualTo(1)
-        assertThat(locMap[testPackage5]).isEqualTo(2)
     }
 
     /**

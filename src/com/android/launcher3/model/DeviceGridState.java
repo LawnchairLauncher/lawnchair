@@ -156,11 +156,11 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     }
 
     public Integer getColumns() {
-        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(0)));
+        return Integer.parseInt(String.valueOf(mGridSizeString.split(",")[0]));
     }
 
     public Integer getRows() {
-        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(2)));
+        return Integer.parseInt(String.valueOf(mGridSizeString.split(",")[1]));
     }
 
     @Override

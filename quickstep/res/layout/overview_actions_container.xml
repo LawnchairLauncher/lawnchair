@@ -23,6 +23,7 @@
         android:id="@+id/action_buttons"
         android:layout_width="match_parent"
         android:layout_height="@dimen/overview_actions_height"
+        android:layout_gravity="bottom"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 

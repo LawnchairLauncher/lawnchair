@@ -21,6 +21,13 @@ import java.util.Random
 
 /** Generates a random CellLayoutBoard. */
 open class RandomBoardGenerator(generator: Random) : DeterministicRandomGenerator(generator) {
+
+    companion object {
+        // This is the max number of widgets because we encode the widgets as letters A-Z and we
+        // already have some of those letter used by other things so 22 is a safe number
+        val MAX_NUMBER_OF_WIDGETS = 22
+    }
+
     /**
      * @param remainingEmptySpaces the maximum number of spaces we will fill with icons and widgets
      *   meaning that if the number is 100 we will try to fill the board with at most 100 spaces
@@ -33,9 +40,9 @@ open class RandomBoardGenerator(generator: Random) : DeterministicRandomGenerato
     }
 
     protected fun fillBoard(
-            board: CellLayoutBoard,
-            area: Rect,
-            remainingEmptySpacesArg: Int
+        board: CellLayoutBoard,
+        area: Rect,
+        remainingEmptySpacesArg: Int
     ): CellLayoutBoard {
         var remainingEmptySpaces = remainingEmptySpacesArg
         if (area.height() * area.width() <= 0) return board
@@ -45,10 +52,17 @@ open class RandomBoardGenerator(generator: Random) : DeterministicRandomGenerato
         val y = area.top + getRandom(0, area.height() - height)
         if (remainingEmptySpaces > 0) {
             remainingEmptySpaces -= width * height
-        } else if (board.widgets.size <= 22 && width * height > 1) {
+        }
+
+        if (board.widgets.size <= MAX_NUMBER_OF_WIDGETS && width * height > 1) {
             board.addWidget(x, y, width, height)
         } else {
             board.addIcon(x, y)
+        }
+
+        if (remainingEmptySpaces < 0) {
+            // optimization, no need to keep going
+            return board
         }
         fillBoard(board, Rect(area.left, area.top, area.right, y), remainingEmptySpaces)
         fillBoard(board, Rect(area.left, y, x, area.bottom), remainingEmptySpaces)

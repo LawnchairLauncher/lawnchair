@@ -223,19 +223,13 @@ public class GridSizeMigrationUtil {
             screens.add(screenId);
         }
 
-        boolean preservePages = false;
-        if (screens.isEmpty() && FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC.get()) {
-            preservePages = destDeviceState.compareTo(srcDeviceState) >= 0
-                    && destDeviceState.getColumns() - srcDeviceState.getColumns() <= 2;
-        }
-
         // Then we place the items on the screens
         for (int screenId : screens) {
             if (DEBUG) {
                 Log.d(TAG, "Migrating " + screenId);
             }
             solveGridPlacement(helper, srcReader,
-                    destReader, screenId, trgX, trgY, workspaceToBeAdded, false);
+                    destReader, screenId, trgX, trgY, workspaceToBeAdded);
             if (workspaceToBeAdded.isEmpty()) {
                 break;
             }
@@ -245,8 +239,8 @@ public class GridSizeMigrationUtil {
         // any of the screens, in this case we add them to new screens until all of them are placed.
         int screenId = destReader.mLastScreenId + 1;
         while (!workspaceToBeAdded.isEmpty()) {
-            solveGridPlacement(helper, srcReader,
-                    destReader, screenId, trgX, trgY, workspaceToBeAdded, preservePages);
+            solveGridPlacement(helper, srcReader, destReader, screenId, trgX, trgY,
+                    workspaceToBeAdded);
             screenId++;
         }
 
@@ -348,7 +342,7 @@ public class GridSizeMigrationUtil {
     private static void solveGridPlacement(@NonNull final DatabaseHelper helper,
             @NonNull final DbReader srcReader, @NonNull final DbReader destReader,
             final int screenId, final int trgX, final int trgY,
-            @NonNull final List<DbEntry> sortedItemsToPlace, final boolean matchingScreenIdOnly) {
+            @NonNull final List<DbEntry> sortedItemsToPlace) {
         final GridOccupancy occupied = new GridOccupancy(trgX, trgY);
         final Point trg = new Point(trgX, trgY);
         final Point next = new Point(0, screenId == 0
@@ -366,8 +360,6 @@ public class GridSizeMigrationUtil {
         Iterator<DbEntry> iterator = sortedItemsToPlace.iterator();
         while (iterator.hasNext()) {
             final DbEntry entry = iterator.next();
-            if (matchingScreenIdOnly && entry.screenId < screenId) continue;
-            if (matchingScreenIdOnly && entry.screenId > screenId) break;
             if (entry.minSpanX > trgX || entry.minSpanY > trgY) {
                 iterator.remove();
                 continue;
@@ -435,7 +427,8 @@ public class GridSizeMigrationUtil {
         }
     }
 
-    protected static class DbReader {
+    @VisibleForTesting
+    public static class DbReader {
 
         private final SQLiteDatabase mDb;
         private final String mTableName;
@@ -446,7 +439,7 @@ public class GridSizeMigrationUtil {
         private final Map<Integer, ArrayList<DbEntry>> mWorkspaceEntriesByScreenId =
                 new ArrayMap<>();
 
-        DbReader(SQLiteDatabase db, String tableName, Context context,
+        public DbReader(SQLiteDatabase db, String tableName, Context context,
                 Set<String> validPackages) {
             mDb = db;
             mTableName = tableName;

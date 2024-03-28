@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -43,8 +42,6 @@ import com.android.quickstep.util.LayoutUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * View for showing action buttons in Overview
@@ -297,17 +294,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         int desiredVisibility = mSplitButtonHiddenFlags == 0 ? VISIBLE : GONE;
         mSplitButton.setVisibility(desiredVisibility);
         findViewById(R.id.action_split_space).setVisibility(desiredVisibility);
-
-        String callStack = Arrays.stream(
-                        Log.getStackTraceString(new Exception("thread stacktrace"))
-                                .split("\\n"))
-                .limit(5)
-                .skip(1) // Removes the line "java.lang.Exception: thread stacktrace"
-                .collect(Collectors.joining("\n"));
-        Log.d("b/321291049", "updateSplitButtonHiddenFlags called with flag: " + flag
-                + " enabled: " + enable
-                + " visibility: " + desiredVisibility
-                + " partial trace: \n" + callStack);
     }
 
     /**
@@ -407,7 +393,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 ? R.drawable.ic_split_horizontal
                 : R.drawable.ic_split_vertical;
         mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(splitIconRes, 0, 0, 0);
+
+        int appPairIconRes = dp.isLeftRightSplit
+                ? R.drawable.ic_save_app_pair_left_right
+                : R.drawable.ic_save_app_pair_up_down;
         mSaveAppPairButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_save_app_pair, 0, 0, 0);
+                appPairIconRes, 0, 0, 0);
     }
 }
