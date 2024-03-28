@@ -55,9 +55,9 @@
     <string name="transparent_background_icons">透明的带主题图标</string>
     <string name="transparent_background_icons_description">在带主题的图标上使用透明背景</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">允许主屏幕旋转</string>
-    <string name="home_screen_rotaton_description">当设备旋转时不保持竖屏</string>
-    <string name="font_label">字体（实验性功能）</string>
+    <string name="home_screen_rotation_label">主屏幕旋转</string>
+    <string name="home_screen_rotation_description">当设备旋转时</string>
+    <string name="font_label">字体 (实验性功能)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">图标样式</string>
     <string name="icon_shape_label">图标形状</string>

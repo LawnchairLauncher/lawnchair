@@ -32,8 +32,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -245,7 +243,7 @@ fun About() {
             Text(
                 text = BuildConfig.VERSION_DISPLAY_NAME,
                 style = MaterialTheme.typography.bodyLarge,
-                color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.combinedClickable(
                     onClick = {},
                     onLongClick = {

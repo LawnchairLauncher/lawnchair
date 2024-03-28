@@ -19,6 +19,8 @@ package app.lawnchair.ui.placeholder
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -66,8 +68,9 @@ interface PlaceholderHighlight {
  * @param highlightColor the color of the highlight which is faded in/out.
  * @param animationSpec the [AnimationSpec] to configure the animation.
  */
+@Composable
 fun PlaceholderHighlight.Companion.fade(
-    highlightColor: Color,
+    highlightColor: Color = fadeHighlightColor(),
     animationSpec: InfiniteRepeatableSpec<Float> = PlaceholderDefaults.fadeAnimationSpec,
 ): PlaceholderHighlight = Fade(
     highlightColor = highlightColor,
@@ -95,6 +98,20 @@ fun PlaceholderHighlight.Companion.shimmer(
     animationSpec = animationSpec,
     progressForMaxAlpha = progressForMaxAlpha,
 )
+
+/**
+ * Returns the value used as the the `highlightColor` parameter value of
+ * [PlaceholderHighlight.Companion.fade].
+ *
+ * @param backgroundColor The current background color of the layout. Defaults to
+ * `MaterialTheme.colors.surface`.
+ * @param alpha The alpha component to set on [backgroundColor]. Defaults to `0.3f`.
+ */
+@Composable
+fun fadeHighlightColor(
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    alpha: Float = 0.3f,
+): Color = backgroundColor.copy(alpha = alpha)
 
 private data class Fade(
     private val highlightColor: Color,

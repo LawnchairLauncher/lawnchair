@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Përdor sfond transfarent në ikonat me temë</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rrotullimi i ekranit</string>
-    <string name="home_screen_rotaton_description">Kur pajisja rrotullohet.</string>
+    <string name="home_screen_rotation_description">Kur pajisja rrotullohet.</string>
     <string name="font_label">Fonte (Eksperimentale)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Sili i ikonave</string>

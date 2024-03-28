@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">השתמש ברקע שקוף עבור סמלי סגנון</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">סיבוב מסך הבית</string>
-    <string name="home_screen_rotaton_description">כאשר המכשיר מסובב.</string>
+    <string name="home_screen_rotation_description">כאשר המכשיר מסובב.</string>
     <string name="font_label">פונט (ניסיוני)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">סגנון אייקון</string>

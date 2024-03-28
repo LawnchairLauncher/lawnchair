@@ -56,7 +56,7 @@
     <string name="smartspace_mode_selection">Uchaguzi wa mtoaji Kwa Mtazamo</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Mzunguko wa Skrini ya Nyumbani</string>
-    <string name="home_screen_rotaton_description">Kifaa kikizungushwa.</string>
+    <string name="home_screen_rotation_description">Kifaa kikizungushwa.</string>
     <string name="font_label">Fonti (ya Majaribio)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Mtindo wa ikoni</string>

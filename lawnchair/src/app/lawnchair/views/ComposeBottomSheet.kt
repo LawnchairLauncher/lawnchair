@@ -17,10 +17,8 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.LocalContentColor as M3LocalContentColor
-import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -155,7 +153,8 @@ class ComposeBottomSheet<T>(context: Context) :
 
     @Composable
     private fun SystemUi(setStatusBar: Boolean = true, setNavBar: Boolean = true) {
-        val useDarkIcons = MaterialTheme.colors.isLight
+        // todo change to isLight
+        val useDarkIcons = true
 
         SideEffect {
             var flags = 0
@@ -188,8 +187,8 @@ class ComposeBottomSheet<T>(context: Context) :
         LawnchairTheme {
             ProvideLifecycleState {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colors.onSurface,
-                    M3LocalContentColor provides Material3Theme.colorScheme.onSurface,
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
                 ) {
                     content()
                 }
@@ -214,7 +213,7 @@ class ComposeBottomSheet<T>(context: Context) :
             modifier = Modifier
                 .fillMaxWidth(),
             shape = backgroundShape,
-            color = Material3Theme.colorScheme.background,
+            color = MaterialTheme.colorScheme.background,
         ) {
             Box(
                 modifier = Modifier

@@ -12,19 +12,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme as Material2Theme
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -37,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
@@ -50,11 +44,9 @@ import app.lawnchair.icons.IconPackProvider
 import app.lawnchair.icons.IconPickerItem
 import app.lawnchair.icons.filter
 import app.lawnchair.ui.OverflowMenu
-import app.lawnchair.ui.preferences.components.layout.MutablePaddingValues
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupDescription
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceSearchScaffold
-import app.lawnchair.ui.preferences.components.layout.SearchTextField
 import app.lawnchair.ui.preferences.components.layout.verticalGridItems
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.util.LazyGridLayout
@@ -62,7 +54,6 @@ import app.lawnchair.ui.util.resultSender
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -117,18 +108,12 @@ fun IconPickerPreference(
     }
 
     PreferenceSearchScaffold(
-        searchInput = {
-            SearchTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                modifier = Modifier.fillMaxSize(),
-                placeholder = {
-                    Text(
-                        text = iconPack.label,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
-                    )
-                },
-                singleLine = true,
+        value = searchQuery,
+        onValueChange = { searchQuery = it },
+        placeholder = {
+            Text(
+                text = iconPack.label,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
         actions = {
@@ -140,36 +125,20 @@ fun IconPickerPreference(
                             .setComponent(pickerComponent)
                         pickerLauncher.launch(intent)
                         hideMenu()
-                    }) {
+                    }, text = {
                         Text(text = stringResource(id = R.string.icon_pack_external_picker))
-                    }
+                    })
                 }
             }
         },
     ) {
-        val scaffoldPadding = LocalScaffoldPadding.current
-        val innerPadding = remember { MutablePaddingValues() }
-        val layoutDirection = LocalLayoutDirection.current
-        innerPadding.left = scaffoldPadding.calculateLeftPadding(layoutDirection)
-        innerPadding.right = scaffoldPadding.calculateRightPadding(layoutDirection)
-        innerPadding.bottom = scaffoldPadding.calculateBottomPadding()
+        val scaffoldPadding = it
 
-        val topPadding = scaffoldPadding.calculateTopPadding()
-
-        CompositionLocalProvider(LocalScaffoldPadding provides innerPadding) {
-            IconPickerGrid(
-                iconPack = iconPack,
-                searchQuery = searchQuery,
-                onClickItem = onClickItem,
-                modifier = Modifier
-                    .padding(top = topPadding),
-            )
-        }
-        Spacer(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxWidth()
-                .height(topPadding),
+        IconPickerGrid(
+            scaffoldPadding = scaffoldPadding,
+            iconPack = iconPack,
+            searchQuery = searchQuery,
+            onClickItem = onClickItem,
         )
     }
 }
@@ -177,6 +146,7 @@ fun IconPickerPreference(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun IconPickerGrid(
+    scaffoldPadding: PaddingValues,
     iconPack: IconPack,
     searchQuery: String,
     onClickItem: (item: IconPickerItem) -> Unit,
@@ -206,7 +176,7 @@ fun IconPickerGrid(
         )
     }
     val numColumns by gridLayout.numColumns
-    PreferenceLazyColumn(modifier = modifier.then(gridLayout.onSizeChanged())) {
+    PreferenceLazyColumn(scaffoldPadding, modifier = modifier.then(gridLayout.onSizeChanged())) {
         if (numColumns != 0) {
             filteredCategories.forEach { category ->
                 stickyHeader {
@@ -259,7 +229,7 @@ fun IconPreview(
     }
     Box(
         modifier = Modifier
-            .clip(Material2Theme.shapes.small)
+            .clip(MaterialTheme.shapes.small)
             .clickable(onClick = onClick)
             .padding(8.dp),
     ) {

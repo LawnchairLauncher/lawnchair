@@ -4,9 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.bottomSheetHandler
 
@@ -73,7 +73,7 @@ fun TextPreferenceDialog(
     onConfirm: (String) -> Unit,
 ) {
     var value by remember { mutableStateOf(initialValue) }
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
         title = { Text(text = title) },
         text = {
             OutlinedTextField(

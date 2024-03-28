@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">ഹോം സ്ക്രീൻ റൊട്ടേഷൻ</string>
-    <string name="home_screen_rotaton_description">ഉപകരണം കറക്ക്‌ബോൾ.</string>
+    <string name="home_screen_rotation_description">ഉപകരണം കറക്ക്‌ബോൾ.</string>
     <string name="font_label">ഫോണ്ട് (പരീക്ഷണാത്മക)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">ഐക്കൺ ശൈലി</string>

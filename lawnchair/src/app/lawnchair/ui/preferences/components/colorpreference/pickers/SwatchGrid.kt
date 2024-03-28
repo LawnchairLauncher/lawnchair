@@ -13,10 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
+import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 import kotlinx.collections.immutable.ImmutableList
 
@@ -92,10 +93,10 @@ fun <T> ColorSwatch(
     selected: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val color = if (MaterialTheme.colors.isLight) {
-        entry.lightColor(LocalContext.current)
-    } else {
+    val color = if (isSelectedThemeDark) {
         entry.darkColor(LocalContext.current)
+    } else {
+        entry.lightColor(LocalContext.current)
     }
 
     Box(
@@ -112,7 +113,7 @@ fun <T> ColorSwatch(
                 Icon(
                     imageVector = Icons.Rounded.Done,
                     contentDescription = null,
-                    tint = MaterialTheme.colors.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         }

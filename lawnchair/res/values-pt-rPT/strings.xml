@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação de Ecrã Inicial</string>
-    <string name="home_screen_rotaton_description">Quando o dispositivo é rodado.</string>
+    <string name="home_screen_rotation_description">Quando o dispositivo é rodado.</string>
     <string name="font_label">Fonte (Experimental)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Estilo de Ícones</string>

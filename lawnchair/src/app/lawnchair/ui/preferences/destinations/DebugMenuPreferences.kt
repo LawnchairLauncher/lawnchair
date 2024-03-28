@@ -11,7 +11,6 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.FontPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -37,7 +36,6 @@ fun DebugMenuPreferences() {
     val flags = remember { prefs.debugFlags }
     val flags2 = remember { prefs2.debugFlags }
     val textFlags = remember { prefs2.textFlags }
-    val fontFlags = remember { prefs.fontFlags }
     val context = LocalContext.current
 
     val enableDebug = prefs.enableDebugMenu.getAdapter()
@@ -81,12 +79,6 @@ fun DebugMenuPreferences() {
                         label = it.key.name,
                     )
                 }
-                fontFlags.forEach {
-                    FontPreference(
-                        fontPref = it,
-                        label = it.key,
-                    )
-                }
             }
         }
     }
@@ -106,12 +98,4 @@ private val PreferenceManager.debugFlags
         searchResultPixelTips,
         searchResultSettings,
         ignoreFeedWhitelist,
-    )
-
-private val PreferenceManager.fontFlags
-    get() = listOf(
-        fontHeading,
-        fontHeadingMedium,
-        fontBody,
-        fontBodyMedium,
     )

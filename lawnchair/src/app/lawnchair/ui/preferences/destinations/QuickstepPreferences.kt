@@ -1,7 +1,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -109,7 +109,7 @@ fun QuickSwitchIgnoredWarning() {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
-        color = androidx.compose.material3.MaterialTheme.colorScheme.errorContainer,
+        color = MaterialTheme.colorScheme.errorContainer,
     ) {
         WarningPreference(
             text = stringResource(id = R.string.quickswitch_ignored_warning),

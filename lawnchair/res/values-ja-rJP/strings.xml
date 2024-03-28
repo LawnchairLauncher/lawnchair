@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">テーマアイコンの背景を透明にします</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
-    <string name="home_screen_rotaton_description">デバイスを回転させた時</string>
+    <string name="home_screen_rotation_description">デバイスを回転させた時</string>
     <string name="font_label">フォント (実験的)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">アイコンのスタイル</string>

@@ -3,8 +3,6 @@ package app.lawnchair.ui.preferences.components.controls
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,7 +28,7 @@ fun MainSwitchPreference(
 
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
-        shape = androidx.compose.material.MaterialTheme.shapes.large,
+        shape = MaterialTheme.shapes.large,
         color = if (checked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
     ) {
         SwitchPreference(
@@ -47,7 +45,7 @@ fun MainSwitchPreference(
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

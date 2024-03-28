@@ -24,9 +24,11 @@ import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -42,6 +44,7 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -100,10 +103,13 @@ object PlaceholderDefaults {
  * @param contentFadeTransitionSpec The transition spec to use when fading the content
  * on/off screen. The boolean parameter defined for the transition is [visible].
  */
+// TODO: need to migrate to Modifier.Node, see https://mrmans0n.github.io/compose-rules/rules/#avoid-modifier-extension-factory-functions
+@Suppress("ktlint:compose:modifier-composable-check")
+@Composable
 fun Modifier.placeholder(
     visible: Boolean,
-    color: Color,
-    shape: Shape = RectangleShape,
+    color: Color = color(),
+    shape: Shape = MaterialTheme.shapes.small,
     highlight: PlaceholderHighlight? = null,
     placeholderFadeTransitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Float> = { spring() },
     contentFadeTransitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Float> = { spring() },
@@ -129,7 +135,7 @@ fun Modifier.placeholder(
     val transitionState = remember { MutableTransitionState(visible) }.apply {
         targetState = visible
     }
-    val transition = updateTransition(transitionState, "placeholder_crossfade")
+    val transition = rememberTransition(transitionState, "placeholder_crossfade")
 
     val placeholderAlpha by transition.animateFloat(
         transitionSpec = placeholderFadeTransitionSpec,
@@ -206,6 +212,22 @@ fun Modifier.placeholder(
         }
     }
 }
+
+/**
+ * Returns the value used as the the `color` parameter value on [Modifier.placeholder].
+ *
+ * @param backgroundColor The current background color of the layout. Defaults to
+ * `MaterialTheme.colors.surface`.
+ * @param contentColor The content color to be used on top of [backgroundColor].
+ * @param contentAlpha The alpha component to set on [contentColor] when compositing the color
+ * on top of [backgroundColor]. Defaults to `0.1f`.
+ */
+@Composable
+private fun color(
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = contentColorFor(backgroundColor),
+    contentAlpha: Float = 0.1f,
+): Color = contentColor.copy(contentAlpha).compositeOver(backgroundColor)
 
 private fun DrawScope.drawPlaceholder(
     shape: Shape,

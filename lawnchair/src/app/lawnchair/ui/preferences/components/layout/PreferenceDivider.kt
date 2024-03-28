@@ -1,7 +1,7 @@
 package app.lawnchair.ui.preferences.components.layout
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -14,7 +14,7 @@ fun PreferenceDivider(
     startIndent: Dp = 0.dp,
     endIndent: Dp = 0.dp,
 ) {
-    Divider(
+    HorizontalDivider(
         modifier = modifier
             .padding(start = startIndent + 16.dp, end = endIndent + 16.dp),
         color = dividerColor(),

@@ -20,11 +20,16 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/**
+ * Creates a simple loading animation with [Crossfade] and [CircularProgressIndicator].
+ * @param isLoading Defines whether the content is still loading or not
+ * @param content Content to appear or disappear based on the value of [isLoading]
+ */
 @Composable
 fun LoadingScreen(
     isLoading: Boolean,
@@ -45,6 +50,11 @@ fun LoadingScreen(
     }
 }
 
+/**
+ * Creates a simple loading animation with [Crossfade] and [CircularProgressIndicator]. [obj] will be passed as a parameter of [content].
+ * @param obj A key representing the content object
+ * @param content Content to appear or disappear based on the value of [obj].
+ */
 @Composable
 fun <T> LoadingScreen(
     obj: T?,

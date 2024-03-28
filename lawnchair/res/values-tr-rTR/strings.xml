@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Temalı ikonlarda saydam arkaplan kullan</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
-    <string name="home_screen_rotaton_description">Cihaz döndürüldüğü zaman.</string>
+    <string name="home_screen_rotation_description">Cihaz döndürüldüğü zaman.</string>
     <string name="font_label">Yazı Tipi (Deneysel)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Simge Şekli</string>

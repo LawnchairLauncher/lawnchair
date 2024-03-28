@@ -22,7 +22,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.qsb.providers.QsbSearchProviderType
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -200,7 +200,7 @@ private fun SponsorDisclaimer(
     sponsor: String,
     onAcknowledge: () -> Unit,
 ) {
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
         buttons = {
             OutlinedButton(onClick = onAcknowledge) {
                 Text(text = stringResource(id = android.R.string.ok))
