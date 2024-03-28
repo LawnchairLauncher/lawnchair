@@ -60,7 +60,7 @@ public class OverviewModalTaskState extends OverviewState {
     }
 
     @Override
-    public void onBackPressed(Launcher launcher) {
+    public void onBackInvoked(Launcher launcher) {
         launcher.getStateManager().goToState(LauncherState.OVERVIEW);
     }
 

@@ -661,6 +661,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         // #5 state handler
         return new OnBackAnimationCallback() {
             @Override
+            public void onBackStarted(BackEvent backEvent) {
+                Launcher.this.onBackStarted();
+            }
+
+            @Override
             public void onBackInvoked() {
                 onStateBack();
             }
@@ -2063,8 +2068,12 @@ public class Launcher extends StatefulActivity<LauncherState>
         getOnBackAnimationCallback().onBackInvoked();
     }
 
+    protected void onBackStarted() {
+        mStateManager.getState().onBackStarted(this);
+    }
+
     protected void onStateBack() {
-        mStateManager.getState().onBackPressed(this);
+        mStateManager.getState().onBackInvoked(this);
     }
 
     protected void onScreenOnChanged(boolean isOn) {
