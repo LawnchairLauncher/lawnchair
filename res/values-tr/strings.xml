@@ -188,7 +188,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtre"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Başarısız: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Gizli alan"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"Özel uygulamaları kilitli ve gizli tutun"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"Gizli"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Gizli Alan Ayarları"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Gizli Alanı Kilitleyin/Kilidini Açın"</string>

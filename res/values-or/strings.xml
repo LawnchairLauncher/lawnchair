@@ -87,7 +87,7 @@
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"କାର୍ଯ୍ୟକାରୀ ଆପ୍‌ ତାଲିକା"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"କାଢ଼ି ଦିଅନ୍ତୁ"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ଅନଇନଷ୍ଟଲ କରନ୍ତୁ"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"ଆପ୍‌ ସୂଚନା"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"ଆପ ସୂଚନା"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ପ୍ରାଇଭେଟରେ ଇନଷ୍ଟଲ କର"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ଆପ ପରାମର୍ଶ ଦିଅନ୍ତୁ ନାହିଁ"</string>
@@ -151,7 +151,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"ଆଇଟମ୍‌କୁ ଏଠାକୁ ଘୁଞ୍ଚାନ୍ତୁ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ହୋମ ସ୍କ୍ରିନରେ ଆଇଟମ ଯୋଗ କରାଗଲା"</string>
     <string name="item_removed" msgid="851119963877842327">"ଆଇଟମକୁ କାଢ଼ି ଦିଆଯାଇଛି"</string>
-    <string name="undo" msgid="4151576204245173321">"ପୂର୍ବବତ୍‍"</string>
+    <string name="undo" msgid="4151576204245173321">"ପୂର୍ବବତ କରନ୍ତୁ"</string>
     <string name="action_move" msgid="4339390619886385032">"ଆଇଟମ୍‌ ଘୁଞ୍ଚାନ୍ତୁ"</string>
     <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g>ରେ ଧାଡି <xliff:g id="NUMBER_0">%1$s</xliff:g> ସ୍ତମ୍ଭ <xliff:g id="NUMBER_1">%2$s</xliff:g>କୁ ମୁଭ କରନ୍ତୁ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> ସ୍ଥିତିକୁ ନିଅନ୍ତୁ"</string>
@@ -188,7 +188,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ଫିଲ୍ଟର୍"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ବିଫଳ ହୋଇଛି: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ପ୍ରାଇଭେଟ ସ୍ପେସ"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"ପ୍ରାଇଭେଟ ଆପ୍ସକୁ ଲକ ଏବଂ ଲୁକ୍କାୟିତ ରଖନ୍ତୁ"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"ପ୍ରାଇଭେଟ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ପ୍ରାଇଭେଟ ସ୍ପେସ ସେଟିଂସ"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ପ୍ରାଇଭେଟ ସ୍ପେସକୁ ଲକ/ଅନଲକ କରନ୍ତୁ"</string>

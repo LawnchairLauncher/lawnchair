@@ -187,11 +187,12 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"আনপজ কৰক"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টাৰ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"বিফল: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"ব্যক্তিগত স্পে’চ"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"ব্যক্তিগত এপ্‌সমূহ লক কৰি লুকুৱাই ৰাখক"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"প্ৰাইভেট স্পে\'চ"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"ব্যক্তিগত"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ব্যক্তিগত স্পে’চৰ ছেটিং"</string>
-    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ব্যক্তিগত স্পে’চ লক/আনলক কৰক"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"প্ৰাইভেট স্পে\'চ লক/আনলক কৰক"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"লক কৰক"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ব্যক্তিগত স্পে’চৰ স্থানান্তৰণ"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"এপ্‌ ইনষ্টল কৰক"</string>
