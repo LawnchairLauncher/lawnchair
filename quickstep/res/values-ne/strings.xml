@@ -45,7 +45,7 @@
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सिफारिस गरिएका एपहरू देखाउने सुविधा असक्षम पारिएको छ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान गरिएको एप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"आफ्नो डिभाइस रोटेट गर्नुहोस्"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"इसारामार्फत गरिने नेभिगेसनको ट्युटोरियल पूरा गर्न कृपया आफ्नो डिभाइस रोटेट गर्नुहोस्"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"जेस्चर नेभिगेसनको ट्युटोरियल पूरा गर्न कृपया आफ्नो डिभाइस रोटेट गर्नुहोस्"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"स्क्रिनको सबैभन्दा दायाँ किनारा वा सबैभन्दा बायाँ किनाराबाट स्वाइप गर्नुहोस्"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"स्क्रिनको दायाँ वा बायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"तपाईंले स्क्रिनको दायाँ किनाराबाट स्वाइप गरेर अघिल्लो स्क्रिनमा फर्कने तरिका सिक्नुभयो। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
