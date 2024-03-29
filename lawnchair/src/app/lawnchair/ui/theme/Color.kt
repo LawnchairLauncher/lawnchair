@@ -7,7 +7,6 @@ import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.theme.UiColorMode
 import app.lawnchair.theme.color.ColorTokens

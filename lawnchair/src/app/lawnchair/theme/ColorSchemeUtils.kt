@@ -5,11 +5,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import kotlin.math.ln
 
 @Composable
 fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorScheme = remember(this, isDark) {
@@ -35,11 +30,11 @@ fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorS
             inverseSurface = neutral(90),
             inverseOnSurface = neutral(20),
             outline = neutralVariant(60),
-            outlineVariant  = neutralVariant(30),
+            outlineVariant = neutralVariant(30),
             scrim = neutral(0),
             surfaceContainer = neutral(20),
             surfaceContainerLow = neutral(20),
-            surfaceContainerHighest = neutral(30)
+            surfaceContainerHighest = neutral(30),
         )
     } else {
         lightColorScheme(
@@ -68,7 +63,7 @@ fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorS
             // Temporary colors until we fully migrate to material-color-utilities
             surfaceContainer = neutral(90),
             surfaceContainerLow = neutral(95),
-            surfaceContainerHighest = neutral(90)
+            surfaceContainerHighest = neutral(90),
         )
     }
 }
