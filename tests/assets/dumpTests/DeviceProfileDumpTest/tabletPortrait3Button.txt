@@ -71,7 +71,8 @@ DeviceProfile:
 	allAppsPadding.right: 32.0px (16.0dp)
 	allAppsLeftRightMargin: 152.0px (76.0dp)
 	hotseatBarSizePx: 272.0px (136.0dp)
-	inv.hotseatColumnSpan: 6
+	mHotseatColumnSpan: 6
+	mHotseatWidthPx: 1300.0px (650.0dp)
 	hotseatCellHeightPx: 135.0px (67.5dp)
 	hotseatBarBottomSpacePx: 152.0px (76.0dp)
 	mHotseatBarEdgePaddingPx: 0.0px (0.0dp)

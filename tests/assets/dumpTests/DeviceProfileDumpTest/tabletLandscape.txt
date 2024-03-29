@@ -71,7 +71,8 @@ DeviceProfile:
 	allAppsPadding.right: 32.0px (16.0dp)
 	allAppsLeftRightMargin: 412.0px (206.0dp)
 	hotseatBarSizePx: 200.0px (100.0dp)
-	inv.hotseatColumnSpan: 4
+	mHotseatColumnSpan: 6
+	mHotseatWidthPx: 1960.0px (980.0dp)
 	hotseatCellHeightPx: 135.0px (67.5dp)
 	hotseatBarBottomSpacePx: 80.0px (40.0dp)
 	mHotseatBarEdgePaddingPx: 0.0px (0.0dp)
@@ -82,12 +83,12 @@ DeviceProfile:
 	springLoadedHotseatBarTopMarginPx: 128.0px (64.0dp)
 	getHotseatLayoutPadding(context).top: 0.0px (0.0dp)
 	getHotseatLayoutPadding(context).bottom: 65.0px (32.5dp)
-	getHotseatLayoutPadding(context).left: 668.0px (334.0dp)
-	getHotseatLayoutPadding(context).right: 668.0px (334.0dp)
+	getHotseatLayoutPadding(context).left: 300.0px (150.0dp)
+	getHotseatLayoutPadding(context).right: 300.0px (150.0dp)
 	numShownHotseatIcons: 6
-	hotseatBorderSpace: 100.0px (50.0dp)
+	hotseatBorderSpace: 248.0px (124.0dp)
 	isQsbInline: false
-	hotseatQsbWidth: 1214.0px (607.0dp)
+	hotseatQsbWidth: 1950.0px (975.0dp)
 	isTaskbarPresent:false
 	isTaskbarPresentInApps:true
 	taskbarHeight: 0.0px (0.0dp)
