@@ -29,7 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"בית"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"מסך מפוצל"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏פרטים על האפליקציה %1$s"</string>
-    <string name="save_app_pair" msgid="5647523853662686243">"שמירה של צמד אפליקציות"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"שמירת צמד אפליקציות"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"צמד האפליקציות הזה לא נתמך במכשיר הזה"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"צריך לפתוח את המכשיר כדי להשתמש בצמד האפליקציות הזה"</string>
@@ -188,7 +188,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"סינון"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"הפעולה נכשלה: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"מרחב פרטי"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"נעילה והסתרה של אפליקציות פרטיות"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"פרטי"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"הגדרות המרחב הפרטי"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"נעילה או ביטול הנעילה של המרחב הפרטי"</string>

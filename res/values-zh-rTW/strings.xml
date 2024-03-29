@@ -39,7 +39,7 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"寬度為 %1$d，高度為 %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"「<xliff:g id="WIDGET_NAME">%1$s</xliff:g>」小工具"</string>
     <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"「<xliff:g id="WIDGET_NAME">%1$s</xliff:g>」小工具 (寬 %2$d，高 %3$d)"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"按住小工具即可將它移到主畫面上的任何位置"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"按住小工具即可拖曳到主畫面的任何位置"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"新增至主畫面"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"已將「<xliff:g id="WIDGET_NAME">%1$s</xliff:g>」小工具新增到主畫面"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"建議"</string>
@@ -188,7 +188,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"篩選器"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"失敗：<xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"私人空間"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"讓私人應用程式保持鎖定及隱藏的狀態"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"私人"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"私人空間設定"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"鎖定/取消鎖定私人空間"</string>

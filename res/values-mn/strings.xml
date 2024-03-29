@@ -188,7 +188,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Шүүлтүүр"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Амжилтгүй болсон: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Хувийн орон зай"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"Хувийн аппуудыг түгжээтэй бөгөөд нуугдсан байлгана уу"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"Хувийн"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Private Space-н тохиргоо"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Private Space-г түгжих/түгжээг тайлах"</string>
