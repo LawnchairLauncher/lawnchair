@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s 앱 정보"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"앱 페어링 저장"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"이 앱 페어링은 이 기기에서 지원되지 않습니다"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"이 앱 페어링을 사용하려면 기기를 펼치세요"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"길게 터치하여 위젯을 이동하세요."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"두 번 탭한 다음 길게 터치하여 위젯을 이동하거나 맞춤 작업을 사용하세요."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> 설치 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> 다운로드 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> 설치 대기 중"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> 앱이 보관처리되었습니다. 다운로드하려면 탭하세요."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"앱 업데이트 필요"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"바로가기 아이콘의 앱이 업데이트되지 않았습니다. 직접 업데이트하여 앱 바로가기를 다시 사용할 수 있도록 하거나 아이콘을 삭제하세요."</string>
     <string name="dialog_update" msgid="2178028071796141234">"업데이트"</string>
