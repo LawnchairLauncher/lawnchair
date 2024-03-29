@@ -33,7 +33,7 @@
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:layout_alignParentEnd="true"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="false">
         <ImageButton
             android:id="@+id/ps_settings_button"
             android:layout_width="@dimen/ps_header_image_height"
