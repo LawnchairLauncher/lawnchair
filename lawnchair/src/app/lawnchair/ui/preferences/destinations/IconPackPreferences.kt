@@ -120,6 +120,7 @@ fun IconPackPreferences() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style),
+        isExpandedScreen = true,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         if (isPortrait) {

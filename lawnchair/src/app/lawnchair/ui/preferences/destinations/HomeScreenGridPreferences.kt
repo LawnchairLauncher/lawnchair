@@ -42,6 +42,7 @@ fun HomeScreenGridPreferences() {
     val scrollState = rememberScrollState()
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_grid),
+        isExpandedScreen = true,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         val prefs = preferenceManager()

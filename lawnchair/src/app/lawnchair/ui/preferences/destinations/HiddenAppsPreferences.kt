@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
@@ -62,6 +63,7 @@ fun HiddenAppsPreferences() {
     val state = rememberLazyListState()
     PreferenceScaffold(
         label = pageTitle,
+        isExpandedScreen = LocalIsExpandedScreen.current,
     ) {
         Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->
             if (present) {

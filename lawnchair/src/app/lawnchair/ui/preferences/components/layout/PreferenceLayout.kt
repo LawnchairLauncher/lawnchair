@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 
 /**
  * Represents the layout of all Preference screens.
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 fun PreferenceLayout(
     label: String,
     backArrowVisible: Boolean = true,
+    isExpandedScreen: Boolean = LocalIsExpandedScreen.current,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(8.dp),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState? = rememberScrollState(),
@@ -59,6 +61,7 @@ fun PreferenceLayout(
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
         label = label,
+        isExpandedScreen = isExpandedScreen,
         actions = actions,
         bottomBar = bottomBar,
     ) {
@@ -92,6 +95,7 @@ fun PreferenceLayout(
 fun PreferenceLayoutLazyColumn(
     label: String,
     modifier: Modifier = Modifier,
+    isExpandedScreen: Boolean = LocalIsExpandedScreen.current,
     enabled: Boolean = true,
     backArrowVisible: Boolean = true,
     state: LazyListState = rememberLazyListState(),
@@ -101,6 +105,7 @@ fun PreferenceLayoutLazyColumn(
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
         label = label,
+        isExpandedScreen = isExpandedScreen,
         actions = actions,
     ) {
         PreferenceLazyColumn(

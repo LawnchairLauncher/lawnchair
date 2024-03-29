@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
@@ -95,7 +96,7 @@ private fun SearchBar(
             ),
     ) {
         ClickableIcon(
-            imageVector = backIcon(),
+            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
             onClick = { backDispatcher?.onBackPressed() },
         )
         Box(modifier = Modifier.weight(1f)) {

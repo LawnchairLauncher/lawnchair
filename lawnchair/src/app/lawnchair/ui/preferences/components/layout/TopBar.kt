@@ -20,55 +20,62 @@ import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     backArrowVisible: Boolean,
     label: String,
+    isExpandedScreen: Boolean,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
-    LargeTopAppBar(
-        title = {
-            Text(
-                text = label,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        },
-        actions = actions,
-        navigationIcon = {
-            if (backArrowVisible) {
-                ClickableIcon(
-                    imageVector = backIcon(),
-                    onClick = { backDispatcher?.onBackPressed() },
+    if (isExpandedScreen) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = label,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-            }
-        },
-        scrollBehavior = scrollBehavior,
-    )
-}
-
-@Composable
-fun backIcon(): ImageVector =
-    if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
-        Icons.AutoMirrored.Rounded.ArrowBack
+            },
+            actions = actions,
+            navigationIcon = {
+                if (backArrowVisible) {
+                    ClickableIcon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        onClick = { backDispatcher?.onBackPressed() },
+                    )
+                }
+            },
+            scrollBehavior = scrollBehavior,
+        )
     } else {
-        Icons.AutoMirrored.Rounded.ArrowForward
+        LargeTopAppBar(
+            title = {
+                Text(
+                    text = label,
+                )
+            },
+            actions = actions,
+            navigationIcon = {
+                if (backArrowVisible) {
+                    ClickableIcon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        onClick = { backDispatcher?.onBackPressed() },
+                    )
+                }
+            },
+            scrollBehavior = scrollBehavior,
+        )
     }
-
-val topBarSize = 64.dp
+}
