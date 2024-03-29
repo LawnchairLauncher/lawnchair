@@ -35,7 +35,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
@@ -212,11 +211,6 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         super.onScaleProgressChanged();
         mAppsView.setClipChildren(!mIsBackProgressing);
         mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsBackProgressing);
-        AllAppsRecyclerView rv = mAppsView.getActiveRecyclerView();
-        if (rv != null && rv.getScrollbar() != null) {
-            rv.getScrollbar().setVisibility(
-                    mIsBackProgressing ? INVISIBLE : VISIBLE);
-        }
     }
 
     @Override

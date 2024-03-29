@@ -27,7 +27,6 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.Process;
@@ -47,12 +46,9 @@ import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.window.BackEvent;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
@@ -901,17 +897,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                         && oldDp.isLandscape != newDp.isLandscape));
 
         return isFoldUnFold || useDifferentLayoutOnOrientationChange;
-    }
-
-    @Override
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    public void onBackProgressed(@NonNull BackEvent backEvent) {
-        super.onBackProgressed(backEvent);
-        // In two pane picker, scroll bar is always hidden.
-        if (!isTwoPane()) {
-            mFastScroller.setVisibility(
-                    backEvent.getProgress() > 0 ? View.INVISIBLE : View.VISIBLE);
-        }
     }
 
     @Override
