@@ -24,8 +24,8 @@ fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorS
             onSecondary = secondary(20),
             secondaryContainer = secondary(30),
             onSecondaryContainer = secondary(90),
-            tertiaryContainer = tertiary(30),
-            onTertiaryContainer = tertiary(90),
+            tertiary = tertiary(80),
+            onTertiary = tertiary(20),
             background = neutral(10),
             onBackground = neutral(90),
             surface = neutral(10),
@@ -35,6 +35,11 @@ fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorS
             inverseSurface = neutral(90),
             inverseOnSurface = neutral(20),
             outline = neutralVariant(60),
+            outlineVariant  = neutralVariant(30),
+            scrim = neutral(0),
+            surfaceContainer = neutral(20),
+            surfaceContainerLow = neutral(20),
+            surfaceContainerHighest = neutral(30)
         )
     } else {
         lightColorScheme(
@@ -58,14 +63,12 @@ fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorS
             inverseSurface = neutral(20),
             inverseOnSurface = neutral(95),
             outline = neutralVariant(50),
+            outlineVariant = neutralVariant(80),
+            scrim = neutral(0),
+            // Temporary colors until we fully migrate to material-color-utilities
+            surfaceContainer = neutral(90),
+            surfaceContainerLow = neutral(95),
+            surfaceContainerHighest = neutral(90)
         )
     }
-}
-
-internal fun ColorScheme.surfaceColorAtElevation(
-    elevation: Dp,
-): Color {
-    if (elevation == 0.dp) return surface
-    val alpha = ((4.5f * ln(elevation.value + 1)) + 2f) / 100f
-    return primary.copy(alpha = alpha).compositeOver(surface)
 }

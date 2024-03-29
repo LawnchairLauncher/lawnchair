@@ -29,7 +29,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -91,7 +90,7 @@ private fun SearchBar(
             .fillMaxWidth()
             .height(56.dp)
             .background(
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.0.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 shape = RoundedCornerShape(100),
             ),
     ) {
