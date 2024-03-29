@@ -33,7 +33,6 @@ import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFla
 import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
 
 import android.content.res.Resources;
-import android.view.ViewConfiguration;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -132,7 +131,7 @@ public final class FeatureFlags {
                     "Allow entering All Apps from Overview (e.g. long swipe up from app)");
 
     public static final BooleanFlag CUSTOM_LPNH_THRESHOLDS =
-            getReleaseFlag(301680992, "CUSTOM_LPNH_THRESHOLDS", DISABLED,
+            getReleaseFlag(301680992, "CUSTOM_LPNH_THRESHOLDS", ENABLED,
                     "Add dev options to customize the LPNH trigger slop and milliseconds");
 
     public static final BooleanFlag ANIMATE_LPNH =
@@ -155,8 +154,7 @@ public final class FeatureFlags {
                     LONG_PRESS_NAV_HANDLE_EXTRA_TOUCH_WIDTH_DP);
 
     public static final IntFlag LPNH_TIMEOUT_MS =
-            FlagsFactory.getIntFlag(301680992, "LPNH_TIMEOUT_MS",
-                    ViewConfiguration.getLongPressTimeout(),
+            FlagsFactory.getIntFlag(301680992, "LPNH_TIMEOUT_MS", 450,
                     "Controls lpnh timeout in milliseconds", LONG_PRESS_NAV_HANDLE_TIMEOUT_MS);
 
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = getReleaseFlag(
