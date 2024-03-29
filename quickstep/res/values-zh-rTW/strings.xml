@@ -134,7 +134,7 @@
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"工作列分隔線"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"移到上方/左側"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"移到底部/右側"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{顯示另外 # 個應用程式。}other{顯示另外 # 個應用程式。}}"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{再多顯示 # 個應用程式。}other{再多顯示 # 個應用程式。}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"「<xliff:g id="APP_NAME_1">%1$s</xliff:g>」和「<xliff:g id="APP_NAME_2">%2$s</xliff:g>」"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"新增應用程式至桌面"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"取消"</string>
