@@ -32,6 +32,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.DisplayCutout;
 import android.view.InputDevice;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -134,7 +135,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
-        if (enableTaskbarPinning()) {
+        if (enableTaskbarPinning() && !mActivityContext.isThreeButtonNav()) {
             DeviceProfile deviceProfile = mActivityContext.getTransientTaskbarDeviceProfile();
             actualIconSize = deviceProfile.taskbarIconSize;
         }
@@ -470,6 +471,29 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     : (right - navSpaceNeeded) - centerAlignIconEnd;
 
             iconEnd = centerAlignIconEnd + offset;
+        }
+
+        // Currently, we support only one device with display cutout and we only are concern about
+        // it when the bottom rect is present and non empty
+        DisplayCutout displayCutout = getDisplay().getCutout();
+        if (displayCutout != null && !displayCutout.getBoundingRectBottom().isEmpty()) {
+            Rect cutoutBottomRect = displayCutout.getBoundingRectBottom();
+            // when cutout present at the bottom of screen align taskbar icons to cutout offset
+            // if taskbar icon overlaps with cutout
+            int taskbarIconLeftBound = iconEnd - spaceNeeded;
+            int taskbarIconRightBound = iconEnd;
+
+            boolean doesTaskbarIconsOverlapWithCutout =
+                    taskbarIconLeftBound <= cutoutBottomRect.centerX()
+                            && cutoutBottomRect.centerX() <= taskbarIconRightBound;
+
+            if (doesTaskbarIconsOverlapWithCutout) {
+                if (!layoutRtl) {
+                    iconEnd = spaceNeeded + cutoutBottomRect.width();
+                } else {
+                    iconEnd = right - cutoutBottomRect.width();
+                }
+            }
         }
 
         sTmpRect.set(mIconLayoutBounds);
