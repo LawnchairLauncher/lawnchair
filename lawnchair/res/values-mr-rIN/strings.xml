@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">थीम असलेल्या चिन्हांवर पारदर्शक पार्श्वभूमी वापरा</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">मुखपृष्ठाचे चक्रगति</string>
-    <string name="home_screen_rotaton_description">जेव्हा उपकरण फिरवले जाते</string>
+    <string name="home_screen_rotation_description">जेव्हा उपकरण फिरवले जाते</string>
     <string name="font_label">फॉन्ट (प्रायोगिक)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">चिन्ह_गाठोडा</string>

@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">استفاده از پس زمینه شفاف در آیکون‌های خاص</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">چرخش صفحه‌ اصلی</string>
-    <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
+    <string name="home_screen_rotation_description">هنگام چرخش دستگاه.</string>
     <string name="font_label">قلم‌ (آزمایشی)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">ظاهر آیکون</string>

@@ -7,11 +7,9 @@ import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.theme.UiColorMode
 import app.lawnchair.theme.color.ColorTokens
-import app.lawnchair.theme.surfaceColorAtElevation
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
@@ -63,4 +61,4 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
 }
 
 @Composable
-fun dividerColor() = MaterialTheme.colorScheme.surfaceColorAtElevation(32.dp)
+fun dividerColor() = MaterialTheme.colorScheme.surfaceVariant

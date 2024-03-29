@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Gebruik transparante achtergrond bij gethematiseerde iconen</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startscherm rotatie</string>
-    <string name="home_screen_rotaton_description">Wanneer het apparaat is gedraaid.</string>
+    <string name="home_screen_rotation_description">Wanneer het apparaat is gedraaid.</string>
     <string name="font_label">Lettertype (Experimenteel)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Icoon stijl</string>

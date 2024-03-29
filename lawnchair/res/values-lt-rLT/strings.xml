@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Naudoti permatoma foną temintoms piktogramoms</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Namu Ekrano Sukimas</string>
-    <string name="home_screen_rotaton_description">Kai įrenginys yra pasuktas.</string>
+    <string name="home_screen_rotation_description">Kai įrenginys yra pasuktas.</string>
     <string name="font_label">Šriftas (Eksperimentinis)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Piktogramų Stilius</string>

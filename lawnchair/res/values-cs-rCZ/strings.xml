@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Použít průhledné pozadí u ikon s tématem</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Otáčení domovské obrazovky</string>
-    <string name="home_screen_rotaton_description">Při otočení zařízení.</string>
+    <string name="home_screen_rotation_description">Při otočení zařízení.</string>
     <string name="font_label">Písmo (experimentální)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Styl ikon</string>

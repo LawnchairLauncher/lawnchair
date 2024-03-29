@@ -37,7 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.lawnchairApp
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
@@ -136,7 +136,7 @@ fun ServiceWarningDialog(
     handleClose: () -> Unit,
 ) {
     val context = LocalContext.current
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
         title = { Text(text = stringResource(id = title)) },
         text = { Text(text = stringResource(id = description)) },
         buttons = {

@@ -99,17 +99,33 @@ fun GeneralPreferences() {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
                 label = stringResource(id = R.string.home_screen_rotation_label),
-                description = stringResource(id = R.string.home_screen_rotaton_description),
+                description = stringResource(id = R.string.home_screen_rotation_description),
             )
-            val enableFontSelection = prefs2.enableFontSelection.asState().value
-            if (enableFontSelection) {
+        }
+        ExpandAndShrink(prefs2.enableFontSelection.asState().value) {
+            PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
                 FontPreference(
                     fontPref = prefs.fontWorkspace,
-                    label = stringResource(id = R.string.font_label),
+                    label = stringResource(R.string.fontWorkspace),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeading,
+                    label = stringResource(R.string.fontHeading),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeadingMedium,
+                    label = stringResource(R.string.fontHeadingMedium),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBody,
+                    label = stringResource(R.string.fontBody),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBodyMedium,
+                    label = stringResource(R.string.fontBodyMedium),
                 )
             }
         }
-
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
         PreferenceGroup(

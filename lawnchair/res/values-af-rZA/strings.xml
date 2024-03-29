@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Tuisskermrotasie</string>
-    <string name="home_screen_rotaton_description">Wanneer die toestel gedraai word.</string>
+    <string name="home_screen_rotation_description">Wanneer die toestel gedraai word.</string>
     <string name="font_label">Lettertipe (eksperimenteel)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Ikoon styl</string>

@@ -1,9 +1,8 @@
 package app.lawnchair.ui.preferences.components.layout
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +25,7 @@ fun ClickableIcon(
         modifier = modifier,
         enabled = enabled,
     ) {
-        val contentAlpha = if (enabled) tint.alpha else ContentAlpha.disabled
+        val contentAlpha = if (enabled) tint.alpha else 0.38f
         val alpha by animateFloatAsState(targetValue = contentAlpha, label = "")
         Icon(
             painter = painter,

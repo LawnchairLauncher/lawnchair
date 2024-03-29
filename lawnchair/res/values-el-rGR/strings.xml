@@ -56,7 +56,7 @@
     <string name="transparent_background_icons_description">Χρήση διαφανούς φόντου στα θεματοποιημένα εικονίδια</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Περιστροφή Αρχικής Οθόνης</string>
-    <string name="home_screen_rotaton_description">Όταν η συσκευή περιστρέφεται.</string>
+    <string name="home_screen_rotation_description">Όταν η συσκευή περιστρέφεται.</string>
     <string name="font_label">Γραμματοσειρά (Πειραματικό χαρακτηριστικό)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Στυλ Εικονιδίου</string>

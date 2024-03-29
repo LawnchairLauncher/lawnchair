@@ -28,11 +28,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 
+/**
+ * Represents the layout of all Preference screens.
+ * Uses a combination of [PreferenceScaffold] and [PreferenceColumn] to represent the layout.
+ *
+ * @param label the text to be displayed at the top of the screen
+ * @param backArrowVisible whether to show the back arrow or not
+ * @param verticalArrangement the vertical arrangement of the layout's children
+ * @param horizontalAlignment the horizontal alignment of the layout's children
+ * @param scrollState the [ScrollState] to use to allow vertical overflow
+ * @param actions what content to show at the top-right of the layout
+ * @param bottomBar what content to show at the bottom of the layout
+ * @param content the actual content
+ * @see [PreferenceLayoutLazyColumn]
+ *
+ * TODO: use DSL to represent all preferences
+ */
 @Composable
 fun PreferenceLayout(
     label: String,
     backArrowVisible: Boolean = true,
+    isExpandedScreen: Boolean = LocalIsExpandedScreen.current,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(8.dp),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState? = rememberScrollState(),
@@ -43,10 +61,12 @@ fun PreferenceLayout(
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
         label = label,
+        isExpandedScreen = isExpandedScreen,
         actions = actions,
         bottomBar = bottomBar,
     ) {
         PreferenceColumn(
+            contentPadding = it,
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             scrollState = scrollState,
@@ -55,10 +75,27 @@ fun PreferenceLayout(
     }
 }
 
+/**
+ * Represents the layout of all Preference screens.
+ * This composable only composes and lays out the currently visible items.
+ * Uses a combination of [PreferenceScaffold] and [PreferenceLazyColumn] to represent the layout.
+ *
+ * @param label the text to be displayed at the top of the screen
+ * @param modifier the [Modifier] to apply at [PreferenceLazyColumn]
+ * @param enabled whether the layout allows user input or not
+ * @param backArrowVisible whether to show the back arrow or not
+ * @param state the state object to be used to control or observe the list's state
+ * @param actions what content to show at the top-right of the layout
+ * @param content the actual content
+ * @see [PreferenceLayout]
+ *
+ * TODO: use DSL to represent all preferences
+ */
 @Composable
 fun PreferenceLayoutLazyColumn(
     label: String,
     modifier: Modifier = Modifier,
+    isExpandedScreen: Boolean = LocalIsExpandedScreen.current,
     enabled: Boolean = true,
     backArrowVisible: Boolean = true,
     state: LazyListState = rememberLazyListState(),
@@ -68,9 +105,11 @@ fun PreferenceLayoutLazyColumn(
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
         label = label,
+        isExpandedScreen = isExpandedScreen,
         actions = actions,
     ) {
         PreferenceLazyColumn(
+            contentPadding = it,
             modifier = modifier,
             enabled = enabled,
             state = state,

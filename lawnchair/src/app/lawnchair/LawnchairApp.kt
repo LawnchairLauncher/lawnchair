@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.destinations.openAppInfo
 import app.lawnchair.util.restartLauncher
 import app.lawnchair.util.unsafeLazy
@@ -211,7 +211,7 @@ class LawnchairApp : Application() {
             val launcher = this
             if (!lawnchairApp.isRecentsComponent || isRecentsEnabled) return
             ComposeBottomSheet.show(this) {
-                AlertBottomSheetContent(
+                ModalBottomSheetContent(
                     title = { Text(text = stringResource(id = R.string.quickstep_incompatible)) },
                     text = {
                         val description = stringResource(

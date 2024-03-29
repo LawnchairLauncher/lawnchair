@@ -58,7 +58,7 @@ workspace_increase_max_grid_size_label</string>
     <string name="transparent_background_icons_description">Transparenten Hintergrund für Symboldesigns verwenden</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
-    <string name="home_screen_rotaton_description">Wenn Gerät gedreht wird.</string>
+    <string name="home_screen_rotation_description">Wenn Gerät gedreht wird.</string>
     <string name="font_label">Schriftart (experimentell)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">Symbolstil</string>

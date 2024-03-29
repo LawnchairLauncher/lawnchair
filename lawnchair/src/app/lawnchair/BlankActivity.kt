@@ -12,9 +12,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ModalBottomSheetDefaults
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ class BlankActivity : AppCompatActivity() {
     private var firstResume = true
     private var targetStarted = false
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -44,7 +46,7 @@ class BlankActivity : AppCompatActivity() {
             LawnchairTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = ModalBottomSheetDefaults.scrimColor,
+                    color = BottomSheetDefaults.ScrimColor,
                 ) {
                     AlertDialog(
                         onDismissRequest = { if (!targetStarted) finish() },
