@@ -146,20 +146,6 @@ android {
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
-    androidComponents {
-        onVariants(selector().all()) { variant ->
-            def capName = variant.name.capitalize()
-            def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
-            def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
-                dependsOn(licenseeTask)
-                from(licenseeTask.map { it.outputDir.file("artifacts.json") })
-                into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
-            }
-            variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
-                objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
-            }
-        }
-    }
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
@@ -306,6 +292,23 @@ android {
             res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
             java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def capName = variant.name.capitalize()
+        def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
+        def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
+            dependsOn(licenseeTask)
+            from(licenseeTask.map { it.jsonOutput })
+            // Copy artifacts.json to a new directory.
+            into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
+        }
+        variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
+            // Avoid using LicenseeTask::outputDir as it contains extra files that we don't need.
+            objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
         }
     }
 }
