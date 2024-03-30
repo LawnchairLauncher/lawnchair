@@ -393,7 +393,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 ? R.drawable.ic_split_horizontal
                 : R.drawable.ic_split_vertical;
         mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(splitIconRes, 0, 0, 0);
+
+        int appPairIconRes = dp.isLeftRightSplit
+                ? R.drawable.ic_save_app_pair_left_right
+                : R.drawable.ic_save_app_pair_up_down;
         mSaveAppPairButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_save_app_pair, 0, 0, 0);
+                appPairIconRes, 0, 0, 0);
     }
 }
