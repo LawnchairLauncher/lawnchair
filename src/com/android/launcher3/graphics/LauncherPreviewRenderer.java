@@ -82,6 +82,8 @@ import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.AppPairInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -388,16 +390,16 @@ public class LauncherPreviewRenderer extends ContextWrapper
         addInScreenFromBind(icon, info);
     }
 
-    private void inflateAndAddCollectionIcon(FolderInfo info) {
+    private void inflateAndAddCollectionIcon(CollectionInfo info) {
         boolean isOnDesktop = info.container == Favorites.CONTAINER_DESKTOP;
         CellLayout screen = isOnDesktop
                 ? mWorkspaceScreens.get(info.screenId)
                 : mHotseat;
-        FrameLayout folderIcon = info.itemType == Favorites.ITEM_TYPE_FOLDER
-                ? FolderIcon.inflateIcon(R.layout.folder_icon, this, screen, info)
-                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, info,
+        FrameLayout collectionIcon = info.itemType == Favorites.ITEM_TYPE_FOLDER
+                ? FolderIcon.inflateIcon(R.layout.folder_icon, this, screen, (FolderInfo) info)
+                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, (AppPairInfo) info,
                         isOnDesktop ? DISPLAY_WORKSPACE : DISPLAY_TASKBAR);
-        addInScreenFromBind(folderIcon, info);
+        addInScreenFromBind(collectionIcon, info);
     }
 
     private void inflateAndAddWidgets(
@@ -501,7 +503,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
                     break;
                 case Favorites.ITEM_TYPE_FOLDER:
                 case Favorites.ITEM_TYPE_APP_PAIR:
-                    inflateAndAddCollectionIcon((FolderInfo) itemInfo);
+                    inflateAndAddCollectionIcon((CollectionInfo) itemInfo);
                     break;
                 default:
                     break;

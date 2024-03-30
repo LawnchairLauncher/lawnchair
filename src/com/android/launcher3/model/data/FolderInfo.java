@@ -24,8 +24,6 @@ import static com.android.launcher3.logger.LauncherAtom.Attribute.EMPTY_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.MANUAL_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABEL;
 
-import android.os.Process;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -49,7 +47,7 @@ import java.util.stream.IntStream;
 /**
  * Represents a folder containing shortcuts or apps.
  */
-public class FolderInfo extends ItemInfo {
+public class FolderInfo extends CollectionInfo {
 
     public static final int NO_FLAGS = 0x00000000;
 
@@ -100,27 +98,15 @@ public class FolderInfo extends ItemInfo {
 
     public FolderNameInfos suggestedFolderNames;
 
-    /**
-     * The apps and shortcuts
-     */
-    public ArrayList<WorkspaceItemInfo> contents = new ArrayList<>();
-
     private ArrayList<FolderListener> mListeners = new ArrayList<>();
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
-        user = Process.myUserHandle();
     }
 
-    /**
-     * Create an app pair, a type of app collection that launches multiple apps into split screen
-     */
-    public static FolderInfo createAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
-        FolderInfo newAppPair = new FolderInfo();
-        newAppPair.itemType = LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
-        newAppPair.add(app1, /* animate */ false);
-        newAppPair.add(app2, /* animate */ false);
-        return newAppPair;
+    /** Adds a app or shortcut to the contents array without animation. */
+    public void add(@NonNull WorkspaceItemInfo item) {
+        add(item, false /* animate */);
     }
 
     /**
@@ -129,15 +115,15 @@ public class FolderInfo extends ItemInfo {
      * @param item
      */
     public void add(WorkspaceItemInfo item, boolean animate) {
-        add(item, contents.size(), animate);
+        add(item, getContents().size(), animate);
     }
 
     /**
      * Add an app or shortcut for a specified rank.
      */
     public void add(WorkspaceItemInfo item, int rank, boolean animate) {
-        rank = Utilities.boundToRange(rank, 0, contents.size());
-        contents.add(rank, item);
+        rank = Utilities.boundToRange(rank, 0, getContents().size());
+        getContents().add(rank, item);
         for (int i = 0; i < mListeners.size(); i++) {
             mListeners.get(i).onAdd(item, rank);
         }
@@ -157,7 +143,7 @@ public class FolderInfo extends ItemInfo {
      * Remove all matching app or shortcut. Does not change the DB.
      */
     public void removeAll(List<WorkspaceItemInfo> items, boolean animate) {
-        contents.removeAll(items);
+        getContents().removeAll(items);
         for (int i = 0; i < mListeners.size(); i++) {
             mListeners.get(i).onRemove(items);
         }
@@ -167,8 +153,7 @@ public class FolderInfo extends ItemInfo {
     @Override
     public void onAddToDatabase(@NonNull ContentWriter writer) {
         super.onAddToDatabase(writer);
-        writer.put(LauncherSettings.Favorites.TITLE, title)
-                .put(LauncherSettings.Favorites.OPTIONS, options);
+        writer.put(LauncherSettings.Favorites.OPTIONS, options);
     }
 
     public void addListener(FolderListener listener) {
@@ -219,9 +204,9 @@ public class FolderInfo extends ItemInfo {
 
     @NonNull
     @Override
-    public LauncherAtom.ItemInfo buildProto(@Nullable FolderInfo fInfo) {
+    public LauncherAtom.ItemInfo buildProto(@Nullable CollectionInfo cInfo) {
         FolderIcon.Builder folderIcon = FolderIcon.newBuilder()
-                .setCardinality(contents.size());
+                .setCardinality(getContents().size());
         if (LabelState.SUGGESTED.equals(getLabelState())) {
             folderIcon.setLabelInfo(title.toString());
         }
@@ -278,17 +263,8 @@ public class FolderInfo extends ItemInfo {
     public ItemInfo makeShallowCopy() {
         FolderInfo folderInfo = new FolderInfo();
         folderInfo.copyFrom(this);
-        folderInfo.contents = this.contents;
+        folderInfo.setContents(this.getContents());
         return folderInfo;
-    }
-
-    /**
-     * Returns {@link LauncherAtom.FolderIcon} wrapped as {@link LauncherAtom.ItemInfo} for logging.
-     */
-    @NonNull
-    @Override
-    public LauncherAtom.ItemInfo buildProto() {
-        return buildProto(null);
     }
 
     /**
@@ -370,14 +346,5 @@ public class FolderInfo extends ItemInfo {
                 // fall through
         }
         return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-    }
-
-    @Override
-    public boolean isDisabled() {
-        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR) {
-            return contents.stream().anyMatch((WorkspaceItemInfo::isDisabled));
-        }
-
-        return super.isDisabled();
     }
 }

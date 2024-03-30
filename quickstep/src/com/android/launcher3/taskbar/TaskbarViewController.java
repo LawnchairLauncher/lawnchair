@@ -813,8 +813,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * 3) All Apps button
      */
     public View getFirstIconMatch(Predicate<ItemInfo> matcher) {
-        Predicate<ItemInfo> folderMatcher = ItemInfoMatcher.forFolderMatch(matcher);
-        return mTaskbarView.getFirstMatch(matcher, folderMatcher);
+        Predicate<ItemInfo> collectionMatcher = ItemInfoMatcher.forFolderMatch(matcher);
+        return mTaskbarView.getFirstMatch(matcher, collectionMatcher);
     }
 
     /**

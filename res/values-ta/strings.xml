@@ -188,7 +188,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"தனிப்பட்ட சேமிப்பிடம்"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"தனிப்பட்ட ஆப்ஸை லாக் செய்தும் மறைத்தும் வைக்கலாம்"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"தனிப்பட்டது"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"தனிப்பட்ட சேமிப்பிட அமைப்புகள்"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"தனிப்பட்ட சேமிப்பிடத்தை லாக்/அன்லாக் செய்யும்"</string>

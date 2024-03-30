@@ -122,7 +122,7 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन फिरवण्‍याची अनुमती द्या"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरवला जातो तेव्हा"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"सूचना बिंदू"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"नोटिफिकेशन डॉट"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"बंद"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनांच्या अ‍ॅक्सेसची आवश्यकता आहे"</string>
@@ -150,8 +150,8 @@
     <string name="action_add_to_workspace" msgid="215894119683164916">"होम स्क्रीनवर जोडा"</string>
     <string name="action_move_here" msgid="2170188780612570250">"आयटम येथे हलवा"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"आयटम मुख्य स्क्रीनवर जोडला"</string>
-    <string name="item_removed" msgid="851119963877842327">"आयटम काढला"</string>
-    <string name="undo" msgid="4151576204245173321">"पूर्ववत करा"</string>
+    <string name="item_removed" msgid="851119963877842327">"आयटम काढून टाकला"</string>
+    <string name="undo" msgid="4151576204245173321">"पहिल्यासारखे करा"</string>
     <string name="action_move" msgid="4339390619886385032">"आयटम हलवा"</string>
     <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> मधील <xliff:g id="NUMBER_0">%1$s</xliff:g> पंक्ती <xliff:g id="NUMBER_1">%2$s</xliff:g> स्तंभ यावर हलवा"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> स्थानावर हलवा"</string>
@@ -188,7 +188,8 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"खाजगी स्पेस"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"खाजगी अ‍ॅप्स लॉक करून आणि लपवून ठेवा"</string>
+    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
+    <skip />
     <string name="ps_container_title" msgid="4391796149519594205">"खाजगी"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"खाजगी स्पेस ची सेटिंग्ज"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"खाजगी स्पेस लॉक/अनलॉक करा"</string>

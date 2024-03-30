@@ -271,8 +271,8 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     @NonNull
     @Override
-    public LauncherAtom.ItemInfo buildProto(@Nullable FolderInfo folderInfo) {
-        LauncherAtom.ItemInfo info = super.buildProto(folderInfo);
+    public LauncherAtom.ItemInfo buildProto(@Nullable CollectionInfo collectionInfo) {
+        LauncherAtom.ItemInfo info = super.buildProto(collectionInfo);
         return info.toBuilder()
                 .setWidget(info.getWidget().toBuilder().setWidgetFeatures(widgetFeatures))
                 .addItemAttributes(getAttribute(sourceContainer))

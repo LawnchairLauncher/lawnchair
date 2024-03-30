@@ -36,7 +36,7 @@
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Aceda facilmente às suas apps mais utilizadas, diretamente no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na última fila passam para o ecrã principal."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Aceda facilmente às suas apps mais utilizadas no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na fila dos favoritos passam para o ecrã principal."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Obter sugestões de apps"</string>
-    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Não, obrigado"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Não"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Definições"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"As apps mais utilizadas aparecem aqui e mudam em função das rotinas."</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Arraste as apps para fora da última fila para ver sugestões de apps."</string>

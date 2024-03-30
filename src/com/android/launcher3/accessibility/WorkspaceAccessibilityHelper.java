@@ -149,7 +149,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
                 // Find the first item in the folder.
                 FolderInfo folder = (FolderInfo) info;
                 WorkspaceItemInfo firstItem = null;
-                for (WorkspaceItemInfo shortcut : folder.contents) {
+                for (WorkspaceItemInfo shortcut : folder.getContents()) {
                     if (firstItem == null || firstItem.rank > shortcut.rank) {
                         firstItem = shortcut;
                     }

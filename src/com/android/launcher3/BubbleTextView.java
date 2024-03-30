@@ -435,8 +435,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     @UiThread
-    @VisibleForTesting
-    public void applyLabel(ItemInfoWithIcon info) {
+    public void applyLabel(ItemInfo info) {
         CharSequence label = info.title;
         if (label != null) {
             mLastOriginalText = label;

@@ -25,7 +25,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.logger.LauncherAtom;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.widget.picker.WidgetRecommendationCategory;
 import com.android.launcher3.widget.util.WidgetSizes;
@@ -82,8 +82,8 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
 
     @NonNull
     @Override
-    public LauncherAtom.ItemInfo buildProto(@Nullable FolderInfo folderInfo) {
-        LauncherAtom.ItemInfo info = super.buildProto(folderInfo);
+    public LauncherAtom.ItemInfo buildProto(@Nullable CollectionInfo collectionInfo) {
+        LauncherAtom.ItemInfo info = super.buildProto(collectionInfo);
         return info.toBuilder()
                 .addItemAttributes(LauncherAppWidgetInfo.getAttribute(sourceContainer))
                 .build();

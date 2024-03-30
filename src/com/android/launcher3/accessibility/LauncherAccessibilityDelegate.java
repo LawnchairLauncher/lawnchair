@@ -39,6 +39,8 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.KeyboardDragAndDropView;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.AppPairInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -317,6 +319,8 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         mDragInfo.dragType = DragType.ICON;
         if (info instanceof FolderInfo) {
             mDragInfo.dragType = DragType.FOLDER;
+        } else if (info instanceof AppPairInfo) {
+            mDragInfo.dragType = DragType.APP_PAIR;
         } else if (info instanceof LauncherAppWidgetInfo) {
             mDragInfo.dragType = DragType.WIDGET;
         }
@@ -430,16 +434,16 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
                 bindItem(info, accessibility, finishCallback);
-            } else if (item instanceof FolderInfo fi) {
+            } else if (item instanceof CollectionInfo ci) {
                 Workspace<?> workspace = mContext.getWorkspace();
                 workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
-                mContext.getModelWriter().addItemToDatabase(fi,
+                mContext.getModelWriter().addItemToDatabase(ci,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId, coordinates[0],
                         coordinates[1]);
-                fi.contents.forEach(member -> {
-                    mContext.getModelWriter().addItemToDatabase(member, fi.id, -1, -1, -1);
-                });
-                bindItem(fi, accessibility, finishCallback);
+                ci.getContents().forEach(member ->
+                        mContext.getModelWriter()
+                                .addItemToDatabase(member, ci.id, -1, -1, -1));
+                bindItem(ci, accessibility, finishCallback);
             }
         }));
         return true;

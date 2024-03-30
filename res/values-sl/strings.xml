@@ -188,7 +188,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtriranje"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Ni uspelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Zasebni prostor"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"Naj vaše zasebne aplikacije ostanejo zaklenjene in skrite"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Dotaknite se, da nastavite ali odprete"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Zasebno"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Nastavitve zasebnega prostora"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Zaklepanje/odklepanje zasebnega prostora"</string>

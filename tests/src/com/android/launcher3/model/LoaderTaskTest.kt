@@ -103,7 +103,7 @@ class LoaderTaskTest {
                 .runSyncOnBackgroundThread()
             Truth.assertThat(workspaceItems.size).isAtLeast(25)
             Truth.assertThat(appWidgets.size).isAtLeast(7)
-            Truth.assertThat(folders.size()).isAtLeast(8)
+            Truth.assertThat(collections.size()).isAtLeast(8)
             Truth.assertThat(itemsIdMap.size()).isAtLeast(40)
         }
 

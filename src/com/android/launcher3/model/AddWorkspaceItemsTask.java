@@ -31,7 +31,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -131,8 +131,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 int screenId = coords[0];
 
                 ItemInfo itemInfo;
-                if (item instanceof WorkspaceItemInfo || item instanceof FolderInfo ||
-                        item instanceof LauncherAppWidgetInfo) {
+                if (item instanceof WorkspaceItemInfo || item instanceof CollectionInfo
+                        || item instanceof LauncherAppWidgetInfo) {
                     itemInfo = item;
                 } else if (item instanceof WorkspaceItemFactory) {
                     itemInfo = ((WorkspaceItemFactory) item).makeWorkspaceItem(app.getContext());
