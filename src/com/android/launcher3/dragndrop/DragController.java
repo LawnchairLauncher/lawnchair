@@ -33,6 +33,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Flags;
 import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -289,7 +290,8 @@ public abstract class DragController<T extends ActivityContext>
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             ItemInfo dragInfo = mDragObject.dragInfo;
-            if (dragInfo instanceof WorkspaceItemInfo && matcher.test(dragInfo)) {
+            if ((dragInfo instanceof WorkspaceItemInfo && matcher.test(dragInfo))
+                    || (dragInfo instanceof AppPairInfo api && api.anyMatch(matcher))) {
                 cancelDrag();
             }
         }

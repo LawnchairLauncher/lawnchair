@@ -29,6 +29,7 @@ import com.android.launcher3.R
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.ModelWriter
+import com.android.launcher3.model.data.AppPairInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
@@ -81,7 +82,7 @@ class ItemInflater<T>(
                     R.layout.app_pair_icon,
                     context,
                     parent,
-                    item as FolderInfo,
+                    item as AppPairInfo,
                     BubbleTextView.DISPLAY_WORKSPACE
                 )
             Favorites.ITEM_TYPE_APPWIDGET,

@@ -361,17 +361,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         }
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
-            // This predicate is used to mark an ItemInfo for removal if its package or component
-            // is marked for removal.
-            Predicate<ItemInfo> removeAppMatch =
+            Predicate<ItemInfo> removeMatch =
                     ItemInfoMatcher.ofPackages(removedPackages, mUser)
                             .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
                             .and(ItemInfoMatcher.ofItemIds(forceKeepShortcuts).negate());
-            // This predicate is used to mark an app pair for removal if it contains an app marked
-            // for removal.
-            Predicate<ItemInfo> removeAppPairMatch =
-                    ItemInfoMatcher.forAppPairMatch(removeAppMatch);
-            Predicate<ItemInfo> removeMatch = removeAppMatch.or(removeAppPairMatch);
             deleteAndBindComponentsRemoved(removeMatch,
                     "removed because the corresponding package or component is removed. "
                             + "mOp=" + mOp + " removedPackages=" + removedPackages.stream().collect(

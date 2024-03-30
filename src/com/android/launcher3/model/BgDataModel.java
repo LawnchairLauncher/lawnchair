@@ -44,6 +44,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -102,9 +103,9 @@ public class BgDataModel {
     public final ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
 
     /**
-     * Map of id to FolderInfos of all the folders created by LauncherModel
+     * Map of id to CollectionInfos of all the folders or app pairs created by LauncherModel
      */
-    public final IntSparseArrayMap<FolderInfo> folders = new IntSparseArrayMap<>();
+    public final IntSparseArrayMap<CollectionInfo> collections = new IntSparseArrayMap<>();
 
     /**
      * Extra container based items
@@ -144,7 +145,7 @@ public class BgDataModel {
     public synchronized void clear() {
         workspaceItems.clear();
         appWidgets.clear();
-        folders.clear();
+        collections.clear();
         itemsIdMap.clear();
         deepShortcutMap.clear();
         extraItems.clear();
@@ -179,9 +180,9 @@ public class BgDataModel {
         for (int i = 0; i < appWidgets.size(); i++) {
             writer.println(prefix + '\t' + appWidgets.get(i).toString());
         }
-        writer.println(prefix + " ---- folder items ");
-        for (int i = 0; i < folders.size(); i++) {
-            writer.println(prefix + '\t' + folders.valueAt(i).toString());
+        writer.println(prefix + " ---- collection items ");
+        for (int i = 0; i < collections.size(); i++) {
+            writer.println(prefix + '\t' + collections.valueAt(i).toString());
         }
         writer.println(prefix + " ---- extra items ");
         for (int i = 0; i < extraItems.size(); i++) {
@@ -211,12 +212,12 @@ public class BgDataModel {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
-                    folders.remove(item.id);
+                    collections.remove(item.id);
                     if (FeatureFlags.IS_STUDIO_BUILD) {
                         for (ItemInfo info : itemsIdMap) {
                             if (info.container == item.id) {
-                                // We are deleting a folder which still contains items that
-                                // think they are contained by that folder.
+                                // We are deleting a collection which still contains items that
+                                // think they are contained by that collection.
                                 String msg = "deleting a collection (" + item + ") which still "
                                         + "contains items (" + info + ")";
                                 Log.e(TAG, msg);
@@ -259,7 +260,7 @@ public class BgDataModel {
         switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
             case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
-                folders.put(item.id, (FolderInfo) item);
+                collections.put(item.id, (CollectionInfo) item);
                 workspaceItems.add(item);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
@@ -269,14 +270,14 @@ public class BgDataModel {
                     workspaceItems.add(item);
                 } else {
                     if (newItem) {
-                        if (!folders.containsKey(item.container)) {
+                        if (!collections.containsKey(item.container)) {
                             // Adding an item to a nonexistent collection.
                             String msg = "attempted to add item: " + item + " to a nonexistent app"
                                     + " collection";
                             Log.e(TAG, msg);
                         }
                     } else {
-                        findOrMakeFolder(item.container).add((WorkspaceItemInfo) item, false);
+                        findOrMakeFolder(item.container).add((WorkspaceItemInfo) item);
                     }
                 }
                 break;
@@ -371,15 +372,18 @@ public class BgDataModel {
      * Return an existing FolderInfo object if we have encountered this ID previously,
      * or make a new one.
      */
-    public synchronized FolderInfo findOrMakeFolder(int id) {
+    public synchronized CollectionInfo findOrMakeFolder(int id) {
         // See if a placeholder was created for us already
-        FolderInfo folderInfo = folders.get(id);
-        if (folderInfo == null) {
-            // No placeholder -- create a new instance
-            folderInfo = new FolderInfo();
-            folders.put(id, folderInfo);
+        CollectionInfo collectionInfo = collections.get(id);
+        if (collectionInfo == null) {
+            // No placeholder -- create a new blank folder instance. At this point, we don't know
+            // if the desired container is supposed to be a folder or an app pair. In the case that
+            // it is an app pair, the blank folder will be replaced by a blank app pair when the app
+            // pair is getting processed, in WorkspaceItemProcessor.processFolderOrAppPair().
+            collectionInfo = new FolderInfo();
+            collections.put(id, collectionInfo);
         }
-        return folderInfo;
+        return collectionInfo;
     }
 
     /**

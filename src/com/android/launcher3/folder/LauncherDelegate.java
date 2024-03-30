@@ -93,7 +93,7 @@ public class LauncherDelegate {
                         // folder
                         CellLayout cellLayout = mLauncher.getCellLayout(info.container,
                                 mLauncher.getCellPosMapper().mapModelToPresenter(info).screenId);
-                        finalItem =  info.contents.remove(0);
+                        finalItem =  info.getContents().remove(0);
                         newIcon = mLauncher.getItemInflater().inflateItem(
                                 finalItem, mLauncher.getModelWriter(), cellLayout);
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,

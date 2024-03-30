@@ -57,7 +57,7 @@ public class FolderGridOrganizer {
      * Updates the organizer with the provided folder info
      */
     public FolderGridOrganizer setFolderInfo(FolderInfo info) {
-        return setContentSize(info.contents.size());
+        return setContentSize(info.getContents().size());
     }
 
     /**

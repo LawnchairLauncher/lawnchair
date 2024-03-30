@@ -61,7 +61,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LogConfig;
@@ -375,7 +375,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 Executors.MODEL_EXECUTOR.execute(
                         () -> write(event, applyOverwrites(mItemInfo.buildProto())));
             } else {
-                // Item is inside the folder, fetch folder info in a BG thread
+                // Item is inside a collection, fetch collection info in a BG thread
                 // and then write to StatsLog.
                 appState.getModel().enqueueModelUpdateTask(
                         new BaseModelUpdateTask() {
@@ -383,8 +383,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                             public void execute(@NonNull final LauncherAppState app,
                                     @NonNull final BgDataModel dataModel,
                                     @NonNull final AllAppsList apps) {
-                                FolderInfo folderInfo = dataModel.folders.get(mItemInfo.container);
-                                write(event, applyOverwrites(mItemInfo.buildProto(folderInfo)));
+                                CollectionInfo collectionInfo =
+                                        dataModel.collections.get(mItemInfo.container);
+                                write(event, applyOverwrites(mItemInfo.buildProto(collectionInfo)));
                             }
                         });
             }

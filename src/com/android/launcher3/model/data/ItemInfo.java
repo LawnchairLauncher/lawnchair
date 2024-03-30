@@ -349,10 +349,9 @@ public class ItemInfo {
 
     /**
      * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
-     * @param fInfo
      */
     @NonNull
-    public LauncherAtom.ItemInfo buildProto(@Nullable final FolderInfo fInfo) {
+    public LauncherAtom.ItemInfo buildProto(@Nullable final CollectionInfo cInfo) {
         LauncherAtom.ItemInfo.Builder itemBuilder = getDefaultItemInfoBuilder();
         Optional<ComponentName> nullableComponent = Optional.ofNullable(getTargetComponent());
         switch (itemType) {
@@ -398,21 +397,21 @@ public class ItemInfo {
             default:
                 break;
         }
-        if (fInfo != null) {
+        if (cInfo != null) {
             LauncherAtom.FolderContainer.Builder folderBuilder =
                     LauncherAtom.FolderContainer.newBuilder();
             folderBuilder.setGridX(cellX).setGridY(cellY).setPageIndex(screenId);
 
-            switch (fInfo.container) {
+            switch (cInfo.container) {
                 case CONTAINER_HOTSEAT:
                 case CONTAINER_HOTSEAT_PREDICTION:
                     folderBuilder.setHotseat(LauncherAtom.HotseatContainer.newBuilder()
-                            .setIndex(fInfo.screenId));
+                            .setIndex(cInfo.screenId));
                     break;
                 case CONTAINER_DESKTOP:
                     folderBuilder.setWorkspace(LauncherAtom.WorkspaceContainer.newBuilder()
-                            .setPageIndex(fInfo.screenId)
-                            .setGridX(fInfo.cellX).setGridY(fInfo.cellY));
+                            .setPageIndex(cInfo.screenId)
+                            .setGridX(cInfo.cellX).setGridY(cInfo.cellY));
                     break;
             }
             itemBuilder.setContainerInfo(ContainerInfo.newBuilder().setFolder(folderBuilder));

@@ -215,7 +215,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
         // Keep the notification dot up to date with the sum of all the content's dots.
         FolderDotInfo folderDotInfo = new FolderDotInfo();
-        for (WorkspaceItemInfo si : folderInfo.contents) {
+        for (WorkspaceItemInfo si : folderInfo.getContents()) {
             folderDotInfo.addDotInfo(activity.getDotInfoForItem(si));
         }
         icon.setDotInfo(folderDotInfo);
@@ -422,7 +422,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             FolderNameInfos nameInfos = new FolderNameInfos();
             Executors.MODEL_EXECUTOR.post(() -> {
                 d.folderNameProvider.getSuggestedFolderName(
-                        getContext(), mInfo.contents, nameInfos);
+                        getContext(), mInfo.getContents(), nameInfos);
                 postDelayed(() -> {
                     setLabelSuggestion(nameInfos, d.logInstanceId);
                     invalidate();
@@ -487,7 +487,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         }
         mFolder.notifyDrop();
         onDrop(item, d, null, 1.0f,
-                itemReturnedOnFailedDrop ? item.rank : mInfo.contents.size(),
+                itemReturnedOnFailedDrop ? item.rank : mInfo.getContents().size(),
                 itemReturnedOnFailedDrop
         );
     }
@@ -666,7 +666,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
      * Returns the list of items which should be visible in the preview
      */
     public List<WorkspaceItemInfo> getPreviewItemsOnPage(int page) {
-        return mPreviewVerifier.setFolderInfo(mInfo).previewItemsForPage(page, mInfo.contents);
+        return mPreviewVerifier.setFolderInfo(mInfo).previewItemsForPage(page, mInfo.getContents());
     }
 
     @Override
@@ -809,7 +809,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
      * Returns a formatted accessibility title for folder
      */
     public String getAccessiblityTitle(CharSequence title) {
-        int size = mInfo.contents.size();
+        int size = mInfo.getContents().size();
         if (size < MAX_NUM_ITEMS_IN_PREVIEW) {
             return getContext().getString(R.string.folder_name_format_exact, title, size);
         } else {

@@ -26,7 +26,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.ModelDbController;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.ContentWriter;
@@ -73,9 +73,8 @@ public class FavoriteItemsTransaction {
                     ContentWriter writer = new ContentWriter(mContext);
                     ItemInfo item = mItemsToSubmit.get(i).get();
 
-                    if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-                        FolderInfo folderInfo = (FolderInfo) item;
-                        for (ItemInfo itemInfo : folderInfo.contents) {
+                    if (item instanceof CollectionInfo ci) {
+                        for (ItemInfo itemInfo : ci.getContents()) {
                             itemInfo.container = i;
                             containerItems.add(itemInfo);
                         }

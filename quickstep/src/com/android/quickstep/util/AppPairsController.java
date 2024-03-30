@@ -53,7 +53,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
@@ -149,25 +149,17 @@ public class AppPairsController {
 
         app1.rank = encodeRank(SPLIT_POSITION_TOP_OR_LEFT, snapPosition);
         app2.rank = encodeRank(SPLIT_POSITION_BOTTOM_OR_RIGHT, snapPosition);
-        FolderInfo newAppPair = FolderInfo.createAppPair(app1, app2);
-
-        if (newAppPair.contents.size() != 2) {
-            // if app pair doesn't have exactly 2 members, log an error and do not create the app
-            // pair.
-            Log.wtf(TAG,
-                    "tried to save an app pair with " + newAppPair.contents.size() + " members");
-            return;
-        }
+        AppPairInfo newAppPair = new AppPairInfo(app1, app2);
 
         IconCache iconCache = LauncherAppState.getInstance(mContext).getIconCache();
         MODEL_EXECUTOR.execute(() -> {
-            newAppPair.contents.forEach(member -> {
+            newAppPair.getContents().forEach(member -> {
                 member.title = "";
                 member.bitmap = iconCache.getDefaultIcon(newAppPair.user);
                 iconCache.getTitleAndIcon(member, member.usingLowResIcon());
             });
-            newAppPair.title = getDefaultTitle(newAppPair.contents.get(0).title,
-                    newAppPair.contents.get(1).title);
+            newAppPair.title = getDefaultTitle(newAppPair.getFirstApp().title,
+                    newAppPair.getSecondApp().title);
             MAIN_EXECUTOR.execute(() -> {
                 LauncherAccessibilityDelegate delegate =
                         Launcher.getLauncher(mContext).getAccessibilityDelegate();
@@ -194,8 +186,8 @@ public class AppPairsController {
      *            monitoring
      */
     public void launchAppPair(AppPairIcon appPairIcon, int cuj) {
-        WorkspaceItemInfo app1 = appPairIcon.getInfo().contents.get(0);
-        WorkspaceItemInfo app2 = appPairIcon.getInfo().contents.get(1);
+        WorkspaceItemInfo app1 = appPairIcon.getInfo().getFirstApp();
+        WorkspaceItemInfo app2 = appPairIcon.getInfo().getSecondApp();
         ComponentKey app1Key = new ComponentKey(app1.getTargetComponent(), app1.user);
         ComponentKey app2Key = new ComponentKey(app2.getTargetComponent(), app2.user);
         mSplitSelectStateController.setLaunchingCuj(cuj);

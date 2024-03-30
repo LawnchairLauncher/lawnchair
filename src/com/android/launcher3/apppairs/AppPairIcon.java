@@ -33,7 +33,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
@@ -50,17 +50,12 @@ import java.util.function.Predicate;
 public class AppPairIcon extends FrameLayout implements DraggableView, Reorderable {
     private static final String TAG = "AppPairIcon";
 
-    /**
-     * Indicates that the app pair is currently launchable on the current screen.
-     */
-    private boolean mIsLaunchableAtScreenSize = true;
-
     // A view that holds the app pair icon graphic.
     private AppPairIconGraphic mIconGraphic;
     // A view that holds the app pair's title.
     private BubbleTextView mAppPairName;
     // The underlying ItemInfo that stores info about the app pair members, etc.
-    private FolderInfo mInfo;
+    private AppPairInfo mInfo;
     // The containing element that holds this icon: workspace, taskbar, folder, etc. Affects certain
     // aspects of how the icon is drawn.
     private int mContainer;
@@ -81,7 +76,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
      * Builds an AppPairIcon to be added to the Launcher.
      */
     public static AppPairIcon inflateIcon(int resId, ActivityContext activity,
-            @Nullable ViewGroup group, FolderInfo appPairInfo, int container) {
+            @Nullable ViewGroup group, AppPairInfo appPairInfo, int container) {
         DeviceProfile grid = activity.getDeviceProfile();
         LayoutInflater inflater = (group != null)
                 ? LayoutInflater.from(group.getContext())
@@ -89,7 +84,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         AppPairIcon icon = (AppPairIcon) inflater.inflate(resId, group, false);
 
         // Sort contents, so that left-hand app comes first
-        appPairInfo.contents.sort(Comparator.comparingInt(a -> a.rank));
+        appPairInfo.getContents().sort(Comparator.comparingInt(a -> a.rank));
 
         icon.setTag(appPairInfo);
         icon.setOnClickListener(activity.getItemOnClickListener());
@@ -99,8 +94,6 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         // Set up icon drawable area
         icon.mIconGraphic = icon.findViewById(R.id.app_pair_icon_graphic);
         icon.mIconGraphic.init(icon, container);
-
-        icon.checkDisabledState();
 
         // Set up app pair title
         icon.mAppPairName = icon.findViewById(R.id.app_pair_icon_name);
@@ -115,7 +108,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         // For some reason, app icons have setIncludeFontPadding(false) inside folders, so we set it
         // here to match that.
         icon.mAppPairName.setIncludeFontPadding(container != DISPLAY_FOLDER);
-        icon.mAppPairName.setText(appPairInfo.title);
+        icon.mAppPairName.applyLabel(appPairInfo);
 
         // Set up accessibility
         icon.setContentDescription(icon.getAccessibilityTitle(appPairInfo));
@@ -127,9 +120,9 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
     /**
      * Returns a formatted accessibility title for app pairs.
      */
-    public String getAccessibilityTitle(FolderInfo appPairInfo) {
-        CharSequence app1 = appPairInfo.contents.get(0).title;
-        CharSequence app2 = appPairInfo.contents.get(1).title;
+    public String getAccessibilityTitle(AppPairInfo appPairInfo) {
+        CharSequence app1 = appPairInfo.getFirstApp().title;
+        CharSequence app2 = appPairInfo.getSecondApp().title;
         return getContext().getString(R.string.app_pair_name_format, app1, app2);
     }
 
@@ -174,7 +167,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         return mScaleForReorderBounce;
     }
 
-    public FolderInfo getInfo() {
+    public AppPairInfo getInfo() {
         return mInfo;
     }
 
@@ -186,41 +179,20 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         return mIconGraphic;
     }
 
-    public boolean isLaunchableAtScreenSize() {
-        return mIsLaunchableAtScreenSize;
-    }
-
-    /**
-     * Updates the "disabled" state of the app pair in the current device configuration.
-     * App pairs can be "disabled" in two ways:
-     * 1) One of the member WorkspaceItemInfos is disabled (i.e. the app software itself is paused
-     * by the user or can't be launched for some other reason).
-     * 2) This specific instance of an app pair can't be launched due to screen size requirements.
-     */
-    public void checkDisabledState() {
-        DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
-        // If user is on a small screen, we can't launch if either of the apps is non-resizeable
-        mIsLaunchableAtScreenSize =
-                dp.isTablet || getInfo().contents.stream().noneMatch(
-                        wii -> wii.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE));
-        // Invalidate to update icons
-        mIconGraphic.redraw();
-    }
-
     /**
      * Called when WorkspaceItemInfos get updated, and the app pair icon may need to be redrawn.
      */
     public void maybeRedrawForWorkspaceUpdate(Predicate<WorkspaceItemInfo> itemCheck) {
         // If either of the app pair icons return true on the predicate (i.e. in the list of
         // updated apps), redraw the icon graphic (icon background and both icons).
-        if (getInfo().contents.stream().anyMatch(itemCheck)) {
-            checkDisabledState();
+        if (getInfo().anyMatch(itemCheck)) {
+            mIconGraphic.redraw();
         }
     }
 
     /**
      * Inside folders, icons are vertically centered in their rows. See
-     * {@link BubbleTextView#onMeasure(int, int)} for comparison.
+     * {@link BubbleTextView} for comparison.
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
