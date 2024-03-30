@@ -70,7 +70,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
@@ -127,7 +126,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
     protected static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
-    private static final int SCROLL_TO_BOTTOM_DURATION = 500;
     private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 300;
     // Render the header protection at all times to debug clipping issues.
     private static final boolean DEBUG_HEADER_PROTECTION = false;
@@ -191,8 +189,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private int mTabsProtectionAlpha;
     private float mTotalHeaderProtectionHeight;
     @Nullable private AllAppsTransitionController mAllAppsTransitionController;
-
-    private PrivateSpaceHeaderViewController mPrivateSpaceHeaderViewController;
 
     public ActivityAllAppsContainerView(Context context) {
         this(context, null);
@@ -261,10 +257,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      */
     protected void initContent() {
         mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
-        if (Flags.enablePrivateSpace()) {
-            mPrivateSpaceHeaderViewController =
-                    new PrivateSpaceHeaderViewController(this, mPrivateProfileManager);
-        }
 
         mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN,
                 new AlphabeticalAppsList<>(mActivityContext,
@@ -398,7 +390,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mAllAppsTransitionController = allAppsTransitionController;
     }
 
-    private void animateToSearchState(boolean goingToSearch, long durationMs) {
+    void animateToSearchState(boolean goingToSearch, long durationMs) {
         if (!mSearchTransitionController.isRunning() && goingToSearch == isSearching()) {
             return;
         }
@@ -499,9 +491,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     /**
-     * Exits search and returns to A-Z apps list. Scroll to the bottom.
+     * Exits search and returns to A-Z apps list. Scroll to the private space header.
      */
-    public void resetAndScrollToBottom() {
+    public void resetAndScrollToPrivateSpaceHeader() {
         if (mTouchHandler != null) {
             mTouchHandler.endFastScrolling();
         }
@@ -518,7 +510,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Switch to the main tab
             switchToTab(ActivityAllAppsContainerView.AdapterHolder.MAIN);
             // Scroll to bottom
-            getActiveRecyclerView().scrollToBottomWithMotion(SCROLL_TO_BOTTOM_DURATION);
+            if (mPrivateProfileManager != null) {
+                mPrivateProfileManager.scrollForViewToBeVisibleInContainer(
+                        getActiveAppsRecyclerView(),
+                        getPersonalAppList().getAdapterItems(),
+                        mPrivateProfileManager.getPsHeaderHeight(),
+                        mActivityContext.getDeviceProfile().allAppsCellHeightPx);
+            }
         });
     }
 
@@ -906,7 +904,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     protected BaseAllAppsAdapter<T> createAdapter(AlphabeticalAppsList<T> appsList) {
         return new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), appsList,
-                mMainAdapterProvider, mPrivateSpaceHeaderViewController);
+                mMainAdapterProvider);
     }
 
     // TODO(b/216683257): Remove when Taskbar All Apps supports search.

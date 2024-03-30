@@ -492,7 +492,7 @@
     <dimen name="ps_header_image_height">48dp</dimen>
     <dimen name="ps_header_text_height">24dp</dimen>
     <dimen name="ps_header_layout_margin">16dp</dimen>
-    <dimen name="ps_header_settings_icon_margin_end">8dp</dimen>
+    <dimen name="ps_header_settings_icon_margin_end">4dp</dimen>
     <dimen name="ps_header_text_size">16sp</dimen>
     <dimen name="ps_button_height">40dp</dimen>
     <dimen name="ps_button_width">40dp</dimen>

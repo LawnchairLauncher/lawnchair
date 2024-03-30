@@ -206,7 +206,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      */
     @Override
     public void onAppsUpdated() {
-        if (mAllAppsStore == null) {
+        // Don't update apps when the private profile animations are running, otherwise the motion
+        // is canceled.
+        if (mAllAppsStore == null || (mPrivateProviderManager != null &&
+                mPrivateProviderManager.getAnimationRunning())) {
             return;
         }
         // Sort the list of apps
@@ -442,6 +445,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             }
         }
         return roundRegion;
+    }
+
+    public PrivateProfileManager getPrivateProfileManager() {
+        return mPrivateProviderManager;
     }
 
     private static class MyDiffCallback extends DiffUtil.Callback {
