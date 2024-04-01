@@ -417,6 +417,7 @@
     <!-- Container size with pointer included: bubblebar_size + bubblebar_pointer_size -->
     <dimen name="bubblebar_size_with_pointer">80dp</dimen>
     <dimen name="bubblebar_elevation">1dp</dimen>
+    <dimen name="bubblebar_drag_elevation">2dp</dimen>
     <dimen name="bubblebar_hotseat_adjustment_threshold">90dp</dimen>
 
     <dimen name="bubblebar_icon_size">50dp</dimen>
@@ -432,6 +433,11 @@
     <dimen name="bubblebar_dismiss_target_icon_size">24dp</dimen>
     <dimen name="bubblebar_dismiss_target_bottom_margin">50dp</dimen>
     <dimen name="bubblebar_dismiss_floating_gradient_height">548dp</dimen>
+    <dimen name="bubblebar_dismiss_zone_width">192dp</dimen>
+    <dimen name="bubblebar_dismiss_zone_height">242dp</dimen>
+
+    <!-- Bubble bar drop target -->
+    <dimen name="bubblebar_drop_target_corner_radius">36dp</dimen>
 
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->

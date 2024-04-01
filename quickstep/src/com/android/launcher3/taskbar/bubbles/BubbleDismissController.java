@@ -67,6 +67,9 @@ public class BubbleDismissController {
     @Nullable
     private BubbleDragAnimator mAnimator;
 
+    @Nullable
+    private Listener mListener;
+
     public BubbleDismissController(TaskbarActivityContext activity, TaskbarDragLayer dragLayer) {
         mActivity = activity;
         mDragLayer = dragLayer;
@@ -79,6 +82,13 @@ public class BubbleDismissController {
      */
     public void init(@NonNull BubbleControllers bubbleControllers) {
         mBubbleBarViewController = bubbleControllers.bubbleBarViewController;
+    }
+
+    /**
+     * Set listener to be notified of dismiss events
+     */
+    public void setListener(@Nullable Listener listener) {
+        mListener = listener;
     }
 
     /**
@@ -189,6 +199,9 @@ public class BubbleDismissController {
                     @NonNull MagnetizedObject<?> draggedObject) {
                 if (mAnimator == null) return;
                 mAnimator.animateDismissCaptured();
+                if (mListener != null) {
+                    mListener.onStuckToDismissChanged(true /* stuck */);
+                }
             }
 
             @Override
@@ -197,6 +210,9 @@ public class BubbleDismissController {
                     float velX, float velY, boolean wasFlungOut) {
                 if (mAnimator == null) return;
                 mAnimator.animateDismissReleased();
+                if (mListener != null) {
+                    mListener.onStuckToDismissChanged(false /* stuck */);
+                }
             }
 
             @Override
@@ -205,5 +221,11 @@ public class BubbleDismissController {
                 dismissMagnetizedObject();
             }
         });
+    }
+
+    /** Interface to receive updates about the dismiss state */
+    public interface Listener {
+        /** Called when view is stuck or unstuck from dismiss target */
+        void onStuckToDismissChanged(boolean stuck);
     }
 }
