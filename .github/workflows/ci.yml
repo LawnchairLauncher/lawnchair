@@ -123,7 +123,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/14-dev'
     needs: build-debug-apk
-    continue-on-error: false
     permissions:
       contents: write
     steps:
