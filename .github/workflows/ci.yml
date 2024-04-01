@@ -131,8 +131,8 @@ jobs:
       - uses: actions/download-artifact@v4
       # Rename because the # symbol causes errors in GH release command.
       - name: Rename .apk file
-        run: (get-item "./Debug APK/lawnWithQuickstepGithub/debug/*.apk") | Rename-Item -NewName "debug.apk"
+        run: mv ./Debug\ APK/lawnWithQuickstepGithub/debug/*.apk ./debug.apk
       - name: Delete release if exist then create release
-        run: gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag ; gh release create "nightly" "./Debug APK/lawnWithQuickstepGithub/debug/debug.apk" -p --generate-notes
+        run: gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag ; gh release create "nightly" "./debug.apk" -p --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
