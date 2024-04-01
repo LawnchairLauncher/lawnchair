@@ -109,7 +109,6 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
                 WidgetCell widgetCell = addItemCell(tableRow);
                 widgetCell.applyFromCellItem(widgetItem);
                 widgetCell.showAppIconInWidgetTitle(true);
-                widgetCell.showBadge();
                 if (enableCategorizedWidgetSuggestions()) {
                     widgetCell.showDescription(false);
                     widgetCell.showDimensions(false);
