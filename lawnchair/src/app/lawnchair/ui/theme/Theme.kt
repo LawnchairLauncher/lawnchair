@@ -17,9 +17,8 @@
 package app.lawnchair.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -32,29 +31,23 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.ThemeProvider
-import app.lawnchair.theme.m3ColorScheme
-import app.lawnchair.theme.materialColors
+import app.lawnchair.theme.toM3ColorScheme
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 
 @Composable
 fun LawnchairTheme(
-    darkTheme: Boolean = isSelectedThemeDark(),
+    darkTheme: Boolean = isSelectedThemeDark,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = getColorScheme(darkTheme = darkTheme)
     MaterialTheme(
-        colors = materialColors(colorScheme, darkTheme),
+        colorScheme = colorScheme,
         typography = Typography,
+        content = content,
         shapes = Shapes,
-    ) {
-        Material3Theme(
-            colorScheme = colorScheme,
-            typography = M3Typography,
-            content = content,
-        )
-    }
+    )
 }
 
 @Composable
@@ -65,39 +58,40 @@ fun getColorScheme(darkTheme: Boolean): ColorScheme {
     val colorScheme = remember(accentColor) {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
+//
+//    colorScheme.accent1
 
-    return m3ColorScheme(colorScheme = colorScheme, isDark = darkTheme)
+    return colorScheme.toM3ColorScheme(isDark = darkTheme)
 }
 
-@Composable
-fun isSelectedThemeDark(): Boolean {
-    val themeChoice by preferenceManager().launcherTheme.observeAsState()
-    return when (themeChoice) {
-        ThemeChoice.LIGHT -> false
-        ThemeChoice.DARK -> true
-        else -> isAutoThemeDark()
-    }
-}
-
-@Composable
-fun isAutoThemeDark() = when {
-    Utilities.ATLEAST_P -> isSystemInDarkTheme()
-    else -> wallpaperSupportsDarkTheme()
-}
-
-@Composable
-fun wallpaperSupportsDarkTheme(): Boolean {
-    val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(LocalContext.current)
-    var supportsDarkTheme by remember { mutableStateOf(wallpaperManager.supportsDarkTheme) }
-
-    DisposableEffect(wallpaperManager) {
-        val listener = object : WallpaperManagerCompat.OnColorsChangedListener {
-            override fun onColorsChanged() {
-                supportsDarkTheme = wallpaperManager.supportsDarkTheme
-            }
+val isSelectedThemeDark: Boolean
+    @Composable get() {
+        val themeChoice by preferenceManager().launcherTheme.observeAsState()
+        return when (themeChoice) {
+            ThemeChoice.LIGHT -> false
+            ThemeChoice.DARK -> true
+            else -> isAutoThemeDark
         }
-        wallpaperManager.addOnChangeListener(listener)
-        onDispose { wallpaperManager.removeOnChangeListener(listener) }
     }
-    return supportsDarkTheme
+
+val isAutoThemeDark: Boolean @Composable get() = when {
+    Utilities.ATLEAST_P -> isSystemInDarkTheme()
+    else -> wallpaperSupportsDarkTheme
 }
+
+val wallpaperSupportsDarkTheme: Boolean
+    @Composable get() {
+        val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(LocalContext.current)
+        var supportsDarkTheme by remember { mutableStateOf(wallpaperManager.supportsDarkTheme) }
+
+        DisposableEffect(wallpaperManager) {
+            val listener = object : WallpaperManagerCompat.OnColorsChangedListener {
+                override fun onColorsChanged() {
+                    supportsDarkTheme = wallpaperManager.supportsDarkTheme
+                }
+            }
+            wallpaperManager.addOnChangeListener(listener)
+            onDispose { wallpaperManager.removeOnChangeListener(listener) }
+        }
+        return supportsDarkTheme
+    }

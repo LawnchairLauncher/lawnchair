@@ -24,10 +24,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -55,7 +54,7 @@ fun PreferenceTemplate(
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
-    val contentAlphaDisabled = ContentAlpha.disabled
+    val contentAlphaDisabled = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
     Column {
         Row(
             verticalAlignment = verticalAlignment,
@@ -76,20 +75,20 @@ fun PreferenceTemplate(
                 modifier = contentModifier
                     .weight(1f)
                     .addIf(!enabled) {
-                        alpha(contentAlphaDisabled)
+                        alpha(0.38f)
                     },
                 verticalAlignment = verticalAlignment,
             ) {
                 Column(Modifier.weight(1f)) {
                     CompositionLocalProvider(
-                        LocalContentColor provides Material3Theme.colorScheme.onBackground,
-                        LocalTextStyle provides Material3Theme.typography.bodyLarge,
+                        LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+                        LocalTextStyle provides MaterialTheme.typography.bodyLarge,
                     ) {
                         title()
                     }
                     CompositionLocalProvider(
-                        LocalContentColor provides Material3Theme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
-                        LocalTextStyle provides Material3Theme.typography.bodyMedium,
+                        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
+                        LocalTextStyle provides MaterialTheme.typography.bodyMedium,
                     ) {
                         description()
                     }

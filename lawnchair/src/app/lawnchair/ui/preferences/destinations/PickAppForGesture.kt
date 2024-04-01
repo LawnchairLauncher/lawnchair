@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.OpenAppTarget
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
@@ -45,10 +46,11 @@ fun PickAppForGesture() {
 
     PreferenceScaffold(
         label = stringResource(id = R.string.pick_app_for_gesture),
+        isExpandedScreen = LocalIsExpandedScreen.current,
     ) {
         Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->
             if (present) {
-                PreferenceLazyColumn(state = state) {
+                PreferenceLazyColumn(it, state = state) {
                     preferenceGroupItems(
                         items = apps,
                         isFirstChild = true,
@@ -60,7 +62,7 @@ fun PickAppForGesture() {
                     }
                 }
             } else {
-                PreferenceLazyColumn(enabled = false) {
+                PreferenceLazyColumn(it, enabled = false) {
                     preferenceGroupItems(
                         count = 20,
                         isFirstChild = true,

@@ -26,7 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.bottomSheetHandler
 
@@ -66,7 +66,7 @@ fun PreferenceClickConfirmation(
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
         title = { Text(text = title) },
         text = { Text(text = text) },
         buttons = {

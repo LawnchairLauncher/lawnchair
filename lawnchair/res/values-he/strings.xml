@@ -22,7 +22,7 @@
     <string name="general_label">כללי</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_rotation_label">סיבוב מסך הבית</string>
-    <string name="home_screen_rotaton_description">כאשר המכשיר מסובב.</string>
+    <string name="home_screen_rotation_description">כאשר המכשיר מסובב.</string>
     <string name="auto_add_shortcuts_label">הוספת יישומים חדשים למסך הבית</string>
     <string name="dock_label">מעגנים</string>
     <string name="dock_description">סרגל חיפוש, כמות סמלים</string>

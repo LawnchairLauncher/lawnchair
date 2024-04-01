@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -59,12 +57,11 @@ fun RgbColorSlider(
             ) {
                 Text(text = label)
                 CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground,
+                    LocalContentColor provides MaterialTheme.colorScheme.onBackground,
                 ) {
                     val valueText = snapSliderValue(rgbRange.start, value.toFloat(), step)
                         .roundToInt().toString()
-                    Text(text = valueText)
+                    Text(text = valueText, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         },
@@ -137,8 +134,7 @@ fun HsbColorSlider(
             ) {
                 Text(text = label)
                 CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground,
+                    LocalContentColor provides MaterialTheme.colorScheme.onBackground,
                 ) {
                     val valueText = snapSliderValue(range.start, value, step)
                     Text(

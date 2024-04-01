@@ -22,7 +22,7 @@
     <string name="general_label">Umum</string>
     <string name="general_description">Warna, Titik Notifikasi, Paket Ikon</string>
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
-    <string name="home_screen_rotaton_description">Ketika perangkat dirotasi.</string>
+    <string name="home_screen_rotation_description">Ketika perangkat dirotasi.</string>
     <string name="auto_add_shortcuts_label">Tambahkan aplikasi baru ke layar beranda</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Bilah pencarian, Jumlah Ikon</string>

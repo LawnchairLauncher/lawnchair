@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.HdrAuto
 import androidx.compose.material3.Icon
@@ -15,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.theme.isSelectedThemeDark
 
 @Composable
 fun <T> ColorDot(
@@ -26,11 +26,7 @@ fun <T> ColorDot(
     val colorLight = entry.lightColor(context)
     val colorDark = entry.darkColor(context)
 
-    val color = if (MaterialTheme.colors.isLight) {
-        colorLight
-    } else {
-        colorDark
-    }
+    val color = if (isSelectedThemeDark) colorDark else colorLight
 
     if (colorLight != 0) {
         ColorDot(

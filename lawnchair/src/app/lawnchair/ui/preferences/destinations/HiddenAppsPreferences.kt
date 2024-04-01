@@ -20,7 +20,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Checkbox
+import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
@@ -62,10 +63,11 @@ fun HiddenAppsPreferences() {
     val state = rememberLazyListState()
     PreferenceScaffold(
         label = pageTitle,
+        isExpandedScreen = LocalIsExpandedScreen.current,
     ) {
         Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->
             if (present) {
-                PreferenceLazyColumn(state = state) {
+                PreferenceLazyColumn(it, state = state) {
                     val toggleHiddenApp = { app: App ->
                         val key = app.key.toString()
                         val newSet = apps.asSequence()
@@ -93,7 +95,7 @@ fun HiddenAppsPreferences() {
                     }
                 }
             } else {
-                PreferenceLazyColumn(enabled = false) {
+                PreferenceLazyColumn(it, enabled = false) {
                     preferenceGroupItems(
                         count = 20,
                         isFirstChild = true,
