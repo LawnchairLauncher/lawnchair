@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 
+// TODO: https://mrmans0n.github.io/compose-rules/rules/#avoid-modifier-extension-factory-functions
+@Suppress("ktlint:compose:modifier-composed-check")
 fun Modifier.navigationBarsOrDisplayCutoutPadding(): Modifier = composed {
     val sides = WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
     val navigationBars = WindowInsets.navigationBars.only(sides).asPaddingValues()
