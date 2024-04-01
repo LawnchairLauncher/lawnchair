@@ -120,24 +120,19 @@ jobs:
           gh pr merge $PR_URL --auto --squash --delete-branch
 
   nightly-release:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    if: github.event_name = 'push' && github.ref == 'refs/heads/14-dev'
     needs: build-debug-apk
-    continue-on-error: true
+    continue-on-error: false
     permissions:
       contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-    
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-
-      # Rename because # symbol cause error in gh release command
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+      # Rename because the # symbol causes errors in GH release command.
       - name: Rename .apk file
         run: (get-item "./Debug APK/lawnWithQuickstepGithub/debug/*.apk") | Rename-Item -NewName "debug.apk"
-
       - name: Delete release if exist then create release
-        id: delete-release
-        run: gh release view "NightlyBuild" && gh release delete "NightlyBuild" -y --cleanup-tag ; gh release create "NightlyBuild" "./Debug APK/lawnWithQuickstepGithub/debug/debug.apk" -p --generate-notes 
-        env: 
+        run: gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag ; gh release create "nightly" "./Debug APK/lawnWithQuickstepGithub/debug/debug.apk" -p --generate-notes
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
