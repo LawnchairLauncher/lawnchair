@@ -99,6 +99,7 @@ import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.AutohideSu
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.launcher3.taskbar.bubbles.BubbleBarController;
+import com.android.launcher3.taskbar.bubbles.BubbleBarPinController;
 import com.android.launcher3.taskbar.bubbles.BubbleBarView;
 import com.android.launcher3.taskbar.bubbles.BubbleBarViewController;
 import com.android.launcher3.taskbar.bubbles.BubbleControllers;
@@ -255,7 +256,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     new BubbleStashController(this),
                     new BubbleStashedHandleViewController(this, bubbleHandleView),
                     new BubbleDragController(this),
-                    new BubbleDismissController(this, mDragLayer)));
+                    new BubbleDismissController(this, mDragLayer),
+                    new BubbleBarPinController(this, mDragLayer,
+                            () -> getDeviceProfile().getDisplayInfo().currentSize)
+            ));
         }
 
         // Construct controllers.

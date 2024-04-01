@@ -39,8 +39,6 @@ import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.launcher3.taskbar.TaskbarActivityContext;
-import com.android.launcher3.views.ActivityContext;
 import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 
 import java.util.List;
@@ -159,8 +157,6 @@ public class BubbleBarView extends FrameLayout {
 
     public BubbleBarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        TaskbarActivityContext activityContext = ActivityContext.lookupContext(context);
-
         setAlpha(0);
         setVisibility(INVISIBLE);
         mIconOverlapAmount = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_overlap);
@@ -171,7 +167,7 @@ public class BubbleBarView extends FrameLayout {
 
         setClipToPadding(false);
 
-        mBubbleBarBackground = new BubbleBarBackground(activityContext,
+        mBubbleBarBackground = new BubbleBarBackground(context,
                 getResources().getDimensionPixelSize(R.dimen.bubblebar_size));
         setBackgroundDrawable(mBubbleBarBackground);
 
@@ -377,6 +373,36 @@ public class BubbleBarView extends FrameLayout {
      */
     public float getRelativePivotY() {
         return mRelativePivotY;
+    }
+
+    /** Prepares for animating a bubble while being stashed. */
+    public void prepareForAnimatingBubbleWhileStashed(String bubbleKey) {
+        // we're about to animate the new bubble in. the new bubble has already been added to this
+        // view, but we're currently stashed, so before we can start the animation we need make
+        // everything else in the bubble bar invisible, except for the bubble that's being animated.
+        setBackground(null);
+        for (int i = 0; i < getChildCount(); i++) {
+            final BubbleView view = (BubbleView) getChildAt(i);
+            final String key = view.getBubble().getKey();
+            if (!bubbleKey.equals(key)) {
+                view.setVisibility(INVISIBLE);
+            }
+        }
+        setVisibility(VISIBLE);
+        setAlpha(1);
+        setTranslationY(0);
+        setScaleX(1);
+        setScaleY(1);
+    }
+
+    /** Resets the state after the bubble animation completed. */
+    public void onAnimatingBubbleCompleted() {
+        setBackground(mBubbleBarBackground);
+        for (int i = 0; i < getChildCount(); i++) {
+            final BubbleView view = (BubbleView) getChildAt(i);
+            view.setVisibility(VISIBLE);
+            view.setAlpha(1f);
+        }
     }
 
     // TODO: (b/280605790) animate it
