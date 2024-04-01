@@ -196,6 +196,11 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_force_widget_resize),
     )
 
+    val widgetUnlimitedSize = preference(
+        key = booleanPreferencesKey(name = "widget_unlimited_size"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_widget_unlimited_size),
+    )
+
     val showStatusBar = preference(
         key = booleanPreferencesKey(name = "show_status_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_status_bar),

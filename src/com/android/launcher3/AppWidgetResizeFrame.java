@@ -190,6 +190,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     public static void showForWidget(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
         PreferenceManager2 pref2 = PreferenceManager2.getInstance(widget.getContext());
         boolean force = PreferenceExtensionsKt.firstBlocking(pref2.getForceWidgetResize());
+        boolean unlimited = PreferenceExtensionsKt.firstBlocking(pref2.getWidgetUnlimitedSize());
         
         Launcher launcher = Launcher.getLauncher(cellLayout.getContext());
         AbstractFloatingView.closeAllOpenViews(launcher);
@@ -207,7 +208,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 gd.setCornerRadius(enforcedCornerRadius);
             }
         }
-        frame.setupForWidget(widget, cellLayout, dl, force);
+        frame.setupForWidget(widget, cellLayout, dl, force, unlimited);
         ((DragLayer.LayoutParams) frame.getLayoutParams()).customPosition = true;
 
         dl.addView(frame);
@@ -216,7 +217,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
-            DragLayer dragLayer, boolean force) {
+            DragLayer dragLayer, boolean force, boolean unlimited) {
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) widgetView.getAppWidgetInfo();
@@ -225,17 +226,25 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         int resizeMode;
         if (force) {
+            resizeMode = AppWidgetProviderInfo.RESIZE_BOTH;
+        } else {
+            resizeMode = info.resizeMode;
+        }
+        if (unlimited) {
             mMinHSpan = 1;
             mMinVSpan = 1;
             mMaxHSpan = idp.numColumns;
             mMaxVSpan = idp.numRows;
-            resizeMode = AppWidgetProviderInfo.RESIZE_BOTH;
+
+            // If widget is resizable in any direction, make it resizable in both
+            if (resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
+                resizeMode = AppWidgetProviderInfo.RESIZE_BOTH;
+            }
         } else {
             mMinHSpan = info.minSpanX;
             mMinVSpan = info.minSpanY;
             mMaxHSpan = info.maxSpanX;
             mMaxVSpan = info.maxSpanY;
-            resizeMode = info.resizeMode;
         }
 
         // Only show resize handles for the directions in which resizing is possible.

@@ -90,6 +90,7 @@
     <bool name="config_default_rounded_widgets">true</bool>
     <bool name="config_default_allow_widget_overlap">false</bool>
     <bool name="config_default_force_widget_resize">false</bool>
+    <bool name="config_default_widget_unlimited_size">false</bool>
     <bool name="config_default_show_status_bar">true</bool>
     <bool name="config_default_remember_position">false</bool>
     <bool name="config_default_show_scrollbar">true</bool>

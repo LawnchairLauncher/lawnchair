@@ -207,6 +207,10 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.allow_widget_overlap),
             )
             SwitchPreference(
+                adapter = prefs2.widgetUnlimitedSize.getAdapter(),
+                label = stringResource(id = R.string.widget_unlimited_size),
+            )
+            SwitchPreference(
                 adapter = prefs2.forceWidgetResize.getAdapter(),
                 label = stringResource(id = R.string.force_widget_resize),
             )
