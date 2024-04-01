@@ -656,7 +656,8 @@ public class TaskbarLauncherStateController {
      * Returns if the current Launcher state has hotseat on top of other elemnets.
      */
     public boolean isInHotseatOnTopStates() {
-        return mLauncherState != LauncherState.ALL_APPS;
+        return mLauncherState != LauncherState.ALL_APPS
+                && !mLauncher.getWorkspace().isOverlayShown();
     }
 
     boolean isInOverview() {

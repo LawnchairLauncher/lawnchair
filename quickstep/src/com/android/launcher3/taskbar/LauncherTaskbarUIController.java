@@ -35,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -49,8 +50,10 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.OnboardingPrefs;
+import com.android.quickstep.HomeVisibilityState;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsAnimationCallbacks;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.RecentsView;
@@ -79,6 +82,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                     AnimatedFloat.VALUE, DISPLAY_PROGRESS_COUNT, Float::max);
 
     private final QuickstepLauncher mLauncher;
+    private final HomeVisibilityState mHomeState;
 
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
             dp -> {
@@ -87,6 +91,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                     mControllers.taskbarViewController.onRotationChanged(dp);
                 }
             };
+    private final HomeVisibilityState.VisibilityChangeListener  mVisibilityChangeListener =
+            this::onLauncherVisibilityChanged;
 
     // Initialized in init.
     private final TaskbarLauncherStateController
@@ -94,6 +100,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     public LauncherTaskbarUIController(QuickstepLauncher launcher) {
         mLauncher = launcher;
+        mHomeState =  SystemUiProxy.INSTANCE.get(mLauncher).getHomeVisibilityState();
     }
 
     @Override
@@ -104,8 +111,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 mControllers.getSharedState().sysuiStateFlags);
 
         mLauncher.setTaskbarUIController(this);
-
-        onLauncherVisibilityChanged(mLauncher.hasBeenResumed(), true /* fromInit */);
+        mHomeState.addListener(mVisibilityChangeListener);
+        onLauncherVisibilityChanged(
+                Flags.useActivityOverlay()
+                        ? mHomeState.isHomeVisible() : mLauncher.hasBeenResumed(),
+                true /* fromInit */);
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
@@ -129,6 +139,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         mLauncher.setTaskbarUIController(null);
         mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
+        mHomeState.removeListener(mVisibilityChangeListener);
         updateTaskTransitionSpec(true);
     }
 
@@ -234,7 +245,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     public void refreshResumedState() {
-        onLauncherVisibilityChanged(mLauncher.hasBeenResumed());
+        onLauncherVisibilityChanged(Flags.useActivityOverlay()
+                ? mHomeState.isHomeVisible() : mLauncher.hasBeenResumed());
     }
 
     @Override
