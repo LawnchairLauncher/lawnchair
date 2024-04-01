@@ -118,3 +118,20 @@ jobs:
         run: |
           gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
           gh pr merge $PR_URL --auto --squash --delete-branch
+
+  nightly-release:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/14-dev'
+    needs: build-debug-apk
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+      # Rename because the # symbol causes errors in GH release command.
+      - name: Rename .apk file
+        run: mv ./Debug\ APK/lawnWithQuickstepGithub/debug/*.apk ./debug.apk
+      - name: Delete release if exist then create release
+        run: gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag ; gh release create "nightly" "./debug.apk" -p --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
