@@ -10,6 +10,7 @@ import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.search.data.RecentKeyword
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.SettingInfo
+import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -37,8 +38,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private var enableFuzzySearch = false
     private var maxResultsCount = 5
     private lateinit var hiddenApps: Set<String>
-    private var showHiddenAppsInSearch = false
-    private var enableSmartHide = false
+    private var hiddenAppsInSearch = ""
     private val generateSearchTarget = GenerateSearchTarget(context)
     private var enableWideSearch = false
 
@@ -54,11 +54,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         pref2.hiddenApps.onEach(launchIn = coroutineScope) {
             hiddenApps = it
         }
-        pref2.showHiddenAppsInSearch.onEach(launchIn = coroutineScope) {
-            showHiddenAppsInSearch = it
-        }
-        pref2.enableSmartHide.onEach(launchIn = coroutineScope) {
-            enableSmartHide = it
+        pref2.hiddenAppsInSearch.onEach(launchIn = coroutineScope) {
+            hiddenAppsInSearch = it
         }
         pref2.performWideSearch.onEach(launchIn = coroutineScope) {
             enableWideSearch = it
@@ -195,9 +192,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     }
 
     private fun Sequence<AppInfo>.filterHiddenApps(query: String): Sequence<AppInfo> {
-        return if (showHiddenAppsInSearch) {
+        return if (hiddenAppsInSearch == HiddenAppsInSearch.ALWAYS) {
             this
-        } else if (enableSmartHide) {
+        } else if (hiddenAppsInSearch == HiddenAppsInSearch.IF_NAME_TYPED) {
             filter {
                 it.toComponentKey().toString() !in hiddenApps ||
                     it.title.toString().lowercase(Locale.getDefault()) == query

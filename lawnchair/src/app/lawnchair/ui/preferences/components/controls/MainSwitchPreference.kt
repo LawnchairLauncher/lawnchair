@@ -1,6 +1,7 @@
 package app.lawnchair.ui.preferences.components.controls
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -8,10 +9,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 
 /**
@@ -22,21 +21,35 @@ fun MainSwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
     description: String? = null,
+    enabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val checked = adapter.state.value
+    MainSwitchPreference(
+        checked = adapter.state.value,
+        onCheckedChange = adapter::onChange,
+        label = label,
+        description = description,
+        enabled = enabled,
+        content = content,
+    )
+}
 
-    Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        shape = MaterialTheme.shapes.large,
-        color = if (checked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
-    ) {
-        SwitchPreference(
-            checked = checked,
-            onCheckedChange = adapter::onChange,
-            label = label,
-        )
-    }
+@Composable
+fun MainSwitchPreference(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    label: String,
+    description: String? = null,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    MainSwitchPreference(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        label = label,
+        enabled = enabled,
+    )
+
     ExpandAndShrink(description != null) {
         if (description != null) {
             Row(
@@ -52,11 +65,36 @@ fun MainSwitchPreference(
     }
     Crossfade(targetState = checked, label = "") { targetState ->
         if (targetState) {
-            DividerColumn(
-                color = Color.Transparent,
-            ) {
+            Column {
                 content()
             }
         }
+    }
+}
+
+@Composable
+fun MainSwitchPreference(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    label: String,
+    enabled: Boolean = true
+) {
+    Surface(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        color = if (checked) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else if (enabled) {
+            MaterialTheme.colorScheme.surfaceVariant
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+    ) {
+        SwitchPreference(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            label = label,
+            enabled = enabled
+        )
     }
 }

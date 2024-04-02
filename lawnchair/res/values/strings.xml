@@ -349,22 +349,6 @@
     <string name="row_height_label">Row Height</string>
     <string name="app_drawer_indent_label">Horizontal Padding</string>
 
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_label">Suggestions</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="pref_recent_suggestion_title">History</string>
-
-    <string name="max_search_result_count_title">Max Search Result Count</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
-
     <!-- HiddenAppsPreferences -->
     <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
     <plurals name="apps_count">
@@ -484,16 +468,39 @@
 
     <!-- Search ig -->
     <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_title">People</string>
+
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
     <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_people_title">People</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="search_pref_result_settings_entry_title">Phone Settings</string>
+    <string name="perform_wide_search_file">Files</string>
+    <string name="pref_suggestion_label">Suggestions</string>
+
+
     <string name="all_apps_device_search_hint">Search</string>
     <string name="search_input_action_clear_results">Clear Search Box</string>
+
     <string name="label_search">Search</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Voice Search</string>
 
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="perform_wide_search_title">Device Search</string>
+
+
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
+    <string name="pref_recent_suggestion_title">History</string>
+
+    <string name="max_search_result_count_title">Max App Result Count</string>
+    <string name="max_people_result_count_title">Max People Result Count</string>
+    <string name="max_file_result_count_title">Max Files Result Count</string>
+    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
+    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
+    <string name="max_recent_result_count_title">Max History Result Count</string>
+    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
+
 
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
@@ -507,7 +514,7 @@
     <string name="warn_contact_permission_content">Requires contact permission</string>
     <string name="warn_files_permission_content">Requires storage permission</string>
 
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
+    <string name="all_apps_search_result_files_description">Media, files, and more</string>
     <string name="all_apps_search_result_contacts_description">Contacts and more</string>
 
     <string name="quickstep_incompatible">Incompatible System Integration</string>

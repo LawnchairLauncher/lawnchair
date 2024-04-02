@@ -46,6 +46,7 @@ import app.lawnchair.ui.preferences.destinations.homeScreenGraph
 import app.lawnchair.ui.preferences.destinations.iconPickerGraph
 import app.lawnchair.ui.preferences.destinations.pickAppForGestureGraph
 import app.lawnchair.ui.preferences.destinations.quickstepGraph
+import app.lawnchair.ui.preferences.destinations.searchGraph
 import app.lawnchair.ui.preferences.destinations.selectIconGraph
 import app.lawnchair.ui.preferences.destinations.smartspaceGraph
 import app.lawnchair.ui.preferences.destinations.smartspaceWidgetGraph
@@ -75,6 +76,7 @@ object Routes {
     const val RESTORE_BACKUP = "restoreBackup"
     const val PICK_APP_FOR_GESTURE = "pickAppForGesture"
     const val GESTURES = "gestures"
+    const val SEARCH = "search"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -130,6 +132,7 @@ fun Preferences(
                         restoreBackupGraph(route = subRoute(Routes.RESTORE_BACKUP))
                         pickAppForGestureGraph(route = subRoute(Routes.PICK_APP_FOR_GESTURE))
                         gesturesGraph(route = subRoute(Routes.GESTURES))
+                        searchGraph(route = subRoute(Routes.SEARCH))
                     }
                 }
             }

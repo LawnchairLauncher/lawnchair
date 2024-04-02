@@ -105,6 +105,13 @@ fun PreferencesDashboard() {
         )
 
         PreferenceCategory(
+            label = "Drawer Search",
+            description = "Global Search, Web Suggestions",
+            iconResource = R.drawable.ic_search,
+            route = Routes.SEARCH
+        )
+
+        PreferenceCategory(
             label = stringResource(R.string.folders_label),
             description = stringResource(R.string.folders_description),
             iconResource = R.drawable.ic_folder,
