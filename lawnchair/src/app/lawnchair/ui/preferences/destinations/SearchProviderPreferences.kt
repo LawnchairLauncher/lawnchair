@@ -111,8 +111,11 @@ private fun ListItem(
     onClick: () -> Unit,
     onDownloadClick: () -> Unit,
     onSponsorDisclaimerClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(
+        modifier = modifier,
+    ) {
         PreferenceTemplate(
             title = { Text(text = title) },
             verticalPadding = if (showDownloadButton) 12.dp else 16.dp,
@@ -160,9 +163,13 @@ private fun Options(
     onAppClick: () -> Unit,
     onAppDownloadClick: () -> Unit,
     onWebsiteClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     PreferenceDivider(startIndent = 40.dp)
-    DividerColumn(startIndent = 40.dp) {
+    DividerColumn(
+        modifier = modifier,
+        startIndent = 40.dp,
+    ) {
         PreferenceTemplate(
             title = { Text(stringResource(id = R.string.app_label)) },
             enabled = appEnabled,

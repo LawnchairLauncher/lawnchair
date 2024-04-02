@@ -225,11 +225,12 @@ fun FontSelection(
 private fun FontSelectionItem(
     adapter: PreferenceAdapter<FontCache.Font>,
     family: FontCache.Family,
+    modifier: Modifier = Modifier,
     onDelete: (() -> Unit)? = null,
 ) {
     val selected = family.variants.any { it.value == adapter.state.value }
     PreferenceTemplate(
-        modifier = Modifier
+        modifier = modifier
             .clickable { adapter.onChange(family.default) },
         title = {
             Box(modifier = Modifier.height(52.dp)) {
@@ -288,11 +289,12 @@ private val VariantButtonContentPadding = PaddingValues(
 private fun VariantDropdown(
     adapter: PreferenceAdapter<FontCache.Font>,
     family: FontCache.Family,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .wrapContentWidth()
             .padding(end = 16.dp),
     ) {

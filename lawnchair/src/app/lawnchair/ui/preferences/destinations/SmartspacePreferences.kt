@@ -109,8 +109,13 @@ fun SmartspacePreferences(
 }
 
 @Composable
-private fun LawnchairSmartspaceSettings(smartspaceProvider: SmartspaceProvider) {
-    Column {
+private fun LawnchairSmartspaceSettings(
+    smartspaceProvider: SmartspaceProvider,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+    ) {
         SmartspacePreview()
         PreferenceGroup(
             heading = stringResource(id = R.string.what_to_show),

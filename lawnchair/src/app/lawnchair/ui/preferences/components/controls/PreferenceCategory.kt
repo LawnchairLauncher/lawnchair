@@ -64,10 +64,11 @@ private fun PreferenceCategory(
     label: String,
     @DrawableRes iconResource: Int,
     onNavigate: () -> Unit,
+    modifier: Modifier = Modifier,
     description: String? = null,
 ) {
     Row(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
     ) {
         PreferenceTemplate(
             modifier = Modifier

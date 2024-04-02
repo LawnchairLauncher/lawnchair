@@ -78,8 +78,10 @@ private fun AnnouncementItem(
     show: Boolean,
     onClose: () -> Unit,
     announcement: Announcement,
+    modifier: Modifier = Modifier,
 ) {
     ExpandAndShrink(
+        modifier = modifier,
         visible = show && announcement.active &&
             announcement.text.isNotBlank() &&
             (!announcement.test || BuildConfig.DEBUG),
@@ -98,9 +100,10 @@ private fun AnnouncementItemContent(
     text: String,
     url: String?,
     onClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp, 0.dp, 16.dp, 0.dp),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -114,12 +117,13 @@ private fun AnnouncementPreferenceItemContent(
     text: String,
     url: String?,
     onClose: (() -> Unit)?,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val hasLink = !url.isNullOrBlank()
 
     PreferenceTemplate(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .addIf(hasLink) {
                 clickable {
