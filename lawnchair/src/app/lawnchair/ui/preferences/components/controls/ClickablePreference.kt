@@ -64,8 +64,8 @@ fun ClickablePreference(
 fun PreferenceClickConfirmation(
     title: String,
     text: String,
-    onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
+    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ModalBottomSheetContent(

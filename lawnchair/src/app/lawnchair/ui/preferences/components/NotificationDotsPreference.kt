@@ -91,11 +91,9 @@ fun NotificationDotsPreference(
             .clickable {
                 if (showWarning) {
                     bottomSheetHandler.show {
-                        NotificationAccessConfirmation(
-                            onDismissRequest = {
-                                bottomSheetHandler.hide()
-                            },
-                        )
+                        NotificationAccessConfirmation {
+                            bottomSheetHandler.hide()
+                        }
                     }
                 } else {
                     val extras = bundleOf(EXTRA_FRAGMENT_ARG_KEY to "notification_badging")
@@ -109,8 +107,8 @@ fun NotificationDotsPreference(
 
 @Composable
 fun NotificationAccessConfirmation(
-    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
 

@@ -133,8 +133,8 @@ private fun CustomIconShapePreference(
 @Composable
 private fun IconShapeCornerPreferenceGroup(
     selectedIconShape: IconShape,
-    onSelectedIconShapeChange: (IconShape) -> Unit,
     modifier: Modifier = Modifier,
+    onSelectedIconShapeChange: (IconShape) -> Unit,
 ) {
     PreferenceGroup(
         modifier = modifier,
@@ -190,8 +190,8 @@ private fun IconShapeCornerPreferenceGroup(
 @Composable
 private fun IconShapeClipboardPreferenceGroup(
     selectedIconShape: IconShape,
-    onSelectedIconShapeChange: (IconShape) -> Unit,
     modifier: Modifier = Modifier,
+    onSelectedIconShapeChange: (IconShape) -> Unit,
 ) {
     val context = LocalContext.current
     val importErrorMessage = stringResource(id = R.string.icon_shape_clipboard_import_error)

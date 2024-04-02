@@ -67,7 +67,7 @@ fun AnnouncementPreference(
     ) {
         announcements.forEachIndexed { index, announcement ->
             var show by remember { mutableStateOf(true) }
-            AnnouncementItem(show, { show = false }, announcement)
+            AnnouncementItem(show, announcement) { show = false }
             if (index != announcements.lastIndex && show && (!announcement.test || BuildConfig.DEBUG)) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -78,9 +78,9 @@ fun AnnouncementPreference(
 @Composable
 private fun AnnouncementItem(
     show: Boolean,
-    onClose: () -> Unit,
     announcement: Announcement,
     modifier: Modifier = Modifier,
+    onClose: () -> Unit,
 ) {
     ExpandAndShrink(
         modifier = modifier,
@@ -100,8 +100,8 @@ private fun AnnouncementItem(
 private fun AnnouncementItemContent(
     text: String,
     url: String?,
-    onClose: () -> Unit,
     modifier: Modifier = Modifier,
+    onClose: () -> Unit,
 ) {
     Surface(
         modifier = modifier
@@ -117,8 +117,8 @@ private fun AnnouncementItemContent(
 private fun AnnouncementPreferenceItemContent(
     text: String,
     url: String?,
-    onClose: (() -> Unit)?,
     modifier: Modifier = Modifier,
+    onClose: (() -> Unit)?,
 ) {
     val context = LocalContext.current
     val hasLink = !url.isNullOrBlank()

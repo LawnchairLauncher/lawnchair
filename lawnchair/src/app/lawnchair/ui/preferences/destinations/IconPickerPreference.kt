@@ -151,8 +151,8 @@ fun IconPickerGrid(
     scaffoldPadding: PaddingValues,
     iconPack: IconPack,
     searchQuery: String,
-    onClickItem: (item: IconPickerItem) -> Unit,
     modifier: Modifier = Modifier,
+    onClickItem: (item: IconPickerItem) -> Unit,
 ) {
     var loadFailed by remember { mutableStateOf(false) }
     val categoriesFlow = remember {
@@ -201,10 +201,9 @@ fun IconPickerGrid(
                     IconPreview(
                         iconPack = iconPack,
                         iconItem = item,
-                        onClick = {
-                            onClickItem(item)
-                        },
-                    )
+                    ) {
+                        onClickItem(item)
+                    }
                 }
             }
         }
@@ -222,8 +221,8 @@ fun IconPickerGrid(
 fun IconPreview(
     iconPack: IconPack,
     iconItem: IconPickerItem,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     val drawable by produceState<Drawable?>(initialValue = null, iconPack, iconItem) {
         launch(Dispatchers.IO) {
