@@ -217,7 +217,7 @@ public class QuickstepLauncher extends Launcher {
     private FixedContainerItems mAllAppsPredictions;
     private HotseatPredictionController mHotseatPredictionController;
     private DepthController mDepthController;
-    private DesktopVisibilityController mDesktopVisibilityController;
+    private @Nullable DesktopVisibilityController mDesktopVisibilityController;
     private QuickstepTransitionManager mAppTransitionManager;
     private OverviewActionsView mActionsView;
     private TISBindHelper mTISBindHelper;
@@ -284,8 +284,8 @@ public class QuickstepLauncher extends Launcher {
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
-        mDesktopVisibilityController = new DesktopVisibilityController(this);
         if (enableDesktopWindowingMode()) {
+            mDesktopVisibilityController = new DesktopVisibilityController(this);
             mDesktopVisibilityController.registerSystemUiListener();
             mSplitSelectStateController.initSplitFromDesktopController(this);
         }
@@ -948,15 +948,13 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public void setResumed() {
-        if (enableDesktopWindowingMode()) {
-            DesktopVisibilityController controller = mDesktopVisibilityController;
-            if (controller != null && controller.areFreeformTasksVisible()
-                    && !controller.isRecentsGestureInProgress()) {
-                // Return early to skip setting activity to appear as resumed
-                // TODO(b/255649902): shouldn't be needed when we have a separate launcher state
-                //  for desktop that we can use to control other parts of launcher
-                return;
-            }
+        if (mDesktopVisibilityController != null
+                && mDesktopVisibilityController.areFreeformTasksVisible()
+                && !mDesktopVisibilityController.isRecentsGestureInProgress()) {
+            // Return early to skip setting activity to appear as resumed
+            // TODO(b/255649902): shouldn't be needed when we have a separate launcher state
+            //  for desktop that we can use to control other parts of launcher
+            return;
         }
         super.setResumed();
     }
@@ -1090,6 +1088,7 @@ public class QuickstepLauncher extends Launcher {
         return mDepthController;
     }
 
+    @Nullable
     public DesktopVisibilityController getDesktopVisibilityController() {
         return mDesktopVisibilityController;
     }

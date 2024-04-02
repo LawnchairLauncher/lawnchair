@@ -27,7 +27,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
@@ -281,12 +280,10 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     private void navigateHome() {
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
 
-        if (enableDesktopWindowingMode()) {
-            DesktopVisibilityController desktopVisibilityController =
-                    LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
-            if (desktopVisibilityController != null) {
-                desktopVisibilityController.onHomeActionTriggered();
-            }
+        DesktopVisibilityController desktopVisibilityController =
+                LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+        if (desktopVisibilityController != null) {
+            desktopVisibilityController.onHomeActionTriggered();
         }
 
         mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_HOME);
