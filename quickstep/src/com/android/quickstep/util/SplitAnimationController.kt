@@ -671,6 +671,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 appIcon2,
                 dividerPos
             )
+        floatingView.bringToFront()
 
         // Launcher animation: animate the floating view, expanding to fill the display surface
         progressUpdater.addUpdateListener(

@@ -18,11 +18,14 @@ package com.android.launcher3.model.data
 
 import android.content.Context
 import com.android.launcher3.LauncherSettings
+import com.android.launcher3.icons.IconCache
 import com.android.launcher3.logger.LauncherAtom
 import com.android.launcher3.views.ActivityContext
 
 /** A type of app collection that launches multiple apps into split screen. */
 class AppPairInfo() : CollectionInfo() {
+    private var contents: ArrayList<WorkspaceItemInfo> = ArrayList()
+
     init {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR
     }
@@ -33,10 +36,27 @@ class AppPairInfo() : CollectionInfo() {
         add(app2)
     }
 
-    /** Adds an element to the contents array. */
-    override fun add(item: WorkspaceItemInfo) {
+    /** Creates a new AppPairInfo that is a copy of the provided one. */
+    constructor(appPairInfo: AppPairInfo) : this() {
+        contents = appPairInfo.contents.clone() as ArrayList<WorkspaceItemInfo>
+        copyFrom(appPairInfo)
+    }
+
+    /** Adds an element to the contents ArrayList. */
+    override fun add(item: ItemInfo) {
+        if (item !is WorkspaceItemInfo) {
+            throw RuntimeException("tried to add an illegal type into an app pair")
+        }
+
         contents.add(item)
     }
+
+    /** Returns the app pair's member apps as an ArrayList of [ItemInfo]. */
+    override fun getContents(): ArrayList<ItemInfo> =
+        ArrayList(contents.stream().map { it as ItemInfo }.toList())
+
+    /** Returns the app pair's member apps as an ArrayList of [WorkspaceItemInfo]. */
+    override fun getAppContents(): ArrayList<WorkspaceItemInfo> = contents
 
     /** Returns the first app in the pair. */
     fun getFirstApp() = contents[0]
@@ -50,7 +70,9 @@ class AppPairInfo() : CollectionInfo() {
     /** Checks if the app pair is launchable at the current screen size. */
     fun isLaunchable(context: Context) =
         (ActivityContext.lookupContext(context) as ActivityContext).getDeviceProfile().isTablet ||
-            noneMatch { it.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE) }
+            getAppContents().stream().noneMatch {
+                it.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE)
+            }
 
     /** Generates an ItemInfo for logging. */
     override fun buildProto(cInfo: CollectionInfo?): LauncherAtom.ItemInfo {
@@ -61,5 +83,12 @@ class AppPairInfo() : CollectionInfo() {
             .setRank(rank)
             .setContainerInfo(getContainerInfo())
             .build()
+    }
+
+    /** Fetches high-res icons for member apps if needed. */
+    fun fetchHiResIconsIfNeeded(iconCache: IconCache) {
+        getAppContents().stream().filter(ItemInfoWithIcon::usingLowResIcon).forEach { member ->
+            iconCache.getTitleAndIcon(member, false)
+        }
     }
 }

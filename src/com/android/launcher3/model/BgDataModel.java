@@ -44,6 +44,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -259,10 +260,15 @@ public class BgDataModel {
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-            case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
-                collections.put(item.id, (CollectionInfo) item);
+                collections.put(item.id, (FolderInfo) item);
                 workspaceItems.add(item);
                 break;
+            case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
+                collections.put(item.id, (AppPairInfo) item);
+                // Fall through here. App pairs are both containers (like folders) and containable
+                // items (can be placed in folders). So we need to add app pairs to the folders
+                // array (above) but also verify the existence of their container, like regular
+                // apps (below).
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
@@ -277,7 +283,7 @@ public class BgDataModel {
                             Log.e(TAG, msg);
                         }
                     } else {
-                        findOrMakeFolder(item.container).add((WorkspaceItemInfo) item);
+                        findOrMakeFolder(item.container).add(item);
                     }
                 }
                 break;

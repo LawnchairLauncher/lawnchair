@@ -160,6 +160,6 @@ public class CacheDataUpdatedTaskTest {
     }
 
     private List<WorkspaceItemInfo> allItems() {
-        return ((FolderInfo) mModelHelper.getBgDataModel().itemsIdMap.get(1)).getContents();
+        return ((FolderInfo) mModelHelper.getBgDataModel().itemsIdMap.get(1)).getAppContents();
     }
 }
