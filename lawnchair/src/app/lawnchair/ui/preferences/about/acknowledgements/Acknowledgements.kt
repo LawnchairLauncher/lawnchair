@@ -63,24 +63,33 @@ fun NavGraphBuilder.licensesGraph(route: String) {
 }
 
 @Composable
-fun Acknowledgements() {
+fun Acknowledgements(
+    modifier: Modifier = Modifier,
+) {
     val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
-    LoadingScreen(ossLibraries) { libraries ->
-        PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
-            preferenceGroupItems(libraries, isFirstChild = true) { index, library ->
-                OssLibraryItem(
-                    ossLibrary = library,
-                    index = index,
-                )
+    LoadingScreen(
+        obj = ossLibraries,
+        modifier = modifier,
+        content = { libraries ->
+            PreferenceLayoutLazyColumn(
+                label = stringResource(id = R.string.acknowledgements),
+            ) {
+                preferenceGroupItems(libraries, isFirstChild = true) { index, library ->
+                    OssLibraryItem(
+                        ossLibrary = library,
+                        index = index,
+                    )
+                }
             }
-        }
-    }
+        },
+    )
 }
 
 @Composable
 fun OssLibraryItem(
     ossLibrary: OssLibrary,
     index: Int,
+    modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
     val destination = subRoute(name = "$index")
@@ -93,7 +102,7 @@ fun OssLibraryItem(
                 overflow = TextOverflow.Ellipsis,
             )
         },
-        modifier = Modifier
+        modifier = modifier
             .clickable { navController.navigate(route = destination) },
     )
 }
@@ -101,6 +110,7 @@ fun OssLibraryItem(
 @Composable
 fun NoticePage(
     index: Int,
+    modifier: Modifier = Modifier,
 ) {
     val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
     val ossLibrary = ossLibraries.getOrNull(index)
@@ -109,6 +119,7 @@ fun NoticePage(
 
     PreferenceLayout(
         label = ossLibrary?.name ?: stringResource(id = R.string.loading),
+        modifier = modifier,
     ) {
         Crossfade(targetState = data, label = "") { it ->
             it ?: return@Crossfade

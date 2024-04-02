@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -58,11 +59,16 @@ fun NavGraphBuilder.homeScreenGraph(route: String) {
 }
 
 @Composable
-fun HomeScreenPreferences() {
+fun HomeScreenPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val scope = rememberCoroutineScope()
-    PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.home_screen_label),
+        modifier = modifier,
+    ) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             val addIconToHomeAdapter = prefs.addIconToHome.getAdapter()
@@ -88,9 +94,12 @@ fun HomeScreenPreferences() {
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
-            ExpandAndShrink(visible = feedAvailable && enableFeedAdapter.state.value) {
-                FeedPreference()
-            }
+            ExpandAndShrink(
+                visible = feedAvailable && enableFeedAdapter.state.value,
+                content = {
+                    FeedPreference()
+                },
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.wallpaper)) {
             SwitchPreference(
@@ -156,12 +165,15 @@ fun HomeScreenPreferences() {
                 adapter = showStatusBarAdapter,
                 label = stringResource(id = R.string.show_status_bar),
             )
-            ExpandAndShrink(visible = showStatusBarAdapter.state.value) {
-                SwitchPreference(
-                    adapter = prefs2.darkStatusBar.getAdapter(),
-                    label = stringResource(id = R.string.dark_status_bar_label),
-                )
-            }
+            ExpandAndShrink(
+                visible = showStatusBarAdapter.state.value,
+                content = {
+                    SwitchPreference(
+                        adapter = prefs2.darkStatusBar.getAdapter(),
+                        label = stringResource(id = R.string.dark_status_bar_label),
+                    )
+                },
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
@@ -176,27 +188,33 @@ fun HomeScreenPreferences() {
                 adapter = homeScreenLabelsAdapter,
                 label = stringResource(id = R.string.show_home_labels),
             )
-            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.label_size),
-                    adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
-                    step = 0.1f,
-                    valueRange = 0.5F..1.5F,
-                    showAsPercentage = true,
-                )
-            }
+            ExpandAndShrink(
+                visible = homeScreenLabelsAdapter.state.value,
+                content = {
+                    SliderPreference(
+                        label = stringResource(id = R.string.label_size),
+                        adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
+                        step = 0.1f,
+                        valueRange = 0.5F..1.5F,
+                        showAsPercentage = true,
+                    )
+                },
+            )
         }
         val overrideRepo = IconOverrideRepository.INSTANCE.get(LocalContext.current)
         val customIconsCount by remember { overrideRepo.observeCount() }.collectAsStateBlocking()
-        ExpandAndShrink(visible = customIconsCount > 0) {
-            PreferenceGroup {
-                ClickablePreference(
-                    label = stringResource(id = R.string.reset_custom_icons),
-                    confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
-                    onClick = { scope.launch { overrideRepo.deleteAll() } },
-                )
-            }
-        }
+        ExpandAndShrink(
+            visible = customIconsCount > 0,
+            content = {
+                PreferenceGroup {
+                    ClickablePreference(
+                        label = stringResource(id = R.string.reset_custom_icons),
+                        confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
+                        onClick = { scope.launch { overrideRepo.deleteAll() } },
+                    )
+                }
+            },
+        )
         PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
             SwitchPreference(
                 adapter = prefs2.roundedWidgets.getAdapter(),
@@ -211,10 +229,13 @@ fun HomeScreenPreferences() {
 }
 
 @Composable
-fun HomeScreenTextColorPreference() {
+fun HomeScreenTextColorPreference(
+    modifier: Modifier = Modifier,
+) {
     ListPreference(
         adapter = preferenceManager2().workspaceTextColor.getAdapter(),
         entries = ColorMode.entries(),
         label = stringResource(id = R.string.home_screen_text_color),
+        modifier = modifier,
     )
 }

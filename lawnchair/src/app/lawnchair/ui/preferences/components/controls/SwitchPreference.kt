@@ -38,6 +38,7 @@ import app.lawnchair.ui.util.PreviewLawnchair
 fun SwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
+    modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
@@ -47,6 +48,7 @@ fun SwitchPreference(
         checked = checked,
         onCheckedChange = adapter::onChange,
         label = label,
+        modifier = modifier,
         description = description,
         onClick = onClick,
         enabled = enabled,
@@ -61,6 +63,7 @@ fun SwitchPreference(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,

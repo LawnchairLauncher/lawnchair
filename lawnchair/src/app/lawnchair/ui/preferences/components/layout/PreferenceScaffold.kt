@@ -31,6 +31,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 fun PreferenceScaffold(
     label: String,
     isExpandedScreen: Boolean,
+    modifier: Modifier = Modifier,
     backArrowVisible: Boolean = true,
     actions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = { BottomSpacer() },
@@ -38,7 +39,7 @@ fun PreferenceScaffold(
 ) {
     val scrollBehavior = if (isExpandedScreen) TopAppBarDefaults.pinnedScrollBehavior() else TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopBar(
                 backArrowVisible = backArrowVisible,

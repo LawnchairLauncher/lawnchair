@@ -102,30 +102,33 @@ fun GeneralPreferences() {
                 description = stringResource(id = R.string.home_screen_rotation_description),
             )
         }
-        ExpandAndShrink(prefs2.enableFontSelection.asState().value) {
-            PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
-                FontPreference(
-                    fontPref = prefs.fontWorkspace,
-                    label = stringResource(R.string.fontWorkspace),
-                )
-                FontPreference(
-                    fontPref = prefs.fontHeading,
-                    label = stringResource(R.string.fontHeading),
-                )
-                FontPreference(
-                    fontPref = prefs.fontHeadingMedium,
-                    label = stringResource(R.string.fontHeadingMedium),
-                )
-                FontPreference(
-                    fontPref = prefs.fontBody,
-                    label = stringResource(R.string.fontBody),
-                )
-                FontPreference(
-                    fontPref = prefs.fontBodyMedium,
-                    label = stringResource(R.string.fontBodyMedium),
-                )
-            }
-        }
+        ExpandAndShrink(
+            visible = prefs2.enableFontSelection.asState().value,
+            content = {
+                PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
+                    FontPreference(
+                        fontPref = prefs.fontWorkspace,
+                        label = stringResource(R.string.fontWorkspace),
+                    )
+                    FontPreference(
+                        fontPref = prefs.fontHeading,
+                        label = stringResource(R.string.fontHeading),
+                    )
+                    FontPreference(
+                        fontPref = prefs.fontHeadingMedium,
+                        label = stringResource(R.string.fontHeadingMedium),
+                    )
+                    FontPreference(
+                        fontPref = prefs.fontBody,
+                        label = stringResource(R.string.fontBody),
+                    )
+                    FontPreference(
+                        fontPref = prefs.fontBodyMedium,
+                        label = stringResource(R.string.fontBodyMedium),
+                    )
+                }
+            },
+        )
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
         PreferenceGroup(
@@ -138,13 +141,16 @@ fun GeneralPreferences() {
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
                 subtitle = iconStyleSubtitle,
             )
-            ExpandAndShrink(visible = themedIconsEnabled) {
-                SwitchPreference(
-                    adapter = prefs.transparentIconBackground.getAdapter(),
-                    label = stringResource(id = R.string.transparent_background_icons),
-                    description = stringResource(id = R.string.transparent_background_icons_description),
-                )
-            }
+            ExpandAndShrink(
+                visible = themedIconsEnabled,
+                content = {
+                    SwitchPreference(
+                        adapter = prefs.transparentIconBackground.getAdapter(),
+                        label = stringResource(id = R.string.transparent_background_icons),
+                        description = stringResource(id = R.string.transparent_background_icons_description),
+                    )
+                },
+            )
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_shape_label),
                 destination = subRoute(name = GeneralRoutes.ICON_SHAPE),
@@ -159,15 +165,18 @@ fun GeneralPreferences() {
                 description = stringResource(id = R.string.auto_adaptive_icons_description),
             )
 
-            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.background_lightness_label),
-                    adapter = prefs.coloredBackgroundLightness.getAdapter(),
-                    valueRange = 0F..1F,
-                    step = 0.1f,
-                    showAsPercentage = true,
-                )
-            }
+            ExpandAndShrink(
+                visible = wrapAdaptiveIcons.state.value,
+                content = {
+                    SliderPreference(
+                        label = stringResource(id = R.string.background_lightness_label),
+                        adapter = prefs.coloredBackgroundLightness.getAdapter(),
+                        valueRange = 0F..1F,
+                        step = 0.1f,
+                        showAsPercentage = true,
+                    )
+                },
+            )
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
@@ -186,15 +195,18 @@ fun GeneralPreferences() {
                     adapter = showNotificationCountAdapter,
                     label = stringResource(id = R.string.show_notification_count),
                 )
-                ExpandAndShrink(visible = showNotificationCountAdapter.state.value) {
-                    DividerColumn {
-                        ColorPreference(preference = prefs2.notificationDotTextColor)
-                        NotificationDotColorContrastWarnings(
-                            dotColor = prefs2.notificationDotColor.asState().value,
-                            dotTextColor = prefs2.notificationDotTextColor.asState().value,
-                        )
-                    }
-                }
+                ExpandAndShrink(
+                    visible = showNotificationCountAdapter.state.value,
+                    content = {
+                        DividerColumn {
+                            ColorPreference(preference = prefs2.notificationDotTextColor)
+                            NotificationDotColorContrastWarnings(
+                                dotColor = prefs2.notificationDotColor.asState().value,
+                                dotTextColor = prefs2.notificationDotTextColor.asState().value,
+                            )
+                        }
+                    },
+                )
             }
         }
     }

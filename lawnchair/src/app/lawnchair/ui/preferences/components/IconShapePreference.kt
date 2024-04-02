@@ -98,14 +98,19 @@ fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
 }
 
 @Composable
-fun IconShapePreference() {
+fun IconShapePreference(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val preferenceManager2 = preferenceManager2()
     val entries = remember { iconShapeEntries(context) }
     val iconShapeAdapter = preferenceManager2.iconShape.getAdapter()
     val customIconShape = preferenceManager2.customIconShape.asState()
 
-    PreferenceLayout(label = stringResource(id = R.string.icon_shape_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.icon_shape_label),
+        modifier = modifier,
+    ) {
         PreferenceGroup(
             heading = stringResource(id = R.string.custom),
         ) {

@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
@@ -36,8 +37,13 @@ fun NavGraphBuilder.folderGraph(route: String) {
 }
 
 @Composable
-fun FolderPreferences() {
-    PreferenceLayout(label = stringResource(id = R.string.folders_label)) {
+fun FolderPreferences(
+    modifier: Modifier = Modifier,
+) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.folders_label),
+        modifier = modifier,
+    ) {
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
@@ -71,15 +77,18 @@ fun FolderPreferences() {
                 adapter = homeScreenLabelsAdapter,
                 label = stringResource(id = R.string.show_home_labels),
             )
-            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.label_size),
-                    adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
-                    step = 0.1f,
-                    valueRange = 0.5F..1.5F,
-                    showAsPercentage = true,
-                )
-            }
+            ExpandAndShrink(
+                visible = homeScreenLabelsAdapter.state.value,
+                content = {
+                    SliderPreference(
+                        label = stringResource(id = R.string.label_size),
+                        adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
+                        step = 0.1f,
+                        valueRange = 0.5F..1.5F,
+                        showAsPercentage = true,
+                    )
+                },
+            )
         }
     }
 }

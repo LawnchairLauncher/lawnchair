@@ -108,7 +108,9 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 }
 
 @Composable
-fun IconPackPreferences() {
+fun IconPackPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
@@ -120,6 +122,7 @@ fun IconPackPreferences() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style),
+        modifier = modifier,
         isExpandedScreen = true,
         scrollState = if (isPortrait) null else scrollState,
     ) {
@@ -137,7 +140,11 @@ fun IconPackPreferences() {
                         .clip(MaterialTheme.shapes.large),
                 ) {
                     WallpaperPreview(modifier = Modifier.fillMaxSize())
-                    key(iconPackAdapter.state.value, themedIconPackAdapter.state.value, themedIconsAdapter.state.value) {
+                    key(
+                        iconPackAdapter.state.value,
+                        themedIconPackAdapter.state.value,
+                        themedIconsAdapter.state.value,
+                    ) {
                         DummyLauncherLayout(
                             idp = invariantDeviceProfile(),
                             modifier = Modifier.fillMaxSize(),
@@ -147,39 +154,48 @@ fun IconPackPreferences() {
             }
         }
         Column {
-            ExpandAndShrink(visible = !drawerThemedIconsEnabled) {
-                PreferenceGroup(
-                    heading = stringResource(id = R.string.icon_pack),
-                ) {
-                    IconPackGrid(
-                        adapter = iconPackAdapter,
-                        themedIconsAdapter.state.value,
-                        false,
-                    )
-                }
-            }
-            ExpandAndShrink(visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled) {
-                PreferenceGroup(
-                    heading = stringResource(id = R.string.themed_icon_pack),
-                ) {
-                    IconPackGrid(
-                        adapter = themedIconPackAdapter,
-                        drawerThemedIconsEnabled,
-                        true,
-                    )
-                }
-            }
-            ExpandAndShrink(visible = drawerThemedIconsEnabled) {
-                PreferenceGroup(
-                    heading = stringResource(id = R.string.themed_icon_pack),
-                ) {
-                    IconPackGrid(
-                        adapter = iconPackAdapter,
-                        drawerThemedIconsEnabled,
-                        true,
-                    )
-                }
-            }
+            ExpandAndShrink(
+                visible = !drawerThemedIconsEnabled,
+                content = {
+                    PreferenceGroup(
+                        heading = stringResource(id = R.string.icon_pack),
+                    ) {
+                        IconPackGrid(
+                            adapter = iconPackAdapter,
+                            themedIconsAdapter.state.value,
+                            false,
+                        )
+                    }
+                },
+            )
+            ExpandAndShrink(
+                visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled,
+                content = {
+                    PreferenceGroup(
+                        heading = stringResource(id = R.string.themed_icon_pack),
+                    ) {
+                        IconPackGrid(
+                            adapter = themedIconPackAdapter,
+                            drawerThemedIconsEnabled,
+                            true,
+                        )
+                    }
+                },
+            )
+            ExpandAndShrink(
+                visible = drawerThemedIconsEnabled,
+                content = {
+                    PreferenceGroup(
+                        heading = stringResource(id = R.string.themed_icon_pack),
+                    ) {
+                        IconPackGrid(
+                            adapter = iconPackAdapter,
+                            drawerThemedIconsEnabled,
+                            true,
+                        )
+                    }
+                },
+            )
             PreferenceGroup {
                 val themedIconsAvailable = LocalContext.current.packageManager
                     .getThemedIconPacksInstalled(LocalContext.current)
@@ -225,6 +241,7 @@ fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
     drawerThemedIcons: Boolean,
     isThemedIconPack: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsState()
@@ -240,7 +257,8 @@ fun IconPackGrid(
             themedIconPacks.filter { it.packageName != "" }
         }
     } else if (drawerThemedIcons) {
-        iconPacksLocal = iconPacks.filter { it.packageName == "" || !themedIconPacksName.contains(it.name) }
+        iconPacksLocal =
+            iconPacks.filter { it.packageName == "" || !themedIconPacksName.contains(it.name) }
     }
 
     val selectedPack = adapter.state.value
@@ -251,30 +269,34 @@ fun IconPackGrid(
         }
     }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val iconPackItemWidth = getIconPackItemWidth(
             availableWidth = this.maxWidth.value - padding.value,
             minimumWidth = 80f,
             gutterWidth = padding.value,
         )
-        NestedScrollStretch {
-            LazyRow(
-                state = lazyListState,
-                horizontalArrangement = Arrangement.spacedBy(space = padding),
-                contentPadding = PaddingValues(horizontal = padding),
-                modifier = Modifier.padding(bottom = 6.dp, top = 6.dp).fillMaxWidth(),
-            ) {
-                itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
-                    IconPackItem(
-                        item = item,
-                        selected = item.packageName == adapter.state.value,
-                        modifier = Modifier.width(iconPackItemWidth.dp),
-                    ) {
-                        adapter.onChange(item.packageName)
+        NestedScrollStretch(
+            content = {
+                LazyRow(
+                    state = lazyListState,
+                    horizontalArrangement = Arrangement.spacedBy(space = padding),
+                    contentPadding = PaddingValues(horizontal = padding),
+                    modifier = Modifier
+                        .padding(bottom = 6.dp, top = 6.dp)
+                        .fillMaxWidth(),
+                ) {
+                    itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
+                        IconPackItem(
+                            item = item,
+                            selected = item.packageName == adapter.state.value,
+                            modifier = Modifier.width(iconPackItemWidth.dp),
+                        ) {
+                            adapter.onChange(item.packageName)
+                        }
                     }
                 }
-            }
-        }
+            },
+        )
     }
 }
 
@@ -289,7 +311,8 @@ private fun getIconPackItemWidth(
     while (true) {
         gutterCount += 1f
         visibleItemCount += 1f
-        val possibleIconPackItemWidth = (availableWidth - gutterCount * gutterWidth) / visibleItemCount
+        val possibleIconPackItemWidth =
+            (availableWidth - gutterCount * gutterWidth) / visibleItemCount
         if (possibleIconPackItemWidth >= minimumWidth) {
             iconPackItemWidth = possibleIconPackItemWidth
         } else {

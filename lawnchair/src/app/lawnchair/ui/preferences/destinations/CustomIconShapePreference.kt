@@ -64,7 +64,9 @@ fun NavGraphBuilder.customIconShapePreferenceGraph(route: String) {
 }
 
 @Composable
-private fun CustomIconShapePreference() {
+private fun CustomIconShapePreference(
+    modifier: Modifier = Modifier,
+) {
     val preferenceManager2 = preferenceManager2()
 
     val customIconShapeAdapter = preferenceManager2.customIconShape.getAdapter()
@@ -79,6 +81,7 @@ private fun CustomIconShapePreference() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.custom_icon_shape),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         bottomBar = {
             Column(

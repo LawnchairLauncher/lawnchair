@@ -25,6 +25,7 @@ import app.lawnchair.ui.util.bottomSheetHandler
 fun TextPreference(
     adapter: PreferenceAdapter<String>,
     label: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: (String) -> String? = { it },
 ) {
@@ -35,6 +36,7 @@ fun TextPreference(
         label = label,
         description = description,
         enabled = enabled,
+        modifier = modifier,
     )
 }
 
@@ -43,6 +45,7 @@ fun TextPreference(
     value: String,
     onChange: (String) -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: (String) -> String? = { it },
 ) {
@@ -50,7 +53,7 @@ fun TextPreference(
     PreferenceTemplate(
         title = { Text(text = label) },
         description = { description(value)?.let { Text(text = it) } },
-        modifier = Modifier
+        modifier = modifier
             .clickable(enabled) {
                 bottomSheetHandler.show {
                     TextPreferenceDialog(
@@ -71,9 +74,11 @@ fun TextPreferenceDialog(
     initialValue: String,
     onDismissRequest: () -> Unit,
     onConfirm: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var value by remember { mutableStateOf(initialValue) }
     ModalBottomSheetContent(
+        modifier = modifier,
         title = { Text(text = title) },
         text = {
             OutlinedTextField(

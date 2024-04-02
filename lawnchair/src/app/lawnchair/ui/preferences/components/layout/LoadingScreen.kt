@@ -34,8 +34,13 @@ import androidx.compose.ui.Modifier
 fun LoadingScreen(
     isLoading: Boolean,
     content: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Crossfade(targetState = isLoading, label = "") {
+    Crossfade(
+        targetState = isLoading,
+        label = "",
+        modifier = modifier,
+    ) {
         if (it) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -59,8 +64,13 @@ fun LoadingScreen(
 fun <T> LoadingScreen(
     obj: T?,
     content: @Composable (T) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    LoadingScreen(isLoading = obj == null) {
-        content(obj!!)
-    }
+    LoadingScreen(
+        isLoading = obj == null,
+        content = {
+            content(obj!!)
+        },
+        modifier = modifier,
+    )
 }

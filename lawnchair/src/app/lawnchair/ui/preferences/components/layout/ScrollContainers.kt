@@ -25,26 +25,30 @@ import kotlinx.coroutines.awaitCancellation
 @Composable
 fun PreferenceColumn(
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState? = rememberScrollState(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    NestedScrollStretch {
-        Column(
-            verticalArrangement = verticalArrangement,
-            horizontalAlignment = horizontalAlignment,
-            modifier = Modifier
-                .fillMaxHeight()
-                .addIf(scrollState != null) {
-                    this
-                        .verticalScroll(scrollState!!)
-                }
-                .padding(contentPadding)
-                .padding(top = 8.dp, bottom = 16.dp),
-            content = content,
-        )
-    }
+    NestedScrollStretch(
+        content = {
+            Column(
+                verticalArrangement = verticalArrangement,
+                horizontalAlignment = horizontalAlignment,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .addIf(scrollState != null) {
+                        this
+                            .verticalScroll(scrollState!!)
+                    }
+                    .padding(contentPadding)
+                    .padding(top = 8.dp, bottom = 16.dp),
+                content = content,
+            )
+        },
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -63,15 +67,18 @@ fun PreferenceLazyColumn(
             }
         }
     }
-    NestedScrollStretch {
-        LazyColumn(
-            modifier = modifier
-                .addIf(!isChild) {
-                    fillMaxHeight()
-                },
-            contentPadding = contentPadding,
-            state = state,
-            content = content,
-        )
-    }
+    NestedScrollStretch(
+        modifier = modifier,
+        content = {
+            LazyColumn(
+                modifier = Modifier
+                    .addIf(!isChild) {
+                        fillMaxHeight()
+                    },
+                contentPadding = contentPadding,
+                state = state,
+                content = content,
+            )
+        },
+    )
 }

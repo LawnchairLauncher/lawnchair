@@ -47,12 +47,14 @@ import app.lawnchair.ui.util.PreviewLawnchair
 fun PreferenceSearchScaffold(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     placeholder: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     Scaffold(
+        modifier = modifier,
         topBar = {
             Surface(
                 color = MaterialTheme.colorScheme.background,

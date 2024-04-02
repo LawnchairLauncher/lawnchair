@@ -3,6 +3,7 @@ package app.lawnchair.ui.preferences.destinations
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavGraphBuilder
@@ -30,7 +31,9 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
  * A screen to house unfinished preferences and debug flags
  */
 @Composable
-fun DebugMenuPreferences() {
+fun DebugMenuPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val flags = remember { prefs.debugFlags }
@@ -40,7 +43,10 @@ fun DebugMenuPreferences() {
 
     val enableDebug = prefs.enableDebugMenu.getAdapter()
 
-    PreferenceLayout(label = "Debug Menu") {
+    PreferenceLayout(
+        label = "Debug Menu",
+        modifier = modifier,
+    ) {
         MainSwitchPreference(adapter = enableDebug, label = "Show Debug Menu") {
             PreferenceGroup {
                 ClickablePreference(

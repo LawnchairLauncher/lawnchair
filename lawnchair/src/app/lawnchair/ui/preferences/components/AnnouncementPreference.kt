@@ -60,8 +60,9 @@ fun AnnouncementPreference() {
 @Composable
 fun AnnouncementPreference(
     announcements: ImmutableList<Announcement>,
+    modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(modifier = modifier) {
         announcements.forEachIndexed { index, announcement ->
             var show by remember { mutableStateOf(true) }
             AnnouncementItem(show, { show = false }, announcement)
@@ -80,13 +81,14 @@ private fun AnnouncementItem(
         visible = show && announcement.active &&
             announcement.text.isNotBlank() &&
             (!announcement.test || BuildConfig.DEBUG),
-    ) {
-        AnnouncementItemContent(
-            text = announcement.text,
-            url = announcement.url,
-            onClose = onClose,
-        )
-    }
+        content = {
+            AnnouncementItemContent(
+                text = announcement.text,
+                url = announcement.url,
+                onClose = onClose,
+            )
+        },
+    )
 }
 
 @Composable

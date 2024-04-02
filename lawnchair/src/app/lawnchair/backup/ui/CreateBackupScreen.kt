@@ -67,6 +67,7 @@ fun NavGraphBuilder.createBackupGraph(route: String) {
 @Composable
 fun CreateBackupScreen(
     viewModel: CreateBackupViewModel,
+    modifier: Modifier = Modifier,
 ) {
     val contents by viewModel.backupContents.collectAsState()
     val screenshot by viewModel.screenshot.collectAsState()
@@ -122,6 +123,7 @@ fun CreateBackupScreen(
 
     PreferenceLayout(
         label = stringResource(id = R.string.create_backup),
+        modifier = modifier,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         DisposableEffect(contents, hasLiveWallpaper, hasStoragePermission) {

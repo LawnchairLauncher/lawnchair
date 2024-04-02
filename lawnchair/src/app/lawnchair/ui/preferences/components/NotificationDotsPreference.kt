@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.callbackFlow
 fun NotificationDotsPreference(
     enabled: Boolean,
     serviceEnabled: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val bottomSheetHandler = bottomSheetHandler
     val context = LocalContext.current
@@ -86,13 +87,15 @@ fun NotificationDotsPreference(
         } else {
             null
         },
-        modifier = Modifier
+        modifier = modifier
             .clickable {
                 if (showWarning) {
                     bottomSheetHandler.show {
-                        NotificationAccessConfirmation {
-                            bottomSheetHandler.hide()
-                        }
+                        NotificationAccessConfirmation(
+                            onDismissRequest = {
+                                bottomSheetHandler.hide()
+                            },
+                        )
                     }
                 } else {
                     val extras = bundleOf(EXTRA_FRAGMENT_ARG_KEY to "notification_badging")
@@ -107,10 +110,12 @@ fun NotificationDotsPreference(
 @Composable
 fun NotificationAccessConfirmation(
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     ModalBottomSheetContent(
+        modifier = modifier,
         title = { Text(text = stringResource(id = R.string.missing_notification_access_label)) },
         text = {
             val appName = stringResource(id = R.string.derived_app_name)

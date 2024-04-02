@@ -50,7 +50,9 @@ fun NavGraphBuilder.hiddenAppsGraph(route: String) {
 }
 
 @Composable
-fun HiddenAppsPreferences() {
+fun HiddenAppsPreferences(
+    modifier: Modifier = Modifier,
+) {
     val adapter = preferenceManager2().hiddenApps.getAdapter()
     val hiddenApps by adapter.state
     val pageTitle =
@@ -63,6 +65,7 @@ fun HiddenAppsPreferences() {
     val state = rememberLazyListState()
     PreferenceScaffold(
         label = pageTitle,
+        modifier = modifier,
         isExpandedScreen = LocalIsExpandedScreen.current,
     ) {
         Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->

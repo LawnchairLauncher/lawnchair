@@ -43,12 +43,13 @@ fun ContributorRow(
     description: String,
     photoUrl: String,
     url: String,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     PreferenceTemplate(
         title = { Text(text = name) },
-        modifier = Modifier
+        modifier = modifier
             .clickable {
                 val webpage = Uri.parse(url)
                 val intent = Intent(Intent.ACTION_VIEW, webpage)

@@ -78,6 +78,7 @@ fun NavGraphBuilder.iconPickerGraph(route: String) {
 @Composable
 fun IconPickerPreference(
     packageName: String,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val iconPack = remember {
@@ -109,6 +110,7 @@ fun IconPickerPreference(
 
     PreferenceSearchScaffold(
         value = searchQuery,
+        modifier = modifier,
         onValueChange = { searchQuery = it },
         placeholder = {
             Text(
@@ -118,17 +120,19 @@ fun IconPickerPreference(
         },
         actions = {
             if (pickerComponent != null) {
-                OverflowMenu {
-                    DropdownMenuItem(onClick = {
-                        val intent = Intent("com.novalauncher.THEME")
-                            .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
-                            .setComponent(pickerComponent)
-                        pickerLauncher.launch(intent)
-                        hideMenu()
-                    }, text = {
-                        Text(text = stringResource(id = R.string.icon_pack_external_picker))
-                    })
-                }
+                OverflowMenu(
+                    block = {
+                        DropdownMenuItem(onClick = {
+                            val intent = Intent("com.novalauncher.THEME")
+                                .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
+                                .setComponent(pickerComponent)
+                            pickerLauncher.launch(intent)
+                            hideMenu()
+                        }, text = {
+                            Text(text = stringResource(id = R.string.icon_pack_external_picker))
+                        })
+                    },
+                )
             }
         },
     ) {
@@ -221,6 +225,7 @@ fun IconPreview(
     iconPack: IconPack,
     iconItem: IconPickerItem,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val drawable by produceState<Drawable?>(initialValue = null, iconPack, iconItem) {
         launch(Dispatchers.IO) {
@@ -228,7 +233,7 @@ fun IconPreview(
         }
     }
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(MaterialTheme.shapes.small)
             .clickable(onClick = onClick)
             .padding(8.dp),

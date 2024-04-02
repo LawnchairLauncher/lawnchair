@@ -32,7 +32,9 @@ fun NavGraphBuilder.quickstepGraph(route: String) {
 }
 
 @Composable
-fun QuickstepPreferences() {
+fun QuickstepPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val context = LocalContext.current
@@ -42,7 +44,10 @@ fun QuickstepPreferences() {
 
     if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
 
-    PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.quickstep_label),
+        modifier = modifier,
+    ) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 adapter = prefs.recentsTranslucentBackground.getAdapter(),
@@ -81,14 +86,17 @@ fun QuickstepPreferences() {
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
                 label = stringResource(id = R.string.override_window_corner_radius_label),
             )
-            ExpandAndShrink(visible = overrideWindowCornerRadius) {
-                SliderPreference(
-                    label = stringResource(id = R.string.window_corner_radius_label),
-                    adapter = prefs.windowCornerRadius.getAdapter(),
-                    step = 0,
-                    valueRange = 70..150,
-                )
-            }
+            ExpandAndShrink(
+                visible = overrideWindowCornerRadius,
+                content = {
+                    SliderPreference(
+                        label = stringResource(id = R.string.window_corner_radius_label),
+                        adapter = prefs.windowCornerRadius.getAdapter(),
+                        step = 0,
+                        valueRange = 70..150,
+                    )
+                },
+            )
         }
 
         if (Utilities.ATLEAST_S_V2) {
@@ -105,9 +113,11 @@ fun QuickstepPreferences() {
 }
 
 @Composable
-fun QuickSwitchIgnoredWarning() {
+fun QuickSwitchIgnoredWarning(
+    modifier: Modifier = Modifier,
+) {
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.errorContainer,
     ) {

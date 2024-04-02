@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -54,42 +55,53 @@ fun NavGraphBuilder.dockGraph(route: String) {
 }
 
 @Composable
-fun DockPreferences() {
+fun DockPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.dock_label),
+        modifier = modifier,
+    ) {
         val isHotseatEnabled = prefs2.isHotseatEnabled.getAdapter()
         val hotseatModeAdapter = prefs2.hotseatMode.getAdapter()
-        MainSwitchPreference(adapter = isHotseatEnabled, label = stringResource(id = R.string.show_hotseat_title)) {
+        MainSwitchPreference(
+            adapter = isHotseatEnabled,
+            label = stringResource(id = R.string.show_hotseat_title),
+        ) {
             PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
                 HotseatModePreference(
                     adapter = hotseatModeAdapter,
                 )
-                ExpandAndShrink(visible = hotseatModeAdapter.state.value == LawnchairHotseat) {
-                    DividerColumn {
-                        SwitchPreference(
-                            adapter = prefs2.themedHotseatQsb.getAdapter(),
-                            label = stringResource(id = R.string.apply_accent_color_label),
-                        )
-                        SliderPreference(
-                            label = stringResource(id = R.string.corner_radius_label),
-                            adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
-                            step = 0.05F,
-                            valueRange = 0F..1F,
-                            showAsPercentage = true,
-                        )
-                        val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
-                        NavigationActionPreference(
-                            label = stringResource(R.string.search_provider),
-                            destination = subRoute(DockRoutes.SEARCH_PROVIDER),
-                            subtitle = stringResource(
-                                id = QsbSearchProvider.values()
-                                    .first { it == hotseatQsbProviderAdapter }
-                                    .name,
-                            ),
-                        )
-                    }
-                }
+                ExpandAndShrink(
+                    visible = hotseatModeAdapter.state.value == LawnchairHotseat,
+                    content = {
+                        DividerColumn {
+                            SwitchPreference(
+                                adapter = prefs2.themedHotseatQsb.getAdapter(),
+                                label = stringResource(id = R.string.apply_accent_color_label),
+                            )
+                            SliderPreference(
+                                label = stringResource(id = R.string.corner_radius_label),
+                                adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
+                                step = 0.05F,
+                                valueRange = 0F..1F,
+                                showAsPercentage = true,
+                            )
+                            val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
+                            NavigationActionPreference(
+                                label = stringResource(R.string.search_provider),
+                                destination = subRoute(DockRoutes.SEARCH_PROVIDER),
+                                subtitle = stringResource(
+                                    id = QsbSearchProvider.values()
+                                        .first { it == hotseatQsbProviderAdapter }
+                                        .name,
+                                ),
+                            )
+                        }
+                    },
+                )
             }
             PreferenceGroup(heading = stringResource(id = R.string.grid)) {
                 SliderPreference(
@@ -113,6 +125,7 @@ fun DockPreferences() {
 @Composable
 private fun HotseatModePreference(
     adapter: PreferenceAdapter<HotseatMode>,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
@@ -130,5 +143,6 @@ private fun HotseatModePreference(
         adapter = adapter,
         entries = entries,
         label = stringResource(id = R.string.hotseat_mode_label),
+        modifier = modifier,
     )
 }

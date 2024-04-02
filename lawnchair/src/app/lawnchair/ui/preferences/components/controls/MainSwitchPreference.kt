@@ -21,13 +21,14 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 fun MainSwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
+    modifier: Modifier = Modifier,
     description: String? = null,
     content: @Composable () -> Unit,
 ) {
     val checked = adapter.state.value
 
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = if (checked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
     ) {
@@ -37,19 +38,22 @@ fun MainSwitchPreference(
             label = label,
         )
     }
-    ExpandAndShrink(description != null) {
-        if (description != null) {
-            Row(
-                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 16.dp),
-            ) {
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+    ExpandAndShrink(
+        visible = description != null,
+        content = {
+            if (description != null) {
+                Row(
+                    modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 16.dp),
+                ) {
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
-        }
-    }
+        },
+    )
     Crossfade(targetState = checked, label = "") { targetState ->
         if (targetState) {
             DividerColumn(

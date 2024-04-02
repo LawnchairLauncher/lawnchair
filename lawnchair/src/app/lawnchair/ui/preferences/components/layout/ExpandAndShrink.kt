@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 /**
  * Animates the appearance and disappearance of [content] via an expanding and shrinking animation, respectively.
@@ -17,11 +18,13 @@ import androidx.compose.runtime.Composable
 fun ExpandAndShrink(
     visible: Boolean,
     content: @Composable AnimatedVisibilityScope.() -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
         visible = visible,
         enter = expandVertically() + fadeIn(),
         exit = shrinkVertically() + fadeOut(),
         content = content,
+        modifier = modifier,
     )
 }

@@ -39,13 +39,18 @@ fun NavGraphBuilder.searchProviderGraph(route: String) {
 }
 
 @Composable
-fun SearchProviderPreferences() {
+fun SearchProviderPreferences(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val bottomSheetHandler = LocalBottomSheetHandler.current
     val adapter = preferenceManager2().hotseatQsbProvider.getAdapter()
     val forceWebsiteAdapter = preferenceManager2().hotseatQsbForceWebsite.getAdapter()
 
-    PreferenceLayout(label = stringResource(R.string.search_provider)) {
+    PreferenceLayout(
+        label = stringResource(R.string.search_provider),
+        modifier = modifier,
+    ) {
         PreferenceGroup {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
                 val appInstalled = qsbSearchProvider.isDownloaded(context)
@@ -63,9 +68,12 @@ fun SearchProviderPreferences() {
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                         onSponsorDisclaimerClick = {
                             bottomSheetHandler.show {
-                                SponsorDisclaimer(title) {
-                                    bottomSheetHandler.hide()
-                                }
+                                SponsorDisclaimer(
+                                    title,
+                                    onAcknowledge = {
+                                        bottomSheetHandler.hide()
+                                    },
+                                )
                             }
                         }.takeIf { qsbSearchProvider.sponsored },
                         description = if (showDownloadButton) {
@@ -74,16 +82,19 @@ fun SearchProviderPreferences() {
                             null
                         },
                     )
-                    ExpandAndShrink(visible = selected && hasAppAndWebsite) {
-                        Options(
-                            appEnabled = appInstalled,
-                            appSelected = !forceWebsiteAdapter.state.value && appInstalled,
-                            onAppClick = { forceWebsiteAdapter.onChange(newValue = false) },
-                            onAppDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
-                            onWebsiteClick = { forceWebsiteAdapter.onChange(newValue = true) },
-                            showAppDownloadButton = !appInstalled,
-                        )
-                    }
+                    ExpandAndShrink(
+                        visible = selected && hasAppAndWebsite,
+                        content = {
+                            Options(
+                                appEnabled = appInstalled,
+                                appSelected = !forceWebsiteAdapter.state.value && appInstalled,
+                                onAppClick = { forceWebsiteAdapter.onChange(newValue = false) },
+                                onAppDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
+                                onWebsiteClick = { forceWebsiteAdapter.onChange(newValue = true) },
+                                showAppDownloadButton = !appInstalled,
+                            )
+                        },
+                    )
                 }
             }
         }
@@ -199,6 +210,7 @@ private fun Options(
 private fun SponsorDisclaimer(
     sponsor: String,
     onAcknowledge: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ModalBottomSheetContent(
         buttons = {
@@ -206,6 +218,7 @@ private fun SponsorDisclaimer(
                 Text(text = stringResource(id = android.R.string.ok))
             }
         },
+        modifier = modifier,
     ) {
         CompositionLocalProvider(
             LocalContentColor provides MaterialTheme.colorScheme.onBackground,

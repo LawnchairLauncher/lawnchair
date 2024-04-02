@@ -50,12 +50,15 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 @Composable
-fun PreferencesDashboard() {
+fun PreferencesDashboard(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     SyncLiveInformation()
 
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
+        modifier = modifier,
         verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu() },
@@ -137,7 +140,9 @@ fun PreferencesDashboard() {
 }
 
 @Composable
-fun PreferencesOverflowMenu() {
+fun PreferencesOverflowMenu(
+    modifier: Modifier = Modifier,
+) {
     val navController = LocalNavController.current
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
     val experimentalFeaturesRoute = subRoute(name = Routes.EXPERIMENTAL_FEATURES)
@@ -149,46 +154,51 @@ fun PreferencesOverflowMenu() {
         )
     }
     val openRestoreBackup = restoreBackupOpener()
-    OverflowMenu {
-        val context = LocalContext.current
-        DropdownMenuItem(onClick = {
-            openAppInfo(context)
-            hideMenu()
-        }, text = {
-            Text(text = stringResource(id = R.string.app_info_drop_target_label))
-        })
-        DropdownMenuItem(onClick = {
-            restartLauncher(context)
-            hideMenu()
-        }, text = {
-            Text(text = stringResource(id = R.string.debug_restart_launcher))
-        })
-        DropdownMenuItem(onClick = {
-            navController.navigate(experimentalFeaturesRoute)
-            hideMenu()
-        }, text = {
-            Text(text = stringResource(id = R.string.experimental_features_label))
-        })
-        PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
-        DropdownMenuItem(onClick = {
-            navController.navigate("/${Routes.CREATE_BACKUP}/")
-            hideMenu()
-        }, text = {
-            Text(text = stringResource(id = R.string.create_backup))
-        })
-        DropdownMenuItem(onClick = {
-            openRestoreBackup()
-            hideMenu()
-        }, text = {
-            Text(text = stringResource(id = R.string.restore_backup))
-        })
-    }
+    OverflowMenu(
+        modifier = modifier,
+        block = {
+            val context = LocalContext.current
+            DropdownMenuItem(onClick = {
+                openAppInfo(context)
+                hideMenu()
+            }, text = {
+                Text(text = stringResource(id = R.string.app_info_drop_target_label))
+            })
+            DropdownMenuItem(onClick = {
+                restartLauncher(context)
+                hideMenu()
+            }, text = {
+                Text(text = stringResource(id = R.string.debug_restart_launcher))
+            })
+            DropdownMenuItem(onClick = {
+                navController.navigate(experimentalFeaturesRoute)
+                hideMenu()
+            }, text = {
+                Text(text = stringResource(id = R.string.experimental_features_label))
+            })
+            PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
+            DropdownMenuItem(onClick = {
+                navController.navigate("/${Routes.CREATE_BACKUP}/")
+                hideMenu()
+            }, text = {
+                Text(text = stringResource(id = R.string.create_backup))
+            })
+            DropdownMenuItem(onClick = {
+                openRestoreBackup()
+                hideMenu()
+            }, text = {
+                Text(text = stringResource(id = R.string.restore_backup))
+            })
+        },
+    )
 }
 
 @Composable
-fun PreferencesDebugWarning() {
+fun PreferencesDebugWarning(
+    modifier: Modifier = Modifier,
+) {
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.errorContainer,
     ) {
@@ -200,10 +210,12 @@ fun PreferencesDebugWarning() {
 }
 
 @Composable
-fun PreferencesSetDefaultLauncherWarning() {
+fun PreferencesSetDefaultLauncherWarning(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {

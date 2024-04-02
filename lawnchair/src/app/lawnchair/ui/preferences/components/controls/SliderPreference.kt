@@ -74,6 +74,7 @@ fun SliderPreference(
     adapter: PreferenceAdapter<Float>,
     valueRange: ClosedFloatingPointRange<Float>,
     step: Float,
+    modifier: Modifier = Modifier,
     showAsPercentage: Boolean = false,
     showUnit: String = "",
 ) {
@@ -130,6 +131,7 @@ fun SliderPreference(
                     .height(24.dp),
             )
         },
+        modifier = modifier,
         applyPaddings = false,
     )
 }

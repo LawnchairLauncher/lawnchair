@@ -52,10 +52,11 @@ fun CustomizeDialog(
     onTitleChange: (String) -> Unit,
     defaultTitle: String,
     launchSelectIcon: (() -> Unit)?,
+    modifier: Modifier = Modifier,
     content: (@Composable () -> Unit)? = null,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .navigationBarsOrDisplayCutoutPadding()
             .fillMaxWidth(),
     ) {

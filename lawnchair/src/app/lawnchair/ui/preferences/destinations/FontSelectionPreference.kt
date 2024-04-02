@@ -88,6 +88,7 @@ private enum class ContentType {
 @Composable
 fun FontSelection(
     fontPref: BasePreferenceManager.FontPref,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val customFonts by remember { FontCache.INSTANCE.get(context).customFonts }.collectAsState(initial = emptyList())
@@ -135,6 +136,7 @@ fun FontSelection(
     PreferenceSearchScaffold(
         value = searchQuery,
         onValueChange = { searchQuery = it },
+        modifier = modifier,
         placeholder = {
             Text(
                 text = stringResource(id = R.string.label_search),
@@ -142,17 +144,19 @@ fun FontSelection(
             )
         },
         actions = {
-            OverflowMenu {
-                DropdownMenuItem(
-                    onClick = {
-                        fontPref.set(fontPref.defaultValue)
-                        hideMenu()
-                    },
-                    text = {
-                        Text(text = stringResource(id = R.string.reset_font))
-                    },
-                )
-            }
+            OverflowMenu(
+                block = {
+                    DropdownMenuItem(
+                        onClick = {
+                            fontPref.set(fontPref.defaultValue)
+                            hideMenu()
+                        },
+                        text = {
+                            Text(text = stringResource(id = R.string.reset_font))
+                        },
+                    )
+                },
+            )
         },
     ) { padding ->
         PreferenceLazyColumn(padding) {

@@ -217,12 +217,15 @@ fun NavGraphBuilder.aboutGraph(route: String) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun About() {
+fun About(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
 
     PreferenceLayout(
-        horizontalAlignment = Alignment.CenterHorizontally,
         label = stringResource(id = R.string.about_label),
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier.padding(top = 8.dp),

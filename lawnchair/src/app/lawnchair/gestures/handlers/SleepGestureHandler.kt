@@ -85,7 +85,8 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
                     title = R.string.dt2s_a11y_hint_title,
                     description = R.string.dt2s_a11y_hint,
                     settingsIntent = intent,
-                ) { close(true) }
+                    handleClose = { close(true) },
+                )
             }
             return
         }
@@ -113,7 +114,8 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
                     title = R.string.dt2s_admin_hint_title,
                     description = R.string.dt2s_admin_hint,
                     settingsIntent = intent,
-                ) { close(true) }
+                    handleClose = { close(true) },
+                )
             }
             return
         }
@@ -134,6 +136,7 @@ fun ServiceWarningDialog(
     description: Int,
     settingsIntent: Intent,
     handleClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     ModalBottomSheetContent(
@@ -155,5 +158,6 @@ fun ServiceWarningDialog(
                 Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
             }
         },
+        modifier = modifier,
     )
 }

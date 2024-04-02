@@ -27,13 +27,14 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 fun NavigationActionPreference(
     label: String,
     destination: String,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
     val navController = LocalNavController.current
 
     PreferenceTemplate(
-        modifier = Modifier.clickable { navController.navigate(route = destination) },
+        modifier = modifier.clickable { navController.navigate(route = destination) },
         title = { Text(text = label) },
         description = { subtitle?.let { Text(text = it) } },
         endWidget = endWidget,
