@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotNull;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +30,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsLauncher3Test extends AbstractLauncherUiTest {
 
+    @ScreenRecord // b/322823478
     @Test
     public void testDevicePressMenu() throws Exception {
         mDevice.pressMenu();

@@ -195,6 +195,7 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
 
     }
 
+    @ScreenRecord // b/322823478
     @Test
     public void testEdu() {
         assumeTrue(mWorkProfileSetupSuccessful);
