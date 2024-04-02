@@ -16,6 +16,7 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
@@ -41,7 +42,12 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.apppairs.AppPairIcon;
+import com.android.launcher3.apppairs.AppPairIconDrawingParams;
+import com.android.launcher3.apppairs.AppPairIconGraphic;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.model.data.AppPairInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Themes;
@@ -125,7 +131,9 @@ public class PreviewItemManager {
     }
 
     Drawable prepareCreateAnimation(final View destView) {
-        Drawable animateDrawable = ((BubbleTextView) destView).getIcon();
+        Drawable animateDrawable = destView instanceof AppPairIcon
+                ? ((AppPairIcon) destView).getIconDrawableArea().getDrawable()
+                : ((BubbleTextView) destView).getIcon();
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 destView.getMeasuredWidth());
         mReferenceDrawable = animateDrawable;
@@ -258,7 +266,7 @@ public class PreviewItemManager {
     }
 
     void buildParamsForPage(int page, ArrayList<PreviewItemDrawingParams> params, boolean animate) {
-        List<WorkspaceItemInfo> items = mIcon.getPreviewItemsOnPage(page);
+        List<ItemInfo> items = mIcon.getPreviewItemsOnPage(page);
 
         // We adjust the size of the list to match the number of items in the preview.
         while (items.size() < params.size()) {
@@ -328,16 +336,18 @@ public class PreviewItemManager {
         mNumOfPrevItems = numOfPrevItemsAux;
     }
 
-    void updatePreviewItems(Predicate<WorkspaceItemInfo> itemCheck) {
+    void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         boolean modified = false;
         for (PreviewItemDrawingParams param : mFirstPageParams) {
-            if (itemCheck.test(param.item)) {
+            if (itemCheck.test(param.item)
+                    || (param.item instanceof AppPairInfo api && api.anyMatch(itemCheck))) {
                 setDrawable(param, param.item);
                 modified = true;
             }
         }
         for (PreviewItemDrawingParams param : mCurrentPageParams) {
-            if (itemCheck.test(param.item)) {
+            if (itemCheck.test(param.item)
+                    || (param.item instanceof AppPairInfo api && api.anyMatch(itemCheck))) {
                 setDrawable(param, param.item);
                 modified = true;
             }
@@ -370,15 +380,14 @@ public class PreviewItemManager {
      * @param newItems The list of items in the new preview.
      * @param dropped  The item that was dropped onto the FolderIcon.
      */
-    public void onDrop(List<WorkspaceItemInfo> oldItems, List<WorkspaceItemInfo> newItems,
-            WorkspaceItemInfo dropped) {
+    public void onDrop(List<ItemInfo> oldItems, List<ItemInfo> newItems, ItemInfo dropped) {
         int numItems = newItems.size();
         final ArrayList<PreviewItemDrawingParams> params = mFirstPageParams;
         buildParamsForPage(0, params, false);
 
         // New preview items for items that are moving in (except for the dropped item).
-        List<WorkspaceItemInfo> moveIn = new ArrayList<>();
-        for (WorkspaceItemInfo newItem : newItems) {
+        List<ItemInfo> moveIn = new ArrayList<>();
+        for (ItemInfo newItem : newItems) {
             if (!oldItems.contains(newItem) && !newItem.equals(dropped)) {
                 moveIn.add(newItem);
             }
@@ -401,10 +410,10 @@ public class PreviewItemManager {
         }
 
         // Old preview items that need to be moved out.
-        List<WorkspaceItemInfo> moveOut = new ArrayList<>(oldItems);
+        List<ItemInfo> moveOut = new ArrayList<>(oldItems);
         moveOut.removeAll(newItems);
         for (int i = 0; i < moveOut.size(); ++i) {
-            WorkspaceItemInfo item = moveOut.get(i);
+            ItemInfo item = moveOut.get(i);
             int oldIndex = oldItems.indexOf(item);
             PreviewItemDrawingParams p = computePreviewItemDrawingParams(oldIndex, numItems, null);
             updateTransitionParam(p, item, oldIndex, EXIT_INDEX, numItems);
@@ -418,7 +427,7 @@ public class PreviewItemManager {
         }
     }
 
-    private void updateTransitionParam(final PreviewItemDrawingParams p, WorkspaceItemInfo item,
+    private void updateTransitionParam(final PreviewItemDrawingParams p, ItemInfo item,
             int prevIndex, int newIndex, int numItems) {
         setDrawable(p, item);
 
@@ -431,16 +440,24 @@ public class PreviewItemManager {
     }
 
     @VisibleForTesting
-    public void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
-        if (item.hasPromiseIconUi() || (item.runtimeStatusFlags
-                & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
-            PreloadIconDrawable drawable = newPendingIcon(mContext, item);
-            p.drawable = drawable;
-        } else {
-            p.drawable = item.newIcon(mContext,
-                    Themes.isThemedIconEnabled(mContext) ? FLAG_THEMED : 0);
+    public void setDrawable(PreviewItemDrawingParams p, ItemInfo item) {
+        if (item instanceof WorkspaceItemInfo wii) {
+            if (wii.hasPromiseIconUi() || (wii.runtimeStatusFlags
+                    & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+                PreloadIconDrawable drawable = newPendingIcon(mContext, wii);
+                p.drawable = drawable;
+            } else {
+                p.drawable = wii.newIcon(mContext,
+                        Themes.isThemedIconEnabled(mContext) ? FLAG_THEMED : 0);
+            }
+            p.drawable.setBounds(0, 0, mIconSize, mIconSize);
+        } else if (item instanceof AppPairInfo api) {
+            AppPairIconDrawingParams appPairParams =
+                    new AppPairIconDrawingParams(mContext, DISPLAY_FOLDER);
+            p.drawable = AppPairIconGraphic.composeDrawable(api, appPairParams);
+            p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         }
-        p.drawable.setBounds(0, 0, mIconSize, mIconSize);
+
         p.item = item;
         // Set the callback to FolderIcon as it is responsible to drawing the icon. The
         // callback will be released when the folder is opened.

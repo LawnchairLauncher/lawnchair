@@ -168,8 +168,8 @@ class FolderIconLoadTest {
         val collections = modelHelper.getBgDataModel().collections
 
         assertThat(collections.size()).isEqualTo(1)
-        assertThat(collections.valueAt(0).contents.size).isEqualTo(itemCount)
-        return collections.valueAt(0).contents
+        assertThat(collections.valueAt(0).getAppContents().size).isEqualTo(itemCount)
+        return collections.valueAt(0).getAppContents()
     }
 
     private fun verifyHighRes(items: ArrayList<WorkspaceItemInfo>, vararg indices: Int) {
