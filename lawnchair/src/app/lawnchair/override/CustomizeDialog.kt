@@ -110,6 +110,7 @@ fun CustomizeAppDialog(
     defaultTitle: String,
     componentKey: ComponentKey,
     onClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val prefs = preferenceManager()
     val preferenceManager2 = preferenceManager2()
@@ -147,6 +148,7 @@ fun CustomizeAppDialog(
         onTitleChange = { title = it },
         defaultTitle = defaultTitle,
         launchSelectIcon = openIconPicker,
+        modifier = modifier,
     ) {
         PreferenceGroup(
             description = componentKey.componentName.flattenToString(),

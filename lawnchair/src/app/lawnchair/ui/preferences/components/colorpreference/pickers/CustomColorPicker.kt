@@ -96,7 +96,9 @@ fun CustomColorPicker(
         )
     }
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+    ) {
         PreferenceGroup(
             heading = stringResource(id = R.string.hex),
             modifier = Modifier.padding(top = 8.dp),

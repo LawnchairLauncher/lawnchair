@@ -96,11 +96,7 @@ fun AppDrawerPreferences(
             val enableSmartHide = prefs2.enableSmartHide.getAdapter()
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
-                subtitle = resources.getQuantityString(
-                    R.plurals.apps_count,
-                    hiddenApps.size,
-                    hiddenApps.size,
-                ),
+                subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenApps.size, hiddenApps.size),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
             ExpandAndShrink(

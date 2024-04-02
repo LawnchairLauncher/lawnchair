@@ -140,11 +140,7 @@ fun IconPackPreferences(
                         .clip(MaterialTheme.shapes.large),
                 ) {
                     WallpaperPreview(modifier = Modifier.fillMaxSize())
-                    key(
-                        iconPackAdapter.state.value,
-                        themedIconPackAdapter.state.value,
-                        themedIconsAdapter.state.value,
-                    ) {
+                    key(iconPackAdapter.state.value, themedIconPackAdapter.state.value, themedIconsAdapter.state.value) {
                         DummyLauncherLayout(
                             idp = invariantDeviceProfile(),
                             modifier = Modifier.fillMaxSize(),
@@ -257,8 +253,7 @@ fun IconPackGrid(
             themedIconPacks.filter { it.packageName != "" }
         }
     } else if (drawerThemedIcons) {
-        iconPacksLocal =
-            iconPacks.filter { it.packageName == "" || !themedIconPacksName.contains(it.name) }
+        iconPacksLocal = iconPacks.filter { it.packageName == "" || !themedIconPacksName.contains(it.name) }
     }
 
     val selectedPack = adapter.state.value
@@ -311,8 +306,7 @@ private fun getIconPackItemWidth(
     while (true) {
         gutterCount += 1f
         visibleItemCount += 1f
-        val possibleIconPackItemWidth =
-            (availableWidth - gutterCount * gutterWidth) / visibleItemCount
+        val possibleIconPackItemWidth = (availableWidth - gutterCount * gutterWidth) / visibleItemCount
         if (possibleIconPackItemWidth >= minimumWidth) {
             iconPackItemWidth = possibleIconPackItemWidth
         } else {

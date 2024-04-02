@@ -44,7 +44,9 @@ fun PreferenceGroup(
     dividersToSkip: Int = 0,
     content: @Composable () -> Unit,
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+    ) {
         PreferenceGroupHeading(heading)
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),

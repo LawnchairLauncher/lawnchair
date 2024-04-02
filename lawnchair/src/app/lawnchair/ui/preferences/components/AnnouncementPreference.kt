@@ -62,7 +62,9 @@ fun AnnouncementPreference(
     announcements: ImmutableList<Announcement>,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+    ) {
         announcements.forEachIndexed { index, announcement ->
             var show by remember { mutableStateOf(true) }
             AnnouncementItem(show, { show = false }, announcement)

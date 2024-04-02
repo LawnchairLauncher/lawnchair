@@ -21,7 +21,9 @@ fun OverflowMenu(
     val showMenu = remember { mutableStateOf(false) }
     val overflowMenuScope = remember { OverflowMenuScopeImpl(showMenu) }
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier,
+    ) {
         ClickableIcon(
             imageVector = Icons.Rounded.MoreVert,
             onClick = { showMenu.value = true },

@@ -99,7 +99,9 @@ fun Preferences(
     val isExpandedScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
 
     Providers(isExpandedScreen) {
-        Surface(modifier = modifier) {
+        Surface(
+            modifier = modifier,
+        ) {
             CompositionLocalProvider(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,

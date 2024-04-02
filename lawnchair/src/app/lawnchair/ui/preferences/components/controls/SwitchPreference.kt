@@ -69,7 +69,7 @@ fun SwitchPreference(
     onClick: (() -> Unit)? = null,
 ) {
     PreferenceTemplate(
-        modifier = Modifier.clickable(enabled = enabled) {
+        modifier = modifier.clickable(enabled = enabled) {
             if (onClick != null) {
                 onClick()
             } else {

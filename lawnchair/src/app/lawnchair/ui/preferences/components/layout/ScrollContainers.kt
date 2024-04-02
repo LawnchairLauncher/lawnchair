@@ -32,6 +32,7 @@ fun PreferenceColumn(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     NestedScrollStretch(
+        modifier = modifier,
         content = {
             Column(
                 verticalArrangement = verticalArrangement,
@@ -47,7 +48,6 @@ fun PreferenceColumn(
                 content = content,
             )
         },
-        modifier = modifier,
     )
 }
 
