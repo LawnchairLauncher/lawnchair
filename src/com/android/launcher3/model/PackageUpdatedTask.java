@@ -286,10 +286,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             }
                             if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
                                 if (activities != null && !activities.isEmpty()) {
-                                    si.status = ApiWrapper.INSTANCE.get(context)
-                                            .isNonResizeableActivity(activities.get(0))
-                                            ? si.status | WorkspaceItemInfo.FLAG_NON_RESIZEABLE
-                                            : si.status & ~WorkspaceItemInfo.FLAG_NON_RESIZEABLE;
+                                    si.setNonResizeable(ApiWrapper.INSTANCE.get(context)
+                                            .isNonResizeableActivity(activities.get(0)));
                                 }
                                 iconCache.getTitleAndIcon(si, si.usingLowResIcon());
                                 infoUpdated = true;
