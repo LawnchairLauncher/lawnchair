@@ -443,7 +443,7 @@ public class LoaderTask implements Runnable {
                 List<IconRequestInfo<WorkspaceItemInfo>> iconRequestInfos = new ArrayList<>();
 
                 WorkspaceItemProcessor itemProcessor = new WorkspaceItemProcessor(c, memoryLogger,
-                        mUserManagerState, mLauncherApps, mPendingPackages,
+                        mUserCache, mUserManagerState, mLauncherApps, mPendingPackages,
                         mShortcutKeyToPinnedShortcuts, mApp, mBgDataModel,
                         mWidgetProvidersMap, installingPkgs, isSdCardReady,
                         widgetInflater, pmHelper, iconRequestInfos, unlockedUsers,
