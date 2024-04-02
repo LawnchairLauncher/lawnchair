@@ -77,9 +77,7 @@ fun FolderPreferences(
                 adapter = homeScreenLabelsAdapter,
                 label = stringResource(id = R.string.show_home_labels),
             )
-            ExpandAndShrink(
-                visible = homeScreenLabelsAdapter.state.value,
-            ) {
+            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),

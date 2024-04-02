@@ -15,8 +15,8 @@ import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 
 @Composable
 fun OverflowMenu(
-    block: @Composable OverflowMenuScope.() -> Unit,
     modifier: Modifier = Modifier,
+    block: @Composable OverflowMenuScope.() -> Unit,
 ) {
     val showMenu = remember { mutableStateOf(false) }
     val overflowMenuScope = remember { OverflowMenuScopeImpl(showMenu) }

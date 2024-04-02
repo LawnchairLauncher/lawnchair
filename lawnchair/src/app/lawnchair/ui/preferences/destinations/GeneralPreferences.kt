@@ -103,9 +103,7 @@ fun GeneralPreferences() {
                 description = stringResource(id = R.string.home_screen_rotation_description),
             )
         }
-        ExpandAndShrink(
-            visible = prefs2.enableFontSelection.asState().value,
-        ) {
+        ExpandAndShrink(visible = prefs2.enableFontSelection.asState().value) {
             PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
                 FontPreference(
                     fontPref = prefs.fontWorkspace,
@@ -141,9 +139,7 @@ fun GeneralPreferences() {
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
                 subtitle = iconStyleSubtitle,
             )
-            ExpandAndShrink(
-                visible = themedIconsEnabled,
-            ) {
+            ExpandAndShrink(visible = themedIconsEnabled) {
                 SwitchPreference(
                     adapter = prefs.transparentIconBackground.getAdapter(),
                     label = stringResource(id = R.string.transparent_background_icons),
@@ -164,9 +160,7 @@ fun GeneralPreferences() {
                 description = stringResource(id = R.string.auto_adaptive_icons_description),
             )
 
-            ExpandAndShrink(
-                visible = wrapAdaptiveIcons.state.value,
-            ) {
+            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),
                     adapter = prefs.coloredBackgroundLightness.getAdapter(),
@@ -193,9 +187,7 @@ fun GeneralPreferences() {
                     adapter = showNotificationCountAdapter,
                     label = stringResource(id = R.string.show_notification_count),
                 )
-                ExpandAndShrink(
-                    visible = showNotificationCountAdapter.state.value,
-                ) {
+                ExpandAndShrink(visible = showNotificationCountAdapter.state.value) {
                     DividerColumn {
                         ColorPreference(preference = prefs2.notificationDotTextColor)
                         NotificationDotColorContrastWarnings(

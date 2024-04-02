@@ -38,9 +38,7 @@ fun MainSwitchPreference(
             label = label,
         )
     }
-    ExpandAndShrink(
-        visible = description != null,
-    ) {
+    ExpandAndShrink(visible = description != null) {
         if (description != null) {
             Row(
                 modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 16.dp),

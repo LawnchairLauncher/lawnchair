@@ -94,9 +94,7 @@ fun HomeScreenPreferences(
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
-            ExpandAndShrink(
-                visible = feedAvailable && enableFeedAdapter.state.value,
-            ) {
+            ExpandAndShrink(visible = feedAvailable && enableFeedAdapter.state.value) {
                 FeedPreference()
             }
         }
@@ -164,9 +162,7 @@ fun HomeScreenPreferences(
                 adapter = showStatusBarAdapter,
                 label = stringResource(id = R.string.show_status_bar),
             )
-            ExpandAndShrink(
-                visible = showStatusBarAdapter.state.value,
-            ) {
+            ExpandAndShrink(visible = showStatusBarAdapter.state.value) {
                 SwitchPreference(
                     adapter = prefs2.darkStatusBar.getAdapter(),
                     label = stringResource(id = R.string.dark_status_bar_label),
@@ -186,9 +182,7 @@ fun HomeScreenPreferences(
                 adapter = homeScreenLabelsAdapter,
                 label = stringResource(id = R.string.show_home_labels),
             )
-            ExpandAndShrink(
-                visible = homeScreenLabelsAdapter.state.value,
-            ) {
+            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
@@ -200,9 +194,7 @@ fun HomeScreenPreferences(
         }
         val overrideRepo = IconOverrideRepository.INSTANCE.get(LocalContext.current)
         val customIconsCount by remember { overrideRepo.observeCount() }.collectAsStateBlocking()
-        ExpandAndShrink(
-            visible = customIconsCount > 0,
-        ) {
+        ExpandAndShrink(visible = customIconsCount > 0) {
             PreferenceGroup {
                 ClickablePreference(
                     label = stringResource(id = R.string.reset_custom_icons),

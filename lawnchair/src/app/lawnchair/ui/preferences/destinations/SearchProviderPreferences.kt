@@ -68,12 +68,9 @@ fun SearchProviderPreferences(
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                         onSponsorDisclaimerClick = {
                             bottomSheetHandler.show {
-                                SponsorDisclaimer(
-                                    title,
-                                    onAcknowledge = {
-                                        bottomSheetHandler.hide()
-                                    },
-                                )
+                                SponsorDisclaimer(title) {
+                                    bottomSheetHandler.hide()
+                                }
                             }
                         }.takeIf { qsbSearchProvider.sponsored },
                         description = if (showDownloadButton) {
@@ -82,9 +79,7 @@ fun SearchProviderPreferences(
                             null
                         },
                     )
-                    ExpandAndShrink(
-                        visible = selected && hasAppAndWebsite,
-                    ) {
+                    ExpandAndShrink(visible = selected && hasAppAndWebsite) {
                         Options(
                             appEnabled = appInstalled,
                             appSelected = !forceWebsiteAdapter.state.value && appInstalled,
@@ -215,8 +210,8 @@ private fun Options(
 @Composable
 private fun SponsorDisclaimer(
     sponsor: String,
-    onAcknowledge: () -> Unit,
     modifier: Modifier = Modifier,
+    onAcknowledge: () -> Unit,
 ) {
     ModalBottomSheetContent(
         buttons = {

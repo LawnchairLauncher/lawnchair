@@ -66,17 +66,12 @@ fun DockPreferences(
     ) {
         val isHotseatEnabled = prefs2.isHotseatEnabled.getAdapter()
         val hotseatModeAdapter = prefs2.hotseatMode.getAdapter()
-        MainSwitchPreference(
-            adapter = isHotseatEnabled,
-            label = stringResource(id = R.string.show_hotseat_title),
-        ) {
+        MainSwitchPreference(adapter = isHotseatEnabled, label = stringResource(id = R.string.show_hotseat_title)) {
             PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
                 HotseatModePreference(
                     adapter = hotseatModeAdapter,
                 )
-                ExpandAndShrink(
-                    visible = hotseatModeAdapter.state.value == LawnchairHotseat,
-                ) {
+                ExpandAndShrink(visible = hotseatModeAdapter.state.value == LawnchairHotseat) {
                     DividerColumn {
                         SwitchPreference(
                             adapter = prefs2.themedHotseatQsb.getAdapter(),

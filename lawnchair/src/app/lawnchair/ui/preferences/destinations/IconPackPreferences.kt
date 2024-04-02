@@ -150,9 +150,7 @@ fun IconPackPreferences(
             }
         }
         Column {
-            ExpandAndShrink(
-                visible = !drawerThemedIconsEnabled,
-            ) {
+            ExpandAndShrink(visible = !drawerThemedIconsEnabled) {
                 PreferenceGroup(
                     heading = stringResource(id = R.string.icon_pack),
                 ) {
@@ -163,9 +161,7 @@ fun IconPackPreferences(
                     )
                 }
             }
-            ExpandAndShrink(
-                visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled,
-            ) {
+            ExpandAndShrink(visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled) {
                 PreferenceGroup(
                     heading = stringResource(id = R.string.themed_icon_pack),
                 ) {
@@ -176,9 +172,7 @@ fun IconPackPreferences(
                     )
                 }
             }
-            ExpandAndShrink(
-                visible = drawerThemedIconsEnabled,
-            ) {
+            ExpandAndShrink(visible = drawerThemedIconsEnabled) {
                 PreferenceGroup(
                     heading = stringResource(id = R.string.themed_icon_pack),
                 ) {
@@ -272,9 +266,7 @@ fun IconPackGrid(
                 state = lazyListState,
                 horizontalArrangement = Arrangement.spacedBy(space = padding),
                 contentPadding = PaddingValues(horizontal = padding),
-                modifier = Modifier
-                    .padding(bottom = 6.dp, top = 6.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(bottom = 6.dp, top = 6.dp).fillMaxWidth(),
             ) {
                 itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
                     IconPackItem(

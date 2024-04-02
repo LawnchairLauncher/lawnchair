@@ -120,19 +120,17 @@ fun IconPickerPreference(
         },
         actions = {
             if (pickerComponent != null) {
-                OverflowMenu(
-                    block = {
-                        DropdownMenuItem(onClick = {
-                            val intent = Intent("com.novalauncher.THEME")
-                                .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
-                                .setComponent(pickerComponent)
-                            pickerLauncher.launch(intent)
-                            hideMenu()
-                        }, text = {
-                            Text(text = stringResource(id = R.string.icon_pack_external_picker))
-                        })
-                    },
-                )
+                OverflowMenu {
+                    DropdownMenuItem(onClick = {
+                        val intent = Intent("com.novalauncher.THEME")
+                            .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
+                            .setComponent(pickerComponent)
+                        pickerLauncher.launch(intent)
+                        hideMenu()
+                    }, text = {
+                        Text(text = stringResource(id = R.string.icon_pack_external_picker))
+                    })
+                }
             }
         },
     ) {

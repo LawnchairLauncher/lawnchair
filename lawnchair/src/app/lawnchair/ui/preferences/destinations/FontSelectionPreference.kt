@@ -144,19 +144,17 @@ fun FontSelection(
             )
         },
         actions = {
-            OverflowMenu(
-                block = {
-                    DropdownMenuItem(
-                        onClick = {
-                            fontPref.set(fontPref.defaultValue)
-                            hideMenu()
-                        },
-                        text = {
-                            Text(text = stringResource(id = R.string.reset_font))
-                        },
-                    )
-                },
-            )
+            OverflowMenu {
+                DropdownMenuItem(
+                    onClick = {
+                        fontPref.set(fontPref.defaultValue)
+                        hideMenu()
+                    },
+                    text = {
+                        Text(text = stringResource(id = R.string.reset_font))
+                    },
+                )
+            }
         },
     ) { padding ->
         PreferenceLazyColumn(padding) {

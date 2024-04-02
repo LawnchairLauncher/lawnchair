@@ -99,17 +99,13 @@ fun AppDrawerPreferences(
                 subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenApps.size, hiddenApps.size),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
-            ExpandAndShrink(
-                visible = hiddenApps.isNotEmpty() && showDrawerSearchBar.state.value,
-            ) {
+            ExpandAndShrink(visible = hiddenApps.isNotEmpty() && showDrawerSearchBar.state.value) {
                 DividerColumn {
                     SwitchPreference(
                         label = stringResource(id = R.string.hide_hidden_apps_search),
                         adapter = hideHiddenAppsInSearch,
                     )
-                    ExpandAndShrink(
-                        visible = hideHiddenAppsInSearch.state.value,
-                    ) {
+                    ExpandAndShrink(visible = hideHiddenAppsInSearch.state.value) {
                         SwitchPreference(
                             label = stringResource(id = R.string.show_enable_smart_hide),
                             adapter = enableSmartHide,
@@ -125,9 +121,7 @@ fun AppDrawerPreferences(
                 label = stringResource(id = R.string.show_app_search_bar),
                 adapter = showDrawerSearchBar,
             )
-            ExpandAndShrink(
-                visible = showDrawerSearchBar.state.value,
-            ) {
+            ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
                 DividerColumn {
                     SwitchPreference(
                         adapter = prefs2.autoShowKeyboardInDrawer.getAdapter(),
@@ -150,17 +144,14 @@ fun AppDrawerPreferences(
             }
         }
 
-        val isDeviceSearch =
-            prefs.performWideSearchExperimental.get() && showDrawerSearchBar.state.value
+        val isDeviceSearch = prefs.performWideSearchExperimental.get() && showDrawerSearchBar.state.value
         if (isDeviceSearch) {
             PreferenceGroup(heading = stringResource(id = R.string.pref_advance_search_category)) {
                 SwitchPreference(
                     adapter = prefs2.performWideSearch.getAdapter(),
                     label = stringResource(id = R.string.perform_wide_search_title),
                 )
-                ExpandAndShrink(
-                    visible = prefs2.performWideSearch.getAdapter().state.value,
-                ) {
+                ExpandAndShrink(visible = prefs2.performWideSearch.getAdapter().state.value) {
                     DividerColumn {
                         SwitchPreference(
                             adapter = prefs.searchResultFiles.getAdapter(),
@@ -176,9 +167,7 @@ fun AppDrawerPreferences(
                             ),
                             onClick = { checkAndRequestFilesPermission(context, prefs) },
                         )
-                        ExpandAndShrink(
-                            visible = prefs.searchResultFiles.getAdapter().state.value,
-                        ) {
+                        ExpandAndShrink(visible = prefs.searchResultFiles.getAdapter().state.value) {
                             SliderPreference(
                                 label = stringResource(id = R.string.max_file_result_count_title),
                                 adapter = prefs2.maxFileResultCount.getAdapter(),
@@ -200,9 +189,7 @@ fun AppDrawerPreferences(
                             ),
                             onClick = { requestContactPermissionGranted(context, prefs) },
                         )
-                        ExpandAndShrink(
-                            visible = prefs.searchResultPeople.getAdapter().state.value,
-                        ) {
+                        ExpandAndShrink(visible = prefs.searchResultPeople.getAdapter().state.value) {
                             SliderPreference(
                                 label = stringResource(id = R.string.max_people_result_count_title),
                                 adapter = prefs2.maxPeopleResultCount.getAdapter(),
@@ -214,9 +201,7 @@ fun AppDrawerPreferences(
                             adapter = prefs.searchResultSettingsEntry.getAdapter(),
                             label = stringResource(id = R.string.search_pref_result_settings_entry_title),
                         )
-                        ExpandAndShrink(
-                            visible = prefs.searchResultSettingsEntry.getAdapter().state.value,
-                        ) {
+                        ExpandAndShrink(visible = prefs.searchResultSettingsEntry.getAdapter().state.value) {
                             SliderPreference(
                                 label = stringResource(id = R.string.max_settings_entry_result_count_title),
                                 adapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
@@ -229,18 +214,14 @@ fun AppDrawerPreferences(
             }
         }
 
-        ExpandAndShrink(
-            visible = showDrawerSearchBar.state.value,
-        ) {
+        ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
             PreferenceGroup(heading = stringResource(id = R.string.pref_suggestion_label)) {
                 DividerColumn {
                     SwitchPreference(
                         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
                         label = stringResource(id = R.string.pref_suggestion_title),
                     )
-                    ExpandAndShrink(
-                        visible = prefs.searchResultStartPageSuggestion.getAdapter().state.value,
-                    ) {
+                    ExpandAndShrink(visible = prefs.searchResultStartPageSuggestion.getAdapter().state.value) {
                         DividerColumn {
                             SliderPreference(
                                 label = stringResource(id = R.string.max_suggestion_result_count_title),
@@ -262,9 +243,7 @@ fun AppDrawerPreferences(
                         label = stringResource(id = R.string.pref_recent_suggestion_title),
                     )
 
-                    ExpandAndShrink(
-                        visible = prefs.searchResulRecentSuggestion.getAdapter().state.value,
-                    ) {
+                    ExpandAndShrink(visible = prefs.searchResulRecentSuggestion.getAdapter().state.value) {
                         SliderPreference(
                             label = stringResource(id = R.string.max_recent_result_count_title),
                             adapter = prefs2.maxRecentResultCount.getAdapter(),
@@ -276,9 +255,7 @@ fun AppDrawerPreferences(
             }
         }
         if (deviceSearchEnabled) {
-            ExpandAndShrink(
-                visible = showDrawerSearchBar.state.value,
-            ) {
+            ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
                 PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                     SwitchPreference(
                         adapter = prefs.searchResultShortcuts.getAdapter(),
@@ -330,9 +307,7 @@ fun AppDrawerPreferences(
                 adapter = showDrawerLabels,
                 label = stringResource(id = R.string.show_home_labels),
             )
-            ExpandAndShrink(
-                visible = showDrawerLabels.state.value,
-            ) {
+            ExpandAndShrink(visible = showDrawerLabels.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.drawerIconLabelSizeFactor.getAdapter(),
