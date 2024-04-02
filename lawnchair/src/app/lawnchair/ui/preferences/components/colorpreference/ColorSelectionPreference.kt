@@ -3,7 +3,6 @@ package app.lawnchair.ui.preferences.components.colorpreference
 import android.content.Context
 import android.graphics.Color
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,7 +62,6 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ColorSelection(
     label: String,

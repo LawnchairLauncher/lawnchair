@@ -17,7 +17,6 @@ open class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
         return mGestureDetector.onTouchEvent(event)
     }
 
-    @Suppress("PrivatePropertyName")
     private inner class GestureListener : SimpleOnGestureListener() {
 
         override fun onDown(e: MotionEvent): Boolean {

@@ -1,5 +1,6 @@
 package app.lawnchair.icons
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -341,6 +342,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
 
         fun updateMapFromResources(resources: Resources, packageName: String) {
             try {
+                @SuppressLint("DiscouragedApi")
                 val xmlId = resources.getIdentifier(THEMED_ICON_MAP_FILE, "xml", packageName)
                 if (xmlId != 0) {
                     val parser = resources.getXml(xmlId)

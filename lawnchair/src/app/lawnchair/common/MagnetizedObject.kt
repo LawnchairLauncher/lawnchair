@@ -19,6 +19,7 @@ package app.lawnchair.common
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PointF
+import android.os.Build
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -26,6 +27,7 @@ import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
 import android.view.ViewConfiguration
+import androidx.annotation.RequiresApi
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.dynamicanimation.animation.SpringForce
@@ -145,6 +147,8 @@ abstract class MagnetizedObject<T : Any>(
 
     private val velocityTracker: VelocityTracker = VelocityTracker.obtain()
     private val vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+    @RequiresApi(Build.VERSION_CODES.R)
     private val vibrationAttributes: VibrationAttributes = VibrationAttributes.createForUsage(
         VibrationAttributes.USAGE_TOUCH,
     )
@@ -164,7 +168,7 @@ abstract class MagnetizedObject<T : Any>(
      * Sets the listener to receive events. This must be set, or [maybeConsumeMotionEvent]
      * will always return false and no magnetic effects will occur.
      */
-    lateinit var magnetListener: MagnetizedObject.MagnetListener
+    lateinit var magnetListener: MagnetListener
 
     /**
      * Optional update listener to provide to the PhysicsAnimator that is used to spring the object

@@ -1,5 +1,6 @@
 package app.lawnchair.theme.color
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.core.content.res.ResourcesCompat
 import dev.kdrag0n.colorkt.Color
@@ -22,6 +23,8 @@ class SystemColorScheme(context: Context) : ColorScheme() {
 
     private fun loadSystemColor(paletteName: String, lum: Int): AndroidColor {
         val colorName = "system_${paletteName}_$lum"
+
+        @SuppressLint("DiscouragedApi")
         val colorId = resources.getIdentifier(colorName, "color", "android")
         return AndroidColor(ResourcesCompat.getColor(resources, colorId, null))
     }

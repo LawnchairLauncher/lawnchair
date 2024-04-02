@@ -143,7 +143,7 @@ class DismissView(context: Context) : FrameLayout(context) {
         if (isShowing) return
         val gradientDrawable = checkExists(gradientDrawable) ?: return
         isShowing = true
-        setVisibility(View.VISIBLE)
+        visibility = View.VISIBLE
         val alphaAnim = ObjectAnimator.ofInt(
             gradientDrawable,
             gradientAlpha,
@@ -216,14 +216,14 @@ class DismissView(context: Context) : FrameLayout(context) {
             intArrayOf(gradientColorWithAlpha, Color.TRANSPARENT),
         )
         gd.setDither(true)
-        gd.setAlpha(0)
+        gd.alpha = 0
         return gd
     }
 
     private fun updatePadding() {
         if (!Utilities.ATLEAST_R) return
         val config = checkExists(config) ?: return
-        val insets: WindowInsets = wm.getCurrentWindowMetrics().getWindowInsets()
+        val insets: WindowInsets = wm.currentWindowMetrics.getWindowInsets()
         val navInset = insets.getInsetsIgnoringVisibility(
             WindowInsets.Type.navigationBars(),
         )
