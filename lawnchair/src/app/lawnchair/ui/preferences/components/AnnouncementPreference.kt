@@ -85,14 +85,13 @@ private fun AnnouncementItem(
         visible = show && announcement.active &&
             announcement.text.isNotBlank() &&
             (!announcement.test || BuildConfig.DEBUG),
-        content = {
-            AnnouncementItemContent(
-                text = announcement.text,
-                url = announcement.url,
-                onClose = onClose,
-            )
-        },
-    )
+    ) {
+        AnnouncementItemContent(
+            text = announcement.text,
+            url = announcement.url,
+            onClose = onClose,
+        )
+    }
 }
 
 @Composable

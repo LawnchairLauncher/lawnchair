@@ -104,15 +104,14 @@ fun PreferenceGroupDescription(
         ExpandAndShrink(
             modifier = modifier,
             visible = showDescription,
-            content = {
-                Row(modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 16.dp)) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            },
-        )
+        ) {
+            Row(modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 16.dp)) {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 }

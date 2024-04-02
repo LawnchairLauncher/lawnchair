@@ -91,8 +91,7 @@ class LawnchairShortcut {
                     icon = icon,
                     defaultTitle = defaultTitle,
                     componentKey = appInfo.toComponentKey(),
-                    onClose = { close(true) },
-                )
+                ) { close(true) }
             }
         }
     }

@@ -84,17 +84,16 @@ fun SearchProviderPreferences(
                     )
                     ExpandAndShrink(
                         visible = selected && hasAppAndWebsite,
-                        content = {
-                            Options(
-                                appEnabled = appInstalled,
-                                appSelected = !forceWebsiteAdapter.state.value && appInstalled,
-                                onAppClick = { forceWebsiteAdapter.onChange(newValue = false) },
-                                onAppDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
-                                onWebsiteClick = { forceWebsiteAdapter.onChange(newValue = true) },
-                                showAppDownloadButton = !appInstalled,
-                            )
-                        },
-                    )
+                    ) {
+                        Options(
+                            appEnabled = appInstalled,
+                            appSelected = !forceWebsiteAdapter.state.value && appInstalled,
+                            onAppClick = { forceWebsiteAdapter.onChange(newValue = false) },
+                            onAppDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
+                            onWebsiteClick = { forceWebsiteAdapter.onChange(newValue = true) },
+                            showAppDownloadButton = !appInstalled,
+                        )
+                    }
                 }
             }
         }

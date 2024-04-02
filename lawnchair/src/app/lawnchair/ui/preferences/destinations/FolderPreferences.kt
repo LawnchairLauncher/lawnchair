@@ -79,16 +79,15 @@ fun FolderPreferences(
             )
             ExpandAndShrink(
                 visible = homeScreenLabelsAdapter.state.value,
-                content = {
-                    SliderPreference(
-                        label = stringResource(id = R.string.label_size),
-                        adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
-                        step = 0.1f,
-                        valueRange = 0.5F..1.5F,
-                        showAsPercentage = true,
-                    )
-                },
-            )
+            ) {
+                SliderPreference(
+                    label = stringResource(id = R.string.label_size),
+                    adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
+                    step = 0.1f,
+                    valueRange = 0.5F..1.5F,
+                    showAsPercentage = true,
+                )
+            }
         }
     }
 }

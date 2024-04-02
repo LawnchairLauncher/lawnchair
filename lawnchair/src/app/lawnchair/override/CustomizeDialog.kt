@@ -109,8 +109,8 @@ fun CustomizeAppDialog(
     icon: Drawable,
     defaultTitle: String,
     componentKey: ComponentKey,
-    onClose: () -> Unit,
     modifier: Modifier = Modifier,
+    onClose: () -> Unit,
 ) {
     val prefs = preferenceManager()
     val preferenceManager2 = preferenceManager2()

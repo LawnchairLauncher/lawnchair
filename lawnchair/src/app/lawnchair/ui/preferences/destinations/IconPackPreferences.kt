@@ -152,46 +152,43 @@ fun IconPackPreferences(
         Column {
             ExpandAndShrink(
                 visible = !drawerThemedIconsEnabled,
-                content = {
-                    PreferenceGroup(
-                        heading = stringResource(id = R.string.icon_pack),
-                    ) {
-                        IconPackGrid(
-                            adapter = iconPackAdapter,
-                            themedIconsAdapter.state.value,
-                            false,
-                        )
-                    }
-                },
-            )
+            ) {
+                PreferenceGroup(
+                    heading = stringResource(id = R.string.icon_pack),
+                ) {
+                    IconPackGrid(
+                        adapter = iconPackAdapter,
+                        themedIconsAdapter.state.value,
+                        false,
+                    )
+                }
+            }
             ExpandAndShrink(
                 visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled,
-                content = {
-                    PreferenceGroup(
-                        heading = stringResource(id = R.string.themed_icon_pack),
-                    ) {
-                        IconPackGrid(
-                            adapter = themedIconPackAdapter,
-                            drawerThemedIconsEnabled,
-                            true,
-                        )
-                    }
-                },
-            )
+            ) {
+                PreferenceGroup(
+                    heading = stringResource(id = R.string.themed_icon_pack),
+                ) {
+                    IconPackGrid(
+                        adapter = themedIconPackAdapter,
+                        drawerThemedIconsEnabled,
+                        true,
+                    )
+                }
+            }
             ExpandAndShrink(
                 visible = drawerThemedIconsEnabled,
-                content = {
-                    PreferenceGroup(
-                        heading = stringResource(id = R.string.themed_icon_pack),
-                    ) {
-                        IconPackGrid(
-                            adapter = iconPackAdapter,
-                            drawerThemedIconsEnabled,
-                            true,
-                        )
-                    }
-                },
-            )
+            ) {
+                PreferenceGroup(
+                    heading = stringResource(id = R.string.themed_icon_pack),
+                ) {
+                    IconPackGrid(
+                        adapter = iconPackAdapter,
+                        drawerThemedIconsEnabled,
+                        true,
+                    )
+                }
+            }
             PreferenceGroup {
                 val themedIconsAvailable = LocalContext.current.packageManager
                     .getThemedIconPacksInstalled(LocalContext.current)
@@ -270,28 +267,26 @@ fun IconPackGrid(
             minimumWidth = 80f,
             gutterWidth = padding.value,
         )
-        NestedScrollStretch(
-            content = {
-                LazyRow(
-                    state = lazyListState,
-                    horizontalArrangement = Arrangement.spacedBy(space = padding),
-                    contentPadding = PaddingValues(horizontal = padding),
-                    modifier = Modifier
-                        .padding(bottom = 6.dp, top = 6.dp)
-                        .fillMaxWidth(),
-                ) {
-                    itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
-                        IconPackItem(
-                            item = item,
-                            selected = item.packageName == adapter.state.value,
-                            modifier = Modifier.width(iconPackItemWidth.dp),
-                        ) {
-                            adapter.onChange(item.packageName)
-                        }
+        NestedScrollStretch {
+            LazyRow(
+                state = lazyListState,
+                horizontalArrangement = Arrangement.spacedBy(space = padding),
+                contentPadding = PaddingValues(horizontal = padding),
+                modifier = Modifier
+                    .padding(bottom = 6.dp, top = 6.dp)
+                    .fillMaxWidth(),
+            ) {
+                itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
+                    IconPackItem(
+                        item = item,
+                        selected = item.packageName == adapter.state.value,
+                        modifier = Modifier.width(iconPackItemWidth.dp),
+                    ) {
+                        adapter.onChange(item.packageName)
                     }
                 }
-            },
-        )
+            }
+        }
     }
 }
 

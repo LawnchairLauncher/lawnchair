@@ -96,10 +96,9 @@ fun HomeScreenPreferences(
             )
             ExpandAndShrink(
                 visible = feedAvailable && enableFeedAdapter.state.value,
-                content = {
-                    FeedPreference()
-                },
-            )
+            ) {
+                FeedPreference()
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.wallpaper)) {
             SwitchPreference(
@@ -167,13 +166,12 @@ fun HomeScreenPreferences(
             )
             ExpandAndShrink(
                 visible = showStatusBarAdapter.state.value,
-                content = {
-                    SwitchPreference(
-                        adapter = prefs2.darkStatusBar.getAdapter(),
-                        label = stringResource(id = R.string.dark_status_bar_label),
-                    )
-                },
-            )
+            ) {
+                SwitchPreference(
+                    adapter = prefs2.darkStatusBar.getAdapter(),
+                    label = stringResource(id = R.string.dark_status_bar_label),
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
@@ -190,31 +188,29 @@ fun HomeScreenPreferences(
             )
             ExpandAndShrink(
                 visible = homeScreenLabelsAdapter.state.value,
-                content = {
-                    SliderPreference(
-                        label = stringResource(id = R.string.label_size),
-                        adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
-                        step = 0.1f,
-                        valueRange = 0.5F..1.5F,
-                        showAsPercentage = true,
-                    )
-                },
-            )
+            ) {
+                SliderPreference(
+                    label = stringResource(id = R.string.label_size),
+                    adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
+                    step = 0.1f,
+                    valueRange = 0.5F..1.5F,
+                    showAsPercentage = true,
+                )
+            }
         }
         val overrideRepo = IconOverrideRepository.INSTANCE.get(LocalContext.current)
         val customIconsCount by remember { overrideRepo.observeCount() }.collectAsStateBlocking()
         ExpandAndShrink(
             visible = customIconsCount > 0,
-            content = {
-                PreferenceGroup {
-                    ClickablePreference(
-                        label = stringResource(id = R.string.reset_custom_icons),
-                        confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
-                        onClick = { scope.launch { overrideRepo.deleteAll() } },
-                    )
-                }
-            },
-        )
+        ) {
+            PreferenceGroup {
+                ClickablePreference(
+                    label = stringResource(id = R.string.reset_custom_icons),
+                    confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
+                    onClick = { scope.launch { overrideRepo.deleteAll() } },
+                )
+            }
+        }
         PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
             SwitchPreference(
                 adapter = prefs2.roundedWidgets.getAdapter(),

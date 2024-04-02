@@ -105,31 +105,30 @@ fun GeneralPreferences() {
         }
         ExpandAndShrink(
             visible = prefs2.enableFontSelection.asState().value,
-            content = {
-                PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
-                    FontPreference(
-                        fontPref = prefs.fontWorkspace,
-                        label = stringResource(R.string.fontWorkspace),
-                    )
-                    FontPreference(
-                        fontPref = prefs.fontHeading,
-                        label = stringResource(R.string.fontHeading),
-                    )
-                    FontPreference(
-                        fontPref = prefs.fontHeadingMedium,
-                        label = stringResource(R.string.fontHeadingMedium),
-                    )
-                    FontPreference(
-                        fontPref = prefs.fontBody,
-                        label = stringResource(R.string.fontBody),
-                    )
-                    FontPreference(
-                        fontPref = prefs.fontBodyMedium,
-                        label = stringResource(R.string.fontBodyMedium),
-                    )
-                }
-            },
-        )
+        ) {
+            PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
+                FontPreference(
+                    fontPref = prefs.fontWorkspace,
+                    label = stringResource(R.string.fontWorkspace),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeading,
+                    label = stringResource(R.string.fontHeading),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeadingMedium,
+                    label = stringResource(R.string.fontHeadingMedium),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBody,
+                    label = stringResource(R.string.fontBody),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBodyMedium,
+                    label = stringResource(R.string.fontBodyMedium),
+                )
+            }
+        }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
         PreferenceGroup(
@@ -144,14 +143,13 @@ fun GeneralPreferences() {
             )
             ExpandAndShrink(
                 visible = themedIconsEnabled,
-                content = {
-                    SwitchPreference(
-                        adapter = prefs.transparentIconBackground.getAdapter(),
-                        label = stringResource(id = R.string.transparent_background_icons),
-                        description = stringResource(id = R.string.transparent_background_icons_description),
-                    )
-                },
-            )
+            ) {
+                SwitchPreference(
+                    adapter = prefs.transparentIconBackground.getAdapter(),
+                    label = stringResource(id = R.string.transparent_background_icons),
+                    description = stringResource(id = R.string.transparent_background_icons_description),
+                )
+            }
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_shape_label),
                 destination = subRoute(name = GeneralRoutes.ICON_SHAPE),
@@ -168,16 +166,15 @@ fun GeneralPreferences() {
 
             ExpandAndShrink(
                 visible = wrapAdaptiveIcons.state.value,
-                content = {
-                    SliderPreference(
-                        label = stringResource(id = R.string.background_lightness_label),
-                        adapter = prefs.coloredBackgroundLightness.getAdapter(),
-                        valueRange = 0F..1F,
-                        step = 0.1f,
-                        showAsPercentage = true,
-                    )
-                },
-            )
+            ) {
+                SliderPreference(
+                    label = stringResource(id = R.string.background_lightness_label),
+                    adapter = prefs.coloredBackgroundLightness.getAdapter(),
+                    valueRange = 0F..1F,
+                    step = 0.1f,
+                    showAsPercentage = true,
+                )
+            }
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
@@ -198,16 +195,15 @@ fun GeneralPreferences() {
                 )
                 ExpandAndShrink(
                     visible = showNotificationCountAdapter.state.value,
-                    content = {
-                        DividerColumn {
-                            ColorPreference(preference = prefs2.notificationDotTextColor)
-                            NotificationDotColorContrastWarnings(
-                                dotColor = prefs2.notificationDotColor.asState().value,
-                                dotTextColor = prefs2.notificationDotTextColor.asState().value,
-                            )
-                        }
-                    },
-                )
+                ) {
+                    DividerColumn {
+                        ColorPreference(preference = prefs2.notificationDotTextColor)
+                        NotificationDotColorContrastWarnings(
+                            dotColor = prefs2.notificationDotColor.asState().value,
+                            dotTextColor = prefs2.notificationDotTextColor.asState().value,
+                        )
+                    }
+                }
             }
         }
     }

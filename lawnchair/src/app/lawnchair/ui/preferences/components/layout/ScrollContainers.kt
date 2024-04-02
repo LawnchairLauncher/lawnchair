@@ -33,22 +33,21 @@ fun PreferenceColumn(
 ) {
     NestedScrollStretch(
         modifier = modifier,
-        content = {
-            Column(
-                verticalArrangement = verticalArrangement,
-                horizontalAlignment = horizontalAlignment,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .addIf(scrollState != null) {
-                        this
-                            .verticalScroll(scrollState!!)
-                    }
-                    .padding(contentPadding)
-                    .padding(top = 8.dp, bottom = 16.dp),
-                content = content,
-            )
-        },
-    )
+    ) {
+        Column(
+            verticalArrangement = verticalArrangement,
+            horizontalAlignment = horizontalAlignment,
+            modifier = Modifier
+                .fillMaxHeight()
+                .addIf(scrollState != null) {
+                    this
+                        .verticalScroll(scrollState!!)
+                }
+                .padding(contentPadding)
+                .padding(top = 8.dp, bottom = 16.dp),
+            content = content,
+        )
+    }
 }
 
 @Composable
@@ -69,16 +68,15 @@ fun PreferenceLazyColumn(
     }
     NestedScrollStretch(
         modifier = modifier,
-        content = {
-            LazyColumn(
-                modifier = Modifier
-                    .addIf(!isChild) {
-                        fillMaxHeight()
-                    },
-                contentPadding = contentPadding,
-                state = state,
-                content = content,
-            )
-        },
-    )
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .addIf(!isChild) {
+                    fillMaxHeight()
+                },
+            contentPadding = contentPadding,
+            state = state,
+            content = content,
+        )
+    }
 }

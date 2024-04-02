@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 @Composable
 fun ExpandAndShrink(
     visible: Boolean,
-    content: @Composable AnimatedVisibilityScope.() -> Unit,
     modifier: Modifier = Modifier,
+    content: @Composable AnimatedVisibilityScope.() -> Unit,
 ) {
     AnimatedVisibility(
         visible = visible,

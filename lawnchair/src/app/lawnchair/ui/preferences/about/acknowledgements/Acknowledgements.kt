@@ -70,19 +70,18 @@ fun Acknowledgements(
     LoadingScreen(
         obj = ossLibraries,
         modifier = modifier,
-        content = { libraries ->
-            PreferenceLayoutLazyColumn(
-                label = stringResource(id = R.string.acknowledgements),
-            ) {
-                preferenceGroupItems(libraries, isFirstChild = true) { index, library ->
-                    OssLibraryItem(
-                        ossLibrary = library,
-                        index = index,
-                    )
-                }
+    ) { libraries ->
+        PreferenceLayoutLazyColumn(
+            label = stringResource(id = R.string.acknowledgements),
+        ) {
+            preferenceGroupItems(libraries, isFirstChild = true) { index, library ->
+                OssLibraryItem(
+                    ossLibrary = library,
+                    index = index,
+                )
             }
-        },
-    )
+        }
+    }
 }
 
 @Composable

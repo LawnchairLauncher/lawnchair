@@ -40,20 +40,19 @@ fun MainSwitchPreference(
     }
     ExpandAndShrink(
         visible = description != null,
-        content = {
-            if (description != null) {
-                Row(
-                    modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 16.dp),
-                ) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+    ) {
+        if (description != null) {
+            Row(
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 16.dp),
+            ) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-        },
-    )
+        }
+    }
     Crossfade(targetState = checked, label = "") { targetState ->
         if (targetState) {
             DividerColumn(

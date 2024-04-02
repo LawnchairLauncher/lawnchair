@@ -224,35 +224,32 @@ fun SmartspaceDateAndTimePreferences(
 
         ExpandAndShrink(
             visible = calendar.formatCustomizationSupport,
-            content = {
-                DividerColumn {
-                    SwitchPreference(
-                        adapter = showDateAdapter,
-                        label = stringResource(id = R.string.smartspace_date),
-                        enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
-                    )
-                    val calendarSelectionEnabled =
-                        preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-                    ExpandAndShrink(
-                        visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value,
-                        content = {
-                            SmartspaceCalendarPreference()
-                        },
-                    )
-                    SwitchPreference(
-                        adapter = showTimeAdapter,
-                        label = stringResource(id = R.string.smartspace_time),
-                        enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
-                    )
-                    ExpandAndShrink(
-                        visible = showTimeAdapter.state.value,
-                        content = {
-                            SmartspaceTimeFormatPreference()
-                        },
-                    )
+        ) {
+            DividerColumn {
+                SwitchPreference(
+                    adapter = showDateAdapter,
+                    label = stringResource(id = R.string.smartspace_date),
+                    enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+                val calendarSelectionEnabled =
+                    preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
+                ExpandAndShrink(
+                    visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value,
+                ) {
+                    SmartspaceCalendarPreference()
                 }
-            },
-        )
+                SwitchPreference(
+                    adapter = showTimeAdapter,
+                    label = stringResource(id = R.string.smartspace_time),
+                    enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+                ExpandAndShrink(
+                    visible = showTimeAdapter.state.value,
+                ) {
+                    SmartspaceTimeFormatPreference()
+                }
+            }
+        }
     }
 }
 
