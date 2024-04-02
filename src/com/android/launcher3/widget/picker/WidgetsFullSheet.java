@@ -548,6 +548,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void exitSearchMode() {
         if (!mIsInSearchMode) return;
         onSearchResults(new ArrayList<>());
+        WidgetsRecyclerView searchRecyclerView = mAdapters.get(
+                AdapterHolder.SEARCH).mWidgetsRecyclerView;
+        // Remove all views when exiting the search mode; this prevents animating from stale results
+        // to new ones the next time we enter search mode. By the time recycler view is hidden,
+        // layout may not have happened to clear up existing results. So, instead of waiting for it
+        // to happen, we clear the views here.
+        searchRecyclerView.swapAdapter(
+                searchRecyclerView.getAdapter(), /*removeAndRecycleExistingViews=*/ true);
         setViewVisibilityBasedOnSearch(/*isInSearchMode=*/ false);
         if (mHasWorkProfile) {
             mViewPager.snapToPage(AdapterHolder.PRIMARY);

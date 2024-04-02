@@ -31,16 +31,17 @@ import java.util.concurrent.atomic.AtomicInteger
  *   account for cases where the user have the same item multiple times.
  */
 fun generateItemsForTest(
-    testCase: GridMigrationUnitTestCase,
-    repeatAfter: Int
+    boards: List<CellLayoutBoard>,
+    repeatAfterRange: Point
 ): List<WorkspaceItem> {
     val id = AtomicInteger(0)
     val widgetId = AtomicInteger(LauncherAppWidgetInfo.CUSTOM_WIDGET_ID - 1)
-    val boards = testCase.boards
     // Repeat the same appWidgetProvider and intent to have repeating widgets and icons and test
     // that case too
-    val getIntent = { i: Int -> "Intent ${i % repeatAfter}" }
-    val getProvider = { i: Int -> "com.test/test.Provider${i % repeatAfter}" }
+    val getIntent = { i: Int -> "Intent ${(i + repeatAfterRange.x) % repeatAfterRange.y}" }
+    val getProvider = { i: Int ->
+        "com.test/test.Provider${(i + repeatAfterRange.x) % repeatAfterRange.y }"
+    }
     val hotseatEntries =
         (0 until boards[0].width).map {
             WorkspaceItem(
@@ -97,11 +98,12 @@ fun generateItemsForTest(
                     container = LauncherSettings.Favorites.CONTAINER_DESKTOP
                 )
             }
-    return widgetEntries + hotseatEntries // + iconEntries
+    return widgetEntries + hotseatEntries + iconEntries
 }
 
 data class GridMigrationUnitTestCase(
     val boards: List<CellLayoutBoard>,
+    val destBoards: List<CellLayoutBoard>,
     val srcSize: Point,
     val targetSize: Point,
     val seed: Long
@@ -135,11 +137,27 @@ class ValidGridMigrationTestCaseGenerator(private val generator: Random) :
         return boards
     }
 
-    fun generateTestCase(): GridMigrationUnitTestCase {
-        var seed = generator.nextLong()
+    fun generateTestCase(isDestEmpty: Boolean): GridMigrationUnitTestCase {
+        val seed = generator.nextLong()
         val randomBoardGenerator = RandomBoardGenerator(Random(seed))
         val width = randomBoardGenerator.getRandom(3, MAX_BOARD_SIZE)
         val height = randomBoardGenerator.getRandom(3, MAX_BOARD_SIZE)
+        val targetSize =
+            Point(
+                randomBoardGenerator.getRandom(3, MAX_BOARD_SIZE),
+                randomBoardGenerator.getRandom(3, MAX_BOARD_SIZE)
+            )
+        val destBoards =
+            if (isDestEmpty) {
+                listOf()
+            } else {
+                generateBoards(
+                    boardGenerator = randomBoardGenerator,
+                    width = targetSize.x,
+                    height = targetSize.y,
+                    boardCount = randomBoardGenerator.getRandom(3, MAX_BOARD_COUNT)
+                )
+            }
         return GridMigrationUnitTestCase(
             boards =
                 generateBoards(
@@ -148,12 +166,9 @@ class ValidGridMigrationTestCaseGenerator(private val generator: Random) :
                     height = height,
                     boardCount = randomBoardGenerator.getRandom(3, MAX_BOARD_COUNT)
                 ),
+            destBoards = destBoards,
             srcSize = Point(width, height),
-            targetSize =
-                Point(
-                    randomBoardGenerator.getRandom(3, MAX_BOARD_SIZE),
-                    randomBoardGenerator.getRandom(3, MAX_BOARD_SIZE)
-                ),
+            targetSize = targetSize,
             seed = seed
         )
     }

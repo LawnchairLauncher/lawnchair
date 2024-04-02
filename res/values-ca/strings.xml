@@ -118,7 +118,7 @@
     <string name="app_pair_name_format" msgid="8134106404716224054">"Parella d\'aplicacions: <xliff:g id="APP1">%1$s</xliff:g> i <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Estil i fons de pantalla"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Edita la pantalla d\'inici"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Config. pantalla d\'inici"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuració de la pantalla d\'inici"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Desactivada per l\'administrador"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permet la rotació de la pantalla d\'inici"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"En girar el telèfon"</string>
@@ -188,8 +188,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtra"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Espai privat"</string>
-    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Toca per configurar o obrir"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privat"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Configuració d\'Espai privat"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Bloqueja o desbloqueja Espai privat"</string>

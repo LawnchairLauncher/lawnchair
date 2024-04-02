@@ -188,8 +188,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ଫିଲ୍ଟର୍"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ବିଫଳ ହୋଇଛି: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ପ୍ରାଇଭେଟ ସ୍ପେସ"</string>
-    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"ସେଟ ଅପ କରିବା କିମ୍ବା ଖୋଲିବାକୁ ଟାପ କରନ୍ତୁ"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ପ୍ରାଇଭେଟ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ପ୍ରାଇଭେଟ ସ୍ପେସ ସେଟିଂସ"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ପ୍ରାଇଭେଟ ସ୍ପେସକୁ ଲକ/ଅନଲକ କରନ୍ତୁ"</string>

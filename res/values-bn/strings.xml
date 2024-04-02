@@ -188,8 +188,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টার"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"কাজটি করা যায়নি: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ব্যক্তিগত স্পেস"</string>
-    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"সেট-আপ করতে বা খুলতে ট্যাপ করুন"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ব্যক্তিগত"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ব্যক্তিগত স্পেসের সেটিংস"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ব্যক্তিগত স্পেস লক/আনলক করুন"</string>
