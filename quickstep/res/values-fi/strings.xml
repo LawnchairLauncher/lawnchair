@@ -109,9 +109,9 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ohita"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Käännä näyttö"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Tehtäväpalkin ohje"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Vedä sovellus sivuun, ja voit käyttää kahta sovellusta"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Vedä sovellus sivuun ja käytä kahta sovellusta"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Näytä tehtäväpalkki pyyhkäisemällä ylös hitaasti"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Sovellussuosituksia käytön perusteella"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Vastaanota sovellussuosituksia käytön perusteella"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Kiinnitä tehtäväpalkki painamalla jakajaa pitkään"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Vinkkejä tehtäväpalkin tehokkaampaan käyttöön"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Näytä tehtäväpalkki aina"</string>
