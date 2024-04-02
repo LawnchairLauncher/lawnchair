@@ -45,7 +45,6 @@ import com.android.internal.jank.Cuj;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.apppairs.AppPairIcon;
@@ -158,8 +157,6 @@ public class AppPairsController {
                 member.bitmap = iconCache.getDefaultIcon(newAppPair.user);
                 iconCache.getTitleAndIcon(member, member.usingLowResIcon());
             });
-            newAppPair.title = getDefaultTitle(newAppPair.getFirstApp().title,
-                    newAppPair.getSecondApp().title);
             MAIN_EXECUTOR.execute(() -> {
                 LauncherAccessibilityDelegate delegate =
                         Launcher.getLauncher(mContext).getAccessibilityDelegate();
@@ -486,13 +483,6 @@ public class AppPairsController {
      */
     public static int convertRankToSnapPosition(int rank) {
         return rank & BITMASK_FOR_SNAP_POSITION;
-    }
-
-    /**
-     * Returns a formatted default title for the app pair.
-     */
-    public String getDefaultTitle(CharSequence app1, CharSequence app2) {
-        return mContext.getString(R.string.app_pair_default_title, app1, app2);
     }
 
     /**
