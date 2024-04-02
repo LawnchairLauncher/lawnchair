@@ -213,6 +213,8 @@ public class FolderInfo extends CollectionInfo {
         void onAdd(ItemInfo item, int rank);
         void onRemove(List<ItemInfo> item);
         void onItemsChanged(boolean animate);
+        void onTitleChanged(CharSequence title);
+
     }
 
     public boolean hasOption(int optionFlag) {
@@ -284,6 +286,10 @@ public class FolderInfo extends CollectionInfo {
         }
         if (modelWriter != null) {
             modelWriter.updateItemInDatabase(this);
+        }
+
+        for (int i = 0; i < mListeners.size(); i++) {
+            mListeners.get(i).onTitleChanged(title);
         }
     }
 
