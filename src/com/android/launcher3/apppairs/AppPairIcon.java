@@ -110,22 +110,42 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         // For some reason, app icons have setIncludeFontPadding(false) inside folders, so we set it
         // here to match that.
         icon.mAppPairName.setIncludeFontPadding(container != DISPLAY_FOLDER);
-        icon.mAppPairName.applyLabel(appPairInfo);
+        // Set title text and accessibility title text.
+        icon.updateTitleAndA11yTitle();
 
-        // Set up accessibility
-        icon.setContentDescription(icon.getAccessibilityTitle(appPairInfo));
         icon.setAccessibilityDelegate(activity.getAccessibilityDelegate());
 
         return icon;
     }
 
     /**
-     * Returns a formatted accessibility title for app pairs.
+     * Updates the title and a11y title of the app pair. Called on creation and when packages
+     * change, to reflect app name changes or user language changes.
      */
-    public String getAccessibilityTitle(AppPairInfo appPairInfo) {
-        CharSequence app1 = appPairInfo.getFirstApp().title;
-        CharSequence app2 = appPairInfo.getSecondApp().title;
-        return getContext().getString(R.string.app_pair_name_format, app1, app2);
+    public void updateTitleAndA11yTitle() {
+        updateTitleAndTextView();
+        updateAccessibilityTitle();
+    }
+
+    /**
+     * Updates AppPairInfo with a formatted app pair title, and sets it on the BubbleTextView.
+     */
+    public void updateTitleAndTextView() {
+        CharSequence newTitle = getInfo().generateTitle(getContext());
+        mAppPairName.setText(newTitle);
+    }
+
+    /**
+     * Updates the accessibility title with a formatted string template.
+     */
+    public void updateAccessibilityTitle() {
+        CharSequence app1 = getInfo().getFirstApp().title;
+        CharSequence app2 = getInfo().getSecondApp().title;
+        String a11yTitle = getContext().getString(R.string.app_pair_name_format, app1, app2);
+        setContentDescription(
+                getInfo().shouldDrawAsDisabled(getContext())
+                        ? getContext().getString(R.string.disabled_app_label, a11yTitle)
+                        : a11yTitle);
     }
 
     // Required for DraggableView
@@ -200,6 +220,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         // If either of the app pair icons return true on the predicate (i.e. in the list of
         // updated apps), redraw the icon graphic (icon background and both icons).
         if (getInfo().anyMatch(itemCheck)) {
+            updateTitleAndA11yTitle();
             mIconGraphic.redraw();
         }
     }

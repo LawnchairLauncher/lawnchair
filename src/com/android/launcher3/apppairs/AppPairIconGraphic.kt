@@ -42,13 +42,7 @@ constructor(context: Context, attrs: AttributeSet? = null) :
     private val TAG = "AppPairIconGraphic"
 
     companion object {
-        /**
-         * Composes a drawable for this icon, consisting of a background and 2 app icons. The app
-         * pair will draw as "disabled" if either of the following is true:
-         * 1) One of the member WorkspaceItemInfos is disabled (i.e. the app software itself is
-         *    paused or can't be launched for some other reason).
-         * 2) One of the member apps can't be launched due to screen size requirements.
-         */
+        /** Composes a drawable for this icon, consisting of a background and 2 app icons. */
         @JvmStatic
         fun composeDrawable(
             appPairInfo: AppPairInfo,
