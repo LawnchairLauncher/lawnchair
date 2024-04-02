@@ -13,7 +13,6 @@ import app.lawnchair.ui.preferences.components.ResultsBottomSheet
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
-import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -58,8 +57,8 @@ fun SearchPreferences() {
                     adapter = prefs.searchResultApps.getAdapter(),
                     maxCountAdapter = prefs2.maxSearchResultCount.getAdapter(),
                     maxCountRange = 3 .. 15,
-                    label = "Apps and Shortcuts",
-                    maxCountLabel = stringResource(R.string.max_search_result_count_title),
+                    label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),
+                    maxCountLabel = stringResource(R.string.max_apps_result_count_title),
                     preventSwitchChange = true,
                 ) {
                     SwitchPreference(
@@ -69,49 +68,10 @@ fun SearchPreferences() {
                     )
                 }
                 ResultsBottomSheet(
-                    adapter = prefs.searchResultSettingsEntry.getAdapter(),
-                    maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
-                    maxCountRange = 2..10,
-                    label = stringResource(id = R.string.search_pref_result_settings_entry_title),
-                    maxCountLabel = stringResource(id = R.string.max_settings_entry_result_count_title),
-                )
-
-                if (isDeviceSearch) {
-                    ResultsBottomSheet(
-                        adapter = prefs.searchResultFiles.getAdapter(),
-                        maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
-                        maxCountRange = 3..10,
-                        label = stringResource(id = R.string.perform_wide_search_file),
-                        maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
-                        description = stringResource(id = R.string.all_apps_search_result_files_description),
-                        enabled = filesAndStorageGranted(context),
-                        requestEnabled = { checkAndRequestFilesPermission(context, prefs) },
-                        requestEnabledDescription = stringResource(id = R.string.warn_files_permission_content),
-                    )
-                    ResultsBottomSheet(
-                        adapter = prefs.searchResultPeople.getAdapter(),
-                        maxCountAdapter = prefs2.maxPeopleResultCount.getAdapter(),
-                        maxCountRange = 3..15,
-                        label = stringResource(id = R.string.search_pref_result_people_title),
-                        maxCountLabel = stringResource(id = R.string.max_people_result_count_title),
-                        description = stringResource(id = R.string.all_apps_search_result_contacts_description),
-                        enabled = contactPermissionGranted(context),
-                        requestEnabled = { requestContactPermissionGranted(context, prefs) },
-                        requestEnabledDescription = stringResource(id = R.string.warn_contact_permission_content),
-                    )
-                    ResultsBottomSheet(
-                        adapter = prefs.searchResultSettingsEntry.getAdapter(),
-                        maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
-                        maxCountRange = 2..10,
-                        label = stringResource(id = R.string.search_pref_result_settings_entry_title),
-                        maxCountLabel = stringResource(id = R.string.max_settings_entry_result_count_title),
-                    )
-                }
-                ResultsBottomSheet(
                     adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
                     maxCountAdapter = prefs2.maxSuggestionResultCount.getAdapter(),
                     maxCountRange = 3..10,
-                    label = stringResource(id = R.string.pref_suggestion_title),
+                    label = stringResource(id = R.string.search_pref_result_web_title),
                     maxCountLabel = stringResource(id = R.string.max_suggestion_result_count_title),
                     description = "Search the web",
                 ) {
@@ -123,11 +83,51 @@ fun SearchPreferences() {
                         showUnit = "ms",
                     )
                 }
+
+                ResultsBottomSheet(
+                    adapter = prefs.searchResultSettingsEntry.getAdapter(),
+                    maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
+                    maxCountRange = 2..10,
+                    label = stringResource(id = R.string.search_pref_result_settings_title),
+                    maxCountLabel = stringResource(id = R.string.max_settings_entry_result_count_title),
+                )
+
+                if (isDeviceSearch) {
+                    ResultsBottomSheet(
+                        adapter = prefs.searchResultPeople.getAdapter(),
+                        maxCountAdapter = prefs2.maxPeopleResultCount.getAdapter(),
+                        maxCountRange = 3..15,
+                        label = stringResource(id = R.string.search_pref_result_people_title),
+                        maxCountLabel = stringResource(id = R.string.max_people_result_count_title),
+                        description = stringResource(id = R.string.search_pref_result_contacts_description),
+                        enabled = contactPermissionGranted(context),
+                        requestEnabled = { requestContactPermissionGranted(context, prefs) },
+                        requestEnabledDescription = stringResource(id = R.string.warn_contact_permission_content),
+                    )
+                    ResultsBottomSheet(
+                        adapter = prefs.searchResultFiles.getAdapter(),
+                        maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
+                        maxCountRange = 3..10,
+                        label = stringResource(id = R.string.search_pref_result_files_title),
+                        maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
+                        description = stringResource(id = R.string.search_pref_result_files_description),
+                        enabled = filesAndStorageGranted(context),
+                        requestEnabled = { checkAndRequestFilesPermission(context, prefs) },
+                        requestEnabledDescription = stringResource(id = R.string.warn_files_permission_content),
+                    )
+                    ResultsBottomSheet(
+                        adapter = prefs.searchResultSettingsEntry.getAdapter(),
+                        maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
+                        maxCountRange = 2..10,
+                        label = stringResource(id = R.string.search_pref_result_settings_title),
+                        maxCountLabel = stringResource(id = R.string.max_settings_entry_result_count_title),
+                    )
+                }
                 ResultsBottomSheet(
                     adapter = prefs.searchResulRecentSuggestion.getAdapter(),
                     maxCountAdapter = prefs2.maxRecentResultCount.getAdapter(),
                     maxCountRange =  1..10,
-                    label = stringResource(id = R.string.pref_recent_suggestion_title),
+                    label = stringResource(id = R.string.search_pref_result_history_title),
                     maxCountLabel = stringResource(id = R.string.max_recent_result_count_title),
                 )
             }

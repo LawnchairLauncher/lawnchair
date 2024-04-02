@@ -14,15 +14,17 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">برای تنظیم Lawnchair بعنوان لانچر پیشفرض روی این کارت ضربه بزنید.</string>
     <string name="settings">تنظیمات</string>
     <string name="general_label">عمومی</string>
     <string name="general_description">رنگ‌ها، آیکون پک، نشان اعلان‌ها</string>
     <string name="home_screen_label">صفحه اصلی</string>
     <string name="home_screen_description">اخبار،‌ جدول،‌‌ آیکون‌ها</string>
+    <!--
+    <string name="smartspace" />
+    -->
     <string name="what_to_show">چه چیزی نشان‌داده شود</string>
     <string name="dock_label">داک</string>
     <string name="dock_description">نوار جستجو، تعداد آیکون‌ها</string>
@@ -35,46 +37,36 @@
     <string name="quickstep_label">برنامه‌های اخیر</string>
     <string name="quickstep_description">دکمه پاک کردن همه، شعاع گوشه‌ها</string>
     <string name="about_label">درباره</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">اطلاعات برنامه</string>
     <string name="debug_restart_launcher">راه اندازی مجدد Lawnchair</string>
     <string name="experimental_features_label">قابلیت‌های آزمایشی</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">شخصی‌سازی قلم</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">بعضی متون بدون تغییر می‌مانند.</string>
     <string name="smartspace_calendar_label">شخصی‌سازی تقویمِ در یک نگاه</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
+    <string name="smartspace_calendar_description">اجازه نمایش تاریخ در سیستم‌های تقویم غیر گرگوری.</string>
     <string name="workspace_increase_max_grid_size_label">افزودن حداکثر اندازه جدول صفحه اصلی</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="workspace_increase_max_grid_size_description">افزایش حداکثر اندازه جدول صفحه اصلی از ۱۰ در ۱۰ به ۲۰ در ۲۰.</string>
     <string name="always_reload_icons_label">همیشه بارگذاری مجدد کردن آیکون‌ها</string>
     <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
-    <!-- Relating to label/icon size -->
-    <string name="icons">آیکون‌ها</string>
-    <string name="icon_size">سایز آیکون</string>
-    <string name="show_home_labels">نشان‌دادن نام‌ها</string>
-    <string name="label_size">اندازه نام‌</string>
-    <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">چرخش صفحه‌ اصلی</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
-    <string name="font_label">قلم‌ (آزمایشی)</string>
-    <string name="fontWorkspace">عمومی</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
-    <string name="icon_style">ظاهر آیکون</string>
     <string name="transparent_background_icons">آیکون‌های خاص شفاف</string>
     <string name="transparent_background_icons_description">استفاده از پس زمینه شفاف در آیکون‌های خاص</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">چرخش صفحه‌ اصلی</string>
+    <string name="home_screen_rotation_description">هنگام چرخش دستگاه.</string>
+    <string name="font_label">قلم‌ (آزمایشی)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">ظاهر آیکون</string>
     <string name="icon_shape_label">شکل آیکن</string>
     <string name="auto_adaptive_icons_label">آیکون‌های انطباقی خودکار</string>
     <string name="auto_adaptive_icons_description">برای تمام آیکون‌های غیر انطباقی.</string>
     <string name="background_lightness_label">روشنایی بک‌گراند</string>
     <string name="adaptive_icon_background_description">استفاده از نور پس زمینه 100% برای رنگ سفید.</string>
-    <string name="reset_custom_icons">تنظیم مجدد آیکون‌های شخصی‌سازی شده</string>
-    <string name="reset_custom_icons_confirmation">تمام آیکون‌های شخصی‌سازی شده مجددا تنظیم خواهند شد. آیا میخواهید ادامه دهید؟</string>
     <string name="notification_dots">نشان اعلان‌ها</string>
+    <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">نشان‌دادن تعداد اعلان‌ها</string>
     <string name="notification_dots_color">رنگ نشان اعلان‌ها</string>
     <string name="notification_dots_text_color">رنگ تعداد اعلان‌ها</string>
@@ -82,7 +74,7 @@
     <string name="notification_dots_color_contrast_warning_sometimes">هشدار: ممکن است رنگ‌های نشان اعلان و تعداد اعلان‌ها همیشه باهم کنتراست کافی نداشته باشند</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
+    <string name="missing_notification_access_description">دسترسی به اعلان‌ها نیاز است.</string>
     <string name="msg_missing_notification_access">برای استفاده از نشان اعلان‌ها، دسترسی به اعلان‌ها را برای <xliff:g id="name" example="My App">%1$s</xliff:g> فعال کنید.</string>
     <string name="title_change_settings">تغییر تنظیمات</string>
     <string name="colors">رنگ‌ها</string>
@@ -110,6 +102,7 @@
     <string name="import_from_clipboard">وارد کردن از کلیپ بورد</string>
     <string name="icon_shape_clipboard_import_error">کلیپ بورد دارای شکل آیکون معتبری نیست</string>
     <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
     <string name="icon_pack">آیکون پک</string>
     <string name="themed_icon_pack">منبع آیکون های پویا</string>
     <string name="system_icons">آیکون‌های سیستمی</string>
@@ -117,8 +110,10 @@
     <string name="themed_icons_off_label">خاموش</string>
     <string name="themed_icons_home_label">صفحه اصلی</string>
     <string name="themed_icons_home_and_drawer_label">صفحه‌اصلی و کشوی برنامه‌ها</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="lawnicons_not_installed_description">Lawnicons نصب نشده است.</string>
+    <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">سیستم</string>
     <string name="icon_shape_circle">دایره</string>
     <string name="icon_shape_cylinder">سیلندر</string>
@@ -134,8 +129,8 @@
     <string name="icon_shape_teardrop">اشک</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">افزودن قلم</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_add_fonts_summary">OTF و TTF پشتیبانی می‌شوند.</string>
+    <string name="pref_fonts_missing_font">قلم پیدا نشد.</string>
     <string name="font_variant_italic">مورب</string>
     <string name="font_weight_thin">نازک</string>
     <string name="font_weight_extra_light">خیلی نازک</string>
@@ -168,27 +163,30 @@
     <string name="invalid_color">رنگ نامعتبر</string>
     <string name="launcher_default_color">مدیریت شده توسط Lawnchair</string>
     <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">افزودن برنامه‌های جدید به صفحه‌اصلی</string>
+    <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="minus_one_unavailable">هیچ اخباری نصب نشده است.</string>
     <string name="minus_one">اخبار</string>
     <string name="feed_provider">Feed Provider</string>
     <string name="feed_default">پیش‌فرض</string>
     <string name="wallpaper">کاغذ دیواری</string>
     <string name="wallpaper_scrolling_label">پیمایش کاغذ دیواری</string>
     <string name="wallpaper_depth_effect_label">افکت عمق کاغذ دیواری</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="wallpaper_depth_effect_description">هنگام انتقال بین حالت‌ها، تصویر زمینه بزرگ‌نمایی و کوچک‌نمایی شود.</string>
     <string name="show_sys_ui_scrim">سایه بالا</string>
     <string name="layout">چیدمان</string>
     <string name="home_screen_grid">جدول صفحه‌اصلی</string>
     <string name="home_screen_lock">قفل صفحه اصلی</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="home_screen_lock_description">جلوگیری از تغییرات در چیدمان صفحه اصلی.</string>
     <string name="home_screen_unlock">باز کردن قفل صفحه اصلی</string>
-    <string name="home_screen_locked">Home Screen is locked</string>
-    <string name="show_dot_pagination_label">Use dot pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use new popup style</string>
-    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_locked">صفحه اصلی قفل شده است.</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
+    <string name="show_material_u_popup_label">Show Material U Popup</string>
+    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
     <string name="popup_menu">منو Pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">نمایش دکمه قفل</string>
     <string name="show_system_settings_entry">نمایش ورودی تنظیمات سیستم</string>
@@ -196,12 +194,20 @@
     <string name="status_bar_label">نوار وضعیت</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
     <string name="dark_status_bar_label">نوار وضعیت تاریک</string>
+    <string name="icons">آیکون‌ها</string>
+    <string name="icon_size">سایز آیکون</string>
+    <string name="show_home_labels">نشان‌دادن نام‌ها</string>
+    <string name="label_size">اندازه نام‌</string>
+    <string name="reset_custom_icons">تنظیم مجدد آیکون‌های شخصی‌سازی شده</string>
+    <string name="reset_custom_icons_confirmation">تمام آیکون‌های شخصی‌سازی شده مجددا تنظیم خواهند شد. آیا میخواهید ادامه دهید؟</string>
     <string name="home_screen_text_color">رنگ متن</string>
     <string name="color_light">روشن</string>
     <string name="color_dark">تاریک</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">گوشه‌های گرد</string>
     <string name="allow_widget_overlap">اجازه همپوشانی داده شود</string>
     <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
     <string name="columns">ستون‌ها</string>
     <string name="rows">ردیف‌ها</string>
     <string name="apply_grid">اعمال</string>
@@ -234,62 +240,75 @@
     <string name="smartspace_calendar_persian">شمسی</string>
     <string name="smartspace_preferences">تنظیمات</string>
     <string name="smartspace_widget_toggle_label">نشان دادن در صفحه ‌اصلی</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
+    <string name="smartspace_widget_toggle_description">در یک نگاه میتواند به صورت دستی با استفاده از ابزارک \"Lawnchair\" اضافه شود.</string>
     <string name="smartspace_mode_label">ارائه دهنده در یک نگاه</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">گوگل</string>
     <string name="smartspace_mode_google_search">جستجوی گوگل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="show_hotseat_title">Show Dock</string>
-    <string name="search_bar_label">نوار جست‌و‌جو</string>
     <string name="hotseat_mode_label">ابزارک نوار جستوجو</string>
     <string name="hotseat_mode_disabled">غیر فعال</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
     <string name="hotseat_mode_google_search">نوار جستجوی گوگل</string>
+    <string name="search_bar_label">نوار جست‌و‌جو</string>
     <string name="corner_radius_label">شعاع گوشه</string>
     <string name="apply_accent_color_label">اعمال رنگ برنامه</string>
     <string name="search_provider">تامین کننده جست‌وجو</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">جدول</string>
     <string name="dock_icons">آیکون‌های داک</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
     <string name="search_provider_app_search">جست‌وجو برنامه</string>
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">برنامه</string>
     <string name="website_label">وب‌سایت</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="qsb_search_provider_app_required">برنامه نیاز است.</string>
     <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
     <string name="background_opacity">شفافیت بک‌گراند</string>
+    <!-- hiddenApps_label -->
     <string name="hidden_apps_label">برنامه‌های مخفی‌شده</string>
     <string name="show_enable_smart_hide">نمایش زمانی که نام کامل تایپ شده است</string>
     <string name="hide_hidden_apps_search">پنهان شدن در نتایج جستجو</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
     <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
+    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
     <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">جست‌و‌جو</string>
     <string name="show_app_search_bar">نشان‌دادن نوار جستجو</string>
     <string name="pref_search_auto_show_keyboard">نمایش خودکار صفحه کلید</string>
     <string name="fuzzy_search_title">جست‌و‌جو فازی</string>
     <string name="fuzzy_search_desc">مطابقت تقریبی برای جستجوی برنامه‌ها.</string>
-    <string name="clear_history">Clear Search History</string>
-    <string name="app_drawer_columns">ستون‌های کشوی برنامه‌ها</string>
-    <string name="row_height_label">ارتفاع ردیف</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_label">پیشنهادها</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="pref_recent_suggestion_title">History</string>
-    <string name="max_search_result_count_title">حداکثر تعداد نتایج جستجو</string>
+    <string name="max_apps_result_count_title">حداکثر تعداد نتایج جستجو</string>
     <string name="max_people_result_count_title">Max People Result Count</string>
     <string name="max_file_result_count_title">Max Files Result Count</string>
     <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
     <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
     <string name="max_recent_result_count_title">Max History Result Count</string>
     <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
+    <string name="clear_history">Clear</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">ستون‌های کشوی برنامه‌ها</string>
+    <string name="row_height_label">ارتفاع ردیف</string>
+    <string name="app_drawer_indent_label">Horizontal Padding</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="search_pref_result_files_title">Files</string>
+    <string name="pref_suggestion_label">پیشنهادها</string>
+    <string name="search_pref_result_web_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
+    <string name="search_pref_result_history_title">History</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
     <!-- HiddenAppsPreferences -->
     <string name="hidden_apps_label_with_count">برنامه های مخفی (%1$d)</string>
     <plurals name="apps_count">
@@ -297,11 +316,15 @@
         <item quantity="other">%1$d تا برنامه</item>
     </plurals>
     <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">شفافیت بک‌گراند آیکون</string>
     <string name="folder_preview_bg_color_label">رنگ پس زمینه ‌آیکون</string>
+    <!-- <string name="grid" /> -->
     <string name="max_folder_columns">حداکثر ستون‌های پوشه‌ها</string>
     <string name="max_folder_rows">حداکثر ردیف‌های پوشه‌ها</string>
     <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">دو ضربه سریع</string>
     <string name="gesture_swipe_up">به بالا کشیدن</string>
     <string name="gesture_swipe_down">به پایین کشیدن</string>
@@ -317,9 +340,12 @@
     <string name="gesture_handler_open_search">بازکردن جستجو</string>
     <string name="pick_app_for_gesture">انتخاب برنامه</string>
     <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
     <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">بک‌گراند نیمه‌شفاف</string>
     <string name="recents_actions_label">عملیات‌های سریع</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">اشتراک گذاری</string>
     <string name="action_lens">لنز</string>
     <string name="recents_clear_all">حذف همه</string>
@@ -328,7 +354,7 @@
     <string name="override_window_corner_radius_label">شعاع گوشه صفحه شخصی‌سازی شده</string>
     <string name="window_corner_radius_description">وقتی برای باز کردن برناتمه‌های اخیر، انگشت خود را به بالا بکشید، برنامه فعلی انگشت شما را دنبال می کند و به اندازه یک کارت کوچک می شود. از این نوار لغزنده برای تنظیم شعاع گوشه کارت زمانی که تقریباً تمام صفحه است استفاده کنید تا با گوشه‌های صفحه شما مطابقت داشته باشد.</string>
     <string name="taskbar_label">نوار وظیفه</string>
-    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">فعال کردن نوار وظیفه (آزمایشی)</string>
     <!-- about/About.kt -->
     <string name="news">اخبار</string>
     <string name="support">پشتیبانی</string>
@@ -338,6 +364,10 @@
     <string name="quickswitch_maintenance">نگه‌داری QuickSwitch</string>
     <string name="devops">دو‌آپس</string>
     <string name="support_and_pr">پشتیبانی و روابط عمومی</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
     <string name="acknowledgements">سپاسگزاریها</string>
     <string name="translate">ترجمه</string>
     <!-- IconPickerPreference -->
@@ -349,7 +379,7 @@
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">جستجو برنامه‌ها</string>
     <string name="settings_button_text">تنظیمات خانه</string>
-    <string name="item_removed">Item removed</string>
+    <string name="item_removed">آیتم حذف شد.</string>
     <string name="all_apps_no_search_results">هیچ برنامه ای مطابق با “<xliff:g example="Android" id="query">%1$s</xliff:g>” پیدا نشد.</string>
     <string name="dt2s_admin_hint_title">دسترسی ادمین نیاز است</string>
     <string name="dt2s_admin_hint">برای استفاده از قابلیت خواب توسطِ دو ضربه سریع، Lawnchair را به عنوان یک برنامه‌ی مدیرِ دستگاه بگذارید. بر روی باز کردن تنظیمات ضربه بزنید، سپس بر روی “فعال سازیِ این برنامه‌ی مدیرِ دستگاه.” ضربه بزنید</string>
@@ -363,7 +393,7 @@
     <string name="label">نام</string>
     <string name="hide_from_drawer">مخفی‌ در کشوی برنامه‌ها</string>
     <string name="suggestion_pref_screen_title">پیشنهادها</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">گزارش مشکلات Lawnchair</string>
     <string name="crash_report_notif_title">%1$s خطا داد</string>
@@ -385,7 +415,7 @@
     <string name="label_search">جست‌و‌جو</string>
     <string name="label_lens">گوگل لنز</string>
     <string name="label_voice_search">جستوجو صوتی</string>
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
+    <string name="search_pref_result_settings_title">Settings Entry</string>
     <string name="all_apps_search_market_message">جست‌و‌جو برنامه‌های بیشتر</string>
     <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">هیچ فروشگاه برنامه یا مرورگری نصب نیست.</string>
@@ -395,8 +425,8 @@
     <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
     <string name="warn_contact_permission_content">Requires contact permission</string>
     <string name="warn_files_permission_content">Requires storage permission</string>
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="search_pref_result_files_description">Media, documents, folders, and more.</string>
+    <string name="search_pref_result_contacts_description">Contacts and more</string>
     <string name="quickstep_incompatible">سیستم یکپارچه سازیِ ناسازگار</string>
     <string name="quickstep_incompatible_description">دستگاه شما به گونه‌ای پیکربندی شده است که ژست‌های حرکتی سیستم (معروف به Quickstep) توسط %1$s ارائه شده باشد، اما این نسخه %1$s با نسخه Android شما سازگار نیست. برای ادامه استفاده از دستگاهتان، لطفاً به‌روزرسانی‌های %1$s را حذف نصب کنید یا %1$s را به‌عنوان ارائه‌دهنده ژست‌های حرکتی سیستم غیرفعال کنید.</string>
     <string name="delete">حذف</string>
@@ -414,10 +444,11 @@
     <string name="backup_restore_success">بکاپ بازنشانی شد.</string>
     <string name="backup_restore_error">بازنشانی بکاپ انجام نشد.</string>
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
-    <!-- Miscellaneous -->
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s و %s</string>
     <string name="system_settings">تنظیمات سیستم</string>
     <string name="action_unlock">Unlock</string>
     <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

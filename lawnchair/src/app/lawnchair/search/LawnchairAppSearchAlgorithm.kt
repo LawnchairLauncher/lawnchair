@@ -123,7 +123,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
         val recentKeyword = filterByType(wideSearchResults, RECENT_KEYWORD)
         if (recentKeyword.isNotEmpty()) {
-            val recentKeywordHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.pref_recent_suggestion_title), HEADER_JUSTIFY)
+            val recentKeywordHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.search_pref_result_history_title), HEADER_JUSTIFY)
             searchTargets.add(recentKeywordHeader)
             searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword) })
         }

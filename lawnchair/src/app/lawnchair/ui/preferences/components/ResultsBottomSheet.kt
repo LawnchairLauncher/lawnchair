@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
@@ -33,7 +34,7 @@ fun ResultsBottomSheet(
     description: String? = null,
     enabled: Boolean = true,
     requestEnabled: (() -> Unit)? = null,
-    requestEnabledDescription: String? = "Permissions not granted. Tap this card to set.",
+    requestEnabledDescription: String = "Requested permission not granted.",
     content: @Composable (() -> Unit)? = null
 ) {
     val bottomSheetHandler = bottomSheetHandler
@@ -78,7 +79,7 @@ private fun ResultsBottomSheetContent(
     maxCountRange: ClosedRange<Int>,
     content: @Composable (() -> Unit)?,
     requestEnabled: (() -> Unit)?,
-    requestEnabledDescription: String?,
+    requestEnabledDescription: String,
     preventSwitchChange: Boolean = false,
 ) {
     ModalBottomSheetContent(
@@ -101,12 +102,15 @@ private fun ResultsBottomSheetContent(
                         if (requestEnabled != null) {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                onClick = { requestEnabled() }
                             ) {
                                 Text(
-                                    text = requestEnabledDescription
-                                        ?: "Permissions not granted. Tap this card to set.",
+                                    text = requestEnabledDescription,
                                 )
+                                Button(
+                                    onClick = { requestEnabled() }
+                                ) {
+                                    Text(text = "Grant permissions")
+                                }
                             }
                         }
                     } else {
