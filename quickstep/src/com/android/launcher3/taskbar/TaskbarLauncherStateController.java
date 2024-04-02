@@ -148,6 +148,7 @@ public class TaskbarLauncherStateController {
     private Integer mPrevState;
     private int mState;
     private LauncherState mLauncherState = LauncherState.NORMAL;
+    private boolean mSkipNextRecentsAnimEnd;
 
     // Time when FLAG_TASKBAR_HIDDEN was last cleared, SystemClock.elapsedRealtime (milliseconds).
     private long mLastUnlockTimeMs = 0;
@@ -292,12 +293,12 @@ public class TaskbarLauncherStateController {
 
         if (mTaskBarRecentsAnimationListener != null) {
             mTaskBarRecentsAnimationListener.endGestureStateOverride(
-                    !mLauncher.isInState(LauncherState.OVERVIEW));
+                    !mLauncher.isInState(LauncherState.OVERVIEW), false /*canceled*/);
         }
         mTaskBarRecentsAnimationListener = new TaskBarRecentsAnimationListener(callbacks);
         callbacks.addListener(mTaskBarRecentsAnimationListener);
         ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(() ->
-                mTaskBarRecentsAnimationListener.endGestureStateOverride(true));
+                mTaskBarRecentsAnimationListener.endGestureStateOverride(true, false /*canceled*/));
 
         ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchCancelledRunnable(() -> {
             updateStateForUserFinishedToApp(false /* finishedToApp */);
@@ -316,6 +317,11 @@ public class TaskbarLauncherStateController {
             applyState();
         }
         mShouldDelayLauncherStateAnim = shouldDelayLauncherStateAnim;
+    }
+
+    /** Will make the next onRecentsAnimationFinished() a no-op. */
+    public void setSkipNextRecentsAnimEnd() {
+        mSkipNextRecentsAnimEnd = true;
     }
 
     /** SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values. */
@@ -770,19 +776,33 @@ public class TaskbarLauncherStateController {
         @Override
         public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
             boolean isInOverview = mLauncher.isInState(LauncherState.OVERVIEW);
-            endGestureStateOverride(!isInOverview);
+            endGestureStateOverride(!isInOverview, true /*canceled*/);
         }
 
         @Override
         public void onRecentsAnimationFinished(RecentsAnimationController controller) {
-            endGestureStateOverride(!controller.getFinishTargetIsLauncher());
+            endGestureStateOverride(!controller.getFinishTargetIsLauncher(), false /*canceled*/);
         }
 
-        private void endGestureStateOverride(boolean finishedToApp) {
+        /**
+         * Handles whatever cleanup is needed after the recents animation is completed.
+         * NOTE: If {@link #mSkipNextRecentsAnimEnd} is set and we're coming from a non-cancelled
+         * path, this will not call {@link #updateStateForUserFinishedToApp(boolean)}
+         *
+         * @param finishedToApp {@code true} if the recents animation finished to showing an app and
+         *                      not workspace or overview
+         * @param canceled {@code true} if the recents animation was canceled instead of finishing
+         *                 to completion
+         */
+        private void endGestureStateOverride(boolean finishedToApp, boolean canceled) {
             mCallbacks.removeListener(this);
             mTaskBarRecentsAnimationListener = null;
             ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(null);
 
+            if (mSkipNextRecentsAnimEnd && !canceled) {
+                mSkipNextRecentsAnimEnd = false;
+                return;
+            }
             updateStateForUserFinishedToApp(finishedToApp);
         }
     }

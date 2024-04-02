@@ -1231,13 +1231,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             return;
         }
 
-        boolean findExactPairMatch = itemInfos.size() == 2;
+        boolean isLaunchingAppPair = itemInfos.size() == 2;
         // Convert the list of ItemInfo instances to a list of ComponentKeys
         List<ComponentKey> componentKeys =
                 itemInfos.stream().map(ItemInfo::getComponentKey).toList();
         recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
                 componentKeys,
-                findExactPairMatch,
+                isLaunchingAppPair,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks[0];
                     if (foundTask != null) {
@@ -1251,10 +1251,18 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         }
                     }
 
-                    if (findExactPairMatch) {
-                        // We did not find the app pair we were looking for, so launch one.
-                        recents.getSplitSelectController().getAppPairsController().launchAppPair(
-                                (AppPairIcon) launchingIconView, -1 /*cuj*/);
+                    if (isLaunchingAppPair) {
+                        // Finish recents animation if it's running before launching to ensure
+                        // we get both leashes for the animation
+                        mControllers.uiController.setSkipNextRecentsAnimEnd();
+                        recents.switchToScreenshot(() ->
+                                recents.finishRecentsAnimation(true /*toRecents*/,
+                                        false /*shouldPip*/,
+                                        () -> recents
+                                                .getSplitSelectController()
+                                                .getAppPairsController()
+                                                .launchAppPair((AppPairIcon) launchingIconView,
+                                                        -1 /*cuj*/)));
                     } else {
                         startItemInfoActivity(itemInfos.get(0));
                     }
