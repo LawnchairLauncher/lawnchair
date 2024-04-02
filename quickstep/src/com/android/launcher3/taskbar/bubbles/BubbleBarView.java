@@ -94,6 +94,8 @@ public class BubbleBarView extends FrameLayout {
 
     private final BubbleBarBackground mBubbleBarBackground;
 
+    private boolean mIsAnimatingNewBubble = false;
+
     /**
      * The current bounds of all the bubble bar. Note that these bounds may not account for
      * translation. The bounds should be retrieved using {@link #getBubbleBarBounds()} which
@@ -377,6 +379,7 @@ public class BubbleBarView extends FrameLayout {
 
     /** Prepares for animating a bubble while being stashed. */
     public void prepareForAnimatingBubbleWhileStashed(String bubbleKey) {
+        mIsAnimatingNewBubble = true;
         // we're about to animate the new bubble in. the new bubble has already been added to this
         // view, but we're currently stashed, so before we can start the animation we need make
         // everything else in the bubble bar invisible, except for the bubble that's being animated.
@@ -397,6 +400,9 @@ public class BubbleBarView extends FrameLayout {
 
     /** Resets the state after the bubble animation completed. */
     public void onAnimatingBubbleCompleted() {
+        mIsAnimatingNewBubble = false;
+        // setting the background triggers relayout so no need to explicitly invalidate after the
+        // animation
         setBackground(mBubbleBarBackground);
         for (int i = 0; i < getChildCount(); i++) {
             final BubbleView view = (BubbleView) getChildAt(i);
@@ -441,6 +447,12 @@ public class BubbleBarView extends FrameLayout {
      * on the expanded state.
      */
     private void updateChildrenRenderNodeProperties() {
+        if (mIsAnimatingNewBubble) {
+            // don't update bubbles if a new bubble animation is playing.
+            // the bubble bar will redraw itself via onLayout after the animation.
+            return;
+        }
+
         final float widthState = (float) mWidthAnimator.getAnimatedValue();
         final float currentWidth = getWidth();
         final float expandedWidth = expandedWidth();
