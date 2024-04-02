@@ -82,7 +82,6 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
             };
     protected static final float TRANSLATION_SHIFT_CLOSED = 1f;
     protected static final float TRANSLATION_SHIFT_OPENED = 0f;
-    private static final float VIEW_NO_SCALE = 1f;
     private static final int DEFAULT_DURATION = 300;
 
     protected final T mActivityContext;
@@ -129,9 +128,13 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected @Nullable OnCloseListener mOnCloseBeginListener;
     protected List<OnCloseListener> mOnCloseListeners = new ArrayList<>();
 
-    protected final AnimatedFloat mSlideInViewScale =
-            new AnimatedFloat(this::onScaleProgressChanged, VIEW_NO_SCALE);
-    protected boolean mIsBackProgressing;
+    /**
+     * How far through a "user initiated dismissal" the UI is. e.g. Predictive back, swipe to home,
+     * 0 is regular state, 1 is fully dismissed.
+     */
+    protected final AnimatedFloat mSwipeToDismissProgress =
+            new AnimatedFloat(this::onUserSwipeToDismissProgressChanged, 0f);
+    protected boolean mIsDismissInProgress;
     private @Nullable Drawable mContentBackground;
     private @Nullable View mContentBackgroundParentView;
 
@@ -287,29 +290,30 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         final float progress = backEvent.getProgress();
         float deceleratedProgress =
                 Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(progress);
-        mIsBackProgressing = progress > 0f;
-        mSlideInViewScale.updateValue(PREDICTIVE_BACK_MIN_SCALE
-                + (1 - PREDICTIVE_BACK_MIN_SCALE) * (1 - deceleratedProgress));
+        mSwipeToDismissProgress.updateValue(deceleratedProgress);
     }
 
-    protected void onScaleProgressChanged() {
-        float scaleProgress = mSlideInViewScale.value;
-        SCALE_PROPERTY.set(this, scaleProgress);
-        setClipChildren(!mIsBackProgressing);
-        setClipToPadding(!mIsBackProgressing);
-        mContent.setClipChildren(!mIsBackProgressing);
-        mContent.setClipToPadding(!mIsBackProgressing);
+    protected void onUserSwipeToDismissProgressChanged() {
+        float progress = mSwipeToDismissProgress.value;
+        mIsDismissInProgress = progress > 0f;
+
+        float scale = PREDICTIVE_BACK_MIN_SCALE + (1 - PREDICTIVE_BACK_MIN_SCALE) * (1f - progress);
+        SCALE_PROPERTY.set(this, scale);
+        setClipChildren(!mIsDismissInProgress);
+        setClipToPadding(!mIsDismissInProgress);
+        mContent.setClipChildren(!mIsDismissInProgress);
+        mContent.setClipToPadding(!mIsDismissInProgress);
         invalidate();
     }
 
     @Override
     public void onBackCancelled() {
         super.onBackCancelled();
-        animateSlideInViewToNoScale();
+        animateSwipeToDismissProgressToStart();
     }
 
-    protected void animateSlideInViewToNoScale() {
-        mSlideInViewScale.animateToValue(1f)
+    protected void animateSwipeToDismissProgressToStart() {
+        mSwipeToDismissProgress.animateToValue(0f)
                 .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS)
                 .start();
     }
@@ -340,7 +344,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
                 mContentBackgroundParentView.getTop() + (int) mContent.getTranslationY(),
                 mContentBackgroundParentView.getRight(),
                 mContentBackgroundParentView.getBottom()
-                        + (mIsBackProgressing ? getBottomOffsetPx() : 0));
+                        + (mIsDismissInProgress ? getBottomOffsetPx() : 0));
         mContentBackground.draw(canvas);
     }
 

@@ -207,10 +207,10 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     }
 
     @Override
-    protected void onScaleProgressChanged() {
-        super.onScaleProgressChanged();
-        mAppsView.setClipChildren(!mIsBackProgressing);
-        mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsBackProgressing);
+    protected void onUserSwipeToDismissProgressChanged() {
+        super.onUserSwipeToDismissProgressChanged();
+        mAppsView.setClipChildren(!mIsDismissInProgress);
+        mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsDismissInProgress);
     }
 
     @Override
@@ -264,7 +264,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         if (mAllAppsCallbacks.handleSearchBackInvoked()) {
             // We need to scale back taskbar all apps if we navigate back within search inside all
             // apps
-            animateSlideInViewToNoScale();
+            animateSwipeToDismissProgressToStart();
         } else {
             super.onBackInvoked();
         }

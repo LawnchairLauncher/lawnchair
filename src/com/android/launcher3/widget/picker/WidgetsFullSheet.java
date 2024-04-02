@@ -17,7 +17,6 @@ package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
@@ -814,8 +813,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void addHintCloseAnim(
             float distanceToMove, Interpolator interpolator, PendingAnimation target) {
-        target.setFloat(getRecyclerView(), VIEW_TRANSLATE_Y, -distanceToMove, interpolator);
-        target.setViewAlpha(getRecyclerView(), 0.5f, interpolator);
+        target.addAnimatedFloat(mSwipeToDismissProgress, 0f, 1f, interpolator);
     }
 
     @Override
@@ -911,7 +909,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void onBackInvoked() {
         if (mIsInSearchMode) {
             mSearchBar.reset();
-            animateSlideInViewToNoScale();
+            animateSwipeToDismissProgressToStart();
         } else {
             super.onBackInvoked();
         }
