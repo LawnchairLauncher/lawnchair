@@ -1,5 +1,6 @@
 package app.lawnchair.icons
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -59,6 +60,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
     }
 
     fun createFromExternalPicker(icon: Intent.ShortcutIconResource): IconPickerItem? {
+        @SuppressLint("DiscouragedApi")
         val id = packResources.getIdentifier(icon.resourceName, null, null)
         if (id == 0) return null
         val simpleName = packResources.getResourceEntryName(id)
@@ -166,6 +168,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
         endCategory()
     }.flowOn(Dispatchers.IO)
 
+    @SuppressLint("DiscouragedApi")
     private fun getDrawableId(name: String) = idCache.getOrPut(name) {
         packResources.getIdentifier(name, "drawable", packPackageName)
     }
@@ -174,6 +177,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
         val res: Resources
         try {
             res = context.packageManager.getResourcesForApplication(packPackageName)
+            @SuppressLint("DiscouragedApi")
             val resourceId = res.getIdentifier(name, "xml", packPackageName)
             return if (0 != resourceId) {
                 context.packageManager.getXml(packPackageName, resourceId, null)

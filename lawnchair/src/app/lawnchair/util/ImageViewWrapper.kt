@@ -6,11 +6,11 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
 
-class ImageViewWrapper(context: Context, attrs: AttributeSet?) : ImageView(context, attrs) {
+class ImageViewWrapper(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
 
     private val mRadius = resources.getDimensionPixelSize(R.dimen.search_row_preview_radius).toFloat()
     private val path = Path()

@@ -153,7 +153,7 @@ class FeedBridge(private val context: Context) {
         private const val TAG = "FeedBridge"
         private const val OVERLAY_ACTION = "com.android.launcher3.WINDOW_OVERLAY"
 
-        private val whitelist = mapOf<String, Long>(
+        private val whitelist = mapOf(
             // HomeFeeder, t.me/homefeeder
             "ua.itaysonlab.homefeeder" to 0x887456ed,
             // Librechair, t.me/librechair

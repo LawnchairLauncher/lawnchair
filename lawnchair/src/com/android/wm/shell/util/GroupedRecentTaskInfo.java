@@ -136,6 +136,7 @@ public class GroupedRecentTaskInfo implements Parcelable {
         return mType;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder taskString = new StringBuilder ( );
@@ -190,7 +191,7 @@ public class GroupedRecentTaskInfo implements Parcelable {
     }
 
     public static final @android.annotation.NonNull Creator<GroupedRecentTaskInfo> CREATOR =
-            new Creator<GroupedRecentTaskInfo> ( ) {
+            new Creator<>() {
                 public GroupedRecentTaskInfo createFromParcel(Parcel source) {
                     return new GroupedRecentTaskInfo(source);
                 }

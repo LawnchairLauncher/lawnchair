@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Launch
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Launch
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -149,7 +149,7 @@ private fun AnnouncementPreferenceItemContent(
             ) {
                 if (hasLink) {
                     Icon(
-                        imageVector = Icons.Rounded.Launch,
+                        imageVector = Icons.AutoMirrored.Rounded.Launch,
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = null,
                     )

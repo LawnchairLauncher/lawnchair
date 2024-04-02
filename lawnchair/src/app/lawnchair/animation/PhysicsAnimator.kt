@@ -41,7 +41,7 @@ val <T : View> T.physicsAnimator: PhysicsAnimator<T> get() {
 
 private const val TAG = "PhysicsAnimator"
 
-private val UNSET = -Float.MAX_VALUE
+private const val UNSET = -Float.MAX_VALUE
 
 /**
  * [FlingAnimation] multiplies the friction set via [FlingAnimation.setFriction] by 4.2f, which is
@@ -627,24 +627,18 @@ class PhysicsAnimator<T> private constructor(target: T) {
         property: FloatPropertyCompat<in T>,
         target: T,
     ): SpringAnimation {
-        return springAnimations.getOrPut(
-            property,
-            {
-                configureDynamicAnimation(SpringAnimation(target, property), property)
-                    as SpringAnimation
-            },
-        )
+        return springAnimations.getOrPut(property) {
+            configureDynamicAnimation(SpringAnimation(target, property), property)
+                as SpringAnimation
+        }
     }
 
     /** Retrieves a fling animation for the given property, building one if needed. */
     private fun getFlingAnimation(property: FloatPropertyCompat<in T>, target: T): FlingAnimation {
-        return flingAnimations.getOrPut(
-            property,
-            {
-                configureDynamicAnimation(FlingAnimation(target, property), property)
-                    as FlingAnimation
-            },
-        )
+        return flingAnimations.getOrPut(property) {
+            configureDynamicAnimation(FlingAnimation(target, property), property)
+                as FlingAnimation
+        }
     }
 
     /**
@@ -686,7 +680,7 @@ class PhysicsAnimator<T> private constructor(target: T) {
      * were being animated when the end listeners were passed in, so that we can provide the
      * appropriate value for allEnded to [EndListener.onAnimationEnd].
      */
-    internal inner class InternalListener constructor(
+    internal inner class InternalListener(
         private val target: T,
         private var properties: Set<FloatPropertyCompat<in T>>,
         private var updateListeners: List<UpdateListener<T>>,
@@ -1047,7 +1041,7 @@ class PhysicsAnimator<T> private constructor(target: T) {
             flingConfig: FlingConfig,
         ): Float {
             val distance = startVelocity / (flingConfig.friction * FLING_FRICTION_SCALAR_MULTIPLIER)
-            return Math.min(flingConfig.max, Math.max(flingConfig.min, startValue + distance))
+            return min(flingConfig.max, max(flingConfig.min, startValue + distance))
         }
 
         @JvmStatic

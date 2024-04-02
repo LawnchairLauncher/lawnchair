@@ -37,8 +37,7 @@ fun lightenColor(@ColorInt color: Int): Int {
 fun Context.getSystemAccent(darkTheme: Boolean): Int {
     val res = resources
     return if (Utilities.ATLEAST_S) {
-        val colorName = if (darkTheme) "system_accent1_100" else "system_accent1_600"
-        val colorId = res.getIdentifier(colorName, "color", "android")
+        val colorId = if (darkTheme) R.color.system_accent1_100 else R.color.system_accent1_600
         res.getColor(colorId)
     } else {
         var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")

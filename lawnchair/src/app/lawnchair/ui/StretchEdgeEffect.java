@@ -291,7 +291,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
      * but returns the amount of <code>deltaDistance</code> that has been consumed. If the
      * {@link #getDistance()} is currently 0 and <code>deltaDistance</code> is negative, this
      * function will return 0 and the drawn value will remain unchanged.
-     *
+     * <p>
      * This method can be used to reverse the effect from a pull or absorb and partially consume
      * some of a motion:
      *
@@ -332,7 +332,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
      * Returns the pull distance needed to be released to remove the showing effect.
      * It is determined by the {@link #onPull(float, float)} <code>deltaDistance</code> and
      * any animating values, including from {@link #onAbsorb(int)} and {@link #onRelease()}.
-     *
+     * <p>
      * This can be used in conjunction with {@link #onPullDistance(float, float)} to
      * release the currently showing effect.
      *

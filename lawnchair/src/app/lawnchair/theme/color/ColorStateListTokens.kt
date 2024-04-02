@@ -2,7 +2,6 @@ package app.lawnchair.theme.color
 
 import android.content.res.ColorStateList
 
-@Suppress("MemberVisibilityCanBePrivate")
 object ColorStateListTokens {
 
     val AllAppsTabTextLight = NewColorStateList { context, scheme, uiColorMode ->

@@ -20,6 +20,9 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+
+import androidx.annotation.NonNull;
+
 import app.lawnchair.FeedBridge;
 import app.lawnchair.FeedBridge.BridgeInfo;
 import java.lang.ref.WeakReference;
@@ -74,7 +77,7 @@ public class LauncherClient {
         }
 
         @Override
-        public boolean handleMessage(Message message) {
+        public boolean handleMessage(@NonNull Message message) {
             if (mClient == null) {
                 return true;
             }
@@ -400,12 +403,10 @@ public class LauncherClient {
         String pkg = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
                 .setPackage(bridgeInfo != null ? bridgeInfo.getPackageName() : "com.google.android.googlequicksearchbox")
-                .setData(Uri.parse(new StringBuilder(pkg.length() + 18)
-                            .append("app://")
-                            .append(pkg)
-                            .append(":")
-                            .append(Process.myUid())
-                            .toString())
+                .setData(Uri.parse("app://" +
+                                pkg +
+                                ":" +
+                                Process.myUid())
                         .buildUpon()
                         .appendQueryParameter("v", Integer.toString(7))
                         .appendQueryParameter("cv", Integer.toString(9))

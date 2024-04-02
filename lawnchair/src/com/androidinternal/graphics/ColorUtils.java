@@ -27,7 +27,7 @@ import com.androidinternal.graphics.cam.Cam;
 
 /**
  * Copied from: frameworks/support/core-utils/java/android/support/v4/graphics/ColorUtils.java
- *
+ * <p>
  * A set of color-related utility methods, building upon those available in {@code Color}.
  */
 public final class ColorUtils {
@@ -337,7 +337,7 @@ public final class ColorUtils {
 
     /**
      * Convert the ARGB color to a color appearance model.
-     *
+     * <p>
      * The color appearance model is based on CAM16 hue and chroma, using L*a*b*'s L* as the
      * third dimension.
      *
@@ -349,7 +349,7 @@ public final class ColorUtils {
 
     /**
      * Convert a color appearance model representation to an ARGB color.
-     *
+     * <p>
      * Note: the returned color may have a lower chroma than requested. Whether a chroma is
      * available depends on luminance. For example, there's no such thing as a high chroma light
      * red, due to the limitations of our eyes and/or physics. If the requested chroma is
@@ -590,11 +590,11 @@ public final class ColorUtils {
     }
 
     private static float constrain(float amount, float low, float high) {
-        return amount < low ? low : (amount > high ? high : amount);
+        return amount < low ? low : (Math.min(amount, high));
     }
 
     private static int constrain(int amount, int low, int high) {
-        return amount < low ? low : (amount > high ? high : amount);
+        return amount < low ? low : (Math.min(amount, high));
     }
 
     private static double pivotXyzComponent(double component) {

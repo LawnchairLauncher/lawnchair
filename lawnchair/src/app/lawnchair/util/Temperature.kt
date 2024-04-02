@@ -27,6 +27,7 @@ class Temperature(val value: Int, val unit: Unit) {
     companion object {
 
         // TODO: Use Unit directly after https://github.com/pinterest/ktlint/issues/2353 is fixed.
+        @Suppress("RemoveRedundantQualifierName")
         fun unitFromString(unit: String): Temperature.Unit {
             return when (unit) {
                 "metric" -> Unit.Celsius

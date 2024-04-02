@@ -6,7 +6,6 @@ import android.graphics.Color.argb
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,7 +76,6 @@ import kotlinx.coroutines.launch
  * @see HsvColorPicker
  * @see RgbColorPicker
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomColorPicker(
     selectedColor: Int,
