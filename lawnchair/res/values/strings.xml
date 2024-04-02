@@ -231,8 +231,10 @@
 
     <string name="force_rounded_widgets">Rounded Corners</string>
     <string name="allow_widget_overlap">Allow Overlap</string>
-    <string name="force_widget_resize">Make all widgets resizable</string>
-    <string name="widget_unlimited_size">Unlimited widget size</string>
+    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
+    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
+    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
+    <string name="widget_unlimited_size_description                                             >Remove the minimum and maximum size restrictions of widgets</string>
 
     <!-- HomeScreenGridPreferences -->
     <string name="columns">Columns</string>

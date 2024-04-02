@@ -201,8 +201,6 @@
     <string name="color_dark">Dunkel</string>
     <string name="force_rounded_widgets">Abgerundete Ecken</string>
     <string name="allow_widget_overlap">Überlappen zulassen</string>
-    <string name="force_widget_resize">Alle Widgets skalieren</string>
-    <string name="widget_unlimited_size">Beliebige Größe für Widgets</string>
     <!-- HomeScreenGridPreferences -->
     <string name="columns">Spalten</string>
     <string name="rows">Zeilen</string>
