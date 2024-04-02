@@ -151,6 +151,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private BubbleStashController mBubbleStashController;
     private BubbleStashedHandleViewController mBubbleStashedHandleViewController;
 
+    // Keep track of bubble bar bounds sent to shell to avoid sending duplicate updates
+    private final Rect mLastSentBubbleBarBounds = new Rect();
+
     /**
      * Similar to {@link BubbleBarUpdate} but rather than {@link BubbleInfo}s it uses
      * {@link BubbleBarBubble}s so that it can be used to update the views.
@@ -221,6 +224,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
                     !sBubbleBarEnabled || mBubbles.isEmpty());
             mBubbleBarViewController.setUpdateSelectedBubbleAfterCollapse(
                     key -> setSelectedBubbleInternal(mBubbles.get(key)));
+            mBubbleBarViewController.setBoundsChangeListener(this::onBubbleBarBoundsChanged);
         });
     }
 
@@ -426,7 +430,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
                         info.getFlags() | Notification.BubbleMetadata.FLAG_SUPPRESS_NOTIFICATION);
                 mSelectedBubble.getView().updateDotVisibility(true /* animate */);
             }
-            mSystemUiProxy.showBubble(getSelectedBubbleKey(), getExpandedBubbleBarDisplayBounds());
+            Rect bounds = getExpandedBubbleBarDisplayBounds();
+            mLastSentBubbleBarBounds.set(bounds);
+            mSystemUiProxy.showBubble(getSelectedBubbleKey(), bounds);
         } else {
             Log.w(TAG, "Trying to show the selected bubble but it's null");
         }
@@ -609,27 +615,39 @@ public class BubbleBarController extends IBubblesListener.Stub {
         return mIconFactory.createBadgedIconBitmap(drawable).icon;
     }
 
+    private void onBubbleBarBoundsChanged(Rect newBounds) {
+        Rect displayBounds = convertToDisplayBounds(newBounds);
+        // Only send bounds over if they changed
+        if (!displayBounds.equals(mLastSentBubbleBarBounds)) {
+            mLastSentBubbleBarBounds.set(displayBounds);
+            mSystemUiProxy.setBubbleBarBounds(displayBounds);
+        }
+    }
+
     /**
      * Get bounds of the bubble bar as if it would be expanded.
      * Calculates the bounds instead of retrieving current view location as the view may be
      * animating.
      */
     private Rect getExpandedBubbleBarDisplayBounds() {
+        return convertToDisplayBounds(mBarView.getBubbleBarBounds());
+    }
+
+    private Rect convertToDisplayBounds(Rect currentBarBounds) {
         Point displaySize = DisplayController.INSTANCE.get(mContext).getInfo().currentSize;
-        Rect currentBarBounds = mBarView.getBubbleBarBounds();
-        Rect location = new Rect();
+        Rect displayBounds = new Rect();
         // currentBarBounds is only useful for distance from left or right edge.
         // It contains the current bounds, calculate the expanded bounds.
         if (mBarView.getBubbleBarLocation().isOnLeft(mBarView.isLayoutRtl())) {
-            location.left = currentBarBounds.left;
-            location.right = (int) (currentBarBounds.left + mBarView.expandedWidth());
+            displayBounds.left = currentBarBounds.left;
+            displayBounds.right = (int) (currentBarBounds.left + mBarView.expandedWidth());
         } else {
-            location.left = (int) (currentBarBounds.right - mBarView.expandedWidth());
-            location.right = currentBarBounds.right;
+            displayBounds.left = (int) (currentBarBounds.right - mBarView.expandedWidth());
+            displayBounds.right = currentBarBounds.right;
         }
         final int translation = (int) abs(mBubbleStashController.getBubbleBarTranslationY());
-        location.top = displaySize.y - currentBarBounds.height() - translation;
-        location.bottom = displaySize.y - translation;
-        return location;
+        displayBounds.top = displaySize.y - currentBarBounds.height() - translation;
+        displayBounds.bottom = displaySize.y - translation;
+        return displayBounds;
     }
 }
