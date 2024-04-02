@@ -172,7 +172,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Werkprofiel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn onderbroken"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn gepauzeerd"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Je krijgt geen meldingen van je werk-apps"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie"</string>
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Je krijgt geen telefoongesprekken, tekstberichten of meldingen van je werk-apps"</string>

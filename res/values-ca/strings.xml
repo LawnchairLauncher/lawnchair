@@ -113,7 +113,7 @@
     <string name="app_pair_name_format" msgid="8134106404716224054">"Parella d\'aplicacions: <xliff:g id="APP1">%1$s</xliff:g> i <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Estil i fons de pantalla"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Edita la pantalla d\'inici"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Config. pantalla d\'inici"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuració de la pantalla d\'inici"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Desactivada per l\'administrador"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permet la rotació de la pantalla d\'inici"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"En girar el telèfon"</string>
