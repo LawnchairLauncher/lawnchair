@@ -43,7 +43,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Dodaj na početni ekran"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Dodali ste vidžet <xliff:g id="WIDGET_NAME">%1$s</xliff:g> na početni ekran"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Predlozi"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Osnovne aplikacije"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Neophodne aplikacije"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Novosti i časopisi"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Zona za opuštanje"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Zabava"</string>
@@ -188,8 +188,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nije uspelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Privatni prostor"</string>
-    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Dodirnite da biste podesili ili otvorili"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privatno"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Podešavanja privatnog prostora"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Zaključaj/otključaj privatni prostor"</string>

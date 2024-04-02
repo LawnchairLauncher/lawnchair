@@ -123,8 +123,8 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"Autoriser la rotation de l\'écran d\'accueil"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Lorsque vous faites pivoter le téléphone"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Pastilles de notification"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activé"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Désactivé"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activées"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Désactivées"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Accès aux notifications requis"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les pastilles de notification, activez les notifications de l\'application <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
@@ -188,8 +188,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtre"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Espace privé"</string>
-    <!-- no translation found for private_space_secondary_label (9203933341714508907) -->
-    <skip />
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Appuyer pour ouvrir ou configurer"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privé"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Paramètres d\'Espace privé"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Verrouiller/Déverrouiller Espace privé"</string>
