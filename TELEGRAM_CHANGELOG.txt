@@ -1,4 +1,5 @@
-Lawnchair 14 Beta 2 is here! Compared to the previous release, this version contains the following improvements:
+As you asked for us to release more updates, here you go, Lawnchair 14 beta 2! 
+Jokes asides, we are fixing some of the issues with our first Lawnchair 14 beta release:
 
 * Fix Lawnchair crashing on Android 9 and some Lenovo devices on Android 10
 * Fix spacing issue within the announcement settings
