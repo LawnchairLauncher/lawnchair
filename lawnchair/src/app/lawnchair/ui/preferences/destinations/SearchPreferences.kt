@@ -9,7 +9,7 @@ import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
-import app.lawnchair.ui.preferences.components.ResultsBottomSheet
+import app.lawnchair.ui.preferences.components.SearchSuggestionPreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -37,7 +37,7 @@ fun SearchPreferences() {
     val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
 
 
-    PreferenceLayout(label = "Drawer Search") {
+    PreferenceLayout(label = stringResource(id = R.string.drawer_search_label)) {
         MainSwitchPreference(adapter = showDrawerSearchBar, label = stringResource(id = R.string.show_app_search_bar)) {
 
             PreferenceGroup (heading = stringResource(R.string.general_label)){
@@ -53,7 +53,7 @@ fun SearchPreferences() {
             val isDeviceSearch = prefs2.performWideSearch.getAdapter().state.value
 
             PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
-                ResultsBottomSheet(
+                SearchSuggestionPreference(
                     adapter = prefs.searchResultApps.getAdapter(),
                     maxCountAdapter = prefs2.maxSearchResultCount.getAdapter(),
                     maxCountRange = 3 .. 15,
@@ -67,13 +67,13 @@ fun SearchPreferences() {
                         description = stringResource(id = R.string.fuzzy_search_desc),
                     )
                 }
-                ResultsBottomSheet(
+                SearchSuggestionPreference(
                     adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
                     maxCountAdapter = prefs2.maxSuggestionResultCount.getAdapter(),
                     maxCountRange = 3..10,
                     label = stringResource(id = R.string.search_pref_result_web_title),
                     maxCountLabel = stringResource(id = R.string.max_suggestion_result_count_title),
-                    description = "Search the web",
+                    description = stringResource(id = R.string.search_pref_result_web_description),
                 ) {
                     SliderPreference(
                         label = stringResource(id = R.string.max_web_suggestion_delay),
@@ -84,7 +84,7 @@ fun SearchPreferences() {
                     )
                 }
 
-                ResultsBottomSheet(
+                SearchSuggestionPreference(
                     adapter = prefs.searchResultSettingsEntry.getAdapter(),
                     maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
                     maxCountRange = 2..10,
@@ -93,29 +93,29 @@ fun SearchPreferences() {
                 )
 
                 if (isDeviceSearch) {
-                    ResultsBottomSheet(
+                    SearchSuggestionPreference(
                         adapter = prefs.searchResultPeople.getAdapter(),
                         maxCountAdapter = prefs2.maxPeopleResultCount.getAdapter(),
                         maxCountRange = 3..15,
                         label = stringResource(id = R.string.search_pref_result_people_title),
                         maxCountLabel = stringResource(id = R.string.max_people_result_count_title),
                         description = stringResource(id = R.string.search_pref_result_contacts_description),
-                        enabled = contactPermissionGranted(context),
-                        requestEnabled = { requestContactPermissionGranted(context, prefs) },
-                        requestEnabledDescription = stringResource(id = R.string.warn_contact_permission_content),
+                        isPermissionGranted = contactPermissionGranted(context),
+                        onPermissionRequest = { requestContactPermissionGranted(context, prefs) },
+                        requestPermissionDescription = stringResource(id = R.string.warn_contact_permission_content),
                     )
-                    ResultsBottomSheet(
+                    SearchSuggestionPreference(
                         adapter = prefs.searchResultFiles.getAdapter(),
                         maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
                         maxCountRange = 3..10,
                         label = stringResource(id = R.string.search_pref_result_files_title),
                         maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
                         description = stringResource(id = R.string.search_pref_result_files_description),
-                        enabled = filesAndStorageGranted(context),
-                        requestEnabled = { checkAndRequestFilesPermission(context, prefs) },
-                        requestEnabledDescription = stringResource(id = R.string.warn_files_permission_content),
+                        isPermissionGranted = filesAndStorageGranted(context),
+                        onPermissionRequest = { checkAndRequestFilesPermission(context, prefs) },
+                        requestPermissionDescription = stringResource(id = R.string.warn_files_permission_content),
                     )
-                    ResultsBottomSheet(
+                    SearchSuggestionPreference(
                         adapter = prefs.searchResultSettingsEntry.getAdapter(),
                         maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
                         maxCountRange = 2..10,
@@ -123,7 +123,7 @@ fun SearchPreferences() {
                         maxCountLabel = stringResource(id = R.string.max_settings_entry_result_count_title),
                     )
                 }
-                ResultsBottomSheet(
+                SearchSuggestionPreference(
                     adapter = prefs.searchResulRecentSuggestion.getAdapter(),
                     maxCountAdapter = prefs2.maxRecentResultCount.getAdapter(),
                     maxCountRange =  1..10,

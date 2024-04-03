@@ -46,7 +46,7 @@ fun MainSwitchPreference(
     MainSwitchPreference(
         checked = checked,
         onCheckedChange = onCheckedChange,
-        label = label,
+       label = label,
         enabled = enabled,
     )
 

@@ -30,6 +30,8 @@
     <string name="dock_description">Search Bar, Icon Count</string>
     <string name="app_drawer_label">App Drawer</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="drawer_search_label">Drawer Search</string>
+    <string name="drawer_search_description">Web Suggestions, Global Search</string>
     <string name="folders_label">Folders</string>
     <string name="folders_description">Row and Column Count</string>
     <string name="gestures_label">Gestures</string>
@@ -467,22 +469,25 @@
     <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
 
     <!-- Search ig -->
+    <string name="action_apply">Apply</string>
     <string name="show_search_result_types">Show in Search Results</string>
 
     <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
     <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
     <string name="search_pref_result_people_title">People</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="search_pref_result_settings_title">Phone Settings</string>
+    <string name="search_pref_result_settings_title">Android Settings</string>
     <string name="search_pref_result_files_title">Files</string>
-    <string name="search_pref_result_web_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search History</string>
 
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contacts and more</string>
+    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
 
     <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
     <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
+    <string name="grant_requested_permissions">Grant Permissions</string>
 
     <string name="pref_suggestion_label">Suggestions</string>
     <string name="all_apps_device_search_hint">Search</string>
