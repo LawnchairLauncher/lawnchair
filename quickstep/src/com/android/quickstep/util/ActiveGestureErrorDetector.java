@@ -277,7 +277,8 @@ public class ActiveGestureErrorDetector {
                     errorDetected |= printErrorIfTrue(
                             true,
                             prefix,
-                            /* errorMessage= */ "new gesture attempted while a requested recents"
+                            /* errorMessage= */ (eventEntry.getDuplicateCount() + 1)
+                                    + " gesture(s) attempted while a requested recents"
                                     + " animation is still pending.",
                             writer);
                     break;

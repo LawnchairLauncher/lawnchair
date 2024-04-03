@@ -216,6 +216,10 @@ public class ActiveGestureLog {
             return gestureEvent;
         }
 
+        public int getDuplicateCount() {
+            return duplicateCount;
+        }
+
         private void update(
                 @NonNull CompoundString compoundString,
                 ActiveGestureErrorDetector.GestureEvent gestureEvent) {
