@@ -2131,6 +2131,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         boolean snappedToNewPage = false;
         boolean resizeOnDrop = false;
         Runnable onCompleteRunnable = null;
+        boolean forceWidgetResize = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getForceWidgetResize());
         if (d.dragSource != this || mDragInfo == null) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
@@ -2252,7 +2253,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                         // We post this call so that the widget has a chance to be placed
                         // in its final location
                         onCompleteRunnable = getWidgetResizeFrameRunnable(options,
-                                (LauncherAppWidgetHostView) cell, dropTargetLayout);
+                                (LauncherAppWidgetHostView) cell, dropTargetLayout, forceWidgetResize);
                     }
                     mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
                             lp.getCellX(), lp.getCellY(), item.spanX, item.spanY);
@@ -2281,7 +2282,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
                     if (pageIsVisible) {
                         onCompleteRunnable = getWidgetResizeFrameRunnable(options,
-                                (LauncherAppWidgetHostView) cell, cellLayout);
+                                (LauncherAppWidgetHostView) cell, cellLayout, forceWidgetResize);
                     }
                 }
             }
@@ -2346,10 +2347,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     @Nullable
     private Runnable getWidgetResizeFrameRunnable(DragOptions options,
-            LauncherAppWidgetHostView hostView, CellLayout cellLayout) {
+            LauncherAppWidgetHostView hostView, CellLayout cellLayout, boolean force) {
         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
-        if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
-                && !options.isAccessibleDrag) {
+        boolean shouldResize = (pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) || force;
+        if (pInfo != null && shouldResize && !options.isAccessibleDrag) {
             return () -> {
                 if (!isPageInTransition()) {
                     AppWidgetResizeFrame.showForWidget(hostView, cellLayout);

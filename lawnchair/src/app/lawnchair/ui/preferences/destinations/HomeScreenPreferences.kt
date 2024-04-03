@@ -206,6 +206,16 @@ fun HomeScreenPreferences() {
                 adapter = prefs2.allowWidgetOverlap.getAdapter(),
                 label = stringResource(id = R.string.allow_widget_overlap),
             )
+            SwitchPreference(
+                adapter = prefs2.widgetUnlimitedSize.getAdapter(),
+                label = stringResource(id = R.string.widget_unlimited_size_label),
+                description = stringResource(id = R.string.widget_unlimited_size_description),
+            )
+            SwitchPreference(
+                adapter = prefs2.forceWidgetResize.getAdapter(),
+                label = stringResource(id = R.string.force_widget_resize_label),
+                description = stringResource(id = R.string.force_widget_resize_description),
+            )
         }
     }
 }
