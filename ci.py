@@ -37,6 +37,11 @@ def send_document_to_telegram_chat(chat_id, document):
 
 def send_artifact_to_telegram_chat(chat_id):
     subdirectories = os.listdir(artifact_directory)
+    if "beta" in github_ref:
+        with open(f"{artifact_directory}/{os.listdir(artifact_directory)[0]}", "rb") as artifact:
+            send_document_to_telegram_chat(chat_id=chat_id, document=artifact)
+            return
+    
     for each_directory in subdirectories:
         full_path = f"{artifact_directory}/{each_directory}/debug"
         with open(f"{full_path}/{os.listdir(full_path)[0]}", "rb") as artifact:
