@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -73,6 +74,7 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellInfo;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
@@ -241,6 +243,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public static final int REORDER_TIMEOUT = 650;
     protected final Alarm mReorderAlarm = new Alarm();
     private PreviewBackground mFolderCreateBg;
+    /** The underlying view that we are dragging something over. */
+    private View mDragOverView = null;
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
@@ -2381,6 +2385,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (mFolderCreateBg != null) {
             mFolderCreateBg.animateToRest();
         }
+
+        if (mDragOverView instanceof AppPairIcon api) {
+            api.getIconDrawableArea().onTemporaryContainerChange(null);
+            mDragOverView = null;
+        }
     }
 
     private void cleanupAddToFolder() {
@@ -2656,17 +2665,21 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             return;
         }
 
-        final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
+        mDragOverView = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
         ItemInfo info = dragObject.dragInfo;
-        boolean userFolderPending = willCreateUserFolder(info, dragOverView, false);
+        boolean userFolderPending = willCreateUserFolder(info, mDragOverView, false);
         if (mDragMode == DRAG_MODE_NONE && userFolderPending) {
 
             mFolderCreateBg = new PreviewBackground();
             mFolderCreateBg.setup(mLauncher, mLauncher, null,
-                    dragOverView.getMeasuredWidth(), dragOverView.getPaddingTop());
+                    mDragOverView.getMeasuredWidth(), mDragOverView.getPaddingTop());
 
             // The full preview background should appear behind the icon
             mFolderCreateBg.isClipping = false;
+
+            if (mDragOverView instanceof AppPairIcon api) {
+                api.getIconDrawableArea().onTemporaryContainerChange(DISPLAY_FOLDER);
+            }
 
             mFolderCreateBg.animateToAccept(mDragTargetLayout, mTargetCell[0], mTargetCell[1]);
             mDragTargetLayout.clearDragOutlines();
@@ -2674,14 +2687,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
             if (dragObject.stateAnnouncer != null) {
                 dragObject.stateAnnouncer.announce(WorkspaceAccessibilityHelper
-                        .getDescriptionForDropOver(dragOverView, getContext()));
+                        .getDescriptionForDropOver(mDragOverView, getContext()));
             }
             return;
         }
 
-        boolean willAddToFolder = willAddToExistingUserFolder(info, dragOverView);
+        boolean willAddToFolder = willAddToExistingUserFolder(info, mDragOverView);
         if (willAddToFolder && mDragMode == DRAG_MODE_NONE) {
-            mDragOverFolderIcon = ((FolderIcon) dragOverView);
+            mDragOverFolderIcon = ((FolderIcon) mDragOverView);
             mDragOverFolderIcon.onDragEnter(info);
             if (mDragTargetLayout != null) {
                 mDragTargetLayout.clearDragOutlines();
@@ -2690,7 +2703,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
             if (dragObject.stateAnnouncer != null) {
                 dragObject.stateAnnouncer.announce(WorkspaceAccessibilityHelper
-                        .getDescriptionForDropOver(dragOverView, getContext()));
+                        .getDescriptionForDropOver(mDragOverView, getContext()));
             }
             return;
         }
