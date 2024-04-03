@@ -57,7 +57,6 @@ fun SearchPreferences() {
                     maxCountRange = 3..15,
                     label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),
                     maxCountLabel = stringResource(R.string.max_apps_result_count_title),
-                    preventSwitchChange = true,
                 ) {
                     SwitchPreference(
                         adapter = prefs2.enableFuzzySearch.getAdapter(),
@@ -76,19 +75,11 @@ fun SearchPreferences() {
                     SliderPreference(
                         label = stringResource(id = R.string.max_web_suggestion_delay),
                         adapter = prefs2.maxWebSuggestionDelay.getAdapter(),
-                        step = 100,
-                        valueRange = 200..5000,
+                        step = 500,
+                        valueRange = 500..5000,
                         showUnit = "ms",
                     )
                 }
-
-                SearchSuggestionPreference(
-                    adapter = prefs.searchResultSettingsEntry.getAdapter(),
-                    maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
-                    maxCountRange = 2..10,
-                    label = stringResource(id = R.string.search_pref_result_settings_title),
-                    maxCountLabel = stringResource(id = R.string.max_settings_entry_result_count_title),
-                )
 
                 if (isDeviceSearch) {
                     SearchSuggestionPreference(
