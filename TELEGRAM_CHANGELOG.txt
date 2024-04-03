@@ -1,19 +1,8 @@
-After about 2 long years, we're delighted to announce that <b>Lawnchair 14 has finally arrived!</b>
+Lawnchair 14 Beta 2 is here! Compared to the previous release, this version contains the following improvements:
 
-Based on Launcher3 from Android 14, this release works with QuickSwitch from Android 10 to Android 14! You won't need to use an older version to integrate with the system.
+* Fix Lawnchair crashing on Android 9 and some Lenovo devices on Android 10
+* Fix spacing issue within the announcement settings
+* Fix "Apps and Shortcuts" being tied to "Files" suggestion in Drawer Search settings
+* Add support for force resizing widgets/unlimited resizing options (thanks to <a href="https://github.com/SolidTux">@SolidTux</a> for their PR!)
 
-Some major highlights:
-• Search your phone, the web, and more with our new <b>Global Search</b> — no root needed!¹
-• View flight info, see surrounding traffic, and keep an eye on your data usage with <b>Smartspacer</b> — all integrated within Lawnchair.²
-• Want to further control your icons? Fret not, We now support custom icon packs for themed icons, alongside some new icon options.³
-• Themers rejoice — you can now <b>hide the Dock</b> for a cleaner home screen. You can also change even more colors, fonts, and padding.
-• Are you tired of Lawnchair crashing because of widgets? We've fixed that issue; you won’t need to do some hacky workaround to add them.⁴
-
-Alongside that, we have a new partnership with <a href="https://startpage.com">Startpage</a> — searching with Startpage (via the dock search bar or App Drawer search) helps support Lawnchair’s development.
-
-We still have more things to share! See the <a href="https://lawnchair.app/blog/lawnchair-14">announcement on our website</a> for more information.
-
-¹ Experimental feature, requires opt in Lawnchair Settings.
-² Requires Smartspacer and respective plugins.
-³ Requires a supported icon pack.
-⁴ May still persist depending on the device.
+Alongside that, after discussion with the team, we have changed the package name back to `app.lawnchair` because of the Play Store update conflicts.
