@@ -379,8 +379,10 @@ public class PrivateProfileManager extends UserProfileManager {
     private void addHeaderOnClickListener(RelativeLayout header) {
         if (getCurrentState() == STATE_DISABLED) {
             header.setOnClickListener(view -> lockingAction(/* lock */ false));
+            header.setClickable(true);
         } else {
             header.setOnClickListener(null);
+            header.setClickable(false);
         }
     }
 

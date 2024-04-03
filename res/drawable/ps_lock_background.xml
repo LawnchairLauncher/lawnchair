@@ -15,13 +15,17 @@
   ~ limitations under the License.
   -->
 
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:inset="4dp">
-    <shape android:shape="rectangle">
-        <corners android:radius="@dimen/ps_lock_corner_radius" />
-        <solid android:color="?attr/materialColorPrimaryFixedDim" />
-        <padding
-            android:left="@dimen/ps_lock_button_background_padding"
-            android:right="@dimen/ps_lock_button_background_padding" />
-    </shape>
-</inset>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/accent_ripple_color">
+    <item>
+        <inset android:inset="4dp">
+            <shape android:shape="rectangle">
+                <corners android:radius="@dimen/ps_lock_corner_radius" />
+                <solid android:color="?attr/materialColorPrimaryFixedDim" />
+                <padding
+                    android:left="@dimen/ps_lock_button_background_padding"
+                    android:right="@dimen/ps_lock_button_background_padding" />
+            </shape>
+        </inset>
+    </item>
+</ripple>
