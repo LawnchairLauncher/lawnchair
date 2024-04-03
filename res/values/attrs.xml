@@ -52,6 +52,7 @@
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
     <attr name="folderHintTextColor" format="color" />
+    <attr name="appPairSurfaceInFolder" format="color" />
     <attr name="isFolderDarkText" format="boolean" />
     <attr name="workspaceAccentColor" format="color" />
     <attr name="workspaceSurfaceColor" format="color" />
