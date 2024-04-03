@@ -63,7 +63,6 @@ import androidx.annotation.WorkerThread;
 import com.android.internal.logging.InstanceId;
 import com.android.internal.util.ScreenshotRequest;
 import com.android.internal.view.AppearanceRegion;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -92,7 +91,6 @@ import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.recents.IRecentTasks;
 import com.android.wm.shell.recents.IRecentTasksListener;
-import com.android.wm.shell.shared.IHomeTransitionListener;
 import com.android.wm.shell.shared.IShellTransitions;
 import com.android.wm.shell.splitscreen.ISplitScreen;
 import com.android.wm.shell.splitscreen.ISplitScreenListener;
@@ -158,7 +156,7 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
     private IOnBackInvokedCallback mBackToLauncherCallback;
     private IRemoteAnimationRunner mBackToLauncherRunner;
     private IDragAndDrop mDragAndDrop;
-    private IHomeTransitionListener mHomeTransitionListener;
+    private final HomeVisibilityState mHomeVisibilityState = new HomeVisibilityState();
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -270,7 +268,7 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         setBubblesListener(mBubblesListener);
         registerSplitScreenListener(mSplitScreenListener);
         registerSplitSelectListener(mSplitSelectListener);
-        setHomeTransitionListener(mHomeTransitionListener);
+        mHomeVisibilityState.init(mShellTransitions);
         setStartingWindowListener(mStartingWindowListener);
         setLauncherUnlockAnimationController(
                 mLauncherActivityClass, mLauncherUnlockAnimationController);
@@ -1115,22 +1113,8 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         mRemoteTransitions.remove(remoteTransition);
     }
 
-    public void setHomeTransitionListener(IHomeTransitionListener listener) {
-        if (!FeatureFlags.enableHomeTransitionListener()) {
-            return;
-        }
-
-        mHomeTransitionListener = listener;
-
-        if (mShellTransitions != null) {
-            try {
-                mShellTransitions.setHomeTransitionListener(listener);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setHomeTransitionListener", e);
-            }
-        } else  {
-            Log.w(TAG, "Unable to call setHomeTransitionListener because ShellTransitions is null");
-        }
+    public HomeVisibilityState getHomeVisibilityState() {
+        return mHomeVisibilityState;
     }
 
     /**
@@ -1571,7 +1555,7 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         pw.println("\tmSplitSelectListener=" + mSplitSelectListener);
         pw.println("\tmOneHanded=" + mOneHanded);
         pw.println("\tmShellTransitions=" + mShellTransitions);
-        pw.println("\tmHomeTransitionListener=" + mHomeTransitionListener);
+        pw.println("\tmHomeVisibilityState=" + mHomeVisibilityState);
         pw.println("\tmStartingWindow=" + mStartingWindow);
         pw.println("\tmStartingWindowListener=" + mStartingWindowListener);
         pw.println("\tmSysuiUnlockAnimationController=" + mSysuiUnlockAnimationController);
