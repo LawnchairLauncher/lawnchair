@@ -82,6 +82,7 @@ import com.android.systemui.unfold.progress.IUnfoldTransitionListener;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.bubbles.IBubbles;
 import com.android.wm.shell.bubbles.IBubblesListener;
+import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 import com.android.wm.shell.common.pip.IPip;
 import com.android.wm.shell.common.pip.IPipAnimationListener;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
@@ -805,6 +806,18 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
             mBubbles.showUserEducation(position.x, position.y);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed call showUserEducation");
+        }
+    }
+
+    /**
+     * Tells SysUI to update the bubble bar location to the new location.
+     * @param location new location for the bubble bar
+     */
+    public void setBubbleBarLocation(BubbleBarLocation location) {
+        try {
+            mBubbles.setBubbleBarLocation(location);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call setBubbleBarLocation");
         }
     }
 

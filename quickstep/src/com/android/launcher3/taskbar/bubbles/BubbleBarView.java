@@ -24,7 +24,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.Nullable;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.LayoutDirection;
@@ -108,6 +110,7 @@ public class BubbleBarView extends FrameLayout {
     private final float mIconSize;
     // The elevation of the bubbles within the bar
     private final float mBubbleElevation;
+    private final float mDragElevation;
     private final int mPointerSize;
 
     // Whether the bar is expanded (i.e. the bubble activity is being displayed).
@@ -138,10 +141,14 @@ public class BubbleBarView extends FrameLayout {
     @Nullable
     private Consumer<String> mUpdateSelectedBubbleAfterCollapse;
 
+    private boolean mDragging;
+
     @Nullable
     private BubbleView mDraggedBubbleView;
 
     private int mPreviousLayoutDirection = LayoutDirection.UNDEFINED;
+
+    private boolean mLocationChangePending;
 
     public BubbleBarView(Context context) {
         this(context, null);
@@ -163,6 +170,7 @@ public class BubbleBarView extends FrameLayout {
         mIconSpacing = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_spacing);
         mIconSize = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_size);
         mBubbleElevation = getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_elevation);
+        mDragElevation = getResources().getDimensionPixelSize(R.dimen.bubblebar_drag_elevation);
         mPointerSize = getResources().getDimensionPixelSize(R.dimen.bubblebar_pointer_size);
 
         setClipToPadding(false);
@@ -237,12 +245,13 @@ public class BubbleBarView extends FrameLayout {
         }
     }
 
+    @SuppressLint("RtlHardcoded")
     private void onBubbleBarLocationChanged() {
+        mLocationChangePending = false;
         final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
         mBubbleBarBackground.setAnchorLeft(onLeft);
         mRelativePivotX = onLeft ? 0f : 1f;
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        if (layoutParams instanceof LayoutParams lp) {
+        if (getLayoutParams() instanceof LayoutParams lp) {
             lp.gravity = Gravity.BOTTOM | (onLeft ? Gravity.LEFT : Gravity.RIGHT);
             setLayoutParams(lp);
         }
@@ -267,11 +276,82 @@ public class BubbleBarView extends FrameLayout {
         }
     }
 
+    /**
+     * Set whether this view is being currently being dragged
+     */
+    public void setIsDragging(boolean dragging) {
+        if (mDragging == dragging) {
+            return;
+        }
+        mDragging = dragging;
+        setElevation(dragging ? mDragElevation : mBubbleElevation);
+        if (!dragging && mLocationChangePending) {
+            // During drag finish animation we may update the translation x value to shift the
+            // bubble to the new drop target. Clear the translation here.
+            setTranslationX(0f);
+            onBubbleBarLocationChanged();
+        }
+    }
+
+    /**
+     * Adjust resting position for the bubble bar while it is being dragged.
+     * <p>
+     * Bubble bar is laid out on left or right side of the screen. When it is being dragged to
+     * the opposite side, the resting position should be on that side. Calculate any additional
+     * translation that may be required to move the bubble bar to the new side.
+     *
+     * @param restingPosition relative resting position of the bubble bar from the laid out position
+     */
+    @SuppressLint("RtlHardcoded")
+    void adjustRelativeRestingPosition(PointF restingPosition) {
+        final boolean locationOnLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
+        // Bubble bar is placed left or right with gravity. Check where it is currently.
+        final int absoluteGravity = Gravity.getAbsoluteGravity(
+                ((LayoutParams) getLayoutParams()).gravity, getLayoutDirection());
+        final boolean gravityOnLeft =
+                (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.LEFT;
+
+        // Bubble bar is pinned to the same side per gravity and the desired location.
+        // Resting translation does not need to be adjusted.
+        if (locationOnLeft == gravityOnLeft) {
+            return;
+        }
+
+        // Bubble bar is laid out on left or right side of the screen. And the desired new
+        // location is on the other side. Calculate x translation value required to shift the
+        // bubble bar from one side to the other.
+        float x = getDistanceFromOtherSide();
+        if (locationOnLeft) {
+            // New location is on the left, shift left
+            // before -> |......ooo.| after -> |.ooo......|
+            restingPosition.x = -x;
+        } else {
+            // New location is on the right, shift right
+            // before -> |.ooo......| after -> |......ooo.|
+            restingPosition.x = x;
+        }
+    }
+
+    private float getDistanceFromOtherSide() {
+        // Calculate the shift needed to position the bubble bar on the other side
+        int displayWidth = getResources().getDisplayMetrics().widthPixels;
+        int margin = 0;
+        if (getLayoutParams() instanceof MarginLayoutParams lp) {
+            margin += lp.leftMargin;
+            margin += lp.rightMargin;
+        }
+        return (float) (displayWidth - getWidth() - margin);
+    }
+
     private void setBubbleBarLocationInternal(BubbleBarLocation bubbleBarLocation) {
         if (bubbleBarLocation != mBubbleBarLocation) {
             mBubbleBarLocation = bubbleBarLocation;
-            onBubbleBarLocationChanged();
-            invalidate();
+            if (mDragging) {
+                mLocationChangePending = true;
+            } else {
+                onBubbleBarLocationChanged();
+                invalidate();
+            }
         }
     }
 

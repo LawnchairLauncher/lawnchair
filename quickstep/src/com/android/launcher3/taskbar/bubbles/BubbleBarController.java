@@ -220,7 +220,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             mBubbleStashedHandleViewController.setHiddenForBubbles(
                     !sBubbleBarEnabled || mBubbles.isEmpty());
             mBubbleBarViewController.setUpdateSelectedBubbleAfterCollapse(
-                    key -> setSelectedBubble(mBubbles.get(key)));
+                    key -> setSelectedBubbleInternal(mBubbles.get(key)));
         });
     }
 
@@ -390,7 +390,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             }
         }
         if (bubbleToSelect != null) {
-            setSelectedBubble(bubbleToSelect);
+            setSelectedBubbleInternal(bubbleToSelect);
             if (previouslySelectedBubble == null) {
                 mBubbleStashController.animateToInitialState(update.expanded);
             }
@@ -409,8 +409,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             if (update.bubbleBarLocation != mBubbleBarViewController.getBubbleBarLocation()) {
                 // Animate when receiving updates. Skip it if we received the initial state.
                 boolean animate = !update.initialState;
-                mBubbleBarViewController.setBubbleBarLocation(update.bubbleBarLocation, animate);
-                mBubbleStashController.setBubbleBarLocation(update.bubbleBarLocation);
+                updateBubbleBarLocationInternal(update.bubbleBarLocation, animate);
             }
         }
     }
@@ -436,7 +435,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     /** Updates the currently selected bubble for launcher views and tells WMShell to show it. */
     public void showAndSelectBubble(BubbleBarItem b) {
         if (DEBUG) Log.w(TAG, "showingSelectedBubble: " + b.getKey());
-        setSelectedBubble(b);
+        setSelectedBubbleInternal(b);
         showSelectedBubble();
     }
 
@@ -445,7 +444,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
      * WMShell that the selection has changed, that should go through either
      * {@link #showSelectedBubble()} or {@link #showAndSelectBubble(BubbleBarItem)}.
      */
-    private void setSelectedBubble(BubbleBarItem b) {
+    private void setSelectedBubbleInternal(BubbleBarItem b) {
         if (!Objects.equals(b, mSelectedBubble)) {
             if (DEBUG) Log.w(TAG, "selectingBubble: " + b.getKey());
             mSelectedBubble = b;
@@ -462,6 +461,21 @@ public class BubbleBarController extends IBubblesListener.Stub {
             return mSelectedBubble.getKey();
         }
         return null;
+    }
+
+    /**
+     * Set a new bubble bar location.
+     * <p>
+     * Updates the value locally in Launcher and in WMShell.
+     */
+    public void updateBubbleBarLocation(BubbleBarLocation location) {
+        updateBubbleBarLocationInternal(location, false /* animate */);
+        mSystemUiProxy.setBubbleBarLocation(location);
+    }
+
+    private void updateBubbleBarLocationInternal(BubbleBarLocation location, boolean animate) {
+        mBubbleBarViewController.setBubbleBarLocation(location, animate);
+        mBubbleStashController.setBubbleBarLocation(location);
     }
 
     //
