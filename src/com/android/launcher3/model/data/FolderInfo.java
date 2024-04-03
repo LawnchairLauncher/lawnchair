@@ -174,6 +174,8 @@ public class FolderInfo extends CollectionInfo {
         void onAdd(WorkspaceItemInfo item, int rank);
         void onRemove(List<WorkspaceItemInfo> item);
         void onItemsChanged(boolean animate);
+        void onTitleChanged(CharSequence title);
+
     }
 
     public boolean hasOption(int optionFlag) {
@@ -245,6 +247,10 @@ public class FolderInfo extends CollectionInfo {
         }
         if (modelWriter != null) {
             modelWriter.updateItemInDatabase(this);
+        }
+
+        for (int i = 0; i < mListeners.size(); i++) {
+            mListeners.get(i).onTitleChanged(title);
         }
     }
 
