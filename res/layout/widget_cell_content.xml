@@ -97,8 +97,6 @@
             android:layout_height="@dimen/widget_cell_add_button_height"
             android:layout_gravity="center"
             android:minWidth="0dp"
-            android:paddingTop="@dimen/widget_cell_add_button_vertical_padding"
-            android:paddingBottom="@dimen/widget_cell_add_button_vertical_padding"
             android:paddingStart="@dimen/widget_cell_add_button_start_padding"
             android:paddingEnd="@dimen/widget_cell_add_button_end_padding"
             android:text="@string/widget_add_button_label"
@@ -106,7 +104,7 @@
             android:textSize="@dimen/widget_cell_font_size"
             android:gravity="center"
             android:visibility="gone"
-            android:drawableLeft="@drawable/ic_plus"
+            android:drawableStart="@drawable/ic_plus"
             android:drawablePadding="8dp"
             android:drawableTint="?attr/widgetPickerAddButtonTextColor"
             android:background="@drawable/widget_cell_add_button_background" />
