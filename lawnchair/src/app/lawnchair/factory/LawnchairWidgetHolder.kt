@@ -11,7 +11,10 @@ import java.util.function.IntConsumer
 class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : LauncherWidgetHolder(context, intConsumer) {
 
     @Keep
-    class LawnchairHolderFactory : HolderFactory() {
+    class LawnchairHolderFactory
+    @Suppress("unused")
+    constructor(@Suppress("UNUSED_PARAMETER") context: Context) :
+        HolderFactory() {
         override fun newInstance(
             context: Context,
             appWidgetRemovedCallback: IntConsumer?,
