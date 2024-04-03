@@ -25,6 +25,6 @@ fun HiddenAppsInSearchPreference() {
     ListPreference(
         adapter = preferenceManager2().hiddenAppsInSearch.getAdapter(),
         entries = hiddenAppsInSearchEntries,
-        label = "Show Hidden Apps in Search Results"
+        label = "Show Hidden Apps in Search Results",
     )
 }

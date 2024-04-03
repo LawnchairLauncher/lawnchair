@@ -36,11 +36,9 @@ fun SearchPreferences() {
     val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
     val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
 
-
     PreferenceLayout(label = stringResource(id = R.string.drawer_search_label)) {
         MainSwitchPreference(adapter = showDrawerSearchBar, label = stringResource(id = R.string.show_app_search_bar)) {
-
-            PreferenceGroup (heading = stringResource(R.string.general_label)){
+            PreferenceGroup(heading = stringResource(R.string.general_label)) {
                 ExpandAndShrink(visible = hiddenApps.isNotEmpty()) {
                     HiddenAppsInSearchPreference()
                 }
@@ -56,7 +54,7 @@ fun SearchPreferences() {
                 SearchSuggestionPreference(
                     adapter = prefs.searchResultApps.getAdapter(),
                     maxCountAdapter = prefs2.maxSearchResultCount.getAdapter(),
-                    maxCountRange = 3 .. 15,
+                    maxCountRange = 3..15,
                     label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),
                     maxCountLabel = stringResource(R.string.max_apps_result_count_title),
                     preventSwitchChange = true,
@@ -126,7 +124,7 @@ fun SearchPreferences() {
                 SearchSuggestionPreference(
                     adapter = prefs.searchResulRecentSuggestion.getAdapter(),
                     maxCountAdapter = prefs2.maxRecentResultCount.getAdapter(),
-                    maxCountRange =  1..10,
+                    maxCountRange = 1..10,
                     label = stringResource(id = R.string.search_pref_result_history_title),
                     maxCountLabel = stringResource(id = R.string.max_recent_result_count_title),
                 )

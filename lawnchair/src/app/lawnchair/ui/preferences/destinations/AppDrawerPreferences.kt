@@ -28,16 +28,11 @@ import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.SuggestionsPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
-import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
-import app.lawnchair.util.checkAndRequestFilesPermission
-import app.lawnchair.util.contactPermissionGranted
-import app.lawnchair.util.filesAndStorageGranted
-import app.lawnchair.util.requestContactPermissionGranted
 import com.android.launcher3.R
 
 object AppDrawerRoutes {

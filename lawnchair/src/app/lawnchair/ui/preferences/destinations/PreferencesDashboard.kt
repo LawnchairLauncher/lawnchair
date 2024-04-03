@@ -108,7 +108,7 @@ fun PreferencesDashboard() {
             label = stringResource(R.string.drawer_search_label),
             description = stringResource(R.string.drawer_search_description),
             iconResource = R.drawable.ic_search,
-            route = Routes.SEARCH
+            route = Routes.SEARCH,
         )
 
         PreferenceCategory(

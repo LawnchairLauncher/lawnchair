@@ -16,6 +16,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,7 +44,7 @@ fun SearchSuggestionPreference(
     isPermissionGranted: Boolean = true,
     onPermissionRequest: (() -> Unit)? = null,
     requestPermissionDescription: String? = null,
-    content: @Composable (() -> Unit)? = null
+    content: @Composable (() -> Unit)? = null,
 ) {
     val bottomSheetHandler = bottomSheetHandler
 
@@ -69,7 +71,7 @@ fun SearchSuggestionPreference(
                     onPermissionDenied = {},
                     onPermissionGranted = {},
                     requestPermissionDescription = requestPermissionDescription,
-                    preventSwitchChange = preventSwitchChange
+                    preventSwitchChange = preventSwitchChange,
                 )
             }
         },
@@ -95,8 +97,11 @@ private fun BottomSheetContent(
     requestPermissionDescription: String?,
     preventSwitchChange: Boolean = false,
 ) {
-    LaunchedEffect(null) {
-        if (!isPermissionGranted && adapterValue) { adapterOnChange(false) }
+    val latestOnClick by rememberUpdatedState(adapterOnChange)
+    LaunchedEffect(Unit) {
+        if (!isPermissionGranted && adapterValue) {
+            latestOnClick(false)
+        }
     }
 
     ModalBottomSheetContent(
@@ -137,7 +142,7 @@ private fun BottomSheetContent(
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(16.dp)
+                                .padding(16.dp),
                         ) {
                             Text(
                                 text = requestPermissionDescription,
@@ -158,15 +163,14 @@ private fun BottomSheetContent(
     }
 }
 
-
 @Composable
 private fun SearchSuggestionsSwitchPreference(
     label: String,
-    description: String? = null,
     checked: Boolean,
     preventSwitchChange: Boolean,
     onClick: () -> Unit,
     enabled: Boolean,
+    description: String? = null,
 ) {
     PreferenceTemplate(
         modifier = Modifier.clickable {
@@ -201,7 +205,7 @@ private fun SearchSuggestionsSwitchPreference(
 
 @PreviewLawnchair
 @Composable
-fun SearchSuggestionsSwitchPreferencePreview() {
+private fun SearchSuggestionsSwitchPreferencePreview() {
     LawnchairTheme {
         SearchSuggestionsSwitchPreference(
             label = "example",

@@ -39,12 +39,12 @@ import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShape as L3IconShape
-import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
@@ -245,18 +245,18 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
 
     val showHiddenAppsInSearch = preference(
         key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
-        defaultValue = false
+        defaultValue = false,
     )
 
     val enableSmartHide = preference(
         key = booleanPreferencesKey(name = "enable_smart_hide"),
-        defaultValue = false
+        defaultValue = false,
     )
 
     val hiddenAppsInSearch = preference(
         key = stringPreferencesKey(name = "hidden_apps_in_search"),
         defaultValue = HiddenAppsInSearch.NEVER,
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val showSuggestedAppsInDrawer = preference(

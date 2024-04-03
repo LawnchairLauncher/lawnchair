@@ -46,7 +46,7 @@ fun MainSwitchPreference(
     MainSwitchPreference(
         checked = checked,
         onCheckedChange = onCheckedChange,
-       label = label,
+        label = label,
         enabled = enabled,
     )
 
@@ -77,7 +77,7 @@ fun MainSwitchPreference(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     label: String,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -94,7 +94,7 @@ fun MainSwitchPreference(
             checked = checked,
             onCheckedChange = onCheckedChange,
             label = label,
-            enabled = enabled
+            enabled = enabled,
         )
     }
 }
