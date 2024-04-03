@@ -54,7 +54,6 @@ fun PreferenceTemplate(
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
-    val contentAlphaDisabled = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
     Column {
         Row(
             verticalAlignment = verticalAlignment,

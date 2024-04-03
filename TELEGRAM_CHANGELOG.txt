@@ -1,14 +1,19 @@
-Lawnchair 12.1 Alpha 4 has arrived! It has the following new features:
+After about 2 long years, we're delighted to announce that <b>Lawnchair 14 has finally arrived!</b>
 
-• App Gesture support
-• The option to toggle Wallpaper depth effect (Android 11+)
-• Custom color picker (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
-• An option to select the Notification Dot color in Notification Dots (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
-• The ability to lock Home Screen & show Lock Button in Pop-Up (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
-• The ability to customize date & time format on At a Glance widget (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
-• Sesame, Bing, Wikipedia & Presearch search providers for Dock (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
-• The option to allow widget overlap (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
-• The option to toggle enforced widget corner radius on Android 12+ (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
-• The option to select Gregorian or Persian as the calendar system used on At a glance widget (Experimental)(thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+Based on Launcher3 from Android 14, this release works with QuickSwitch from Android 10 to Android 14! You won't need to use an older version to integrate with the system.
 
-Also included in this version are bug fixes and other improvements. Thanks go to <a href="https://github.com/dercodeling">@dercodeling</a>, <a href="https://github.com/felixonmars">Felix Yan</a>, <a  href="https://github.com/xdevs23">Simão Gomes Viana</a>, <a href="https://github.com/marshmello61">Mayur Varde</a>, <a href="https://github.com/Goooler">@Goooler</a>, and <a href="https://github.com/SuperDragonXD">@SuperDragonXD</a> for their contributions.
+Some major highlights:
+• Search your phone, the web, and more with our new <b>Global Search</b> — no root needed!¹
+• View flight info, see surrounding traffic, and keep an eye on your data usage with <b>Smartspacer</b> — all integrated within Lawnchair.²
+• Want to further control your icons? Fret not, We now support custom icon packs for themed icons, alongside some new icon options.³
+• Themers rejoice — you can now <b>hide the Dock</b> for a cleaner home screen. You can also change even more colors, fonts, and padding.
+• Are you tired of Lawnchair crashing because of widgets? We've fixed that issue; you won’t need to do some hacky workaround to add them.⁴
+
+Alongside that, we have a new partnership with <a href="https://startpage.com">Startpage</a> — searching with Startpage (via the dock search bar or App Drawer search) helps support Lawnchair’s development.
+
+We still have more things to share! See the <a href="https://lawnchair.app/blog/lawnchair-14">announcement on our website</a> for more information.
+
+¹ Experimental feature, requires opt in Lawnchair Settings.
+² Requires Smartspacer and respective plugins.
+³ Requires a supported icon pack.
+⁴ May still persist depending on the device.

@@ -30,6 +30,8 @@
     <string name="dock_description">Search Bar, Icon Count</string>
     <string name="app_drawer_label">App Drawer</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="drawer_search_label">Drawer Search</string>
+    <string name="drawer_search_description">Web Suggestions, Global Search</string>
     <string name="folders_label">Folders</string>
     <string name="folders_description">Row and Column Count</string>
     <string name="gestures_label">Gestures</string>
@@ -48,8 +50,8 @@
     <string name="font_picker_description">Some text remains unchanged</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
     <string name="always_reload_icons_label">Always Reload Icons</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="recents_lock_unlock">Lock/Unlock</string>
@@ -211,9 +213,9 @@
     <string name="home_screen_unlock">Unlock Home Screen</string>
     <string name="home_screen_locked">Home Screen is locked</string>
 
-    <string name="show_dot_pagination_label">Use dot pagination</string>
+    <string name="show_dot_pagination_label">Use Dot Pagination</string>
     <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use new popup style</string>
+    <string name="show_material_u_popup_label">Use New Popup Style</string>
     <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
 
     <string name="popup_menu">Pop-up Menu</string>
@@ -349,22 +351,6 @@
     <string name="row_height_label">Row Height</string>
     <string name="app_drawer_indent_label">Horizontal Padding</string>
 
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_label">Suggestions</string>
-    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="pref_recent_suggestion_title">History</string>
-
-    <string name="max_search_result_count_title">Max Search Result Count</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
-
     <!-- HiddenAppsPreferences -->
     <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
     <plurals name="apps_count">
@@ -376,8 +362,8 @@
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
     <string name="folder_preview_bg_color_label">Icon Background Color</string>
 
-    <string name="max_folder_columns">Max. Folder Columns</string>
-    <string name="max_folder_rows">Max. Folder Rows</string>
+    <string name="max_folder_columns">Maximum Folder Columns</string>
+    <string name="max_folder_rows">Maximum Folder Rows</string>
 
     <!-- GesturePreference -->
     <string name="gesture_double_tap">Double Tap</string>
@@ -483,32 +469,55 @@
     <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
 
     <!-- Search ig -->
+    <string name="action_apply">Apply</string>
     <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_title">People</string>
+
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
     <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_people_title">People</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="search_pref_result_settings_title">Android Settings</string>
+    <string name="search_pref_result_files_title">Files</string>
+    <string name="search_pref_result_web_title">Web suggestions</string>
+    <string name="search_pref_result_history_title">Search History</string>
+
+    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_contacts_description">Contacts and more</string>
+    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+
+    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
+    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
+    <string name="grant_requested_permissions">Grant Permissions</string>
+
+    <string name="pref_suggestion_label">Suggestions</string>
     <string name="all_apps_device_search_hint">Search</string>
     <string name="search_input_action_clear_results">Clear Search Box</string>
-    <string name="label_search">Search</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Voice Search</string>
-
-    <string name="search_pref_result_settings_entry_title">Settings Entry</string>
-
-    <string name="all_apps_search_market_message">Search for More Apps</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
 
     <string name="all_apps_search_result_suggestions">From the web</string>
     <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
     <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your settings</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
 
-    <string name="warn_contact_permission_content">Requires contact permission</string>
-    <string name="warn_files_permission_content">Requires storage permission</string>
+    <string name="label_search">Search</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Voice Search</string>
 
-    <string name="all_apps_search_result_files_description">Media, documents, folders, and more.</string>
-    <string name="all_apps_search_result_contacts_description">Contacts and more</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
+
+    <string name="max_apps_result_count_title">Maximum App Result Count</string>
+    <string name="max_people_result_count_title">Maximum People Result Count</string>
+    <string name="max_file_result_count_title">Maximum Files Result Count</string>
+    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
+    <string name="max_recent_result_count_title">Maximum Search History Count</string>
+    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
+    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+
+    <string name="all_apps_search_market_message">Search for More Apps</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
 
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>

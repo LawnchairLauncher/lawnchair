@@ -34,9 +34,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
         with:
           gradle-home-cache-cleanup: true
-      - name: Build release APK
-        run: ./gradlew assembleLawnWithQuickstepMarketRelease
       - name: Write sign info
+        id: sign-release-apk
         if: github.repository_owner == 'LawnchairLauncher'
         run: |
           if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
@@ -46,9 +45,10 @@ jobs:
             echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
+      - name: Build release APK
+        run: ./gradlew assembleLawnWithQuickstepMarketRelease
       - name: Rename artifact
-        continue-on-error: true
-        run: mv "${{ steps.sign-release-apk.outputs.signedReleaseFile }}" "${{ github.event.inputs.artifactName }}"
+        run: mv build/outputs/apk/**/**/*.apk "${{ github.event.inputs.artifactName }}"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
