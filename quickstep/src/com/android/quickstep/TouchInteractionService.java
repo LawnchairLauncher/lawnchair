@@ -501,7 +501,6 @@ public class TouchInteractionService extends Service {
         mTaskbarManager = new TaskbarManager(this, mAllAppsActionManager);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
-        BootAwarePreloader.start(this);
 
         // Call runOnUserUnlocked() before any other callbacks to ensure everything is initialized.
         LockedUserState.get(this).runOnUserUnlocked(this::onUserUnlocked);
