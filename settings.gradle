@@ -12,7 +12,7 @@ pluginManagement {
 
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
-    id "com.gradle.enterprise" version "3.16.2"
+    id "com.gradle.enterprise" version "3.17"
 }
 
 gradleEnterprise {
