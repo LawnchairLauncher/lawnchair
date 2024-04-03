@@ -25,6 +25,8 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.RemoteAnimationTarget;
 
+import java.io.PrintWriter;
+
 /**
  * Extension of {@link RemoteAnimationTargets} with additional information about swipe
  * up animation
@@ -62,5 +64,15 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
             }
         }
         return false;
+    }
+
+    @Override
+    public void dump(String prefix, PrintWriter pw) {
+        super.dump(prefix, pw);
+        prefix += '\t';
+        pw.println(prefix + "RecentsAnimationTargets:");
+
+        pw.println(prefix + "\thomeContentInsets=" + homeContentInsets);
+        pw.println(prefix + "\tminimizedHomeBounds=" + minimizedHomeBounds);
     }
 }
