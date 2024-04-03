@@ -70,6 +70,7 @@ import android.window.RemoteTransition;
 import android.window.TransitionInfo;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.logging.InstanceId;
 import com.android.launcher3.Launcher;
@@ -132,6 +133,7 @@ public class SplitSelectStateController {
     private final StatsLogManager mStatsLogManager;
     private final SystemUiProxy mSystemUiProxy;
     private final StateManager mStateManager;
+    @Nullable
     private SplitFromDesktopController mSplitFromDesktopController;
     @Nullable
     private DepthController mDepthController;
@@ -208,6 +210,9 @@ public class SplitSelectStateController {
         mActivityBackCallback = null;
         mAppPairsController.onDestroy();
         mSplitSelectDataHolder.onDestroy();
+        if (mSplitFromDesktopController != null) {
+            mSplitFromDesktopController.onDestroy();
+        }
     }
 
     /**
@@ -643,7 +648,12 @@ public class SplitSelectStateController {
     }
 
     public void initSplitFromDesktopController(Launcher launcher) {
-        mSplitFromDesktopController = new SplitFromDesktopController(launcher);
+        initSplitFromDesktopController(new SplitFromDesktopController(launcher));
+    }
+
+    @VisibleForTesting
+    void initSplitFromDesktopController(SplitFromDesktopController controller) {
+        mSplitFromDesktopController = controller;
     }
 
     private RemoteTransition getShellRemoteTransition(int firstTaskId, int secondTaskId,
@@ -975,6 +985,11 @@ public class SplitSelectStateController {
                 }
             };
             SystemUiProxy.INSTANCE.get(mLauncher).registerSplitSelectListener(mSplitSelectListener);
+        }
+
+        void onDestroy() {
+            SystemUiProxy.INSTANCE.get(mLauncher).unregisterSplitSelectListener(
+                    mSplitSelectListener);
         }
 
         /**

@@ -36,6 +36,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.SystemUiProxy
+import com.android.quickstep.util.SplitSelectStateController.SplitFromDesktopController
 import com.android.systemui.shared.recents.model.Task
 import com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50
 import java.util.function.Consumer
@@ -65,6 +66,7 @@ class SplitSelectStateControllerTest {
     private val context: StatefulActivity<*> = mock()
     private val recentsModel: RecentsModel = mock()
     private val pendingIntent: PendingIntent = mock()
+    private val splitFromDesktopController: SplitFromDesktopController = mock()
 
     private lateinit var splitSelectStateController: SplitSelectStateController
 
@@ -605,6 +607,18 @@ class SplitSelectStateControllerTest {
         splitSelectStateController.setInitialTaskSelect(null, 0, itemInfo, null, 1)
         splitSelectStateController.setSecondTask(pendingIntent, itemInfo2)
         assertTrue(splitSelectStateController.isBothSplitAppsConfirmed)
+    }
+
+    @Test
+    fun splitSelectStateControllerDestroyed_SplitFromDesktopControllerAlsoDestroyed() {
+        // Initiate split from desktop controller
+        splitSelectStateController.initSplitFromDesktopController(splitFromDesktopController)
+
+        // Simulate default controller being destroyed
+        splitSelectStateController.onDestroy()
+
+        // Verify desktop controller is also destroyed
+        verify(splitFromDesktopController).onDestroy()
     }
 
     // Generate GroupTask with default userId.
