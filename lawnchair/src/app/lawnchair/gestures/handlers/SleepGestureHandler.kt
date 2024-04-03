@@ -26,7 +26,7 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
@@ -138,8 +138,8 @@ fun ServiceWarningDialog(
     handleClose: () -> Unit,
 ) {
     val context = LocalContext.current
-    Spacer(modifier = Modifier.height(16.dp))
     ModalBottomSheetContent(
+        modifier = modifier.padding(top = 16.dp),
         title = { Text(text = stringResource(id = title)) },
         text = { Text(text = stringResource(id = description)) },
         buttons = {
@@ -158,6 +158,5 @@ fun ServiceWarningDialog(
                 Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
             }
         },
-        modifier = modifier,
     )
 }
