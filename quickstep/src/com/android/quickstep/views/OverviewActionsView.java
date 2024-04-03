@@ -243,13 +243,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /**
      * Updates a batch of flags to hide and show actions buttons for tablet/non tablet case.
-     * @param isSmallScreen True if the current display is a small screen.
      */
-    public void updateForSmallScreen(boolean isSmallScreen) {
+    private void updateForIsTablet() {
+        assert mDp != null;
         // Update flags to see if split button should be hidden.
-        updateSplitButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_SPLIT, isSmallScreen);
+        updateSplitButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_SPLIT, !mDp.isTablet);
         // Update flags to see if save app pair button should be hidden.
-        updateAppPairButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_APP_PAIR, isSmallScreen);
+        updateAppPairButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_APP_PAIR, !mDp.isTablet);
     }
 
     /**
@@ -386,6 +386,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mDp = dp;
         mTaskSize.set(taskSize);
         updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
+        updateForIsTablet();
 
         requestLayout();
 
