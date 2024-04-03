@@ -15,7 +15,12 @@
  */
 package com.android.launcher3.taskbar
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.Gravity
 import android.view.View
 import android.view.View.GONE
@@ -24,16 +29,20 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.TextView
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
+import androidx.core.text.HtmlCompat
 import androidx.core.view.updateLayoutParams
 import com.airbnb.lottie.LottieAnimationView
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.config.FeatureFlags.enableTaskbarPinning
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_EDU_OPEN
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
+import com.android.launcher3.util.OnboardingPrefs.TASKBAR_CIRCLE_TO_SEARCH_EDU_SEEN
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.util.LottieAnimationColorUtils
@@ -52,6 +61,10 @@ const val TOOLTIP_STEP_PINNING = 2
  * This value should match the maximum count for [TASKBAR_EDU_TOOLTIP_STEP].
  */
 const val TOOLTIP_STEP_NONE = 3
+/** The base URL for the Privacy Policy that will later be localized. */
+private const val PRIVACY_POLICY_BASE_URL = "https://policies.google.com/privacy/embedded?hl="
+/** The base URL for the Terms of Service that will later be localized. */
+private const val TOS_BASE_URL = "https://policies.google.com/terms?hl="
 
 /** Current step in the tooltip EDU flow. */
 @Retention(AnnotationRetention.SOURCE)
@@ -70,6 +83,15 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         get() = isTooltipEnabled && tooltipStep <= TOOLTIP_STEP_FEATURES
     private lateinit var controllers: TaskbarControllers
 
+    // Keep track of whether the user has seen the Circle to Search Edu
+    private var userHasSeenCircleToSearchEdu: Boolean
+        get() {
+            return TASKBAR_CIRCLE_TO_SEARCH_EDU_SEEN.get(activityContext)
+        }
+        private set(seen) {
+            LauncherPrefs.get(activityContext).put(TASKBAR_CIRCLE_TO_SEARCH_EDU_SEEN, seen)
+        }
+
     @TaskbarEduTooltipStep
     var tooltipStep: Int
         get() {
@@ -83,6 +105,8 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
 
     fun init(controllers: TaskbarControllers) {
         this.controllers = controllers
+        // We want to show the Circle To Search Edu right after pinning, so we post it here
+        activityContext.dragLayer.post { maybeShowCircleToSearchEdu() }
     }
 
     /** Shows swipe EDU tooltip if it is the current [tooltipStep]. */
@@ -112,6 +136,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     fun maybeShowFeaturesEdu() {
         if (!isTooltipEnabled || tooltipStep > TOOLTIP_STEP_FEATURES) {
             maybeShowPinningEdu()
+            maybeShowCircleToSearchEdu()
             return
         }
 
@@ -205,6 +230,96 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
 
             show()
         }
+    }
+
+    /**
+     * Shows standalone Circle To Search EDU tooltip if this EDU has not been seen.
+     *
+     * We show this standalone edu for users to learn to how to trigger Circle To Search from the
+     * pinned taskbar
+     */
+    fun maybeShowCircleToSearchEdu() {
+        if (
+            !enableTaskbarPinning() ||
+                !DisplayController.isPinnedTaskbar(activityContext) ||
+                !isTooltipEnabled ||
+                userHasSeenCircleToSearchEdu
+        ) {
+            return
+        }
+        userHasSeenCircleToSearchEdu = true
+        inflateTooltip(R.layout.taskbar_edu_circle_to_search)
+        tooltip?.run {
+            requireViewById<LottieAnimationView>(R.id.circle_to_search_animation)
+                .supportLightTheme()
+            val eduSubtitle: TextView = requireViewById(R.id.circle_to_search_text)
+            showDisclosureText(eduSubtitle)
+            updateLayoutParams<BaseDragLayer.LayoutParams> {
+                if (DisplayController.isTransientTaskbar(activityContext)) {
+                    bottomMargin += activityContext.deviceProfile.taskbarHeight
+                }
+                // Unlike other tooltips, we want to align with the all apps button rather than
+                // center.
+                gravity = Gravity.BOTTOM
+                marginStart = 0
+                width =
+                    resources.getDimensionPixelSize(
+                        R.dimen.taskbar_edu_features_tooltip_width_with_one_feature
+                    )
+            }
+
+            // Calculate the amount the tooltip must be shifted by to align with the action key
+            val allAppsButtonView = controllers.taskbarViewController.allAppsButtonView
+            if (allAppsButtonView != null) {
+                val allAppsIconLocation = allAppsButtonView.x + allAppsButtonView.width / 2
+                x = allAppsIconLocation - layoutParams.width / 2
+            }
+
+            show()
+        }
+    }
+
+    /**
+     * Set up the provided TextView to display legal disclosures. The method takes locale into
+     * account to show the appropriate links to regional disclosures.
+     */
+    private fun TaskbarEduTooltip.showDisclosureText(
+        textView: TextView,
+        stringId: Int = R.string.taskbar_edu_circle_to_search_disclosure,
+    ) {
+        val locale = resources.configuration.locales[0]
+        val text =
+            SpannableString(
+                HtmlCompat.fromHtml(
+                    resources.getString(
+                        stringId,
+                        PRIVACY_POLICY_BASE_URL + locale.language,
+                        TOS_BASE_URL + locale.language,
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                )
+            )
+        // Directly process URLSpan clicks
+        text.getSpans(0, text.length, URLSpan::class.java).forEach { urlSpan ->
+            val url: URLSpan =
+                object : URLSpan(urlSpan.url) {
+                    override fun onClick(widget: View) {
+                        val uri = Uri.parse(urlSpan.url)
+                        val context = widget.context
+                        val intent =
+                            Intent(Intent.ACTION_VIEW, uri).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(intent)
+                    }
+                }
+
+            val spanStart = text.getSpanStart(urlSpan)
+            val spanEnd = text.getSpanEnd(urlSpan)
+            val spanFlags = text.getSpanFlags(urlSpan)
+            text.removeSpan(urlSpan)
+            text.setSpan(url, spanStart, spanEnd, spanFlags)
+        }
+        textView.text = text
+        textView.movementMethod = LinkMovementMethod.getInstance()
     }
 
     /** Closes the current [tooltip]. */

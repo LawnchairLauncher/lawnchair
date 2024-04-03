@@ -397,6 +397,7 @@
     <dimen name="taskbar_edu_features_tooltip_width_with_one_feature">412dp</dimen>
     <dimen name="taskbar_edu_features_tooltip_width_with_two_features">428dp</dimen>
     <dimen name="taskbar_edu_features_tooltip_width_with_three_features">624dp</dimen>
+    <dimen name="taskbar_edu_circle_to_search_subtitle_text_size">12sp</dimen>
 
     <!--- Taskbar Pinning -->
     <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>

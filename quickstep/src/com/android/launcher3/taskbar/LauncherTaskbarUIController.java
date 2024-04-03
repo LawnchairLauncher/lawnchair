@@ -299,6 +299,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      */
     public void showEduOnAppLaunch() {
         if (!shouldShowEduOnAppLaunch()) {
+            // Called in case the edu finishes and circle to search edu is still pending
+            mControllers.taskbarEduTooltipController.maybeShowCircleToSearchEdu();
             return;
         }
 
