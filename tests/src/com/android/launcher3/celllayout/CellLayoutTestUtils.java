@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.celllayout.board.CellLayoutBoard;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 import java.util.ArrayList;
@@ -60,9 +61,7 @@ public class CellLayoutTestUtils {
     }
 
     public static CellLayoutBoard viewsToBoard(List<View> views, int width, int height) {
-        CellLayoutBoard board = new CellLayoutBoard();
-        board.mWidth = width;
-        board.mHeight = height;
+        CellLayoutBoard board = new CellLayoutBoard(width, height);
 
         for (View callView : views) {
             CellLayoutLayoutParams params = (CellLayoutLayoutParams) callView.getLayoutParams();

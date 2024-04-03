@@ -19,6 +19,7 @@ package com.android.launcher3.statemanager;
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
 import static com.android.launcher3.anim.AnimatorPlaybackController.callListenerCommandRecursively;
+import static com.android.launcher3.states.StateAnimationConfig.HANDLE_STATE_APPLY;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_ALL_ANIMATIONS;
 
 import android.animation.Animator;
@@ -36,6 +37,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
+import com.android.launcher3.states.StateAnimationConfig.AnimationPropertyFlags;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.io.PrintWriter;
@@ -189,7 +191,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     public void reapplyState(boolean cancelCurrentAnimation) {
         boolean wasInAnimation = mConfig.currentAnimation != null;
-        if (cancelCurrentAnimation) {
+        if (cancelCurrentAnimation && (mConfig.animProps & HANDLE_STATE_APPLY) == 0) {
             // Animation canceling can trigger a cleanup routine, causing problems when we are in a
             // launcher state that relies on member variable data. So if we are in one of those
             // states, accelerate the current animation to its end point rather than canceling it
@@ -237,7 +239,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                     listener.onAnimationEnd(null);
                 }
                 return;
-            } else if ((!mConfig.userControlled && animated && mConfig.targetState == state)
+            } else if ((!mConfig.isUserControlled() && animated && mConfig.targetState == state)
                     || mState.shouldPreserveDataStateOnReapply()) {
                 // We are running the same animation as requested, and/or target state should not be
                 // reset -- allow the current animation to complete instead of canceling it.
@@ -343,7 +345,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(STATE_TYPE state,
             StateAnimationConfig config) {
-        config.userControlled = true;
+        config.animProps |= StateAnimationConfig.USER_CONTROLLED;
         cancelAnimation();
         config.copyTo(mConfig);
         mConfig.playbackController = createAnimationToNewWorkspaceInternal(state)
@@ -418,7 +420,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     }
 
     public void moveToRestState(boolean isAnimated) {
-        if (mConfig.currentAnimation != null && mConfig.userControlled) {
+        if (mConfig.currentAnimation != null && mConfig.isUserControlled()) {
             // The user is doing something. Lets not mess it up
             return;
         }
@@ -450,10 +452,18 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         }
     }
 
+    /**
+     * Sets the provided controller as the current user controlled state animation
+     */
     public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
+        setCurrentAnimation(controller, StateAnimationConfig.USER_CONTROLLED);
+    }
+
+    public void setCurrentAnimation(AnimatorPlaybackController controller,
+            @AnimationPropertyFlags int animationProps) {
         clearCurrentAnimation();
         setCurrentAnimation(controller.getTarget());
-        mConfig.userControlled = true;
+        mConfig.animProps = animationProps;
         mConfig.playbackController = controller;
     }
 

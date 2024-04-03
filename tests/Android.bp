@@ -29,6 +29,30 @@ filegroup {
     ],
 }
 
+// Source code used for screenshot tests
+filegroup {
+    name: "launcher-image-tests-src",
+    srcs: [
+      "src/com/android/launcher3/celllayout/board/*.java",
+      "src/com/android/launcher3/celllayout/board/*.kt",
+      "src/com/android/launcher3/celllayout/FavoriteItemsTransaction.java",
+      "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
+      "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
+      "src/com/android/launcher3/ui/TestViewHelpers.java",
+      "src/com/android/launcher3/util/LauncherLayoutBuilder.java",
+      "src/com/android/launcher3/util/ModelTestExtensions.kt",
+      "src/com/android/launcher3/util/TestConstants.java",
+      "src/com/android/launcher3/util/TestUtil.java",
+      "src/com/android/launcher3/util/Wait.java",
+      "src/com/android/launcher3/util/WidgetUtils.java",
+      "src/com/android/launcher3/util/rule/*.java",
+      "src/com/android/launcher3/util/rule/*.kt",
+      "src/com/android/launcher3/util/viewcapture_analysis/*.java",
+      "src/com/android/launcher3/testcomponent/*.java",
+      "src/com/android/launcher3/testcomponent/*.kt",
+    ],
+}
+
 // Source code used for non-quickstep tests
 filegroup {
     name: "launcher-non-quickstep-tests-src",
@@ -42,10 +66,18 @@ filegroup {
 filegroup {
     name: "launcher-oop-tests-src",
     srcs: [
+      "src/com/android/launcher3/allapps/TaplOpenCloseAllApps.java",
+      "src/com/android/launcher3/allapps/TaplTestsAllAppsIconsWorking.java",
+      "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
+      "src/com/android/launcher3/dragging/TaplDragTest.java",
+      "src/com/android/launcher3/dragging/TaplUninstallRemove.java",
       "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
       "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
       "src/com/android/launcher3/ui/TaplTestsLauncher3.java",
+      "src/com/android/launcher3/ui/widget/TaplWidgetPickerTest.java",
+      "src/com/android/launcher3/ui/workspace/TaplWorkspaceTest.java",
       "src/com/android/launcher3/util/LauncherLayoutBuilder.java",
+      "src/com/android/launcher3/util/TestConstants.java",
       "src/com/android/launcher3/util/TestUtil.java",
       "src/com/android/launcher3/util/Wait.java",
       "src/com/android/launcher3/util/WidgetUtils.java",
@@ -54,8 +86,8 @@ filegroup {
       "src/com/android/launcher3/util/rule/SamplerRule.java",
       "src/com/android/launcher3/util/rule/ScreenRecordRule.java",
       "src/com/android/launcher3/util/rule/ShellCommandRule.java",
+      "src/com/android/launcher3/util/rule/TestIsolationRule.java",
       "src/com/android/launcher3/util/rule/TestStabilityRule.java",
-      "src/com/android/launcher3/util/rule/TISBindRule.java",
       "src/com/android/launcher3/util/viewcapture_analysis/*.java",
       "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
@@ -73,6 +105,7 @@ android_library {
     asset_dirs: ["assets"],
     resource_dirs: ["res"],
     static_libs: [
+        "flag-junit-base",
         "launcher-aosp-tapl",
         "androidx.test.core",
         "androidx.test.runner",
@@ -82,11 +115,14 @@ android_library {
         "androidx.test.espresso.contrib",
         "androidx.test.espresso.intents",
         "androidx.test.uiautomator_uiautomator",
-        "mockito-target-inline-minus-junit4",
+        "mockito-kotlin2",
+        "mockito-target-extended-minus-junit4",
         "launcher_log_protos_lite",
-        "truth-prebuilt",
+        "truth",
         "platform-test-rules",
         "testables",
+        "com_android_launcher3_flags_lib",
+        "com_android_wm_shell_flags_lib",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
@@ -103,12 +139,16 @@ android_test {
         ":launcher-tests-src",
         ":launcher-non-quickstep-tests-src",
     ],
-    static_libs: ["Launcher3TestLib"],
+    static_libs: [
+        "Launcher3TestLib",
+        "com_android_launcher3_flags_lib",
+    ],
     libs: [
         "android.test.base",
         "android.test.runner",
         "android.test.mock",
     ],
+    // Libraries used by mockito inline extended
     jni_libs: [
         "libdexmakerjvmtiagent",
         "libstaticjvmtiagent",

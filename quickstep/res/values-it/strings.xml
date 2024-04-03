@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Dividi"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Tocca un\'altra app per usare lo schermo diviso"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Annulla"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Esci dalla selezione dello schermo diviso"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Scegli un\'altra app per usare lo schermo diviso"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Questa azione non è consentita dall\'app o dall\'organizzazione"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Attualmente i widget non sono supportati, seleziona un\'altra app"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Saltare il tutorial di navigazione?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Puoi trovarlo in un secondo momento nell\'app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annulla"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Trascina un\'app di lato per usare due app contemporaneamente"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Scorri lentamente in su per mostrare la barra delle app"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Visualizza le app suggerite in base alla tua routine"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Per nascondere automaticamente la barra delle app, attiva la navigazione tramite gesti"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Premi a lungo sul divisore per fissare la barra delle app"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Fai di più con la barra delle app"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Chiudi"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fine"</string>

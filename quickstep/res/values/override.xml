@@ -35,4 +35,6 @@
 
   <string name="assist_state_manager_class" translatable="false"></string>
 
+  <string name="launcher_restore_event_logger_class" translatable="false">com.android.quickstep.LauncherRestoreEventLoggerImpl</string>
+
 </resources>

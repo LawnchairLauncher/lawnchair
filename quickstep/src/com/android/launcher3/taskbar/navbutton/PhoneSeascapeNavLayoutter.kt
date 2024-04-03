@@ -17,30 +17,57 @@
 package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
+import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
-import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
+import com.android.systemui.shared.rotation.RotationButton
 
 class PhoneSeascapeNavLayoutter(
         resources: Resources,
         navBarContainer: LinearLayout,
         endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup
+        startContextualContainer: ViewGroup,
+        imeSwitcher: ImageView?,
+        rotationButton: RotationButton?,
+        a11yButton: ImageView?
 ) :
         PhoneLandscapeNavLayoutter(
                 resources,
                 navBarContainer,
                 endContextualContainer,
-                startContextualContainer
+                startContextualContainer,
+                imeSwitcher,
+                rotationButton,
+                a11yButton
         ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
-        // TODO(b/230395757): Polish pending, this is just to make it usable
-        super.layoutButtons(dp, isContextualButtonShowing)
-        navButtonContainer.removeAllViews()
+    override fun addThreeButtons() {
         // Flip ordering of back and recents buttons
         navButtonContainer.addView(backButton)
         navButtonContainer.addView(homeButton)
         navButtonContainer.addView(recentsButton)
+    }
+
+    override fun repositionContextualButtons() {
+        endContextualContainer.removeAllViews()
+        startContextualContainer.removeAllViews()
+
+        val contextualMargin = resources.getDimensionPixelSize(
+                R.dimen.taskbar_contextual_button_padding)
+        repositionContextualContainer(endContextualContainer, contextualMargin, Gravity.BOTTOM)
+
+        if (imeSwitcher != null) {
+            endContextualContainer.addView(imeSwitcher)
+            imeSwitcher.layoutParams = getParamsToCenterView()
+        }
+        if (a11yButton != null) {
+            endContextualContainer.addView(a11yButton)
+        }
+        if (rotationButton != null) {
+            endContextualContainer.addView(rotationButton.currentView)
+            rotationButton.currentView.layoutParams = getParamsToCenterView()
+        }
     }
 }

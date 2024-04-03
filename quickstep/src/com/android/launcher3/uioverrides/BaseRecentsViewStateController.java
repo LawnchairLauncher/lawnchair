@@ -107,8 +107,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
 
-        boolean exitingOverview = !FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
-                && !toState.overviewUi;
+        boolean exitingOverview = !FeatureFlags.enableSplitContextually() && !toState.overviewUi;
         if (mRecentsView.isSplitSelectionActive() && exitingOverview) {
             setter.add(mRecentsView.getSplitSelectController().getSplitAnimationController()
                     .createPlaceholderDismissAnim(mLauncher));

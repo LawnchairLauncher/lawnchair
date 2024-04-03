@@ -35,6 +35,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.unfold.LauncherJankMonitorTransitionProgressListener;
 import com.android.quickstep.util.unfold.PreemptiveUnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
@@ -91,6 +92,8 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
         }
 
         unfoldTransitionProgressProvider.addCallback(mExternalTransitionStatusProvider);
+        unfoldTransitionProgressProvider.addCallback(
+                new LauncherJankMonitorTransitionProgressListener(launcher::getRootView));
 
         mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
                 windowManager, rotationChangeProvider);

@@ -37,6 +37,7 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 
 public class OverviewWithoutFocusInputConsumer implements InputConsumer,
         TriggerSwipeUpTouchTracker.OnSwipeUpListener {
+    private static final String TAG = "OverviewWithoutFocusInputConsumer";
 
     private final Context mContext;
     private final InputMonitorCompat mInputMonitor;
@@ -77,7 +78,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
 
     @Override
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
-        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null);
+        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null, TAG);
         BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
         int state = (mGestureState != null && mGestureState.getEndTarget() != null)
                 ? mGestureState.getEndTarget().containerType

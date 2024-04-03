@@ -23,17 +23,17 @@ import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_B
 import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.anyBoolean
-import org.mockito.Mockito.never
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class TaskbarKeyguardControllerTest : TaskbarBaseTestCase() {
 
-    @Mock lateinit var baseDragLayer: TaskbarDragLayer
-    @Mock lateinit var keyguardManager: KeyguardManager
+    private val baseDragLayer: TaskbarDragLayer = mock()
+    private val keyguardManager: KeyguardManager = mock()
 
     @Before
     override fun setup() {
@@ -50,7 +50,7 @@ class TaskbarKeyguardControllerTest : TaskbarBaseTestCase() {
     @Test
     fun uninterestingFlags_noActions() {
         setFlags(0)
-        verify(navbarButtonsViewController, never()).setKeyguardVisible(anyBoolean(), anyBoolean())
+        verify(navbarButtonsViewController, never()).setKeyguardVisible(any(), any())
     }
 
     @Test

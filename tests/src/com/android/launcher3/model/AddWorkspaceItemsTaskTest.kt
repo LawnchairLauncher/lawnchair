@@ -24,20 +24,19 @@ import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.IntArray
 import com.android.launcher3.util.TestUtil.runOnExecutorSync
-import com.android.launcher3.util.any
-import com.android.launcher3.util.eq
-import com.android.launcher3.util.same
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
-import org.mockito.Mockito.`when` as whenever
-import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.same
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyZeroInteractions
+import org.mockito.kotlin.whenever
 
 /** Tests for [AddWorkspaceItemsTask] */
 @SmallTest
@@ -46,12 +45,11 @@ class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
 
     private lateinit var mDataModelCallbacks: MyCallbacks
 
-    @Mock private lateinit var mWorkspaceItemSpaceFinder: WorkspaceItemSpaceFinder
+    private val mWorkspaceItemSpaceFinder: WorkspaceItemSpaceFinder = mock()
 
     @Before
     override fun setup() {
         super.setup()
-        MockitoAnnotations.initMocks(this)
         mDataModelCallbacks = MyCallbacks()
         Executors.MAIN_EXECUTOR.submit { mModelHelper.model.addCallbacks(mDataModelCallbacks) }
             .get()

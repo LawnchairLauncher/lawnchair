@@ -21,7 +21,10 @@ import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
 import static android.view.Gravity.RIGHT;
 import static android.view.Gravity.START;
+import static android.view.Gravity.TOP;
+import static android.view.View.LAYOUT_DIRECTION_RTL;
 
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
@@ -31,6 +34,7 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -86,13 +90,21 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
     public float getTaskMenuX(float x, View thumbnailView,
-            DeviceProfile deviceProfile, float taskInsetMargin) {
+            DeviceProfile deviceProfile, float taskInsetMargin, View taskViewIcon) {
+        if (enableOverviewIconMenu()) {
+            return x + (taskViewIcon.getHeight() * 2);
+        }
         return x + taskInsetMargin;
     }
 
     @Override
     public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
-            View taskMenuView, float taskInsetMargin) {
+            View taskMenuView, float taskInsetMargin, View taskViewIcon) {
+        if (enableOverviewIconMenu()) {
+            return y + taskViewIcon.getWidth() + (
+                    thumbnailView.getLayoutDirection() == LAYOUT_DIRECTION_RTL ? taskInsetMargin
+                            / 2f : -taskViewIcon.getHeight());
+        }
         BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
         int taskMenuWidth = lp.width;
         if (stagePosition == STAGE_POSITION_UNDEFINED) {
@@ -127,7 +139,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
             int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
-        boolean isRtl = banner.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        boolean isRtl = banner.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         float translationX = 0;
         float translationY = 0;
         FrameLayout.LayoutParams bannerParams = (FrameLayout.LayoutParams) banner.getLayoutParams();
@@ -207,11 +219,37 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams,
             int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
-        iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
-        iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
         iconParams.rightMargin = 0;
-        iconParams.topMargin = thumbnailTopMargin / 2;
         iconParams.bottomMargin = 0;
+        if (enableOverviewIconMenu()) {
+            iconParams.setMarginStart(taskIconMargin);
+            iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
+            iconParams.leftMargin = 0;
+            iconParams.topMargin = 0;
+        } else {
+            iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
+            iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
+            iconParams.topMargin = thumbnailTopMargin / 2;
+        }
+    }
+
+    @Override
+    public void setIconAppChipMenuParams(View iconAppChipMenuView,
+            FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin, int thumbnailTopMargin) {
+        boolean isRtl = iconAppChipMenuView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        iconMenuParams.gravity = (isRtl ? TOP : BOTTOM) | (isRtl ? END : START);
+        iconMenuParams.setMarginStart(0);
+        iconMenuParams.topMargin = isRtl ? iconMenuMargin : 0;
+        iconMenuParams.bottomMargin = 0;
+        iconMenuParams.setMarginEnd(isRtl ? thumbnailTopMargin : 0);
+
+        // Use half menu height to place the pivot within the X/Y center of icon in the menu.
+        float iconCenter = iconAppChipMenuView.getHeight() / 2f;
+        iconAppChipMenuView.setPivotX(isRtl ? iconMenuParams.width / 2f : iconCenter);
+        iconAppChipMenuView.setPivotY(
+                isRtl ? iconMenuParams.width / 2f : iconCenter - iconMenuMargin);
+        iconAppChipMenuView.setTranslationY(0);
+        iconAppChipMenuView.setRotation(getDegreesRotated());
     }
 
     @Override
@@ -241,11 +279,20 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         int bottomToMidpointOffset = (int) (overviewThumbnailAreaThickness * midpointFromBottomPct);
         int insetOffset = (int) (overviewThumbnailAreaThickness * insetPct);
 
-        primaryIconParams.gravity = BOTTOM | (isRtl ? END : START);
-        secondaryIconParams.gravity = BOTTOM | (isRtl ? END : START);
+        int gravity = (isRtl ? TOP : BOTTOM) | (isRtl ? END : START);
+        primaryIconParams.gravity = gravity;
+        secondaryIconParams.gravity = gravity;
         primaryIconView.setTranslationX(0);
         secondaryIconView.setTranslationX(0);
-        if (splitConfig.initiatedFromSeascape) {
+        if (enableOverviewIconMenu()) {
+            if (primaryIconView.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
+                primaryIconView.setTranslationY(groupedTaskViewHeight - primarySnapshotHeight);
+                secondaryIconView.setTranslationY(0);
+            } else {
+                secondaryIconView.setTranslationY(-primarySnapshotHeight);
+                primaryIconView.setTranslationY(0);
+            }
+        } else if (splitConfig.initiatedFromSeascape) {
             // if the split was initiated from seascape,
             // the task on the right (secondary) is slightly larger
             primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset

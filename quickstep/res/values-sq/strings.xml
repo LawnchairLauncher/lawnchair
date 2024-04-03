@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Pamja e ekranit"</string>
     <string name="action_split" msgid="2098009717623550676">"Ndaj"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Trokit një apl. tjetër; përdor ekranin e ndarë"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Anulo"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Dil nga zgjedhja e ekranit të ndarë"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Zgjidh një aplikacion tjetër për të përdorur ekranin e ndarë"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Ky veprim nuk lejohet nga aplikacioni ose organizata jote"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Miniaplikacionet nuk mbështeten për momentin. Zgjidh një aplikacion tjetër"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Të kapërcehet udhëzuesi i navigimit?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Këtë mund ta gjesh më vonë tek aplikacioni \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Anulo"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Zvarrit një aplikacion në anë për të përdorur 2 aplikacione njëherësh"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Rrëshqit lart ngadalë për të shfaqur \"Shiritin e detyrave\""</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Merr sugjerime për aplikacion bazuar në rutinën tënde"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Aktivizo navigimin me gjeste te \"Cilësimet\" për të fshehur \"Shiritin e detyrave\""</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Kryej një shtypje të gjatë te ndarësi për të gozhduar \"Shiritin e detyrave\""</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Bëj më shumë me \"Shiritin e detyrave\""</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Mbyll"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"U krye"</string>

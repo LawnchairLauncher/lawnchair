@@ -16,15 +16,14 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.view.MotionEvent;
 
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.testing.shared.TestProtocol;
 
@@ -48,33 +47,42 @@ public abstract class Launchable {
         return mObject;
     }
 
+    protected boolean launcherStopsAfterLaunch() {
+        return true;
+    }
+
     /**
      * Clicks the object to launch its app.
+     * We are assuming non-translucent app launches because only such launches generate
+     * LAUNCHER_ACTIVITY_STOPPED_MESSAGE.
      */
     public LaunchedAppState launch(String expectedPackageName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            return launch(By.pkg(expectedPackageName));
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "want to launch an app from " + launchableType())) {
+                LauncherInstrumentation.log("Launchable.launch before click "
+                        + mObject.getVisibleCenter() + " in "
+                        + mLauncher.getVisibleBounds(mObject));
+
+                if (launcherStopsAfterLaunch()) {
+                    mLauncher.executeAndWaitForLauncherStop(
+                            () -> mLauncher.clickLauncherObject(mObject),
+                            "clicking the launchable");
+                } else {
+                    mLauncher.clickLauncherObject(mObject);
+                }
+
+                try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
+                    expectActivityStartEvents();
+                    return mLauncher.assertAppLaunched(expectedPackageName);
+                }
+            }
         }
     }
 
     protected abstract void expectActivityStartEvents();
 
     protected abstract String launchableType();
-
-    private LaunchedAppState launch(BySelector selector) {
-        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                "want to launch an app from " + launchableType())) {
-            LauncherInstrumentation.log("Launchable.launch before click "
-                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
-
-            mLauncher.clickLauncherObject(mObject);
-
-            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
-                expectActivityStartEvents();
-                return assertAppLaunched(selector);
-            }
-        }
-    }
 
     /**
      * Clicks a launcher object to initiate splitscreen, where the selected app will be one of two
@@ -83,26 +91,24 @@ public abstract class Launchable {
      * fired when the click is executed.
      */
     public LaunchedAppState launchIntoSplitScreen() {
-        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                "want to launch split tasks from " + launchableType())) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                     "want to launch split tasks from " + launchableType())) {
             LauncherInstrumentation.log("Launchable.launch before click "
-                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
-
-            mLauncher.clickLauncherObject(mObject);
+                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(
+                    mObject));
+            mLauncher.executeAndWaitForLauncherEvent(
+                    () -> mLauncher.clickLauncherObject(mObject),
+                    accessibilityEvent ->
+                            accessibilityEvent.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                    () -> "Unable to click object to launch split",
+                    "Click launcher object to launch split");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, OverviewTask.SPLIT_START_EVENT);
                 return new LaunchedAppState(mLauncher);
             }
         }
-    }
-
-    protected LaunchedAppState assertAppLaunched(BySelector selector) {
-        mLauncher.assertTrue(
-                "App didn't start: (" + selector + ")",
-                mLauncher.getDevice().wait(Until.hasObject(selector),
-                        LauncherInstrumentation.WAIT_TIME_MS));
-        return new LaunchedAppState(mLauncher);
     }
 
     Point startDrag(long downTime, Runnable expectLongClickEvents, boolean runToSpringLoadedState) {

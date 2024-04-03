@@ -26,7 +26,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_ENABLED;
 import static com.android.launcher3.model.DeviceGridState.KEY_WORKSPACE_SIZE;
-import static com.android.launcher3.model.QuickstepModelDelegate.LAST_PREDICTION_ENABLED_STATE;
+import static com.android.launcher3.model.PredictionUpdateTask.LAST_PREDICTION_ENABLED;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
@@ -155,13 +155,12 @@ public class SettingsChangeLogger implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (LAST_PREDICTION_ENABLED_STATE.equals(key)
+        if (LAST_PREDICTION_ENABLED.getSharedPrefKey().equals(key)
                 || KEY_WORKSPACE_SIZE.equals(key)
                 || KEY_THEMED_ICONS.equals(key)
                 || mLoggablePrefs.containsKey(key)) {
 
-            mHomeScreenSuggestionEvent = getDevicePrefs(mContext)
-                    .getBoolean(LAST_PREDICTION_ENABLED_STATE, true)
+            mHomeScreenSuggestionEvent = LauncherPrefs.get(mContext).get(LAST_PREDICTION_ENABLED)
                     ? LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED
                     : LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
 

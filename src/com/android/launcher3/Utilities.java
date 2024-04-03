@@ -16,12 +16,15 @@
 
 package com.android.launcher3;
 
+import static android.graphics.drawable.AdaptiveIconDrawable.getExtraInsetFraction;
+
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ICON_BADGED;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.Person;
@@ -34,6 +37,9 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BlendMode;
+import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -44,22 +50,23 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Process;
 import android.os.TransactionTooLargeException;
-import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TtsSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,16 +76,21 @@ import android.view.animation.Interpolator;
 import androidx.annotation.ChecksSdkIntAtLeast;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.TintedDrawableSpan;
+import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.testing.shared.ResourceUtils;
@@ -106,15 +118,14 @@ public final class Utilities {
 
     private static final String TAG = "Launcher.Utilities";
 
-    private static final Pattern sTrimPattern = Pattern
-            .compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
+    private static final Pattern sTrimPattern =
+            Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
 
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
-    public static final Person[] EMPTY_PERSON_ARRAY = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? new Person[0]
-            : null;
+    public static final Person[] EMPTY_PERSON_ARRAY = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? new Person[0] : null;
 
     public static final boolean ATLEAST_O = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
 
@@ -132,24 +143,23 @@ public final class Utilities {
     @ChecksSdkIntAtLeast(api = VERSION_CODES.S)
     public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
 
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.S_V2)
+    public static final boolean ATLEAST_S_V2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2;
+    
     @ChecksSdkIntAtLeast(api = VERSION_CODES.TIRAMISU, codename = "T")
     public static final boolean ATLEAST_T = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-
-    public static final boolean ATLEAST_S_V2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2;
+    
     @ChecksSdkIntAtLeast(api = VERSION_CODES.UPSIDE_DOWN_CAKE, codename = "U")
     public static final boolean ATLEAST_U = Build.VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE;
 
     /**
-     * Set on a motion event dispatched from the nav bar. See
-     * {@link MotionEvent#setEdgeFlags(int)}.
+     * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
      */
     public static final int EDGE_NAV_BAR = 1 << 8;
 
     /**
-     * Indicates if the device has a debug build. Should only be used to store
-     * additional info or
+     * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
-     *
      * @deprecated Use {@link BuildConfig#IS_DEBUG_DEVICE} directly
      */
     @Deprecated
@@ -160,9 +170,8 @@ public final class Utilities {
     public static final int TRANSLATE_LEFT = 2;
     public static final int TRANSLATE_RIGHT = 3;
 
-    @IntDef({ TRANSLATE_UP, TRANSLATE_DOWN, TRANSLATE_LEFT, TRANSLATE_RIGHT })
-    public @interface AdjustmentDirection {
-    }
+    @IntDef({TRANSLATE_UP, TRANSLATE_DOWN, TRANSLATE_LEFT, TRANSLATE_RIGHT})
+    public @interface AdjustmentDirection{}
 
     /**
      * Returns true if theme is dark.
@@ -180,11 +189,6 @@ public final class Utilities {
         Configuration configuration = context.getResources().getConfiguration();
         int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightMode == Configuration.UI_MODE_NIGHT_YES;
-    }
-
-    public static boolean isDevelopersOptionsEnabled(Context context) {
-        return Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
-                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
     }
 
     private static boolean sIsRunningInTestHarness = ActivityManager.isRunningInTestHarness();
@@ -218,22 +222,16 @@ public final class Utilities {
     }
 
     /**
-     * Given a coordinate relative to the descendant, find the coordinate in a
-     * parent view's
+     * Given a coordinate relative to the descendant, find the coordinate in a parent view's
      * coordinates.
      *
-     * @param descendant        The descendant to which the passed coordinate is
-     *                          relative.
-     * @param ancestor          The root view to make the coordinates relative to.
-     * @param coord             The coordinate that we want mapped.
-     * @param includeRootScroll Whether or not to account for the scroll of the
-     *                          descendant:
-     *                          sometimes this is relevant as in a child's
-     *                          coordinates within the descendant.
-     * @return The factor by which this descendant is scaled relative to this
-     *         DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any
-     *         point this
+     * @param descendant The descendant to which the passed coordinate is relative.
+     * @param ancestor The root view to make the coordinates relative to.
+     * @param coord The coordinate that we want mapped.
+     * @param includeRootScroll Whether or not to account for the scroll of the descendant:
+     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
+     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(
@@ -243,30 +241,24 @@ public final class Utilities {
     }
 
     /**
-     * Given a coordinate relative to the descendant, find the coordinate in a
-     * parent view's
+     * Given a coordinate relative to the descendant, find the coordinate in a parent view's
      * coordinates.
      *
-     * @param descendant        The descendant to which the passed coordinate is
-     *                          relative.
-     * @param ancestor          The root view to make the coordinates relative to.
-     * @param coord             The coordinate that we want mapped.
-     * @param includeRootScroll Whether or not to account for the scroll of the
-     *                          descendant:
-     *                          sometimes this is relevant as in a child's
-     *                          coordinates within the descendant.
-     * @param ignoreTransform   If true, view transform is ignored
-     * @return The factor by which this descendant is scaled relative to this
-     *         DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any
-     *         point this
+     * @param descendant The descendant to which the passed coordinate is relative.
+     * @param ancestor The root view to make the coordinates relative to.
+     * @param coord The coordinate that we want mapped.
+     * @param includeRootScroll Whether or not to account for the scroll of the descendant:
+     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     * @param ignoreTransform If true, view transform is ignored
+     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
+     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
             float[] coord, boolean includeRootScroll, boolean ignoreTransform) {
         float scale = 1.0f;
         View v = descendant;
-        while (v != ancestor && v != null) {
+        while(v != ancestor && v != null) {
             // For TextViews, scroll has a meaning which relates to the text position
             // which is very strange... ignore the scroll.
             if (v != descendant || includeRootScroll) {
@@ -289,12 +281,10 @@ public final class Utilities {
      *
      * see {@link com.android.launcher3.dragndrop.DragLayer}.
      *
-     * @param viewBounds      Bounds of the view wanted in drag layer coordinates,
-     *                        relative to the view
-     *                        itself. eg. (0, 0, view.getWidth, view.getHeight)
+     * @param viewBounds Bounds of the view wanted in drag layer coordinates, relative to the view
+     *                   itself. eg. (0, 0, view.getWidth, view.getHeight)
      * @param ignoreTransform If true, view transform is ignored
-     * @param outRect         The out rect where we return the bounds of
-     *                        {@param view} in drag layer coords.
+     * @param outRect The out rect where we return the bounds of {@param view} in drag layer coords.
      */
     public static void getBoundsForViewInDragLayer(BaseDragLayer dragLayer, View view,
             Rect viewBounds, boolean ignoreTransform, float[] recycle, RectF outRect) {
@@ -314,25 +304,23 @@ public final class Utilities {
     }
 
     /**
-     * Similar to
-     * {@link #mapCoordInSelfToDescendant(View descendant, View root, float[] coord)}
+     * Similar to {@link #mapCoordInSelfToDescendant(View descendant, View root, float[] coord)}
      * but accepts a Rect instead of float[].
      */
     public static void mapRectInSelfToDescendant(View descendant, View root, Rect rect) {
-        float[] coords = new float[] { rect.left, rect.top, rect.right, rect.bottom };
+        float[] coords = new float[]{rect.left, rect.top, rect.right, rect.bottom};
         mapCoordInSelfToDescendant(descendant, root, coords);
         rect.set((int) coords[0], (int) coords[1], (int) coords[2], (int) coords[3]);
     }
 
     /**
-     * Inverse of
-     * {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
+     * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
     public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
         if (descendant == null || root == null || coord == null || coord.length < 2) return;
         sMatrix.reset();
         View v = descendant;
-        while (v != root) {
+        while(v != root) {
             sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
             sMatrix.postConcat(v.getMatrix());
             sMatrix.postTranslate(v.getLeft(), v.getTop());
@@ -361,10 +349,8 @@ public final class Utilities {
 
     /**
      * Utility method to determine whether the given point, in local coordinates,
-     * is inside the view, where the area of the view is expanded by the slop
-     * factor.
-     * This method is called while processing touch-move events to determine if the
-     * event
+     * is inside the view, where the area of the view is expanded by the slop factor.
+     * This method is called while processing touch-move events to determine if the event
      * is still within the view.
      */
     public static boolean pointInView(View v, float localX, float localY, float slop) {
@@ -377,8 +363,7 @@ public final class Utilities {
     }
 
     /**
-     * Similar to {@link #scaleRectAboutCenter(Rect, float)} except this allows
-     * different scales
+     * Similar to {@link #scaleRectAboutCenter(Rect, float)} except this allows different scales
      * for X and Y
      */
     public static void scaleRectFAboutCenter(RectF r, float scaleX, float scaleY) {
@@ -420,8 +405,8 @@ public final class Utilities {
     /**
      * Sets the x and y pivots for scaling from one Rect to another.
      *
-     * @param src      the source rectangle to scale from.
-     * @param dst      the destination rectangle to scale to.
+     * @param src the source rectangle to scale from.
+     * @param dst the destination rectangle to scale to.
      * @param outPivot the pivots set for scaling from src to dst.
      */
     public static void getPivotsForScalingRectToRect(Rect src, Rect dst, PointF outPivot) {
@@ -434,12 +419,11 @@ public final class Utilities {
 
     /**
      * Maps t from one range to another range.
-     *
-     * @param t       The value to map.
+     * @param t The value to map.
      * @param fromMin The lower bound of the range that t is being mapped from.
      * @param fromMax The upper bound of the range that t is being mapped from.
-     * @param toMin   The lower bound of the range that t is being mapped to.
-     * @param toMax   The upper bound of the range that t is being mapped to.
+     * @param toMin The lower bound of the range that t is being mapped to.
+     * @param toMax The upper bound of the range that t is being mapped to.
      * @return The mapped value of t.
      */
     public static float mapToRange(float t, float fromMin, float fromMax, float toMin, float toMax,
@@ -468,8 +452,7 @@ public final class Utilities {
     }
 
     /**
-     * Trims the string, removing all whitespace at the beginning and end of the
-     * string.
+     * Trims the string, removing all whitespace at the beginning and end of the string.
      * Non-breaking whitespaces are also removed.
      */
     @NonNull
@@ -478,8 +461,7 @@ public final class Utilities {
             return "";
         }
 
-        // Just strip any sequence of whitespace or java space characters from the
-        // beginning and end
+        // Just strip any sequence of whitespace or java space characters from the beginning and end
         Matcher m = sTrimPattern.matcher(s);
         return m.replaceAll("$1");
     }
@@ -498,9 +480,7 @@ public final class Utilities {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
-    /**
-     * Converts a pixel value (px) to scale pixel value (SP) for the current device.
-     */
+    /** Converts a pixel value (px) to scale pixel value (SP) for the current device. */
     public static float pxToSp(float size) {
         return size / Resources.getSystem().getDisplayMetrics().scaledDensity;
     }
@@ -554,8 +534,7 @@ public final class Utilities {
 
     /**
      * Ensures that a value is within given bounds. Specifically:
-     * If value is less than lowerBound, return lowerBound; else if value is greater
-     * than upperBound,
+     * If value is less than lowerBound, return lowerBound; else if value is greater than upperBound,
      * return upperBound; else return value unchanged.
      */
     public static int boundToRange(int value, int lowerBound, int upperBound) {
@@ -579,8 +558,7 @@ public final class Utilities {
     /**
      * Wraps a message with a TTS span, so that a different message is spoken than
      * what is getting displayed.
-     *
-     * @param msg    original message
+     * @param msg original message
      * @param ttsMsg message to be spoken
      */
     public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
@@ -595,10 +573,8 @@ public final class Utilities {
      */
     public static CharSequence prefixTextWithIcon(Context context, int iconRes, CharSequence msg) {
         // Update the hint to contain the icon.
-        // Prefix the original hint with two spaces. The first space gets replaced by
-        // the icon
-        // using span. The second space is used for a singe space character between the
-        // hint
+        // Prefix the original hint with two spaces. The first space gets replaced by the icon
+        // using span. The second space is used for a singe space character between the hint
         // and the icon.
         SpannableString spanned = new SpannableString("  " + msg);
         spanned.setSpan(new TintedDrawableSpan(context, iconRes),
@@ -620,8 +596,7 @@ public final class Utilities {
     }
 
     /**
-     * Utility method to post a runnable on the handler, skipping the
-     * synchronization barriers.
+     * Utility method to post a runnable on the handler, skipping the synchronization barriers.
      */
     public static void postAsyncCallback(Handler handler, Runnable callback) {
         Message msg = Message.obtain(handler, callback);
@@ -630,8 +605,7 @@ public final class Utilities {
     }
 
     /**
-     * Utility method to allow background activity launch for the provided activity
-     * options
+     * Utility method to allow background activity launch for the provided activity options
      */
     public static ActivityOptions allowBGLaunch(ActivityOptions options) {
         if (ATLEAST_U) {
@@ -642,117 +616,116 @@ public final class Utilities {
     }
 
     /**
-     * Returns the full drawable for info without any flattening or pre-processing.
+     * Returns the full drawable for info as multiple layers of AdaptiveIconDrawable. The second
+     * drawable in the Pair is the badge used with the icon.
      *
-     * @param shouldThemeIcon If true, will theme icons when applicable
-     * @param outObj          this is set to the internal data associated with
-     *                        {@code info},
-     *                        eg {@link LauncherActivityInfo} or
-     *                        {@link ShortcutInfo}.
+     * @param useTheme If true, will theme icons when applicable
      */
-    @TargetApi(Build.VERSION_CODES.TIRAMISU)
-    public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
-            boolean shouldThemeIcon, Object[] outObj, boolean[] outIsIconThemed) {
-        Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
-        if (ATLEAST_T && icon instanceof AdaptiveIconDrawable && shouldThemeIcon) {
-            AdaptiveIconDrawable aid = (AdaptiveIconDrawable) icon.mutate();
-            Drawable mono = aid.getMonochrome();
-            if (mono != null && Themes.isThemedIconEnabled(context)) {
-                outIsIconThemed[0] = true;
-                int[] colors = ThemedIconDrawable.getColors(context);
-                mono = mono.mutate();
-                mono.setTint(colors[1]);
-                return new AdaptiveIconDrawable(new ColorDrawable(colors[0]), mono);
-            }
-        }
-        return icon;
-    }
-
-    public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
-            Object[] outObj, boolean useTheme) {
-        Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
-        if (useTheme && icon instanceof BitmapInfo.Extender) {
-            icon = ((BitmapInfo.Extender) icon).getThemedDrawable(context);
-        }
-        return icon;
-    }
-
-    public static Drawable loadFullDrawableWithoutTheme(Context context, ItemInfo info,
-            int width, int height, Object[] outObj) {
-        ActivityContext activity = ActivityContext.lookupContext(context);
+    @SuppressLint("UseCompatLoadingForDrawables")
+    @Nullable
+    @WorkerThread
+    public static <T extends Context & ActivityContext> Pair<AdaptiveIconDrawable, Drawable>
+            getFullDrawable(T context, ItemInfo info, int width, int height, boolean useTheme) {
+        useTheme &= Themes.isThemedIconEnabled(context);
         LauncherAppState appState = LauncherAppState.getInstance(context);
-        if (info instanceof PendingAddShortcutInfo) {
-            ShortcutConfigActivityInfo activityInfo = ((PendingAddShortcutInfo) info).getActivityInfo(context);
-            outObj[0] = activityInfo;
-            return activityInfo.getFullResIcon(appState.getIconCache());
+        Drawable mainIcon = null;
+
+        Drawable badge = null;
+        if ((info instanceof ItemInfoWithIcon iiwi) && !iiwi.usingLowResIcon()) {
+            badge = iiwi.bitmap.getBadgeDrawable(context, useTheme);
         }
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+
+        if (info instanceof PendingAddShortcutInfo) {
+            ShortcutConfigActivityInfo activityInfo =
+                    ((PendingAddShortcutInfo) info).getActivityInfo(context);
+            mainIcon = activityInfo.getFullResIcon(appState.getIconCache());
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = context.getSystemService(LauncherApps.class)
                     .resolveActivity(info.getIntent(), info.user);
-            outObj[0] = activityInfo;
-            return activityInfo == null ? null
-                    : LauncherAppState.getInstance(context)
-                            .getIconProvider().getIcon(
-                                    activityInfo, activity.getDeviceProfile().inv.fillResIconDpi);
+            if (activityInfo == null) {
+                return null;
+            }
+            mainIcon = appState.getIconProvider().getIcon(
+                    activityInfo, appState.getInvariantDeviceProfile().fillResIconDpi);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-            List<ShortcutInfo> si = ShortcutKey.fromItemInfo(info)
+            List<ShortcutInfo> siList = ShortcutKey.fromItemInfo(info)
                     .buildRequest(context)
                     .query(ShortcutRequest.ALL);
-            if (si.isEmpty()) {
+            if (siList.isEmpty()) {
                 return null;
             } else {
-                outObj[0] = si.get(0);
-                return ShortcutCachingLogic.getIcon(context, si.get(0),
+                ShortcutInfo si = siList.get(0);
+                mainIcon = ShortcutCachingLogic.getIcon(context, si,
                         appState.getInvariantDeviceProfile().fillResIconDpi);
+                // Only fetch badge if the icon is on workspace
+                if (info.id != ItemInfo.NO_ID && badge == null) {
+                    badge = appState.getIconCache().getShortcutInfoBadge(si)
+                            .newIcon(context, FLAG_THEMED);
+                }
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
-                    activity, info.id, new Point(width, height));
+                    context, info.id, new Point(width, height));
             if (icon == null) {
                 return null;
             }
-            outObj[0] = icon;
-            return icon;
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
-                && info instanceof ItemInfoWithIcon) {
-            return ((ItemInfoWithIcon) info).bitmap.newIcon(context);
-        } else {
+            mainIcon =  icon;
+            badge = icon.getBadge();
+        }
+
+        if (mainIcon == null) {
             return null;
         }
-    }
-
-    /**
-     * For apps icons and shortcut icons that have badges, this method creates a
-     * drawable that can
-     * later on be rendered on top of the layers for the badges. For app icons, work
-     * profile badges
-     * can only be applied. For deep shortcuts, when dragged from the pop up
-     * container, there's no
-     * badge. When dragged from workspace or folder, it may contain app AND/OR work
-     * profile badge
-     **/
-    @TargetApi(Build.VERSION_CODES.O)
-    public static Drawable getBadge(Context context, ItemInfo info, Object obj,
-            boolean isIconThemed) {
-        LauncherAppState appState = LauncherAppState.getInstance(context);
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-            boolean iconBadged = (info instanceof ItemInfoWithIcon)
-                    && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
-            if ((info.id == ItemInfo.NO_ID && !iconBadged)
-                    || !(obj instanceof ShortcutInfo)) {
-                // The item is not yet added on home screen.
-                return new ColorDrawable(Color.TRANSPARENT);
-            }
-            ShortcutInfo si = (ShortcutInfo) obj;
-            return LauncherAppState.getInstance(appState.getContext())
-                    .getIconCache().getShortcutInfoBadge(si).newIcon(context);
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            return ((FolderAdaptiveIcon) obj).getBadge();
+        AdaptiveIconDrawable result;
+        if (mainIcon instanceof AdaptiveIconDrawable aid) {
+            result = aid;
         } else {
-            return Process.myUserHandle().equals(info.user)
-                    ? new ColorDrawable(Color.TRANSPARENT)
-                    : context.getDrawable(R.drawable.ic_work_app_badge);
+            // Wrap the main icon in AID
+            try (LauncherIcons li = LauncherIcons.obtain(context)) {
+                result = li.wrapToAdaptiveIcon(mainIcon);
+            }
         }
+        if (result == null) {
+            return null;
+        }
+
+        // Inject monochrome icon drawable
+        if (ATLEAST_T && useTheme) {
+            result.mutate();
+            int[] colors = ThemedIconDrawable.getColors(context);
+            Drawable mono = result.getMonochrome();
+
+            if (mono != null) {
+                mono.setTint(colors[1]);
+            } else  if (info instanceof ItemInfoWithIcon iiwi) {
+                // Inject a previously generated monochrome icon
+                Bitmap monoBitmap = iiwi.bitmap.getMono();
+                if (monoBitmap != null) {
+                    // Use BitmapDrawable instead of FastBitmapDrawable so that the colorState is
+                    // preserved in constantState
+                    mono = new BitmapDrawable(monoBitmap);
+                    mono.setColorFilter(new BlendModeColorFilter(colors[1], BlendMode.SRC_IN));
+                    // Inset the drawable according to the AdaptiveIconDrawable layers
+                    mono = new InsetDrawable(mono, getExtraInsetFraction() / 2);
+                }
+            }
+            if (mono != null) {
+                result = new AdaptiveIconDrawable(new ColorDrawable(colors[0]), mono);
+            }
+        }
+
+        if (badge == null) {
+            try (LauncherIcons li = LauncherIcons.obtain(context)) {
+                badge = BitmapInfo.LOW_RES_INFO.withFlags(
+                                li.getBitmapFlagOp(new BaseIconFactory.IconOptions().setUser(
+                                        UserCache.INSTANCE.get(context).getUserInfo(info.user))))
+                        .getBadgeDrawable(context, useTheme);
+            }
+            if (badge == null) {
+                badge = new ColorDrawable(Color.TRANSPARENT);
+            }
+        }
+        return Pair.create(result, badge);
     }
 
     public static float squaredHypot(float x, float y) {
@@ -765,10 +738,8 @@ public final class Utilities {
     }
 
     /**
-     * Rotates `inOutBounds` by `delta` 90-degree increments. Rotation is visually
-     * CCW. Parent
-     * sizes represent the "space" that will rotate carrying inOutBounds along with
-     * it to determine
+     * Rotates `inOutBounds` by `delta` 90-degree increments. Rotation is visually CCW. Parent
+     * sizes represent the "space" that will rotate carrying inOutBounds along with it to determine
      * the final bounds.
      */
     public static void rotateBounds(Rect inOutBounds, int parentWidth, int parentHeight,
@@ -798,10 +769,9 @@ public final class Utilities {
     }
 
     /**
-     * Make a color filter that blends a color into the destination based on a
-     * scalable amout.
+     * Make a color filter that blends a color into the destination based on a scalable amout.
      *
-     * @param color      to blend in.
+     * @param color to blend in.
      * @param tintAmount [0-1] 0 no tinting, 1 full color.
      * @return ColorFilter for tinting, or {@code null} if no filter is needed.
      */
@@ -810,8 +780,7 @@ public final class Utilities {
             return null;
         }
         return new LightingColorFilter(
-                // This isn't blending in white, its making a multiplication mask for the base
-                // color
+                // This isn't blending in white, its making a multiplication mask for the base color
                 ColorUtils.blendARGB(Color.WHITE, 0, tintAmount),
                 ColorUtils.blendARGB(0, color, tintAmount));
     }
@@ -823,71 +792,66 @@ public final class Utilities {
     }
 
     /**
-     * Returns a list of screen-splitting options depending on the device
-     * orientation (split top for
+     * Returns a list of screen-splitting options depending on the device orientation (split top for
      * portrait, split right for landscape)
      */
     public static List<SplitPositionOption> getSplitPositionOptions(
             DeviceProfile dp) {
+        int splitIconRes = dp.isLeftRightSplit
+                ? R.drawable.ic_split_horizontal
+                : R.drawable.ic_split_vertical;
+        int stagePosition = dp.isLeftRightSplit
+                ? STAGE_POSITION_BOTTOM_OR_RIGHT
+                : STAGE_POSITION_TOP_OR_LEFT;
         return Collections.singletonList(new SplitPositionOption(
-                dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical,
+                splitIconRes,
                 R.string.recent_task_option_split_screen,
-                dp.isLandscape ? STAGE_POSITION_BOTTOM_OR_RIGHT : STAGE_POSITION_TOP_OR_LEFT,
-                STAGE_TYPE_MAIN));
+                stagePosition,
+                STAGE_TYPE_MAIN
+        ));
     }
 
-    /**
-     * Logs the Scale and Translate properties of a matrix. Ignores skew and
-     * perspective.
-     */
+    /** Logs the Scale and Translate properties of a matrix. Ignores skew and perspective. */
     public static void logMatrix(String label, Matrix matrix) {
         float[] matrixValues = new float[9];
         matrix.getValues(matrixValues);
         Log.d(label, String.format("%s: %s\nscale (x,y) = (%f, %f)\ntranslate (x,y) = (%f, %f)",
                 label, matrix, matrixValues[Matrix.MSCALE_X], matrixValues[Matrix.MSCALE_Y],
-                matrixValues[Matrix.MTRANS_X], matrixValues[Matrix.MTRANS_Y]));
+                matrixValues[Matrix.MTRANS_X], matrixValues[Matrix.MTRANS_Y]
+        ));
     }
 
     public static SharedPreferences getPrefs(Context context) {
         // Use application context for shared preferences, so that we use a single
         // cached instance
         return context.getApplicationContext().getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+            LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences getDevicePrefs(Context context) {
         // Use application context for shared preferences, so that we use a single
         // cached instance
         return context.getApplicationContext().getSharedPreferences(
-                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+            LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     /**
-     * Translates the {@code targetView} so that it overlaps with
-     * {@code exclusionBounds} as little
+     * Translates the {@code targetView} so that it overlaps with {@code exclusionBounds} as little
      * as possible, while remaining within {@code inclusionBounds}.
      * <p>
-     * {@code inclusionBounds} will always take precedence over
-     * {@code exclusionBounds}, so if
-     * {@code targetView} needs to be translated outside of {@code inclusionBounds}
-     * to fully fix an
-     * overlap with {@code exclusionBounds}, then {@code targetView} will only be
-     * translated up to
+     * {@code inclusionBounds} will always take precedence over {@code exclusionBounds}, so if
+     * {@code targetView} needs to be translated outside of {@code inclusionBounds} to fully fix an
+     * overlap with {@code exclusionBounds}, then {@code targetView} will only be translated up to
      * the border of {@code inclusionBounds}.
      * <p>
-     * Note: {@code targetViewBounds}, {@code inclusionBounds} and
-     * {@code exclusionBounds} must all
+     * Note: {@code targetViewBounds}, {@code inclusionBounds} and {@code exclusionBounds} must all
      * be in relation to the same reference point on screen.
      * <p>
-     *
-     * @param targetView          the view being translated
-     * @param targetViewBounds    the bounds of the {@code targetView}
-     * @param inclusionBounds     the bounds the {@code targetView} absolutely must
-     *                            stay within
-     * @param exclusionBounds     the bounds to try to move the {@code targetView}
-     *                            away from
-     * @param adjustmentDirection the translation direction that should be attempted
-     *                            to fix an
+     * @param targetView the view being translated
+     * @param targetViewBounds the bounds of the {@code targetView}
+     * @param inclusionBounds the bounds the {@code targetView} absolutely must stay within
+     * @param exclusionBounds the bounds to try to move the {@code targetView} away from
+     * @param adjustmentDirection the translation direction that should be attempted to fix an
      *                            overlap
      */
     public static void translateOverlappingView(

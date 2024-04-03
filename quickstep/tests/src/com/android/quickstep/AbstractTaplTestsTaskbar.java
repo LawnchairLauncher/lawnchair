@@ -25,7 +25,6 @@ import android.content.Intent;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
@@ -37,7 +36,6 @@ import java.util.List;
 
 public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
 
-    protected static final String TEST_APP_NAME = "LauncherTestApp";
     protected static final String TEST_APP_PACKAGE =
             getInstrumentation().getContext().getPackageName();
     protected static final String CALCULATOR_APP_PACKAGE =
@@ -56,7 +54,7 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
                 "com.google.android.apps.nexuslauncher.tests",
                 "com.android.launcher3.testcomponent.BaseTestingActivity");
         mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, layoutBuilder);
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
         startAppFast(CALCULATOR_APP_PACKAGE);
         mLauncher.enableBlockTimeout(true);
         mLauncher.showTaskbarIfHidden();
@@ -95,6 +93,6 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
         launcher.enableTransientTaskbar(expectTransientTaskbar);
         launcher.recreateTaskbar();
         launcher.checkForAnomaly(true, true);
-        AbstractLauncherUiTest.checkDetectedLeaks(launcher);
+        AbstractLauncherUiTest.checkDetectedLeaks(launcher, true);
     }
 }

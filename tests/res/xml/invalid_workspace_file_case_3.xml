@@ -15,44 +15,46 @@
   -->
 
 <workspaceSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
-    <workspaceSpec
-        launcher:specType="height"
-        launcher:maxAvailableSize="648dp">
-        <startPadding
-            launcher:ofAvailableSpace="0.0125" />
-        <endPadding
-            launcher:ofAvailableSpace="0.05" />
-        <gutter
-            launcher:fixedSize="16dp" />
-        <!--  value bigger than 1 -->
-        <cellSize
-            launcher:ofRemainderSpace="1.001" />
-    </workspaceSpec>
+    <specs launcher:maxAspectRatio="10">
+        <workspaceSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="648dp">
+            <startPadding
+                launcher:ofAvailableSpace="0.0125" />
+            <endPadding
+                launcher:ofAvailableSpace="0.05" />
+            <gutter
+                launcher:fixedSize="16dp" />
+            <!--  value bigger than 1 -->
+            <cellSize
+                launcher:ofRemainderSpace="1.001" />
+        </workspaceSpec>
 
-    <workspaceSpec
-        launcher:specType="height"
-        launcher:maxAvailableSize="9999dp">
-        <startPadding
-            launcher:ofAvailableSpace="0.0306" />
-        <endPadding
-            launcher:ofAvailableSpace="0.068" />
-        <gutter
-            launcher:fixedSize="16dp" />
-        <cellSize
-            launcher:ofRemainderSpace="0.2" />
-    </workspaceSpec>
+        <workspaceSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding
+                launcher:ofAvailableSpace="0.0306" />
+            <endPadding
+                launcher:ofAvailableSpace="0.068" />
+            <gutter
+                launcher:fixedSize="16dp" />
+            <cellSize
+                launcher:ofRemainderSpace="0.2" />
+        </workspaceSpec>
 
-    <!-- Width spec is always the same -->
-    <workspaceSpec
-        launcher:specType="width"
-        launcher:maxAvailableSize="9999dp">
-        <startPadding
-            launcher:ofRemainderSpace="0.21436227" />
-        <endPadding
-            launcher:ofRemainderSpace="0.21436227" />
-        <gutter
-            launcher:ofRemainderSpace="0.11425509" />
-        <cellSize
-            launcher:fixedSize="120dp" />
-    </workspaceSpec>
+        <!-- Width spec is always the same -->
+        <workspaceSpec
+            launcher:dimensionType="width"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding
+                launcher:ofRemainderSpace="0.21436227" />
+            <endPadding
+                launcher:ofRemainderSpace="0.21436227" />
+            <gutter
+                launcher:ofRemainderSpace="0.11425509" />
+            <cellSize
+                launcher:fixedSize="120dp" />
+        </workspaceSpec>
+    </specs>
 </workspaceSpecs>

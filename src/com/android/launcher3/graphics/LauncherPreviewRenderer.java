@@ -22,6 +22,7 @@ import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.DeviceProfile.DEFAULT_SCALE;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 
@@ -127,27 +128,26 @@ import app.lawnchair.smartspace.provider.SmartspaceProvider;
 import app.lawnchair.theme.ThemeProvider;
 
 /**
- * Utility class for generating the preview of Launcher for a given
- * InvariantDeviceProfile.
+ * Utility class for generating the preview of Launcher for a given InvariantDeviceProfile.
  * Steps:
- * 1) Create a dummy icon info with just white icon
- * 2) Inflate a strip down layout definition for Launcher
- * 3) Place appropriate elements like icons and first-page qsb
- * 4) Measure and draw the view on a canvas
+ *   1) Create a dummy icon info with just white icon
+ *   2) Inflate a strip down layout definition for Launcher
+ *   3) Place appropriate elements like icons and first-page qsb
+ *   4) Measure and draw the view on a canvas
  */
 @TargetApi(Build.VERSION_CODES.R)
 public class LauncherPreviewRenderer extends ContextWrapper
         implements ActivityContext, WorkspaceLayoutManager, LayoutInflater.Factory2 {
 
     /**
-     * Context used just for preview. It also provides a few objects (e.g.
-     * UserCache) just for
+     * Context used just for preview. It also provides a few objects (e.g. UserCache) just for
      * preview purposes.
      */
     public static class PreviewContext extends SandboxContext {
 
         private final InvariantDeviceProfile mIdp;
-        private final ConcurrentLinkedQueue<LauncherIconsForPreview> mIconPool = new ConcurrentLinkedQueue<>();
+        private final ConcurrentLinkedQueue<LauncherIconsForPreview> mIconPool =
+                new ConcurrentLinkedQueue<>();
 
         public PreviewContext(Context base, InvariantDeviceProfile idp) {
             super(base, UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
@@ -268,23 +268,26 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mHotseat = mRootView.findViewById(R.id.hotseat);
         mHotseat.resetLayout(false);
 
-        mLauncherWidgetSpanInfo = launcherWidgetSpanInfo == null ? new SparseArray<>() : launcherWidgetSpanInfo;
+        mLauncherWidgetSpanInfo = launcherWidgetSpanInfo == null ? new SparseArray<>() :
+                launcherWidgetSpanInfo;
 
         CellLayout firstScreen = mRootView.findViewById(R.id.workspace);
         firstScreen.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingPx.left,
                 mDp.workspacePadding.top + mDp.cellLayoutPaddingPx.top,
                 (mDp.isTwoPanels ? mDp.cellLayoutBorderSpacePx.x / 2
                         : mDp.workspacePadding.right) + mDp.cellLayoutPaddingPx.right,
-                mDp.workspacePadding.bottom + mDp.cellLayoutPaddingPx.bottom);
+                mDp.workspacePadding.bottom + mDp.cellLayoutPaddingPx.bottom
+        );
         mWorkspaceScreens.put(FIRST_SCREEN_ID, firstScreen);
 
         if (mDp.isTwoPanels) {
             CellLayout rightPanel = mRootView.findViewById(R.id.workspace_right);
             rightPanel.setPadding(
-                    mDp.cellLayoutBorderSpacePx.x / 2 + mDp.cellLayoutPaddingPx.left,
+                    mDp.cellLayoutBorderSpacePx.x / 2  + mDp.cellLayoutPaddingPx.left,
                     mDp.workspacePadding.top + mDp.cellLayoutPaddingPx.top,
                     mDp.workspacePadding.right + mDp.cellLayoutPaddingPx.right,
-                    mDp.workspacePadding.bottom + mDp.cellLayoutPaddingPx.bottom);
+                    mDp.workspacePadding.bottom + mDp.cellLayoutPaddingPx.bottom
+            );
             mWorkspaceScreens.put(Workspace.SECOND_SCREEN_ID, rightPanel);
         }
 
@@ -509,8 +512,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void populate(BgDataModel dataModel,
             Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
-        // Separate the items that are on the current screen, and the other remaining
-        // items.
+        // Separate the items that are on the current screen, and the other remaining items.
         ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
         ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
@@ -553,14 +555,15 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
         IntArray ranks = getMissingHotseatRanks(currentWorkspaceItems,
                 mDp.numShownHotseatIcons);
-        FixedContainerItems hotseatPredictions = dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
+        FixedContainerItems hotseatPredictions =
+                dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
         List<ItemInfo> predictions = hotseatPredictions == null
-                ? Collections.emptyList()
-                : hotseatPredictions.items;
+                ? Collections.emptyList() : hotseatPredictions.items;
         int count = Math.min(ranks.size(), predictions.size());
         for (int i = 0; i < count; i++) {
             int rank = ranks.get(i);
-            WorkspaceItemInfo itemInfo = new WorkspaceItemInfo((WorkspaceItemInfo) predictions.get(i));
+            WorkspaceItemInfo itemInfo =
+                    new WorkspaceItemInfo((WorkspaceItemInfo) predictions.get(i));
             itemInfo.container = CONTAINER_HOTSEAT_PREDICTION;
             itemInfo.rank = rank;
             itemInfo.cellX = mHotseat.getCellXFromOrder(rank);
@@ -570,11 +573,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
 
         // Add first page QSB
-        if (FeatureFlags.topQsbOnFirstScreenEnabled(mContext)) {
+        if (FeatureFlags.topQsbOnFirstScreenEnabled(mContext) && dataModel.isFirstPagePinnedItemEnabled
+                && !shouldShowFirstPageWidget()) {
             CellLayout firstScreen = mWorkspaceScreens.get(FIRST_SCREEN_ID);
-            View qsb = mHomeElementInflater.inflate(mWorkspaceSearchContainer, firstScreen,
-                    false);
-            CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, mDp.inv.numColumns, 1);
+            View qsb = mHomeElementInflater.inflate(mWorkspaceSearchContainer, firstScreen, false);
+            CellLayoutLayoutParams lp = new CellLayoutLayoutParams(
+                    0, 0, mDp.inv.numColumns, 1);
             lp.canReorder = false;
             firstScreen.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true);
         }

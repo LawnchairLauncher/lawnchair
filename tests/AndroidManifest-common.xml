@@ -42,18 +42,7 @@
         </receiver>
 
         <receiver
-            android:name="com.android.launcher3.testcomponent.AppWidgetNoConfigLarge"
-            android:exported="true"
-            android:label="No Config Large">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/appwidget_no_config_large"/>
-        </receiver>
-
-        <receiver
-            android:name="com.android.launcher3.testcomponent.AppWdigetHidden"
+            android:name="com.android.launcher3.testcomponent.AppWidgetHidden"
             android:exported="true"
             android:label="Hidden widget">
             <intent-filter>
@@ -84,7 +73,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/appwidget_no_config"/>
+                android:resource="@xml/appwidget_no_config_large"/>
         </receiver>
 
         <receiver

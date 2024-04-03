@@ -18,24 +18,33 @@ package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
+import com.android.systemui.shared.rotation.RotationButton
 
 /** Layoutter for showing gesture navigation on phone screen. No buttons here, no-op container */
 class PhoneGestureLayoutter(
         resources: Resources,
         navBarContainer: LinearLayout,
         endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup
+        startContextualContainer: ViewGroup,
+        imeSwitcher: ImageView?,
+        rotationButton: RotationButton?,
+        a11yButton: ImageView?
 ) :
         AbstractNavButtonLayoutter(
                 resources,
                 navBarContainer,
                 endContextualContainer,
-                startContextualContainer
+                startContextualContainer,
+                imeSwitcher,
+                rotationButton,
+                a11yButton
         ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
-        // no-op
+    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
+        endContextualContainer.removeAllViews()
+        startContextualContainer.removeAllViews()
     }
 }

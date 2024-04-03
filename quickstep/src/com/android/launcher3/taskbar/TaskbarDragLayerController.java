@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
+import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
+
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -24,6 +27,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.util.DimensionUtils;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.TouchController;
 
@@ -58,6 +62,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     // changes the inset visibility.
     private final AnimatedFloat mTaskbarAlpha = new AnimatedFloat(this::updateTaskbarAlpha);
 
+    private final AnimatedFloat mTaskbarBackgroundProgress = new AnimatedFloat(
+            this::updateTaskbarBackgroundProgress);
+
     // Initialized in init.
     private TaskbarControllers mControllers;
     private TaskbarStashViaTouchController mTaskbarStashViaTouchController;
@@ -82,6 +89,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
 
         mOnBackgroundNavButtonColorIntensity = mControllers.navbarButtonsViewController
                 .getOnTaskbarBackgroundNavButtonColorOverride();
+
+        mTaskbarBackgroundProgress.updateValue(DisplayController.isTransientTaskbar(mActivity)
+                ? PINNING_TRANSIENT
+                : PINNING_PERSISTENT);
 
         mBgTaskbar.value = 1;
         mKeyguardBgTaskbar.value = 1;
@@ -138,6 +149,11 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         return mBgOffset;
     }
 
+    // AnimatedFloat is for animating between pinned and transient taskbar
+    public AnimatedFloat getTaskbarBackgroundProgress() {
+        return mTaskbarBackgroundProgress;
+    }
+
     public AnimatedFloat getTaskbarAlpha() {
         return mTaskbarAlpha;
     }
@@ -180,8 +196,11 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
 
     private void updateBackgroundOffset() {
         mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
-
         updateOnBackgroundNavButtonColorIntensity();
+    }
+
+    private void updateTaskbarBackgroundProgress() {
+        mTaskbarDragLayer.setTaskbarBackgroundProgress(mTaskbarBackgroundProgress.value);
     }
 
     private void updateTaskbarAlpha() {

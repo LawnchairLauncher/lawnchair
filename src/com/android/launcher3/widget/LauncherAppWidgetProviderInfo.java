@@ -67,7 +67,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
      */
     public int maxSpanY;
 
-    private boolean mIsMinSizeFulfilled;
+    protected boolean mIsMinSizeFulfilled;
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {

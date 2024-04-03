@@ -29,8 +29,7 @@ import android.graphics.Rect;
 import android.util.FloatProperty;
 import android.view.View;
 
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.Themes;
+import com.android.launcher3.R;
 
 /**
  * A helper class to draw background of a focused item.
@@ -103,9 +102,8 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
 
         setAlpha(0);
         mShift = 0;
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            mRadius = Themes.getDialogCornerRadius(container.getContext());
-        }
+        mRadius = container.getResources().getDimensionPixelSize(
+                R.dimen.grid_visualization_rounding_radius);
     }
 
     protected void setAlpha(float alpha) {

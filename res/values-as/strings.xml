@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"বিভাজিত স্ক্ৰীন"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$sৰ বাবে এপৰ তথ্য"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"এপৰ পেয়াৰ ছেভ কৰক"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ৱিজেট স্থানান্তৰ কৰিবলৈ টিপি ধৰি ৰাখক।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"কোনো ৱিজেট স্থানান্তৰ কৰিবলৈ দুবাৰ টিপি ধৰি ৰাখক অথবা কাষ্টম কাৰ্য ব্যৱহাৰ কৰক।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -99,6 +100,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ফ\'ল্ডাৰৰ নাম সলনি কৰি <xliff:g id="NAME">%1$s</xliff:g> কৰা হৈছে"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ফ’ল্ডাৰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> টা বস্তু"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ফ’ল্ডাৰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> টা অথবা তাতকৈ অধিক বস্তু"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"এপ্ পেয়াৰ কৰা: <xliff:g id="APP1">%1$s</xliff:g> আৰু <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ৱালপেপাৰ আৰু শৈলী"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"গৃহ স্ক্ৰীন সম্পাদনা কৰক"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"গৃহ ছেটিং"</string>
@@ -170,7 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"কৰ্মস্থানৰ এপ্‌ পজ কৰক"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"আনপজ কৰক"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টাৰ"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"আপোনাৰ ফ’নৰ বস্তু সন্ধান কৰক"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"আপোনাৰ টেবলেটৰ বস্তু সন্ধান কৰক"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"বিফল: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"ব্যক্তিগত স্পে’চ"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"ব্যক্তিগত"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"ব্যক্তিগত স্পে’চৰ ছেটিং"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ব্যক্তিগত স্পে’চ লক/আনলক কৰক"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"ব্যক্তিগত স্পে’চৰ স্থানান্তৰণ"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"অ’ভাৰফ্ল’"</string>
 </resources>

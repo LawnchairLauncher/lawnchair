@@ -18,6 +18,9 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.LauncherSettings.Favorites.TMP_TABLE;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
+import static com.android.launcher3.model.LoaderTask.SMARTSPACE_ON_HOME_SCREEN;
 import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
@@ -37,6 +40,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -62,8 +66,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * This class takes care of shrinking the workspace (by maximum of one row and
- * one column), as a
+ * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
  * result of restoring from a larger device or device density change.
  */
 public class GridSizeMigrationUtil {
@@ -95,8 +98,7 @@ public class GridSizeMigrationUtil {
     /**
      * When migrating the grid, we copy the table
      * {@link LauncherSettings.Favorites#TABLE_NAME} from {@code source} into
-     * {@link LauncherSettings.Favorites#TMP_TABLE}, run the grid size migration
-     * algorithm
+     * {@link LauncherSettings.Favorites#TMP_TABLE}, run the grid size migration algorithm
      * to migrate the later to the former, and load the workspace from the default
      * {@link LauncherSettings.Favorites#TABLE_NAME}.
      *
@@ -165,20 +167,21 @@ public class GridSizeMigrationUtil {
             Log.d(TAG, "Start migration:"
                     + "\n Source Device:"
                     + srcWorkspaceItems.stream().map(DbEntry::toString).collect(
-                            Collectors.joining(",\n", "[", "]"))
+                    Collectors.joining(",\n", "[", "]"))
                     + "\n Target Device:"
                     + dstWorkspaceItems.stream().map(DbEntry::toString).collect(
-                            Collectors.joining(",\n", "[", "]"))
+                    Collectors.joining(",\n", "[", "]"))
                     + "\n Removing Items:"
-                    + dstWorkspaceItems.stream().filter(entry -> toBeRemoved.contains(entry.id)).map(DbEntry::toString)
-                            .collect(
-                                    Collectors.joining(",\n", "[", "]"))
+                    + dstWorkspaceItems.stream().filter(entry ->
+                            toBeRemoved.contains(entry.id)).map(DbEntry::toString).collect(
+                    Collectors.joining(",\n", "[", "]"))
                     + "\n Adding Workspace Items:"
                     + workspaceToBeAdded.stream().map(DbEntry::toString).collect(
-                            Collectors.joining(",\n", "[", "]"))
+                    Collectors.joining(",\n", "[", "]"))
                     + "\n Adding Hotseat Items:"
                     + hotseatToBeAdded.stream().map(DbEntry::toString).collect(
-                            Collectors.joining(",\n", "[", "]")));
+                    Collectors.joining(",\n", "[", "]"))
+            );
         }
         if (!toBeRemoved.isEmpty()) {
             removeEntryFromDb(destReader.mDb, destReader.mTableName, toBeRemoved);
@@ -220,10 +223,8 @@ public class GridSizeMigrationUtil {
             }
         }
 
-        // In case the new grid is smaller, there might be some leftover items that
-        // don't fit on
-        // any of the screens, in this case we add them to new screens until all of them
-        // are placed.
+        // In case the new grid is smaller, there might be some leftover items that don't fit on
+        // any of the screens, in this case we add them to new screens until all of them are placed.
         int screenId = destReader.mLastScreenId + 1;
         while (!workspaceToBeAdded.isEmpty()) {
             solveGridPlacement(helper, srcReader,
@@ -309,15 +310,11 @@ public class GridSizeMigrationUtil {
     }
 
     private static HashSet<String> getValidPackages(Context context) {
-        // Initialize list of valid packages. This contain all the packages which are
-        // already on
-        // the device and packages which are being installed. Any item which doesn't
-        // belong to
+        // Initialize list of valid packages. This contain all the packages which are already on
+        // the device and packages which are being installed. Any item which doesn't belong to
         // this set is removed.
-        // Since the loader removes such items anyway, removing these items here doesn't
-        // cause
-        // any extra data loss and gives us more free space on the grid for better
-        // migration.
+        // Since the loader removes such items anyway, removing these items here doesn't cause
+        // any extra data loss and gives us more free space on the grid for better migration.
         HashSet<String> validPackages = new HashSet<>();
         for (PackageInfo info : context.getPackageManager()
                 .getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
@@ -335,9 +332,12 @@ public class GridSizeMigrationUtil {
             @NonNull final List<DbEntry> sortedItemsToPlace, final boolean matchingScreenIdOnly) {
         final GridOccupancy occupied = new GridOccupancy(trgX, trgY);
         final Point trg = new Point(trgX, trgY);
-        final Point next = new Point(0, screenId == 0 && FeatureFlags.topQsbOnFirstScreenEnabled(srcReader.mContext)
-                ? 1
-                /* smartspace */ : 0);
+        final Point next = new Point(0, screenId == 0
+                && (FeatureFlags.QSB_ON_FIRST_SCREEN
+                && (!ENABLE_SMARTSPACE_REMOVAL.get() || LauncherPrefs.getPrefs(destReader.mContext)
+                .getBoolean(SMARTSPACE_ON_HOME_SCREEN, true))
+                && !shouldShowFirstPageWidget())
+                ? 1 /* smartspace */ : 0);
         List<DbEntry> existedEntries = destReader.mWorkspaceEntriesByScreenId.get(screenId);
         if (existedEntries != null) {
             for (DbEntry entry : existedEntries) {
@@ -347,10 +347,8 @@ public class GridSizeMigrationUtil {
         Iterator<DbEntry> iterator = sortedItemsToPlace.iterator();
         while (iterator.hasNext()) {
             final DbEntry entry = iterator.next();
-            if (matchingScreenIdOnly && entry.screenId < screenId)
-                continue;
-            if (matchingScreenIdOnly && entry.screenId > screenId)
-                break;
+            if (matchingScreenIdOnly && entry.screenId < screenId) continue;
+            if (matchingScreenIdOnly && entry.screenId > screenId) break;
             if (entry.minSpanX > trgX || entry.minSpanY > trgY) {
                 iterator.remove();
                 continue;
@@ -363,16 +361,14 @@ public class GridSizeMigrationUtil {
     }
 
     /**
-     * Search for the next possible placement of an icon. (mNextStartX, mNextStartY)
-     * serves as
-     * a memoization of last placement, we can start our search for next placement
-     * from there
+     * Search for the next possible placement of an icon. (mNextStartX, mNextStartY) serves as
+     * a memoization of last placement, we can start our search for next placement from there
      * to speed up the search.
      */
     private static boolean findPlacementForEntry(@NonNull final DbEntry entry,
             @NonNull final Point next, @NonNull final Point trg,
             @NonNull final GridOccupancy occupied, final int screenId) {
-        for (int y = next.y; y < trg.y; y++) {
+        for (int y = next.y; y <  trg.y; y++) {
             for (int x = next.x; x < trg.x; x++) {
                 boolean fits = occupied.isRegionVacant(x, y, entry.spanX, entry.spanY);
                 boolean minFits = occupied.isRegionVacant(x, y, entry.minSpanX,
@@ -398,7 +394,7 @@ public class GridSizeMigrationUtil {
     private static void solveHotseatPlacement(
             @NonNull final DatabaseHelper helper, final int hotseatSize,
             @NonNull final DbReader srcReader, @NonNull final DbReader destReader,
-            @NonNull final List<DbEntry> placedHotseatItems,
+            @NonNull final  List<DbEntry> placedHotseatItems,
             @NonNull final List<DbEntry> itemsToPlace) {
 
         final boolean[] occupied = new boolean[hotseatSize];
@@ -428,7 +424,8 @@ public class GridSizeMigrationUtil {
         private final Set<String> mValidPackages;
         private int mLastScreenId = -1;
 
-        private final Map<Integer, ArrayList<DbEntry>> mWorkspaceEntriesByScreenId = new ArrayMap<>();
+        private final Map<Integer, ArrayList<DbEntry>> mWorkspaceEntriesByScreenId =
+                new ArrayMap<>();
 
         DbReader(SQLiteDatabase db, String tableName, Context context,
                 Set<String> validPackages) {
@@ -441,11 +438,11 @@ public class GridSizeMigrationUtil {
         protected List<DbEntry> loadHotseatEntries() {
             final List<DbEntry> hotseatEntries = new ArrayList<>();
             Cursor c = queryWorkspace(
-                    new String[] {
-                            LauncherSettings.Favorites._ID, // 0
-                            LauncherSettings.Favorites.ITEM_TYPE, // 1
-                            LauncherSettings.Favorites.INTENT, // 2
-                            LauncherSettings.Favorites.SCREEN }, // 3
+                    new String[]{
+                            LauncherSettings.Favorites._ID,                  // 0
+                            LauncherSettings.Favorites.ITEM_TYPE,            // 1
+                            LauncherSettings.Favorites.INTENT,               // 2
+                            LauncherSettings.Favorites.SCREEN},              // 3
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
@@ -477,6 +474,13 @@ public class GridSizeMigrationUtil {
                             }
                             break;
                         }
+                        case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR: {
+                            int total = getFolderItemsCount(entry);
+                            if (total != 2) {
+                                throw new Exception("App pair contains fewer or more than 2 items");
+                            }
+                            break;
+                        }
                         default:
                             throw new Exception("Invalid item type");
                     }
@@ -497,18 +501,18 @@ public class GridSizeMigrationUtil {
         protected List<DbEntry> loadAllWorkspaceEntries() {
             final List<DbEntry> workspaceEntries = new ArrayList<>();
             Cursor c = queryWorkspace(
-                    new String[] {
-                            LauncherSettings.Favorites._ID, // 0
-                            LauncherSettings.Favorites.ITEM_TYPE, // 1
-                            LauncherSettings.Favorites.SCREEN, // 2
-                            LauncherSettings.Favorites.CELLX, // 3
-                            LauncherSettings.Favorites.CELLY, // 4
-                            LauncherSettings.Favorites.SPANX, // 5
-                            LauncherSettings.Favorites.SPANY, // 6
-                            LauncherSettings.Favorites.INTENT, // 7
-                            LauncherSettings.Favorites.APPWIDGET_PROVIDER, // 8
-                            LauncherSettings.Favorites.APPWIDGET_ID }, // 9
-                    LauncherSettings.Favorites.CONTAINER + " = "
+                    new String[]{
+                            LauncherSettings.Favorites._ID,                  // 0
+                            LauncherSettings.Favorites.ITEM_TYPE,            // 1
+                            LauncherSettings.Favorites.SCREEN,               // 2
+                            LauncherSettings.Favorites.CELLX,                // 3
+                            LauncherSettings.Favorites.CELLY,                // 4
+                            LauncherSettings.Favorites.SPANX,                // 5
+                            LauncherSettings.Favorites.SPANY,                // 6
+                            LauncherSettings.Favorites.INTENT,               // 7
+                            LauncherSettings.Favorites.APPWIDGET_PROVIDER,   // 8
+                            LauncherSettings.Favorites.APPWIDGET_ID},        // 9
+                        LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_DESKTOP);
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
@@ -552,7 +556,7 @@ public class GridSizeMigrationUtil {
 
                             int widgetId = c.getInt(indexAppWidgetId);
                             LauncherAppWidgetProviderInfo pInfo = widgetManagerHelper
-                                    .getLauncherAppWidgetInfo(widgetId);
+                                    .getLauncherAppWidgetInfo(widgetId, cn);
                             Point spans = null;
                             if (pInfo != null) {
                                 spans = pInfo.getMinSpans();
@@ -571,6 +575,13 @@ public class GridSizeMigrationUtil {
                             int total = getFolderItemsCount(entry);
                             if (total == 0) {
                                 throw new Exception("Folder is empty");
+                            }
+                            break;
+                        }
+                        case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR: {
+                            int total = getFolderItemsCount(entry);
+                            if (total != 2) {
+                                throw new Exception("App pair contains fewer or more than 2 items");
                             }
                             break;
                         }
@@ -597,7 +608,7 @@ public class GridSizeMigrationUtil {
 
         private int getFolderItemsCount(DbEntry entry) {
             Cursor c = queryWorkspace(
-                    new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.INTENT },
+                    new String[]{LauncherSettings.Favorites._ID, LauncherSettings.Favorites.INTENT},
                     LauncherSettings.Favorites.CONTAINER + " = " + entry.id);
 
             int total = 0;
@@ -665,10 +676,8 @@ public class GridSizeMigrationUtil {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             DbEntry entry = (DbEntry) o;
             return Objects.equals(getEntryMigrationId(), entry.getEntryMigrationId());
         }
@@ -686,16 +695,14 @@ public class GridSizeMigrationUtil {
             values.put(LauncherSettings.Favorites.SPANY, spanY);
         }
 
-        /**
-         * This id is not used in the DB is only used while doing the migration and it
-         * identifies
-         * an entry on each workspace. For example two calculator icons would have the
-         * same
+        /** This id is not used in the DB is only used while doing the migration and it identifies
+         * an entry on each workspace. For example two calculator icons would have the same
          * migration id even thought they have different database ids.
          */
         public String getEntryMigrationId() {
             switch (itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
                     return getFolderMigrationId();
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                     return mProvider;
@@ -713,8 +720,7 @@ public class GridSizeMigrationUtil {
         }
 
         /**
-         * This method should return an id that should be the same for two folders
-         * containing the
+         * This method should return an id that should be the same for two folders containing the
          * same elements.
          */
         @NonNull
@@ -727,8 +733,7 @@ public class GridSizeMigrationUtil {
         }
 
         /**
-         * This is needed because sourceBounds can change and make the id of two equal
-         * items
+         * This is needed because sourceBounds can change and make the id of two equal items
          * different.
          */
         @NonNull

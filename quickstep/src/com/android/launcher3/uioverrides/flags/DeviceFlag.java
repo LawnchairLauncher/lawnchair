@@ -29,6 +29,11 @@ class DeviceFlag extends DebugFlag {
     }
 
     @Override
+    boolean currentValueModified() {
+        return super.currentValueModified() || mDefaultValueInCode != get();
+    }
+
+    @Override
     public String toString() {
         return super.toString() + ", mDefaultValueInCode=" + mDefaultValueInCode;
     }
