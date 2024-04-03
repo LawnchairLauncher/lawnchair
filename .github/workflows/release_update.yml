@@ -48,7 +48,7 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepMarketRelease
       - name: Rename artifact
-        run: mv build/outputs/apk/**/*.apk "${{ github.event.inputs.artifactName }}"
+        run: mv build/outputs/apk/**/**/*.apk "${{ github.event.inputs.artifactName }}"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
