@@ -830,6 +830,18 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         }
     }
 
+    /**
+     * Tells SysUI the bounds for the bubble bar
+     * @param bubbleBarBounds bounds of the bubble bar in display coordinates
+     */
+    public void setBubbleBarBounds(Rect bubbleBarBounds) {
+        try {
+            mBubbles.setBubbleBarBounds(bubbleBarBounds);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call setBubbleBarBounds");
+        }
+    }
+
     //
     // Splitscreen
     //
