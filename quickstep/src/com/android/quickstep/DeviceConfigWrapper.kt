@@ -44,8 +44,25 @@ class DeviceConfigWrapper private constructor(propReader: PropReader) {
             "Enable AGSA override for LPNH and LPH timeout and touch slop"
         )
 
+    val lpnhTimeoutMs =
+        propReader.get("LPNH_TIMEOUT_MS", 450, "Controls lpnh timeout in milliseconds")
+
     val lpnhSlopPercentage =
         propReader.get("LPNH_SLOP_PERCENTAGE", 100, "Controls touch slop percentage for lpnh")
+
+    val enableLpnhTwoStages =
+        propReader.get(
+            "ENABLE_LPNH_TWO_STAGES",
+            false,
+            "Enable two stage for LPNH duration and touch slop"
+        )
+
+    val twoStageMultiplier =
+        propReader.get(
+            "TWO_STAGE_MULTIPLIER",
+            2,
+            "Extends the duration and touch slop if the initial slop is passed"
+        )
 
     val animateLpnh = propReader.get("ANIMATE_LPNH", false, "Animates navbar when long pressing")
 
@@ -55,9 +72,6 @@ class DeviceConfigWrapper private constructor(propReader: PropReader) {
             false,
             "Shrinks navbar when long pressing if ANIMATE_LPNH is enabled"
         )
-
-    val lpnhTimeoutMs =
-        propReader.get("LPNH_TIMEOUT_MS", 450, "Controls lpnh timeout in milliseconds")
 
     val enableLongPressNavHandle =
         propReader.get(
