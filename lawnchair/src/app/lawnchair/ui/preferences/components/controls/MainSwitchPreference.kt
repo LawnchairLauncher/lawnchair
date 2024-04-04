@@ -79,10 +79,10 @@ fun MainSwitchPreference(
 @Composable
 fun MainSwitchPreference(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Surface(
         modifier = modifier.padding(horizontal = 16.dp),

@@ -22,10 +22,10 @@ import kotlin.math.abs
 @Composable
 fun Chip(
     label: String,
-    onClick: () -> Unit,
     currentOffset: Float,
     page: Int,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     val selectedProgress = 1f - abs(currentOffset - page).coerceIn(0f, 1f)
     Chip(
@@ -40,8 +40,8 @@ fun Chip(
 fun Chip(
     label: String,
     selected: Boolean,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     val selectedProgress by animateFloatAsState(targetValue = if (selected) 1f else 0f, label = "")
     Chip(
@@ -56,8 +56,8 @@ fun Chip(
 fun Chip(
     label: String,
     selectedProgress: Float,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(8.dp)
     val textColor = lerp(
