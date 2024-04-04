@@ -912,7 +912,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @Nullable
     public PreloadIconDrawable applyProgressLevel() {
         if (!(getTag() instanceof ItemInfoWithIcon)
-                || !((ItemInfoWithIcon) getTag()).isActiveArchive()) {
+                || ((ItemInfoWithIcon) getTag()).isInactiveArchive()) {
             return null;
         }
 

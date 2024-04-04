@@ -168,9 +168,9 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         return (runtimeStatusFlags & FLAG_ARCHIVED) != 0;
     }
 
-    /** Returns true if the app is archived and has an active install session. */
-    public boolean isActiveArchive() {
-        return isArchived() && (runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0;
+    /** Returns true if the app is archived and doesn't have an active install session. */
+    public boolean isInactiveArchive() {
+        return isArchived() && (runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) == 0;
     }
 
     /**
