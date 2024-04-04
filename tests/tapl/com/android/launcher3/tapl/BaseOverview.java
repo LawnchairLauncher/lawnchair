@@ -398,8 +398,9 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         if (isTablet && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
             return false;
         }
-        if (!mLauncher.isAppPairsEnabled() && task.isTaskSplit()) {
-            // Overview actions aren't visible for split screen tasks.
+        if (task.isTaskSplit() && (!mLauncher.isAppPairsEnabled() || !isTablet)) {
+            // Overview actions aren't visible for split screen tasks, except for save app pair
+            // button on tablets.
             return false;
         }
         return true;

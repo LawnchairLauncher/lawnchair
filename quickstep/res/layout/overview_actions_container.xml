@@ -21,10 +21,9 @@
 
     <LinearLayout
         android:id="@+id/action_buttons"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/overview_actions_height"
-        android:layout_gravity="bottom"
-        android:gravity="center_horizontal"
+        android:layout_gravity="bottom|center_horizontal"
         android:orientation="horizontal">
 
         <Button
@@ -36,17 +35,12 @@
             android:text="@string/action_screenshot"
             android:theme="@style/ThemeControlHighlightWorkspaceColor" />
 
-        <Space
-            android:id="@+id/action_split_space"
-            android:layout_width="@dimen/overview_actions_button_spacing"
-            android:layout_height="1dp"
-            android:visibility="gone" />
-
         <Button
             android:id="@+id/action_split"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/overview_actions_button_spacing"
             android:text="@string/action_split"
             android:theme="@style/ThemeControlHighlightWorkspaceColor"
             android:visibility="gone" />
