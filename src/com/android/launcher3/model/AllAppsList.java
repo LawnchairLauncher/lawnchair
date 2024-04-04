@@ -169,7 +169,7 @@ public class AllAppsList {
     public AppInfo addPromiseApp(
             Context context, PackageInstallInfo installInfo, boolean loadIcon) {
         // only if not yet installed
-        if (new PackageManagerHelper(context)
+        if (PackageManagerHelper.INSTANCE.get(context)
                 .isAppInstalled(installInfo.packageName, installInfo.user)) {
             return null;
         }

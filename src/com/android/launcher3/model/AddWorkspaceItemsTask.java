@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.model;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
@@ -85,6 +86,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final IntArray addedWorkspaceScreensFinal = new IntArray();
+        final Context context = app.getContext();
 
         synchronized (dataModel) {
             IntArray workspaceScreens = dataModel.collectWorkspaceScreens();
@@ -99,7 +101,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     }
 
                     // b/139663018 Short-circuit this logic if the icon is a system app
-                    if (PackageManagerHelper.isSystemApp(app.getContext(),
+                    if (PackageManagerHelper.isSystemApp(context,
                             Objects.requireNonNull(item.getIntent()))) {
                         continue;
                     }
@@ -112,7 +114,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     if (item instanceof WorkspaceItemFactory) {
-                        item = ((WorkspaceItemFactory) item).makeWorkspaceItem(app.getContext());
+                        item = ((WorkspaceItemFactory) item).makeWorkspaceItem(context);
                     }
                 }
                 if (item != null) {
@@ -121,8 +123,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             }
 
             InstallSessionHelper packageInstaller =
-                    InstallSessionHelper.INSTANCE.get(app.getContext());
-            LauncherApps launcherApps = app.getContext().getSystemService(LauncherApps.class);
+                    InstallSessionHelper.INSTANCE.get(context);
+            LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
 
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
@@ -135,7 +137,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                         || item instanceof LauncherAppWidgetInfo) {
                     itemInfo = item;
                 } else if (item instanceof WorkspaceItemFactory) {
-                    itemInfo = ((WorkspaceItemFactory) item).makeWorkspaceItem(app.getContext());
+                    itemInfo = ((WorkspaceItemFactory) item).makeWorkspaceItem(context);
                 } else {
                     throw new RuntimeException("Unexpected info type");
                 }

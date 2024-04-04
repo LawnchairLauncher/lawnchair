@@ -447,8 +447,8 @@ public class LauncherModel implements InstallSessionTracker.Callback {
                 IconCache iconCache = app.getIconCache();
                 final IntSet removedIds = new IntSet();
                 HashSet<WorkspaceItemInfo> archivedWorkspaceItemsToCacheRefresh = new HashSet<>();
-                boolean isAppArchived = new PackageManagerHelper(
-                        mApp.getContext()).isAppArchivedForUser(packageName, user);
+                boolean isAppArchived = PackageManagerHelper.INSTANCE.get(mApp.getContext())
+                        .isAppArchivedForUser(packageName, user);
                 synchronized (dataModel) {
                     if (isAppArchived) {
                         // Remove package icon cache entry for archived app in case of a session

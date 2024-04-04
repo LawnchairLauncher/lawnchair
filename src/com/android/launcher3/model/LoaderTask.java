@@ -138,6 +138,7 @@ public class LoaderTask implements Runnable {
     private final LauncherApps mLauncherApps;
     private final UserManager mUserManager;
     private final UserCache mUserCache;
+    private final PackageManagerHelper mPmHelper;
 
     private final InstallSessionHelper mSessionHelper;
     private final IconCache mIconCache;
@@ -170,6 +171,7 @@ public class LoaderTask implements Runnable {
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
         mUserCache = UserCache.INSTANCE.get(mApp.getContext());
+        mPmHelper = PackageManagerHelper.INSTANCE.get(mApp.getContext());
         mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
         mUserManagerState = userManagerState;
@@ -407,7 +409,6 @@ public class LoaderTask implements Runnable {
             @Nullable LoaderMemoryLogger memoryLogger,
             @Nullable LauncherRestoreEventLogger restoreEventLogger) {
         final Context context = mApp.getContext();
-        final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         final boolean isSdCardReady = Utilities.isBootCompleted();
         final WidgetInflater widgetInflater = new WidgetInflater(context);
 
@@ -447,7 +448,7 @@ public class LoaderTask implements Runnable {
                         mUserCache, mUserManagerState, mLauncherApps, mPendingPackages,
                         mShortcutKeyToPinnedShortcuts, mApp, mBgDataModel,
                         mWidgetProvidersMap, installingPkgs, isSdCardReady,
-                        widgetInflater, pmHelper, iconRequestInfos, unlockedUsers,
+                        widgetInflater, mPmHelper, iconRequestInfos, unlockedUsers,
                         allDeepShortcuts);
 
                 while (!mStopped && c.moveToNext()) {

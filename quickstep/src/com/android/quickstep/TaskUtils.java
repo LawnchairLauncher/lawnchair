@@ -70,7 +70,7 @@ public final class TaskUtils {
             return "";
         }
         UserHandle user = UserHandle.of(userId);
-        ApplicationInfo applicationInfo = new PackageManagerHelper(context)
+        ApplicationInfo applicationInfo = PackageManagerHelper.INSTANCE.get(context)
                 .getApplicationInfo(packageName, user, 0);
         if (applicationInfo == null) {
             Log.e(TAG, "Failed to get title for userId=" + userId + ", packageName=" + packageName);

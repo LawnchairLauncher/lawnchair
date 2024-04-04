@@ -362,7 +362,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
         public void onLauncherResume() {
             // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
-            if (new PackageManagerHelper(mContext).getApplicationInfo(mPackageName,
+            if (PackageManagerHelper.INSTANCE.get(mContext).getApplicationInfo(mPackageName,
                     mDragObject.dragInfo.user, PackageManager.MATCH_UNINSTALLED_PACKAGES) == null) {
                 mDragObject.dragSource = mOriginal;
                 mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, true);
