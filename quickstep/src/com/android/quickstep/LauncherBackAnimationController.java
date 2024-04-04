@@ -100,7 +100,7 @@ public class LauncherBackAnimationController {
     private final int mWindowScaleMarginX;
     private float mWindowScaleEndCornerRadius;
     private float mWindowScaleStartCornerRadius;
-    private final Interpolator mProgressInterpolator = Interpolators.STANDARD_DECELERATE;
+    private final Interpolator mProgressInterpolator = Interpolators.BACK_GESTURE;
     private final Interpolator mVerticalMoveInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
 
