@@ -20,6 +20,7 @@ import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.Flags.enableWidgetTapToAdd;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_TIP_SEEN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -32,6 +33,7 @@ import android.view.View.OnLongClickListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.core.view.ViewCompat;
@@ -45,7 +47,6 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -54,6 +55,8 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.ArrowTipView;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Base class for various widgets popup
@@ -163,12 +166,25 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     /**
      * Click handler for tap to add button.
      */
-    public void addWidget(PendingAddItemInfo info) {
+    private void addWidget(@NonNull PendingAddItemInfo info) {
+        // Using a boolean flag here to make sure the callback is only run once. This should never
+        // happen because we close the sheet and it will be reconstructed the next time it is
+        // needed.
+        final AtomicBoolean hasRun = new AtomicBoolean(false);
+        addOnCloseListener(() -> {
+            if (!hasRun.get()) {
+                Launcher.getLauncher(mActivityContext).getAccessibilityDelegate().addToWorkspace(
+                        info, /*accessibility=*/ false,
+                        /*finishCallback=*/ (success) -> {
+                            mActivityContext.getStatsLogManager()
+                                    .logger()
+                                    .withItemInfo(info)
+                                    .log(LAUNCHER_WIDGET_ADD_BUTTON_TAP);
+                        });
+                hasRun.set(true);
+            }
+        });
         handleClose(true);
-        Launcher.getLauncher(mActivityContext).getAccessibilityDelegate()
-                .addToWorkspace(info, /*accessibility=*/ false, /*finishCallback=*/ null);
-        mActivityContext.getStatsLogManager().logger().withItemInfo(info).log(
-                StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP);
     }
 
     @Override

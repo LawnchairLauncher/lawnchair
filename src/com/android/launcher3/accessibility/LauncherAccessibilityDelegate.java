@@ -423,11 +423,16 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                     widgetInfo.bindOptions = widgetInfo.getDefaultSizeOptions(mContext);
                 }
                 Workspace<?> workspace = mContext.getWorkspace();
-                workspace.post(
-                        () -> workspace.snapToPage(workspace.getPageIndexForScreenId(screenId))
-                );
-                mContext.addPendingItem(info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                        screenId, coordinates, info.spanX, info.spanY);
+                workspace.post(() -> {
+                    workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
+                    workspace.setOnPageTransitionEndCallback(() -> {
+                        mContext.addPendingItem(info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                                screenId, coordinates, info.spanX, info.spanY);
+                        if (finishCallback != null) {
+                            finishCallback.accept(/* success= */ true);
+                        }
+                    });
+                });
             } else if (item instanceof WorkspaceItemInfo) {
                 WorkspaceItemInfo info = ((WorkspaceItemInfo) item).clone();
                 mContext.getModelWriter().addItemToDatabase(info,
