@@ -38,6 +38,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.animation.AnimationUtils;
@@ -46,6 +47,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.annotation.VisibleForTesting;
@@ -69,6 +71,7 @@ import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.views.StickyHeaderLayout;
 import com.android.launcher3.views.WidgetsEduView;
 import com.android.launcher3.widget.BaseWidgetSheet;
+import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
@@ -989,6 +992,60 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void openFirstHeader() {
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.selectFirstHeaderEntry();
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView.scrollToTop();
+    }
+
+    @Override
+    protected int getHeaderTopClip(@NonNull WidgetCell cell) {
+        StickyHeaderLayout header = findViewById(R.id.search_and_recommendations_container);
+        if (header == null) {
+            return 0;
+        }
+        Rect cellRect = new Rect();
+        boolean cellIsPartiallyVisible = cell.getGlobalVisibleRect(cellRect);
+        if (cellIsPartiallyVisible) {
+            Rect occludingRect = new Rect();
+            for (View headerChild : header.getStickyChildren()) {
+                Rect childRect = new Rect();
+                boolean childVisible = headerChild.getGlobalVisibleRect(childRect);
+                if (childVisible && childRect.intersect(cellRect)) {
+                    occludingRect.union(childRect);
+                }
+            }
+            if (!occludingRect.isEmpty() && cellRect.top < occludingRect.bottom) {
+                return occludingRect.bottom - cellRect.top;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    protected void scrollCellContainerByY(WidgetCell wc, int scrollByY) {
+        for (ViewParent parent = wc.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof WidgetsRecyclerView recyclerView) {
+                // Scrollable container for main widget list.
+                recyclerView.smoothScrollBy(0, scrollByY);
+                return;
+            } else if (parent instanceof StickyHeaderLayout header) {
+                // Scrollable container for recommendations. We still scroll on the recycler (even
+                // though the recommendations are not in the recycler view) because the
+                // StickyHeaderLayout scroll is connected to the currently visible recycler view.
+                WidgetsRecyclerView recyclerView = findVisibleRecyclerView();
+                if (recyclerView != null) {
+                    recyclerView.smoothScrollBy(0, scrollByY);
+                }
+                return;
+            } else if (parent == this) {
+                return;
+            }
+        }
+    }
+
+    @Nullable
+    private WidgetsRecyclerView findVisibleRecyclerView() {
+        if (mViewPager != null) {
+            return (WidgetsRecyclerView) mViewPager.getPageAt(mViewPager.getCurrentPage());
+        }
+        return findViewById(R.id.primary_widgets_list_view);
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */
