@@ -454,6 +454,17 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
     }
 
     @Override
+    public void setOverrideHomeButtonLongPress(long duration, float slopMultiplier) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setOverrideHomeButtonLongPress(duration, slopMultiplier);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setOverrideHomeButtonLongPress", e);
+            }
+        }
+    }
+
+    @Override
     public void notifyAccessibilityButtonClicked(int displayId) {
         if (mSystemUiProxy != null) {
             try {
