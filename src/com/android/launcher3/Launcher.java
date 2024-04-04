@@ -680,7 +680,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
             @Override
             public void onBackCancelled() {
-                mStateManager.getState().onBackCancelled(Launcher.this);
+                Launcher.this.onBackCancelled();
             }
         };
     }
@@ -2084,6 +2084,10 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     protected void onStateBack() {
         mStateManager.getState().onBackInvoked(this);
+    }
+
+    protected void onBackCancelled() {
+        mStateManager.getState().onBackCancelled(this);
     }
 
     protected void onScreenOnChanged(boolean isOn) {
