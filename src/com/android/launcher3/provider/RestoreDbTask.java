@@ -126,6 +126,9 @@ public class RestoreDbTask {
         if (Flags.enableNarrowGridRestore()) {
             String oldPhoneFileName = idp.dbFile;
             removeOldDBs(context, oldPhoneFileName);
+            // The idp before this contains data about the old phone, after this it becomes the idp
+            // of the current phone.
+            idp.reset(context);
             trySettingPreviousGidAsCurrent(context, idp, oldPhoneFileName);
         } else {
             idp.reinitializeAfterRestore(context);
