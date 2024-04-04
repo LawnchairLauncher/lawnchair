@@ -61,7 +61,6 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_SETTLED_ON_END_TARGET;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -947,7 +946,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
-        if (enableDesktopWindowingMode() && targets.hasDesktopTasks()) {
+        if (targets.hasDesktopTasks()) {
             mRemoteTargetHandles = mTargetGluer.assignTargetsForDesktop(targets);
         } else {
             int untrimmedAppCount = mRemoteTargetHandles.length;
@@ -1170,13 +1169,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify the SysUI to use fade-in animation when entering PiP
                 SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
-                if (enableDesktopWindowingMode()) {
+                DesktopVisibilityController desktopVisibilityController =
+                        mActivityInterface.getDesktopVisibilityController();
+                if (desktopVisibilityController != null) {
                     // Notify the SysUI to stash desktop apps if they are visible
-                    DesktopVisibilityController desktopVisibilityController =
-                            mActivityInterface.getDesktopVisibilityController();
-                    if (desktopVisibilityController != null) {
-                        desktopVisibilityController.onHomeActionTriggered();
-                    }
+                    desktopVisibilityController.onHomeActionTriggered();
                 }
                 break;
             case RECENTS:

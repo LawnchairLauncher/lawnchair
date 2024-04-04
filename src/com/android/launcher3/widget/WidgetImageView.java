@@ -24,8 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.android.launcher3.R;
-
 /**
  * View that draws a bitmap horizontally centered. If the image width is greater than the view
  * width, the image is scaled down appropriately.
@@ -33,8 +31,6 @@ import com.android.launcher3.R;
 public class WidgetImageView extends View {
 
     private final RectF mDstRectF = new RectF();
-    private final int mBadgeMargin;
-
     private Drawable mDrawable;
 
     public WidgetImageView(Context context) {
@@ -47,9 +43,6 @@ public class WidgetImageView extends View {
 
     public WidgetImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        mBadgeMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
     /** Set the drawable to use for this view. */

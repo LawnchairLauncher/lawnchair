@@ -34,6 +34,7 @@ import com.android.quickstep.InputConsumer;
 import com.android.quickstep.NavHandle;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.TopTaskTracker;
+import com.android.quickstep.util.AssistStateManager;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
@@ -64,8 +65,9 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         super(delegate, inputMonitor);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;
         mDeepPressEnabled = FeatureFlags.ENABLE_LPNH_DEEP_PRESS.get();
-        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
-            mLongPressTimeout = FeatureFlags.LPNH_TIMEOUT_MS.get();
+        AssistStateManager assistStateManager = AssistStateManager.INSTANCE.get(context);
+        if (assistStateManager.getLPNHDurationMillis().isPresent()) {
+            mLongPressTimeout = assistStateManager.getLPNHDurationMillis().get().intValue();
         } else {
             mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
         }

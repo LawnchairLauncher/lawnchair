@@ -77,22 +77,29 @@ class AppPairIconDrawingParams(val context: Context, container: Int) {
         innerPadding = iconSize * INNER_PADDING_SCALE
         memberIconSize = iconSize * MEMBER_ICON_SCALE
         updateOrientation(dp)
-        if (container == DISPLAY_FOLDER) {
-            val ta =
-                context.theme.obtainStyledAttributes(
-                    intArrayOf(R.attr.materialColorSurfaceContainerLowest)
-                )
-            bgColor = ta.getColor(0, 0)
-            ta.recycle()
-        } else {
-            val ta = context.theme.obtainStyledAttributes(R.styleable.FolderIconPreview)
-            bgColor = ta.getColor(R.styleable.FolderIconPreview_folderPreviewColor, 0)
-            ta.recycle()
-        }
+        bgColor = getBgColorForContainer(container)
     }
 
     /** Checks the device orientation and updates isLeftRightSplit accordingly. */
     fun updateOrientation(dp: DeviceProfile) {
         isLeftRightSplit = dp.isLeftRightSplit
+    }
+
+    private fun getBgColorForContainer(container: Int): Int {
+        val color: Int
+        if (container == DISPLAY_FOLDER) {
+            val ta =
+                context.theme.obtainStyledAttributes(
+                    intArrayOf(R.attr.materialColorSurfaceContainerLowest)
+                )
+            color = ta.getColor(0, 0)
+            ta.recycle()
+        } else {
+            val ta = context.theme.obtainStyledAttributes(R.styleable.FolderIconPreview)
+            color = ta.getColor(R.styleable.FolderIconPreview_folderPreviewColor, 0)
+            ta.recycle()
+        }
+
+        return color
     }
 }

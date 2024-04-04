@@ -1061,6 +1061,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             @Nullable DesktopRecentsTransitionController desktopRecentsTransitionController) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
+        // Update flags for 1p/3p launchers
+        mActionsView.updateFor3pLauncher(!supportsAppPairs());
         mSplitSelectStateController = splitController;
         mDesktopRecentsTransitionController = desktopRecentsTransitionController;
     }
@@ -3962,15 +3964,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Update flags to see if actions bar should show buttons for a single task or a pair of
         // tasks.
         mActionsView.updateForGroupedTask(isCurrentSplit);
-        // Update flags to see if actions bar should show buttons for tablets or phones.
-        mActionsView.updateForSmallScreen(!mActivity.getDeviceProfile().isTablet);
-        // Update flags for 1p/3p launchers
-        mActionsView.updateFor3pLauncher(!supportsAppPairs());
 
-        if (enableDesktopWindowingMode()) {
-            boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
-            mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
-        }
+        boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
+        mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
     }
 
     /** Returns if app pairs are supported in this launcher. Overridden in subclasses. */
@@ -4692,9 +4688,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setAnimateCurrentTaskDismissal(
                 true /*animateCurrentTaskDismissal*/);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
-        if (enableDesktopWindowingMode()) {
-            updateDesktopTaskVisibility(false /* visible */);
-        }
+        updateDesktopTaskVisibility(false /* visible */);
     }
 
     /**
@@ -4716,9 +4710,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
                 splitSelectSource.position.stagePosition, splitSelectSource.itemInfo,
                 splitSelectSource.splitEvent, splitSelectSource.alreadyRunningTaskId);
-        if (enableDesktopWindowingMode()) {
-            updateDesktopTaskVisibility(false /* visible */);
-        }
+        updateDesktopTaskVisibility(false /* visible */);
     }
 
     private void updateDesktopTaskVisibility(boolean visible) {
@@ -4922,9 +4914,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE, INVALID_TASK_ID);
             mSplitHiddenTaskView = null;
         }
-        if (enableDesktopWindowingMode()) {
-            updateDesktopTaskVisibility(true /* visible */);
-        }
+        updateDesktopTaskVisibility(true /* visible */);
     }
 
     private void safeRemoveDragLayerView(@Nullable View viewToRemove) {

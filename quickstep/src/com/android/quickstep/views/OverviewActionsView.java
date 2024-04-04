@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -107,6 +108,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     private MultiValueAlpha mMultiValueAlpha;
 
+    protected LinearLayout mActionButtons;
     // The screenshot button is implemented as a Button in launcher3 and NexusLauncher, but is an
     // ImageButton in go launcher (does not share a common class with Button). Take care when
     // casting this.
@@ -151,7 +153,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), NUM_ALPHAS);
+        mActionButtons = findViewById(R.id.action_buttons);
+        mMultiValueAlpha = new MultiValueAlpha(mActionButtons, NUM_ALPHAS);
         mMultiValueAlpha.setUpdateVisibility(true);
 
         mScreenshotButton = findViewById(R.id.action_screenshot);
@@ -243,13 +246,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /**
      * Updates a batch of flags to hide and show actions buttons for tablet/non tablet case.
-     * @param isSmallScreen True if the current display is a small screen.
      */
-    public void updateForSmallScreen(boolean isSmallScreen) {
+    private void updateForIsTablet() {
+        assert mDp != null;
         // Update flags to see if split button should be hidden.
-        updateSplitButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_SPLIT, isSmallScreen);
+        updateSplitButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_SPLIT, !mDp.isTablet);
         // Update flags to see if save app pair button should be hidden.
-        updateAppPairButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_APP_PAIR, isSmallScreen);
+        updateAppPairButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_APP_PAIR, !mDp.isTablet);
     }
 
     /**
@@ -274,7 +277,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mScreenshotButtonHiddenFlags &= ~flag;
         }
         int desiredVisibility = mScreenshotButtonHiddenFlags == 0 ? VISIBLE : GONE;
-        mScreenshotButton.setVisibility(desiredVisibility);
+        if (mScreenshotButton.getVisibility() != desiredVisibility) {
+            mScreenshotButton.setVisibility(desiredVisibility);
+            mActionButtons.requestLayout();
+        }
     }
 
     /**
@@ -292,8 +298,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mSplitButtonHiddenFlags &= ~flag;
         }
         int desiredVisibility = mSplitButtonHiddenFlags == 0 ? VISIBLE : GONE;
-        mSplitButton.setVisibility(desiredVisibility);
-        findViewById(R.id.action_split_space).setVisibility(desiredVisibility);
+        if (mSplitButton.getVisibility() != desiredVisibility) {
+            mSplitButton.setVisibility(desiredVisibility);
+            mActionButtons.requestLayout();
+        }
     }
 
     /**
@@ -315,7 +323,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mAppPairButtonHiddenFlags &= ~flag;
         }
         int desiredVisibility = mAppPairButtonHiddenFlags == 0 ? VISIBLE : GONE;
-        mSaveAppPairButton.setVisibility(desiredVisibility);
+        if (mSaveAppPairButton.getVisibility() != desiredVisibility) {
+            mSaveAppPairButton.setVisibility(desiredVisibility);
+            mActionButtons.requestLayout();
+        }
     }
 
     public MultiProperty getContentAlpha() {
@@ -342,7 +353,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * Returns the visibility of the overview actions buttons.
      */
     public @Visibility int getActionsButtonVisibility() {
-        return findViewById(R.id.action_buttons).getVisibility();
+        return mActionButtons.getVisibility();
     }
 
     /**
@@ -358,8 +369,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         if (mDp == null) {
             return;
         }
-        LayoutParams actionParams = (LayoutParams) findViewById(
-                R.id.action_buttons).getLayoutParams();
+        LayoutParams actionParams = (LayoutParams) mActionButtons.getLayoutParams();
         actionParams.setMargins(
                 actionParams.leftMargin, mDp.overviewActionsTopMarginPx,
                 actionParams.rightMargin, getBottomMargin());
@@ -386,6 +396,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mDp = dp;
         mTaskSize.set(taskSize);
         updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
+        updateForIsTablet();
 
         requestLayout();
 

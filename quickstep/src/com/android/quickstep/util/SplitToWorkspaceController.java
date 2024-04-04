@@ -17,7 +17,6 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -197,8 +196,6 @@ public class SplitToWorkspaceController {
     }
 
     private boolean shouldIgnoreSecondSplitLaunch() {
-        return (!FeatureFlags.enableSplitContextually()
-                && !enableDesktopWindowingMode())
-                || !mController.isSplitSelectActive();
+        return !FeatureFlags.enableSplitContextually() || !mController.isSplitSelectActive();
     }
 }

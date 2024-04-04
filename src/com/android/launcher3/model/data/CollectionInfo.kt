@@ -22,19 +22,21 @@ import com.android.launcher3.util.ContentWriter
 import java.util.function.Predicate
 
 abstract class CollectionInfo : ItemInfo() {
-    var contents: ArrayList<WorkspaceItemInfo> = ArrayList()
+    /** Adds an ItemInfo to the collection. Throws if given an illegal type. */
+    abstract fun add(item: ItemInfo)
 
-    abstract fun add(item: WorkspaceItemInfo)
+    /** Returns the collection's contents as an ArrayList of [ItemInfo]. */
+    abstract fun getContents(): ArrayList<ItemInfo>
+
+    /**
+     * Returns the collection's contents as an ArrayList of [WorkspaceItemInfo]. Does not include
+     * other collection [ItemInfo]s that are inside this collection; rather, it should collect
+     * *their* contents and adds them to the ArrayList.
+     */
+    abstract fun getAppContents(): ArrayList<WorkspaceItemInfo>
 
     /** Convenience function. Checks contents to see if any match a given predicate. */
-    fun anyMatch(matcher: Predicate<in WorkspaceItemInfo>): Boolean {
-        return contents.stream().anyMatch(matcher)
-    }
-
-    /** Convenience function. Returns true if none of the contents match a given predicate. */
-    fun noneMatch(matcher: Predicate<in WorkspaceItemInfo>): Boolean {
-        return contents.stream().noneMatch(matcher)
-    }
+    fun anyMatch(matcher: Predicate<ItemInfo>) = getContents().stream().anyMatch(matcher)
 
     override fun onAddToDatabase(writer: ContentWriter) {
         super.onAddToDatabase(writer)

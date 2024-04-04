@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.Attribute;
@@ -98,14 +99,20 @@ public class FolderInfo extends CollectionInfo {
 
     public FolderNameInfos suggestedFolderNames;
 
+    /**
+     * The apps and shortcuts
+     */
+    private final ArrayList<ItemInfo> contents = new ArrayList<>();
+
     private ArrayList<FolderListener> mListeners = new ArrayList<>();
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
     }
 
-    /** Adds a app or shortcut to the contents array without animation. */
-    public void add(@NonNull WorkspaceItemInfo item) {
+    /** Adds a app or shortcut to the contents ArrayList without animation. */
+    @Override
+    public void add(@NonNull ItemInfo item) {
         add(item, false /* animate */);
     }
 
@@ -114,14 +121,18 @@ public class FolderInfo extends CollectionInfo {
      *
      * @param item
      */
-    public void add(WorkspaceItemInfo item, boolean animate) {
+    public void add(ItemInfo item, boolean animate) {
         add(item, getContents().size(), animate);
     }
 
     /**
      * Add an app or shortcut for a specified rank.
      */
-    public void add(WorkspaceItemInfo item, int rank, boolean animate) {
+    public void add(ItemInfo item, int rank, boolean animate) {
+        if (!Folder.willAccept(item)) {
+            throw new RuntimeException("tried to add an illegal type into a folder");
+        }
+
         rank = Utilities.boundToRange(rank, 0, getContents().size());
         getContents().add(rank, item);
         for (int i = 0; i < mListeners.size(); i++) {
@@ -135,19 +146,47 @@ public class FolderInfo extends CollectionInfo {
      *
      * @param item
      */
-    public void remove(WorkspaceItemInfo item, boolean animate) {
+    public void remove(ItemInfo item, boolean animate) {
         removeAll(Collections.singletonList(item), animate);
     }
 
     /**
      * Remove all matching app or shortcut. Does not change the DB.
      */
-    public void removeAll(List<WorkspaceItemInfo> items, boolean animate) {
-        getContents().removeAll(items);
+    public void removeAll(List<ItemInfo> items, boolean animate) {
+        contents.removeAll(items);
         for (int i = 0; i < mListeners.size(); i++) {
             mListeners.get(i).onRemove(items);
         }
         itemsChanged(animate);
+    }
+
+    /**
+     * Returns the folder's contents as an ArrayList of {@link ItemInfo}. Includes
+     * {@link WorkspaceItemInfo} and {@link AppPairInfo}s.
+     */
+    @NonNull
+    @Override
+    public ArrayList<ItemInfo> getContents() {
+        return contents;
+    }
+
+    /**
+     * Returns the folder's contents as an ArrayList of {@link WorkspaceItemInfo}. Note: Does not
+     * return any {@link AppPairInfo}s contained in the folder, instead collects *their* contents
+     * and adds them to the ArrayList.
+     */
+    @Override
+    public ArrayList<WorkspaceItemInfo> getAppContents()  {
+        ArrayList<WorkspaceItemInfo> workspaceItemInfos = new ArrayList<>();
+        for (ItemInfo item : contents) {
+            if (item instanceof WorkspaceItemInfo wii) {
+                workspaceItemInfos.add(wii);
+            } else if (item instanceof AppPairInfo api) {
+                workspaceItemInfos.addAll(api.getAppContents());
+            }
+        }
+        return workspaceItemInfos;
     }
 
     @Override
@@ -171,9 +210,11 @@ public class FolderInfo extends CollectionInfo {
     }
 
     public interface FolderListener {
-        void onAdd(WorkspaceItemInfo item, int rank);
-        void onRemove(List<WorkspaceItemInfo> item);
+        void onAdd(ItemInfo item, int rank);
+        void onRemove(List<ItemInfo> item);
         void onItemsChanged(boolean animate);
+        void onTitleChanged(CharSequence title);
+
     }
 
     public boolean hasOption(int optionFlag) {
@@ -246,6 +287,10 @@ public class FolderInfo extends CollectionInfo {
         if (modelWriter != null) {
             modelWriter.updateItemInDatabase(this);
         }
+
+        for (int i = 0; i < mListeners.size(); i++) {
+            mListeners.get(i).onTitleChanged(title);
+        }
     }
 
     /**
@@ -263,8 +308,15 @@ public class FolderInfo extends CollectionInfo {
     public ItemInfo makeShallowCopy() {
         FolderInfo folderInfo = new FolderInfo();
         folderInfo.copyFrom(this);
-        folderInfo.setContents(this.getContents());
         return folderInfo;
+    }
+
+    @Override
+    public void copyFrom(@NonNull ItemInfo info) {
+        super.copyFrom(info);
+        if (info instanceof FolderInfo fi) {
+            contents.addAll(fi.getContents());
+        }
     }
 
     /**

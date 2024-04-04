@@ -39,6 +39,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Choreographer;
 import android.view.IRemoteAnimationFinishedCallback;
 import android.view.IRemoteAnimationRunner;
 import android.view.RemoteAnimationTarget;
@@ -99,7 +100,7 @@ public class LauncherBackAnimationController {
     private final int mWindowScaleMarginX;
     private float mWindowScaleEndCornerRadius;
     private float mWindowScaleStartCornerRadius;
-    private final Interpolator mProgressInterpolator = Interpolators.STANDARD_DECELERATE;
+    private final Interpolator mProgressInterpolator = Interpolators.BACK_GESTURE;
     private final Interpolator mVerticalMoveInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
 
@@ -302,7 +303,7 @@ public class LauncherBackAnimationController {
         if (mScrimLayer == null) {
             addScrimLayer();
         }
-        mTransaction.apply();
+        applyTransaction();
     }
 
     private void setLauncherTargetViewVisible(boolean isVisible) {
@@ -342,7 +343,8 @@ public class LauncherBackAnimationController {
             return;
         }
         if (mScrimLayer.isValid()) {
-            mTransaction.remove(mScrimLayer).apply();
+            mTransaction.remove(mScrimLayer);
+            applyTransaction();
         }
         mScrimLayer = null;
     }
@@ -396,7 +398,11 @@ public class LauncherBackAnimationController {
             mTransaction.setWindowCrop(mBackTarget.leash, mStartRect);
             mTransaction.setCornerRadius(mBackTarget.leash, cornerRadius);
         }
+        applyTransaction();
+    }
 
+    private void applyTransaction() {
+        mTransaction.setFrameTimelineVsync(Choreographer.getInstance().getVsyncId());
         mTransaction.apply();
     }
 
@@ -511,7 +517,7 @@ public class LauncherBackAnimationController {
             float value = (Float) animation.getAnimatedValue();
             if (mScrimLayer != null && mScrimLayer.isValid()) {
                 mTransaction.setAlpha(mScrimLayer, value * mScrimAlpha);
-                mTransaction.apply();
+                applyTransaction();
             }
         });
         mScrimAlphaAnimator.addListener(new AnimatorListenerAdapter() {

@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
-
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 
@@ -117,9 +115,7 @@ public final class KeyboardQuickSwitchController implements
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                enableDesktopWindowingMode()
-                        && desktopController != null
-                        && desktopController.areFreeformTasksVisible();
+                desktopController != null && desktopController.areFreeformTasksVisible();
 
         if (mModel.isTaskListValid(mTaskListChangeId)) {
             // When we are opening the KQS with no focus override, check if the first task is
@@ -158,14 +154,12 @@ public final class KeyboardQuickSwitchController implements
 
         // Hide all desktop tasks and show them on the hidden tile
         int hiddenDesktopTasks = 0;
-        if (enableDesktopWindowingMode()) {
-            DesktopTask desktopTask = findDesktopTask(tasks);
-            if (desktopTask != null) {
-                hiddenDesktopTasks = desktopTask.tasks.size();
-                tasks = tasks.stream()
-                        .filter(t -> !(t instanceof DesktopTask))
-                        .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
-            }
+        DesktopTask desktopTask = findDesktopTask(tasks);
+        if (desktopTask != null) {
+            hiddenDesktopTasks = desktopTask.tasks.size();
+            tasks = tasks.stream()
+                    .filter(t -> !(t instanceof DesktopTask))
+                    .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
         }
         mTasks = tasks.stream()
                 .limit(MAX_TASKS)

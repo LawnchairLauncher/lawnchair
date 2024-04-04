@@ -132,7 +132,16 @@ public final class FeatureFlags {
 
     public static final BooleanFlag CUSTOM_LPNH_THRESHOLDS =
             getReleaseFlag(301680992, "CUSTOM_LPNH_THRESHOLDS", ENABLED,
-                    "Add dev options to customize the LPNH trigger slop and milliseconds");
+                    "Add dev options and server side control to customize the LPNH "
+                            + "trigger slop and milliseconds");
+
+    public static final BooleanFlag CUSTOM_LPH_THRESHOLDS = getReleaseFlag(331800576,
+            "CUSTOM_LPH_THRESHOLDS", DISABLED,
+            "Server side control to customize LPH timeout and touch slop");
+
+    public static final BooleanFlag OVERRIDE_LPNH_LPH_THRESHOLDS = getReleaseFlag(331799727,
+            "OVERRIDE_LPNH_LPH_THRESHOLDS", DISABLED,
+            "Enable AGSA override for LPNH and LPH timeout and touch slop");
 
     public static final BooleanFlag ANIMATE_LPNH =
             getReleaseFlag(308693847, "ANIMATE_LPNH", TEAMFOOD,

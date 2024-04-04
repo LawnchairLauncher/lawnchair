@@ -139,9 +139,9 @@ class ItemInflaterTest {
     @Test
     fun test_folder_inflated_on_UI() {
         val itemInfo = FolderInfo()
-        itemInfo.contents.add(workspaceItemInfo())
-        itemInfo.contents.add(workspaceItemInfo())
-        itemInfo.contents.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
 
         val view =
             MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
@@ -155,9 +155,9 @@ class ItemInflaterTest {
         setFlagsRule.enableFlags(Flags.FLAG_ENABLE_WORKSPACE_INFLATION)
 
         val itemInfo = FolderInfo()
-        itemInfo.contents.add(workspaceItemInfo())
-        itemInfo.contents.add(workspaceItemInfo())
-        itemInfo.contents.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
 
         val view =
             VIEW_PREINFLATION_EXECUTOR.submit(
@@ -173,8 +173,8 @@ class ItemInflaterTest {
     fun test_app_pair_inflated_on_UI() {
         val itemInfo = AppPairInfo()
         itemInfo.itemType = ITEM_TYPE_APP_PAIR
-        itemInfo.contents.add(workspaceItemInfo())
-        itemInfo.contents.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
 
         val view =
             MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
@@ -189,8 +189,8 @@ class ItemInflaterTest {
 
         val itemInfo = AppPairInfo()
         itemInfo.itemType = ITEM_TYPE_APP_PAIR
-        itemInfo.contents.add(workspaceItemInfo())
-        itemInfo.contents.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
+        itemInfo.add(workspaceItemInfo())
 
         val view =
             VIEW_PREINFLATION_EXECUTOR.submit(

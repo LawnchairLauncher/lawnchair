@@ -270,9 +270,13 @@ public class RecentTasksList {
 
         int numVisibleTasks = 0;
         for (GroupedRecentTaskInfo rawTask : rawTasks) {
-            if (enableDesktopWindowingMode() && rawTask.getType() == TYPE_FREEFORM) {
-                GroupTask desktopTask = createDesktopTask(rawTask);
-                allTasks.add(desktopTask);
+            if (rawTask.getType() == TYPE_FREEFORM) {
+                // TYPE_FREEFORM tasks is only created when enableDesktopWindowingMode() is true,
+                // leftover TYPE_FREEFORM tasks created when flag was on should be ignored.
+                if (enableDesktopWindowingMode()) {
+                    GroupTask desktopTask = createDesktopTask(rawTask);
+                    allTasks.add(desktopTask);
+                }
                 continue;
             }
             ActivityManager.RecentTaskInfo taskInfo1 = rawTask.getTaskInfo1();

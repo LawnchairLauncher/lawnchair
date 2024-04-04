@@ -153,7 +153,7 @@ public class AppPairsController {
 
         IconCache iconCache = LauncherAppState.getInstance(mContext).getIconCache();
         MODEL_EXECUTOR.execute(() -> {
-            newAppPair.getContents().forEach(member -> {
+            newAppPair.getAppContents().forEach(member -> {
                 member.title = "";
                 member.bitmap = iconCache.getDefaultIcon(newAppPair.user);
                 iconCache.getTitleAndIcon(member, member.usingLowResIcon());

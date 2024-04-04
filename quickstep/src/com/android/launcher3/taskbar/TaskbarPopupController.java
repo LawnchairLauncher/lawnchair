@@ -118,7 +118,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                 FolderInfo fi = (FolderInfo) info;
                 if (fi.anyMatch(matcher)) {
                     FolderDotInfo folderDotInfo = new FolderDotInfo();
-                    for (WorkspaceItemInfo si : fi.getContents()) {
+                    for (ItemInfo si : fi.getContents()) {
                         folderDotInfo.addDotInfo(mPopupDataProvider.getDotInfoForItem(si));
                     }
                     ((FolderIcon) v).setDotInfo(folderDotInfo);

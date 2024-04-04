@@ -35,7 +35,6 @@ import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_SINGLE_TASK
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_PENDINGINTENT;
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_SHORTCUT;
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_TASK_TASK;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 import static com.android.wm.shell.common.split.SplitScreenConstants.KEY_EXTRA_WIDGET_INTENT;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
 
@@ -70,6 +69,7 @@ import android.window.RemoteTransition;
 import android.window.TransitionInfo;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.logging.InstanceId;
 import com.android.launcher3.Launcher;
@@ -132,6 +132,7 @@ public class SplitSelectStateController {
     private final StatsLogManager mStatsLogManager;
     private final SystemUiProxy mSystemUiProxy;
     private final StateManager mStateManager;
+    @Nullable
     private SplitFromDesktopController mSplitFromDesktopController;
     @Nullable
     private DepthController mDepthController;
@@ -208,6 +209,9 @@ public class SplitSelectStateController {
         mActivityBackCallback = null;
         mAppPairsController.onDestroy();
         mSplitSelectDataHolder.onDestroy();
+        if (mSplitFromDesktopController != null) {
+            mSplitFromDesktopController.onDestroy();
+        }
     }
 
     /**
@@ -643,7 +647,12 @@ public class SplitSelectStateController {
     }
 
     public void initSplitFromDesktopController(Launcher launcher) {
-        mSplitFromDesktopController = new SplitFromDesktopController(launcher);
+        initSplitFromDesktopController(new SplitFromDesktopController(launcher));
+    }
+
+    @VisibleForTesting
+    void initSplitFromDesktopController(SplitFromDesktopController controller) {
+        mSplitFromDesktopController = controller;
     }
 
     private RemoteTransition getShellRemoteTransition(int firstTaskId, int secondTaskId,
@@ -968,13 +977,17 @@ public class SplitSelectStateController {
                 @Override
                 public boolean onRequestSplitSelect(ActivityManager.RunningTaskInfo taskInfo,
                         int splitPosition, Rect taskBounds) {
-                    if (!enableDesktopWindowingMode()) return false;
                     MAIN_EXECUTOR.execute(() -> enterSplitSelect(taskInfo, splitPosition,
                             taskBounds));
                     return true;
                 }
             };
             SystemUiProxy.INSTANCE.get(mLauncher).registerSplitSelectListener(mSplitSelectListener);
+        }
+
+        void onDestroy() {
+            SystemUiProxy.INSTANCE.get(mLauncher).unregisterSplitSelectListener(
+                    mSplitSelectListener);
         }
 
         /**
