@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.graphics.Color;
 
@@ -46,11 +45,9 @@ public class QuickSwitchState extends BackgroundAppState {
 
     @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
-        if (enableDesktopWindowingMode()) {
-            if (launcher.areFreeformTasksVisible()) {
-                // No scrim while freeform tasks are visible
-                return Color.TRANSPARENT;
-            }
+        if (launcher.areFreeformTasksVisible()) {
+            // No scrim while freeform tasks are visible
+            return Color.TRANSPARENT;
         }
         DeviceProfile dp = launcher.getDeviceProfile();
         if (dp.isTaskbarPresentInApps) {

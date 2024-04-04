@@ -21,7 +21,6 @@ import static com.android.launcher3.statemanager.BaseState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.taskbar.TaskbarEduTooltipControllerKt.TOOLTIP_STEP_FEATURES;
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_VISIBLE;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -220,9 +219,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                enableDesktopWindowingMode()
-                        && desktopController != null
-                        && desktopController.areFreeformTasksVisible();
+                desktopController != null && desktopController.areFreeformTasksVisible();
         if (onDesktop) {
             isVisible = false;
         }

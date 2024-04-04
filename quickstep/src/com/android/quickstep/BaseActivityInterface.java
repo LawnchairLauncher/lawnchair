@@ -25,7 +25,6 @@ import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
@@ -109,19 +108,17 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         if (endTarget != null) {
             // We were on our way to this state when we got canceled, end there instead.
             startState = stateFromGestureEndTarget(endTarget);
-            if (enableDesktopWindowingMode()) {
-                DesktopVisibilityController controller = getDesktopVisibilityController();
-                if (controller != null && controller.areFreeformTasksVisible()
-                        && endTarget == LAST_TASK) {
-                    // When we are cancelling the transition and going back to last task, move to
-                    // rest state instead when desktop tasks are visible.
-                    // If a fullscreen task is visible, launcher goes to normal state when the
-                    // activity is stopped. This does not happen when freeform tasks are visible
-                    // on top of launcher. Force the launcher state to rest state here.
-                    startState = activity.getStateManager().getRestState();
-                    // Do not animate the transition
-                    activityVisible = false;
-                }
+            DesktopVisibilityController controller = getDesktopVisibilityController();
+            if (controller != null && controller.areFreeformTasksVisible()
+                    && endTarget == LAST_TASK) {
+                // When we are cancelling the transition and going back to last task, move to
+                // rest state instead when desktop tasks are visible.
+                // If a fullscreen task is visible, launcher goes to normal state when the
+                // activity is stopped. This does not happen when freeform tasks are visible
+                // on top of launcher. Force the launcher state to rest state here.
+                startState = activity.getStateManager().getRestState();
+                // Do not animate the transition
+                activityVisible = false;
             }
         }
         activity.getStateManager().goToState(startState, activityVisible);
