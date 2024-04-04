@@ -890,17 +890,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /**
-     * Should be called when a system gesture starts and settles, so we can defer updating
-     * FLAG_STASHED_IN_APP_IME until after the gesture transition completes.
+     * Should be called when a system gesture starts and settles, so we can remove
+     * FLAG_STASHED_IN_APP_IME while the gesture is in progress.
      */
     public void setSystemGestureInProgress(boolean inProgress) {
         mIsSystemGestureInProgress = inProgress;
-        if (mIsSystemGestureInProgress) {
-            return;
-        }
-
-        // Only update the following flags when system gesture is not in progress.
-        updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
         setStashedImeState();
     }
 
@@ -952,12 +946,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 && !hasAnyFlag(systemUiStateFlags, SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY);
         updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED, isLocked);
 
-        // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
         mIsImeSwitcherShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SWITCHER_SHOWING);
-
-        if (!mIsSystemGestureInProgress) {
-            updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme());
+        if (updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme())) {
             animDuration = TASKBAR_STASH_DURATION_FOR_IME;
             startDelay = getTaskbarStashStartDelayForIme();
         }
@@ -970,7 +961,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *
      * <p>Do not stash if in small screen, with 3 button nav, and in landscape (or seascape).
      * <p>Do not stash if taskbar is transient.
-     * <p>Do not stash if hardware keyboard is attached and taskbar is pinned and IME is docked
+     * <p>Do not stash if hardware keyboard is attached and taskbar is pinned and IME is docked.
+     * <p>Do not stash if a system gesture is started.
      */
     private boolean shouldStashForIme() {
         if (DisplayController.isTransientTaskbar(mActivity)) {
@@ -996,6 +988,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return false;
         }
 
+        // Do not stash if a gesture started.
+        if (mIsSystemGestureInProgress) {
+            return false;
+        }
+
         return mIsImeShowing || mIsImeSwitcherShowing;
     }
 
@@ -1007,13 +1004,16 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * @param flag    The flag to update.
      * @param enabled Whether to enable the flag: True will cause the task bar to be stashed /
      *                unstashed.
+     * @return Whether the flag state changed.
      */
-    public void updateStateForFlag(int flag, boolean enabled) {
+    public boolean updateStateForFlag(int flag, boolean enabled) {
+        int oldState = mState;
         if (enabled) {
             mState |= flag;
         } else {
             mState &= ~flag;
         }
+        return mState != oldState;
     }
 
     /**
