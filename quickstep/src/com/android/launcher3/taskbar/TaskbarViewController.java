@@ -337,11 +337,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private void updateTaskbarIconTranslationXForPinning() {
         View[] iconViews = mTaskbarView.getIconViews();
         float scale = mTaskbarIconTranslationXForPinning.value;
-        float taskbarCenterX =
-                mTaskbarView.getLeft() + (mTaskbarView.getRight() - mTaskbarView.getLeft()) / 2.0f;
-
-        float finalMarginScale = mapRange(scale, 0f, mTransientIconSize - mPersistentIconSize);
-
         float transientTaskbarAllAppsOffset = mActivity.getResources().getDimension(
                 mTaskbarView.getAllAppsButtonTranslationXOffset(true));
         float persistentTaskbarAllAppsOffset = mActivity.getResources().getDimension(
@@ -353,6 +348,17 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         if (mIsRtl) {
             allAppIconTranslateRange *= -1;
         }
+
+        if (mActivity.isThreeButtonNav()) {
+            ((IconButtonView) mTaskbarView.getAllAppsButtonView())
+                    .setTranslationXForTaskbarAllAppsIcon(allAppIconTranslateRange);
+            return;
+        }
+
+        float taskbarCenterX =
+                mTaskbarView.getLeft() + (mTaskbarView.getRight() - mTaskbarView.getLeft()) / 2.0f;
+
+        float finalMarginScale = mapRange(scale, 0f, mTransientIconSize - mPersistentIconSize);
 
         float halfIconCount = iconViews.length / 2.0f;
         for (int iconIndex = 0; iconIndex < iconViews.length; iconIndex++) {
