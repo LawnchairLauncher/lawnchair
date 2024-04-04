@@ -359,6 +359,15 @@ public class InvariantDeviceProfile {
         return displayOption.grid.name;
     }
 
+    /**
+     * @deprecated This is a temporary solution because on the backup and restore case we modify the
+     * IDP, this resets it. b/332974074
+     */
+    @Deprecated
+    public void reset(Context context) {
+        initGrid(context, getCurrentGridName(context));
+    }
+
     @VisibleForTesting
     public static String getDefaultGridName(Context context) {
         return new InvariantDeviceProfile().initGrid(context, null);
