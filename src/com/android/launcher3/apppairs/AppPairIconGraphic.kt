@@ -19,7 +19,6 @@ package com.android.launcher3.apppairs
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.FrameLayout
@@ -52,7 +51,10 @@ constructor(context: Context, attrs: AttributeSet? = null) :
          * 2) One of the member apps can't be launched due to screen size requirements.
          */
         @JvmStatic
-        fun composeDrawable(appPairInfo: AppPairInfo, p: AppPairIconDrawingParams): Drawable {
+        fun composeDrawable(
+            appPairInfo: AppPairInfo,
+            p: AppPairIconDrawingParams
+        ): AppPairIconDrawable {
             // Generate new icons, using themed flag if needed.
             val flags = if (Themes.isThemedIconEnabled(p.context)) BitmapInfo.FLAG_THEMED else 0
             val appIcon1 = appPairInfo.getFirstApp().newIcon(p.context, flags)
@@ -81,7 +83,7 @@ constructor(context: Context, attrs: AttributeSet? = null) :
 
     private lateinit var parentIcon: AppPairIcon
     private lateinit var drawParams: AppPairIconDrawingParams
-    private lateinit var drawable: Drawable
+    lateinit var drawable: AppPairIconDrawable
 
     fun init(icon: AppPairIcon, container: Int) {
         parentIcon = icon
@@ -116,12 +118,6 @@ constructor(context: Context, attrs: AttributeSet? = null) :
         redraw()
     }
 
-    /** Updates the icon drawable and redraws it */
-    fun redraw() {
-        drawable = composeDrawable(parentIcon.info, drawParams)
-        invalidate()
-    }
-
     /**
      * Gets this icon graphic's visual bounds, with respect to the parent icon's coordinate system.
      */
@@ -134,6 +130,12 @@ constructor(context: Context, attrs: AttributeSet? = null) :
             (parentIcon.paddingTop + drawParams.standardIconPadding + drawParams.outerPadding)
                 .toInt()
         )
+    }
+
+    /** Updates the icon drawable and redraws it */
+    fun redraw() {
+        drawable = composeDrawable(parentIcon.info, drawParams)
+        invalidate()
     }
 
     override fun dispatchDraw(canvas: Canvas) {

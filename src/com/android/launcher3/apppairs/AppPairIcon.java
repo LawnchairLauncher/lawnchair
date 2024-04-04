@@ -30,11 +30,13 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.AppPairInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
 
@@ -180,9 +182,17 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
     }
 
     /**
+     * Ensures that both app icons in the pair are loaded in high resolution.
+     */
+    public void verifyHighRes() {
+        IconCache iconCache = LauncherAppState.getInstance(getContext()).getIconCache();
+        getInfo().fetchHiResIconsIfNeeded(iconCache);
+    }
+
+    /**
      * Called when WorkspaceItemInfos get updated, and the app pair icon may need to be redrawn.
      */
-    public void maybeRedrawForWorkspaceUpdate(Predicate<WorkspaceItemInfo> itemCheck) {
+    public void maybeRedrawForWorkspaceUpdate(Predicate<ItemInfo> itemCheck) {
         // If either of the app pair icons return true on the predicate (i.e. in the list of
         // updated apps), redraw the icon graphic (icon background and both icons).
         if (getInfo().anyMatch(itemCheck)) {

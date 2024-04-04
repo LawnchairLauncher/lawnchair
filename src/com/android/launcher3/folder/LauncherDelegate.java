@@ -33,7 +33,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.data.FolderInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -86,7 +86,7 @@ public class LauncherDelegate {
                 FolderInfo info = folder.mInfo;
                 if (itemCount <= 1) {
                     View newIcon = null;
-                    WorkspaceItemInfo finalItem = null;
+                    ItemInfo finalItem = null;
 
                     if (itemCount == 1) {
                         // Move the item from the folder to the workspace, in the position of the
