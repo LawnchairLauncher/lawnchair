@@ -58,7 +58,7 @@ public class AssistStateManager implements ResourceBasedOverride {
     }
 
     /** Get the Launcher overridden long press touch slop multiplier to trigger Assistant. */
-    public Optional<Long> getLPNHCustomSlopMultiplier() {
+    public Optional<Float> getLPNHCustomSlopMultiplier() {
         return Optional.empty();
     }
 
