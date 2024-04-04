@@ -108,7 +108,9 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 }
 
 @Composable
-fun IconPackPreferences() {
+fun IconPackPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
@@ -120,6 +122,7 @@ fun IconPackPreferences() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style),
+        modifier = modifier,
         isExpandedScreen = true,
         scrollState = if (isPortrait) null else scrollState,
     ) {
@@ -225,6 +228,7 @@ fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
     drawerThemedIcons: Boolean,
     isThemedIconPack: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsState()
@@ -251,7 +255,7 @@ fun IconPackGrid(
         }
     }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val iconPackItemWidth = getIconPackItemWidth(
             availableWidth = this.maxWidth.value - padding.value,
             minimumWidth = 80f,

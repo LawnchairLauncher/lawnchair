@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -46,13 +47,18 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 }
 
 @Composable
-fun AppDrawerPreferences() {
+fun AppDrawerPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val context = LocalContext.current
     val resources = context.resources
 
-    PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.app_drawer_label),
+        modifier = modifier,
+    ) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),

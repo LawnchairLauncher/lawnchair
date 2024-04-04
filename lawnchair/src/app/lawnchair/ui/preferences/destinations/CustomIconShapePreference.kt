@@ -64,7 +64,9 @@ fun NavGraphBuilder.customIconShapePreferenceGraph(route: String) {
 }
 
 @Composable
-private fun CustomIconShapePreference() {
+private fun CustomIconShapePreference(
+    modifier: Modifier = Modifier,
+) {
     val preferenceManager2 = preferenceManager2()
 
     val customIconShapeAdapter = preferenceManager2.customIconShape.getAdapter()
@@ -79,6 +81,7 @@ private fun CustomIconShapePreference() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.custom_icon_shape),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         bottomBar = {
             Column(
@@ -131,8 +134,10 @@ private fun CustomIconShapePreference() {
 private fun IconShapeCornerPreferenceGroup(
     selectedIconShape: IconShape,
     onSelectedIconShapeChange: (IconShape) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     PreferenceGroup(
+        modifier = modifier,
         heading = stringResource(id = R.string.color_sliders),
     ) {
         IconShapeCornerPreference(
@@ -186,10 +191,12 @@ private fun IconShapeCornerPreferenceGroup(
 private fun IconShapeClipboardPreferenceGroup(
     selectedIconShape: IconShape,
     onSelectedIconShapeChange: (IconShape) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val importErrorMessage = stringResource(id = R.string.icon_shape_clipboard_import_error)
     PreferenceGroup(
+        modifier = modifier,
         heading = stringResource(id = R.string.clipboard),
     ) {
         ClipboardButton(

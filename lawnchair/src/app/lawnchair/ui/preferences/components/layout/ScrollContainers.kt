@@ -25,12 +25,15 @@ import kotlinx.coroutines.awaitCancellation
 @Composable
 fun PreferenceColumn(
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState? = rememberScrollState(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    NestedScrollStretch {
+    NestedScrollStretch(
+        modifier = modifier,
+    ) {
         Column(
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
@@ -63,9 +66,11 @@ fun PreferenceLazyColumn(
             }
         }
     }
-    NestedScrollStretch {
+    NestedScrollStretch(
+        modifier = modifier,
+    ) {
         LazyColumn(
-            modifier = modifier
+            modifier = Modifier
                 .addIf(!isChild) {
                     fillMaxHeight()
                 },

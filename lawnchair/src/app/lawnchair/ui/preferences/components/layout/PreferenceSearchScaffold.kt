@@ -47,12 +47,14 @@ import app.lawnchair.ui.util.PreviewLawnchair
 fun PreferenceSearchScaffold(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     placeholder: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     Scaffold(
+        modifier = modifier,
         topBar = {
             Surface(
                 color = MaterialTheme.colorScheme.background,
@@ -61,8 +63,8 @@ fun PreferenceSearchScaffold(
                     value,
                     onValueChange,
                     backDispatcher,
-                    placeholder,
-                    actions,
+                    placeholder = placeholder,
+                    actions = actions,
                 )
                 Spacer(modifier = Modifier.requiredHeight(16.dp))
             }
@@ -78,12 +80,13 @@ private fun SearchBar(
     value: String,
     onValueChange: (String) -> Unit,
     backDispatcher: OnBackPressedDispatcher?,
+    modifier: Modifier = Modifier,
     placeholder: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .zIndex(1f)
             .statusBarsPadding()
             .padding(top = 8.dp)
@@ -134,6 +137,7 @@ private fun SearchBar(
 private fun SearchTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     placeholder: @Composable (() -> Unit)? = null,
 ) {
     val textStyle: TextStyle = LocalTextStyle.current
@@ -142,7 +146,7 @@ private fun SearchTextField(
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor))
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicTextField(

@@ -50,12 +50,15 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 @Composable
-fun PreferencesDashboard() {
+fun PreferencesDashboard(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     SyncLiveInformation()
 
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
+        modifier = modifier,
         verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu() },
@@ -144,7 +147,9 @@ fun PreferencesDashboard() {
 }
 
 @Composable
-fun PreferencesOverflowMenu() {
+fun PreferencesOverflowMenu(
+    modifier: Modifier = Modifier,
+) {
     val navController = LocalNavController.current
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
     val experimentalFeaturesRoute = subRoute(name = Routes.EXPERIMENTAL_FEATURES)
@@ -156,7 +161,9 @@ fun PreferencesOverflowMenu() {
         )
     }
     val openRestoreBackup = restoreBackupOpener()
-    OverflowMenu {
+    OverflowMenu(
+        modifier = modifier,
+    ) {
         val context = LocalContext.current
         DropdownMenuItem(onClick = {
             openAppInfo(context)
@@ -193,9 +200,11 @@ fun PreferencesOverflowMenu() {
 }
 
 @Composable
-fun PreferencesDebugWarning() {
+fun PreferencesDebugWarning(
+    modifier: Modifier = Modifier,
+) {
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.errorContainer,
     ) {
@@ -207,10 +216,12 @@ fun PreferencesDebugWarning() {
 }
 
 @Composable
-fun PreferencesSetDefaultLauncherWarning() {
+fun PreferencesSetDefaultLauncherWarning(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {

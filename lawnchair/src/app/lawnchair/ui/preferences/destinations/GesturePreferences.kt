@@ -1,6 +1,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
@@ -16,9 +17,14 @@ fun NavGraphBuilder.gesturesGraph(route: String) {
 }
 
 @Composable
-fun GesturePreferences() {
+fun GesturePreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager2()
-    PreferenceLayout(label = stringResource(id = R.string.gestures_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.gestures_label),
+        modifier = modifier,
+    ) {
         PreferenceGroup {
             GestureHandlerPreference(
                 adapter = prefs.doubleTapGestureHandler.getAdapter(),

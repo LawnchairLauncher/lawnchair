@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -102,7 +103,7 @@ fun GeneralPreferences() {
                 description = stringResource(id = R.string.home_screen_rotation_description),
             )
         }
-        ExpandAndShrink(prefs2.enableFontSelection.asState().value) {
+        ExpandAndShrink(visible = prefs2.enableFontSelection.asState().value) {
             PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
                 FontPreference(
                     fontPref = prefs.fontWorkspace,
@@ -204,6 +205,7 @@ fun GeneralPreferences() {
 private fun NotificationDotColorContrastWarnings(
     dotColor: ColorOption,
     dotTextColor: ColorOption,
+    modifier: Modifier = Modifier,
 ) {
     val dotColorIsDynamic = when (dotColor) {
         is ColorOption.SystemAccent,
@@ -214,12 +216,16 @@ private fun NotificationDotColorContrastWarnings(
     }
 
     if (dotColorIsDynamic && dotTextColor !is ColorOption.Default) {
-        WarningPreference(text = stringResource(id = R.string.notification_dots_color_contrast_warning_sometimes))
+        WarningPreference(
+            text = stringResource(id = R.string.notification_dots_color_contrast_warning_sometimes),
+            modifier = modifier,
+        )
     } else {
         ColorContrastWarning(
             foregroundColor = dotTextColor,
             backgroundColor = dotColor,
             text = stringResource(id = R.string.notification_dots_color_contrast_warning_always),
+            modifier = modifier,
         )
     }
 }

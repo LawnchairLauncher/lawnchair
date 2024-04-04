@@ -39,6 +39,7 @@ import com.patrykmichalik.opto.domain.Preference
 @Composable
 fun ColorPreference(
     preference: Preference<ColorOption, String, Preferences.Key<String>>,
+    modifier: Modifier = Modifier,
 ) {
     val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
     val model = modelList[preference.key.name]
@@ -52,6 +53,6 @@ fun ColorPreference(
         description = {
             Text(text = adapter.state.value.colorPreferenceEntry.label())
         },
-        modifier = Modifier.clickable { navController.navigate(route = "/colorSelection/${model.prefObject.key.name}/") },
+        modifier = modifier.clickable { navController.navigate(route = "/colorSelection/${model.prefObject.key.name}/") },
     )
 }

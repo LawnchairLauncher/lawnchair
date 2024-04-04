@@ -52,7 +52,9 @@ fun getEntries(context: Context) = getProviders(context).map {
 }.toPersistentList()
 
 @Composable
-fun FeedPreference() {
+fun FeedPreference(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val adapter = preferenceManager().feedProvider.getAdapter()
     val preferredPackage = adapter.state.value
@@ -70,6 +72,7 @@ fun FeedPreference() {
         onValueChange = adapter::onChange,
         entries = entries,
         label = stringResource(R.string.feed_provider),
+        modifier = modifier,
         endWidget = resolvedEntry?.endWidget,
     )
 }

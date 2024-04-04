@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -54,10 +55,15 @@ fun NavGraphBuilder.dockGraph(route: String) {
 }
 
 @Composable
-fun DockPreferences() {
+fun DockPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.dock_label),
+        modifier = modifier,
+    ) {
         val isHotseatEnabled = prefs2.isHotseatEnabled.getAdapter()
         val hotseatModeAdapter = prefs2.hotseatMode.getAdapter()
         MainSwitchPreference(adapter = isHotseatEnabled, label = stringResource(id = R.string.show_hotseat_title)) {
@@ -113,6 +119,7 @@ fun DockPreferences() {
 @Composable
 private fun HotseatModePreference(
     adapter: PreferenceAdapter<HotseatMode>,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
@@ -130,5 +137,6 @@ private fun HotseatModePreference(
         adapter = adapter,
         entries = entries,
         label = stringResource(id = R.string.hotseat_mode_label),
+        modifier = modifier,
     )
 }

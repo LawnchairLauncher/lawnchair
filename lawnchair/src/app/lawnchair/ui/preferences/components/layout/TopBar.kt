@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +35,7 @@ fun TopBar(
     backArrowVisible: Boolean,
     label: String,
     isExpandedScreen: Boolean,
+    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
@@ -41,6 +43,7 @@ fun TopBar(
 
     if (isExpandedScreen) {
         TopAppBar(
+            modifier = modifier,
             title = {
                 Text(
                     text = label,
@@ -61,6 +64,7 @@ fun TopBar(
         )
     } else {
         LargeTopAppBar(
+            modifier = modifier,
             title = {
                 Text(
                     text = label,

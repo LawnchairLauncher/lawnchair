@@ -8,18 +8,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 
 @Composable
 fun OverflowMenu(
+    modifier: Modifier = Modifier,
     block: @Composable OverflowMenuScope.() -> Unit,
 ) {
     val showMenu = remember { mutableStateOf(false) }
     val overflowMenuScope = remember { OverflowMenuScopeImpl(showMenu) }
 
-    Box {
+    Box(
+        modifier = modifier,
+    ) {
         ClickableIcon(
             imageVector = Icons.Rounded.MoreVert,
             onClick = { showMenu.value = true },

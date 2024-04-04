@@ -94,7 +94,9 @@ fun CustomColorPicker(
         )
     }
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+    ) {
         PreferenceGroup(
             heading = stringResource(id = R.string.hex),
             modifier = Modifier.padding(top = 8.dp),
@@ -287,6 +289,7 @@ private fun HsvColorPicker(
     selectedColor: Int,
     onSelectedColorChange: () -> Unit,
     onSliderValuesChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val hsv = remember { intColorToHsvColorArray(selectedColor) }
     var hue by remember { mutableFloatStateOf(hsv[0]) }
@@ -314,7 +317,9 @@ private fun HsvColorPicker(
         }
     }
 
-    DividerColumn {
+    DividerColumn(
+        modifier = modifier,
+    ) {
         HsbColorSlider(
             type = HsbSliderType.HUE,
             value = hue,
@@ -355,6 +360,7 @@ private fun RgbColorPicker(
     selectedColor: Int,
     onSelectedColorChange: () -> Unit,
     onSliderValuesChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
     selectedColorCompose: Color = Color(selectedColor),
 ) {
     var red by remember { mutableIntStateOf(selectedColor.red) }
@@ -383,7 +389,9 @@ private fun RgbColorPicker(
         }
     }
 
-    DividerColumn {
+    DividerColumn(
+        modifier = modifier,
+    ) {
         RgbColorSlider(
             label = stringResource(id = R.string.rgb_red),
             value = red,

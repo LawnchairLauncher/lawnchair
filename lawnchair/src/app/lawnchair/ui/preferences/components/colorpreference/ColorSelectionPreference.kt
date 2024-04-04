@@ -66,6 +66,7 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
 fun ColorSelection(
     label: String,
     preference: Preference<ColorOption, String, *>,
+    modifier: Modifier = Modifier,
     dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = dynamicColors,
     staticEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
@@ -95,6 +96,7 @@ fun ColorSelection(
     )
     PreferenceLayout(
         label = label,
+        modifier = modifier,
         bottomBar = {
             if (pagerState.currentPage == 0) {
                 BottomSpacer()

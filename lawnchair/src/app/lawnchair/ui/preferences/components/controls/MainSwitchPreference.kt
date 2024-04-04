@@ -20,6 +20,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 fun MainSwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
+    modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
     content: @Composable () -> Unit,
@@ -28,6 +29,7 @@ fun MainSwitchPreference(
         checked = adapter.state.value,
         onCheckedChange = adapter::onChange,
         label = label,
+        modifier = modifier,
         description = description,
         enabled = enabled,
         content = content,
@@ -39,6 +41,7 @@ fun MainSwitchPreference(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
     content: @Composable () -> Unit,
@@ -47,6 +50,7 @@ fun MainSwitchPreference(
         checked = checked,
         onCheckedChange = onCheckedChange,
         label = label,
+        modifier = modifier,
         enabled = enabled,
     )
 
@@ -77,10 +81,11 @@ fun MainSwitchPreference(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = if (checked) {
             MaterialTheme.colorScheme.primaryContainer

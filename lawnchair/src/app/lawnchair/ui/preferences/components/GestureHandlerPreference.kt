@@ -37,6 +37,7 @@ val options = listOf(
 fun GestureHandlerPreference(
     adapter: PreferenceAdapter<GestureHandlerConfig>,
     label: String,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -54,7 +55,7 @@ fun GestureHandlerPreference(
     PreferenceTemplate(
         title = { Text(text = label) },
         description = { Text(text = currentConfig.getLabel(context)) },
-        modifier = Modifier.clickable {
+        modifier = modifier.clickable {
             bottomSheetHandler.show {
                 ModalBottomSheetContent(
                     title = { Text(label) },

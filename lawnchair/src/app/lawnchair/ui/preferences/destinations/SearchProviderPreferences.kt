@@ -39,13 +39,18 @@ fun NavGraphBuilder.searchProviderGraph(route: String) {
 }
 
 @Composable
-fun SearchProviderPreferences() {
+fun SearchProviderPreferences(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val bottomSheetHandler = LocalBottomSheetHandler.current
     val adapter = preferenceManager2().hotseatQsbProvider.getAdapter()
     val forceWebsiteAdapter = preferenceManager2().hotseatQsbForceWebsite.getAdapter()
 
-    PreferenceLayout(label = stringResource(R.string.search_provider)) {
+    PreferenceLayout(
+        label = stringResource(R.string.search_provider),
+        modifier = modifier,
+    ) {
         PreferenceGroup {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
                 val appInstalled = qsbSearchProvider.isDownloaded(context)
@@ -100,8 +105,11 @@ private fun ListItem(
     onClick: () -> Unit,
     onDownloadClick: () -> Unit,
     onSponsorDisclaimerClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(
+        modifier = modifier,
+    ) {
         PreferenceTemplate(
             title = { Text(text = title) },
             verticalPadding = if (showDownloadButton) 12.dp else 16.dp,
@@ -149,9 +157,13 @@ private fun Options(
     onAppClick: () -> Unit,
     onAppDownloadClick: () -> Unit,
     onWebsiteClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     PreferenceDivider(startIndent = 40.dp)
-    DividerColumn(startIndent = 40.dp) {
+    DividerColumn(
+        modifier = modifier,
+        startIndent = 40.dp,
+    ) {
         PreferenceTemplate(
             title = { Text(stringResource(id = R.string.app_label)) },
             enabled = appEnabled,
@@ -198,6 +210,7 @@ private fun Options(
 @Composable
 private fun SponsorDisclaimer(
     sponsor: String,
+    modifier: Modifier = Modifier,
     onAcknowledge: () -> Unit,
 ) {
     ModalBottomSheetContent(
@@ -206,6 +219,7 @@ private fun SponsorDisclaimer(
                 Text(text = stringResource(id = android.R.string.ok))
             }
         },
+        modifier = modifier,
     ) {
         CompositionLocalProvider(
             LocalContentColor provides MaterialTheme.colorScheme.onBackground,

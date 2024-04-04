@@ -13,6 +13,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 fun FontPreference(
     fontPref: BasePreferenceManager.FontPref,
     label: String,
+    modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
 
@@ -25,7 +26,7 @@ fun FontPreference(
                 fontFamily = font.composeFontFamily,
             )
         },
-        modifier = Modifier
+        modifier = modifier
             .clickable { navController.navigate(route = "/fontSelection/${fontPref.key}/") },
     )
 }

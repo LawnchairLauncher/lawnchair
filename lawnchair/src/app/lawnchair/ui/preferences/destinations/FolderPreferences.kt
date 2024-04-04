@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
@@ -36,8 +37,13 @@ fun NavGraphBuilder.folderGraph(route: String) {
 }
 
 @Composable
-fun FolderPreferences() {
-    PreferenceLayout(label = stringResource(id = R.string.folders_label)) {
+fun FolderPreferences(
+    modifier: Modifier = Modifier,
+) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.folders_label),
+        modifier = modifier,
+    ) {
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {

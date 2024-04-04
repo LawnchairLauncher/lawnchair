@@ -42,6 +42,7 @@ fun <T> ListPreference(
     adapter: PreferenceAdapter<T>,
     entries: ImmutableList<ListPreferenceEntry<T>>,
     label: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
@@ -51,6 +52,7 @@ fun <T> ListPreference(
         value = adapter.state.value,
         onValueChange = adapter::onChange,
         label = label,
+        modifier = modifier,
         enabled = enabled,
         description = description,
         endWidget = endWidget,
@@ -63,6 +65,7 @@ fun <T> ListPreference(
     value: T,
     onValueChange: (T) -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
@@ -82,7 +85,7 @@ fun <T> ListPreference(
         enabled = enabled,
         endWidget = endWidget,
         applyPaddings = false,
-        modifier = Modifier.clickable(enabled) {
+        modifier = modifier.clickable(enabled) {
             bottomSheetHandler.show {
                 ModalBottomSheetContent(
                     title = { Text(label) },
