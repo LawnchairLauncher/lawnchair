@@ -26,7 +26,6 @@ import androidx.annotation.OpenForTesting
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener
 import com.android.launcher3.icons.BitmapInfo
-import com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter
 import com.android.launcher3.model.data.AppPairInfo
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
@@ -62,20 +61,9 @@ constructor(context: Context, attrs: AttributeSet? = null) :
             appIcon1.setBounds(0, 0, p.memberIconSize.toInt(), p.memberIconSize.toInt())
             appIcon2.setBounds(0, 0, p.memberIconSize.toInt(), p.memberIconSize.toInt())
 
-            val shouldDrawAsDisabled =
-                appPairInfo.isDisabled || !appPairInfo.isLaunchable(p.context)
-
-            // Set disabled status on icons.
-            appIcon1.setIsDisabled(shouldDrawAsDisabled)
-            appIcon2.setIsDisabled(shouldDrawAsDisabled)
-
             // Create icon drawable.
             val fullIconDrawable = AppPairIconDrawable(p, appIcon1, appIcon2)
             fullIconDrawable.setBounds(0, 0, p.iconSize, p.iconSize)
-
-            // Set disabled color filter on background paint.
-            fullIconDrawable.colorFilter =
-                if (shouldDrawAsDisabled) getDisabledColorFilter() else null
 
             return fullIconDrawable
         }
