@@ -70,9 +70,9 @@ public class WidgetsEduView extends AbstractSlideInView<BaseActivity> implements
     }
 
     @Override
-    protected void onScaleProgressChanged() {
-        super.onScaleProgressChanged();
-        setTranslationY(getMeasuredHeight() * (1 - mSlideInViewScale.value) / 2);
+    protected void onUserSwipeToDismissProgressChanged() {
+        super.onUserSwipeToDismissProgressChanged();
+        setTranslationY(getMeasuredHeight() * (mSwipeToDismissProgress.value / 2));
     }
 
     private void show() {

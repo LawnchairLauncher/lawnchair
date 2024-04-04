@@ -280,6 +280,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     @Override
     public void addHintCloseAnim(
             float distanceToMove, Interpolator interpolator, PendingAnimation target) {
-        target.setInt(this, PADDING_BOTTOM, (int) (distanceToMove + mInsets.bottom), interpolator);
+        target.addAnimatedFloat(mSwipeToDismissProgress, 0f, 1f, interpolator);
     }
 }
