@@ -200,6 +200,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     public static void showForWidget(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
+        // If widget is not added to view hierarchy, we cannot show resize frame at correct location
+        if (widget.getParent() == null) {
+            return;
+        }
         Launcher launcher = Launcher.getLauncher(cellLayout.getContext());
         AbstractFloatingView.closeAllOpenViews(launcher);
 
