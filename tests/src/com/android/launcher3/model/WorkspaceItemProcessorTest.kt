@@ -64,13 +64,13 @@ class WorkspaceItemProcessorTest {
     @Mock private lateinit var mockBgDataModel: BgDataModel
     @Mock private lateinit var mockContext: Context
     @Mock private lateinit var mockAppState: LauncherAppState
-    @Mock private lateinit var mockIntent: Intent
     @Mock private lateinit var mockPmHelper: PackageManagerHelper
     @Mock private lateinit var mockLauncherApps: LauncherApps
     @Mock private lateinit var mockCursor: LoaderCursor
     @Mock private lateinit var mockUserManagerState: UserManagerState
     @Mock private lateinit var mockWidgetInflater: WidgetInflater
 
+    private lateinit var intent: Intent
     private lateinit var userHandle: UserHandle
     private lateinit var iconRequestInfos: MutableList<IconRequestInfo<WorkspaceItemInfo>>
     private lateinit var componentName: ComponentName
@@ -90,11 +90,11 @@ class WorkspaceItemProcessorTest {
         mockBgDataModel = mock<BgDataModel>()
         componentName = ComponentName("package", "class")
         unlockedUsersArray = LongSparseArray<Boolean>(1).apply { put(101, true) }
-        mockIntent =
-            mock<Intent>().apply {
-                whenever(component).thenReturn(componentName)
-                whenever(`package`).thenReturn("pkg")
-                whenever(getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID)).thenReturn("")
+        intent =
+            Intent().apply {
+                component = componentName
+                `package` = "pkg"
+                putExtra(ShortcutKey.EXTRA_SHORTCUT_ID, "")
             }
         mockContext =
             mock<Context>().apply {
@@ -110,7 +110,7 @@ class WorkspaceItemProcessorTest {
         mockPmHelper =
             mock<PackageManagerHelper>().apply {
                 whenever(getAppLaunchIntent(componentName.packageName, userHandle))
-                    .thenReturn(mockIntent)
+                    .thenReturn(intent)
             }
         mockLauncherApps =
             mock<LauncherApps>().apply {
@@ -124,10 +124,9 @@ class WorkspaceItemProcessorTest {
                 id = 1
                 restoreFlag = 1
                 serialNumber = 101
-                whenever(parseIntent()).thenReturn(mockIntent)
+                whenever(parseIntent()).thenReturn(intent)
                 whenever(markRestored()).doAnswer { restoreFlag = 0 }
-                whenever(updater().put(Favorites.INTENT, mockIntent.toUri(0)).commit())
-                    .thenReturn(1)
+                whenever(updater().put(Favorites.INTENT, intent.toUri(0)).commit()).thenReturn(1)
                 whenever(getAppShortcutInfo(any(), any(), any(), any()))
                     .thenReturn(mockWorkspaceInfo)
                 whenever(createIconRequestInfo(any(), any())).thenReturn(mockIconRequestInfo)
@@ -185,9 +184,11 @@ class WorkspaceItemProcessorTest {
     fun `When user is null then mark item deleted`() {
         // Given
         mockCursor = mock<LoaderCursor>().apply { id = 1 }
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
+
         // Then
         verify(mockCursor).markDeleted("User has been deleted for item id=1", PROFILE_DELETED)
         verify(mockCursor, times(0)).checkAndAddItem(any(), any(), anyOrNull())
@@ -197,8 +198,9 @@ class WorkspaceItemProcessorTest {
     fun `When app has null intent then mark deleted`() {
         // Given
         mockCursor.apply { whenever(parseIntent()).thenReturn(null) }
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
         // Then
         verify(mockCursor).markDeleted("Null intent from db for item id=1", MISSING_INFO)
@@ -209,13 +211,13 @@ class WorkspaceItemProcessorTest {
     fun `When app has null target package then mark deleted`() {
 
         // Given
-        mockIntent.apply {
-            whenever(component).thenReturn(null)
-            whenever(`package`).thenReturn(null)
+        intent.apply {
+            component = null
+            `package` = null
         }
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
 
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
 
         // Then
@@ -228,11 +230,11 @@ class WorkspaceItemProcessorTest {
 
         // Given
         componentName = ComponentName("", "")
-        whenever(mockIntent.component).thenReturn(componentName)
-        whenever(mockCursor.parseIntent()).thenReturn(mockIntent)
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
+        intent.component = componentName
+        intent.`package` = ""
 
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
 
         // Then
@@ -243,10 +245,8 @@ class WorkspaceItemProcessorTest {
     @Test
     fun `When valid app then mark restored`() {
 
-        // Given
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
-
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
 
         // Then
@@ -271,18 +271,18 @@ class WorkspaceItemProcessorTest {
         mockPmHelper =
             mock<PackageManagerHelper>().apply {
                 whenever(getAppLaunchIntent(componentName.packageName, userHandle))
-                    .thenReturn(mockIntent)
+                    .thenReturn(intent)
             }
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
 
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
 
         // Then
         assertWithMessage("item restoreFlag should be set to 0")
             .that(mockCursor.restoreFlag)
             .isEqualTo(0)
-        verify(mockCursor.updater().put(Favorites.INTENT, mockIntent.toUri(0))).commit()
+        verify(mockCursor.updater().put(Favorites.INTENT, intent.toUri(0))).commit()
         assertThat(iconRequestInfos).containsExactly(mockIconRequestInfo)
         verify(mockCursor).checkAndAddItem(mockWorkspaceInfo, mockBgDataModel, null)
     }
@@ -300,9 +300,9 @@ class WorkspaceItemProcessorTest {
             mock<PackageManagerHelper>().apply {
                 whenever(getAppLaunchIntent(componentName.packageName, userHandle)).thenReturn(null)
             }
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
 
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
 
         // Then
@@ -336,13 +336,13 @@ class WorkspaceItemProcessorTest {
                 whenever(disabledReason).thenReturn(0)
                 whenever(persons).thenReturn(EMPTY_PERSON_ARRAY)
             }
-        val shortcutKey = ShortcutKey.fromIntent(mockIntent, mockCursor.user)
+        val shortcutKey = ShortcutKey.fromIntent(intent, mockCursor.user)
         keyToPinnedShortcutsMap[shortcutKey] = expectedShortcutInfo
         iconRequestInfos = mutableListOf()
-        itemProcessorUnderTest =
-            createWorkspaceItemProcessorUnderTest(allDeepShortcuts = allDeepShortcuts)
 
         // When
+        itemProcessorUnderTest =
+            createWorkspaceItemProcessorUnderTest(allDeepShortcuts = allDeepShortcuts)
         itemProcessorUnderTest.processItem()
 
         // Then
@@ -362,9 +362,9 @@ class WorkspaceItemProcessorTest {
         mockCursor.itemType = ITEM_TYPE_DEEP_SHORTCUT
         iconRequestInfos = mutableListOf()
         keyToPinnedShortcutsMap = hashMapOf()
-        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
 
         // When
+        itemProcessorUnderTest = createWorkspaceItemProcessorUnderTest()
         itemProcessorUnderTest.processItem()
 
         // Then
@@ -378,6 +378,45 @@ class WorkspaceItemProcessorTest {
                 "Pinned shortcut not found from request. package=pkg, user=UserHandle{0}",
                 "shortcut_not_found"
             )
+    }
+
+    @Test
+    fun `When valid Pinned Deep Shortcut with null intent package then use targetPkg`() {
+
+        // Given
+        mockCursor.itemType = ITEM_TYPE_DEEP_SHORTCUT
+        val expectedShortcutInfo =
+            mock<ShortcutInfo>().apply {
+                whenever(id).thenReturn("")
+                whenever(`package`).thenReturn("")
+                whenever(activity).thenReturn(mock())
+                whenever(longLabel).thenReturn("")
+                whenever(isEnabled).thenReturn(true)
+                whenever(disabledMessage).thenReturn("")
+                whenever(disabledReason).thenReturn(0)
+                whenever(persons).thenReturn(EMPTY_PERSON_ARRAY)
+            }
+        iconRequestInfos = mutableListOf()
+        // Make sure shortcuts map has expected key from expected package
+        intent.`package` = componentName.packageName
+        val shortcutKey = ShortcutKey.fromIntent(intent, mockCursor.user)
+        keyToPinnedShortcutsMap[shortcutKey] = expectedShortcutInfo
+        // set intent package back to null to test scenario
+        intent.`package` = null
+
+        // When
+        itemProcessorUnderTest =
+            createWorkspaceItemProcessorUnderTest(allDeepShortcuts = allDeepShortcuts)
+        itemProcessorUnderTest.processItem()
+
+        // Then
+        assertWithMessage("item restoreFlag should be set to 0")
+            .that(mockCursor.restoreFlag)
+            .isEqualTo(0)
+        assertThat(iconRequestInfos).isEmpty()
+        assertThat(allDeepShortcuts).containsExactly(expectedShortcutInfo)
+        verify(mockCursor).markRestored()
+        verify(mockCursor).checkAndAddItem(any(), any(), anyOrNull())
     }
 
     @Test

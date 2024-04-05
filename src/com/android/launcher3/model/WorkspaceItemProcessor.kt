@@ -181,6 +181,9 @@ class WorkspaceItemProcessor(
                 }
             }
         }
+        if (intent.`package` == null) {
+            intent.`package` = targetPkg
+        }
         // else if cn == null => can't infer much, leave it
         // else if !validPkg => could be restored icon or missing sd-card
         when {
