@@ -39,6 +39,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PrivateSpaceInstallAppButtonInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BubbleTextHolder;
@@ -150,7 +151,10 @@ public class ItemLongClickListener {
         if (launcher.getWorkspace().isSwitchingState()) return false;
 
         StatsLogger logger = launcher.getStatsLogManager().logger();
-        if (v.getTag() instanceof ItemInfo) {
+        if (v.getTag() instanceof ItemInfo itemInfo) {
+            if (itemInfo instanceof PrivateSpaceInstallAppButtonInfo) {
+                return false;
+            }
             logger.withItemInfo((ItemInfo) v.getTag());
         }
         logger.log(LAUNCHER_ALLAPPS_ITEM_LONG_PRESSED);
