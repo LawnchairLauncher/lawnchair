@@ -65,7 +65,7 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
             notificationDotsEnabled(context = context).first().not()
 
     override suspend fun startSetup(activity: Activity) {
-        val intent = PreferenceActivity.createIntent(activity, "/${Routes.GENERAL}/")
+        val intent = PreferenceActivity.createIntent(activity, "${Routes.GENERAL}")
         val message = activity.getString(
             R.string.event_provider_missing_notification_dots,
             activity.getString(providerName),

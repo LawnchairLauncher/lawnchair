@@ -22,10 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.CustomColorPicker
@@ -34,33 +30,10 @@ import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGri
 import app.lawnchair.ui.preferences.components.layout.BottomSpacer
 import app.lawnchair.ui.preferences.components.layout.Chip
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
-
-fun NavGraphBuilder.colorSelectionGraph(route: String) {
-    preferenceGraph(route, {}) { subRoute ->
-        composable(
-            route = subRoute("{prefKey}"),
-            arguments = listOf(
-                navArgument("prefKey") { type = NavType.StringType },
-            ),
-        ) { backStackEntry ->
-
-            val args = backStackEntry.arguments!!
-            val prefKey = args.getString("prefKey")!!
-            val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
-            val model = modelList[prefKey]
-            ColorSelection(
-                label = stringResource(id = model.labelRes),
-                preference = model.prefObject,
-                dynamicEntries = model.dynamicEntries,
-            )
-        }
-    }
-}
 
 @Composable
 fun ColorSelection(

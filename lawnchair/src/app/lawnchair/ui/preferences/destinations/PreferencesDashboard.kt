@@ -43,7 +43,6 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
-import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
@@ -152,9 +151,9 @@ fun PreferencesOverflowMenu(
 ) {
     val navController = LocalNavController.current
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
-    val experimentalFeaturesRoute = subRoute(name = Routes.EXPERIMENTAL_FEATURES)
+    val experimentalFeaturesRoute = Routes.EXPERIMENTAL_FEATURES
     if (enableDebug) {
-        val resolvedRoute = subRoute(name = Routes.DEBUG_MENU)
+        val resolvedRoute = Routes.DEBUG_MENU
         ClickableIcon(
             imageVector = Icons.Rounded.Build,
             onClick = { navController.navigate(resolvedRoute) },
@@ -185,7 +184,7 @@ fun PreferencesOverflowMenu(
         })
         PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
         DropdownMenuItem(onClick = {
-            navController.navigate("/${Routes.CREATE_BACKUP}/")
+            navController.navigate("${Routes.CREATE_BACKUP}")
             hideMenu()
         }, text = {
             Text(text = stringResource(id = R.string.create_backup))

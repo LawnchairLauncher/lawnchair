@@ -3,7 +3,6 @@ package app.lawnchair.ui.preferences.destinations
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
@@ -16,16 +15,11 @@ import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.contactPermissionGranted
 import app.lawnchair.util.filesAndStorageGranted
 import app.lawnchair.util.requestContactPermissionGranted
 import com.android.launcher3.R
-
-fun NavGraphBuilder.searchGraph(route: String) {
-    preferenceGraph(route, { SearchPreferences() })
-}
 
 @Composable
 fun SearchPreferences() {

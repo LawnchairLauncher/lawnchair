@@ -36,7 +36,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.PreviewLawnchair
 import com.android.launcher3.R
@@ -49,7 +48,7 @@ fun PreferenceCategory(
     description: String? = null,
 ) {
     val navController = LocalNavController.current
-    val resolvedRoute = subRoute(name = route)
+    val resolvedRoute = route
 
     PreferenceCategory(
         label = label,

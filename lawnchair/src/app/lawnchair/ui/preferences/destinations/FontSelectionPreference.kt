@@ -42,16 +42,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import app.lawnchair.font.FontCache
 import app.lawnchair.font.googlefonts.GoogleFontsListing
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.AndroidText
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
@@ -60,25 +55,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceSearchScaffold
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
-import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
-
-fun NavGraphBuilder.fontSelectionGraph(route: String) {
-    preferenceGraph(route, {}) { subRoute ->
-        composable(
-            route = subRoute("{prefKey}"),
-            arguments = listOf(
-                navArgument("prefKey") { type = NavType.StringType },
-            ),
-        ) { backStackEntry ->
-            val args = backStackEntry.arguments!!
-            val prefKey = args.getString("prefKey")!!
-            val pref = preferenceManager().prefsMap[prefKey]
-                as? BasePreferenceManager.FontPref ?: return@composable
-            FontSelection(pref)
-        }
-    }
-}
 
 private enum class ContentType {
     ADD_BUTTON,
