@@ -113,7 +113,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             new CopyOnWriteArrayList<>();
 
     public StatsLogCompatManager(Context context) {
-        mContext = context;
+        super(context);
     }
 
     @Override
