@@ -1253,16 +1253,23 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
             appAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             appAnimator.setInterpolator(ACCELERATE_DECELERATE);
+            final Matrix matrix = new Matrix();
             appAnimator.addUpdateListener(valueAnimator -> {
                 float percent = valueAnimator.getAnimatedFraction();
                 SurfaceTransaction transaction = new SurfaceTransaction();
-                Matrix matrix = new Matrix();
-                matrix.postScale(percent, percent);
-                matrix.postTranslate(mActivity.getDeviceProfile().widthPx * (1 - percent) / 2,
-                        mActivity.getDeviceProfile().heightPx * (1 - percent) / 2);
-                transaction.forSurface(apps[apps.length - 1].leash)
-                        .setAlpha(percent)
-                        .setMatrix(matrix);
+                for (int i = apps.length - 1; i >= 0; --i) {
+                    RemoteAnimationTarget app = apps[i];
+
+                    float dx = mActivity.getDeviceProfile().widthPx * (1 - percent) / 2
+                            + app.screenSpaceBounds.left * percent;
+                    float dy = mActivity.getDeviceProfile().heightPx * (1 - percent) / 2
+                            + app.screenSpaceBounds.top * percent;
+                    matrix.setScale(percent, percent);
+                    matrix.postTranslate(dx, dy);
+                    transaction.forSurface(app.leash)
+                            .setAlpha(percent)
+                            .setMatrix(matrix);
+                }
                 surfaceApplier.scheduleApply(transaction);
             });
             appAnimator.addListener(new AnimatorListenerAdapter() {
@@ -5357,6 +5364,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         finishRecentsAnimation(toRecents, true /* shouldPip */, onFinishComplete);
     }
 
+    /**
+     * NOTE: Whatever value gets passed through to the toRecents param may need to also be set on
+     * {@link #mRecentsAnimationController#setWillFinishToHome}.
+     */
     public void finishRecentsAnimation(boolean toRecents, boolean shouldPip,
             @Nullable Runnable onFinishComplete) {
         Log.d(TAG, "finishRecentsAnimation - mRecentsAnimationController: "
