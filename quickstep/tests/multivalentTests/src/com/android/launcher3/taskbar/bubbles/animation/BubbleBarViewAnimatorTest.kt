@@ -16,6 +16,9 @@
 
 package com.android.launcher3.taskbar.bubbles.animation
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Path
@@ -24,6 +27,8 @@ import android.view.LayoutInflater
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
+import androidx.core.animation.AnimatorTestRule
+import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.toBitmap
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.test.core.app.ApplicationProvider
@@ -39,10 +44,14 @@ import com.android.launcher3.taskbar.bubbles.BubbleView
 import com.android.wm.shell.common.bubbles.BubbleInfo
 import com.android.wm.shell.shared.animation.PhysicsAnimatorTestUtils
 import com.google.common.truth.Truth.assertThat
+import java.util.concurrent.Semaphore
+import java.util.concurrent.TimeUnit
 import org.junit.Before
+import org.junit.ClassRule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @SmallTest
@@ -51,6 +60,10 @@ class BubbleBarViewAnimatorTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val animatorScheduler = TestBubbleBarViewAnimatorScheduler()
+
+    companion object {
+        @JvmField @ClassRule val animatorTestRule = AnimatorTestRule()
+    }
 
     @Before
     fun setUp() {
@@ -86,6 +99,15 @@ class BubbleBarViewAnimatorTest {
         val bubbleStashController = mock<BubbleStashController>()
         whenever(bubbleStashController.isStashed).thenReturn(true)
 
+        val semaphore = Semaphore(0)
+        val hideHandleAnimator = AnimatorSet()
+        hideHandleAnimator.duration = 0
+        whenever(bubbleStashController.buildHideHandleAnimationForNewBubble())
+            .thenReturn(hideHandleAnimator)
+        // add an end listener to the hide handle animation. we add it when the animation starts
+        // to ensure that it gets called after all other end listeners.
+        hideHandleAnimator.doOnStart { hideHandleAnimator.doOnEnd { semaphore.release() } }
+
         val animator =
             BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
 
@@ -93,29 +115,44 @@ class BubbleBarViewAnimatorTest {
             animator.animateBubbleInForStashed(bubble)
         }
 
+        // wait for the stash handle animation to complete
+        assertThat(semaphore.tryAcquire(5, TimeUnit.SECONDS)).isTrue()
+        // stash handle animation finished. verify that the stash handle is now hidden
+        verify(bubbleStashController).setStashAlpha(0f)
+
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
 
         assertThat(overflowView.visibility).isEqualTo(INVISIBLE)
         assertThat(bubbleBarView.visibility).isEqualTo(VISIBLE)
         assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
 
+        // wait for the show bubble animation to complete
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(
             DynamicAnimation.ALPHA,
-            DynamicAnimation.TRANSLATION_Y
+            DynamicAnimation.TRANSLATION_Y,
+            DynamicAnimation.SCALE_Y,
         )
 
         assertThat(bubbleView.alpha).isEqualTo(1)
         assertThat(bubbleView.translationY).isEqualTo(-50)
+        assertThat(bubbleView.scaleY).isEqualTo(1)
 
+        val showHandleAnimator = AnimatorSet()
+        showHandleAnimator.duration = 0
+        whenever(bubbleStashController.buildShowHandleAnimationForNewBubble())
+            .thenReturn(showHandleAnimator)
+        var showHandleAnimationStarted = false
+        showHandleAnimator.doOnStart { showHandleAnimationStarted = true }
+
+        // execute the hide bubble animation
         assertThat(animatorScheduler.delayedBlock).isNotNull()
         InstrumentationRegistry.getInstrumentation().runOnMainSync(animatorScheduler.delayedBlock!!)
+        // finish the hide bubble animation
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animatorTestRule.advanceTimeBy(250)
+        }
 
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
-
-        PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(
-            DynamicAnimation.ALPHA,
-            DynamicAnimation.TRANSLATION_Y
-        )
+        assertThat(showHandleAnimationStarted).isTrue()
 
         assertThat(bubbleView.alpha).isEqualTo(1)
         assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
@@ -123,6 +160,16 @@ class BubbleBarViewAnimatorTest {
         assertThat(bubbleBarView.alpha).isEqualTo(0)
         assertThat(overflowView.alpha).isEqualTo(1)
         assertThat(overflowView.visibility).isEqualTo(VISIBLE)
+    }
+
+    private fun AnimatorSet.doOnStart(onStart: () -> Unit) {
+        addListener(
+            object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animator: Animator) {
+                    onStart()
+                }
+            }
+        )
     }
 
     private class TestBubbleBarViewAnimatorScheduler : BubbleBarViewAnimator.Scheduler {

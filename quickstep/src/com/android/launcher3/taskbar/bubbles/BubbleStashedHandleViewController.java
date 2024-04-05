@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.taskbar.StashedHandleView;
@@ -47,7 +48,7 @@ public class BubbleStashedHandleViewController {
 
     private final TaskbarActivityContext mActivity;
     private final StashedHandleView mStashedHandleView;
-    private final MultiValueAlpha mTaskbarStashedHandleAlpha;
+    private final MultiValueAlpha mStashedHandleAlpha;
 
     // Initialized in init.
     private BubbleBarViewController mBarViewController;
@@ -57,6 +58,12 @@ public class BubbleStashedHandleViewController {
     private int mStashedTaskbarHeight;
     private int mStashedHandleWidth;
     private int mStashedHandleHeight;
+
+    private final AnimatedFloat mStashedHandleTranslationY =
+            new AnimatedFloat(this::updateTranslationY);
+
+    // Modified when swipe up is happening on the stashed handle or task bar.
+    private float mSwipeUpTranslationY;
 
     // The bounds we want to clip to in the settled state when showing the stashed handle.
     private final Rect mStashedHandleBounds = new Rect();
@@ -75,7 +82,7 @@ public class BubbleStashedHandleViewController {
             StashedHandleView stashedHandleView) {
         mActivity = activity;
         mStashedHandleView = stashedHandleView;
-        mTaskbarStashedHandleAlpha = new MultiValueAlpha(mStashedHandleView, 1);
+        mStashedHandleAlpha = new MultiValueAlpha(mStashedHandleView, 1);
     }
 
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
@@ -93,7 +100,7 @@ public class BubbleStashedHandleViewController {
                 R.dimen.transient_taskbar_bottom_margin);
         mStashedHandleView.getLayoutParams().height = mBarSize + bottomMargin;
 
-        mTaskbarStashedHandleAlpha.get(0).setValue(0);
+        mStashedHandleAlpha.get(0).setValue(0);
 
         mStashedTaskbarHeight = resources.getDimensionPixelSize(
                 R.dimen.bubblebar_stashed_size);
@@ -231,18 +238,33 @@ public class BubbleStashedHandleViewController {
         }
     }
 
+    /** Returns an animator for translation Y. */
+    public AnimatedFloat getStashedHandleTranslationY() {
+        return mStashedHandleTranslationY;
+    }
+
     /**
      * Sets the translation of the stashed handle during the swipe up gesture.
      */
     public void setTranslationYForSwipe(float transY) {
-        mStashedHandleView.setTranslationY(transY);
+        mSwipeUpTranslationY = transY;
+        updateTranslationY();
+    }
+
+    private void updateTranslationY() {
+        mStashedHandleView.setTranslationY(mStashedHandleTranslationY.value + mSwipeUpTranslationY);
     }
 
     /**
      * Used by {@link BubbleStashController} to animate the handle when stashing or un stashing.
      */
     public MultiPropertyFactory<View> getStashedHandleAlpha() {
-        return mTaskbarStashedHandleAlpha;
+        return mStashedHandleAlpha;
+    }
+
+    /** Returns the x position of the center of the stashed handle. */
+    public float getStashedHandleCenterX() {
+        return mStashedHandleBounds.exactCenterX();
     }
 
     /**
