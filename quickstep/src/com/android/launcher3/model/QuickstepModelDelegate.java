@@ -111,12 +111,11 @@ public class QuickstepModelDelegate extends ModelDelegate {
     private final InvariantDeviceProfile mIDP;
     private final AppEventProducer mAppEventProducer;
     private final StatsManager mStatsManager;
-    private final Context mContext;
 
     protected boolean mActive = false;
 
     public QuickstepModelDelegate(Context context) {
-        mContext = context;
+        super(context);
         mAppEventProducer = new AppEventProducer(context, this::onAppTargetEvent);
 
         mIDP = InvariantDeviceProfile.INSTANCE.get(context);
