@@ -157,20 +157,27 @@ public class ItemClickHandler {
                             ? R.string.app_pair_needs_unfold
                             : R.string.app_pair_unlaunchable_at_screen_size,
                     Toast.LENGTH_SHORT).show();
+            return;
         } else if (appPairIcon.getInfo().isDisabled()) {
             WorkspaceItemInfo app1 = appPairIcon.getInfo().getFirstApp();
             WorkspaceItemInfo app2 = appPairIcon.getInfo().getSecondApp();
             // Show the user why the app pair is disabled.
-            if (app1.isDisabled() && !handleDisabledItemClicked(app1, launcher)) {
-                // If handleDisabledItemClicked() did not handle the error message, we initiate an
-                // app launch so Framework can tell the user why the app is suspended.
-                onClickAppShortcut(v, app1, launcher);
-            } else if (app2.isDisabled() && !handleDisabledItemClicked(app2, launcher)) {
-                onClickAppShortcut(v, app2, launcher);
+            if (app1.isDisabled() && app2.isDisabled()) {
+                // Both apps are disabled, show "app pair is not available" toast.
+                Toast.makeText(launcher, R.string.app_pair_not_available, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            } else if ((app1.isDisabled() && handleDisabledItemClicked(app1, launcher))
+                    || (app2.isDisabled() && handleDisabledItemClicked(app2, launcher))) {
+                // Only one is disabled, and handleDisabledItemClicked() will show a toast, so we
+                // are done.
+                return;
             }
-        } else {
-            launcher.launchAppPair(appPairIcon);
         }
+
+        // Either the app pair is not disabled, or it is a disabled state that can be handled by
+        // framework directly (e.g. one app is paused), so go ahead and launch.
+        launcher.launchAppPair(appPairIcon);
     }
 
     /**
