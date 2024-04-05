@@ -303,7 +303,7 @@ public class PrivateSpaceHeaderViewTest {
         assertEquals(NUM_PRIVATE_SPACE_APPS + 1 + 1,
                 mAlphabeticalAppsList.getAdapterItems().size());
         assertEquals(position,
-                privateProfileManager.scrollForViewToBeVisibleInContainer(
+                privateProfileManager.scrollForHeaderToBeVisibleInContainer(
                         new AllAppsRecyclerView(mContext),
                         mAlphabeticalAppsList.getAdapterItems(),
                         PS_HEADER_HEIGHT,
@@ -339,7 +339,7 @@ public class PrivateSpaceHeaderViewTest {
         assertEquals(NUM_PRIVATE_SPACE_APPS + 1 + 1,
                 mAlphabeticalAppsList.getAdapterItems().size());
         assertEquals(position,
-                privateProfileManager.scrollForViewToBeVisibleInContainer(
+                privateProfileManager.scrollForHeaderToBeVisibleInContainer(
                         new AllAppsRecyclerView(mContext),
                         mAlphabeticalAppsList.getAdapterItems(),
                         BIGGER_PS_HEADER_HEIGHT,
@@ -369,7 +369,7 @@ public class PrivateSpaceHeaderViewTest {
         // The number of adapterItems should be the private space apps + one main app.
         assertEquals(NUM_PRIVATE_SPACE_APPS + 1,
                 mAlphabeticalAppsList.getAdapterItems().size());
-        assertEquals(SCROLL_NO_WHERE, privateProfileManager.scrollForViewToBeVisibleInContainer(
+        assertEquals(SCROLL_NO_WHERE, privateProfileManager.scrollForHeaderToBeVisibleInContainer(
                 new AllAppsRecyclerView(mContext),
                 mAlphabeticalAppsList.getAdapterItems(),
                 BIGGER_PS_HEADER_HEIGHT,
