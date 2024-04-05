@@ -141,35 +141,31 @@ fun Preferences(
                     popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
                 ) {
                     composable(route = "/") { PreferencesDashboard() }
-                    composable(
-                        route = "${Routes.COLOR_SELECTION}/{prefKey}",
-                        arguments = listOf(
-                            navArgument("prefKey") { type = NavType.StringType },
-                        ),
-                    ) { backStackEntry ->
-                        val args = backStackEntry.arguments!!
-                        val prefKey = args.getString("prefKey")!!
-                        val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
-                        val model = modelList[prefKey]
-                        ColorSelection(
-                            label = stringResource(id = model.labelRes),
-                            preference = model.prefObject,
-                            dynamicEntries = model.dynamicEntries,
-                        )
-                    }
+
                     composable(route = Routes.GENERAL) { GeneralPreferences() }
                     composable(route = GeneralRoutes.ICON_PACK) { IconPackPreferences() }
                     composable(route = GeneralRoutes.ICON_SHAPE) { IconShapePreference() }
                     composable(route = IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR) { CustomIconShapePreference() }
+
                     composable(route = Routes.HOME_SCREEN) { HomeScreenPreferences() }
                     composable(route = HomeScreenRoutes.GRID) { HomeScreenGridPreferences() }
                     composable(route = Routes.DOCK) { DockPreferences() }
                     composable(route = DockRoutes.SEARCH_PROVIDER) { SearchProviderPreferences() }
+
+                    composable(route = Routes.SMARTSPACE) { SmartspacePreferences(fromWidget = false) }
+                    composable(route = Routes.SMARTSPACE_WIDGET) { SmartspacePreferences(fromWidget = true) }
+
                     composable(route = Routes.APP_DRAWER) { AppDrawerPreferences() }
                     composable(route = AppDrawerRoutes.HIDDEN_APPS) { HiddenAppsPreferences() }
+
                     composable(route = Routes.SEARCH) { SearchPreferences() }
                     composable(route = Routes.FOLDERS) { FolderPreferences() }
+
+                    composable(route = Routes.GESTURES) { GesturePreferences() }
+                    composable(route = Routes.PICK_APP_FOR_GESTURE) { PickAppForGesture() }
+
                     composable(route = Routes.QUICKSTEP) { QuickstepPreferences() }
+
                     composable(route = Routes.ABOUT) { About() }
                     composable(route = AboutRoutes.LICENSES) { Acknowledgements() }
                     composable(
@@ -184,7 +180,9 @@ fun Preferences(
                             as? BasePreferenceManager.FontPref ?: return@composable
                         FontSelection(pref)
                     }
+
                     composable(route = Routes.DEBUG_MENU) { DebugMenuPreferences() }
+
                     composable(
                         route = "${Routes.SELECT_ICON}/{packageName}/{nameAndUser}/",
                         arguments = listOf(
@@ -209,13 +207,27 @@ fun Preferences(
                         val packageName = args.getString("packageName")!!
                         IconPickerPreference(packageName)
                     }
+
                     composable(route = Routes.EXPERIMENTAL_FEATURES) { ExperimentalFeaturesPreferences() }
-                    composable(route = Routes.SMARTSPACE) { SmartspacePreferences(fromWidget = false) }
-                    composable(route = Routes.SMARTSPACE_WIDGET) { SmartspacePreferences(fromWidget = true) }
+                    composable(
+                        route = "${Routes.COLOR_SELECTION}/{prefKey}",
+                        arguments = listOf(
+                            navArgument("prefKey") { type = NavType.StringType },
+                        ),
+                    ) { backStackEntry ->
+                        val args = backStackEntry.arguments!!
+                        val prefKey = args.getString("prefKey")!!
+                        val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
+                        val model = modelList[prefKey]
+                        ColorSelection(
+                            label = stringResource(id = model.labelRes),
+                            preference = model.prefObject,
+                            dynamicEntries = model.dynamicEntries,
+                        )
+                    }
+
                     composable(route = Routes.CREATE_BACKUP) { CreateBackupScreen(viewModel()) }
                     restoreBackupGraph(route = Routes.RESTORE_BACKUP)
-                    composable(route = Routes.PICK_APP_FOR_GESTURE) { PickAppForGesture() }
-                    composable(route = Routes.GESTURES) { GesturePreferences() }
                 }
             }
         }
