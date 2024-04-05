@@ -20,9 +20,9 @@ import android.os.IBinder
 import android.os.RemoteException
 import android.util.Log
 import android.view.SurfaceControl
-import android.window.IRemoteTransition
 import android.window.IRemoteTransitionFinishedCallback
 import android.window.RemoteTransition
+import android.window.RemoteTransitionStub
 import android.window.TransitionInfo
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
@@ -66,7 +66,7 @@ class DesktopRecentsTransitionController(
         private val stateManager: StateManager<*>,
         private val depthController: DepthController?,
         private val successCallback: Consumer<Boolean>?
-    ) : IRemoteTransition.Stub() {
+    ) : RemoteTransitionStub() {
 
         override fun startAnimation(
             token: IBinder,
@@ -95,16 +95,6 @@ class DesktopRecentsTransitionController(
                 }
             }
         }
-
-        override fun mergeAnimation(
-            transition: IBinder,
-            info: TransitionInfo,
-            t: SurfaceControl.Transaction,
-            mergeTarget: IBinder,
-            finishCallback: IRemoteTransitionFinishedCallback
-        ) {}
-
-        override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {}
     }
 
     companion object {
