@@ -20,19 +20,8 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
-import static com.android.launcher3.LauncherPrefs.PRIVATE_SPACE_APPS;
-import static com.android.launcher3.config.FeatureFlags.LPNH_EXTRA_TOUCH_WIDTH_DP;
-import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_DELAY;
-import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_END_SCALE_PERCENT;
-import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_ITERATIONS;
-import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_SCALE_EXPONENT;
-import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_START_SCALE_PERCENT;
-import static com.android.launcher3.config.FeatureFlags.LPNH_SLOP_PERCENTAGE;
-import static com.android.launcher3.config.FeatureFlags.LPNH_TIMEOUT_MS;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_HIGHLIGHT_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
-import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_COUNT;
 import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
@@ -51,7 +40,6 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,21 +49,18 @@ import android.widget.Toast;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
-import androidx.preference.PreferenceDataStore;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
-import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
 
-import com.android.launcher3.ConstantItem;
-import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.systemui.shared.plugins.PluginEnabler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +81,6 @@ public class DeveloperOptionsUI {
     private final PreferenceFragmentCompat mFragment;
     private final PreferenceScreen mPreferenceScreen;
 
-    private final FlagTogglerPrefUi mFlagTogglerPrefUi;
-
     private PreferenceCategory mPluginsCategory;
 
     public DeveloperOptionsUI(PreferenceFragmentCompat fragment, PreferenceCategory flags) {
@@ -112,20 +95,14 @@ public class DeveloperOptionsUI {
         parent.addView(topBar, parent.indexOfChild(listView));
         initSearch(topBar.findViewById(R.id.filter_box));
 
-        mFlagTogglerPrefUi = new FlagTogglerPrefUi(mFragment.requireActivity(),
-                topBar.findViewById(R.id.flag_apply_btn));
-        mFlagTogglerPrefUi.applyTo(flags);
+        new FlagTogglerPrefUi(mFragment.requireActivity(), topBar.findViewById(R.id.flag_apply_btn))
+                .applyTo(flags);
+        DevOptionsUiHelper uiHelper = new DevOptionsUiHelper();
+        uiHelper.inflateServerFlags(newCategory("Server flags"));
 
         loadPluginPrefs();
         maybeAddSandboxCategory();
         addOnboardingPrefsCatergory();
-        if (FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()) {
-            addAllAppsFromOverviewCatergory();
-        }
-        addCustomLpnhCategory();
-        if (Flags.enablePrivateSpace()) {
-            addCustomPrivateAppsCategory();
-        }
     }
 
     private void filterPreferences(String query, PreferenceGroup pg) {
@@ -205,7 +182,7 @@ public class DeveloperOptionsUI {
                 new ArrayMap<>();
 
         Set<String> pluginPermissionApps = pm.getPackagesHoldingPermissions(
-                new String[]{PLUGIN_PERMISSION}, MATCH_DISABLED_COMPONENTS)
+                        new String[]{PLUGIN_PERMISSION}, MATCH_DISABLED_COMPONENTS)
                 .stream()
                 .map(pi -> pi.packageName)
                 .collect(Collectors.toSet());
@@ -228,7 +205,7 @@ public class DeveloperOptionsUI {
             }
         }
 
-        PreferenceDataStore enabler = manager.getPluginEnabler();
+        PluginEnabler enabler = manager.getPluginEnabler();
         plugins.forEach((key, si) -> {
             String packageName = key.first;
             List<ComponentName> componentNames = si.stream()
@@ -347,111 +324,10 @@ public class DeveloperOptionsUI {
         return onboardingPref;
     }
 
-    private void addAllAppsFromOverviewCatergory() {
-        PreferenceCategory category = newCategory("All Apps from Overview Config");
-        category.addPreference(createSeekBarPreference("Threshold to open All Apps from Overview",
-                105, 500, 100, ALL_APPS_OVERVIEW_THRESHOLD));
-    }
-
-    private void addCustomLpnhCategory() {
-        PreferenceCategory category = newCategory("Long Press Nav Handle Config");
-        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
-            category.addPreference(createSeekBarPreference(
-                    "Slop multiplier (applied to edge slop, "
-                            + "which is generally already 50% higher than touch slop)",
-                    25, 200, 100, LPNH_SLOP_PERCENTAGE));
-            category.addPreference(createSeekBarPreference(
-                    "Extra width DP (how far outside the sides of the nav bar to trigger)",
-                    // Stashed taskbar is currently 220dp; -86 (x2) would result in 48dp touch area.
-                    -86, 100, 1, LPNH_EXTRA_TOUCH_WIDTH_DP));
-            category.addPreference(createSeekBarPreference("LPNH timeout",
-                    100, 500, 1, LPNH_TIMEOUT_MS));
-        }
-        if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get()) {
-            category.addPreference(
-                    createSeekBarPreference("Haptic hint start scale",
-                            0, 100, 100, LPNH_HAPTIC_HINT_START_SCALE_PERCENT));
-            category.addPreference(createSeekBarPreference("Haptic hint end scale",
-                    0, 100, 100, LPNH_HAPTIC_HINT_END_SCALE_PERCENT));
-            category.addPreference(
-                    createSeekBarPreference("Haptic hint scale exponent",
-                            1, 5, 1, LPNH_HAPTIC_HINT_SCALE_EXPONENT));
-            category.addPreference(
-                    createSeekBarPreference("Haptic hint iterations (12 ms each)",
-                            0, 200, 1, LPNH_HAPTIC_HINT_ITERATIONS));
-            category.addPreference(createSeekBarPreference("Haptic hint delay (ms)",
-                    0, 400, 1, LPNH_HAPTIC_HINT_DELAY));
-        }
-    }
-
-    private void addCustomPrivateAppsCategory() {
-        PreferenceCategory category = newCategory("Apps in Private Space Config");
-        category.addPreference(createSeekBarPreference(
-                "Number of Apps to put in private region", 0, 100, 1, PRIVATE_SPACE_APPS));
-    }
-
-    private SeekBarPreference createSeekBarPreference(String title, int min,
-            int max, int scale, FeatureFlags.IntFlag flag) {
-        if (!(flag instanceof IntDebugFlag)) {
-            Log.e(TAG, "Cannot create seekbar preference with IntFlag. Use a launcher preference "
-                    + "flag or pref-backed IntDebugFlag instead");
-            return null;
-        }
-        IntDebugFlag debugflag = (IntDebugFlag) flag;
-        if (debugflag.launcherPrefFlag == null) {
-            Log.e(TAG, "Cannot create seekbar preference with IntDebugFlag. Use a launcher "
-                    + "preference flag or pref-backed IntDebugFlag instead");
-            return null;
-        }
-        SeekBarPreference seekBarPref = createSeekBarPreference(title, min, max, scale,
-                debugflag.launcherPrefFlag);
-        int value = flag.get();
-        seekBarPref.setValue(value);
-        // For some reason the initial value is not triggering the summary update, so call manually.
-        seekBarPref.setSummary(String.valueOf(scale == 1 ? value
-                : value / (float) scale));
-        return seekBarPref;
-    }
-
-    /**
-     * Create a preference with text and a seek bar. Should be added to a PreferenceCategory.
-     *
-     * @param title text to show for this seek bar
-     * @param min min value for the seek bar
-     * @param max max value for the seek bar
-     * @param scale how much to divide the value to convert int to float
-     * @param launcherPref used to store the current value
-     */
-    private SeekBarPreference createSeekBarPreference(String title, int min, int max, int scale,
-            ConstantItem<Integer> launcherPref) {
-        SeekBarPreference seekBarPref = new SeekBarPreference(getContext());
-        seekBarPref.setTitle(title);
-        seekBarPref.setSingleLineTitle(false);
-
-        seekBarPref.setMax(max);
-        seekBarPref.setMin(min);
-        seekBarPref.setUpdatesContinuously(true);
-        seekBarPref.setIconSpaceReserved(false);
-        // Don't directly save to shared prefs, use LauncherPrefs instead.
-        seekBarPref.setPersistent(false);
-        seekBarPref.setOnPreferenceChangeListener((preference, newValue) -> {
-            LauncherPrefs.get(getContext()).put(launcherPref, newValue);
-            preference.setSummary(String.valueOf(scale == 1 ? newValue
-                    : (int) newValue / (float) scale));
-            mFlagTogglerPrefUi.updateMenu();
-            return true;
-        });
-        int value = LauncherPrefs.get(getContext()).get(launcherPref);
-        seekBarPref.setValue(value);
-        // For some reason the initial value is not triggering the summary update, so call manually.
-        seekBarPref.setSummary(String.valueOf(scale == 1 ? value
-                : value / (float) scale));
-        return seekBarPref;
-    }
-
     private String toName(String action) {
         String str = action.replace("com.android.systemui.action.PLUGIN_", "")
                 .replace("com.android.launcher3.action.PLUGIN_", "");
+
         StringBuilder b = new StringBuilder();
         for (String s : str.split("_")) {
             if (b.length() != 0) {
@@ -466,11 +342,11 @@ public class DeveloperOptionsUI {
     private static class PluginPreference extends SwitchPreference {
         private final String mPackageName;
         private final ResolveInfo mSettingsInfo;
-        private final PreferenceDataStore mPluginEnabler;
+        private final PluginEnabler mPluginEnabler;
         private final List<ComponentName> mComponentNames;
 
         PluginPreference(Context prefContext, ResolveInfo pluginInfo,
-                PreferenceDataStore pluginEnabler, List<ComponentName> componentNames) {
+                PluginEnabler pluginEnabler, List<ComponentName> componentNames) {
             super(prefContext);
             PackageManager pm = prefContext.getPackageManager();
             mPackageName = pluginInfo.serviceInfo.applicationInfo.packageName;
@@ -495,14 +371,9 @@ public class DeveloperOptionsUI {
             setWidgetLayoutResource(R.layout.switch_preference_with_settings);
         }
 
-        private boolean isEnabled(ComponentName cn) {
-            return mPluginEnabler.getBoolean(pluginEnabledKey(cn), true);
-
-        }
-
         private boolean isPluginEnabled() {
             for (ComponentName componentName : mComponentNames) {
-                if (!isEnabled(componentName)) {
+                if (!mPluginEnabler.isEnabled(componentName)) {
                     return false;
                 }
             }
@@ -513,8 +384,9 @@ public class DeveloperOptionsUI {
         protected boolean persistBoolean(boolean isEnabled) {
             boolean shouldSendBroadcast = false;
             for (ComponentName componentName : mComponentNames) {
-                if (isEnabled(componentName) != isEnabled) {
-                    mPluginEnabler.putBoolean(pluginEnabledKey(componentName), isEnabled);
+                if (mPluginEnabler.isEnabled(componentName) != isEnabled) {
+                    mPluginEnabler.setDisabled(componentName,
+                            isEnabled ? PluginEnabler.ENABLED : PluginEnabler.DISABLED_MANUALLY);
                     shouldSendBroadcast = true;
                 }
             }

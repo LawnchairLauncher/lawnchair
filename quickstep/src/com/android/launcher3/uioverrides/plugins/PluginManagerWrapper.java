@@ -98,13 +98,6 @@ public class PluginManagerWrapper {
         return new PluginPrefs(mContext).getPluginList();
     }
 
-    /**
-     * Returns the string key used to store plugin enabled/disabled setting
-     */
-    public static String pluginEnabledKey(ComponentName cn) {
-        return PluginEnablerImpl.pluginEnabledKey(cn);
-    }
-
     public static boolean hasPlugins(Context context) {
         return PluginPrefs.hasPlugins(context);
     }

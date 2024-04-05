@@ -48,7 +48,6 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
-import com.android.launcher3.config.FeatureFlags.IntFlag;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.util.rule.TestStabilityRule;
@@ -67,7 +66,6 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 
 public class TestUtil {
     private static final String TAG = "TestUtil";
@@ -165,21 +163,6 @@ public class TestUtil {
         return () -> {
             if (FeatureFlags.sBooleanReader == testProxy) {
                 FeatureFlags.sBooleanReader = originalProxy;
-            }
-        };
-    }
-
-    /**
-     * Utility class to override a int flag during test. Note that the returned SafeCloseable
-     * must be closed to restore the original state
-     */
-    public static SafeCloseable overrideFlag(IntFlag flag, int value) {
-        ToIntFunction<IntFlag> originalProxy = FeatureFlags.sIntReader;
-        ToIntFunction<IntFlag> testProxy = f -> f == flag ? value : originalProxy.applyAsInt(f);
-        FeatureFlags.sIntReader = testProxy;
-        return () -> {
-            if (FeatureFlags.sIntReader == testProxy) {
-                FeatureFlags.sIntReader = originalProxy;
             }
         };
     }

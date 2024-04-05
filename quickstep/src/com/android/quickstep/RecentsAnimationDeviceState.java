@@ -60,7 +60,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
@@ -588,9 +587,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
                 : QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
         float touchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
 
-        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
-            float customSlopMultiplier =
-                    FeatureFlags.LPNH_SLOP_PERCENTAGE.get() / 100f;
+        if (DeviceConfigWrapper.get().getCustomLpnhThresholds()) {
+            float customSlopMultiplier = DeviceConfigWrapper.get().getLpnhSlopPercentage() / 100f;
             return customSlopMultiplier * slopMultiplier * touchSlop;
         } else {
             return slopMultiplier * touchSlop;
