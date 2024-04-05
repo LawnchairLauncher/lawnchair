@@ -119,6 +119,15 @@ constructor(context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
+     * When the icon is temporary moved to a different colored surface, update the background color.
+     * Calling this method with [null] reverts the icon back to its default color.
+     */
+    fun onTemporaryContainerChange(newContainer: Int?) {
+        drawParams.updateBgColor(newContainer ?: parentIcon.container)
+        redraw()
+    }
+
+    /**
      * Gets this icon graphic's visual bounds, with respect to the parent icon's coordinate system.
      */
     fun getIconBounds(outBounds: Rect) {

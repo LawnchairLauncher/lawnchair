@@ -181,6 +181,10 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         return mIconGraphic;
     }
 
+    public int getContainer() {
+        return mContainer;
+    }
+
     /**
      * Ensures that both app icons in the pair are loaded in high resolution.
      */

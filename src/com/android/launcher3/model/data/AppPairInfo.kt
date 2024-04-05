@@ -74,6 +74,13 @@ class AppPairInfo() : CollectionInfo() {
                 it.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE)
             }
 
+    /** Fetches high-res icons for member apps if needed. */
+    fun fetchHiResIconsIfNeeded(iconCache: IconCache) {
+        getAppContents().stream().filter(ItemInfoWithIcon::usingLowResIcon).forEach { member ->
+            iconCache.getTitleAndIcon(member, false)
+        }
+    }
+
     /** Generates an ItemInfo for logging. */
     override fun buildProto(cInfo: CollectionInfo?): LauncherAtom.ItemInfo {
         val appPairIcon = LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size)
@@ -83,12 +90,5 @@ class AppPairInfo() : CollectionInfo() {
             .setRank(rank)
             .setContainerInfo(getContainerInfo())
             .build()
-    }
-
-    /** Fetches high-res icons for member apps if needed. */
-    fun fetchHiResIconsIfNeeded(iconCache: IconCache) {
-        getAppContents().stream().filter(ItemInfoWithIcon::usingLowResIcon).forEach { member ->
-            iconCache.getTitleAndIcon(member, false)
-        }
     }
 }
