@@ -88,6 +88,8 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 
+val LocalIsExpandedScreen = compositionLocalOf { false }
+
 @Composable
 fun Preferences(
     windowSizeClass: WindowSizeClass,
@@ -100,13 +102,14 @@ fun Preferences(
 
     val isExpandedScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
 
-    Providers(isExpandedScreen) {
+    Providers {
         Surface(
             modifier = modifier,
         ) {
             CompositionLocalProvider(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
+                LocalIsExpandedScreen provides isExpandedScreen,
             ) {
                 NavHost(
                     navController = navController,
@@ -146,16 +149,11 @@ fun Preferences(
 
 @Composable
 private fun Providers(
-    isExpandedScreen: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider(LocalIsExpandedScreen provides isExpandedScreen) {
-        ProvideLifecycleState {
-            ProvideBottomSheetHandler {
-                content()
-            }
+    ProvideLifecycleState {
+        ProvideBottomSheetHandler {
+            content()
         }
     }
 }
-
-val LocalIsExpandedScreen = compositionLocalOf { false }
