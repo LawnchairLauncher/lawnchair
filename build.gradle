@@ -10,7 +10,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version "1.9.23"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.23"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.23"
-    id "com.google.devtools.ksp" version "1.9.23-1.0.19"
+    id "com.google.devtools.ksp" version "1.9.23-1.0.20"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.11.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
