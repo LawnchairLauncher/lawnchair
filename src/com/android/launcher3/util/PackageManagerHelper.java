@@ -48,7 +48,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
@@ -164,22 +163,6 @@ public class PackageManagerHelper {
      */
     public static boolean isAppSuspended(ApplicationInfo info) {
         return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
-    }
-
-    /**
-     * Creates a new market search intent.
-     */
-    public static Intent getMarketSearchIntent(Context context, String query) {
-        try {
-            Intent intent = Intent.parseUri(context.getString(R.string.market_search_intent), 0);
-            if (!TextUtils.isEmpty(query)) {
-                intent.setData(
-                        intent.getData().buildUpon().appendQueryParameter("q", query).build());
-            }
-            return intent;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

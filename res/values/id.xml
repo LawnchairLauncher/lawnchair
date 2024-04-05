@@ -23,6 +23,40 @@
     <item type="id" name="split_topLeft_appInfo" />
     <item type="id" name="split_bottomRight_appInfo" />
 
+    <!-- Accessibility actions -->
+    <item type="id" name="action_remove" />
+    <item type="id" name="action_uninstall" />
+    <item type="id" name="action_reconfigure" />
+    <item type="id" name="action_add_to_workspace" />
+    <item type="id" name="action_move" />
+    <item type="id" name="action_move_to_workspace" />
+    <item type="id" name="action_move_screen_backwards" />
+    <item type="id" name="action_move_screen_forwards" />
+    <item type="id" name="action_resize" />
+    <item type="id" name="action_deep_shortcuts" />
+    <item type="id" name="action_remote_action_shortcut" />
+    <item type="id" name="action_dismiss_prediction" />
+    <item type="id" name="action_pin_prediction"/>
+
+    <!-- QSB IDs. DO not change -->
+    <item type="id" name="search_container_workspace" />
+    <item type="id" name="search_container_all_apps" />
+    <item type="id" name="search_container_hotseat" />
+
+    <!-- View ID to use for QSB widget -->
+    <item type="id" name="qsb_widget" />
+
+    <!-- View ID used by cell layout to jail its content -->
+    <item type="id" name="cell_layout_jail_id" />
+
+    <!-- View IDs to store item highlight information -->
+    <item type="id" name="view_unhighlight_background" />
+
+    <!-- view ID used to restore work tab state -->
+    <item type="id" name="work_tab_state_id" />
+
+    <!-- Menu id for feature flags -->
+    <item type="id" name="menu_apply_flags" />
 
     <!--  Do not change, must be kept in sync with sysui navbar button IDs for tests!  -->
     <item type="id" name="home" />
@@ -52,5 +86,14 @@
     <item type="id" name="ps_lock_unlock_button" />
     <item type="id" name="ps_settings_button" />
     <item type="id" name="ps_transition_image" />
+
+    <!-- Recents -->
+    <item type="id" name="overview_panel"/>
+
+    <!-- DragController -->
+    <item type="id" name="drag_event_parity" />
+
+    <!-- View tag key used to store SpringAnimation data. -->
+    <item type="id" name="spring_animation_tag" />
 
 </resources>
