@@ -509,9 +509,12 @@ public class PrivateProfileManager extends UserProfileManager {
                 if (rowToExpandToWithRespectToHeader == -1) {
                     rowToExpandToWithRespectToHeader = currentItem.rowIndex;
                 }
+                // If there are no tabs, decrease the row to scroll to by 1 since the header
+                // may be cut off slightly.
                 int rowToScrollTo =
                         (int) Math.floor((double) (mAllApps.getHeight() - psHeaderHeight
-                                - mAllApps.getHeaderProtectionHeight()) / allAppsCellHeight);
+                                - mAllApps.getHeaderProtectionHeight()) / allAppsCellHeight)
+                                - (mAllApps.isUsingTabs() ? 0 : 1);
                 int currentRowDistance = currentItem.rowIndex - rowToExpandToWithRespectToHeader;
                 // rowToScrollTo - 1 since the item to scroll to is 0 indexed.
                 if (currentRowDistance == rowToScrollTo - 1) {
