@@ -45,28 +45,29 @@ public class ModelDelegate implements ResourceBasedOverride {
             boolean isPrimaryInstance) {
         ModelDelegate delegate = Overrides.getObject(
                 ModelDelegate.class, context, R.string.model_delegate_class);
-        delegate.init(context, app, appsList, dataModel, isPrimaryInstance);
+        delegate.init(app, appsList, dataModel, isPrimaryInstance);
         return delegate;
     }
 
-    protected Context mContext;
+    protected final Context mContext;
     protected LauncherAppState mApp;
     protected AllAppsList mAppsList;
     protected BgDataModel mDataModel;
     protected boolean mIsPrimaryInstance;
 
-    public ModelDelegate() { }
+    public ModelDelegate(Context context) {
+        mContext = context;
+    }
 
     /**
      * Initializes the object with the given params.
      */
-    private void init(Context context, LauncherAppState app, AllAppsList appsList,
+    private void init(LauncherAppState app, AllAppsList appsList,
             BgDataModel dataModel, boolean isPrimaryInstance) {
         this.mApp = app;
         this.mAppsList = appsList;
         this.mDataModel = dataModel;
         this.mIsPrimaryInstance = isPrimaryInstance;
-        this.mContext = context;
     }
 
     /** Called periodically to validate and update any data */

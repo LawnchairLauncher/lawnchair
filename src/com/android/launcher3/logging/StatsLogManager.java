@@ -23,6 +23,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.slice.SliceItem;
 
@@ -53,11 +54,18 @@ public class StatsLogManager implements ResourceBasedOverride {
     public static final int LAUNCHER_STATE_ALLAPPS = 4;
     public static final int LAUNCHER_STATE_UNCHANGED = 5;
 
+    @NonNull
+    protected final Context mContext;
+    @Nullable
+    protected final ActivityContext mActivityContext;
+
+    private KeyboardStateManager mKeyboardStateManager;
     private InstanceId mInstanceId;
 
-    protected @Nullable ActivityContext mActivityContext = null;
-    protected @Nullable Context mContext = null;
-    private KeyboardStateManager mKeyboardStateManager;
+    public StatsLogManager(@NonNull Context context) {
+        mContext = context;
+        mActivityContext = ActivityContext.lookupContextNoThrow(context);
+    }
 
     /**
      * Returns event enum based on the two state transition information when swipe
@@ -1194,10 +1202,7 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Creates a new instance of {@link StatsLogManager} based on provided context.
      */
     public static StatsLogManager newInstance(Context context) {
-        StatsLogManager manager = Overrides.getObject(StatsLogManager.class,
+        return Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
-        manager.mActivityContext = ActivityContext.lookupContextNoThrow(context);
-        manager.mContext = context;
-        return manager;
     }
 }
