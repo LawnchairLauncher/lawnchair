@@ -41,6 +41,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private var hiddenAppsInSearch = ""
     private val generateSearchTarget = GenerateSearchTarget(context)
     private var enableWideSearch = false
+    private var searchApps = true
+    private var useStartpageSuggestions = true
 
     private val prefs: PreferenceManager = PreferenceManager.getInstance(context)
 
@@ -60,6 +62,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         pref2.performWideSearch.onEach(launchIn = coroutineScope) {
             enableWideSearch = it
         }
+        useStartpageSuggestions = prefs.searchResultStartPageSuggestion.get()
+        searchApps = prefs.searchResultApps.get()
     }
 
     override fun doSearch(query: String, callback: SearchCallback<AdapterItem>) {
@@ -93,11 +97,11 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
-        if (appResults.isNotEmpty()) {
+        if (appResults.isNotEmpty() && searchApps) {
             appResults.mapTo(searchTargets, ::createSearchTarget)
         }
 
-        if (appResults.size == 1 && context.isDefaultLauncher()) {
+        if (appResults.size == 1 && searchApps && context.isDefaultLauncher()) {
             val singleAppResult = appResults.first()
             val shortcuts = getShortcuts(singleAppResult)
             if (shortcuts.isNotEmpty()) {
@@ -144,7 +148,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
         searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
 
-        searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
+        if (useStartpageSuggestions) searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
         generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
 
         val adapterItems = transformSearchResults(searchTargets)
