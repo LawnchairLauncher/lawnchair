@@ -25,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
@@ -44,19 +43,10 @@ import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
 import kotlinx.collections.immutable.toPersistentList
-
-fun NavGraphBuilder.smartspaceGraph(route: String) {
-    preferenceGraph(route, { SmartspacePreferences(fromWidget = false) })
-}
-
-fun NavGraphBuilder.smartspaceWidgetGraph(route: String) {
-    preferenceGraph(route, { SmartspacePreferences(fromWidget = true) })
-}
 
 @Composable
 fun SmartspacePreferences(

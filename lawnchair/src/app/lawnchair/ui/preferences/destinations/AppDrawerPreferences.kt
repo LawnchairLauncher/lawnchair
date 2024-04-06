@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
@@ -32,18 +31,10 @@ import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
     const val HIDDEN_APPS = "hiddenApps"
-}
-
-fun NavGraphBuilder.appDrawerGraph(route: String) {
-    preferenceGraph(route, { AppDrawerPreferences() }) { subRoute ->
-        hiddenAppsGraph(route = subRoute(AppDrawerRoutes.HIDDEN_APPS))
-    }
 }
 
 @Composable
@@ -88,7 +79,7 @@ fun AppDrawerPreferences(
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
                 subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenApps.size, hiddenApps.size),
-                destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
+                destination = AppDrawerRoutes.HIDDEN_APPS,
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {

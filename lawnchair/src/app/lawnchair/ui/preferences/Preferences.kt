@@ -24,35 +24,59 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import app.lawnchair.backup.ui.createBackupGraph
+import androidx.navigation.navArgument
+import androidx.navigation.navigation
+import app.lawnchair.backup.ui.CreateBackupScreen
 import app.lawnchair.backup.ui.restoreBackupGraph
-import app.lawnchair.ui.preferences.about.aboutGraph
-import app.lawnchair.ui.preferences.components.colorpreference.colorSelectionGraph
+import app.lawnchair.preferences.BasePreferenceManager
+import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.ui.preferences.about.About
+import app.lawnchair.ui.preferences.about.AboutRoutes
+import app.lawnchair.ui.preferences.about.acknowledgements.Acknowledgements
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceModelList
+import app.lawnchair.ui.preferences.components.colorpreference.ColorSelection
+import app.lawnchair.ui.preferences.destinations.AppDrawerPreferences
+import app.lawnchair.ui.preferences.destinations.AppDrawerRoutes
+import app.lawnchair.ui.preferences.destinations.CustomIconShapePreference
+import app.lawnchair.ui.preferences.destinations.DebugMenuPreferences
+import app.lawnchair.ui.preferences.destinations.DockPreferences
+import app.lawnchair.ui.preferences.destinations.DockRoutes
+import app.lawnchair.ui.preferences.destinations.DummyPreference
+import app.lawnchair.ui.preferences.destinations.ExperimentalFeaturesPreferences
+import app.lawnchair.ui.preferences.destinations.FolderPreferences
+import app.lawnchair.ui.preferences.destinations.FontSelection
+import app.lawnchair.ui.preferences.destinations.GeneralPreferences
+import app.lawnchair.ui.preferences.destinations.GeneralRoutes
+import app.lawnchair.ui.preferences.destinations.GesturePreferences
+import app.lawnchair.ui.preferences.destinations.HiddenAppsPreferences
+import app.lawnchair.ui.preferences.destinations.HomeScreenGridPreferences
+import app.lawnchair.ui.preferences.destinations.HomeScreenPreferences
+import app.lawnchair.ui.preferences.destinations.HomeScreenRoutes
+import app.lawnchair.ui.preferences.destinations.IconPackPreferences
+import app.lawnchair.ui.preferences.destinations.IconPickerPreference
+import app.lawnchair.ui.preferences.destinations.IconShapePreference
+import app.lawnchair.ui.preferences.destinations.IconShapeRoutes
+import app.lawnchair.ui.preferences.destinations.PickAppForGesture
 import app.lawnchair.ui.preferences.destinations.PreferencesDashboard
-import app.lawnchair.ui.preferences.destinations.appDrawerGraph
-import app.lawnchair.ui.preferences.destinations.debugMenuGraph
-import app.lawnchair.ui.preferences.destinations.dockGraph
-import app.lawnchair.ui.preferences.destinations.experimentalFeaturesGraph
-import app.lawnchair.ui.preferences.destinations.folderGraph
-import app.lawnchair.ui.preferences.destinations.fontSelectionGraph
-import app.lawnchair.ui.preferences.destinations.generalGraph
-import app.lawnchair.ui.preferences.destinations.gesturesGraph
-import app.lawnchair.ui.preferences.destinations.homeScreenGraph
-import app.lawnchair.ui.preferences.destinations.iconPickerGraph
-import app.lawnchair.ui.preferences.destinations.pickAppForGestureGraph
-import app.lawnchair.ui.preferences.destinations.quickstepGraph
-import app.lawnchair.ui.preferences.destinations.searchGraph
-import app.lawnchair.ui.preferences.destinations.selectIconGraph
-import app.lawnchair.ui.preferences.destinations.smartspaceGraph
-import app.lawnchair.ui.preferences.destinations.smartspaceWidgetGraph
+import app.lawnchair.ui.preferences.destinations.QuickstepPreferences
+import app.lawnchair.ui.preferences.destinations.SearchPreferences
+import app.lawnchair.ui.preferences.destinations.SearchProviderPreferences
+import app.lawnchair.ui.preferences.destinations.SelectIconPreference
+import app.lawnchair.ui.preferences.destinations.SmartspacePreferences
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
 import app.lawnchair.util.ProvideLifecycleState
+import com.android.launcher3.util.ComponentKey
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
@@ -88,6 +112,8 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 
+val LocalIsExpandedScreen = compositionLocalOf { false }
+
 @Composable
 fun Preferences(
     windowSizeClass: WindowSizeClass,
@@ -97,65 +123,156 @@ fun Preferences(
     val navController = rememberNavController()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val slideDistance = rememberSlideDistance()
-
     val isExpandedScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
 
-    Providers(isExpandedScreen) {
+    Providers {
         Surface(
             modifier = modifier,
         ) {
             CompositionLocalProvider(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
+                LocalIsExpandedScreen provides isExpandedScreen,
             ) {
-                NavHost(
-                    navController = navController,
-                    startDestination = "/",
-                    enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
-                    exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
-                    popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
-                    popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
-                ) {
-                    preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
-                        generalGraph(route = subRoute(Routes.GENERAL))
-                        homeScreenGraph(route = subRoute(Routes.HOME_SCREEN))
-                        dockGraph(route = subRoute(Routes.DOCK))
-                        appDrawerGraph(route = subRoute(Routes.APP_DRAWER))
-                        folderGraph(route = subRoute(Routes.FOLDERS))
-                        quickstepGraph(route = subRoute(Routes.QUICKSTEP))
-                        aboutGraph(route = subRoute(Routes.ABOUT))
-                        fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
-                        colorSelectionGraph(route = subRoute(Routes.COLOR_SELECTION))
-                        debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
-                        selectIconGraph(route = subRoute(Routes.SELECT_ICON))
-                        iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
-                        experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
-                        smartspaceGraph(route = subRoute(Routes.SMARTSPACE))
-                        smartspaceWidgetGraph(route = subRoute(Routes.SMARTSPACE_WIDGET))
-                        createBackupGraph(route = subRoute(Routes.CREATE_BACKUP))
-                        restoreBackupGraph(route = subRoute(Routes.RESTORE_BACKUP))
-                        pickAppForGestureGraph(route = subRoute(Routes.PICK_APP_FOR_GESTURE))
-                        gesturesGraph(route = subRoute(Routes.GESTURES))
-                        searchGraph(route = subRoute(Routes.SEARCH))
-                    }
-                }
+                InnerNavigation(navController, isRtl, slideDistance)
             }
         }
     }
 }
 
 @Composable
-private fun Providers(
-    isExpandedScreen: Boolean = false,
-    content: @Composable () -> Unit,
+private fun InnerNavigation(
+    navController: NavHostController,
+    isRtl: Boolean,
+    slideDistance: Int,
 ) {
-    CompositionLocalProvider(LocalIsExpandedScreen provides isExpandedScreen) {
-        ProvideLifecycleState {
-            ProvideBottomSheetHandler {
-                content()
-            }
+    NavHost(
+        navController = navController,
+        startDestination = "/",
+        enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
+        exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
+        popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
+        popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
+    ) {
+        composable(route = "/") {
+            PreferencesDashboard(
+                currentRoute = navController.currentDestination?.route ?: "/",
+                onNavigate = {
+                    navController.navigate(it)
+                },
+            )
         }
+        composable(route = "dummy") {
+            DummyPreference()
+        }
+
+        navigation(route = Routes.GENERAL, startDestination = "main") {
+            composable(route = "main") {
+                GeneralPreferences()
+            }
+            composable(route = GeneralRoutes.ICON_PACK) { IconPackPreferences() }
+            composable(route = GeneralRoutes.ICON_SHAPE) { IconShapePreference() }
+            composable(route = IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR) { CustomIconShapePreference() }
+        }
+
+        navigation(route = Routes.HOME_SCREEN, startDestination = "main") {
+            composable(route = "main") { HomeScreenPreferences() }
+            composable(route = HomeScreenRoutes.GRID) { HomeScreenGridPreferences() }
+        }
+
+        navigation(route = Routes.DOCK, startDestination = "main") {
+            composable(route = "main") { DockPreferences() }
+            composable(route = DockRoutes.SEARCH_PROVIDER) { SearchProviderPreferences() }
+        }
+
+        composable(route = Routes.SMARTSPACE) { SmartspacePreferences(fromWidget = false) }
+        composable(route = Routes.SMARTSPACE_WIDGET) { SmartspacePreferences(fromWidget = true) }
+
+        navigation(route = Routes.APP_DRAWER, startDestination = "main") {
+            composable(route = "main") { AppDrawerPreferences() }
+            composable(route = AppDrawerRoutes.HIDDEN_APPS) { HiddenAppsPreferences() }
+        }
+
+        composable(route = Routes.SEARCH) { SearchPreferences() }
+        composable(route = Routes.FOLDERS) { FolderPreferences() }
+
+        composable(route = Routes.GESTURES) { GesturePreferences() }
+        composable(route = Routes.PICK_APP_FOR_GESTURE) { PickAppForGesture() }
+
+        composable(route = Routes.QUICKSTEP) { QuickstepPreferences() }
+
+        composable(route = Routes.ABOUT) { About() }
+        composable(route = AboutRoutes.LICENSES) { Acknowledgements() }
+        composable(
+            route = "${Routes.FONT_SELECTION}/{prefKey}",
+            arguments = listOf(
+                navArgument("prefKey") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val prefKey = args.getString("prefKey")!!
+            val pref = preferenceManager().prefsMap[prefKey]
+                as? BasePreferenceManager.FontPref ?: return@composable
+            FontSelection(pref)
+        }
+
+        composable(route = Routes.DEBUG_MENU) { DebugMenuPreferences() }
+
+        composable(
+            route = "${Routes.SELECT_ICON}/{packageName}/{nameAndUser}/",
+            arguments = listOf(
+                navArgument("packageName") { type = NavType.StringType },
+                navArgument("nameAndUser") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val packageName = args.getString("packageName")
+            val nameAndUser = args.getString("nameAndUser")
+            val key = ComponentKey.fromString("$packageName/$nameAndUser")!!
+            SelectIconPreference(key)
+        }
+        composable(route = Routes.ICON_PICKER) { IconPickerPreference(packageName = "") }
+        composable(
+            route = "${Routes.ICON_PICKER}/{packageName}",
+            arguments = listOf(
+                navArgument("packageName") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val packageName = args.getString("packageName")!!
+            IconPickerPreference(packageName)
+        }
+
+        composable(route = Routes.EXPERIMENTAL_FEATURES) { ExperimentalFeaturesPreferences() }
+        composable(
+            route = "${Routes.COLOR_SELECTION}/{prefKey}",
+            arguments = listOf(
+                navArgument("prefKey") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val prefKey = args.getString("prefKey")!!
+            val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
+            val model = modelList[prefKey]
+            ColorSelection(
+                label = stringResource(id = model.labelRes),
+                preference = model.prefObject,
+                dynamicEntries = model.dynamicEntries,
+            )
+        }
+
+        composable(route = Routes.CREATE_BACKUP) { CreateBackupScreen(viewModel()) }
+        restoreBackupGraph(route = Routes.RESTORE_BACKUP)
     }
 }
 
-val LocalIsExpandedScreen = compositionLocalOf { false }
+@Composable
+private fun Providers(
+    content: @Composable () -> Unit,
+) {
+    ProvideLifecycleState {
+        ProvideBottomSheetHandler {
+            content()
+        }
+    }
+}

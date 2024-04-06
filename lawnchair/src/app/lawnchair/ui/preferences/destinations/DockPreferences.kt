@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.hotseat.LawnchairHotseat
 import app.lawnchair.preferences.PreferenceAdapter
@@ -39,19 +38,11 @@ import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 import kotlinx.collections.immutable.toPersistentList
 
 object DockRoutes {
     const val SEARCH_PROVIDER = "searchProvider"
-}
-
-fun NavGraphBuilder.dockGraph(route: String) {
-    preferenceGraph(route, { DockPreferences() }) { subRoute ->
-        searchProviderGraph(subRoute(DockRoutes.SEARCH_PROVIDER))
-    }
 }
 
 @Composable
@@ -87,7 +78,7 @@ fun DockPreferences(
                         val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
                         NavigationActionPreference(
                             label = stringResource(R.string.search_provider),
-                            destination = subRoute(DockRoutes.SEARCH_PROVIDER),
+                            destination = DockRoutes.SEARCH_PROVIDER,
                             subtitle = stringResource(
                                 id = QsbSearchProvider.values()
                                     .first { it == hotseatQsbProviderAdapter }

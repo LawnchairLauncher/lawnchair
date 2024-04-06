@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.qsb.providers.QsbSearchProvider
@@ -30,13 +29,8 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.util.LocalBottomSheetHandler
 import com.android.launcher3.R
-
-fun NavGraphBuilder.searchProviderGraph(route: String) {
-    preferenceGraph(route, { SearchProviderPreferences() })
-}
 
 @Composable
 fun SearchProviderPreferences(

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences.components
+package app.lawnchair.ui.preferences.destinations
 
 import android.content.Context
 import androidx.compose.foundation.Canvas
@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.preferences.PreferenceAdapter
@@ -59,19 +58,10 @@ import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.destinations.customIconShapePreferenceGraph
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 
 object IconShapeRoutes {
     const val CUSTOM_ICON_SHAPE_CREATOR = "customIconShapeCreator"
-}
-
-fun NavGraphBuilder.iconShapeGraph(route: String) {
-    preferenceGraph(route, { IconShapePreference() }) { subRoute ->
-        customIconShapePreferenceGraph(subRoute(IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR))
-    }
 }
 
 /**
@@ -114,7 +104,7 @@ fun IconShapePreference(
         PreferenceGroup(
             heading = stringResource(id = R.string.custom),
         ) {
-            CustomIconShapePreference(
+            CustomIconShapePreferenceOption(
                 iconShapeAdapter = iconShapeAdapter,
             )
             ModifyCustomIconShapePreference(
@@ -148,7 +138,7 @@ fun IconShapePreference(
 }
 
 @Composable
-private fun CustomIconShapePreference(
+private fun CustomIconShapePreferenceOption(
     iconShapeAdapter: PreferenceAdapter<IconShape>,
     modifier: Modifier = Modifier,
 ) {
@@ -182,7 +172,7 @@ private fun ModifyCustomIconShapePreference(
     modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
-    val route = subRoute(IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR)
+    val route = IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR
 
     val created = customIconShape != null
 

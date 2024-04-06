@@ -2,6 +2,7 @@ package app.lawnchair.override
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -125,8 +126,10 @@ fun CustomizeAppDialog(
         onClose()
     }
 
+    Log.d("TEST", "${Routes.SELECT_ICON}/$componentKey")
+
     val openIconPicker = {
-        val destination = "/${Routes.SELECT_ICON}/$componentKey/"
+        val destination = "${Routes.SELECT_ICON}/$componentKey/"
         request.launch(PreferenceActivity.createIntent(context, destination))
     }
 

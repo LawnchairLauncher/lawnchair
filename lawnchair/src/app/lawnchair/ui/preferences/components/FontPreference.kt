@@ -27,6 +27,6 @@ fun FontPreference(
             )
         },
         modifier = modifier
-            .clickable { navController.navigate(route = "/fontSelection/${fontPref.key}/") },
+            .clickable { navController.navigate(route = "fontSelection/${fontPref.key}") },
     )
 }
