@@ -16,7 +16,14 @@
 
 package app.lawnchair.ui.preferences
 
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
+import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -30,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -77,6 +85,8 @@ import com.android.launcher3.util.ComponentKey
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
+import androidx.navigation.navigation
+import app.lawnchair.ui.preferences.destinations.DummyPreference
 
 object Routes {
     const val GENERAL = "general"
@@ -120,7 +130,6 @@ fun Preferences(
     val navController = rememberNavController()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val slideDistance = rememberSlideDistance()
-
     val isExpandedScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
 
     Providers {
@@ -132,105 +141,135 @@ fun Preferences(
                 LocalPreferenceInteractor provides interactor,
                 LocalIsExpandedScreen provides isExpandedScreen,
             ) {
-                NavHost(
-                    navController = navController,
-                    startDestination = "/",
-                    enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
-                    exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
-                    popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
-                    popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
-                ) {
-                    composable(route = "/") { PreferencesDashboard() }
-
-                    composable(route = Routes.GENERAL) { GeneralPreferences() }
-                    composable(route = GeneralRoutes.ICON_PACK) { IconPackPreferences() }
-                    composable(route = GeneralRoutes.ICON_SHAPE) { IconShapePreference() }
-                    composable(route = IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR) { CustomIconShapePreference() }
-
-                    composable(route = Routes.HOME_SCREEN) { HomeScreenPreferences() }
-                    composable(route = HomeScreenRoutes.GRID) { HomeScreenGridPreferences() }
-                    composable(route = Routes.DOCK) { DockPreferences() }
-                    composable(route = DockRoutes.SEARCH_PROVIDER) { SearchProviderPreferences() }
-
-                    composable(route = Routes.SMARTSPACE) { SmartspacePreferences(fromWidget = false) }
-                    composable(route = Routes.SMARTSPACE_WIDGET) { SmartspacePreferences(fromWidget = true) }
-
-                    composable(route = Routes.APP_DRAWER) { AppDrawerPreferences() }
-                    composable(route = AppDrawerRoutes.HIDDEN_APPS) { HiddenAppsPreferences() }
-
-                    composable(route = Routes.SEARCH) { SearchPreferences() }
-                    composable(route = Routes.FOLDERS) { FolderPreferences() }
-
-                    composable(route = Routes.GESTURES) { GesturePreferences() }
-                    composable(route = Routes.PICK_APP_FOR_GESTURE) { PickAppForGesture() }
-
-                    composable(route = Routes.QUICKSTEP) { QuickstepPreferences() }
-
-                    composable(route = Routes.ABOUT) { About() }
-                    composable(route = AboutRoutes.LICENSES) { Acknowledgements() }
-                    composable(
-                        route = "${Routes.FONT_SELECTION}/{prefKey}",
-                        arguments = listOf(
-                            navArgument("prefKey") { type = NavType.StringType },
-                        ),
-                    ) { backStackEntry ->
-                        val args = backStackEntry.arguments!!
-                        val prefKey = args.getString("prefKey")!!
-                        val pref = preferenceManager().prefsMap[prefKey]
-                            as? BasePreferenceManager.FontPref ?: return@composable
-                        FontSelection(pref)
-                    }
-
-                    composable(route = Routes.DEBUG_MENU) { DebugMenuPreferences() }
-
-                    composable(
-                        route = "${Routes.SELECT_ICON}/{packageName}/{nameAndUser}/",
-                        arguments = listOf(
-                            navArgument("packageName") { type = NavType.StringType },
-                            navArgument("nameAndUser") { type = NavType.StringType },
-                        ),
-                    ) { backStackEntry ->
-                        val args = backStackEntry.arguments!!
-                        val packageName = args.getString("packageName")
-                        val nameAndUser = args.getString("nameAndUser")
-                        val key = ComponentKey.fromString("$packageName/$nameAndUser")!!
-                        SelectIconPreference(key)
-                    }
-                    composable(route = Routes.ICON_PICKER) { IconPickerPreference(packageName = "") }
-                    composable(
-                        route = "${Routes.ICON_PICKER}/{packageName}",
-                        arguments = listOf(
-                            navArgument("packageName") { type = NavType.StringType },
-                        ),
-                    ) { backStackEntry ->
-                        val args = backStackEntry.arguments!!
-                        val packageName = args.getString("packageName")!!
-                        IconPickerPreference(packageName)
-                    }
-
-                    composable(route = Routes.EXPERIMENTAL_FEATURES) { ExperimentalFeaturesPreferences() }
-                    composable(
-                        route = "${Routes.COLOR_SELECTION}/{prefKey}",
-                        arguments = listOf(
-                            navArgument("prefKey") { type = NavType.StringType },
-                        ),
-                    ) { backStackEntry ->
-                        val args = backStackEntry.arguments!!
-                        val prefKey = args.getString("prefKey")!!
-                        val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
-                        val model = modelList[prefKey]
-                        ColorSelection(
-                            label = stringResource(id = model.labelRes),
-                            preference = model.prefObject,
-                            dynamicEntries = model.dynamicEntries,
-                        )
-                    }
-
-                    composable(route = Routes.CREATE_BACKUP) { CreateBackupScreen(viewModel()) }
-                    restoreBackupGraph(route = Routes.RESTORE_BACKUP)
-                }
+                InnerNavigation(navController, isRtl, slideDistance)
             }
         }
+    }
+}
+
+@Composable
+private fun InnerNavigation(
+    navController: NavHostController,
+    isRtl: Boolean,
+    slideDistance: Int,
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "/",
+        enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
+        exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
+        popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
+        popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
+    ) {
+        composable(route = "/") {
+            PreferencesDashboard(
+                currentRoute = navController.currentDestination?.route ?: "/",
+                onNavigate = {
+                    navController.navigate(it)
+                }
+            )
+        }
+        composable(route = "dummy") {
+            DummyPreference()
+        }
+
+        navigation(route = Routes.GENERAL, startDestination = "main") {
+            composable(route = "main") {
+                GeneralPreferences()
+            }
+            composable(route = GeneralRoutes.ICON_PACK) { IconPackPreferences() }
+            composable(route = GeneralRoutes.ICON_SHAPE) { IconShapePreference() }
+            composable(route = IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR) { CustomIconShapePreference() }
+        }
+
+        navigation(route = Routes.HOME_SCREEN, startDestination = "main") {
+            composable(route = "main") { HomeScreenPreferences() }
+            composable(route = HomeScreenRoutes.GRID) { HomeScreenGridPreferences() }
+        }
+
+        navigation(route = Routes.DOCK, startDestination = "main") {
+            composable(route = "main") { DockPreferences() }
+            composable(route = DockRoutes.SEARCH_PROVIDER) { SearchProviderPreferences() }
+        }
+
+        composable(route = Routes.SMARTSPACE) { SmartspacePreferences(fromWidget = false) }
+        composable(route = Routes.SMARTSPACE_WIDGET) { SmartspacePreferences(fromWidget = true) }
+
+        navigation(route = Routes.APP_DRAWER, startDestination = "main") {
+            composable(route = "main") { AppDrawerPreferences() }
+            composable(route = AppDrawerRoutes.HIDDEN_APPS) { HiddenAppsPreferences() }
+        }
+
+        composable(route = Routes.SEARCH) { SearchPreferences() }
+        composable(route = Routes.FOLDERS) { FolderPreferences() }
+
+        composable(route = Routes.GESTURES) { GesturePreferences() }
+        composable(route = Routes.PICK_APP_FOR_GESTURE) { PickAppForGesture() }
+
+        composable(route = Routes.QUICKSTEP) { QuickstepPreferences() }
+
+        composable(route = Routes.ABOUT) { About() }
+        composable(route = AboutRoutes.LICENSES) { Acknowledgements() }
+        composable(
+            route = "${Routes.FONT_SELECTION}/{prefKey}",
+            arguments = listOf(
+                navArgument("prefKey") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val prefKey = args.getString("prefKey")!!
+            val pref = preferenceManager().prefsMap[prefKey]
+                as? BasePreferenceManager.FontPref ?: return@composable
+            FontSelection(pref)
+        }
+
+        composable(route = Routes.DEBUG_MENU) { DebugMenuPreferences() }
+
+        composable(
+            route = "${Routes.SELECT_ICON}/{packageName}/{nameAndUser}/",
+            arguments = listOf(
+                navArgument("packageName") { type = NavType.StringType },
+                navArgument("nameAndUser") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val packageName = args.getString("packageName")
+            val nameAndUser = args.getString("nameAndUser")
+            val key = ComponentKey.fromString("$packageName/$nameAndUser")!!
+            SelectIconPreference(key)
+        }
+        composable(route = Routes.ICON_PICKER) { IconPickerPreference(packageName = "") }
+        composable(
+            route = "${Routes.ICON_PICKER}/{packageName}",
+            arguments = listOf(
+                navArgument("packageName") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val packageName = args.getString("packageName")!!
+            IconPickerPreference(packageName)
+        }
+
+        composable(route = Routes.EXPERIMENTAL_FEATURES) { ExperimentalFeaturesPreferences() }
+        composable(
+            route = "${Routes.COLOR_SELECTION}/{prefKey}",
+            arguments = listOf(
+                navArgument("prefKey") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val prefKey = args.getString("prefKey")!!
+            val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
+            val model = modelList[prefKey]
+            ColorSelection(
+                label = stringResource(id = model.labelRes),
+                preference = model.prefObject,
+                dynamicEntries = model.dynamicEntries,
+            )
+        }
+
+        composable(route = Routes.CREATE_BACKUP) { CreateBackupScreen(viewModel()) }
+        restoreBackupGraph(route = Routes.RESTORE_BACKUP)
     }
 }
 

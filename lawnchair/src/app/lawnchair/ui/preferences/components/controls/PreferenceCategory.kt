@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.components.controls
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -32,77 +33,65 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.PreviewLawnchair
+import app.lawnchair.ui.util.addIf
 import com.android.launcher3.R
 
 @Composable
 fun PreferenceCategory(
     label: String,
     @DrawableRes iconResource: Int,
-    route: String,
-    description: String? = null,
-) {
-    val navController = LocalNavController.current
-    val resolvedRoute = route
-
-    PreferenceCategory(
-        label = label,
-        iconResource = iconResource,
-        onNavigate = { navController.navigate(resolvedRoute) },
-        description = description,
-    )
-}
-
-@Composable
-private fun PreferenceCategory(
-    label: String,
-    @DrawableRes iconResource: Int,
     onNavigate: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier,
     description: String? = null,
 ) {
-    Row(
-        modifier = modifier.padding(horizontal = 16.dp),
-    ) {
-        PreferenceTemplate(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.large)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = ripple(
-                        bounded = true,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                    ),
-                ) { onNavigate() },
-            verticalPadding = 14.dp,
-            title = {
-                Text(text = label)
-            },
-            description = {
-                if (description != null) {
-                    Text(text = description)
-                }
-            },
-            startWidget = {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.size(32.dp),
-                ) {
-                    Icon(
-                        painter = painterResource(id = iconResource),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            },
-        )
-    }
+    PreferenceTemplate(
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .clip(MaterialTheme.shapes.large)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(
+                    bounded = true,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                ),
+            ) { onNavigate() }
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent
+            ),
+        verticalPadding = 14.dp,
+        title = {
+            Text(
+                text = label,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+            )
+        },
+        description = {
+            if (description != null) {
+                Text(text = description)
+            }
+        },
+        startWidget = {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.size(32.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = iconResource),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+        },
+    )
 }
 
 @PreviewLawnchair
