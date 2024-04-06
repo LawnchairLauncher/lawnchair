@@ -68,12 +68,15 @@ class AppPairInfo() : CollectionInfo() {
     /** Returns if either of the app pair members is currently disabled. */
     override fun isDisabled() = anyMatch { it.isDisabled }
 
-    /** Checks if the app pair is launchable at the current screen size. */
-    fun isLaunchable(context: Context) =
-        (ActivityContext.lookupContext(context) as ActivityContext).getDeviceProfile().isTablet ||
-            getAppContents().stream().noneMatch {
-                it.hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE)
-            }
+    /** Checks if member apps are launchable at the current screen size. */
+    fun isLaunchable(context: Context): Pair<Boolean, Boolean> {
+        val isTablet =
+            (ActivityContext.lookupContext(context) as ActivityContext).getDeviceProfile().isTablet
+        return Pair(
+            isTablet || !getFirstApp().hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE),
+            isTablet || !getSecondApp().hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE)
+        )
+    }
 
     /** Fetches high-res icons for member apps if needed. */
     fun fetchHiResIconsIfNeeded(iconCache: IconCache) {
@@ -83,13 +86,14 @@ class AppPairInfo() : CollectionInfo() {
     }
 
     /**
-     * App pairs will draw as "disabled" if either of the following is true:
+     * App pairs will report itself as "disabled" (for accessibility) if either of the following is
+     * true:
      * 1) One of the member WorkspaceItemInfos is disabled (i.e. the app software itself is paused
      *    or can't be launched for some other reason).
      * 2) One of the member apps can't be launched due to screen size requirements.
      */
-    fun shouldDrawAsDisabled(context: Context): Boolean {
-        return isDisabled || !isLaunchable(context)
+    fun shouldReportDisabled(context: Context): Boolean {
+        return isDisabled || !isLaunchable(context).first || !isLaunchable(context).second
     }
 
     /** Generates a default title for the app pair and sets it. */
