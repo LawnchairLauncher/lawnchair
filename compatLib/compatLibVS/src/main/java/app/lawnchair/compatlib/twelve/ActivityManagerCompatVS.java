@@ -78,6 +78,10 @@ public class ActivityManagerCompatVS extends ActivityManagerCompatVR {
                         public void onTaskAppeared(RemoteAnimationTarget app) {
                             runnerCompat.onTaskAppeared(app);
                         }
+
+                        public void onTasksAppeared(RemoteAnimationTarget[] apps) {
+                            runnerCompat.onTasksAppeared(apps);
+                        }
                     };
         }
         try {
