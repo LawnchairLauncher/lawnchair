@@ -42,6 +42,11 @@ public class AssistStateManager implements ResourceBasedOverride {
         return false;
     }
 
+    /** Whether search supports showing on the lockscreen. */
+    public boolean supportsShowWhenLocked() {
+        return false;
+    }
+
     /** Whether CsHelper CtS invocation path is available. */
     public Optional<Boolean> isCsHelperAvailable() {
         return Optional.empty();
