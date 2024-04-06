@@ -143,6 +143,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
 
         searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
+
         searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
         generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
 

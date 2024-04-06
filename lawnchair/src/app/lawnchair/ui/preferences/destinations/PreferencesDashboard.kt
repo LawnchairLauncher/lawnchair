@@ -143,7 +143,7 @@ fun PreferencesDashboard(
                 description = stringResource(id = R.string.quickstep_description),
                 iconResource = R.drawable.ic_quickstep,
                 onNavigate = { onNavigate(Routes.QUICKSTEP) },
-            isSelected = currentRoute.contains(Routes.QUICKSTEP),
+                isSelected = currentRoute.contains(Routes.QUICKSTEP),
             )
         }
 

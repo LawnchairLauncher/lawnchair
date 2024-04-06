@@ -21,7 +21,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -36,11 +35,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.PreviewLawnchair
-import app.lawnchair.ui.util.addIf
 import com.android.launcher3.R
 
 @Composable
@@ -48,8 +45,8 @@ fun PreferenceCategory(
     label: String,
     @DrawableRes iconResource: Int,
     onNavigate: () -> Unit,
-    isSelected: Boolean = false,
     modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
     description: String? = null,
 ) {
     PreferenceTemplate(
@@ -64,13 +61,13 @@ fun PreferenceCategory(
                 ),
             ) { onNavigate() }
             .background(
-                if (isSelected) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent
+                if (isSelected) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent,
             ),
         verticalPadding = 14.dp,
         title = {
             Text(
                 text = label,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
             )
         },
         description = {
