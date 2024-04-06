@@ -237,7 +237,8 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 // we're on the main executor now, so check that the overflow hasn't been created
                 // again to avoid races.
                 if (mOverflowBubble == null) {
-                    mBubbleBarViewController.addBubble(overflow, /* isExpanding= */ false);
+                    mBubbleBarViewController.addBubble(
+                            overflow, /* isExpanding= */ false, /* suppressAnimation= */ true);
                     mOverflowBubble = overflow;
                 }
             });
@@ -307,6 +308,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
         final boolean isCollapsed = (update.expandedChanged && !update.expanded)
                 || (!update.expandedChanged && !mBubbleBarViewController.isExpanded());
         final boolean isExpanding = update.expandedChanged && update.expanded;
+        // don't animate bubbles if this is the initial state because we may be unfolding or
+        // enabling gesture nav
+        final boolean suppressAnimation = update.initialState;
         BubbleBarItem previouslySelectedBubble = mSelectedBubble;
         BubbleBarBubble bubbleToSelect = null;
         if (!update.removedBubbles.isEmpty()) {
@@ -323,7 +327,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         }
         if (update.addedBubble != null) {
             mBubbles.put(update.addedBubble.getKey(), update.addedBubble);
-            mBubbleBarViewController.addBubble(update.addedBubble, isExpanding);
+            mBubbleBarViewController.addBubble(update.addedBubble, isExpanding, suppressAnimation);
             if (isCollapsed) {
                 // If we're collapsed, the most recently added bubble will be selected.
                 bubbleToSelect = update.addedBubble;
@@ -336,7 +340,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 BubbleBarBubble bubble = update.currentBubbles.get(i);
                 if (bubble != null) {
                     mBubbles.put(bubble.getKey(), bubble);
-                    mBubbleBarViewController.addBubble(bubble, isExpanding);
+                    mBubbleBarViewController.addBubble(bubble, isExpanding, suppressAnimation);
                     if (isCollapsed) {
                         // If we're collapsed, the most recently added bubble will be selected.
                         bubbleToSelect = bubble;
