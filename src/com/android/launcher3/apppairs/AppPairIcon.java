@@ -143,7 +143,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
         CharSequence app2 = getInfo().getSecondApp().title;
         String a11yTitle = getContext().getString(R.string.app_pair_name_format, app1, app2);
         setContentDescription(
-                getInfo().shouldDrawAsDisabled(getContext())
+                getInfo().shouldReportDisabled(getContext())
                         ? getContext().getString(R.string.disabled_app_label, a11yTitle)
                         : a11yTitle);
     }
