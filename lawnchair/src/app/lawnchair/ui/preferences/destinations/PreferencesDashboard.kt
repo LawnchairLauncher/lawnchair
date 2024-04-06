@@ -78,7 +78,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.general_description),
             iconResource = R.drawable.ic_general,
             onNavigate = { onNavigate(Routes.GENERAL) },
-            isSelected = currentRoute == Routes.GENERAL,
+            isSelected = currentRoute.contains(Routes.GENERAL),
         )
 
         PreferenceCategory(
@@ -86,7 +86,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.home_screen_description),
             iconResource = R.drawable.ic_home_screen,
             onNavigate = { onNavigate(Routes.HOME_SCREEN) },
-            isSelected = currentRoute == Routes.HOME_SCREEN,
+            isSelected = currentRoute.contains(Routes.HOME_SCREEN),
         )
 
         PreferenceCategory(
@@ -94,7 +94,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.smartspace_widget_description),
             iconResource = R.drawable.ic_smartspace,
             onNavigate = { onNavigate(Routes.SMARTSPACE) },
-            isSelected = currentRoute == Routes.SMARTSPACE,
+            isSelected = currentRoute.contains(Routes.SMARTSPACE),
         )
 
         PreferenceCategory(
@@ -102,7 +102,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.dock_description),
             iconResource = R.drawable.ic_dock,
             onNavigate = { onNavigate(Routes.DOCK) },
-            isSelected = currentRoute == Routes.DOCK,
+            isSelected = currentRoute.contains(Routes.DOCK),
         )
 
         PreferenceCategory(
@@ -110,7 +110,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.app_drawer_description),
             iconResource = R.drawable.ic_app_drawer,
             onNavigate = { onNavigate(Routes.APP_DRAWER) },
-            isSelected = currentRoute == Routes.APP_DRAWER,
+            isSelected = currentRoute.contains(Routes.APP_DRAWER),
         )
 
         PreferenceCategory(
@@ -118,7 +118,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.drawer_search_description),
             iconResource = R.drawable.ic_search,
             onNavigate = { onNavigate(Routes.SEARCH) },
-            isSelected = currentRoute == Routes.SEARCH,
+            isSelected = currentRoute.contains(Routes.SEARCH),
         )
 
         PreferenceCategory(
@@ -126,7 +126,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.folders_description),
             iconResource = R.drawable.ic_folder,
             onNavigate = { onNavigate(Routes.FOLDERS) },
-            isSelected = currentRoute == Routes.FOLDERS,
+            isSelected = currentRoute.contains(Routes.FOLDERS),
         )
 
         PreferenceCategory(
@@ -134,7 +134,7 @@ fun PreferencesDashboard(
             description = stringResource(R.string.gestures_description),
             iconResource = R.drawable.ic_gestures,
             onNavigate = { onNavigate(Routes.GESTURES) },
-            isSelected = currentRoute == Routes.GESTURES,
+            isSelected = currentRoute.contains(Routes.GESTURES),
         )
 
         if (LawnchairApp.isRecentsEnabled || BuildConfig.DEBUG) {
@@ -143,7 +143,7 @@ fun PreferencesDashboard(
                 description = stringResource(id = R.string.quickstep_description),
                 iconResource = R.drawable.ic_quickstep,
                 onNavigate = { onNavigate(Routes.QUICKSTEP) },
-            isSelected = currentRoute == Routes.QUICKSTEP,
+            isSelected = currentRoute.contains(Routes.QUICKSTEP),
             )
         }
 
@@ -152,7 +152,7 @@ fun PreferencesDashboard(
             description = "${context.getString(R.string.derived_app_name)} ${BuildConfig.MAJOR_VERSION}",
             iconResource = R.drawable.ic_about,
             onNavigate = { onNavigate(Routes.ABOUT) },
-            isSelected = currentRoute == Routes.ABOUT,
+            isSelected = currentRoute.contains(Routes.ABOUT),
         )
     }
 }
