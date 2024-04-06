@@ -193,15 +193,19 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     }
 
     private fun Sequence<AppInfo>.filterHiddenApps(query: String): Sequence<AppInfo> {
-        return if (hiddenAppsInSearch == HiddenAppsInSearch.ALWAYS) {
-            this
-        } else if (hiddenAppsInSearch == HiddenAppsInSearch.IF_NAME_TYPED) {
-            filter {
-                it.toComponentKey().toString() !in hiddenApps ||
-                    it.title.toString().lowercase(Locale.getDefault()) == query
+        return when (hiddenAppsInSearch) {
+            HiddenAppsInSearch.ALWAYS -> {
+                this
             }
-        } else {
-            filter { it.toComponentKey().toString() !in hiddenApps }
+            HiddenAppsInSearch.IF_NAME_TYPED -> {
+                filter {
+                    it.toComponentKey().toString() !in hiddenApps ||
+                        it.title.toString().lowercase(Locale.getDefault()) == query
+                }
+            }
+            else -> {
+                filter { it.toComponentKey().toString() !in hiddenApps }
+            }
         }
     }
 }
