@@ -1410,6 +1410,10 @@ public class QuickstepLauncher extends Launcher {
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.dump(prefix, writer);
         }
+        PredictionRowView<?> predictionRowView =
+                getAppsView().getFloatingHeaderView().findFixedRowByType(
+                        PredictionRowView.class);
+        predictionRowView.dump(prefix, writer);
     }
 
     @Override

@@ -399,4 +399,12 @@ public class TaskbarUIController {
         mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, !isVisible);
         mControllers.taskbarStashController.applyState();
     }
+
+    /**
+     * Request for UI controller to ignore animations for the next callback for the end of recents
+     * animation
+     */
+    public void setSkipNextRecentsAnimEnd() {
+        // Overridden
+    }
 }

@@ -321,6 +321,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mControllers.taskbarEduTooltipController.maybeShowSwipeEdu();
     }
 
+    /** Will make the next onRecentsAnimationFinished() animation a no-op. */
+    public void setSkipNextRecentsAnimEnd() {
+        mTaskbarLauncherStateController.setSkipNextRecentsAnimEnd();
+    }
+
     /**
      * Returns {@code true} if a Taskbar education should be shown on application launch.
      */

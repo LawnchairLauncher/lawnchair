@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar.bubbles;
 
 import static androidx.dynamicanimation.animation.SpringForce.DAMPING_RATIO_LOW_BOUNCY;
 import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_LOW;
-import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_MEDIUM;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
@@ -42,11 +41,14 @@ public class BubbleDragAnimator {
     private static final float SCALE_BUBBLE_FOCUSED = 1.2f;
     private static final float SCALE_BUBBLE_CAPTURED = 0.9f;
     private static final float SCALE_BUBBLE_BAR_FOCUSED = 1.1f;
+    // 400f matches to MEDIUM_LOW spring stiffness
+    private static final float TRANSLATION_SPRING_STIFFNESS = 400f;
 
     private final PhysicsAnimator.SpringConfig mDefaultConfig =
             new PhysicsAnimator.SpringConfig(STIFFNESS_LOW, DAMPING_RATIO_LOW_BOUNCY);
     private final PhysicsAnimator.SpringConfig mTranslationConfig =
-            new PhysicsAnimator.SpringConfig(STIFFNESS_MEDIUM, DAMPING_RATIO_LOW_BOUNCY);
+            new PhysicsAnimator.SpringConfig(TRANSLATION_SPRING_STIFFNESS,
+                    DAMPING_RATIO_LOW_BOUNCY);
     @NonNull
     private final View mView;
     @NonNull

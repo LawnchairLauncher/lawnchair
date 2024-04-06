@@ -35,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.util.DisplayController;
 
@@ -42,6 +43,7 @@ import com.android.launcher3.util.DisplayController;
  * Utility class to manage launcher rotation
  */
 public class RotationHelper implements OnSharedPreferenceChangeListener,
+        DeviceProfile.OnDeviceProfileChangeListener,
         DisplayController.DisplayInfoChangeListener {
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
@@ -119,10 +121,24 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         }
     }
 
+    /**
+     * Listening to both onDisplayInfoChanged and onDeviceProfileChanged to reduce delay. While
+     * onDeviceProfileChanged is triggered earlier, it only receives callback when Launcher is in
+     * the foreground. When in the background, we can still rely on onDisplayInfoChanged to update,
+     * assuming that the delay is tolerable since it takes time to change to foreground.
+     */
     @Override
     public void onDisplayInfoChanged(Context context, DisplayController.Info info, int flags) {
+        onIgnoreAutoRotateChanged(info.isTablet(info.realBounds));
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        onIgnoreAutoRotateChanged(dp.isTablet);
+    }
+
+    private void onIgnoreAutoRotateChanged(boolean ignoreAutoRotateSettings) {
         if (mDestroyed) return;
-        boolean ignoreAutoRotateSettings = info.isTablet(info.realBounds);
         if (mIgnoreAutoRotateSettings != ignoreAutoRotateSettings) {
             setIgnoreAutoRotateSettings(ignoreAutoRotateSettings);
             notifyChange();
@@ -161,12 +177,14 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         DisplayController.Info info = displayController.getInfo();
         setIgnoreAutoRotateSettings(info.isTablet(info.realBounds));
         displayController.addChangeListener(this);
+        mActivity.addOnDeviceProfileChangeListener(this);
         notifyChange();
     }
 
     public void destroy() {
         if (mDestroyed) return;
         mDestroyed = true;
+        mActivity.removeOnDeviceProfileChangeListener(this);
         DisplayController.INSTANCE.get(mActivity).removeChangeListener(this);
         LauncherPrefs.get(mActivity).removeListener(this, ALLOW_ROTATION);
     }
