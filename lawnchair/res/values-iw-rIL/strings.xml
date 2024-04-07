@@ -14,22 +14,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">הקש כאן כדי להגדיר את Lawnchair כעמוד הבית שלך.</string>
+    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
     <string name="settings">הגדרות</string>
     <string name="general_label">כללי</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_label">מסך הבית</string>
     <string name="home_screen_description">פיד, רשת, אייקונים</string>
-    <!--
-    <string name="smartspace" />
-    -->
     <string name="what_to_show">מה להציג</string>
     <string name="dock_label">מעגנים</string>
     <string name="dock_description">סרגל חיפוש, כמות סמלים</string>
     <string name="app_drawer_label">מגירת היישומים</string>
     <string name="app_drawer_description">יישומים מוסתרים, כמות העמודות, סמלים</string>
+    <string name="drawer_search_label">Drawer Search</string>
+    <string name="drawer_search_description">Web Suggestions, Global Search</string>
     <string name="folders_label">תיקיות</string>
     <string name="folders_description">כמות עמודות ושורות</string>
     <string name="gestures_label">מחוות</string>
@@ -37,36 +37,46 @@
     <string name="quickstep_label">אחרונים</string>
     <string name="quickstep_description">כפתור ניקוי הכל, רדיוס פינות</string>
     <string name="about_label">על אודות</string>
-    <!-- <string name="version" /> (unknown source) -->
-    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">מידע על האפליקציה</string>
     <string name="debug_restart_launcher">איתחול Lawnchair</string>
     <string name="experimental_features_label">אפשרויות ניסויות</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">התאמת גופן</string>
-    <string name="font_picker_description">טקסט מסוים נותר ללא שינוי.</string>
+    <string name="font_picker_description">Some text remains unchanged</string>
     <string name="smartspace_calendar_label">התאמות לוח שנה במבט מהיר</string>
-    <string name="smartspace_calendar_description">אפשר הצגת תאריכים באמצעות מערכות לוח שנה לא גרגוריאניות.</string>
-    <string name="workspace_increase_max_grid_size_label">גודל מרבי של רשת מסך הבית מוגדל</string>
-    <string name="workspace_increase_max_grid_size_description">הגדל את הגודל המרבי המותר של רשת מסך הבית מ-10 × 10 ל-20 × 20.</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
     <string name="always_reload_icons_label">תמיד טען מחדש סמלים</string>
     <string name="always_reload_icons_description">הימנע משימוש בסמלים ממטמון מחבילות סמלים</string>
-    <string name="transparent_background_icons">סמלי נושא שקופים</string>
-    <string name="transparent_background_icons_description">השתמש ברקע שקוף עבור סמלי סגנון</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <!-- Relating to label/icon size -->
+    <string name="icons">סמלים</string>
+    <string name="icon_size">גודל סמל</string>
+    <string name="show_home_labels">הצגת תוויות</string>
+    <string name="label_size">גודל טקסט</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">סיבוב מסך הבית</string>
-    <string name="home_screen_rotation_description">כאשר המכשיר מסובב.</string>
+    <string name="home_screen_rotation_description">When device is rotated</string>
     <string name="font_label">פונט (ניסיוני)</string>
-    <!-- <string name="icons" /> -->
+    <string name="fontWorkspace">כללי</string>
+    <string name="fontHeading">Headings</string>
+    <string name="fontHeadingMedium">Headings (Medium)</string>
+    <string name="fontBody">Body</string>
+    <string name="fontBodyMedium">Body (Medium)</string>
     <string name="icon_style">סגנון אייקון</string>
+    <string name="transparent_background_icons">סמלי נושא שקופים</string>
+    <string name="transparent_background_icons_description">השתמש ברקע שקוף עבור סמלי סגנון</string>
     <string name="icon_shape_label">צורת האייקון</string>
     <string name="auto_adaptive_icons_label">אייקונים מותאמים אוטומטית</string>
     <string name="auto_adaptive_icons_description">לכל האייקונים שלא מותאמים.</string>
     <string name="background_lightness_label">בהירות הרקע</string>
     <string name="adaptive_icon_background_description">השתמש ב-100% בהירות רקע בשביל לבן.</string>
+    <string name="reset_custom_icons">איפוס אייקונים מותאמים</string>
+    <string name="reset_custom_icons_confirmation">כל האייקונים המותאמים יתאפסו. אתה רוצה להמשיך?</string>
     <string name="notification_dots">התראות</string>
-    <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">הצגת כמות התראות</string>
     <string name="notification_dots_color">צבע נקודת התראה</string>
     <string name="notification_dots_text_color">צבע מונה ההודעות</string>
@@ -74,7 +84,7 @@
     <string name="notification_dots_color_contrast_warning_sometimes">אזהרה: ייתכן כי נקודת ההודעה &amp; ומונה ההודעות לא תמיד ישתלבו בצורה מספקת אחת עם השנייה</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">נדרשת גישה להתראות</string>
-    <string name="missing_notification_access_description">נדרשת גישה להתראות.</string>
+    <string name="missing_notification_access_description">Notification access needed</string>
     <string name="msg_missing_notification_access">כדי להשתמש בנקודות התראות, אשר <xliff:g id="name" example="My App">%1$s</xliff:g> גישה להתראות.</string>
     <string name="title_change_settings">שינוי הגדרות</string>
     <string name="colors">צבעים</string>
@@ -102,7 +112,6 @@
     <string name="import_from_clipboard">ייבא מהלוח</string>
     <string name="icon_shape_clipboard_import_error">הלוח לא מכיר צורת סמל תקינה</string>
     <!-- IconPackPreferences -->
-    <!-- <string name="icon_style" /> -->
     <string name="icon_pack">ערכת סמלים</string>
     <string name="themed_icon_pack">מקור לסגנון סמלים</string>
     <string name="system_icons">סמלי המערכת</string>
@@ -110,10 +119,8 @@
     <string name="themed_icons_off_label">כבוי</string>
     <string name="themed_icons_home_label">מסך הבית</string>
     <string name="themed_icons_home_and_drawer_label">מסך בית ומגירת אפליקציות</string>
-    <string name="lawnicons_not_installed_description">Lawnicons לא מותקן.</string>
-    <!-- <string name="cancel" /> (unknown source)-->
+    <string name="lawnicons_not_installed_description">No supported icon packs</string>
     <!-- IconPickerPreference -->
-    <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">מערכת</string>
     <string name="icon_shape_circle">עיגול</string>
     <string name="icon_shape_cylinder">צילינדר</string>
@@ -129,8 +136,8 @@
     <string name="icon_shape_teardrop">טיפה</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">הוספת פונטים</string>
-    <string name="pref_fonts_add_fonts_summary">תומך ב-OTF ו-TTF.</string>
-    <string name="pref_fonts_missing_font">פונט לא נמצא.</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
+    <string name="pref_fonts_missing_font">Font not found</string>
     <string name="font_variant_italic">נטוי</string>
     <string name="font_weight_thin">דק</string>
     <string name="font_weight_extra_light">דק במיוחד</string>
@@ -163,30 +170,27 @@
     <string name="invalid_color">צבע לא תקני</string>
     <string name="launcher_default_color">מנוהל ע\"י Lawnchair</string>
     <!-- HomeScreenPreferences -->
-    <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">הוספת יישומים חדשים למסך הבית</string>
-    <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">הצגת ההזנה</string>
-    <string name="minus_one_unavailable">ההזנה אינה מותקנת.</string>
+    <string name="minus_one_unavailable">No feed apps installed</string>
     <string name="minus_one">פיד</string>
     <string name="feed_provider">ספק הזנה</string>
     <string name="feed_default">ברירת מחדל</string>
     <string name="wallpaper">רקע</string>
     <string name="wallpaper_scrolling_label">גלילת טפט</string>
     <string name="wallpaper_depth_effect_label">אפקט עומק של טפט</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">הצגת צל</string>
     <string name="layout">סידור</string>
     <string name="home_screen_grid">רשת מסך הבית</string>
     <string name="home_screen_lock">נעילת מסך הבית</string>
-    <string name="home_screen_lock_description">מנע שינויים בפריסת מסך הבית.</string>
+    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
     <string name="home_screen_unlock">פתח נעילת מסך הבית</string>
-    <!-- used in popup menu-->
-    <string name="home_screen_locked">מסך הבית נעול.</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
-    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
+    <string name="home_screen_locked">Home Screen is locked</string>
+    <string name="show_dot_pagination_label">Use Dot Pagination</string>
+    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_material_u_popup_label">Use New Popup Style</string>
+    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
     <string name="popup_menu">תפריט Pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">הצג כפתור נעילה</string>
     <string name="show_system_settings_entry">הצג כניסה להגדרות המערכת</string>
@@ -194,20 +198,16 @@
     <string name="status_bar_label">סרגל מצב</string>
     <string name="show_status_bar">הצגת שורת מצב</string>
     <string name="dark_status_bar_label">שורת מצב כהה</string>
-    <string name="icons">סמלים</string>
-    <string name="icon_size">גודל סמל</string>
-    <string name="show_home_labels">הצגת תוויות</string>
-    <string name="label_size">גודל טקסט</string>
-    <string name="reset_custom_icons">איפוס אייקונים מותאמים</string>
-    <string name="reset_custom_icons_confirmation">כל האייקונים המותאמים יתאפסו. אתה רוצה להמשיך?</string>
     <string name="home_screen_text_color">צבע טקסט</string>
     <string name="color_light">בהירה</string>
     <string name="color_dark">כהה</string>
-    <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">פינות מעוגלות</string>
     <string name="allow_widget_overlap">אשר חפיפה</string>
+    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
+    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
+    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
+    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
     <!-- HomeScreenGridPreferences -->
-    <!-- <string name="home_screen_grid" /> -->
     <string name="columns">עמודות</string>
     <string name="rows">שורות</string>
     <string name="apply_grid">החל</string>
@@ -240,75 +240,48 @@
     <string name="smartspace_calendar_persian">פרסית</string>
     <string name="smartspace_preferences">העדפות</string>
     <string name="smartspace_widget_toggle_label">הצג במסך הבית</string>
-    <string name="smartspace_widget_toggle_description">ניתן להוסיף \"מבט מהיר\" באופן ידני על ידי הצבת הווידג\'ט \"Lawnchair\".</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
     <string name="smartspace_mode_label">ווידג׳ט במבט מהיר</string>
-    <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">גוגל</string>
     <string name="smartspace_mode_google_search">חיפוש בגוגל</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="show_hotseat_title">Show Dock</string>
+    <string name="search_bar_label">סרגל חיפוש</string>
     <string name="hotseat_mode_label">ווידג\'ט שורת חיפוש</string>
     <string name="hotseat_mode_disabled">השבת</string>
-    <string name="hotseat_mode_lawnchair">Lawnchair</string>
     <string name="hotseat_mode_google_search">שורת חיפוש בגוגל</string>
-    <string name="search_bar_label">סרגל חיפוש</string>
     <string name="corner_radius_label">רדיוס פינות</string>
     <string name="apply_accent_color_label">החל צבע הדגשה</string>
     <string name="search_provider">ספק חיפוש</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <string name="grid">רשת</string>
     <string name="dock_icons">הסמלים במעגן</string>
+    <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <!-- SearchProviderPreferences -->
-    <!-- search_provider -->
     <string name="search_provider_app_search">חיפוש אפליקציה</string>
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">יישום</string>
     <string name="website_label">אתר</string>
-    <string name="qsb_search_provider_app_required">אפליקציה נדרשת.</string>
+    <string name="qsb_search_provider_app_required">App required</string>
     <!-- AppDrawerPrefences -->
-    <!-- app_drawer_label -->
-    <!-- general_label -->
     <string name="background_opacity">שקיפות הרקע</string>
-    <!-- hiddenApps_label -->
     <string name="hidden_apps_label">יישומים מוסתרים</string>
     <string name="show_enable_smart_hide">הצג כאשר מקלידים שם מלא</string>
     <string name="hide_hidden_apps_search">הסתבר בתוצאות חיפוש</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually loading and displaying icons</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
     <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
+    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
     <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
     <string name="pref_category_search">חיפוש</string>
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
     <string name="pref_search_auto_show_keyboard">הצגה אוטומטית של המקלדת</string>
     <string name="fuzzy_search_title">חיפוש מקורב</string>
     <string name="fuzzy_search_desc">התאמה מקורבת עבור חיפושי אפליקציה.</string>
-    <string name="max_apps_result_count_title">מספר תוצאות חיפוש מקסימלי</string>
-    <string name="max_people_result_count_title">Max People Result Count</string>
-    <string name="max_file_result_count_title">Max Files Result Count</string>
-    <string name="max_suggestion_result_count_title">Max Suggestion Result Count</string>
-    <string name="max_settings_entry_result_count_title">Max Settings Entry Result Count</string>
-    <string name="max_recent_result_count_title">Max History Result Count</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
-    <string name="clear_history">ניקוי</string>
-    <!-- <string name="grid" /> -->
+    <string name="clear_history">Clear Search History</string>
     <string name="app_drawer_columns">עמודות במגירת היישומים</string>
     <string name="row_height_label">גובה שורה</string>
     <string name="app_drawer_indent_label">Horizontal Padding</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="search_pref_result_files_title">קבצים</string>
-    <string name="pref_suggestion_label">המלצות</string>
-    <string name="search_pref_result_web_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">חיפוש מתקדם</string>
-    <string name="perform_wide_search_description">ניתן לחפש את אנשי הקשר, הקבצים וההגדרות שלך בחיפוש במגירת האפליקציות.</string>
-    <string name="search_pref_result_history_title">היסטוריה</string>
-    <!--
-    <string name="icons" />
-      <string name="icon_size" />
-      <string name="show_home_labels" />
-      <string name="label_size" />
-    -->
     <!-- HiddenAppsPreferences -->
     <string name="hidden_apps_label_with_count">אפליקציות מוסתרות (%1$d)</string>
     <plurals name="apps_count">
@@ -318,15 +291,11 @@
         <item quantity="other">%1$d אפליקציות</item>
     </plurals>
     <!-- FolderPreferences -->
-    <!-- <string name="folders_label" /> -->
-    <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">שקיפות רקע אייקון</string>
     <string name="folder_preview_bg_color_label">צבע רקע של הסמל</string>
-    <!-- <string name="grid" /> -->
-    <string name="max_folder_columns">מספר מרבי לטורים בתיקייה</string>
-    <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
+    <string name="max_folder_columns">Maximum Folder Columns</string>
+    <string name="max_folder_rows">Maximum Folder Rows</string>
     <!-- GesturePreference -->
-    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">הקשה כפולה</string>
     <string name="gesture_swipe_up">החלק למעלה</string>
     <string name="gesture_swipe_down">החלק למטה</string>
@@ -342,12 +311,9 @@
     <string name="gesture_handler_open_search">פתח חיפוש</string>
     <string name="pick_app_for_gesture">בחר יישום</string>
     <!-- QuickstepPreferences -->
-    <!-- <string name="quickstep_label" /> -->
-    <!-- <string name="general_label" /> -->
     <string name="quickswitch_ignored_warning">הגדרות אלו לא יחולו מכיוון ש- Lawnchair אינו מוגדר כספק מסך \'אחרונים\'.</string>
     <string name="translucent_background">רקע שקוף</string>
     <string name="recents_actions_label">פעולות מהירות</string>
-    <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">שיתוף</string>
     <string name="action_lens">עדשה</string>
     <string name="recents_clear_all">ניקוי הכל</string>
@@ -356,7 +322,7 @@
     <string name="override_window_corner_radius_label">רדיוס פינות מסך מותאם</string>
     <string name="window_corner_radius_description">כשאתה מחליק מעלה לפתיחת \"אחרונים\", היישום הנוכחי עוקב אחרי האצבע שלך, ומצטמצם לכרטיס. השתמש בסמן כדי להתאים לפי בחירתך את רדיוס עיגול הפינות של הכרטיס כשהוא כמעט על מסך מלא כך שזה יתאים לפינות המסך שלך.</string>
     <string name="taskbar_label">חלונית משימות</string>
-    <string name="enable_taskbar_experimental">הפעל חלונית משימות (נסיוני)</string>
+    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
     <!-- about/About.kt -->
     <string name="news">חדשות</string>
     <string name="support">תמיכה</string>
@@ -366,10 +332,6 @@
     <string name="quickswitch_maintenance">תחזוקת QuickSwitch</string>
     <string name="devops">דֶב-אוֹפּס</string>
     <string name="support_and_pr">תמיכה ובקשות מיזוג</string>
-    <!--
-      <string name="support" />
-      <string name="support_and_pr" />
-      -->
     <string name="acknowledgements">תודות</string>
     <string name="translate">תרגום</string>
     <!-- IconPickerPreference -->
@@ -381,7 +343,7 @@
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">חיפוש יישומים</string>
     <string name="settings_button_text">הגדרות בית</string>
-    <string name="item_removed">הפריט הוסר.</string>
+    <string name="item_removed">Item removed</string>
     <string name="all_apps_no_search_results">לא נמצאו אפליקציות מתאימות “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">כדי להשתמש בלחיצה כפולה כדי להפעיל מצב שינה, יש להגדיר את Lawnchair כמנהל מכשיר. הקש על \"פתח הגדרות\" ואז על \"הפעל את אפליקציית ניהול מכשיר זו\"</string>
@@ -395,7 +357,7 @@
     <string name="label">תוית</string>
     <string name="hide_from_drawer">הסתר ממגירת היישומים</string>
     <string name="suggestion_pref_screen_title">המלצות</string>
-    <string name="show_suggested_apps_at_drawer_top">הצעות לאפליקציות יוצגו בראש המגירה</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">דיווח על תקלה</string>
     <string name="crash_report_notif_title">%1$s קרס</string>
@@ -408,27 +370,45 @@
     <string name="bugreport_group_summary">%d דיווחים חדשים.</string>
     <string name="bugreport_group_summary_multiple">מס\' דיווחים חדשים.</string>
     <!-- Search ig -->
+    <string name="action_apply">החל</string>
     <string name="show_search_result_types">הצגה בתוצאות החיפוש</string>
-    <string name="search_pref_result_people_title">אנשים</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
     <string name="search_pref_result_shortcuts_title">קיצורי יישום</string>
+    <string name="search_pref_result_people_title">אנשים</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="search_pref_result_settings_title">Android Settings</string>
+    <string name="search_pref_result_files_title">קבצים</string>
+    <string name="search_pref_result_web_title">Web suggestions</string>
+    <string name="search_pref_result_history_title">Search History</string>
+    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_contacts_description">אנשי קשר ועוד</string>
+    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
+    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
+    <string name="grant_requested_permissions">Grant Permissions</string>
+    <string name="pref_suggestion_label">המלצות</string>
     <string name="all_apps_device_search_hint">חיפוש</string>
     <string name="search_input_action_clear_results">נקה תיבת חיפוש</string>
-    <string name="label_search">חיפוש</string>
-    <string name="label_lens">עדשת גוגל</string>
-    <string name="label_voice_search">חיפוש קולי</string>
-    <string name="search_pref_result_settings_title">Settings Entry</string>
-    <string name="all_apps_search_market_message">חפש עוד יישומים</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">לא נמצאו חנות או דפדפן מותקנים.</string>
     <string name="all_apps_search_result_suggestions">מהרשת</string>
     <string name="all_apps_search_result_contacts_from_device">מאנשי הקשר</string>
     <string name="all_apps_search_result_files">מהקבצים</string>
-    <string name="all_apps_search_result_settings_entry_from_device">מההגדרות</string>
-    <string name="warn_contact_permission_content">נדרשת הרשאה לאנשי קשר</string>
-    <string name="warn_files_permission_content">נדרשת הרשאה לאחסון</string>
-    <string name="search_pref_result_files_description">מדיה, מסמכים, תיקיות ועוד.</string>
-    <string name="search_pref_result_contacts_description">אנשי קשר ועוד</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
+    <string name="label_search">חיפוש</string>
+    <string name="label_lens">עדשת גוגל</string>
+    <string name="label_voice_search">חיפוש קולי</string>
+    <string name="pref_advance_search_category">חיפוש מתקדם</string>
+    <string name="perform_wide_search_title">Device Search</string>
+    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
+    <string name="max_apps_result_count_title">Maximum App Result Count</string>
+    <string name="max_people_result_count_title">Maximum People Result Count</string>
+    <string name="max_file_result_count_title">Maximum Files Result Count</string>
+    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
+    <string name="max_recent_result_count_title">Maximum Search History Count</string>
+    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
+    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+    <string name="all_apps_search_market_message">חפש עוד יישומים</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">לא נמצאו חנות או דפדפן מותקנים.</string>
     <string name="quickstep_incompatible">גישור לא תואם למערכת</string>
     <string name="quickstep_incompatible_description">המכשיר שלך מוגדר עם מחוות-מערכת (ידועים כ-Quickstep) שפועלות ע\"י %1$s, אבל הגרסה הזאת של %1$s לא מתאימה לעבוד עם גרסת האנדרואיד שלך. בכדי להמשיך להשתמש במכשיר שלך, יש להסיר את עדכוני %1$s או להשבית את פעולת %1$s כמפעיל מחוות-המערכת.</string>
     <string name="delete">מחיקה</string>
@@ -446,11 +426,10 @@
     <string name="backup_restore_success">גיבוי שוחזר.</string>
     <string name="backup_restore_error">שיחזור הגיבוי נכשל.</string>
     <string name="invalid_backup_file">קובץ גיבוי לא תקין.</string>
+    <!-- Miscellaneous -->
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s ו%s</string>
     <string name="system_settings">הגדרות מערכת</string>
     <string name="action_unlock">Unlock</string>
     <string name="action_lock">Lock</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>
