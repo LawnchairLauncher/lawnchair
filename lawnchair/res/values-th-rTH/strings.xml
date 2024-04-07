@@ -14,31 +14,29 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">แตะที่การ์ดเพื่อตั้ง Lawnchair เป็นแอปเริ่มต้นสำหรับหน้าแรก</string>
+    <string name="set_default_launcher_tip">ตั้งค่า Lawnchair ให้เป็น Lancher เริ่มต้นเพื่อเข้าถึงทางลัดและอีกมากมาย</string>
     <string name="settings">การตั้งค่า</string>
     <string name="general_label">ทั่วไป</string>
     <string name="general_description">สี, ชุดไอคอน, จุดแจ้งเตือน</string>
     <string name="home_screen_label">หน้าแรก</string>
     <string name="home_screen_description">ฟีด, กริด, ไอคอน</string>
-    <!--
-    <string name="smartspace" />
-    -->
     <string name="what_to_show">สิ่งที่อยากให้แสดง</string>
-    <string name="dock_label">แถบรายการโปรด</string>
+    <string name="dock_label">Dock</string>
     <string name="dock_description">แถบค้นหา, จำนวนไอคอน</string>
     <string name="app_drawer_label">รายการแอป</string>
-    <string name="app_drawer_description">แอปที่ซ่อนไว้, ไอคอน</string>
+    <string name="app_drawer_description">ซ่อนแอป, จำนวนคอลัมน์, ไอคอน</string>
+    <string name="drawer_search_label">ค้นหาในลิ้นชัก</string>
+    <string name="drawer_search_description">คำแนะนำเว็ป, การค้นหาทั้งหมด</string>
     <string name="folders_label">โฟลเดอร์</string>
-    <string name="folders_description">จำนวนไอคอน</string>
+    <string name="folders_description">จำนวนแถวและคอลัมน์</string>
     <string name="gestures_label">ท่าทาง</string>
-    <string name="gestures_description">การกดและการปัด</string>
+    <string name="gestures_description">การแตะและการปัด</string>
     <string name="quickstep_label">แอพที่ใช้งานล่าสุด</string>
     <string name="quickstep_description">ล้างปุ่มทั้งหมด, รัศมีมุม</string>
     <string name="about_label">เกี่ยวกับ</string>
-    <!-- <string name="version" /> (unknown source) -->
-    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">ข้อมูลแอป</string>
     <string name="debug_restart_launcher">เริ่มต้น Lawnchair ใหม่</string>
     <string name="experimental_features_label">ฟีเจอร์ทดลอง</string>
@@ -52,21 +50,33 @@
     <string name="workspace_increase_max_grid_size_description">เพิ่มขนาดกริดหน้าจอหลักสูงสุดที่อนุญาตจาก 10 x 10 เป็น 20 x 20</string>
     <string name="always_reload_icons_label">โหลดไอคอนใหม่เสมอ</string>
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
-    <string name="transparent_background_icons">ไอคอนธีมโปร่งใส</string>
-    <string name="transparent_background_icons_description">ใช้พื้นหลังโปร่งใสบนไอคอนที่มีธีม</string>
+    <string name="recents_lock_unlock">ล็อค/ปลดล็อค</string>
+    <string name="recents_lock_unlock_description">ป้องกันไม่ให้แอปที่เลือกปิดตัวลงเมื่อกด \"ล้างทั้งหมด\"</string>
+    <!-- Relating to label/icon size -->
+    <string name="icons">ไอคอน</string>
+    <string name="icon_size">ขนาดไอคอน</string>
+    <string name="show_home_labels">แสดงชื่อแอป</string>
+    <string name="label_size">ขนาดตัวอักษร</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
     <string name="home_screen_rotation_description">เมื่อโทรศัพท์หมุน</string>
     <string name="font_label">แบบอักษร (อยู่ในการทดลอง)</string>
-    <!-- <string name="icons" /> -->
+    <string name="fontWorkspace">ทั่วไป</string>
+    <string name="fontHeading">หัวข้อ</string>
+    <string name="fontHeadingMedium">หัวข้อ (ปานกลาง)</string>
+    <string name="fontBody">ลักษณะ</string>
+    <string name="fontBodyMedium">ลักษณะ (่ปานกลาง)</string>
     <string name="icon_style">รูปแบบไอคอน</string>
-    <string name="icon_shape_label">รูปร่างไอคอน</string>
+    <string name="transparent_background_icons">ไอคอนธีมโปร่งใส</string>
+    <string name="transparent_background_icons_description">ใช้พื้นหลังโปร่งใสบนไอคอนที่มีธีม</string>
+    <string name="icon_shape_label">รูปทรงไอคอน</string>
     <string name="auto_adaptive_icons_label">ไอคอนปรับใช้อัตโนมัติ</string>
     <string name="auto_adaptive_icons_description">สำหรับไอคอนธรรมดา</string>
     <string name="background_lightness_label">ความสว่างพื้นหลัง</string>
     <string name="adaptive_icon_background_description">ใช้ความสว่าง 100% สำหรับสีขาว</string>
+    <string name="reset_custom_icons">คืนค่าไอคอนที่กำหนดเอง</string>
+    <string name="reset_custom_icons_confirmation">ไอคอนที่กำหนดเองทั้งหมดจะถูกคืนเป็นค่าเริ่มต้น, คุณต้องการดำเนินการต่อหรือไม่?</string>
     <string name="notification_dots">จุดแสดงการแจ้งเตือน</string>
-    <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">แสดงตัวเลขจากการแจ้งเตือน</string>
     <string name="notification_dots_color">สีจุดการแจ้งเตือน</string>
     <string name="notification_dots_text_color">สีการนับการแจ้งเตือน</string>
@@ -102,7 +112,6 @@
     <string name="import_from_clipboard">นำเข้าจากคลิปบอร์ด</string>
     <string name="icon_shape_clipboard_import_error">คลิปบอร์ดไม่มีรูปร่างไอคอนที่ถูกต้อง</string>
     <!-- IconPackPreferences -->
-    <!-- <string name="icon_style" /> -->
     <string name="icon_pack">ชุดไอคอน</string>
     <string name="themed_icon_pack">แหล่งที่มาของไอคอนธีม</string>
     <string name="system_icons">ไอคอนระบบ</string>
@@ -110,10 +119,8 @@
     <string name="themed_icons_off_label">ปิด</string>
     <string name="themed_icons_home_label">หน้าแรก</string>
     <string name="themed_icons_home_and_drawer_label">หน้าจอหลัก &amp; รายการแอพ</string>
-    <string name="lawnicons_not_installed_description">ยังไม่ได้ติดตั้ง Lawnicons</string>
-    <!-- <string name="cancel" /> (unknown source)-->
+    <string name="lawnicons_not_installed_description">ไม่รองรับไอคอนแพ็ค</string>
     <!-- IconPickerPreference -->
-    <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">ระบบ</string>
     <string name="icon_shape_circle">วงกลม</string>
     <string name="icon_shape_cylinder">ทรงกระบอก</string>
@@ -129,7 +136,7 @@
     <string name="icon_shape_teardrop">ทรงหยดน้ำ</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">เพิ่มแบบอักษร</string>
-    <string name="pref_fonts_add_fonts_summary">รองรับไฟล์ฟอน์ตสกุล OTF &amp; TTF</string>
+    <string name="pref_fonts_add_fonts_summary">รองรับไฟล์แบบอักษร OFT &amp; TTF</string>
     <string name="pref_fonts_missing_font">ไม่พบแบบอักษร</string>
     <string name="font_variant_italic">ตัวเอียง</string>
     <string name="font_weight_thin">ตัวบาง</string>
@@ -163,30 +170,27 @@
     <string name="invalid_color">สีไม่ถูกต้อง</string>
     <string name="launcher_default_color">จัดการโดย Lawnchair</string>
     <!-- HomeScreenPreferences -->
-    <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">เพิ่มไอคอนแอปในหน้าจอหลัก</string>
-    <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">แสดงฟีด</string>
-    <string name="minus_one_unavailable">ยังไม่ได้ติดตั้ง Feed</string>
+    <string name="minus_one_unavailable">ยังไม่ได้ติดตั้งแอป Feed</string>
     <string name="minus_one">ฟีดข่าวสาร</string>
     <string name="feed_provider">ผู้ให้บริการข่าว</string>
     <string name="feed_default">ค่าเริ่มต้น</string>
     <string name="wallpaper">ภาพพื้นหลัง</string>
     <string name="wallpaper_scrolling_label">เลื่อนพื้นหลัง</string>
     <string name="wallpaper_depth_effect_label">เอฟเฟกต์ความลึกของพื้นหลัง</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">ขยายเข้าและออกวอลเปเปอร์เมื่อเกิดการเปลี่ยนแปลงระหว่างพื้นที่ของ Launcher</string>
     <string name="show_sys_ui_scrim">เงาด้านบน</string>
     <string name="layout">การจัดหน้า</string>
     <string name="home_screen_grid">ขนาดกริด</string>
     <string name="home_screen_lock">ล็อกหน้าแรก</string>
     <string name="home_screen_lock_description">ป้องกันการเปลี่ยนแปลงของวัตถุบนหน้าจอหลัก</string>
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
-    <!-- used in popup menu-->
     <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Enable showing dot pagination in workspace.</string>
-    <string name="show_material_u_popup_label">Show Material U Popup</string>
-    <string name="show_material_u_popup_description">Enable bouncy and slightly consolidated popup.</string>
+    <string name="show_dot_pagination_label">ใช้ตัวแบ่งหน้าแบบจุด</string>
+    <string name="show_dot_pagination_description">ใช้จุดแทนเส้นเพื่อแสดงหมายเลขหน้า</string>
+    <string name="show_material_u_popup_label">ใช้ลักษณะป็อปอัพแบบใหม่</string>
+    <string name="show_material_u_popup_description">ใช้ลักษณะป๊อปอัพที่เด้งรวมกับ Material You</string>
     <string name="popup_menu">เมนูป็อปอัพ</string>
     <string name="home_screen_lock_toggle_from_home_popup">แสดงปุ่มล็อค</string>
     <string name="show_system_settings_entry">แสดงรายการตั้งค่าระบบ</string>
@@ -194,20 +198,16 @@
     <string name="status_bar_label">แถบสถานะ</string>
     <string name="show_status_bar">แสดงแถบสถานะ</string>
     <string name="dark_status_bar_label">แถบสถานะสีดำ</string>
-    <string name="icons">ไอคอน</string>
-    <string name="icon_size">ขนาดไอคอน</string>
-    <string name="show_home_labels">แสดงชื่อแอป</string>
-    <string name="label_size">ขนาดตัวอักษร</string>
-    <string name="reset_custom_icons">คืนค่าไอคอนที่กำหนดเอง</string>
-    <string name="reset_custom_icons_confirmation">ไอคอนที่กำหนดเองทั้งหมดจะถูกคืนเป็นค่าเริ่มต้น, คุณต้องการดำเนินการต่อหรือไม่?</string>
     <string name="home_screen_text_color">สีของข้อความ</string>
     <string name="color_light">สว่าง</string>
     <string name="color_dark">มืด</string>
-    <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">มุมโค้งมน</string>
     <string name="allow_widget_overlap">อนุญาตให้ซ้อนทับกัน</string>
+    <string name="force_widget_resize_label">ป้องกันการปรับขนาดของวิดเจ็ต</string>
+    <string name="force_widget_resize_description">อนุญาติให้ปรับขนาดของวิดเจ็ตที่มีขนาดเฉพาะ</string>
+    <string name="widget_unlimited_size_label">ลบข้อจำกัดด้านขนาด</string>
+    <string name="widget_unlimited_size_description">ลบข้อจำกัดขนาดขั้นต่ำและสูงสุดของวิดเจ็ต</string>
     <!-- HomeScreenGridPreferences -->
-    <!-- <string name="home_screen_grid" /> -->
     <string name="columns">จำนวนคอลัมน์</string>
     <string name="rows">จำนวนแถว</string>
     <string name="apply_grid">ใช้งานทันที</string>
@@ -240,90 +240,59 @@
     <string name="smartspace_calendar_persian">เปอร์เซีย</string>
     <string name="smartspace_preferences">ปรับแต่ง</string>
     <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
-    <string name="smartspace_widget_toggle_description">สามารถเพิ่มข้อมูลสรุปได้ด้วยตนเองโดยวางวิดเจ็ต \"Lawnchair\"</string>
+    <string name="smartspace_widget_toggle_description">สามารถเพิ่มข้อมูลสรุปในหน้าหลักได้ด้วยตนเองโดยวางวิดเจ็ต \"Lawnchair\"</string>
     <string name="smartspace_mode_label">ผู้ให้บริการข้อมูลโดยย่อ</string>
-    <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">แถบค้นหาของ Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
+    <string name="show_hotseat_title">แสดง Dock</string>
+    <string name="search_bar_label">แถบการค้นหา</string>
     <string name="hotseat_mode_label">วิดเจ็ตแถบค้นหา</string>
     <string name="hotseat_mode_disabled">ปิด</string>
-    <string name="hotseat_mode_lawnchair">Lawnchair</string>
     <string name="hotseat_mode_google_search">แถบค้นหาของ Google</string>
-    <string name="search_bar_label">แถบการค้นหา</string>
     <string name="corner_radius_label">รัศมีมุม</string>
     <string name="apply_accent_color_label">ใช้งานสีที่เน้น</string>
     <string name="search_provider">ผู้ให้บริการค้นหา</string>
-    <string name="hotseat_bottom_space_label">เว้นขอบล่าง</string>
     <string name="grid">กริด</string>
     <string name="dock_icons">จำนวนไอคอน</string>
+    <string name="hotseat_bottom_space_label">เว้นขอบล่าง</string>
     <!-- SearchProviderPreferences -->
-    <!-- search_provider -->
     <string name="search_provider_app_search">ค้นหาแอพ</string>
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">แอป</string>
     <string name="website_label">เว็บไซต์</string>
     <string name="qsb_search_provider_app_required">จำเป็นต้องมีแอป</string>
     <!-- AppDrawerPrefences -->
-    <!-- app_drawer_label -->
-    <!-- general_label -->
     <string name="background_opacity">ความทึบของพื้นหลัง</string>
-    <!-- hiddenApps_label -->
     <string name="hidden_apps_label">แอปที่ซ่อนไว้</string>
     <string name="show_enable_smart_hide">แสดงเมื่อพิมพ์ชื่อเต็ม</string>
     <string name="hide_hidden_apps_search">ซ่อนในผลการค้นหา</string>
     <string name="pref_all_apps_bulk_icon_loading_title">โหลดแอปเป็นชุด</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">โหลดและแสดงไอคอนเป็นชุด แทนที่จะโหลดและแสดงไอคอนทีละตัว</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">โหลดและแสดงไอคอนทั้งหมดพร้อมกัน แทนที่จะโหลดและแสดงไอคอนทีละไอคอน สามารถแก้ไขปัญหาเกี่ยวกับการค้นหาได้ แต่จะเพิ่มเวลาในการโหลด</string>
     <string name="pref_all_apps_remember_position_title">จำตำแหน่ง</string>
-    <string name="pref_all_apps_remember_position_description">Remember the position when you left off instead of the top</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_remember_position_description">จดจำตำแหน่งของแอปในลิ้นชักหลังจากออกจากลิ้นชัก</string>
+    <string name="pref_all_apps_show_scrollbar_title">แสดงแถบเลื่อน</string>
     <string name="pref_category_search">ค้นหา</string>
     <string name="show_app_search_bar">แสดงแถบค้นหา</string>
     <string name="pref_search_auto_show_keyboard">แสดงคีย์บอร์ดอัตโนมัติ</string>
     <string name="fuzzy_search_title">การค้นหาแบบคาดเดา</string>
     <string name="fuzzy_search_desc">การจับคูแบบประมาณสำหรับค้นหาแอพ</string>
-    <string name="max_apps_result_count_title">จำนวนผลการค้นหาสูงสุด</string>
-    <string name="max_people_result_count_title">จำนวนผลการค้นหาผู้คนสูงสุด</string>
-    <string name="max_file_result_count_title">จำนวนผลการค้นหาผู้คนสูงสุด</string>
-    <string name="max_suggestion_result_count_title">จำนวนผลคำแนะนำสูงสุด</string>
-    <string name="max_settings_entry_result_count_title">\@ObsessedYaoi18</string>
-    <string name="max_recent_result_count_title">จำนวนผลการค้นหาผู้คนสูงสุด</string>
-    <string name="max_web_suggestion_delay">Max Web Suggestion Delay</string>
-    <string name="clear_history">ล้าง</string>
-    <!-- <string name="grid" /> -->
+    <string name="clear_history">ล้างประวัติการค้นหา</string>
     <string name="app_drawer_columns">จำนวนคอลัมน์</string>
     <string name="row_height_label">ความสูงของแถว</string>
     <string name="app_drawer_indent_label">เว้นขอบข้าง</string>
-    <string name="perform_wide_search_title">ค้นหาในอุปกรณ์</string>
-    <string name="search_pref_result_files_title">ไฟล์</string>
-    <string name="pref_suggestion_label">คำแนะนำ</string>
-    <string name="search_pref_result_web_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">ค้นหาขั้นสูง</string>
-    <string name="perform_wide_search_description">Search your contacts, files, and settings in app drawer search.</string>
-    <string name="search_pref_result_history_title">ประวัติ</string>
-    <!--
-    <string name="icons" />
-      <string name="icon_size" />
-      <string name="show_home_labels" />
-      <string name="label_size" />
-    -->
     <!-- HiddenAppsPreferences -->
     <string name="hidden_apps_label_with_count">แอปที่ซ่อนอยู่ (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="other">%1$d แอป</item>
     </plurals>
     <!-- FolderPreferences -->
-    <!-- <string name="folders_label" /> -->
-    <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">ความทึบของพื้นหลังไอคอน</string>
     <string name="folder_preview_bg_color_label">สีพื้นหลังของไอคอน</string>
-    <!-- <string name="grid" /> -->
-    <string name="max_folder_columns">จำนวนคอลัมน์</string>
-    <string name="max_folder_rows">จำนวนแถว</string>
+    <string name="max_folder_columns">จำนวนคอลัมน์ในโฟลเดอร์สูงสุด</string>
+    <string name="max_folder_rows">จำนวนแถวในโฟลเดอร์สูงสุด</string>
     <!-- GesturePreference -->
-    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">แตะสองครั้ง</string>
     <string name="gesture_swipe_up">ปัดขึ้น</string>
     <string name="gesture_swipe_down">ปัดลง</string>
@@ -339,21 +308,18 @@
     <string name="gesture_handler_open_search">เปิดการค้นหา</string>
     <string name="pick_app_for_gesture">เลือกแอป</string>
     <!-- QuickstepPreferences -->
-    <!-- <string name="quickstep_label" /> -->
-    <!-- <string name="general_label" /> -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">การตั้งค่าเหล่านี้จะถูกเพิกเฉยเนื่องจาก Lawnchair ไม่ได้ถูกตั้งค่าเป็นผู้ให้บริการล่าสุด</string>
     <string name="translucent_background">พื้นหลังโปร่งแสง</string>
     <string name="recents_actions_label">การกระทำด่วน</string>
-    <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">แชร์</string>
     <string name="action_lens">เลนส์</string>
     <string name="recents_clear_all">ล้างทั้งหมด</string>
-    <string name="task_menu_force_stop">Force close</string>
+    <string name="task_menu_force_stop">บังคับปิด</string>
     <string name="window_corner_radius_label">หน้าจอขอบมน</string>
     <string name="override_window_corner_radius_label">ปรับแต่งขอบมนของหน้าจอ</string>
     <string name="window_corner_radius_description">เมื่อคุณปัดขึ้นเพื่อเปิดแอพล่าสุด แอพปัจจุบันจะตามนิ้วของคุณโดยย่อเป็นการ์ด ใช้แถบเลื่อนนี้เพื่อปรับรัศมีมุมของการ์ดเมื่อเกือบเต็มหน้าจอ เพื่อให้พอดีกับมุมของหน้าจอของคุณ</string>
     <string name="taskbar_label">แถบงาน</string>
-    <string name="enable_taskbar_experimental">เปิดใช้แถบงาน (อยู่ในการทดลอง)</string>
+    <string name="enable_taskbar_experimental">แสดงแถบงาน (อยู่ในการทดลอง)</string>
     <!-- about/About.kt -->
     <string name="news">ข่าวสาร</string>
     <string name="support">ความช่วยเหลือ</string>
@@ -363,10 +329,6 @@
     <string name="quickswitch_maintenance">ผู้ดูแล QuickSwitch</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">ความช่วยเหลือ &amp; ประชาสัมพันธ์</string>
-    <!--
-      <string name="support" />
-      <string name="support_and_pr" />
-      -->
     <string name="acknowledgements">ใบอนุญาตโอเพนซอร์ส</string>
     <string name="translate">ช่วยแปลภาษาหน่อยจร้า</string>
     <!-- IconPickerPreference -->
@@ -392,7 +354,7 @@
     <string name="label">เครื่องหมาย</string>
     <string name="hide_from_drawer">ซ่อนจากรายการแอพ</string>
     <string name="suggestion_pref_screen_title">คำแนะนำ</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+    <string name="show_suggested_apps_at_drawer_top">แสดงแอพที่แนะนำด้านบนสุดของลิ้นชักแอพ</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">รายงานข้อผิดพลาดให้กับ Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ทำงานผิดพลาด</string>
@@ -405,27 +367,45 @@
     <string name="bugreport_group_summary">%d รายงานใหม่</string>
     <string name="bugreport_group_summary_multiple">รายงานใหม่หลายฉบับ</string>
     <!-- Search ig -->
+    <string name="action_apply">ใช้งานทันที</string>
     <string name="show_search_result_types">แสดงในผลการค้นหา</string>
-    <string name="search_pref_result_people_title">ผู้คน</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">แอป &amp; ทางลัด</string>
     <string name="search_pref_result_shortcuts_title">ทางลัดแอพ</string>
+    <string name="search_pref_result_people_title">ผู้คน</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="search_pref_result_settings_title">การตั้งค่า Android</string>
+    <string name="search_pref_result_files_title">ไฟล์</string>
+    <string name="search_pref_result_web_title">การแนะนำเว็ป</string>
+    <string name="search_pref_result_history_title">ประวัติการค้นหา</string>
+    <string name="search_pref_result_files_description">สื่อ, ไฟล์, และอื่นๆ</string>
+    <string name="search_pref_result_contacts_description">รายชื่อและอื่น ๆ</string>
+    <string name="search_pref_result_web_description">ผ่าน <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="warn_contact_permission_content">เพื่อค้นหารายชื่อติดต่อ, ให้สิทธิ Lawnchair ในการเข้าถึงรายชื่อติดต่อ และการโทร</string>
+    <string name="warn_files_permission_content">เพื่อค้นหาไฟล์, ให้สิทธิ Lawnchair ในการเข้าถึงที่เก็บข้อมูล</string>
+    <string name="grant_requested_permissions">ให้สิทธิ์</string>
+    <string name="pref_suggestion_label">คำแนะนำ</string>
     <string name="all_apps_device_search_hint">ค้นหา</string>
     <string name="search_input_action_clear_results">ล้างช่องค้นหา</string>
-    <string name="label_search">ค้นหา</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">ค้นหาด้วยเสียง</string>
-    <string name="search_pref_result_settings_title">Settings Entry</string>
-    <string name="all_apps_search_market_message">ค้นหาแอพเพิ่มเติม</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">ยังไม่ได้ติดตั้งแอพสโตร์หรือเบราว์เซอร์</string>
     <string name="all_apps_search_result_suggestions">จากเว็บไซต์</string>
     <string name="all_apps_search_result_contacts_from_device">จากรายชื่อ</string>
     <string name="all_apps_search_result_files">จากไฟล์</string>
-    <string name="all_apps_search_result_settings_entry_from_device">จากการตั้งค่า</string>
-    <string name="warn_contact_permission_content">ต้องการการอนุญาตเข้าถึงรายชื่อ</string>
-    <string name="warn_files_permission_content">ต้องการการอนุญาตเข้าถึงที่เก็บข้อมูล</string>
-    <string name="search_pref_result_files_description">สื่อ, เอกสาร, แฟ้ม และอื่น ๆ</string>
-    <string name="search_pref_result_contacts_description">รายชื่อและอื่น ๆ</string>
+    <string name="all_apps_search_result_settings_entry_from_device">จากการตั้งค่าของมือถึอคุณ</string>
+    <string name="label_search">ค้นหา</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">ค้นหาด้วยเสียง</string>
+    <string name="pref_advance_search_category">ค้นหาขั้นสูง</string>
+    <string name="perform_wide_search_title">ค้นหาในอุปกรณ์</string>
+    <string name="perform_wide_search_description">ค้นหารายชื่อ, ไฟล์, และตั้งค่า ในมือถือของคุณ</string>
+    <string name="max_apps_result_count_title">จำนวนผลการค้นหาแอปสูงสุด</string>
+    <string name="max_people_result_count_title">จำนวนผลการค้นหาผู้คนสูงสุด</string>
+    <string name="max_file_result_count_title">จำนวนผลลัพธ์ไฟล์สูงสุด</string>
+    <string name="max_settings_entry_result_count_title">จำนวนผลลัพธ์การตั้งค่าสูงสุด</string>
+    <string name="max_recent_result_count_title">จำนวนประวัติการค้นหาสูงสุด</string>
+    <string name="max_suggestion_result_count_title">จำนวนผลลัพธ์คำแนะนำเว็บสูงสุด</string>
+    <string name="max_web_suggestion_delay">ความล่าช้าสูงสุดของการแนะนำเว็บ</string>
+    <string name="all_apps_search_market_message">ค้นหาแอพเพิ่มเติม</string>
+    <string name="all_apps_search_startpage_message">ค้นหาบน <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">ยังไม่ได้ติดตั้งแอพสโตร์หรือเบราว์เซอร์</string>
     <string name="quickstep_incompatible">ระบบไม่สามารถเข้ากันได้</string>
     <string name="quickstep_incompatible_description">อุปกรณ์ของคุณได้รับการกำหนดค่าให้มีรูปแบบลายเส้นของระบบ (เรียกว่า Quickstep) ซึ่งให้บริการโดย %1$s แต่ %1$s เวอร์ชันนี้ไม่สามารถทำงานร่วมกับ Android เวอร์ชันของคุณได้ หากต้องการใช้อุปกรณ์ของคุณต่อไป โปรดถอนการติดตั้งการอัปเดต %1$s หรือปิดใช้งาน %1$s ในการตั้งค่า</string>
     <string name="delete">ลบ</string>
@@ -443,11 +423,10 @@
     <string name="backup_restore_success">ข้อมูลสำรองถูกคืนค่าแล้ว</string>
     <string name="backup_restore_error">ไม่สามารถกู้คืนข้อมูลสำรอง</string>
     <string name="invalid_backup_file">ไฟล์สำรองข้อมูลไม่ถูกต้อง</string>
+    <!-- Miscellaneous -->
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">ตั้งค่าระบบ</string>
     <string name="action_unlock">ปลดล็อค</string>
     <string name="action_lock">ล็อค</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using \"Clear All\"</string>
 </resources>

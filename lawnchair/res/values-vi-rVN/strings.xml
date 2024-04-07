@@ -14,22 +14,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Nhấn vào thẻ này để đặt Lawnchair làm trình khởi chạy mặc định của bạn.</string>
+    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
     <string name="settings">Cài đặt</string>
     <string name="general_label">Chung</string>
     <string name="general_description">Màu sắc, Gói biểu tượng, Dấu chấm thông báo</string>
     <string name="home_screen_label">Màn hình chính</string>
     <string name="home_screen_description">Bảng tin, Lưới, Biểu tượng</string>
-    <!--
-    <string name="smartspace" />
-    -->
     <string name="what_to_show">Hiện những gì</string>
     <string name="dock_label">Khay</string>
     <string name="dock_description">Thanh tìm kiếm, Số biểu tượng</string>
     <string name="app_drawer_label">Trang ứng dụng</string>
     <string name="app_drawer_description">Ẩn ứng dụng, Số cột, Biểu tượng</string>
+    <string name="drawer_search_label">Ngăn kéo tìm kiếm</string>
+    <string name="drawer_search_description">Web Suggestions, Global Search</string>
     <string name="folders_label">Thư mục</string>
     <string name="folders_description">Số hàng và cột</string>
     <string name="gestures_label">Cử chỉ</string>
@@ -37,36 +37,46 @@
     <string name="quickstep_label">Gần đây</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
     <string name="about_label">Giới thiệu</string>
-    <!-- <string name="version" /> (unknown source) -->
-    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Tính năng thử nghiệm</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Tùy chỉnh font</string>
-    <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
+    <string name="font_picker_description">Some text remains unchanged</string>
     <string name="smartspace_calendar_label">Tùy chỉnh lịch Xem nhanh</string>
-    <string name="smartspace_calendar_description">Cho phép hiện ngày bằng hệ thống lịch khác Gregory.</string>
-    <string name="workspace_increase_max_grid_size_label">Tăng kích thước lưới màn hình chính lên tối đa</string>
-    <string name="workspace_increase_max_grid_size_description">Tăng kích thước lưới ở màn hình chính cho phép tối đa từ 10 x 10 đến 20 x 20.</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
-    <string name="transparent_background_icons">Biểu tượng theo chủ đề trong suốt</string>
-    <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo chủ đề</string>
+    <string name="recents_lock_unlock">Khóa/Mở khóa</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <!-- Relating to label/icon size -->
+    <string name="icons">Biểu tượng</string>
+    <string name="icon_size">Kích thước biểu tượng</string>
+    <string name="show_home_labels">Hiện tên ứng dụng</string>
+    <string name="label_size">Kích thước tên ứng dụng</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>
-    <string name="home_screen_rotation_description">Khi thiết bị được xoay.</string>
+    <string name="home_screen_rotation_description">When device is rotated</string>
     <string name="font_label">Font (Experimental)</string>
-    <!-- <string name="icons" /> -->
+    <string name="fontWorkspace">Chung</string>
+    <string name="fontHeading">Headings</string>
+    <string name="fontHeadingMedium">Headings (Medium)</string>
+    <string name="fontBody">Body</string>
+    <string name="fontBodyMedium">Body (Medium)</string>
     <string name="icon_style">Kiểu biểu tượng</string>
+    <string name="transparent_background_icons">Biểu tượng theo chủ đề trong suốt</string>
+    <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo chủ đề</string>
     <string name="icon_shape_label">Hình dạng biểu tượng</string>
     <string name="auto_adaptive_icons_label">Biểu tượng thích ứng tự động</string>
     <string name="auto_adaptive_icons_description">Cho mọi biểu tượng không thích ứng.</string>
     <string name="background_lightness_label">Độ sáng nền</string>
     <string name="adaptive_icon_background_description">Sử dụng 100% độ sáng nền cho màu trắng.</string>
+    <string name="reset_custom_icons">Đặt lại biểu tượng tùy chỉnh</string>
+    <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <string name="notification_dots">Dấu chấm thông báo</string>
-    <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Hiện số đếm thông báo</string>
     <string name="notification_dots_color">Màu của dấu chấm thông báo</string>
     <string name="notification_dots_text_color">Màu dấu chấm thông báo</string>
@@ -74,7 +84,7 @@
     <string name="notification_dots_color_contrast_warning_sometimes">Cảnh báo: Màu dấu chấm thông báo &amp; số đếm không phải lúc nào cũng đủ tương phản với nhau</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
-    <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
+    <string name="missing_notification_access_description">Notification access needed</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Thay đổi cài đặt</string>
     <string name="colors">Màu</string>
@@ -102,7 +112,6 @@
     <string name="import_from_clipboard">Nhập từ bộ nhớ tạm thời</string>
     <string name="icon_shape_clipboard_import_error">Bộ nhớ tạm thời không chứa hình dạng biểu tượng thích hợp</string>
     <!-- IconPackPreferences -->
-    <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Gói biểu tượng</string>
     <string name="themed_icon_pack">Nguồn biểu tượng theo chủ đề</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
@@ -110,10 +119,8 @@
     <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Màn hình chính</string>
     <string name="themed_icons_home_and_drawer_label">Màn hình chính &amp; Ngăn kéo ứng dụng</string>
-    <string name="lawnicons_not_installed_description">Lawnicons chưa được cài đặt.</string>
-    <!-- <string name="cancel" /> (unknown source)-->
+    <string name="lawnicons_not_installed_description">No supported icon packs</string>
     <!-- IconPickerPreference -->
-    <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">Hệ thống</string>
     <string name="icon_shape_circle">Tròn</string>
     <string name="icon_shape_cylinder">Trụ</string>
@@ -129,8 +136,8 @@
     <string name="icon_shape_teardrop">Giọt nước</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF được hỗ trợ.</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
+    <string name="pref_fonts_missing_font">Font not found</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
@@ -163,30 +170,27 @@
     <string name="invalid_color">Màu không hợp lệ</string>
     <string name="launcher_default_color">Quản lí bởi Lawnchair</string>
     <!-- HomeScreenPreferences -->
-    <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>
-    <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Hiện bản tin</string>
-    <string name="minus_one_unavailable">Chưa cài đặt bản tin.</string>
+    <string name="minus_one_unavailable">No feed apps installed</string>
     <string name="minus_one">Bản tin</string>
     <string name="feed_provider">Nhà cung cấp bảng Feed</string>
     <string name="feed_default">Mặc định</string>
     <string name="wallpaper">Hình nền</string>
     <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
     <string name="wallpaper_depth_effect_label">Hiệu ứng chiều sâu hình nền</string>
-    <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi giữa các khu vực của trình khởi chạy.</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Đổ bóng phía trên</string>
     <string name="layout">Bố cục</string>
     <string name="home_screen_grid">Lưới màn hình chính</string>
     <string name="home_screen_lock">Khoá màn hình chính</string>
-    <string name="home_screen_lock_description">Ngăn bố cục màn hình chính bị thay đổi.</string>
+    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
     <string name="home_screen_unlock">Mở khóa màn hình chính</string>
-    <!-- used in popup menu-->
-    <string name="home_screen_locked">Đã khoá màn hình chính.</string>
-    <string name="show_dot_pagination_label">Hiển thị dấu chấm số trang</string>
-    <string name="show_dot_pagination_description">Bật hiển thị dấu chấm số trang trong không gian làm việc.</string>
-    <string name="show_material_u_popup_label">Hiện popup phong cách Material U</string>
-    <string name="show_material_u_popup_description">Cửa sổ popup bật nảy lên và hơi hợp nhất.</string>
+    <string name="home_screen_locked">Home Screen is locked</string>
+    <string name="show_dot_pagination_label">Use Dot Pagination</string>
+    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_material_u_popup_label">Use New Popup Style</string>
+    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
     <string name="popup_menu">Menu pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Hiển thị phím khóa</string>
     <string name="show_system_settings_entry">Hiển thị mục cài đặt hệ thống</string>
@@ -194,20 +198,16 @@
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>
-    <string name="icons">Biểu tượng</string>
-    <string name="icon_size">Kích thước biểu tượng</string>
-    <string name="show_home_labels">Hiện tên ứng dụng</string>
-    <string name="label_size">Kích thước tên ứng dụng</string>
-    <string name="reset_custom_icons">Đặt lại biểu tượng tùy chỉnh</string>
-    <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <string name="home_screen_text_color">Màu chữ</string>
     <string name="color_light">Sáng</string>
     <string name="color_dark">Tối</string>
-    <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Bo tròn góc</string>
     <string name="allow_widget_overlap">Cho phép widget chồng lên nhau</string>
+    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
+    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
+    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
+    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
     <!-- HomeScreenGridPreferences -->
-    <!-- <string name="home_screen_grid" /> -->
     <string name="columns">Cột</string>
     <string name="rows">Hàng</string>
     <string name="apply_grid">Áp dụng</string>
@@ -240,90 +240,59 @@
     <string name="smartspace_calendar_persian">Ba Tư</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
     <string name="smartspace_widget_toggle_label">Hiện trên Màn Hình Chính</string>
-    <string name="smartspace_widget_toggle_description">Có thể thêm tính năng Xem nhanh bằng cách đặt tiện ích con “Lawnchair”.</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
     <string name="smartspace_mode_label">Nhà cung cấp dịch vụ cho Xem nhanh</string>
-    <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Tìm kiếm</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="show_hotseat_title">Hiện thanh dock</string>
+    <string name="search_bar_label">Thanh tìm kiếm</string>
     <string name="hotseat_mode_label">Tiện ích thanh tìm kiếm</string>
     <string name="hotseat_mode_disabled">Đã vô hiệu hoá</string>
-    <string name="hotseat_mode_lawnchair">Lawnchair</string>
     <string name="hotseat_mode_google_search">Thanh Tìm kiếm Google</string>
-    <string name="search_bar_label">Thanh tìm kiếm</string>
     <string name="corner_radius_label">Độ cong của góc</string>
     <string name="apply_accent_color_label">Áp dụng màu nhấn</string>
     <string name="search_provider">Nhà cung cấp dịch vụ tìm kiếm</string>
-    <string name="hotseat_bottom_space_label">Khoảng cách với cạnh đáy</string>
     <string name="grid">Lưới</string>
     <string name="dock_icons">Biểu tượng ở khay ứng dụng</string>
+    <string name="hotseat_bottom_space_label">Khoảng cách với cạnh đáy</string>
     <!-- SearchProviderPreferences -->
-    <!-- search_provider -->
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair có thoả thuận chia sẻ doanh thu.\n\nTìm kiếm với %1$s trợ giúp hỗ trợ Lawnchair.</string>
     <string name="app_label">Ứng dụng</string>
     <string name="website_label">Trang web</string>
-    <string name="qsb_search_provider_app_required">Yêu cầu ứng dụng.</string>
+    <string name="qsb_search_provider_app_required">App required</string>
     <!-- AppDrawerPrefences -->
-    <!-- app_drawer_label -->
-    <!-- general_label -->
     <string name="background_opacity">Độ trong suốt Nền</string>
-    <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Ứng dụng đã ẩn</string>
     <string name="show_enable_smart_hide">Hiện khi nhập đầy đủ tên</string>
     <string name="hide_hidden_apps_search">Ẩn khỏi kết quả tìm kiếm</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Load hàng loạt ứng dụng</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load và hiện thị các biểu tượng hàng loạt thay vì tải và hiển thị các biểu tượng riêng lẻ</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
     <string name="pref_all_apps_remember_position_title">Nhớ vị trí</string>
-    <string name="pref_all_apps_remember_position_description">Nhớ vị trí khi bạn rời khỏi thay vì trên cùng</string>
+    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
     <string name="pref_all_apps_show_scrollbar_title">Hiển thị thanh cuộn</string>
     <string name="pref_category_search">Tìm kiếm</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
-    <string name="max_apps_result_count_title">Số lượng kết quả tìm kiếm tối đa</string>
-    <string name="max_people_result_count_title">Số kết quả người tối đa</string>
-    <string name="max_file_result_count_title">Số kết quả tệp tối đa</string>
-    <string name="max_suggestion_result_count_title">Số kết quả đề xuất tối đa</string>
-    <string name="max_settings_entry_result_count_title">Số kết quả mục nhập cài đặt tối đa</string>
-    <string name="max_recent_result_count_title">Số lịch sử kết quả tối đa</string>
-    <string name="max_web_suggestion_delay">Độ trễ đề xuất web tối đa</string>
-    <string name="clear_history">Xóa</string>
-    <!-- <string name="grid" /> -->
+    <string name="clear_history">Clear Search History</string>
     <string name="app_drawer_columns">Số cột của trang ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>
     <string name="app_drawer_indent_label">Phần đệm ngang</string>
-    <string name="perform_wide_search_title">Tìm thiết bị</string>
-    <string name="search_pref_result_files_title">Các tệp</string>
-    <string name="pref_suggestion_label">Gợi ý</string>
-    <string name="search_pref_result_web_title">Đề xuất web ( thông qua <xliff:g id="startpage">Startpage</xliff:g>)</string>
-    <string name="pref_advance_search_category">Tìm kiếm nâng cao</string>
-    <string name="perform_wide_search_description">Tìm kiếm liên hệ, tệp, và cài đặt trong Tìm kiếm ở ngăn kéo ứng dụng.</string>
-    <string name="search_pref_result_history_title">Lịch sử</string>
-    <!--
-    <string name="icons" />
-      <string name="icon_size" />
-      <string name="show_home_labels" />
-      <string name="label_size" />
-    -->
     <!-- HiddenAppsPreferences -->
     <string name="hidden_apps_label_with_count">Ẩn ứng dụng (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="other">%1$d Ứng dụng</item>
     </plurals>
     <!-- FolderPreferences -->
-    <!-- <string name="folders_label" /> -->
-    <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Độ trong suốt nền biểu tượng</string>
     <string name="folder_preview_bg_color_label">Màu Nền Biểu Tượng</string>
-    <!-- <string name="grid" /> -->
-    <string name="max_folder_columns">Số cột tối đa của thư mục</string>
-    <string name="max_folder_rows">Số hàng tối đa của thư mục</string>
+    <string name="max_folder_columns">Maximum Folder Columns</string>
+    <string name="max_folder_rows">Maximum Folder Rows</string>
     <!-- GesturePreference -->
-    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Nhấn 2 lần</string>
     <string name="gesture_swipe_up">Vuốt lên</string>
     <string name="gesture_swipe_down">Vuốt xuống</string>
@@ -339,12 +308,9 @@
     <string name="gesture_handler_open_search">Mở tìm kiếm</string>
     <string name="pick_app_for_gesture">Chọn ứng dụng</string>
     <!-- QuickstepPreferences -->
-    <!-- <string name="quickstep_label" /> -->
-    <!-- <string name="general_label" /> -->
     <string name="quickswitch_ignored_warning">Cài đặt này sẽ bị bỏ qua vì Lawnchair không được đặt làm nhà cung cấp gần đây.</string>
     <string name="translucent_background">Nền trong suốt</string>
     <string name="recents_actions_label">Thao tác nhanh</string>
-    <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Chia sẻ</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Xoá tất cả</string>
@@ -353,7 +319,7 @@
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="taskbar_label">Thanh tác vụ</string>
-    <string name="enable_taskbar_experimental">Bật Thanh tác vụ (thử nghiệm)</string>
+    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
     <!-- about/About.kt -->
     <string name="news">Tin tức</string>
     <string name="support">Hỗ trợ</string>
@@ -363,10 +329,6 @@
     <string name="quickswitch_maintenance">Duy trì QuickSwitch</string>
     <string name="devops">Tuỳ chọn của lập trình viên</string>
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
-    <!--
-      <string name="support" />
-      <string name="support_and_pr" />
-      -->
     <string name="acknowledgements">Ghi nhận</string>
     <string name="translate">Dịch</string>
     <!-- IconPickerPreference -->
@@ -378,7 +340,7 @@
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Tìm kiếm ứng dụng</string>
     <string name="settings_button_text">Cài đặt màn hình chính</string>
-    <string name="item_removed">Mục đã bị xoá.</string>
+    <string name="item_removed">Item removed</string>
     <string name="all_apps_no_search_results">Không tìm thấy ứng dụng khớp \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
     <string name="dt2s_admin_hint_title">Cần cấp Quyền Quản trị</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
@@ -392,7 +354,7 @@
     <string name="label">Nhãn</string>
     <string name="hide_from_drawer">Ẩn khỏi ngăn kéo ứng dụng</string>
     <string name="suggestion_pref_screen_title">Gợi ý</string>
-    <string name="show_suggested_apps_at_drawer_top">Hiển thị ứng dụng đề xuất ở đầu danh sách</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
     <string name="crash_report_notif_title">%1$s đã dừng</string>
@@ -405,27 +367,45 @@
     <string name="bugreport_group_summary">%d báo cáo mới.</string>
     <string name="bugreport_group_summary_multiple">Nhiều báo cáo mới.</string>
     <!-- Search ig -->
+    <string name="action_apply">Áp dụng</string>
     <string name="show_search_result_types">Hiện trong kết quả tìm kiếm</string>
-    <string name="search_pref_result_people_title">Mọi người</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Lối tắt ứng dụng</string>
+    <string name="search_pref_result_people_title">Mọi người</string>
     <string name="search_pref_result_tips_title">Mẹo Pixel</string>
+    <string name="search_pref_result_settings_title">Android Settings</string>
+    <string name="search_pref_result_files_title">Các tệp</string>
+    <string name="search_pref_result_web_title">Web suggestions</string>
+    <string name="search_pref_result_history_title">Search History</string>
+    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_contacts_description">Danh bạ và mục khác</string>
+    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
+    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
+    <string name="grant_requested_permissions">Grant Permissions</string>
+    <string name="pref_suggestion_label">Gợi ý</string>
     <string name="all_apps_device_search_hint">Tìm kiếm</string>
     <string name="search_input_action_clear_results">Xóa nội dung trong hộp tìm kiếm</string>
-    <string name="label_search">Tìm kiếm</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
-    <string name="search_pref_result_settings_title">Mục cài đặt</string>
-    <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
-    <string name="all_apps_search_startpage_message">Tìm kiếm trên <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hay trình duyệt được cài đặt.</string>
     <string name="all_apps_search_result_suggestions">Từ web</string>
     <string name="all_apps_search_result_contacts_from_device">Từ liên lạc của bạn</string>
     <string name="all_apps_search_result_files">Từ tệp của bạn</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Từ cài đặt của bạn</string>
-    <string name="warn_contact_permission_content">Yêu cầu quyền truy cập danh bạ</string>
-    <string name="warn_files_permission_content">Yêu cầu quyền lưu trữ</string>
-    <string name="search_pref_result_files_description">Phương tiện truyền thông, tài liệu, thư mục, và hơn thế nữa.</string>
-    <string name="search_pref_result_contacts_description">Danh bạ và mục khác</string>
+    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
+    <string name="label_search">Tìm kiếm</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
+    <string name="pref_advance_search_category">Tìm kiếm nâng cao</string>
+    <string name="perform_wide_search_title">Tìm thiết bị</string>
+    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
+    <string name="max_apps_result_count_title">Maximum App Result Count</string>
+    <string name="max_people_result_count_title">Maximum People Result Count</string>
+    <string name="max_file_result_count_title">Maximum Files Result Count</string>
+    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
+    <string name="max_recent_result_count_title">Maximum Search History Count</string>
+    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
+    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+    <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
+    <string name="all_apps_search_startpage_message">Tìm kiếm trên <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hay trình duyệt được cài đặt.</string>
     <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
     <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
     <string name="delete">Xoá</string>
@@ -443,11 +423,10 @@
     <string name="backup_restore_success">Đã khôi phục bản sao lưu.</string>
     <string name="backup_restore_error">Khôi phục bản sao lưu thất bại.</string>
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ.</string>
+    <!-- Miscellaneous -->
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Cài đặt hệ thống</string>
     <string name="action_unlock">Mở khóa</string>
     <string name="action_lock">Khóa</string>
-    <string name="recents_lock_unlock">Khóa/Mở khóa</string>
-    <string name="recents_lock_unlock_description">Ngăn ứng dụng được chọn bị đóng khi sử dụng \"Đóng tất cả\"</string>
 </resources>
