@@ -83,14 +83,15 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
      * <p>If the content can't fit {@code recommendationTableMaxHeight}, this view will remove a
      * last row from the {@code recommendedWidgets} until it fits or only one row left.
      *
-     * <p>Returns {@code false} if none of the widgets could fit</p>
+     * <p>Returns the list of widgets that could fit</p>
      */
-    public int setRecommendedWidgets(List<ArrayList<WidgetItem>> recommendedWidgets,
+    public List<ArrayList<WidgetItem>> setRecommendedWidgets(
+            List<ArrayList<WidgetItem>> recommendedWidgets,
             DeviceProfile deviceProfile, float recommendationTableMaxHeight) {
         List<ArrayList<WidgetItem>> rows = selectRowsThatFitInAvailableHeight(recommendedWidgets,
                 recommendationTableMaxHeight, deviceProfile);
         bindData(rows);
-        return rows.stream().mapToInt(ArrayList::size).sum();
+        return rows;
     }
 
     private void bindData(List<ArrayList<WidgetItem>> recommendationTable) {

@@ -633,29 +633,21 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Px
-    private float getMaxAvailableHeightForRecommendations() {
+    protected float getMaxAvailableHeightForRecommendations() {
         // There isn't enough space to show recommendations in landscape orientation on phones with
         // a full sheet design. Tablets use a two pane picker.
-        if (!isTwoPane() && mDeviceProfile.isLandscape) {
+        if (mDeviceProfile.isLandscape) {
             return 0f;
         }
 
         return (mDeviceProfile.heightPx - mDeviceProfile.bottomSheetTopPadding)
-                * getRecommendationSectionHeightRatio();
+                * RECOMMENDATION_TABLE_HEIGHT_RATIO;
     }
 
     /** b/209579563: "Widgets" header should be focused first. */
     @Override
     protected View getAccessibilityInitialFocusView() {
         return mHeaderTitle;
-    }
-
-    /**
-     * Ratio of recommendations section with respect to bottom sheet's height on scale of 0 to 1.
-     */
-    @Px
-    protected float getRecommendationSectionHeightRatio() {
-        return RECOMMENDATION_TABLE_HEIGHT_RATIO;
     }
 
     private void open(boolean animate) {
@@ -733,6 +725,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // picker and calls save/restore hierarchy state. We save the state of recommendations
         // across those updates.
         bundle.putInt(RECOMMENDATIONS_SAVED_STATE_KEY, mRecommendationsCurrentPage);
+        mWidgetRecommendationsView.saveState(bundle);
         SparseArray<Parcelable> superState = new SparseArray<>();
         super.saveHierarchyState(superState);
         bundle.putSparseParcelableArray(SUPER_SAVED_STATE_KEY, superState);
@@ -744,6 +737,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         Bundle state = (Bundle) sparseArray.get(0);
         mRecommendationsCurrentPage = state.getInt(
                 RECOMMENDATIONS_SAVED_STATE_KEY, /*defaultValue=*/0);
+        mWidgetRecommendationsView.restoreState(state);
         super.restoreHierarchyState(state.getSparseParcelableArray(SUPER_SAVED_STATE_KEY));
     }
 
