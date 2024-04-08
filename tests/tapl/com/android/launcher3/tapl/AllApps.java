@@ -416,6 +416,14 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
         }
     }
 
+    /** Returns PrivateSpaceContainer if present in view. */
+    @NonNull
+    public PrivateSpaceContainer getPrivateSpaceUnlockedView() {
+        final UiObject2 allAppsContainer = verifyActiveContainer();
+        final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
+        return new PrivateSpaceContainer(mLauncher, appListRecycler);
+    }
+
     protected abstract void verifyVisibleContainerOnDismiss();
 
     /**
