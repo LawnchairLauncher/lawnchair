@@ -123,7 +123,7 @@
     <string name="title_missing_notification_access" msgid="7503287056163941064">"通知へのアクセス権限が必要"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"通知ドットを表示するには、「<xliff:g id="NAME">%1$s</xliff:g>」のアプリ通知を ON にしてください"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"設定を変更"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"通知ドットの表示"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"通知ドットを表示"</string>
     <string name="developer_options_title" msgid="700788437593726194">"開発者向けオプション"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ホーム画面にアプリのアイコンを追加"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"新しいアプリをダウンロードしたときに自動で追加します"</string>
@@ -183,7 +183,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"フィルタ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"失敗: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"プライベート スペース"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"限定公開アプリをロックして非表示"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"プライベート アプリをロック / 非表示状態に保つ"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"プライベート"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"プライベート スペースの設定"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"プライベート スペースをロック / ロック解除する"</string>

@@ -29,7 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"الشاشة الرئيسية"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"تقسيم الشاشة"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏معلومات تطبيق %1$s"</string>
-    <string name="save_app_pair" msgid="5647523853662686243">"حفظ إعدادات ميزة \"استخدام تطبيقين في الوقت نفسه\""</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"حفظ استخدام التطبيقين معًا"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | ‏<xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"لا يمكن استخدام هذين التطبيقَين في الوقت نفسه على هذا الجهاز"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"افتح الجهاز لاستخدام هذين التطبيقَين في الوقت نفسه"</string>
@@ -38,7 +38,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏العرض %1$d الطول %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"أداة <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"انقر مع الاستمرار على التطبيق المصغّر لنقله إلى الشاشة الرئيسية."</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"انقر مع الاستمرار على التطبيق المصغّر لنقله إلى الشاشة الرئيسية"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"إضافة إلى الشاشة الرئيسية"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"تمت إضافة الأداة <xliff:g id="WIDGET_NAME">%1$s</xliff:g> إلى الشاشة الرئيسية."</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"اقتراحات"</string>

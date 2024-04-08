@@ -29,7 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Հիմնական էկրան"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Տրոհել էկրանը"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Տեղեկություններ %1$s հավելվածի մասին"</string>
-    <string name="save_app_pair" msgid="5647523853662686243">"Պահել հավելվածների զույգը"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Պահել հավելվ. զույգը"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Հավելվածների զույգը չի աջակցվում այս սարքում"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Բացեք սարքը՝ այս հավելվածների զույգն օգտագործելու համար"</string>
@@ -186,9 +186,9 @@
     <string name="private_space_secondary_label" msgid="611902414159280263">"Անձնական հավելվածները պահեք կողպված և թաքցված"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Անձնական"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Անձնական տարածքի կարգավորումներ"</string>
-    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Կողպել/ապակողպել անձնական տարածքը"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Կողպել/ապակողպել մասնավոր տարածքը"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Կողպում"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"Անցում անձնական տարածք"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Անցում մասնավոր տարածք"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Հավելվածների տեղադրում"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Հավելվածների տեղադրում անձնական տարածքում"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Լրացուցիչ ընտրացանկ"</string>
