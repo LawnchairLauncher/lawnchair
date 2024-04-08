@@ -23,11 +23,17 @@
     android:orientation="vertical"
     android:visibility="invisible">
 
-    <LinearLayout
-        android:id="@+id/menu_option_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:showDividers="middle" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/menu_option_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:showDividers="middle" />
+
+    </ScrollView>
 
 </com.android.quickstep.views.TaskMenuViewWithArrow>
