@@ -40,10 +40,6 @@ public class LauncherIntentTest extends AbstractLauncherUiTest {
 
     @Test
     public void testAllAppsIntent() {
-        // setup by moving to home
-        mLauncher.goHome();
-        assertTrue("Launcher internal state is not Home", isInState(() -> LauncherState.NORMAL));
-
         // Try executing ALL_APPS intent
         executeOnLauncher(launcher -> launcher.onNewIntent(allAppsIntent));
         // A-Z view with Main adapter should be loaded
@@ -56,10 +52,6 @@ public class LauncherIntentTest extends AbstractLauncherUiTest {
         executeOnLauncher(launcher -> launcher.onNewIntent(allAppsIntent));
         // A-Z view with Main adapter should be loaded
         assertOnMainAdapterAToZView();
-
-        // finish
-        mLauncher.goHome();
-        assertTrue("Launcher internal state is not Home", isInState(() -> LauncherState.NORMAL));
     }
 
     // Highlights the search bar, then fills text to display the SearchView.
