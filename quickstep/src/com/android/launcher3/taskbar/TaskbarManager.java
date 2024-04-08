@@ -473,8 +473,8 @@ public class TaskbarManager {
                 LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
 
             // All Apps action is unrelated to navbar unification, so we only need to check DP.
-            mAllAppsActionManager.setTaskbarPresent(dp != null && dp.isTaskbarPresent);
-
+            final boolean isLargeScreenTaskbar = dp != null && dp.isTaskbarPresent;
+            mAllAppsActionManager.setTaskbarPresent(isLargeScreenTaskbar);
             destroyExistingTaskbar();
 
             boolean isTaskbarEnabled = dp != null && isTaskbarEnabled(dp);
@@ -497,6 +497,7 @@ public class TaskbarManager {
             }
             mSharedState.startTaskbarVariantIsTransient =
                     DisplayController.isTransientTaskbar(mTaskbarActivityContext);
+            mSharedState.allAppsVisible = mSharedState.allAppsVisible && isLargeScreenTaskbar;
             mTaskbarActivityContext.init(mSharedState);
 
             if (mActivity != null) {
