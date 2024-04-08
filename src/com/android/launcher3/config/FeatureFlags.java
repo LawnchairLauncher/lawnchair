@@ -82,6 +82,10 @@ public final class FeatureFlags {
             PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
             return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableMaterialUPopUp());
     }
+    public static boolean twoLineAllApps(Context context) {
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+        return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getTwoLineAllApps());
+    }
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
      * <p>

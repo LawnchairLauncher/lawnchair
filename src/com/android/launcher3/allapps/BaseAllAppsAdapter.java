@@ -182,7 +182,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ICON:
-                int layout = !FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() ? R.layout.all_apps_icon
+                int layout = !FeatureFlags.twoLineAllApps(parent.getContext()) ? R.layout.all_apps_icon
                         : R.layout.all_apps_icon_twoline;
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         layout, parent, false);
@@ -193,7 +193,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height =
                         mActivityContext.getDeviceProfile().allAppsCellHeightPx;
-                if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()) {
+                if (FeatureFlags.twoLineAllApps(parent.getContext())) {
                     icon.getLayoutParams().height += mExtraTextHeight;
                 }
                 return new ViewHolder(icon);
