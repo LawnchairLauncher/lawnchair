@@ -33,6 +33,9 @@
         android:textColor="?attr/widgetPickerTitleColor"
         android:textFontWeight="500"
         android:textSize="16sp"
+        android:maxLines="1"
+        android:paddingHorizontal="8dp"
+        android:ellipsize="end"
         android:visibility="gone" />
     <!-- Shown when there are more than one pages -->
     <com.android.launcher3.pageindicators.PageIndicatorDots
