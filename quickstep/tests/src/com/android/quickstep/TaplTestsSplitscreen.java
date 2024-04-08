@@ -117,18 +117,21 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     }
 
     @Test
-    public void testSaveAppPairMenuItemExistsOnSplitPair() throws Exception {
+    public void testSaveAppPairMenuItemOrActionExistsOnSplitPair() {
         assumeTrue("App pairs feature is currently not enabled, no test needed",
                 Flags.enableAppPairs());
 
         createAndLaunchASplitPair();
 
-        assertTrue("Save app pair menu item is missing",
-                mLauncher.goHome()
-                        .switchToOverview()
-                        .getCurrentTask()
-                        .tapMenu()
-                        .hasMenuItem("Save app pair"));
+        Overview overview = mLauncher.goHome().switchToOverview();
+        if (mLauncher.isGridOnlyOverviewEnabled() || !mLauncher.isTablet()) {
+            assertTrue("Save app pair menu item is missing",
+                    overview.getCurrentTask()
+                            .tapMenu()
+                            .hasMenuItem("Save app pair"));
+        } else {
+            overview.getOverviewActions().assertHasAction("Save app pair");
+        }
     }
 
     @Test
