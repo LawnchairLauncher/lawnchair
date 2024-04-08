@@ -124,6 +124,25 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         optionLayout = requireViewById(R.id.menu_option_layout)
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val maxMenuHeight: Int = calculateMaxHeight()
+        val newHeightMeasureSpec =
+            if (MeasureSpec.getSize(heightMeasureSpec) > maxMenuHeight) {
+                MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST)
+            } else heightMeasureSpec
+        super.onMeasure(widthMeasureSpec, newHeightMeasureSpec)
+    }
+
+    private fun calculateMaxHeight(): Int {
+        val taskInsetMargin = resources.getDimension(R.dimen.task_card_margin)
+        return taskView.pagedOrientationHandler.getTaskMenuHeight(
+            taskInsetMargin,
+            mActivityContext.deviceProfile,
+            translationX,
+            translationY
+        )
+    }
+
     private fun populateAndShowForTask(
         taskContainer: TaskIdAttributeContainer,
         alignedOptionIndex: Int
