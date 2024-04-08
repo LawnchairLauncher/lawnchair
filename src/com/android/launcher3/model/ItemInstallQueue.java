@@ -40,6 +40,7 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -300,7 +301,7 @@ public class ItemInstallQueue {
                     } else {
                         lai = laiList.get(0);
                         si.intent = makeLaunchIntent(lai);
-                        if (Utilities.enableSupportForArchiving()
+                        if (Flags.enableSupportForArchiving()
                                 && lai.getActivityInfo().isArchived) {
                             si.runtimeStatusFlags |= FLAG_ARCHIVED;
                         }

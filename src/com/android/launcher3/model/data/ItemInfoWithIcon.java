@@ -22,6 +22,7 @@ import android.os.Process;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapInfo.DrawableCreationFlags;
@@ -162,7 +163,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Returns true if the app corresponding to the item is archived.
      */
     public boolean isArchived() {
-        if (!Utilities.enableSupportForArchiving()) {
+        if (!Flags.enableSupportForArchiving()) {
             return false;
         }
         return (runtimeStatusFlags & FLAG_ARCHIVED) != 0;

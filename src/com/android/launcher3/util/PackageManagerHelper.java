@@ -38,6 +38,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -109,7 +110,7 @@ public class PackageManagerHelper {
     @SuppressWarnings("NewApi")
     public boolean isAppArchivedForUser(@NonNull final String packageName,
             @NonNull final UserHandle user) {
-        if (!Utilities.enableSupportForArchiving()) {
+        if (!Flags.enableSupportForArchiving()) {
             return false;
         }
         final ApplicationInfo info = getApplicationInfo(
@@ -274,6 +275,6 @@ public class PackageManagerHelper {
     @SuppressWarnings("NewApi")
     private boolean isPackageInstalledOrArchived(ApplicationInfo info) {
         return (info.flags & ApplicationInfo.FLAG_INSTALLED) != 0 || (
-                Utilities.enableSupportForArchiving() && info.isArchived);
+                Flags.enableSupportForArchiving() && info.isArchived);
     }
 }

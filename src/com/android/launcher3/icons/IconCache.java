@@ -51,6 +51,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
@@ -248,7 +249,7 @@ public class IconCache extends BaseIconCache {
     @SuppressWarnings("NewApi")
     public synchronized void getTitleAndIcon(ItemInfoWithIcon info,
             LauncherActivityInfo activityInfo, boolean useLowResIcon) {
-        boolean isAppArchived = Utilities.enableSupportForArchiving() && activityInfo != null
+        boolean isAppArchived = Flags.enableSupportForArchiving() && activityInfo != null
                 && activityInfo.getActivityInfo().isArchived;
         // If we already have activity info, no need to use package icon
         getTitleAndIcon(info, () -> activityInfo, isAppArchived, useLowResIcon,
