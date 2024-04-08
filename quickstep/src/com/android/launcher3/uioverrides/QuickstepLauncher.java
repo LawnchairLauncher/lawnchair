@@ -1210,6 +1210,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         switch (info.container) {
             case Favorites.CONTAINER_DESKTOP:
             case Favorites.CONTAINER_HOTSEAT:
+            case Favorites.CONTAINER_PRIVATESPACE:
                 // Fall through and continue it's on the workspace (we don't support swiping back
                 // to other containers like all apps or the hotseat predictions (which can change)
                 break;

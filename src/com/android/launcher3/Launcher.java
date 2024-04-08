@@ -2508,7 +2508,13 @@ public class Launcher extends StatefulActivity<LauncherState>
         final int itemCount = container.getChildCount();
         for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
             View item = container.getChildAt(itemIdx);
-            if (op.test((ItemInfo) item.getTag())) {
+            if (item instanceof ViewGroup viewGroup) {
+                View view = mapOverViewGroup(viewGroup, op);
+                if (view != null) {
+                    return view;
+                }
+            }
+            if (item.getTag() instanceof ItemInfo itemInfo && op.test(itemInfo)) {
                 return item;
             }
         }

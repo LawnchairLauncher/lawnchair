@@ -55,6 +55,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
@@ -282,6 +283,8 @@ public class FloatingIconView extends FrameLayout implements
         } else if (btvIcon instanceof PreloadIconDrawable) {
             // Force the progress bar to display.
             drawable = btvIcon;
+        } else if (originalView instanceof ImageView) {
+            drawable = ((ImageView) originalView).getDrawable();
         } else {
             int width = (int) pos.width();
             int height = (int) pos.height();
