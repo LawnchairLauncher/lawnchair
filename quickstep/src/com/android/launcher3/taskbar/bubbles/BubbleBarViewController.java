@@ -329,16 +329,21 @@ public class BubbleBarViewController {
     /**
      * Adds the provided bubble to the bubble bar.
      */
-    public void addBubble(BubbleBarItem b) {
+    public void addBubble(BubbleBarItem b, boolean isExpanding, boolean suppressAnimation) {
         if (b != null) {
             mBarView.addView(b.getView(), 0,
                     new FrameLayout.LayoutParams(mIconSize, mIconSize, Gravity.LEFT));
             b.getView().setOnClickListener(mBubbleClickListener);
             mBubbleDragController.setupBubbleView(b.getView());
 
+            if (suppressAnimation) {
+                return;
+            }
+
             boolean isStashedOrGone =
                     mBubbleStashController.isStashed() || mBarView.getVisibility() != VISIBLE;
-            if (b instanceof BubbleBarBubble && isStashedOrGone) {
+            // don't animate the new bubble if we're auto expanding from stashed
+            if (b instanceof BubbleBarBubble && isStashedOrGone && !isExpanding) {
                 mBubbleBarViewAnimator.animateBubbleInForStashed((BubbleBarBubble) b);
             }
         } else {
