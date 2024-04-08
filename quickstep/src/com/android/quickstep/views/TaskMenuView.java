@@ -140,9 +140,14 @@ public class TaskMenuView extends AbstractFloatingView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int maxMenuHeight = calculateMaxHeight();
-        if (MeasureSpec.getSize(heightMeasureSpec) > maxMenuHeight) {
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST);
+        if (!(enableOverviewIconMenu()
+                && ((RecentsView) mActivity.getOverviewPanel()).isOnGridBottomRow(mTaskView))) {
+            // TODO(b/326952853): Cap menu height for grid bottom row in a way that doesn't break
+            // additionalTranslationY.
+            int maxMenuHeight = calculateMaxHeight();
+            if (MeasureSpec.getSize(heightMeasureSpec) > maxMenuHeight) {
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST);
+            }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
