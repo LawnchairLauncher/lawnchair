@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.BuildConfig;
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
@@ -346,7 +347,7 @@ public class ItemClickHandler {
 
         // Check for abandoned promise
         if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()
-                && (!Utilities.enableSupportForArchiving() || !shortcut.isArchived())) {
+                && (!Flags.enableSupportForArchiving() || !shortcut.isArchived())) {
             String packageName = shortcut.getIntent().getComponent() != null
                     ? shortcut.getIntent().getComponent().getPackageName()
                     : shortcut.getIntent().getPackage();
