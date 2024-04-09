@@ -198,6 +198,7 @@ public class PrivateProfileManager extends UserProfileManager {
      * when animation is not running.
      */
     public void reset() {
+        getMainRecyclerView().setChildAttachedConsumer(null);
         int previousState = getCurrentState();
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
@@ -589,6 +590,9 @@ public class PrivateProfileManager extends UserProfileManager {
      * here.
      */
     private void updatePrivateStateAnimator(boolean expand) {
+        if (!Flags.enablePrivateSpace() || !Flags.privateSpaceAnimation()) {
+            return;
+        }
         if (mPSHeader == null) {
             mOnPSHeaderAdded = () -> updatePrivateStateAnimator(expand);
             setAnimationRunning(false);
@@ -615,12 +619,13 @@ public class PrivateProfileManager extends UserProfileManager {
         });
         animatorSet.addListener(forEndCallback(() -> {
             setAnimationRunning(false);
+            getMainRecyclerView().setChildAttachedConsumer(child -> child.setAlpha(1));
             if (!expand) {
                 // Call onAppsUpdated() because it may be canceled when this animation occurs.
                 mAllApps.getPersonalAppList().onAppsUpdated();
                 if (isPrivateSpaceHidden()) {
                     // TODO (b/325455879): Figure out if we can avoid this.
-                    mAllApps.getActiveRecyclerView().getAdapter().notifyDataSetChanged();
+                    getMainRecyclerView().getAdapter().notifyDataSetChanged();
                 }
             }
         }));
@@ -722,6 +727,10 @@ public class PrivateProfileManager extends UserProfileManager {
         layoutManager.startSmoothScroll(smoothScroller);
         allAppsRecyclerView.removeOnScrollListener(mOnIdleScrollListener);
         allAppsRecyclerView.addOnScrollListener(mOnIdleScrollListener);
+    }
+
+    AllAppsRecyclerView getMainRecyclerView() {
+        return mAllApps.mAH.get(ActivityAllAppsContainerView.AdapterHolder.MAIN).mRecyclerView;
     }
 
     boolean getAnimate() {
