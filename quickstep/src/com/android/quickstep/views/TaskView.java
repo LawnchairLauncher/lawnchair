@@ -487,7 +487,11 @@ public class TaskView extends FrameLayout implements Reusable {
         return getItemInfo(mTask);
     }
 
-    protected WorkspaceItemInfo getItemInfo(@Nullable Task task) {
+    /**
+     * Builds proto for logging
+     */
+    @VisibleForTesting
+    public WorkspaceItemInfo getItemInfo(@Nullable Task task) {
         WorkspaceItemInfo stubInfo = new WorkspaceItemInfo();
         stubInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_TASK;
         stubInfo.container = LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
