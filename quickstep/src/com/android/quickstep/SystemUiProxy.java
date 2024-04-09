@@ -836,7 +836,9 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
      */
     public void setBubbleBarBounds(Rect bubbleBarBounds) {
         try {
-            mBubbles.setBubbleBarBounds(bubbleBarBounds);
+            if (mBubbles != null) {
+                mBubbles.setBubbleBarBounds(bubbleBarBounds);
+            }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed call setBubbleBarBounds");
         }

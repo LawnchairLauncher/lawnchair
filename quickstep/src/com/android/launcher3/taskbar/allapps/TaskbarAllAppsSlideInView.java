@@ -96,7 +96,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         mAllAppsCallbacks.onAllAppsTransitionStart(true);
         if (!animate) {
             mAllAppsCallbacks.onAllAppsTransitionEnd(true);
-            mTranslationShift = TRANSLATION_SHIFT_OPENED;
+            setTranslationShift(TRANSLATION_SHIFT_OPENED);
             return;
         }
 

@@ -48,10 +48,8 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
-import com.android.launcher3.config.FeatureFlags.IntFlag;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Assert;
 
@@ -67,7 +65,6 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 
 public class TestUtil {
     private static final String TAG = "TestUtil";
@@ -138,20 +135,13 @@ public class TestUtil {
      */
     public static Point[] getCornersAndCenterPositions(LauncherInstrumentation launcher) {
         final Point dimensions = launcher.getWorkspace().getIconGridDimensions();
-        if (TestStabilityRule.isPresubmit()) {
-            // Return only center in presubmit to fit under the presubmit SLO.
-            return new Point[]{
-                    new Point(dimensions.x / 2, dimensions.y / 2)
-            };
-        } else {
-            return new Point[]{
-                    new Point(0, 1),
-                    new Point(0, dimensions.y - 2),
-                    new Point(dimensions.x - 1, 1),
-                    new Point(dimensions.x - 1, dimensions.y - 2),
-                    new Point(dimensions.x / 2, dimensions.y / 2)
-            };
-        }
+        return new Point[]{
+                new Point(0, 1),
+                new Point(0, dimensions.y - 2),
+                new Point(dimensions.x - 1, 1),
+                new Point(dimensions.x - 1, dimensions.y - 2),
+                new Point(dimensions.x / 2, dimensions.y / 2)
+        };
     }
 
     /**
@@ -165,21 +155,6 @@ public class TestUtil {
         return () -> {
             if (FeatureFlags.sBooleanReader == testProxy) {
                 FeatureFlags.sBooleanReader = originalProxy;
-            }
-        };
-    }
-
-    /**
-     * Utility class to override a int flag during test. Note that the returned SafeCloseable
-     * must be closed to restore the original state
-     */
-    public static SafeCloseable overrideFlag(IntFlag flag, int value) {
-        ToIntFunction<IntFlag> originalProxy = FeatureFlags.sIntReader;
-        ToIntFunction<IntFlag> testProxy = f -> f == flag ? value : originalProxy.applyAsInt(f);
-        FeatureFlags.sIntReader = testProxy;
-        return () -> {
-            if (FeatureFlags.sIntReader == testProxy) {
-                FeatureFlags.sIntReader = originalProxy;
             }
         };
     }

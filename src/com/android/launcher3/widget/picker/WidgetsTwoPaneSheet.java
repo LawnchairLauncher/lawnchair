@@ -276,8 +276,15 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     @Override
     @Px
-    protected float getRecommendationSectionHeightRatio() {
-        return RECOMMENDATION_SECTION_HEIGHT_RATIO_TWO_PANE;
+    protected float getMaxAvailableHeightForRecommendations() {
+        if (mRecommendedWidgetsCount > 0) {
+            // If widgets were already selected for display, we show them all on orientation change
+            // in a two pane picker
+            return Float.MAX_VALUE;
+        }
+
+        return (mDeviceProfile.heightPx - mDeviceProfile.bottomSheetTopPadding)
+                * RECOMMENDATION_SECTION_HEIGHT_RATIO_TWO_PANE;
     }
 
     @Override

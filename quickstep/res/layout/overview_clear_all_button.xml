@@ -17,10 +17,12 @@
 <com.android.quickstep.views.ClearAllButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     style="@style/OverviewClearAllButton"
     android:id="@+id/clear_all"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/recents_clear_all"
     android:textColor="?androidprv:attr/materialColorOnSurface"
+    launcher:focusBorderColor="?androidprv:attr/materialColorOutline"
     android:textSize="14sp" />

@@ -423,7 +423,8 @@ public class TaskView extends FrameLayout implements Reusable {
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
-        boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get();
+        boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
+                || Flags.enableFocusOutline();
         boolean cursorHoverStatesEnabled = enableCursorHoverStates();
 
         setWillNotDraw(!keyboardFocusHighlightEnabled && !cursorHoverStatesEnabled);

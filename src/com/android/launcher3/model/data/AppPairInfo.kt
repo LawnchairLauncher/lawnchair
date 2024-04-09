@@ -18,6 +18,7 @@ package com.android.launcher3.model.data
 
 import android.content.Context
 import com.android.launcher3.LauncherSettings
+import com.android.launcher3.R
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.logger.LauncherAtom
 import com.android.launcher3.views.ActivityContext
@@ -79,6 +80,24 @@ class AppPairInfo() : CollectionInfo() {
         getAppContents().stream().filter(ItemInfoWithIcon::usingLowResIcon).forEach { member ->
             iconCache.getTitleAndIcon(member, false)
         }
+    }
+
+    /**
+     * App pairs will draw as "disabled" if either of the following is true:
+     * 1) One of the member WorkspaceItemInfos is disabled (i.e. the app software itself is paused
+     *    or can't be launched for some other reason).
+     * 2) One of the member apps can't be launched due to screen size requirements.
+     */
+    fun shouldDrawAsDisabled(context: Context): Boolean {
+        return isDisabled || !isLaunchable(context)
+    }
+
+    /** Generates a default title for the app pair and sets it. */
+    fun generateTitle(context: Context): CharSequence? {
+        val app1: CharSequence? = getFirstApp().title
+        val app2: CharSequence? = getSecondApp().title
+        title = context.getString(R.string.app_pair_default_title, app1, app2)
+        return title
     }
 
     /** Generates an ItemInfo for logging. */

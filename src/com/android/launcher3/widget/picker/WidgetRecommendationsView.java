@@ -18,7 +18,9 @@ package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.widget.util.WidgetsTableUtils.groupWidgetItemsUsingRowPxWithoutReordering;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,14 +33,19 @@ import androidx.annotation.Px;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * A {@link PagedView} that displays widget recommendations in categories with dots as paged
@@ -46,6 +53,8 @@ import java.util.function.Consumer;
  */
 public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots> {
     private @Px float mAvailableHeight = Float.MAX_VALUE;
+    private static final String INITIALLY_DISPLAYED_WIDGETS_STATE_KEY =
+            "widgetRecommendationsView:mDisplayedWidgets";
     private static final int MAX_CATEGORIES = 3;
     private TextView mRecommendationPageTitle;
     private final List<String> mCategoryTitles = new ArrayList<>();
@@ -57,6 +66,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
     private OnLongClickListener mWidgetCellOnLongClickListener;
     @Nullable
     private OnClickListener mWidgetCellOnClickListener;
+    private Set<ComponentName> mDisplayedWidgets = Collections.emptySet();
 
     public WidgetRecommendationsView(Context context) {
         this(context, /* attrs= */ null);
@@ -74,6 +84,38 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mRecommendationPageTitle = parent.findViewById(R.id.recommendations_page_title);
+    }
+
+    /**
+     * Saves the necessary state in the provided bundle. To be called in case of orientation /
+     * other config changes.
+     */
+    public void saveState(Bundle bundle) {
+        // Save the widgets that were displayed, so that, on rotation / fold / unfold, we can
+        // maintain the "initial" set of widgets that user first saw (if they fit).
+        bundle.putParcelableArrayList(INITIALLY_DISPLAYED_WIDGETS_STATE_KEY,
+                new ArrayList<>(mDisplayedWidgets));
+    }
+
+    /**
+     * Restores the state that was saved by the saveState method during orientation / other config
+     * changes.
+     */
+    public void restoreState(Bundle bundle) {
+        ArrayList<ComponentName> componentList;
+        if (Utilities.ATLEAST_T) {
+            componentList = bundle.getParcelableArrayList(
+                    INITIALLY_DISPLAYED_WIDGETS_STATE_KEY, ComponentName.class);
+        } else {
+            componentList = bundle.getParcelableArrayList(
+                    INITIALLY_DISPLAYED_WIDGETS_STATE_KEY);
+        }
+
+        // Restore the "initial" set of widgets that were displayed, so that, on rotation / fold /
+        // unfold, we can maintain the set of widgets that user first saw (if they fit).
+        if (componentList != null) {
+            mDisplayedWidgets = new HashSet<>(componentList);
+        }
     }
 
     /** Sets a {@link android.view.View.OnLongClickListener} for all widget cells in this table. */
@@ -112,10 +154,18 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         this.mAvailableHeight = availableHeight;
         clear();
 
-        int displayedWidgets = maybeDisplayInTable(recommendedWidgets, deviceProfile,
+        Set<ComponentName> displayedWidgets = maybeDisplayInTable(recommendedWidgets,
+                deviceProfile,
                 availableWidth, cellPadding);
+
+        if (mDisplayedWidgets.isEmpty()) {
+            // Save the widgets shown for the first time user opened the picker; so that, they can
+            // be maintained across orientation changes.
+            mDisplayedWidgets = displayedWidgets;
+        }
+
         updateTitleAndIndicator(/* requestedPage= */ 0);
-        return displayedWidgets;
+        return displayedWidgets.size();
     }
 
     /**
@@ -144,20 +194,21 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         clear();
 
         int displayedCategories = 0;
-        int totalDisplayedWidgets = 0;
+        Set<ComponentName> allDisplayedWidgets = new HashSet<>();
 
         // Render top MAX_CATEGORIES in separate tables. Each table becomes a page.
         for (Map.Entry<WidgetRecommendationCategory, List<WidgetItem>> entry :
                 new TreeMap<>(recommendations).entrySet()) {
             // If none of the recommendations for the category could fit in the mAvailableHeight, we
             // don't want to add that category; and we look for the next one.
-            int displayedCount = maybeDisplayInTable(entry.getValue(), deviceProfile,
+            Set<ComponentName> displayedWidgetsForCategory = maybeDisplayInTable(entry.getValue(),
+                    deviceProfile,
                     availableWidth, cellPadding);
-            if (displayedCount > 0) {
+            if (!displayedWidgetsForCategory.isEmpty()) {
                 mCategoryTitles.add(
                         context.getResources().getString(entry.getKey().categoryTitleRes));
                 displayedCategories++;
-                totalDisplayedWidgets += displayedCount;
+                allDisplayedWidgets.addAll(displayedWidgetsForCategory);
             }
 
             if (displayedCategories == MAX_CATEGORIES) {
@@ -165,11 +216,17 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
             }
         }
 
+        if (mDisplayedWidgets.isEmpty()) {
+            // Save the widgets shown for the first time user opened the picker; so that, they can
+            // be maintained across orientation changes.
+            mDisplayedWidgets = allDisplayedWidgets;
+        }
+
         updateTitleAndIndicator(requestedPage);
         // For purpose of recommendations section, we don't want paging dots to be halved in two
         // pane display, so, we always provide isTwoPanels = "false".
         mPageIndicator.setPauseScroll(/*pause=*/false, /*isTwoPanels=*/false);
-        return totalDisplayedWidgets;
+        return allDisplayedWidgets.size();
     }
 
     private void clear() {
@@ -241,20 +298,25 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
     }
 
     /**
-     * Groups the provided recommendations into rows and displays them in a table if at least one
-     * fits.
-     * <p>Returns false if none of the recommendations could fit.</p>
+     * Groups the provided recommendations into rows and displays ones that fit in a table.
+     * <p>Returns the set of widgets that could fit.</p>
      */
-    private int maybeDisplayInTable(List<WidgetItem> recommendedWidgets,
+    private Set<ComponentName> maybeDisplayInTable(List<WidgetItem> recommendedWidgets,
             DeviceProfile deviceProfile,
             final @Px int availableWidth, final @Px int cellPadding) {
+        List<WidgetItem> filteredRecommendedWidgets = recommendedWidgets;
+        // Show only those widgets that were displayed when user first opened the picker.
+        if (!mDisplayedWidgets.isEmpty()) {
+            filteredRecommendedWidgets = recommendedWidgets.stream().filter(
+                    w -> mDisplayedWidgets.contains(w.componentName)).toList();
+        }
         Context context = getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Since we are limited by space, we don't sort recommendations - to show most relevant
         // (if possible).
         List<ArrayList<WidgetItem>> rows = groupWidgetItemsUsingRowPxWithoutReordering(
-                recommendedWidgets,
+                filteredRecommendedWidgets,
                 context,
                 deviceProfile,
                 availableWidth,
@@ -268,13 +330,17 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         recommendationsTable.setWidgetCellOnClickListener(mWidgetCellOnClickListener);
         recommendationsTable.setWidgetCellLongClickListener(mWidgetCellOnLongClickListener);
 
-        int displayedCount = recommendationsTable.setRecommendedWidgets(rows,
+        List<ArrayList<WidgetItem>> displayedItems = recommendationsTable.setRecommendedWidgets(
+                rows,
                 deviceProfile, mAvailableHeight);
-        if (displayedCount > 0) {
+
+        if (!displayedItems.isEmpty()) {
             addView(recommendationsTable);
         }
 
-        return displayedCount;
+        return displayedItems.stream().flatMap(
+                        items -> items.stream().map(w -> w.componentName))
+                .collect(Collectors.toSet());
     }
 
     /** Returns location of a widget cell for displaying the "touch and hold" education tip. */

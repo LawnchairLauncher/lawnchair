@@ -45,3 +45,6 @@ zakcohen@google.com
 
 per-file FeatureFlags.java, globs = set noparent
 per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, captaincole@google.com
+
+per-file DeviceConfigWrapper.java, globs = set noparent
+per-file DeviceConfigWrapper.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com
