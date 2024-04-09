@@ -20,7 +20,7 @@
     <item>
         <shape android:shape="rectangle"
             android:tint="?colorButtonNormal">
-            <corners android:radius="24dp" />
+            <corners android:radius="@dimen/recents_clear_all_outline_radius" />
             <solid android:color="?androidprv:attr/materialColorSurfaceBright"/>
         </shape>
     </item>
