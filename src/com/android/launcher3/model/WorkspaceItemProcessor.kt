@@ -31,6 +31,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.Utilities
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError
+import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.logging.FileLog
 import com.android.launcher3.model.data.AppPairInfo
 import com.android.launcher3.model.data.FolderInfo
@@ -372,6 +373,12 @@ class WorkspaceItemProcessor(
         // If we generated a placeholder Folder before this point, it may need to be replaced with
         // an app pair.
         if (c.itemType == Favorites.ITEM_TYPE_APP_PAIR && collection is FolderInfo) {
+            if (!FeatureFlags.enableAppPairs()) {
+                // If app pairs are not enabled, stop loading.
+                Log.e(TAG, "app pairs flag is off, did not load app pair")
+                return
+            }
+
             val folderInfo: FolderInfo = collection
             val newAppPair = AppPairInfo()
             // Move the placeholder's contents over to the new app pair.
