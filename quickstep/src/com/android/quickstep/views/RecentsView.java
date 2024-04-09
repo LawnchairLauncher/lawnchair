@@ -163,6 +163,7 @@ import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.TranslateEdgeEffect;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.ViewPool;
@@ -4294,7 +4295,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Updates {@link RecentsOrientedState}'s cached RecentsView rotation.
      */
     public void updateRecentsRotation() {
-        final int rotation = mActivity.getDisplay().getRotation();
+        final int rotation = TraceHelper.allowIpcs(
+                "RecentsView.updateRecentsRotation", () -> mActivity.getDisplay().getRotation());
         mOrientationState.setRecentsRotation(rotation);
     }
 
