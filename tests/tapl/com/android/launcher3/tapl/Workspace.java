@@ -347,6 +347,7 @@ public final class Workspace extends Home {
      */
     public Map<String, Point> getWorkspaceIconsPositions() {
         final UiObject2 workspace = verifyActiveContainer();
+        mLauncher.waitForLauncherInitialized(); // b/319501259
         List<UiObject2> workspaceIcons =
                 mLauncher.waitForObjectsInContainer(workspace, AppIcon.getAnyAppIconSelector());
         return workspaceIcons.stream()
