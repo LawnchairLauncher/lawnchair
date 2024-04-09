@@ -288,8 +288,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public void onBackProgressed(BackEvent backEvent) {
         final float progress = backEvent.getProgress();
-        float deceleratedProgress =
-                Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(progress);
+        float deceleratedProgress = Interpolators.BACK_GESTURE.getInterpolation(progress);
         mSwipeToDismissProgress.updateValue(deceleratedProgress);
     }
 
