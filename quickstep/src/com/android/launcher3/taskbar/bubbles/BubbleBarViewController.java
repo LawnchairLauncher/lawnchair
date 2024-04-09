@@ -215,8 +215,17 @@ public class BubbleBarViewController {
     /**
      * Update bar {@link BubbleBarLocation}
      */
-    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation, boolean animate) {
-        mBarView.setBubbleBarLocation(bubbleBarLocation, animate);
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        mBarView.setBubbleBarLocation(bubbleBarLocation);
+    }
+
+    /**
+     * Animate bubble bar to the given location. The location change is transient. It does not
+     * update the state of the bubble bar.
+     * To update bubble bar pinned location, use {@link #setBubbleBarLocation(BubbleBarLocation)}.
+     */
+    public void animateBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        mBarView.animateToBubbleBarLocation(bubbleBarLocation);
     }
 
     /**
