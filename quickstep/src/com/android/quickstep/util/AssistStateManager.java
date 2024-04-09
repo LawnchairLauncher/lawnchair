@@ -33,8 +33,8 @@ public class AssistStateManager implements ResourceBasedOverride, SafeCloseable 
 
     public AssistStateManager() {}
 
-    /** Whether search is available. */
-    public boolean isSearchAvailable() {
+    /** Return {@code true} if the Settings toggle is enabled. */
+    public boolean isSettingsAllEntrypointsEnabled() {
         return false;
     }
 
@@ -43,14 +43,9 @@ public class AssistStateManager implements ResourceBasedOverride, SafeCloseable 
         return false;
     }
 
-    /** Whether CsHelper CtS invocation path is available. */
-    public Optional<Boolean> isCsHelperAvailable() {
-        return Optional.empty();
-    }
-
-    /** Whether VIS CtS invocation path is available. */
-    public Optional<Boolean> isVisAvailable() {
-        return Optional.empty();
+    /** Whether ContextualSearchService invocation path is available. */
+    public boolean isContextualSearchServiceAvailable() {
+        return false;
     }
 
     /** Get the Launcher overridden long press nav handle duration to trigger Assistant. */
@@ -88,11 +83,6 @@ public class AssistStateManager implements ResourceBasedOverride, SafeCloseable 
     /** Get the haptic bit overridden by AGSA. */
     public Optional<Boolean> getShouldPlayHapticOverride() {
         return Optional.empty();
-    }
-
-    /** Return {@code true} if the Settings toggle is enabled. */
-    public boolean isSettingsAllEntrypointsEnabled() {
-        return false;
     }
 
     /** Dump states. */
