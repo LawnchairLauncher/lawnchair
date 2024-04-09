@@ -5,7 +5,6 @@ import android.view.Surface;
 
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.rule.FailureWatcher;
-import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -34,11 +33,7 @@ public class PortraitLandscapeRunner implements TestRule {
     @Override
     public Statement apply(Statement base, Description description) {
         if (!TestHelpers.isInLauncherProcess()
-                || description.getAnnotation(PortraitLandscape.class) == null
-                // If running in presubmit, don't run in both orientations.
-                // It's important to keep presubmits fast even if we will occasionally miss
-                // regressions in presubmit.
-                || TestStabilityRule.isPresubmit()) {
+                || description.getAnnotation(PortraitLandscape.class) == null) {
             return base;
         }
 
