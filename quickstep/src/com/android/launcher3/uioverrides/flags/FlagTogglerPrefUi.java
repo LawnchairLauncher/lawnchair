@@ -34,7 +34,6 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreference;
 
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 
@@ -162,19 +161,9 @@ public final class FlagTogglerPrefUi implements ActivityLifecycleCallbacksAdapte
         return mDataStore.getBoolean(flag.key, defaultValue);
     }
 
-    private int getIntFlagStateFromSharedPrefs(IntDebugFlag flag) {
-        LauncherPrefs prefs = LauncherPrefs.get(mContext);
-        return flag.launcherPrefFlag == null ? flag.get() : prefs.get(flag.launcherPrefFlag);
-    }
-
     private boolean anyChanged() {
         for (DebugFlag flag : FlagsFactory.getDebugFlags()) {
             if (getFlagStateFromSharedPrefs(flag) != flag.get()) {
-                return true;
-            }
-        }
-        for (IntDebugFlag flag : FlagsFactory.getIntDebugFlags()) {
-            if (getIntFlagStateFromSharedPrefs(flag) != flag.get()) {
                 return true;
             }
         }

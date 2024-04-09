@@ -1456,6 +1456,7 @@ public class TouchInteractionService extends Service {
         pw.println("AssistStateManager:");
         AssistStateManager.INSTANCE.get(this).dump("  ", pw);
         SystemUiProxy.INSTANCE.get(this).dump(pw);
+        DeviceConfigWrapper.get().dump("   ", pw);
     }
 
     private AbsSwipeUpHandler createLauncherSwipeHandler(

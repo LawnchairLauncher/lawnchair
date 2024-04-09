@@ -297,64 +297,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmField
         val ICON_STATE =
             nonRestorableItem("pref_icon_shape_path", "", EncryptionType.MOVE_TO_DEVICE_PROTECTED)
-        @JvmField
-        val ALL_APPS_OVERVIEW_THRESHOLD =
-            nonRestorableItem(
-                "pref_all_apps_overview_threshold",
-                180,
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE =
-            nonRestorableItem("LPNH_SLOP_PERCENTAGE", 100, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_EXTRA_TOUCH_WIDTH_DP =
-            nonRestorableItem(
-                "LPNH_EXTRA_TOUCH_WIDTH_DP",
-                0,
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_TIMEOUT_MS =
-            nonRestorableItem(
-                "LPNH_TIMEOUT_MS",
-                450,
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT =
-            nonRestorableItem(
-                "LPNH_HAPTIC_HINT_START_SCALE_PERCENT",
-                0,
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT =
-            nonRestorableItem(
-                "LPNH_HAPTIC_HINT_END_SCALE_PERCENT",
-                100,
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT =
-            nonRestorableItem(
-                "LPNH_HAPTIC_HINT_SCALE_EXPONENT",
-                1,
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS =
-            nonRestorableItem(
-                "LPNH_HAPTIC_HINT_ITERATIONS",
-                50,
-                EncryptionType.MOVE_TO_DEVICE_PROTECTED
-            )
-        @JvmField
-        val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY =
-            nonRestorableItem("LPNH_HAPTIC_HINT_DELAY", 0, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
-        @JvmField
-        val PRIVATE_SPACE_APPS =
-            nonRestorableItem("pref_private_space_apps", 0, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
+
         @JvmField
         val ENABLE_TWOLINE_ALLAPPS_TOGGLE = backedUpItem("pref_enable_two_line_toggle", false)
         @JvmField
