@@ -17,11 +17,8 @@
 package com.android.launcher3.config;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
-import static com.android.launcher3.config.FeatureFlags.FlagState.DISABLED;
-import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
-import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
-import static com.android.launcher3.uioverrides.flags.FlagsFactory.getDebugFlag;
-import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFlag;
+import static com.android.launcher3.config.FeatureFlags.BooleanFlag.DISABLED;
+import static com.android.launcher3.config.FeatureFlags.BooleanFlag.ENABLED;
 import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
 
 import android.content.res.Resources;
@@ -31,17 +28,12 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Flags;
 
-import java.util.function.Predicate;
-
 /**
  * Defines a set of flags used to control various launcher behaviors.
  * <p>
  * <p>All the flags should be defined here with appropriate default values.
  */
 public final class FeatureFlags {
-
-    @VisibleForTesting
-    public static Predicate<BooleanFlag> sBooleanReader = f -> f.mCurrentValue;
 
     private FeatureFlags() { }
 
@@ -181,7 +173,7 @@ public final class FeatureFlags {
 
     // TODO(Block 14): Cleanup flags
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag(270393108, "NOTIFY_CRASHES",
-            TEAMFOOD, "Sends a notification whenever launcher encounters an uncaught exception.");
+            DISABLED, "Sends a notification whenever launcher encounters an uncaught exception.");
 
     public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
             enableTaskbarNavbarUnification() && !isPhone();
@@ -251,7 +243,7 @@ public final class FeatureFlags {
     // TODO(Block 17): Clean up flags
     // Aconfig migration complete for ENABLE_TASKBAR_PINNING.
     private static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(296231746,
-            "ENABLE_TASKBAR_PINNING", TEAMFOOD,
+            "ENABLE_TASKBAR_PINNING", DISABLED,
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
 
@@ -291,7 +283,7 @@ public final class FeatureFlags {
 
     // Aconfig migration complete for ENABLE_HOME_TRANSITION_LISTENER.
     public static final BooleanFlag ENABLE_HOME_TRANSITION_LISTENER = getDebugFlag(306053414,
-            "ENABLE_HOME_TRANSITION_LISTENER", TEAMFOOD,
+            "ENABLE_HOME_TRANSITION_LISTENER", DISABLED,
             "Enables launcher to listen to all transitions that include home activity.");
 
     public static boolean enableHomeTransitionListener() {
@@ -386,7 +378,7 @@ public final class FeatureFlags {
     // Aconfig migration complete for ENABLE_RESPONSIVE_WORKSPACE.
     @VisibleForTesting
     public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
-            "ENABLE_RESPONSIVE_WORKSPACE", TEAMFOOD,
+            "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
             "Enables new workspace grid calculations method.");
     public static boolean enableResponsiveWorkspace() {
         return ENABLE_RESPONSIVE_WORKSPACE.get() || Flags.enableResponsiveWorkspace();
@@ -400,35 +392,31 @@ public final class FeatureFlags {
             "ALL_APPS_GONE_VISIBILITY", ENABLED,
             "Set all apps container view's hidden visibility to GONE instead of INVISIBLE.");
 
-    // TODO(Block 34): Empty block
-    // Please only add flags to your assigned block. If you do not have a block:
-    // 1. Assign yourself this block
-    // 2. Add your flag to this block
-    // 3. Add a new empty block below this one
-    // 4. Move this comment to that new empty block
-    // This is all to prevent merge conflicts in the future and help keep track of who owns which
-    // flags.
-    // List of assigned blocks can be found: http://go/gnl-flags-block-directory
+    public static BooleanFlag getDebugFlag(
+            int bugId, String key, BooleanFlag flagState, String description) {
+        return flagState;
+    }
 
-    public static class BooleanFlag {
-
-        private final boolean mCurrentValue;
-
-        public BooleanFlag(boolean currentValue) {
-            mCurrentValue = currentValue;
-        }
-
-        public boolean get() {
-            return sBooleanReader.test(this);
-        }
+    public static BooleanFlag getReleaseFlag(
+            int bugId, String key, BooleanFlag flagState, String description) {
+        return flagState;
     }
 
     /**
      * Enabled state for a flag
      */
-    public enum FlagState {
-        ENABLED,
-        DISABLED,
-        TEAMFOOD    // Enabled in team food
+    public enum BooleanFlag {
+        ENABLED(true),
+        DISABLED(false);
+
+        private final boolean mValue;
+
+        BooleanFlag(boolean value) {
+            mValue = value;
+        }
+
+        public boolean get() {
+            return mValue;
+        }
     }
 }

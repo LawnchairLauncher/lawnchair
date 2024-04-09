@@ -19,13 +19,12 @@ package com.android.quickstep.util
 import android.app.ActivityThread
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.SharedPreferences.*
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.provider.DeviceConfig
 import android.provider.DeviceConfig.OnPropertiesChangedListener
 import android.provider.DeviceConfig.Properties
 import androidx.annotation.WorkerThread
 import com.android.launcher3.BuildConfig
-import com.android.launcher3.uioverrides.flags.FlagsFactory
 import com.android.launcher3.util.Executors
 
 /** Utility class to manage a set of device configurations */
@@ -79,10 +78,7 @@ class DeviceConfigHelper<ConfigType>(private val factory: (PropReader) -> Config
 
     private fun recreateConfig() {
         val myProps =
-            DeviceConfig.getProperties(
-                FlagsFactory.NAMESPACE_LAUNCHER,
-                *allKeys.toTypedArray<String>()
-            )
+            DeviceConfig.getProperties(NAMESPACE_LAUNCHER, *allKeys.toTypedArray<String>())
         config =
             factory(
                 PropReader(

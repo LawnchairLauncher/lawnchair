@@ -11,16 +11,17 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/developer_options_filter_margins"
+        android:background="@drawable/rounded_action_button"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:padding="12dp"
+        android:drawableStart="@drawable/ic_allapps_search"
+        android:drawableTint="?android:attr/textColorSecondary"
+        android:drawablePadding="8dp"
         android:hint="@string/developer_options_filter_hint"
         android:inputType="text"
         android:maxLines="1"
         android:imeOptions="actionDone"
         />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text="Apply"
-        android:visibility="invisible"
-        android:id="@+id/flag_apply_btn" />
 </LinearLayout>
