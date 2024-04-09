@@ -113,8 +113,8 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
-import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors;
@@ -1120,7 +1120,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         } else if (info.isPromise()) {
                             TestLogging.recordEvent(
                                     TestProtocol.SEQUENCE_MAIN, "start: taskbarPromiseIcon");
-                            intent = ApiWrapper.getAppMarketActivityIntent(this,
+                            intent = ApiWrapper.INSTANCE.get(this).getAppMarketActivityIntent(
                                     info.getTargetPackage(), Process.myUserHandle());
                             startActivity(intent);
 
