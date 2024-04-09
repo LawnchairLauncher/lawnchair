@@ -115,7 +115,7 @@ public final class KeyboardQuickSwitchController implements
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                desktopController != null && desktopController.areFreeformTasksVisible();
+                desktopController != null && desktopController.areDesktopTasksVisible();
 
         if (mModel.isTaskListValid(mTaskListChangeId)) {
             // When we are opening the KQS with no focus override, check if the first task is

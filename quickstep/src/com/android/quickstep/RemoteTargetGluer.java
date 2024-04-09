@@ -70,7 +70,7 @@ public class RemoteTargetGluer {
         DesktopVisibilityController desktopVisibilityController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         if (desktopVisibilityController != null) {
-            int visibleTasksCount = desktopVisibilityController.getVisibleFreeformTasksCount();
+            int visibleTasksCount = desktopVisibilityController.getVisibleDesktopTasksCount();
             if (visibleTasksCount > 0) {
                 // Allocate +1 to account for a new task added to the desktop mode
                 int numHandles = visibleTasksCount + 1;

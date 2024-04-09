@@ -271,7 +271,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         if (desktopVisibilityController != null) {
             endTarget = mCurrentGestureEndTarget;
             if (endTarget == GestureState.GestureEndTarget.LAST_TASK
-                    && desktopVisibilityController.areFreeformTasksVisible()) {
+                    && desktopVisibilityController.areDesktopTasksVisible()) {
                 // Recents gesture was cancelled and we are returning to the previous task.
                 // After super class has handled clean up, show desktop apps on top again
                 showDesktopApps = true;

@@ -937,7 +937,7 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public void setResumed() {
         if (mDesktopVisibilityController != null
-                && mDesktopVisibilityController.areFreeformTasksVisible()
+                && mDesktopVisibilityController.areDesktopTasksVisible()
                 && !mDesktopVisibilityController.isRecentsGestureInProgress()) {
             // Return early to skip setting activity to appear as resumed
             // TODO(b/255649902): shouldn't be needed when we have a separate launcher state
@@ -1284,9 +1284,9 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    public boolean areFreeformTasksVisible() {
+    public boolean areDesktopTasksVisible() {
         if (mDesktopVisibilityController != null) {
-            return mDesktopVisibilityController.areFreeformTasksVisible();
+            return mDesktopVisibilityController.areDesktopTasksVisible();
         }
         return false;
     }

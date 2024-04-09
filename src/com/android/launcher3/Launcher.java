@@ -2893,8 +2893,8 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Returns {@code true} if there are visible tasks with windowing mode set to
      * {@link android.app.WindowConfiguration#WINDOWING_MODE_FREEFORM}
      */
-    public boolean areFreeformTasksVisible() {
-        return false; // Base launcher does not track freeform tasks
+    public boolean areDesktopTasksVisible() {
+        return false; // Base launcher does not track desktop tasks
     }
 
     // Getters and Setters

@@ -91,8 +91,8 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        if (Launcher.getLauncher(context).areFreeformTasksVisible()) {
-            // Don't blur the background while freeform tasks are visible
+        if (Launcher.getLauncher(context).areDesktopTasksVisible()) {
+            // Don't blur the background while desktop tasks are visible
             return BaseDepthController.DEPTH_0_PERCENT;
         } else if (enableScalingRevealHomeAnimation()) {
             return BaseDepthController.DEPTH_70_PERCENT;

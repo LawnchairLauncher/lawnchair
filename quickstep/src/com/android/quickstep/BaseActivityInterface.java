@@ -109,12 +109,12 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             // We were on our way to this state when we got canceled, end there instead.
             startState = stateFromGestureEndTarget(endTarget);
             DesktopVisibilityController controller = getDesktopVisibilityController();
-            if (controller != null && controller.areFreeformTasksVisible()
+            if (controller != null && controller.areDesktopTasksVisible()
                     && endTarget == LAST_TASK) {
                 // When we are cancelling the transition and going back to last task, move to
                 // rest state instead when desktop tasks are visible.
                 // If a fullscreen task is visible, launcher goes to normal state when the
-                // activity is stopped. This does not happen when freeform tasks are visible
+                // activity is stopped. This does not happen when desktop tasks are visible
                 // on top of launcher. Force the launcher state to rest state here.
                 startState = activity.getStateManager().getRestState();
                 // Do not animate the transition
