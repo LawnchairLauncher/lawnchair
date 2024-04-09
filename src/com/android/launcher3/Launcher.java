@@ -1647,7 +1647,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         } else if (Intent.ACTION_ALL_APPS.equals(intent.getAction())) {
             showAllAppsFromIntent(alreadyOnHome);
         } else if (INTENT_ACTION_ALL_APPS_TOGGLE.equals(intent.getAction())) {
-            toggleAllAppsFromIntent(alreadyOnHome);
+            toggleAllAppsSearch(alreadyOnHome);
         } else if (Intent.ACTION_SHOW_WORK_APPS.equals(intent.getAction())) {
             showAllAppsWithSelectedTabFromIntent(alreadyOnHome,
                     ActivityAllAppsContainerView.AdapterHolder.WORK);
@@ -1661,7 +1661,12 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Overridden
     }
 
-    protected void toggleAllAppsFromIntent(boolean alreadyOnHome) {
+    /** Toggles Launcher All Apps with keyboard ready for search. */
+    public void toggleAllAppsSearch() {
+        toggleAllAppsSearch(/* alreadyOnHome= */ true);
+    }
+
+    protected void toggleAllAppsSearch(boolean alreadyOnHome) {
         if (getStateManager().isInStableState(ALL_APPS)) {
             getStateManager().goToState(NORMAL, alreadyOnHome);
         } else {

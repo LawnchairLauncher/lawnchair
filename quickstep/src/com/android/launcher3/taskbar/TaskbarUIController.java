@@ -193,7 +193,7 @@ public class TaskbarUIController {
     }
 
     /** Returns {@code true} if Taskbar is currently within overview. */
-    protected boolean isInOverview() {
+    protected boolean isInOverviewUi() {
         return false;
     }
 

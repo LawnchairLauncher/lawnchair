@@ -602,23 +602,21 @@ public class TouchInteractionService extends Service {
     }
 
     private PendingIntent createAllAppsPendingIntent() {
-        final Intent homeIntent = new Intent(mOverviewComponentObserver.getHomeIntent())
-                .setAction(INTENT_ACTION_ALL_APPS_TOGGLE);
-
         if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
             return new PendingIntent(new IIntentSender.Stub() {
                 @Override
                 public void send(int code, Intent intent, String resolvedType,
                         IBinder allowlistToken, IIntentReceiver finishedReceiver,
                         String requiredPermission, Bundle options) {
-                    MAIN_EXECUTOR.execute(() -> mTaskbarManager.toggleAllApps(homeIntent));
+                    MAIN_EXECUTOR.execute(() -> mTaskbarManager.toggleAllApps());
                 }
             });
         } else {
             return PendingIntent.getActivity(
                     this,
                     GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS,
-                    homeIntent,
+                    new Intent(mOverviewComponentObserver.getHomeIntent())
+                            .setAction(INTENT_ACTION_ALL_APPS_TOGGLE),
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
     }

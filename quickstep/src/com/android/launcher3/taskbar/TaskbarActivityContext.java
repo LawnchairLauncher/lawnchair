@@ -665,7 +665,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
                 LauncherAtom.TaskBarContainer.newBuilder();
-        if (mControllers.uiController.isInOverview()) {
+        if (mControllers.uiController.isInOverviewUi()) {
             taskbarBuilder.setTaskSwitcherContainer(
                     LauncherAtom.TaskSwitcherContainer.newBuilder());
         }

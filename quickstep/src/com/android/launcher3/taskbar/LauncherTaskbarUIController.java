@@ -425,14 +425,14 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    protected boolean isInOverview() {
-        return mTaskbarLauncherStateController.isInOverview();
+    protected boolean isInOverviewUi() {
+        return mTaskbarLauncherStateController.isInOverviewUi();
     }
 
     @Override
     protected boolean canToggleHomeAllApps() {
         return mLauncher.isResumed()
-                && !mTaskbarLauncherStateController.isInOverview()
+                && !mTaskbarLauncherStateController.isInOverviewUi()
                 && !mLauncher.areFreeformTasksVisible();
     }
 
