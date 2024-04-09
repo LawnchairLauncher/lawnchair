@@ -813,12 +813,18 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void onClick(View view) {
         if (getTask() == null) {
+            Log.d("b/310064698", "onClick - task is null");
             return;
         }
         if (confirmSecondSplitSelectApp()) {
+            Log.d("b/310064698", mTask + " - onClick - split select is active");
             return;
         }
-        launchTasks();
+        RunnableList callbackList = launchTasks();
+        Log.d("b/310064698", mTask + " - onClick - callbackList: " + callbackList);
+        if (callbackList != null) {
+            callbackList.add(() -> Log.d("b/310064698", mTask + " - onClick - launchCompleted"));
+        }
         mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                 .log(LAUNCHER_TASK_LAUNCH_TAP);
     }
