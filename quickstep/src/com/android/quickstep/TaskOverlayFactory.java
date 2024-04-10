@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static android.view.Surface.ROTATION_0;
-
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
@@ -33,7 +31,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -42,6 +39,7 @@ import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.Snackbar;
 import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -65,9 +63,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
         final RecentsViewContainer container =
                 RecentsViewContainer.containerFromContext(taskView.getContext());
-        boolean hasMultipleTasks = taskView.getTaskIds()[1] != -1;
         for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
-            if (hasMultipleTasks && !menuOption.showForSplitscreen()) {
+            if (taskView instanceof GroupedTaskView && !menuOption.showForGroupedTask()) {
+                continue;
+            }
+            if (taskView instanceof DesktopTaskView && !menuOption.showForDesktopTask()) {
                 continue;
             }
 
@@ -76,33 +76,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 continue;
             }
             shortcuts.addAll(menuShortcuts);
-        }
-        RecentsOrientedState orientedState = taskView.getRecentsView().getPagedViewOrientedState();
-        boolean canLauncherRotate = orientedState.isRecentsActivityRotationAllowed();
-        boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
-        boolean isTablet = container.getDeviceProfile().isTablet;
-
-        boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
-        // Add overview actions to the menu when:
-        // - single task is showing
-        // - in in-place rotate landscape mode, or in grid-only overview.
-        if (!hasMultipleTasks && ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview)) {
-            // Add screenshot action to task menu.
-            List<SystemShortcut> screenshotShortcuts = TaskShortcutFactory.SCREENSHOT
-                    .getShortcuts(container, taskContainer);
-            if (screenshotShortcuts != null) {
-                shortcuts.addAll(screenshotShortcuts);
-            }
-
-            // Add modal action only if display orientation is the same as the device orientation,
-            // or in grid-only overview.
-            if (orientedState.getDisplayRotation() == ROTATION_0 || isGridOnlyOverview) {
-                List<SystemShortcut> modalShortcuts = TaskShortcutFactory.MODAL
-                        .getShortcuts(container, taskContainer);
-                if (modalShortcuts != null) {
-                    shortcuts.addAll(modalShortcuts);
-                }
-            }
         }
         return shortcuts;
     }
@@ -140,7 +113,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.FREE_FORM,
             DesktopSystemShortcut.Companion.createFactory(),
             TaskShortcutFactory.WELLBEING,
-            TaskShortcutFactory.SAVE_APP_PAIR
+            TaskShortcutFactory.SAVE_APP_PAIR,
+            TaskShortcutFactory.SCREENSHOT,
+            TaskShortcutFactory.MODAL
     };
 
     /**

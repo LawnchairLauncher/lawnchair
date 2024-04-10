@@ -174,10 +174,10 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
     /** @return true if successfully able to populate task view menu, false otherwise */
     private fun populateMenu(): Boolean {
         // Icon may not be loaded
-        if (taskContainer.task.icon == null) return false
+        if (taskContainer.iconView.drawable == null) return false
 
         addMenuOptions()
-        return true
+        return optionLayout.childCount > 0
     }
 
     private fun addMenuOptions() {

@@ -193,10 +193,6 @@ public class TaskMenuView extends AbstractFloatingView {
 
     /** @return true if successfully able to populate task view menu, false otherwise */
     private boolean populateAndLayoutMenu() {
-        if (mTaskContainer.getTask().icon == null) {
-            // Icon may not be loaded
-            return false;
-        }
         addMenuOptions(mTaskContainer);
         orientAroundTaskView(mTaskContainer);
         return true;

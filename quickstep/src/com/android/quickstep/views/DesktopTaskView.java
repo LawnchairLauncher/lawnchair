@@ -18,10 +18,10 @@ package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -32,7 +32,6 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -43,7 +42,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
-import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.BaseContainerInterface;
@@ -133,13 +131,12 @@ public class DesktopTaskView extends TaskView {
         ShapeDrawable background = new ShapeDrawable(shape);
         background.setTint(getResources().getColor(android.R.color.system_neutral2_300,
                 getContext().getTheme()));
-        // TODO(b/244348395): this should be wallpaper
         mBackgroundView.setBackground(background);
 
         Drawable icon = getResources().getDrawable(R.drawable.ic_desktop, getContext().getTheme());
         Drawable iconBackground = getResources().getDrawable(R.drawable.bg_circle,
                 getContext().getTheme());
-        mIconView.setDrawable(new LayerDrawable(new Drawable[]{iconBackground, icon}));
+        setIcon(mIconView, new LayerDrawable(new Drawable[]{iconBackground, icon}));
 
         mChildCountAtInflation = getChildCount();
     }
@@ -229,22 +226,8 @@ public class DesktopTaskView extends TaskView {
 
     private TaskIdAttributeContainer createAttributeContainer(Task task,
             TaskThumbnailViewDeprecated thumbnailView) {
-        return new TaskIdAttributeContainer(task, thumbnailView, createIconView(task),
+        return new TaskIdAttributeContainer(task, thumbnailView, mIconView,
                 STAGE_POSITION_UNDEFINED);
-    }
-
-    private IconView createIconView(Task task) {
-        IconView iconView = new IconView(mContext);
-        PackageManager pm = mContext.getApplicationContext().getPackageManager();
-        try {
-            IconProvider provider = new IconProvider(mContext);
-            Drawable appIcon = provider.getIcon(pm.getActivityInfo(task.topActivity,
-                    PackageManager.ComponentInfoFlags.of(0)));
-            iconView.setDrawable(appIcon);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.w(TAG, "Package not found: " + task.topActivity.getPackageName(), e);
-        }
-        return iconView;
     }
 
     @Nullable
@@ -327,16 +310,6 @@ public class DesktopTaskView extends TaskView {
             cancellableTask.cancel();
         }
         mPendingThumbnailRequests.clear();
-    }
-
-    @Override
-    public boolean offerTouchToChildren(MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    protected boolean showTaskMenuWithContainer(TaskViewIcon iconView) {
-        return false;
     }
 
     @Nullable
@@ -489,7 +462,7 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     public void setOverlayEnabled(boolean overlayEnabled) {
-        // Intentional no-op to prevent setting smart actions overlay on thumbnails
+        // TODO(b/330685808) support overlay for Screenshot action
     }
 
     @Override
@@ -497,6 +470,7 @@ public class DesktopTaskView extends TaskView {
         // TODO(b/249371338): this copies parent implementation and makes it work for N thumbs
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
+        mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         if (mFullscreenProgress > 0) {
             // Don't show background while we are transitioning to/from fullscreen
             mBackgroundView.setVisibility(INVISIBLE);
@@ -506,6 +480,12 @@ public class DesktopTaskView extends TaskView {
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             TaskThumbnailViewDeprecated thumbnailView = mSnapshotViewMap.valueAt(i);
             thumbnailView.getTaskOverlay().setFullscreenProgress(progress);
+        }
+        // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
+        // oversized and banner would look disproportionately large.
+        if (mContainer.<RecentsView<?, ?>>getOverviewPanel().getStateManager().getState()
+                != BACKGROUND_APP) {
+            setIconsAndBannersTransitionProgress(progress, true);
         }
         updateSnapshotRadius();
     }
@@ -520,11 +500,6 @@ public class DesktopTaskView extends TaskView {
             }
             mSnapshotViewMap.valueAt(i).setFullscreenParams(mSnapshotDrawParams);
         }
-    }
-
-    @Override
-    protected void setIconsAndBannersTransitionProgress(float progress, boolean invert) {
-        // no-op
     }
 
     @Override
