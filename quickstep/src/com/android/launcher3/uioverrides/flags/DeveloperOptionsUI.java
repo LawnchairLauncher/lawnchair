@@ -75,7 +75,6 @@ public class DeveloperOptionsUI {
 
     private static final String ACTION_PLUGIN_SETTINGS =
             "com.android.systemui.action.PLUGIN_SETTINGS";
-    private static final String TAG = "DeveloperOptionsUI";
     private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
 
     private final PreferenceFragmentCompat mFragment;
@@ -86,6 +85,7 @@ public class DeveloperOptionsUI {
     public DeveloperOptionsUI(PreferenceFragmentCompat fragment, PreferenceCategory flags) {
         mFragment = fragment;
         mPreferenceScreen = fragment.getPreferenceScreen();
+        flags.getParent().removePreference(flags);
 
         // Add search bar
         View listView = mFragment.getListView();
@@ -95,8 +95,6 @@ public class DeveloperOptionsUI {
         parent.addView(topBar, parent.indexOfChild(listView));
         initSearch(topBar.findViewById(R.id.filter_box));
 
-        new FlagTogglerPrefUi(mFragment.requireActivity(), topBar.findViewById(R.id.flag_apply_btn))
-                .applyTo(flags);
         DevOptionsUiHelper uiHelper = new DevOptionsUiHelper();
         uiHelper.inflateServerFlags(newCategory("Server flags"));
 
