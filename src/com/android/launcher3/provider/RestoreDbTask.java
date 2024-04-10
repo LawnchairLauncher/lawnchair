@@ -75,9 +75,11 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
 
+import java.io.File;
 import java.io.InvalidObjectException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -125,35 +127,50 @@ public class RestoreDbTask {
 
         if (Flags.enableNarrowGridRestore()) {
             String oldPhoneFileName = idp.dbFile;
+            List<String> previousDbs = existingDbs();
             removeOldDBs(context, oldPhoneFileName);
             // The idp before this contains data about the old phone, after this it becomes the idp
             // of the current phone.
             idp.reset(context);
-            trySettingPreviousGidAsCurrent(context, idp, oldPhoneFileName);
+            trySettingPreviousGidAsCurrent(context, idp, oldPhoneFileName, previousDbs);
         } else {
             idp.reinitializeAfterRestore(context);
         }
     }
+
 
     /**
      * Try setting the gird used in the previous phone to the new one. If the current device doesn't
      * support the previous grid option it will not be set.
      */
     private static void trySettingPreviousGidAsCurrent(Context context, InvariantDeviceProfile idp,
-            String oldPhoneDbFileName) {
-        InvariantDeviceProfile.GridOption gridOption = idp.getGridOptionFromFileName(context,
-                oldPhoneDbFileName);
-        if (gridOption != null) {
+            String oldPhoneDbFileName, List<String> previousDbs) {
+        InvariantDeviceProfile.GridOption oldPhoneGridOption = idp.getGridOptionFromFileName(
+                context, oldPhoneDbFileName);
+        // The grid option could be null if current phone doesn't support the previous db.
+        if (oldPhoneGridOption != null) {
+            /* If the user only used the default db on the previous phone and the new default db is
+             * bigger than or equal to the previous one, then keep the new default db */
+            if (previousDbs.size() == 1 && oldPhoneGridOption.numColumns <= idp.numColumns
+                    && oldPhoneGridOption.numRows <= idp.numRows) {
+                /* Keep the user in default grid */
+                return;
+            }
             /*
-             * We do this because in some cases different devices have different names for grid
-             * options, in one device the grid option "normal" can be 4x4 while in other it
-             * could be "practical". Calling this changes the current device grid to the same
-             * we had in the other phone, in the case the current phone doesn't support the grid
-             * option we use the default and migrate the db to the default. Migration occurs on
-             * {@code GridSizeMigrationUtil#migrateGridIfNeeded}
+             * Here we are setting the previous db as the current one.
              */
-            idp.setCurrentGrid(context, gridOption.name);
+            idp.setCurrentGrid(context, oldPhoneGridOption.name);
         }
+    }
+
+    /**
+     * Returns a list of paths of the existing launcher dbs.
+     */
+    private static List<String> existingDbs() {
+        // At this point idp.dbFile contains the name of the dbFile from the previous phone
+        return LauncherFiles.GRID_DB_FILES.stream()
+                .filter(dbName -> new File(dbName).exists())
+                .toList();
     }
 
     /**
