@@ -123,7 +123,7 @@
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Wymagany jest dostęp do powiadomień"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Aby pokazywać kropki powiadomień, włącz powiadomienia aplikacji <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Zmień ustawienia"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"Pokaż kropki powiadomień"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Pokazuj kropki powiadomień"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Opcje programisty"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Dodawaj ikony aplikacji do ekranu głównego"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"W przypadku nowych aplikacji"</string>

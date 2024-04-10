@@ -109,7 +109,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Biratu pantaila"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Zereginen barra erabiltzeko argibideak"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Bi aplikazio batera erabiltzeko, arrastatu bat albo batera"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Zereginen barra ikusteko, pasatu hatza gora poliki"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Zereginen barra ikusteko, pasatu hatza gora mantso"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Jaso aplikazioen iradokizunak erabileran oinarrituta"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Zereginen barra ainguratzeko, sakatu zatitzailea luze"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Egin gauza gehiago zereginen barrarekin"</string>
