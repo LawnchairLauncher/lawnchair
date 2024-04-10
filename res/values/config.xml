@@ -107,6 +107,8 @@
     <!-- Menu id for feature flags -->
     <item type="id" name="menu_apply_flags" />
 
+    <string name="taskbar_edu_tooltip_controller_class" translatable="false"></string>
+
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
     <string name="local_colors_extraction_class" translatable="false"></string>
