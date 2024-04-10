@@ -19,6 +19,7 @@ import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.window.flags.Flags.enableDesktopWindowingWallpaperActivity;
 
 import android.os.Debug;
 import android.os.SystemProperties;
@@ -141,7 +142,8 @@ public class DesktopVisibilityController {
             final boolean isVisible = visibleTasksCount > 0;
             mVisibleDesktopTasksCount = visibleTasksCount;
 
-            if (wasVisible != isVisible) {
+            if (!enableDesktopWindowingWallpaperActivity() && wasVisible != isVisible) {
+                // TODO: b/333533253 - Remove after flag rollout
                 if (mVisibleDesktopTasksCount > 0) {
                     setLauncherViewsVisibility(View.INVISIBLE);
                     if (!mInOverviewState) {
@@ -178,6 +180,10 @@ public class DesktopVisibilityController {
         }
         if (overviewStateEnabled != mInOverviewState) {
             mInOverviewState = overviewStateEnabled;
+            if (enableDesktopWindowingWallpaperActivity()) {
+                return;
+            }
+            // TODO: b/333533253 - Clean up after flag rollout
             if (mInOverviewState) {
                 setLauncherViewsVisibility(View.VISIBLE);
                 markLauncherResumed();
@@ -190,6 +196,9 @@ public class DesktopVisibilityController {
         }
     }
 
+    /**
+     * TODO: b/333533253 - Remove after flag rollout
+     */
     private void setBackgroundStateEnabled(boolean backgroundStateEnabled) {
         if (DEBUG) {
             Log.d(TAG, "setBackgroundStateEnabled: enabled=" + backgroundStateEnabled
@@ -210,6 +219,8 @@ public class DesktopVisibilityController {
 
     /**
      * Whether recents gesture is currently in progress.
+     *
+     * TODO: b/333533253 - Remove after flag rollout
      */
     public boolean isRecentsGestureInProgress() {
         return mGestureInProgress;
@@ -217,6 +228,8 @@ public class DesktopVisibilityController {
 
     /**
      * Notify controller that recents gesture has started.
+     *
+     * TODO: b/333533253 - Remove after flag rollout
      */
     public void setRecentsGestureStart() {
         if (DEBUG) {
@@ -228,6 +241,8 @@ public class DesktopVisibilityController {
     /**
      * Notify controller that recents gesture finished with the given
      * {@link com.android.quickstep.GestureState.GestureEndTarget}
+     *
+     * TODO: b/333533253 - Remove after flag rollout
      */
     public void setRecentsGestureEnd(@Nullable GestureState.GestureEndTarget endTarget) {
         if (DEBUG) {
@@ -241,6 +256,9 @@ public class DesktopVisibilityController {
         }
     }
 
+    /**
+     * TODO: b/333533253 - Remove after flag rollout
+     */
     private void setRecentsGestureInProgress(boolean gestureInProgress) {
         if (gestureInProgress != mGestureInProgress) {
             mGestureInProgress = gestureInProgress;
@@ -256,7 +274,13 @@ public class DesktopVisibilityController {
         }
     }
 
+    /**
+     * TODO: b/333533253 - Remove after flag rollout
+     */
     private void setLauncherViewsVisibility(int visibility) {
+        if (enableDesktopWindowingWallpaperActivity()) {
+            return;
+        }
         if (DEBUG) {
             Log.d(TAG, "setLauncherViewsVisibility: visibility=" + visibility + " "
                     + Debug.getCaller());
@@ -275,7 +299,13 @@ public class DesktopVisibilityController {
         }
     }
 
+    /**
+     * TODO: b/333533253 - Remove after flag rollout
+     */
     private void markLauncherPaused() {
+        if (enableDesktopWindowingWallpaperActivity()) {
+            return;
+        }
         if (DEBUG) {
             Log.d(TAG, "markLauncherPaused " + Debug.getCaller());
         }
@@ -286,7 +316,13 @@ public class DesktopVisibilityController {
         }
     }
 
+    /**
+     * TODO: b/333533253 - Remove after flag rollout
+     */
     private void markLauncherResumed() {
+        if (enableDesktopWindowingWallpaperActivity()) {
+            return;
+        }
         if (DEBUG) {
             Log.d(TAG, "markLauncherResumed " + Debug.getCaller());
         }
