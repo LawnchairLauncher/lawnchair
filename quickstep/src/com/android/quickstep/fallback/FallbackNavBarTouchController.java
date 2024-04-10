@@ -24,9 +24,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
-import com.android.quickstep.views.RecentsViewContainer;
 
 /**
  * In 0-button mode, intercepts swipe up from the nav bar on FallbackRecentsView to go home.
@@ -34,18 +34,17 @@ import com.android.quickstep.views.RecentsViewContainer;
 public class FallbackNavBarTouchController implements TouchController,
         TriggerSwipeUpTouchTracker.OnSwipeUpListener {
 
-    private final RecentsViewContainer mContainer;
+    private final RecentsActivity mActivity;
     @Nullable
     private final TriggerSwipeUpTouchTracker mTriggerSwipeUpTracker;
 
-    public FallbackNavBarTouchController(RecentsViewContainer container) {
-        mContainer = container;
-        NavigationMode sysUINavigationMode =
-                DisplayController.getNavigationMode(mContainer.asContext());
+    public FallbackNavBarTouchController(RecentsActivity activity) {
+        mActivity = activity;
+        NavigationMode sysUINavigationMode = DisplayController.getNavigationMode(mActivity);
         if (sysUINavigationMode == NavigationMode.NO_BUTTON) {
             NavBarPosition navBarPosition = new NavBarPosition(sysUINavigationMode,
-                    DisplayController.INSTANCE.get(mContainer.asContext()).getInfo());
-            mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(mContainer.asContext(),
+                    DisplayController.INSTANCE.get(mActivity).getInfo());
+            mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(mActivity,
                     true /* disableHorizontalSwipe */, navBarPosition, this);
         } else {
             mTriggerSwipeUpTracker = null;
@@ -76,6 +75,6 @@ public class FallbackNavBarTouchController implements TouchController,
 
     @Override
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
-        mContainer.<FallbackRecentsView>getOverviewPanel().startHome();
+        mActivity.<FallbackRecentsView>getOverviewPanel().startHome();
     }
 }

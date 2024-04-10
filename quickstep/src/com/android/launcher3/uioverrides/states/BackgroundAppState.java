@@ -22,6 +22,7 @@ import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITION
 import android.content.Context;
 import android.graphics.Color;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -62,7 +63,7 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return getOverviewScaleAndOffsetForBackgroundState(launcher.getOverviewPanel());
+        return getOverviewScaleAndOffsetForBackgroundState(launcher);
     }
 
     @Override
@@ -124,7 +125,9 @@ public class BackgroundAppState extends OverviewState {
     }
 
     public static float[] getOverviewScaleAndOffsetForBackgroundState(
-            RecentsView recentsView) {
-        return new float[] {recentsView.getMaxScaleForFullScreen(), NO_OFFSET};
+            BaseDraggingActivity activity) {
+        return new float[] {
+                ((RecentsView) activity.getOverviewPanel()).getMaxScaleForFullScreen(),
+                NO_OFFSET};
     }
 }

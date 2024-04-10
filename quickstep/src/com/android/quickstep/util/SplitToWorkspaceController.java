@@ -35,6 +35,7 @@ import android.view.View;
 
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
@@ -45,7 +46,6 @@ import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -53,14 +53,13 @@ import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 /** Handles when the stage split lands on the home screen. */
 public class SplitToWorkspaceController {
 
-    private final QuickstepLauncher mLauncher;
+    private final Launcher mLauncher;
     private final SplitSelectStateController mController;
 
     private final int mHalfDividerSize;
     private final IconCache mIconCache;
 
-    public SplitToWorkspaceController(QuickstepLauncher launcher,
-            SplitSelectStateController controller) {
+    public SplitToWorkspaceController(Launcher launcher, SplitSelectStateController controller) {
         mLauncher = launcher;
         mController = controller;
         mIconCache = LauncherAppState.getInstanceNoCreate().getIconCache();

@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.animation.Interpolator
 import com.android.app.animation.Interpolators
+import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.quickstep.util.AnimUtils
@@ -54,7 +55,7 @@ class FloatingAppPairBackground(
         private val ARRAY_OF_ZEROES = FloatArray(8)
     }
 
-    private val container: RecentsViewContainer
+    private val launcher: Launcher
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     // Animation interpolators
@@ -69,15 +70,15 @@ class FloatingAppPairBackground(
     private val desiredSplitRatio: Float
 
     init {
-        container = RecentsViewContainer.containerFromContext(context)
-        val dp = container.deviceProfile
+        launcher = Launcher.getLauncher(context)
+        val dp = launcher.deviceProfile
         // Set up background paint color
         val ta = context.theme.obtainStyledAttributes(R.styleable.FolderIconPreview)
         backgroundPaint.style = Paint.Style.FILL
         backgroundPaint.color = ta.getColor(R.styleable.FolderIconPreview_folderPreviewColor, 0)
         ta.recycle()
         // Set up timings and interpolators
-        val timings = AnimUtils.getDeviceAppPairLaunchTimings(container.deviceProfile.isTablet)
+        val timings = AnimUtils.getDeviceAppPairLaunchTimings(launcher.deviceProfile.isTablet)
         expandXInterpolator =
             Interpolators.clampToProgress(
                 timings.getStagedRectScaleXInterpolator(),
@@ -104,9 +105,9 @@ class FloatingAppPairBackground(
             )
 
         // Find device-specific measurements
-        deviceCornerRadius = QuickStepContract.getWindowCornerRadius(container.asContext())
+        deviceCornerRadius = QuickStepContract.getWindowCornerRadius(launcher)
         deviceHalfDividerSize =
-                container.asContext().resources.getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2f
+            launcher.resources.getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2f
         val dividerCenterPos = dividerPos + deviceHalfDividerSize
         desiredSplitRatio =
             if (dp.isLeftRightSplit) dividerCenterPos / dp.widthPx
@@ -114,7 +115,7 @@ class FloatingAppPairBackground(
     }
 
     override fun draw(canvas: Canvas) {
-        if (container.deviceProfile.isLeftRightSplit) {
+        if (launcher.deviceProfile.isLeftRightSplit) {
             drawLeftRightSplit(canvas)
         } else {
             drawTopBottomSplit(canvas)
@@ -149,37 +150,39 @@ class FloatingAppPairBackground(
         val dividerCenterPos = width * desiredSplitRatio
 
         // The left half of the background image
-        val leftSide = RectF(0f, 0f, dividerCenterPos - changingDividerSize, height)
+        val leftSide = RectF(
+            0f,
+            0f,
+            dividerCenterPos - changingDividerSize,
+            height
+        )
         // The right half of the background image
-        val rightSide = RectF(dividerCenterPos + changingDividerSize, 0f, width, height)
+        val rightSide = RectF(
+            dividerCenterPos + changingDividerSize,
+            0f,
+            width,
+            height
+        )
 
         // Draw background
         drawCustomRoundedRect(
             canvas,
             leftSide,
             floatArrayOf(
-                cornerRadiusX,
-                cornerRadiusY,
-                changingInnerRadiusX,
-                changingInnerRadiusY,
-                changingInnerRadiusX,
-                changingInnerRadiusY,
-                cornerRadiusX,
-                cornerRadiusY,
+                cornerRadiusX, cornerRadiusY,
+                changingInnerRadiusX, changingInnerRadiusY,
+                changingInnerRadiusX, changingInnerRadiusY,
+                cornerRadiusX, cornerRadiusY
             )
         )
         drawCustomRoundedRect(
             canvas,
             rightSide,
             floatArrayOf(
-                changingInnerRadiusX,
-                changingInnerRadiusY,
-                cornerRadiusX,
-                cornerRadiusY,
-                cornerRadiusX,
-                cornerRadiusY,
-                changingInnerRadiusX,
-                changingInnerRadiusY,
+                changingInnerRadiusX, changingInnerRadiusY,
+                cornerRadiusX, cornerRadiusY,
+                cornerRadiusX, cornerRadiusY,
+                changingInnerRadiusX, changingInnerRadiusY
             )
         )
 
@@ -247,37 +250,39 @@ class FloatingAppPairBackground(
         val dividerCenterPos = height * desiredSplitRatio
 
         // The top half of the background image
-        val topSide = RectF(0f, 0f, width, dividerCenterPos - changingDividerSize)
+        val topSide = RectF(
+            0f,
+            0f,
+            width,
+            dividerCenterPos - changingDividerSize
+        )
         // The bottom half of the background image
-        val bottomSide = RectF(0f, dividerCenterPos + changingDividerSize, width, height)
+        val bottomSide = RectF(
+            0f,
+            dividerCenterPos + changingDividerSize,
+            width,
+            height
+        )
 
         // Draw background
         drawCustomRoundedRect(
             canvas,
             topSide,
             floatArrayOf(
-                cornerRadiusX,
-                cornerRadiusY,
-                cornerRadiusX,
-                cornerRadiusY,
-                changingInnerRadiusX,
-                changingInnerRadiusY,
-                changingInnerRadiusX,
-                changingInnerRadiusY
+                cornerRadiusX, cornerRadiusY,
+                cornerRadiusX, cornerRadiusY,
+                changingInnerRadiusX, changingInnerRadiusY,
+                changingInnerRadiusX, changingInnerRadiusY
             )
         )
         drawCustomRoundedRect(
             canvas,
             bottomSide,
             floatArrayOf(
-                changingInnerRadiusX,
-                changingInnerRadiusY,
-                changingInnerRadiusX,
-                changingInnerRadiusY,
-                cornerRadiusX,
-                cornerRadiusY,
-                cornerRadiusX,
-                cornerRadiusY
+                changingInnerRadiusX, changingInnerRadiusY,
+                changingInnerRadiusX, changingInnerRadiusY,
+                cornerRadiusX, cornerRadiusY,
+                cornerRadiusX, cornerRadiusY
             )
         )
 
@@ -333,10 +338,8 @@ class FloatingAppPairBackground(
             // Fallback rectangle with uniform rounded corners
             val scaleFactorX = floatingView.scaleX
             val scaleFactorY = floatingView.scaleY
-            val cornerRadiusX =
-                QuickStepContract.getWindowCornerRadius(container.asContext()) / scaleFactorX
-            val cornerRadiusY =
-                QuickStepContract.getWindowCornerRadius(container.asContext()) / scaleFactorY
+            val cornerRadiusX = QuickStepContract.getWindowCornerRadius(launcher) / scaleFactorX
+            val cornerRadiusY = QuickStepContract.getWindowCornerRadius(launcher) / scaleFactorY
             c.drawRoundRect(rect, cornerRadiusX, cornerRadiusY, backgroundPaint)
         }
     }

@@ -18,24 +18,24 @@ package com.android.quickstep
 
 import android.view.View
 import com.android.launcher3.AbstractFloatingViewHelper
+import com.android.launcher3.BaseDraggingActivity
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.popup.SystemShortcut
 import com.android.quickstep.views.RecentsView
-import com.android.quickstep.views.RecentsViewContainer
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
 import com.android.window.flags.Flags
 
 /** A menu item, "Desktop", that allows the user to bring the current app into Desktop Windowing. */
 class DesktopSystemShortcut(
-    container: RecentsViewContainer,
+    activity: BaseDraggingActivity,
     private val mTaskContainer: TaskIdAttributeContainer,
     abstractFloatingViewHelper: AbstractFloatingViewHelper
 ) :
-    SystemShortcut<RecentsViewContainer>(
+    SystemShortcut<BaseDraggingActivity>(
         R.drawable.ic_caption_desktop_button_foreground,
         R.string.recent_task_option_desktop,
-        container,
+        activity,
         mTaskContainer.itemInfo,
         mTaskContainer.taskView,
         abstractFloatingViewHelper
@@ -59,7 +59,7 @@ class DesktopSystemShortcut(
         ): TaskShortcutFactory {
             return object : TaskShortcutFactory {
                 override fun getShortcuts(
-                    container: RecentsViewContainer,
+                    activity: BaseDraggingActivity,
                     taskContainer: TaskIdAttributeContainer
                 ): List<DesktopSystemShortcut>? {
                     return if (!Flags.enableDesktopWindowingMode()) null
@@ -67,7 +67,7 @@ class DesktopSystemShortcut(
                     else
                         listOf(
                             DesktopSystemShortcut(
-                                container,
+                                activity,
                                 taskContainer,
                                 abstractFloatingViewHelper
                             )

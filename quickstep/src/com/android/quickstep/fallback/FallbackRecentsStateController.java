@@ -49,9 +49,7 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.ClearAllButton;
-import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.RecentsViewContainer;
 
 /**
  * State controller for fallback recents activity

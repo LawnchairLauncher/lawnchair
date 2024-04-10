@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import com.android.app.animation.Interpolators.LINEAR
 import com.android.app.animation.Interpolators.clampToProgress
 import com.android.launcher3.CellLayout
+import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY
 import com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_UNFOLD_ANIMATION
 import com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X
@@ -27,7 +28,6 @@ import com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y
 import com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY
 import com.android.launcher3.Workspace
 import com.android.launcher3.anim.PendingAnimation
-import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.util.HorizontalInsettableView
 
 private typealias ViewGroupAction = (ViewGroup, Boolean) -> Unit
@@ -112,7 +112,7 @@ object UnfoldAnimationBuilder {
      * Builds an animation for the unfold experience and adds it to the provided PendingAnimation
      */
     fun buildUnfoldAnimation(
-        launcher: QuickstepLauncher,
+        launcher: Launcher,
         isVerticalFold: Boolean,
         screenSize: Point,
         anim: PendingAnimation

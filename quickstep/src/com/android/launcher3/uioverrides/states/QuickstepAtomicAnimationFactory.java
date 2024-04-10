@@ -94,7 +94,7 @@ public class QuickstepAtomicAnimationFactory extends
     @Override
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
-        RecentsView overview = mContainer.getOverviewPanel();
+        RecentsView overview = mActivity.getOverviewPanel();
         if ((fromState == OVERVIEW || fromState == OVERVIEW_SPLIT_SELECT) && toState == NORMAL) {
             overview.switchToScreenshot(() ->
                     overview.finishRecentsAnimation(true /* toRecents */, null));
@@ -118,7 +118,7 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATE);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCELERATE);
 
-            if (DisplayController.getNavigationMode(mContainer).hasGestures
+            if (DisplayController.getNavigationMode(mActivity).hasGestures
                     && overview.getTaskViewCount() > 0) {
                 // Overview is going offscreen, so keep it at its current scale and opacity.
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
@@ -136,7 +136,7 @@ public class QuickstepAtomicAnimationFactory extends
                 config.duration = Math.max(config.duration, scrollDuration);
 
                 // Sync scroll so that it ends before or at the same time as the taskbar animation.
-                if (mContainer.getDeviceProfile().isTaskbarPresent) {
+                if (mActivity.getDeviceProfile().isTaskbarPresent) {
                     config.duration = Math.min(
                             config.duration, QuickstepTransitionManager.getTaskbarToHomeDuration());
                 }
@@ -147,7 +147,7 @@ public class QuickstepAtomicAnimationFactory extends
                 config.setInterpolator(ANIM_OVERVIEW_FADE, DECELERATE_1_7);
             }
 
-            Workspace<?> workspace = mContainer.getWorkspace();
+            Workspace<?> workspace = mActivity.getWorkspace();
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
             if (isWorkspaceVisible) {
@@ -160,7 +160,7 @@ public class QuickstepAtomicAnimationFactory extends
                 workspace.setScaleX(WORKSPACE_PREPARE_SCALE);
                 workspace.setScaleY(WORKSPACE_PREPARE_SCALE);
             }
-            Hotseat hotseat = mContainer.getHotseat();
+            Hotseat hotseat = mActivity.getHotseat();
             boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
             if (!isHotseatVisible) {
                 hotseat.setScaleX(WORKSPACE_PREPARE_SCALE);
@@ -168,7 +168,7 @@ public class QuickstepAtomicAnimationFactory extends
             }
         } else if ((fromState == NORMAL || fromState == HINT_STATE
                 || fromState == HINT_STATE_TWO_BUTTON) && toState == OVERVIEW) {
-            if (DisplayController.getNavigationMode(mContainer).hasGestures) {
+            if (DisplayController.getNavigationMode(mActivity).hasGestures) {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
                         fromState == NORMAL ? ACCELERATE : OVERSHOOT_1_2);
                 config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCELERATE);
@@ -201,18 +201,18 @@ public class QuickstepAtomicAnimationFactory extends
         } else if (fromState == HINT_STATE && toState == NORMAL) {
             config.setInterpolator(ANIM_DEPTH, DECELERATE_3);
             if (mHintToNormalDuration == -1) {
-                ValueAnimator va = getWorkspaceSpringScaleAnimator(mContainer,
-                        mContainer.getWorkspace(),
-                        toState.getWorkspaceScaleAndTranslation(mContainer).scale);
+                ValueAnimator va = getWorkspaceSpringScaleAnimator(mActivity,
+                        mActivity.getWorkspace(),
+                        toState.getWorkspaceScaleAndTranslation(mActivity).scale);
                 mHintToNormalDuration = (int) va.getDuration();
             }
             config.duration = Math.max(config.duration, mHintToNormalDuration);
         } else if (fromState == ALL_APPS && toState == NORMAL) {
-            AllAppsSwipeController.applyAllAppsToNormalConfig(mContainer, config);
+            AllAppsSwipeController.applyAllAppsToNormalConfig(mActivity, config);
         } else if (fromState == NORMAL && toState == ALL_APPS) {
-            AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mContainer, config);
+            AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mActivity, config);
         } else if (fromState == OVERVIEW && toState == OVERVIEW_SPLIT_SELECT) {
-            SplitAnimationTimings timings = mContainer.getDeviceProfile().isTablet
+            SplitAnimationTimings timings = mActivity.getDeviceProfile().isTablet
                     ? SplitAnimationTimings.TABLET_OVERVIEW_TO_SPLIT
                     : SplitAnimationTimings.PHONE_OVERVIEW_TO_SPLIT;
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR,

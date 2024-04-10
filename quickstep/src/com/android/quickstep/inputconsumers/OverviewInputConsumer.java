@@ -28,24 +28,24 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.BaseState;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.BaseContainerInterface;
+import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.TaskUtils;
-import com.android.quickstep.views.RecentsViewContainer;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
  */
-public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsViewContainer>
+public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulActivity<S>>
         implements InputConsumer {
 
-    private final T mContainer;
-    private final BaseContainerInterface<?, T> mContainerInterface;
+    private final T mActivity;
+    private final BaseActivityInterface<?, T> mActivityInterface;
     private final BaseDragLayer mTarget;
     private final InputMonitorCompat mInputMonitor;
 
@@ -56,14 +56,14 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
     private boolean mHasSetTouchModeForFirstDPadEvent;
     private boolean mIsWaitingForAttachToWindow;
 
-    public OverviewInputConsumer(GestureState gestureState, T container,
+    public OverviewInputConsumer(GestureState gestureState, T activity,
             @Nullable InputMonitorCompat inputMonitor, boolean startingInActivityBounds) {
-        mContainer = container;
+        mActivity = activity;
         mInputMonitor = inputMonitor;
         mStartingInActivityBounds = startingInActivityBounds;
-        mContainerInterface = gestureState.getContainerInterface();
+        mActivityInterface = gestureState.getActivityInterface();
 
-        mTarget = container.getDragLayer();
+        mTarget = activity.getDragLayer();
         mTarget.getLocationOnScreen(mLocationOnScreen);
     }
 
@@ -91,7 +91,7 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
         if (!mTargetHandledTouch && handled) {
             mTargetHandledTouch = true;
             if (!mStartingInActivityBounds) {
-                mContainerInterface.closeOverlay();
+                mActivityInterface.closeOverlay();
                 TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
             }
             if (mInputMonitor != null) {
@@ -100,13 +100,13 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
             }
         }
         if (mHasSetTouchModeForFirstDPadEvent) {
-            mContainer.getRootView().clearFocus();
+            mActivity.getRootView().clearFocus();
         }
     }
 
     @Override
     public void onHoverEvent(MotionEvent ev) {
-        mContainer.dispatchGenericMotionEvent(ev);
+        mActivity.dispatchGenericMotionEvent(ev);
     }
 
     @Override
@@ -115,8 +115,7 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_MUTE:
-                MediaSessionManager mgr = mContainer.asContext()
-                        .getSystemService(MediaSessionManager.class);
+                MediaSessionManager mgr = mActivity.getSystemService(MediaSessionManager.class);
                 mgr.dispatchVolumeKeyEventAsSystemService(ev,
                         AudioManager.USE_DEFAULT_STREAM_TYPE);
                 break;
@@ -125,7 +124,7 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
                 if (mHasSetTouchModeForFirstDPadEvent) {
                     break;
                 }
-                View viewRoot = mContainer.getRootView();
+                View viewRoot = mActivity.getRootView();
                 if (viewRoot.isAttachedToWindow()) {
                     setTouchModeChanged(viewRoot);
                     break;
@@ -151,7 +150,7 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
             default:
                 break;
         }
-        mContainer.dispatchKeyEvent(ev);
+        mActivity.dispatchKeyEvent(ev);
     }
 
     private void setTouchModeChanged(@NonNull View viewRoot) {

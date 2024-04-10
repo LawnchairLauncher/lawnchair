@@ -36,10 +36,12 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.views.BaseDragLayer;
@@ -52,7 +54,7 @@ import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Create an instance via
- * {@link #getFloatingTaskView(RecentsViewContainer, View, Bitmap, Drawable, RectF)} to
+ * {@link #getFloatingTaskView(StatefulActivity, View, Bitmap, Drawable, RectF)} to
  * which will have the thumbnail from the provided existing TaskView overlaying the taskview itself.
  *
  * Can then animate the taskview using
@@ -65,32 +67,32 @@ public class FloatingTaskView extends FrameLayout {
 
     public static final FloatProperty<FloatingTaskView> PRIMARY_TRANSLATE_OFFSCREEN =
             new FloatProperty<FloatingTaskView>("floatingTaskPrimaryTranslateOffscreen") {
-                @Override
-                public void setValue(FloatingTaskView view, float translation) {
-                    ((RecentsView) view.mContainer.getOverviewPanel()).getPagedOrientationHandler()
-                            .setFloatingTaskPrimaryTranslation(
-                                    view,
-                                    translation,
-                                    view.mContainer.getDeviceProfile()
-                            );
-                }
+        @Override
+        public void setValue(FloatingTaskView view, float translation) {
+            ((RecentsView) view.mActivity.getOverviewPanel()).getPagedOrientationHandler()
+                    .setFloatingTaskPrimaryTranslation(
+                            view,
+                            translation,
+                            view.mActivity.getDeviceProfile()
+                    );
+        }
 
-                @Override
-                public Float get(FloatingTaskView view) {
-                        return ((RecentsView) view.mContainer.getOverviewPanel())
-                                .getPagedOrientationHandler()
-                                .getFloatingTaskPrimaryTranslation(
-                                        view,
-                                        view.mContainer.getDeviceProfile()
-                                );
-                }
-            };
+        @Override
+        public Float get(FloatingTaskView view) {
+            return ((RecentsView) view.mActivity.getOverviewPanel())
+                    .getPagedOrientationHandler()
+                    .getFloatingTaskPrimaryTranslation(
+                            view,
+                            view.mActivity.getDeviceProfile()
+                    );
+        }
+    };
 
     private int mSplitHolderSize;
     private FloatingTaskThumbnailView mThumbnailView;
     private SplitPlaceholderView mSplitPlaceholderView;
     private RectF mStartingPosition;
-    private final RecentsViewContainer mContainer;
+    private final StatefulActivity mActivity;
     private final boolean mIsRtl;
     private final FullscreenDrawParams mFullscreenParams;
     private RecentsPagedOrientationHandler mOrientationHandler;
@@ -108,7 +110,7 @@ public class FloatingTaskView extends FrameLayout {
 
     public FloatingTaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContainer = RecentsViewContainer.containerFromContext(context);
+        mActivity = BaseActivity.fromContext(context);
         mIsRtl = Utilities.isRtl(getResources());
         mFullscreenParams = new FullscreenDrawParams(context);
 
@@ -124,7 +126,7 @@ public class FloatingTaskView extends FrameLayout {
         mSplitPlaceholderView.setAlpha(0);
     }
 
-    private void init(RecentsViewContainer launcher, View originalView, @Nullable Bitmap thumbnail,
+    private void init(StatefulActivity launcher, View originalView, @Nullable Bitmap thumbnail,
             Drawable icon, RectF positionOut) {
         mStartingPosition = positionOut;
         updateInitialPositionForView(originalView);
@@ -151,7 +153,7 @@ public class FloatingTaskView extends FrameLayout {
      * Configures and returns a an instance of {@link FloatingTaskView} initially matching the
      * appearance of {@code originalView}.
      */
-    public static FloatingTaskView getFloatingTaskView(RecentsViewContainer launcher,
+    public static FloatingTaskView getFloatingTaskView(StatefulActivity launcher,
             View originalView, @Nullable Bitmap thumbnail, Drawable icon, RectF positionOut) {
         final ViewGroup dragLayer = launcher.getDragLayer();
         final FloatingTaskView floatingView = (FloatingTaskView) launcher.getLayoutInflater()
@@ -177,13 +179,13 @@ public class FloatingTaskView extends FrameLayout {
             originalView.getBoundsOnScreen(mTmpRect);
             mStartingPosition.set(mTmpRect);
             int[] dragLayerPositionRelativeToScreen =
-                    mContainer.getDragLayer().getLocationOnScreen();
+                    mActivity.getDragLayer().getLocationOnScreen();
             mStartingPosition.offset(
                     -dragLayerPositionRelativeToScreen[0],
                     -dragLayerPositionRelativeToScreen[1]);
         } else {
             Rect viewBounds = new Rect(0, 0, originalView.getWidth(), originalView.getHeight());
-            Utilities.getBoundsForViewInDragLayer(mContainer.getDragLayer(), originalView,
+            Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView,
                     viewBounds, false /* ignoreTransform */, null /* recycle */,
                     mStartingPosition);
         }
@@ -233,7 +235,7 @@ public class FloatingTaskView extends FrameLayout {
         // Position the floating view exactly on top of the original
         lp.topMargin = Math.round(pos.top);
         if (mIsRtl) {
-            lp.setMarginStart(mContainer.getDeviceProfile().widthPx - Math.round(pos.right));
+            lp.setMarginStart(mActivity.getDeviceProfile().widthPx - Math.round(pos.right));
         } else {
             lp.setMarginStart(Math.round(pos.left));
         }
@@ -250,7 +252,7 @@ public class FloatingTaskView extends FrameLayout {
      */
     public void addStagingAnimation(PendingAnimation animation, RectF startingBounds,
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
-        boolean isTablet = mContainer.getDeviceProfile().isTablet;
+        boolean isTablet = mActivity.getDeviceProfile().isTablet;
         boolean splittingFromOverview = fadeWithThumbnail;
         SplitAnimationTimings timings;
 
@@ -274,7 +276,7 @@ public class FloatingTaskView extends FrameLayout {
     public void addConfirmAnimation(PendingAnimation animation, RectF startingBounds,
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
         SplitAnimationTimings timings =
-                AnimUtils.getDeviceSplitToConfirmTimings(mContainer.getDeviceProfile().isTablet);
+                AnimUtils.getDeviceSplitToConfirmTimings(mActivity.getDeviceProfile().isTablet);
 
         addAnimation(animation, startingBounds, endBounds, fadeWithThumbnail, isStagedTask,
                 timings);
@@ -289,7 +291,7 @@ public class FloatingTaskView extends FrameLayout {
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask,
             SplitAnimationTimings timings) {
         mFullscreenParams.setIsStagedTask(isStagedTask);
-        final BaseDragLayer dragLayer = mContainer.getDragLayer();
+        final BaseDragLayer dragLayer = mActivity.getDragLayer();
         int[] dragLayerBounds = new int[2];
         dragLayer.getLocationOnScreen(dragLayerBounds);
         SplitOverlayProperties prop = new SplitOverlayProperties(endBounds,
@@ -389,7 +391,7 @@ public class FloatingTaskView extends FrameLayout {
         mOrientationHandler.updateSplitIconParams(iconView, onScreenRectCenterX,
                 onScreenRectCenterY, mFullscreenParams.mScaleX, mFullscreenParams.mScaleY,
                 iconView.getDrawableWidth(), iconView.getDrawableHeight(),
-                mContainer.getDeviceProfile(), mStagePosition);
+                mActivity.getDeviceProfile(), mStagePosition);
     }
 
     public int getStagePosition() {

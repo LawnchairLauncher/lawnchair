@@ -68,7 +68,7 @@ public class ClearAllButton extends Button {
                 }
             };
 
-    private final RecentsViewContainer mContainer;
+    private final StatefulActivity mActivity;
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
@@ -92,7 +92,7 @@ public class ClearAllButton extends Button {
     public ClearAllButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
-        mContainer = RecentsViewContainer.containerFromContext(context);
+        mActivity = StatefulActivity.fromContext(context);
 
         if (Flags.enableFocusOutline()) {
             TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
@@ -326,7 +326,7 @@ public class ClearAllButton extends Button {
      * Get the Y translation that is set in the original layout position, before scrolling.
      */
     private float getOriginalTranslationY() {
-        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         if (deviceProfile.isTablet) {
             if (enableGridOnlyOverview()) {
                 return (getRecentsView().getLastComputedTaskSize().height()

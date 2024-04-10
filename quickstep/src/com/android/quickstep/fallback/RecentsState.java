@@ -26,8 +26,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.util.Themes;
-import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.RecentsViewContainer;
+import com.android.quickstep.RecentsActivity;
 
 /**
  * State definition for Fallback recents
@@ -127,13 +126,12 @@ public class RecentsState implements BaseState<RecentsState> {
     /**
      * For this state, what color scrim should be drawn behind overview.
      */
-    public int getScrimColor(Context context) {
-        return hasFlag(FLAG_SCRIM)
-                ? Themes.getAttrColor(context, R.attr.overviewScrimColor)
+    public int getScrimColor(RecentsActivity activity) {
+        return hasFlag(FLAG_SCRIM) ? Themes.getAttrColor(activity, R.attr.overviewScrimColor)
                 : Color.TRANSPARENT;
     }
 
-    public float[] getOverviewScaleAndOffset(RecentsViewContainer container) {
+    public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
         return new float[] { NO_SCALE, NO_OFFSET };
     }
 
@@ -163,8 +161,8 @@ public class RecentsState implements BaseState<RecentsState> {
         }
 
         @Override
-        public float[] getOverviewScaleAndOffset(RecentsViewContainer container) {
-            return getOverviewScaleAndOffsetForModalState(container.getOverviewPanel());
+        public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
+            return getOverviewScaleAndOffsetForModalState(activity);
         }
     }
 
@@ -174,8 +172,8 @@ public class RecentsState implements BaseState<RecentsState> {
         }
 
         @Override
-        public float[] getOverviewScaleAndOffset(RecentsViewContainer container) {
-            return getOverviewScaleAndOffsetForBackgroundState(container.getOverviewPanel());
+        public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
+            return getOverviewScaleAndOffsetForBackgroundState(activity);
         }
     }
 
@@ -185,7 +183,7 @@ public class RecentsState implements BaseState<RecentsState> {
         }
 
         @Override
-        public float[] getOverviewScaleAndOffset(RecentsViewContainer container) {
+        public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
             return new float[] { NO_SCALE, 1 };
         }
     }
