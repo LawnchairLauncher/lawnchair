@@ -111,7 +111,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     private final float mMotionPauseMinDisplacement;
     private final LauncherRecentsView mRecentsView;
     protected final AnimatorListener mClearStateOnCancelListener =
-            newCancelListener(this::clearState);
+            newCancelListener(this::clearState, /* isSingleUse = */ false);
 
     private boolean mNoIntercept;
     private LauncherState mStartState;

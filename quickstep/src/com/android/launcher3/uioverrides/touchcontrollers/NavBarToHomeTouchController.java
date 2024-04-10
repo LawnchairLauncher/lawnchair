@@ -19,7 +19,7 @@ import static com.android.app.animation.Interpolators.DECELERATE_3;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
-import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
+import static com.android.launcher3.LauncherAnimUtils.newSingleUseCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
@@ -165,7 +165,7 @@ public class NavBarToHomeTouchController implements TouchController,
             topView.addHintCloseAnim(mPullbackDistance, PULLBACK_INTERPOLATOR, builder);
         }
         mCurrentAnimation = builder.createPlaybackController();
-        mCurrentAnimation.getTarget().addListener(newCancelListener(this::clearState));
+        mCurrentAnimation.getTarget().addListener(newSingleUseCancelListener(this::clearState));
     }
 
     private void clearState() {
