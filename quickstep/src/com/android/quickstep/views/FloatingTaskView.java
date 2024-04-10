@@ -167,7 +167,7 @@ public class FloatingTaskView extends FrameLayout {
             // Add to top if not
             openTaskViewIndex = dragLayer.getChildCount();
         }
-        dragLayer.addView(floatingView, openTaskViewIndex - 1);
+        dragLayer.addView(floatingView, openTaskViewIndex);
         return floatingView;
     }
 
