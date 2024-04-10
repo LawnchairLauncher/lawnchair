@@ -215,8 +215,12 @@ sealed class LawnchairSearchAlgorithm(
         }
 
         val settingsDeferred = async {
-            findSettingsByNameAndAction(query, maxSettingsEntryCount)
-                .map { SearchResult(SETTING, it) }
+            if (prefs.searchResultSettings.get()) {
+                findSettingsByNameAndAction(query, maxSettingsEntryCount)
+                    .map { SearchResult(SETTING, it) }
+            } else {
+                emptyList()
+            }
         }
 
         val startPageSuggestionsDeferred = async {
