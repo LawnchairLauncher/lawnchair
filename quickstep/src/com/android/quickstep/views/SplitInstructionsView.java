@@ -43,7 +43,6 @@ import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.StateAnimationConfig;
-
 import com.android.quickstep.util.SplitSelectStateController;
 
 /**
@@ -58,7 +57,7 @@ public class SplitInstructionsView extends LinearLayout {
     private static final float BOUNCE_HEIGHT = 20;
     private static final int DURATION_DEFAULT_SPLIT_DISMISS = 350;
 
-    private final RecentsViewContainer mContainer;
+    private final StatefulActivity mLauncher;
     public boolean mIsCurrentlyAnimating = false;
 
     public static final FloatProperty<SplitInstructionsView> UNFOLD =
@@ -97,13 +96,13 @@ public class SplitInstructionsView extends LinearLayout {
 
     public SplitInstructionsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContainer = RecentsViewContainer.containerFromContext(context);
+        mLauncher = (StatefulActivity) context;
     }
 
-    public static SplitInstructionsView getSplitInstructionsView(RecentsViewContainer container) {
-        ViewGroup dragLayer = container.getDragLayer();
+    public static SplitInstructionsView getSplitInstructionsView(StatefulActivity launcher) {
+        ViewGroup dragLayer = launcher.getDragLayer();
         final SplitInstructionsView splitInstructionsView =
-                (SplitInstructionsView) container.getLayoutInflater().inflate(
+                (SplitInstructionsView) launcher.getLayoutInflater().inflate(
                         R.layout.split_instructions_view,
                         dragLayer,
                         false
@@ -140,12 +139,12 @@ public class SplitInstructionsView extends LinearLayout {
     }
 
     private void exitSplitSelection() {
-        RecentsView recentsView = mContainer.getOverviewPanel();
-        SplitSelectStateController splitSelectController = recentsView.getSplitSelectController();
+        SplitSelectStateController splitSelectController =
+                ((RecentsView) mLauncher.getOverviewPanel()).getSplitSelectController();
 
-        StateManager stateManager = recentsView.getStateManager();
+        StateManager stateManager = mLauncher.getStateManager();
         BaseState startState = stateManager.getState();
-        long duration = startState.getTransitionDuration(mContainer.asContext(), false);
+        long duration = startState.getTransitionDuration(mLauncher, false);
         if (duration == 0) {
             // Case where we're in contextual on workspace (NORMAL), which by default has 0
             // transition duration
@@ -156,7 +155,7 @@ public class SplitInstructionsView extends LinearLayout {
         AnimatorSet stateAnim = stateManager.createAtomicAnimation(
                 startState, NORMAL, config);
         AnimatorSet dismissAnim = splitSelectController.getSplitAnimationController()
-                .createPlaceholderDismissAnim(mContainer,
+                .createPlaceholderDismissAnim(mLauncher,
                         LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON, duration);
         stateAnim.play(dismissAnim);
         stateManager.setCurrentAnimation(stateAnim, NORMAL);
@@ -164,10 +163,10 @@ public class SplitInstructionsView extends LinearLayout {
     }
 
     void ensureProperRotation() {
-        ((RecentsView) mContainer.getOverviewPanel()).getPagedOrientationHandler()
+        ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler()
                 .setSplitInstructionsParams(
                         this,
-                        mContainer.getDeviceProfile(),
+                        mLauncher.getDeviceProfile(),
                         getMeasuredHeight(),
                         getMeasuredWidth()
                 );

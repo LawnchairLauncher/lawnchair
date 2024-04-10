@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
@@ -45,7 +46,6 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
@@ -63,15 +63,14 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView,
             TaskIdAttributeContainer taskContainer) {
         final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
-        final RecentsViewContainer container =
-                RecentsViewContainer.containerFromContext(taskView.getContext());
+        final BaseDraggingActivity activity = BaseActivity.fromContext(taskView.getContext());
         boolean hasMultipleTasks = taskView.getTaskIds()[1] != -1;
         for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
             if (hasMultipleTasks && !menuOption.showForSplitscreen()) {
                 continue;
             }
 
-            List<SystemShortcut> menuShortcuts = menuOption.getShortcuts(container, taskContainer);
+            List<SystemShortcut> menuShortcuts = menuOption.getShortcuts(activity, taskContainer);
             if (menuShortcuts == null) {
                 continue;
             }
@@ -80,7 +79,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         RecentsOrientedState orientedState = taskView.getRecentsView().getPagedViewOrientedState();
         boolean canLauncherRotate = orientedState.isRecentsActivityRotationAllowed();
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
-        boolean isTablet = container.getDeviceProfile().isTablet;
+        boolean isTablet = activity.getDeviceProfile().isTablet;
 
         boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
         // Add overview actions to the menu when:
@@ -89,7 +88,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         if (!hasMultipleTasks && ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview)) {
             // Add screenshot action to task menu.
             List<SystemShortcut> screenshotShortcuts = TaskShortcutFactory.SCREENSHOT
-                    .getShortcuts(container, taskContainer);
+                    .getShortcuts(activity, taskContainer);
             if (screenshotShortcuts != null) {
                 shortcuts.addAll(screenshotShortcuts);
             }
@@ -98,7 +97,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             // or in grid-only overview.
             if (orientedState.getDisplayRotation() == ROTATION_0 || isGridOnlyOverview) {
                 List<SystemShortcut> modalShortcuts = TaskShortcutFactory.MODAL
-                        .getShortcuts(container, taskContainer);
+                        .getShortcuts(activity, taskContainer);
                 if (modalShortcuts != null) {
                     shortcuts.addAll(modalShortcuts);
                 }
@@ -256,9 +255,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         /**
          * Gets the system shortcut for the screenshot that will be added to the task menu.
          */
-        public SystemShortcut getScreenshotShortcut(RecentsViewContainer container,
+        public SystemShortcut getScreenshotShortcut(BaseDraggingActivity activity,
                 ItemInfo iteminfo, View originalView) {
-            return new ScreenshotSystemShortcut(container, iteminfo, originalView);
+            return new ScreenshotSystemShortcut(activity, iteminfo, originalView);
         }
 
         /**
@@ -306,13 +305,13 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
         private class ScreenshotSystemShortcut extends SystemShortcut {
 
-            private final RecentsViewContainer mContainer;
+            private final BaseDraggingActivity mActivity;
 
-            ScreenshotSystemShortcut(RecentsViewContainer container, ItemInfo itemInfo,
+            ScreenshotSystemShortcut(BaseDraggingActivity activity, ItemInfo itemInfo,
                     View originalView) {
-                super(R.drawable.ic_screenshot, R.string.action_screenshot, container, itemInfo,
+                super(R.drawable.ic_screenshot, R.string.action_screenshot, activity, itemInfo,
                         originalView);
-                mContainer = container;
+                mActivity = activity;
             }
 
             @Override

@@ -29,6 +29,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.android.launcher3.BaseDraggingActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.R
@@ -39,22 +40,24 @@ import com.android.launcher3.util.Themes
 import com.android.quickstep.TaskOverlayFactory
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
 
-class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T : Context {
+class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     companion object {
         const val TAG = "TaskMenuViewWithArrow"
 
-        fun <T> showForTask(
+        fun showForTask(
             taskContainer: TaskIdAttributeContainer,
             alignedOptionIndex: Int = 0
-        ): Boolean where T : RecentsViewContainer, T : Context {
-            val container: RecentsViewContainer =
-                RecentsViewContainer.containerFromContext(taskContainer.taskView.context)
+        ): Boolean {
+            val activity =
+                BaseDraggingActivity.fromContext<BaseDraggingActivity>(
+                    taskContainer.taskView.context
+                )
             val taskMenuViewWithArrow =
-                container.layoutInflater.inflate(
+                activity.layoutInflater.inflate(
                     R.layout.task_menu_with_arrow,
-                    container.dragLayer,
+                    activity.dragLayer,
                     false
-                ) as TaskMenuViewWithArrow<T>
+                ) as TaskMenuViewWithArrow<*>
 
             return taskMenuViewWithArrow.populateAndShowForTask(taskContainer, alignedOptionIndex)
         }

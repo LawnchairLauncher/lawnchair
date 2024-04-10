@@ -45,6 +45,8 @@ import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -81,7 +83,7 @@ public final class DigitalWellBeingToast {
 
     private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
 
-    private final RecentsViewContainer mContainer;
+    private final BaseDraggingActivity mActivity;
     private final TaskView mTaskView;
     private final LauncherApps mLauncherApps;
 
@@ -100,10 +102,10 @@ public final class DigitalWellBeingToast {
     private float mSplitOffsetTranslationY;
     private float mSplitOffsetTranslationX;
 
-    public DigitalWellBeingToast(RecentsViewContainer container, TaskView taskView) {
-        mContainer = container;
+    public DigitalWellBeingToast(BaseDraggingActivity activity, TaskView taskView) {
+        mActivity = activity;
         mTaskView = taskView;
-        mLauncherApps = container.asContext().getSystemService(LauncherApps.class);
+        mLauncherApps = activity.getSystemService(LauncherApps.class);
     }
 
     private void setNoLimit() {
@@ -118,10 +120,9 @@ public final class DigitalWellBeingToast {
         mAppUsageLimitTimeMs = appUsageLimitTimeMs;
         mAppRemainingTimeMs = appRemainingTimeMs;
         mHasLimit = true;
-        TextView toast = mContainer.getViewCache().getView(R.layout.digital_wellbeing_toast,
-                mContainer.asContext(), mTaskView);
-        toast.setText(prefixTextWithIcon(mContainer.asContext(), R.drawable.ic_hourglass_top,
-                getText()));
+        TextView toast = mActivity.getViewCache().getView(R.layout.digital_wellbeing_toast,
+                mActivity, mTaskView);
+        toast.setText(prefixTextWithIcon(mActivity, R.drawable.ic_hourglass_top, getText()));
         toast.setOnClickListener(this::openAppUsageSettings);
         replaceBanner(toast);
 
@@ -169,14 +170,14 @@ public final class DigitalWellBeingToast {
     public void setSplitConfiguration(SplitBounds splitBounds) {
         mSplitBounds = splitBounds;
         if (mSplitBounds == null
-                || !mContainer.getDeviceProfile().isTablet
+                || !mActivity.getDeviceProfile().isTablet
                 || mTaskView.isFocusedTask()) {
             mSplitBannerConfig = SPLIT_BANNER_FULLSCREEN;
             return;
         }
 
         // For portrait grid only height of task changes, not width. So we keep the text the same
-        if (!mContainer.getDeviceProfile().isLeftRightSplit) {
+        if (!mActivity.getDeviceProfile().isLeftRightSplit) {
             mSplitBannerConfig = SPLIT_GRID_BANNER_LARGE;
             return;
         }
@@ -225,7 +226,7 @@ public final class DigitalWellBeingToast {
 
         // Use a specific string for usage less than one minute but non-zero.
         if (duration.compareTo(Duration.ZERO) > 0) {
-            return mContainer.asContext().getString(durationLessThanOneMinuteStringId);
+            return mActivity.getString(durationLessThanOneMinuteStringId);
         }
 
         // Otherwise, return 0-minute string.
@@ -249,7 +250,7 @@ public final class DigitalWellBeingToast {
                 R.string.shorter_duration_less_than_one_minute,
                 false /* forceFormatWidth */);
         if (forContentDesc || mSplitBannerConfig == SPLIT_BANNER_FULLSCREEN) {
-            return mContainer.asContext().getString(
+            return mActivity.getString(
                     R.string.time_left_for_app,
                     readableDuration);
         }
@@ -269,12 +270,11 @@ public final class DigitalWellBeingToast {
                         mTask.getTopComponent().getPackageName()).addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         try {
-            final RecentsViewContainer container =
-                    RecentsViewContainer.containerFromContext(view.getContext());
+            final BaseActivity activity = BaseActivity.fromContext(view.getContext());
             final ActivityOptions options = ActivityOptions.makeScaleUpAnimation(
                     view, 0, 0,
                     view.getWidth(), view.getHeight());
-            container.asContext().startActivity(intent, options.toBundle());
+            activity.startActivity(intent, options.toBundle());
 
             // TODO: add WW logging on the app usage settings click.
         } catch (ActivityNotFoundException e) {
@@ -286,7 +286,7 @@ public final class DigitalWellBeingToast {
     private String getContentDescriptionForTask(
             Task task, long appUsageLimitTimeMs, long appRemainingTimeMs) {
         return appUsageLimitTimeMs >= 0 && appRemainingTimeMs >= 0 ?
-                mContainer.asContext().getString(
+                mActivity.getString(
                         R.string.task_contents_description_with_remaining_time,
                         task.titleDescription,
                         getText(appRemainingTimeMs, true /* forContentDesc */)) :
@@ -303,7 +303,7 @@ public final class DigitalWellBeingToast {
             mBanner.setOutlineProvider(mOldBannerOutlineProvider);
             mTaskView.removeView(mBanner);
             mBanner.setOnClickListener(null);
-            mContainer.getViewCache().recycleView(R.layout.digital_wellbeing_toast, mBanner);
+            mActivity.getViewCache().recycleView(R.layout.digital_wellbeing_toast, mBanner);
         }
     }
 
@@ -318,7 +318,7 @@ public final class DigitalWellBeingToast {
     private void setupAndAddBanner() {
         FrameLayout.LayoutParams layoutParams =
                 (FrameLayout.LayoutParams) mBanner.getLayoutParams();
-        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         layoutParams.bottomMargin = ((ViewGroup.MarginLayoutParams)
                 mTaskView.getThumbnail().getLayoutParams()).bottomMargin;
         RecentsPagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();

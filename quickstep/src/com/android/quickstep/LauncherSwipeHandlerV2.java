@@ -75,7 +75,7 @@ public class LauncherSwipeHandlerV2 extends
     protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
             long duration, boolean isTargetTranslucent, boolean appCanEnterPip,
             RemoteAnimationTarget runningTaskTarget) {
-        if (mContainer == null) {
+        if (mActivity == null) {
             mStateCallback.addChangeListener(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                     isPresent -> mRecentsView.startHome());
             return new HomeAnimationFactory() {
@@ -91,9 +91,9 @@ public class LauncherSwipeHandlerV2 extends
         boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow()
                 && workspaceView.getHeight() > 0;
 
-        mContainer.getRootView().setForceHideBackArrow(true);
+        mActivity.getRootView().setForceHideBackArrow(true);
         if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-            mContainer.setHintUserWillBeActive();
+            mActivity.setHintUserWillBeActive();
         }
 
         if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
@@ -108,10 +108,10 @@ public class LauncherSwipeHandlerV2 extends
 
     private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
         RectF iconLocation = new RectF();
-        FloatingIconView floatingIconView = getFloatingIconView(mContainer, workspaceView, null,
-                mContainer.getTaskbarUIController() == null
+        FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView, null,
+                mActivity.getTaskbarUIController() == null
                         ? null
-                        : mContainer.getTaskbarUIController().findMatchingView(workspaceView),
+                        : mActivity.getTaskbarUIController().findMatchingView(workspaceView),
                 true /* hideOriginal */, iconLocation, false /* isOpening */);
 
         // We want the window alpha to be 0 once this threshold is met, so that the
@@ -171,7 +171,7 @@ public class LauncherSwipeHandlerV2 extends
         Size windowSize = new Size(crop.width(), crop.height());
         int fallbackBackgroundColor =
                 FloatingWidgetView.getDefaultBackgroundColor(mContext, runningTaskTarget);
-        FloatingWidgetView floatingWidgetView = FloatingWidgetView.getFloatingWidgetView(mContainer,
+        FloatingWidgetView floatingWidgetView = FloatingWidgetView.getFloatingWidgetView(mActivity,
                 hostView, backgroundLocation, windowSize, tvs.getCurrentCornerRadius(),
                 isTargetTranslucent, fallbackBackgroundColor);
 
@@ -248,7 +248,7 @@ public class LauncherSwipeHandlerV2 extends
             }
         }
 
-        return mContainer.getFirstMatchForAppClose(launchCookieItemId,
+        return mActivity.getFirstMatchForAppClose(launchCookieItemId,
                 runningTaskView.getTask().key.getComponent().getPackageName(),
                 UserHandle.of(runningTaskView.getTask().key.userId),
                 false /* supportsAllAppsState */);
@@ -292,18 +292,18 @@ public class LauncherSwipeHandlerV2 extends
             // Return an empty APC here since we have an non-user controlled animation
             // to home.
             long accuracy = 2 * Math.max(mDp.widthPx, mDp.heightPx);
-            return mContainer.getStateManager().createAnimationToNewWorkspace(
+            return mActivity.getStateManager().createAnimationToNewWorkspace(
                     NORMAL, accuracy, StateAnimationConfig.SKIP_ALL_ANIMATIONS);
         }
 
         @Override
         public void playAtomicAnimation(float velocity) {
             if (enableScalingRevealHomeAnimation()) {
-                if (mContainer != null) {
-                    new ScalingWorkspaceRevealAnim(mContainer).start();
+                if (mActivity != null) {
+                    new ScalingWorkspaceRevealAnim(mActivity).start();
                 }
             } else {
-                new StaggeredWorkspaceAnim(mContainer, velocity, true /* animateOverviewScrim */,
+                new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
                         getViewIgnoredInWorkspaceRevealAnimation())
                         .start();
             }

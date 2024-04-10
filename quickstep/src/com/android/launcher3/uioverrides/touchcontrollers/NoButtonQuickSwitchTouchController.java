@@ -84,6 +84,7 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.WorkspaceRevealAnim;
+import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
@@ -107,7 +108,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     private final float mMaxYProgress;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
-    private final RecentsView mRecentsView;
+    private final LauncherRecentsView mRecentsView;
     protected final AnimatorListener mClearStateOnCancelListener =
             newCancelListener(this::clearState);
 

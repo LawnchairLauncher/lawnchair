@@ -72,6 +72,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.logging.InstanceId;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.apppairs.AppPairIcon;
@@ -81,9 +82,9 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.BackPressHandler;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -99,7 +100,6 @@ import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.SplitInstructionsView;
 import com.android.systemui.animation.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.recents.model.Task;
@@ -121,7 +121,7 @@ import java.util.function.Consumer;
 public class SplitSelectStateController {
     private static final String TAG = "SplitSelectStateCtor";
 
-    private RecentsViewContainer mContainer;
+    private StatefulActivity mContext;
     private final Handler mHandler;
     private final RecentsModel mRecentTasksModel;
     @Nullable
@@ -179,7 +179,7 @@ public class SplitSelectStateController {
         public void onBackInvoked() {
             // When exiting from split selection, leave current context to go to
             // homescreen as well
-            getSplitAnimationController().playPlaceholderDismissAnim(mContainer,
+            getSplitAnimationController().playPlaceholderDismissAnim(mContext,
                     LAUNCHER_SPLIT_SELECTION_EXIT_HOME);
             if (mActivityBackCallback != null) {
                 mActivityBackCallback.run();
@@ -187,11 +187,11 @@ public class SplitSelectStateController {
         }
     };
 
-    public SplitSelectStateController(RecentsViewContainer container, Handler handler,
+    public SplitSelectStateController(StatefulActivity context, Handler handler,
             StateManager stateManager, DepthController depthController,
             StatsLogManager statsLogManager, SystemUiProxy systemUiProxy, RecentsModel recentsModel,
             Runnable activityBackCallback) {
-        mContainer = container;
+        mContext = context;
         mHandler = handler;
         mStatsLogManager = statsLogManager;
         mSystemUiProxy = systemUiProxy;
@@ -200,12 +200,12 @@ public class SplitSelectStateController {
         mRecentTasksModel = recentsModel;
         mActivityBackCallback = activityBackCallback;
         mSplitAnimationController = new SplitAnimationController(this);
-        mAppPairsController = new AppPairsController(mContainer.asContext(), this, statsLogManager);
-        mSplitSelectDataHolder = new SplitSelectDataHolder(mContainer.asContext());
+        mAppPairsController = new AppPairsController(context, this, statsLogManager);
+        mSplitSelectDataHolder = new SplitSelectDataHolder(mContext);
     }
 
     public void onDestroy() {
-        mContainer = null;
+        mContext = null;
         mActivityBackCallback = null;
         mAppPairsController.onDestroy();
         mSplitSelectDataHolder.onDestroy();
@@ -646,7 +646,7 @@ public class SplitSelectStateController {
         }
     }
 
-    public void initSplitFromDesktopController(QuickstepLauncher launcher) {
+    public void initSplitFromDesktopController(Launcher launcher) {
         initSplitFromDesktopController(new SplitFromDesktopController(launcher));
     }
 
@@ -955,7 +955,7 @@ public class SplitSelectStateController {
     public class SplitFromDesktopController {
         private static final String TAG = "SplitFromDesktopController";
 
-        private final QuickstepLauncher mLauncher;
+        private final Launcher mLauncher;
         private final OverviewComponentObserver mOverviewComponentObserver;
         private final int mSplitPlaceholderSize;
         private final int mSplitPlaceholderInset;
@@ -963,7 +963,7 @@ public class SplitSelectStateController {
         private ISplitSelectListener mSplitSelectListener;
         private Drawable mAppIcon;
 
-        public SplitFromDesktopController(QuickstepLauncher launcher) {
+        public SplitFromDesktopController(Launcher launcher) {
             mLauncher = launcher;
             RecentsAnimationDeviceState deviceState = new RecentsAnimationDeviceState(
                     launcher.getApplicationContext());

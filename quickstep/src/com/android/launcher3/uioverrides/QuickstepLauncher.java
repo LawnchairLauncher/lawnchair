@@ -181,7 +181,6 @@ import com.android.quickstep.util.unfold.ProxyUnfoldTransitionProvider;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -205,7 +204,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class QuickstepLauncher extends Launcher implements RecentsViewContainer {
+public class QuickstepLauncher extends Launcher {
     private static final boolean TRACE_LAYOUTS =
             SystemProperties.getBoolean("persist.debug.trace_layouts", false);
     private static final String TRACE_RELAYOUT_CLASS =
@@ -219,8 +218,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
     private DepthController mDepthController;
     private @Nullable DesktopVisibilityController mDesktopVisibilityController;
     private QuickstepTransitionManager mAppTransitionManager;
-
-    private OverviewActionsView<?> mActionsView;
+    private OverviewActionsView mActionsView;
     private TISBindHelper mTISBindHelper;
     private @Nullable LauncherTaskbarUIController mTaskbarUIController;
     // Will be updated when dragging from taskbar.
@@ -246,16 +244,12 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
 
     private boolean mIsPredictiveBackToHomeInProgress;
 
-    public static QuickstepLauncher getLauncher(Context context) {
-        return fromContext(context);
-    }
-
     @Override
     protected void setupViews() {
         super.setupViews();
 
         mActionsView = findViewById(R.id.overview_actions_view);
-        RecentsView<?,?> overviewPanel = getOverviewPanel();
+        RecentsView overviewPanel = getOverviewPanel();
         SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(this);
         mSplitSelectStateController =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
@@ -1061,9 +1055,8 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
                 .playPlaceholderDismissAnim(this, splitDismissEvent);
     }
 
-    @Override
-    public OverviewActionsView<?> getActionsView() {
-        return mActionsView;
+    public <T extends OverviewActionsView> T getActionsView() {
+        return (T) mActionsView;
     }
 
     @Override
@@ -1376,25 +1369,25 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
     }
 
     private static final class LauncherTaskViewController extends
-            TaskViewTouchController<QuickstepLauncher> {
+            TaskViewTouchController<Launcher> {
 
-        LauncherTaskViewController(QuickstepLauncher activity) {
+        LauncherTaskViewController(Launcher activity) {
             super(activity);
         }
 
         @Override
         protected boolean isRecentsInteractive() {
-            return mContainer.isInState(OVERVIEW) || mContainer.isInState(OVERVIEW_MODAL_TASK);
+            return mActivity.isInState(OVERVIEW) || mActivity.isInState(OVERVIEW_MODAL_TASK);
         }
 
         @Override
         protected boolean isRecentsModal() {
-            return mContainer.isInState(OVERVIEW_MODAL_TASK);
+            return mActivity.isInState(OVERVIEW_MODAL_TASK);
         }
 
         @Override
         protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
-            mContainer.getStateManager().setCurrentUserControlledAnimation(animController);
+            mActivity.getStateManager().setCurrentUserControlledAnimation(animController);
         }
     }
 

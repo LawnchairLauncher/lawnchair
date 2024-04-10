@@ -26,7 +26,6 @@ import android.view.KeyEvent;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
@@ -38,7 +37,7 @@ import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class TaplKeyboardFocusTest extends AbstractLauncherUiTest<Launcher> {
+public class TaplKeyboardFocusTest extends AbstractLauncherUiTest {
 
     @Test
     public void testAllAppsFocusApp() {

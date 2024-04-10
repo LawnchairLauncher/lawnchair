@@ -77,11 +77,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         mLiveTileRestartListener);
                 return;
             }
-            BaseContainerInterface containerInterface = mLastGestureState.getContainerInterface();
-            if (containerInterface.isInLiveTileMode()
-                    && containerInterface.getCreatedContainer() != null) {
-                RecentsView recentsView = containerInterface.getCreatedContainer()
-                        .getOverviewPanel();
+            BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
+            if (activityInterface.isInLiveTileMode()
+                    && activityInterface.getCreatedActivity() != null) {
+                RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
                 if (recentsView != null) {
                     recentsView.launchSideTaskInLiveTileModeForRestartedApp(task.taskId);
                     TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
@@ -136,10 +135,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             cleanUpRecentsAnimation(mCallbacks);
         }
 
-        final BaseContainerInterface containerInterface = gestureState.getContainerInterface();
+        final BaseActivityInterface activityInterface = gestureState.getActivityInterface();
         mLastGestureState = gestureState;
         RecentsAnimationCallbacks newCallbacks = new RecentsAnimationCallbacks(
-                SystemUiProxy.INSTANCE.get(mCtx), containerInterface.allowMinimizeSplitScreen());
+                SystemUiProxy.INSTANCE.get(mCtx), activityInterface.allowMinimizeSplitScreen());
         mCallbacks = newCallbacks;
         mCallbacks.addListener(new RecentsAnimationCallbacks.RecentsAnimationListener() {
             @Override
@@ -209,18 +208,17 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             @Override
             public void onTasksAppeared(RemoteAnimationTarget[] appearedTaskTargets) {
                 RemoteAnimationTarget appearedTaskTarget = appearedTaskTargets[0];
-                BaseContainerInterface containerInterface =
-                        mLastGestureState.getContainerInterface();
+                BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
 
                 for (RemoteAnimationTarget compat : appearedTaskTargets) {
                     if (compat.windowConfiguration.getActivityType() == ACTIVITY_TYPE_HOME
-                            && containerInterface.getCreatedContainer() instanceof RecentsActivity
+                            && activityInterface.getCreatedActivity() instanceof RecentsActivity
                             && DisplayController.getNavigationMode(mCtx) != NO_BUTTON) {
                         // The only time we get onTasksAppeared() in button navigation with a
                         // 3p launcher is if the user goes to overview first, and in this case we
                         // can immediately finish the transition
                         RecentsView recentsView =
-                                containerInterface.getCreatedContainer().getOverviewPanel();
+                                activityInterface.getCreatedActivity().getOverviewPanel();
                         if (recentsView != null) {
                             recentsView.finishRecentsAnimation(true, null);
                         }
@@ -234,12 +232,12 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 if (nonAppTargets == null) {
                     nonAppTargets = new RemoteAnimationTarget[0];
                 }
-                if ((containerInterface.isInLiveTileMode()
+                if ((activityInterface.isInLiveTileMode()
                             || mLastGestureState.getEndTarget() == RECENTS
                             || isNonRecentsStartedTasksAppeared(appearedTaskTargets))
-                        && containerInterface.getCreatedContainer() != null) {
+                        && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
-                            containerInterface.getCreatedContainer().getOverviewPanel();
+                            activityInterface.getCreatedActivity().getOverviewPanel();
                     if (recentsView != null) {
                         ActiveGestureLog.INSTANCE.addLog(
                                 new ActiveGestureLog.CompoundString("Launching side task id=")
@@ -274,13 +272,13 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
             @Override
             public boolean onSwitchToScreenshot(Runnable onFinished) {
-                if (!containerInterface.isInLiveTileMode()
-                        || containerInterface.getCreatedContainer() == null) {
+                if (!activityInterface.isInLiveTileMode()
+                        || activityInterface.getCreatedActivity() == null) {
                     // No need to switch since tile is already a screenshot.
                     onFinished.run();
                 } else {
                     final RecentsView recentsView =
-                            containerInterface.getCreatedContainer().getOverviewPanel();
+                            activityInterface.getCreatedActivity().getOverviewPanel();
                     if (recentsView != null) {
                         recentsView.switchToScreenshot(onFinished);
                     } else {
@@ -297,7 +295,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         if (ENABLE_SHELL_TRANSITIONS) {
             final ActivityOptions options = ActivityOptions.makeBasic();
             // Use regular (non-transient) launch for all apps page to control IME.
-            if (!containerInterface.allowAllAppsFromOverview()) {
+            if (!activityInterface.allowAllAppsFromOverview()) {
                 options.setTransientLaunch();
             }
             options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
@@ -334,10 +332,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         if (mLastGestureState == null) {
             return;
         }
-        BaseContainerInterface containerInterface = mLastGestureState.getContainerInterface();
-        if (containerInterface.isInLiveTileMode()
-                && containerInterface.getCreatedContainer() != null) {
-            RecentsView recentsView = containerInterface.getCreatedContainer().getOverviewPanel();
+        BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
+        if (activityInterface.isInLiveTileMode()
+                && activityInterface.getCreatedActivity() != null) {
+            RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
             if (recentsView != null) {
                 recentsView.switchToScreenshot(null,
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */,

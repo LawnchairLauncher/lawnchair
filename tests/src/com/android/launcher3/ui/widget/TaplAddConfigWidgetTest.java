@@ -52,7 +52,7 @@ import org.junit.runner.RunWith;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest<Launcher> {
+public class TaplAddConfigWidgetTest extends AbstractLauncherUiTest {
 
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();

@@ -41,10 +41,10 @@ import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 
-import kotlin.Unit;
-
 import java.util.HashMap;
 import java.util.function.Consumer;
+
+import kotlin.Unit;
 
 /**
  * TaskView that contains and shows thumbnails for not one, BUT TWO(!!) tasks
@@ -81,7 +81,7 @@ public class GroupedTaskView extends TaskView {
 
     public GroupedTaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mDigitalWellBeingToast2 = new DigitalWellBeingToast(mContainer, this);
+        mDigitalWellBeingToast2 = new DigitalWellBeingToast(mActivity, this);
     }
 
     @Override
@@ -356,7 +356,7 @@ public class GroupedTaskView extends TaskView {
         if (initSplitTaskId == INVALID_TASK_ID) {
             getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(mSnapshotView,
                     mSnapshotView2, widthSize, heightSize, mSplitBoundsConfig,
-                    mContainer.getDeviceProfile(), getLayoutDirection() == LAYOUT_DIRECTION_RTL);
+                    mActivity.getDeviceProfile(), getLayoutDirection() == LAYOUT_DIRECTION_RTL);
             // Should we be having a separate translation step apart from the measuring above?
             // The following only applies to large screen for now, but for future reference
             // we'd want to abstract this out in PagedViewHandlers to get the primary/secondary
@@ -373,7 +373,7 @@ public class GroupedTaskView extends TaskView {
             container.getThumbnailView().measure(widthMeasureSpec,
                     View.MeasureSpec.makeMeasureSpec(
                             heightSize -
-                                    mContainer.getDeviceProfile().overviewTaskThumbnailTopMarginPx,
+                                    mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx,
                             MeasureSpec.EXACTLY));
         }
         if (!enableOverviewIconMenu()) {
@@ -392,7 +392,7 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void setOrientationState(RecentsOrientedState orientationState) {
-        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         if (enableOverviewIconMenu() && mSplitBoundsConfig != null) {
             ViewGroup.LayoutParams layoutParams = getLayoutParams();
             Pair<Point, Point> groupedTaskViewSizes =
@@ -425,7 +425,7 @@ public class GroupedTaskView extends TaskView {
             return;
         }
 
-        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
 

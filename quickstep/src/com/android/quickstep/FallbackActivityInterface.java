@@ -96,13 +96,13 @@ public final class FallbackActivityInterface extends
 
     @Nullable
     @Override
-    public RecentsActivity getCreatedContainer() {
+    public RecentsActivity getCreatedActivity() {
         return RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Override
     public FallbackTaskbarUIController getTaskbarController() {
-        RecentsActivity activity = getCreatedContainer();
+        RecentsActivity activity = getCreatedActivity();
         if (activity == null) {
             return null;
         }
@@ -112,7 +112,7 @@ public final class FallbackActivityInterface extends
     @Nullable
     @Override
     public RecentsView getVisibleRecentsView() {
-        RecentsActivity activity = getCreatedContainer();
+        RecentsActivity activity = getCreatedActivity();
         if (activity != null) {
             if (activity.hasBeenResumed() || isInLiveTileMode()) {
                 return activity.getOverviewPanel();
@@ -154,7 +154,7 @@ public final class FallbackActivityInterface extends
 
     @Override
     public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
-        final StateManager<RecentsState> stateManager = getCreatedContainer().getStateManager();
+        final StateManager<RecentsState> stateManager = getCreatedActivity().getStateManager();
         if (stateManager.getState() == HOME) {
             exitRunnable.run();
             notifyRecentsOfOrientation(deviceState);
@@ -177,7 +177,7 @@ public final class FallbackActivityInterface extends
 
     @Override
     public boolean isInLiveTileMode() {
-        RecentsActivity activity = getCreatedContainer();
+        RecentsActivity activity = getCreatedActivity();
         return activity != null && activity.getStateManager().getState() == DEFAULT &&
                 activity.isStarted();
     }
@@ -185,7 +185,7 @@ public final class FallbackActivityInterface extends
     @Override
     public void onLaunchTaskFailed() {
         // TODO: probably go back to overview instead.
-        RecentsActivity activity = getCreatedContainer();
+        RecentsActivity activity = getCreatedActivity();
         if (activity == null) {
             return;
         }
@@ -209,7 +209,7 @@ public final class FallbackActivityInterface extends
 
     private void notifyRecentsOfOrientation(RotationTouchHelper rotationTouchHelper) {
         // reset layout on swipe to home
-        RecentsView recentsView = getCreatedContainer().getOverviewPanel();
+        RecentsView recentsView = getCreatedActivity().getOverviewPanel();
         recentsView.setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
                 rotationTouchHelper.getDisplayRotation());
     }

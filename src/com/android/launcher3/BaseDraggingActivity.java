@@ -111,6 +111,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return false;
     }
 
+    public abstract <T extends View> T getOverviewPanel();
+
     public abstract View getRootView();
 
     public void returnToHomescreen() {

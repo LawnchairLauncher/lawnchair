@@ -48,6 +48,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.graphics.ColorUtils;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -121,7 +122,7 @@ public class TaskThumbnailView extends View {
                 }
             };
 
-    private final RecentsViewContainer mContainer;
+    private final BaseActivity mActivity;
     @Nullable
     private TaskOverlay mOverlay;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -170,7 +171,7 @@ public class TaskThumbnailView extends View {
         mBackgroundPaint.setColor(Color.WHITE);
         mSplashBackgroundPaint.setColor(Color.WHITE);
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        mContainer = RecentsViewContainer.containerFromContext(context);
+        mActivity = BaseActivity.fromContext(context);
         // Initialize with placeholder value. It is overridden later by TaskView
         mFullscreenParams = TEMP_PARAMS.get(context);
 
@@ -307,7 +308,7 @@ public class TaskThumbnailView extends View {
         RectF boundsInBitmapSpace = new RectF();
         boundsToBitmapSpace.mapRect(boundsInBitmapSpace, viewRect);
 
-        DeviceProfile dp = mContainer.getDeviceProfile();
+        DeviceProfile dp = mActivity.getDeviceProfile();
         int bottomInset = dp.isTablet
                 ? Math.round(bitmapRect.bottom - boundsInBitmapSpace.bottom) : 0;
         return Insets.of(0, 0, 0, bottomInset);
@@ -548,7 +549,7 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailMatrix() {
-        DeviceProfile dp = mContainer.getDeviceProfile();
+        DeviceProfile dp = mActivity.getDeviceProfile();
         mPreviewPositionHelper.setOrientationChanged(false);
         if (mBitmapShader != null && mThumbnailData != null) {
             mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),

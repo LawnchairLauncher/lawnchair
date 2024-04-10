@@ -200,6 +200,11 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
+    public <T extends View> T getOverviewPanel() {
+        return null;
+    }
+
+    @Override
     public View getRootView() {
         return mDragLayer;
     }
