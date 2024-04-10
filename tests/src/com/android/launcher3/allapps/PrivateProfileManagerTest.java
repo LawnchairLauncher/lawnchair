@@ -209,7 +209,8 @@ public class PrivateProfileManagerTest {
 
         Mockito.verify(mContext).startActivity(acIntent.capture());
         assertEquals("Intent Action is different",
-                expectedIntent.toUri(0), acIntent.getValue().toUri(0));
+                expectedIntent == null ? null : expectedIntent.toUri(0),
+                acIntent.getValue() == null ? null : acIntent.getValue().toUri(0));
     }
 
     private static void awaitTasksCompleted() throws Exception {
