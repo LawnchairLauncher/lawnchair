@@ -33,6 +33,7 @@ import android.os.SystemClock;
 import android.platform.test.annotations.PlatinumTest;
 import android.util.Log;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.tapl.Folder;
 import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.HomeAllApps;
@@ -57,7 +58,7 @@ import org.junit.Test;
  *    * Can drag an icon from AllApps into the workspace
  *    * Can drag an icon on the Workspace to other positions of the Workspace.
  */
-public class TaplDragTest extends AbstractLauncherUiTest {
+public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
 
     /**
      * Adds two icons to the Workspace and combines them into a folder, then makes sure the icons

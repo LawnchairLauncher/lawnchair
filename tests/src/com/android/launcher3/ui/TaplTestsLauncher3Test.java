@@ -22,13 +22,14 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
+import com.android.launcher3.Launcher;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TaplTestsLauncher3Test extends AbstractLauncherUiTest {
+public class TaplTestsLauncher3Test extends AbstractLauncherUiTest<Launcher> {
 
     @ScreenRecord // b/322823478
     @Test

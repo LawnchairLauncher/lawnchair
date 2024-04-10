@@ -86,7 +86,7 @@ public abstract class SwipeUpAnimationLogic implements
         updateIsGestureForSplit(TopTaskTracker.INSTANCE.get(context)
                 .getRunningSplitTaskIds().length);
 
-        mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getActivityInterface());
+        mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getContainerInterface());
         mRemoteTargetHandles = mTargetGluer.getRemoteTargetHandles();
         runActionOnRemoteHandles(remoteTargetHandle ->
                 remoteTargetHandle.getTaskViewSimulator().getOrientationState().update(
@@ -97,9 +97,10 @@ public abstract class SwipeUpAnimationLogic implements
 
     protected void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
-        mTransitionDragLength = mGestureState.getActivityInterface().getSwipeUpDestinationAndLength(
-                dp, mContext, TEMP_RECT, mRemoteTargetHandles[0].getTaskViewSimulator()
-                        .getOrientationState().getOrientationHandler());
+        mTransitionDragLength = mGestureState.getContainerInterface()
+                .getSwipeUpDestinationAndLength(dp, mContext, TEMP_RECT,
+                        mRemoteTargetHandles[0].getTaskViewSimulator().getOrientationState()
+                                .getOrientationHandler());
         mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
 
         for (RemoteTargetHandle remoteHandle : mRemoteTargetHandles) {

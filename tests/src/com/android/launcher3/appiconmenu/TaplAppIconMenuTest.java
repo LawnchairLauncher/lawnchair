@@ -38,7 +38,7 @@ import org.junit.Test;
  * Tests the AppIconMenu (the menu that appears when you long press an app icon) and also make sure
  * we can launch a shortcut from it.
  */
-public class TaplAppIconMenuTest extends AbstractLauncherUiTest {
+public class TaplAppIconMenuTest extends AbstractLauncherUiTest<Launcher> {
 
     private boolean isOptionsPopupVisible(Launcher launcher) {
         final ArrowPopup<?> popup = launcher.getOptionsPopup();

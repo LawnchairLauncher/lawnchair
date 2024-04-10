@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.android.launcher3.Hotseat;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 
 /**
@@ -28,10 +28,10 @@ import com.android.systemui.unfold.updates.RotationChangeProvider;
  */
 public class UnfoldMoveFromCenterHotseatAnimator extends BaseUnfoldMoveFromCenterAnimator {
 
-    private final Launcher mLauncher;
+    private final QuickstepLauncher mLauncher;
 
-    public UnfoldMoveFromCenterHotseatAnimator(Launcher launcher, WindowManager windowManager,
-            RotationChangeProvider rotationChangeProvider) {
+    public UnfoldMoveFromCenterHotseatAnimator(QuickstepLauncher launcher,
+            WindowManager windowManager, RotationChangeProvider rotationChangeProvider) {
         super(windowManager, rotationChangeProvider);
         mLauncher = launcher;
     }
