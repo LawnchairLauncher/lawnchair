@@ -219,7 +219,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                desktopController != null && desktopController.areFreeformTasksVisible();
+                desktopController != null && desktopController.areDesktopTasksVisible();
         if (onDesktop) {
             isVisible = false;
         }
@@ -425,15 +425,15 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    protected boolean isInOverview() {
-        return mTaskbarLauncherStateController.isInOverview();
+    protected boolean isInOverviewUi() {
+        return mTaskbarLauncherStateController.isInOverviewUi();
     }
 
     @Override
     protected boolean canToggleHomeAllApps() {
         return mLauncher.isResumed()
-                && !mTaskbarLauncherStateController.isInOverview()
-                && !mLauncher.areFreeformTasksVisible();
+                && !mTaskbarLauncherStateController.isInOverviewUi()
+                && !mLauncher.areDesktopTasksVisible();
     }
 
     @Override

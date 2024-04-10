@@ -26,6 +26,7 @@ import android.graphics.Point
 import android.text.TextUtils
 import android.util.Log
 import android.util.LongSparseArray
+import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
@@ -41,7 +42,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.pm.PackageInstallInfo
 import com.android.launcher3.shortcuts.ShortcutKey
-import com.android.launcher3.uioverrides.ApiWrapper
+import com.android.launcher3.util.ApiWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.util.PackageUserKey
@@ -325,7 +326,7 @@ class WorkspaceItemProcessor(
             }
             val activityInfo = c.launcherActivityInfo
             if (activityInfo != null) {
-                if (ApiWrapper.isNonResizeableActivity(activityInfo)) {
+                if (ApiWrapper.INSTANCE.get(app.context).isNonResizeableActivity(activityInfo)) {
                     info.status = info.status or WorkspaceItemInfo.FLAG_NON_RESIZEABLE
                 }
                 info.setProgressLevel(
@@ -335,7 +336,7 @@ class WorkspaceItemProcessor(
             }
             if (
                 (c.restoreFlag != 0 ||
-                    Utilities.enableSupportForArchiving() &&
+                    Flags.enableSupportForArchiving() &&
                         activityInfo != null &&
                         activityInfo.applicationInfo.isArchived) && !TextUtils.isEmpty(targetPkg)
             ) {
@@ -347,7 +348,7 @@ class WorkspaceItemProcessor(
                             ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE.inv()
                 } else if (
                     activityInfo == null ||
-                        (Utilities.enableSupportForArchiving() &&
+                        (Flags.enableSupportForArchiving() &&
                             activityInfo.applicationInfo.isArchived)
                 ) {
                     // For archived apps, include progress info in case there is
@@ -479,7 +480,7 @@ class WorkspaceItemProcessor(
                         !isSafeMode &&
                         (si == null) &&
                         (lapi == null) &&
-                        !(Utilities.enableSupportForArchiving() &&
+                        !(Flags.enableSupportForArchiving() &&
                             pmHelper.isAppArchived(component.packageName))
                 ) {
                     // Restore never started

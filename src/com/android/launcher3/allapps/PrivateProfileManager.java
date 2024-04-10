@@ -72,7 +72,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.PrivateSpaceInstallAppButtonInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.views.ActivityContext;
@@ -122,7 +122,9 @@ public class PrivateProfileManager extends UserProfileManager {
         super(userManager, statsLogManager, userCache);
         mAllApps = allApps;
         mPrivateProfileMatcher = (user) -> userCache.getUserInfo(user).isPrivate();
-        UI_HELPER_EXECUTOR.post(this::initializeInBackgroundThread);
+
+        Context appContext = allApps.getContext().getApplicationContext();
+        UI_HELPER_EXECUTOR.post(() -> initializeInBackgroundThread(appContext));
         mPsHeaderHeight = mAllApps.getContext().getResources().getDimensionPixelSize(
                 R.dimen.ps_header_height);
     }
@@ -187,7 +189,7 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Whether private profile should be hidden on Launcher. */
     public boolean isPrivateSpaceHidden() {
         return getCurrentState() == STATE_DISABLED && SettingsCache.INSTANCE
-                    .get(mAllApps.mActivityContext).getValue(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI, 0);
+                    .get(mAllApps.getContext()).getValue(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI, 0);
     }
 
     /**
@@ -215,8 +217,8 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Opens the Private Space Settings Page. */
     public void openPrivateSpaceSettings() {
         if (mPrivateSpaceSettingsAvailable) {
-            mAllApps.getContext()
-                    .startActivity(ApiWrapper.getPrivateSpaceSettingsIntent(mAllApps.getContext()));
+            mAllApps.getContext().startActivity(
+                    ApiWrapper.INSTANCE.get(mAllApps.getContext()).getPrivateSpaceSettingsIntent());
         }
     }
 
@@ -239,33 +241,17 @@ public class PrivateProfileManager extends UserProfileManager {
      * This case should still be ok, as locking the Private Space container and unlocking it,
      * reloads the values, fixing the incorrect UI.
      */
-    private void initializeInBackgroundThread() {
+    private void initializeInBackgroundThread(Context appContext) {
         Preconditions.assertNonUiThread();
-        setPreInstalledSystemPackages();
-        setAppInstallerIntent();
-        initializePrivateSpaceSettingsState();
-    }
-
-    private void initializePrivateSpaceSettingsState() {
-        Preconditions.assertNonUiThread();
-        Intent psSettingsIntent = ApiWrapper.getPrivateSpaceSettingsIntent(mAllApps.getContext());
-        setPrivateSpaceSettingsAvailable(psSettingsIntent != null);
-    }
-
-    private void setPreInstalledSystemPackages() {
-        Preconditions.assertNonUiThread();
-        if (getProfileUser() != null) {
-            mPreInstalledSystemPackages = new HashSet<>(ApiWrapper
-                    .getPreInstalledSystemPackages(mAllApps.getContext(), getProfileUser()));
+        ApiWrapper apiWrapper = ApiWrapper.INSTANCE.get(appContext);
+        UserHandle profileUser = getProfileUser();
+        if (profileUser != null) {
+            mPreInstalledSystemPackages = new HashSet<>(
+                    apiWrapper.getPreInstalledSystemPackages(profileUser));
+            mAppInstallerIntent = apiWrapper
+                    .getAppMarketActivityIntent(BuildConfig.APPLICATION_ID, profileUser);
         }
-    }
-
-    private void setAppInstallerIntent() {
-        Preconditions.assertNonUiThread();
-        if (getProfileUser() != null) {
-            mAppInstallerIntent = ApiWrapper.getAppMarketActivityIntent(mAllApps.getContext(),
-                    BuildConfig.APPLICATION_ID, getProfileUser());
-        }
+        setPrivateSpaceSettingsAvailable(apiWrapper.getPrivateSpaceSettingsIntent() != null);
     }
 
     @VisibleForTesting

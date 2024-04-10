@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AppFilter;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.icons.IconCache;
@@ -330,7 +331,7 @@ public class AllAppsList {
                             PackageManagerHelper.getLoadingProgress(info),
                             PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                     applicationInfo.intent = launchIntent;
-                    if (Utilities.enableSupportForArchiving()) {
+                    if (Flags.enableSupportForArchiving()) {
                         // In case an app is archived, the respective item flag corresponding to
                         // archiving should also be applied during package updates
                         if (info.getActivityInfo().isArchived) {

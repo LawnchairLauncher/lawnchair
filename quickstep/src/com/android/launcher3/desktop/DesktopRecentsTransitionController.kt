@@ -56,6 +56,11 @@ class DesktopRecentsTransitionController(
         systemUiProxy.showDesktopApps(desktopTaskView.display.displayId, transition)
     }
 
+    /** Launch desktop tasks from recents view */
+    fun moveToDesktop(taskId: Int) {
+        systemUiProxy.moveToDesktop(taskId)
+    }
+
     private class RemoteDesktopLaunchTransitionRunner(
         private val desktopTaskView: DesktopTaskView,
         private val stateManager: StateManager<*>,
@@ -99,8 +104,7 @@ class DesktopRecentsTransitionController(
             finishCallback: IRemoteTransitionFinishedCallback
         ) {}
 
-        override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {
-        }
+        override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {}
     }
 
     companion object {

@@ -499,7 +499,7 @@ public class HotseatPredictionController implements DragController.DragListener,
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             pinPrediction(mItemInfo);
         }
     }

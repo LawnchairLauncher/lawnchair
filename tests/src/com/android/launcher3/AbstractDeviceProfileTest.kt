@@ -38,17 +38,18 @@ import com.android.launcher3.util.rule.setFlags
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
 import com.google.common.truth.Truth
-import org.junit.Rule
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.whenever
 import java.io.BufferedReader
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
+import org.junit.Rule
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.whenever
 
 /**
  * This is an abstract class for DeviceProfile tests that create an InvariantDeviceProfile based on
@@ -286,6 +287,9 @@ abstract class AbstractDeviceProfileTest {
             .thenReturn(
                 if (isGestureMode) NavigationMode.NO_BUTTON else NavigationMode.THREE_BUTTONS
             )
+        doReturn(WindowManagerProxy.INSTANCE[runningContext].isTaskbarDrawnInProcess)
+            .whenever(windowManagerProxy)
+            .isTaskbarDrawnInProcess()
 
         val density = densityDpi / DisplayMetrics.DENSITY_DEFAULT.toFloat()
         val config =

@@ -78,6 +78,7 @@
     <string name="launcher_restore_event_logger_class" translatable="false"></string>
     <!--  Used for determining category of a widget presented in widget recommendations. -->
     <string name="widget_recommendation_category_provider_class" translatable="false"></string>
+    <string name="api_wrapper_class" translatable="false"></string>
 
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>

@@ -985,7 +985,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         DesktopVisibilityController visibilityController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         if (visibilityController != null && mActivity.isHardwareKeyboard()
-                && mActivity.isThreeButtonNav() && visibilityController.areFreeformTasksVisible()) {
+                && mActivity.isThreeButtonNav() && visibilityController.areDesktopTasksVisible()) {
             return false;
         }
 

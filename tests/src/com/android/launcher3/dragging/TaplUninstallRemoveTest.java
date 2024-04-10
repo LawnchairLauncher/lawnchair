@@ -17,7 +17,6 @@ package com.android.launcher3.dragging;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
 import static com.android.launcher3.testing.shared.TestProtocol.UIOBJECT_STALE_ELEMENT;
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.TestConstants.AppNames.DUMMY_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
@@ -32,6 +31,7 @@ import android.graphics.Point;
 import android.platform.test.annotations.PlatinumTest;
 import android.util.Log;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.Workspace;
@@ -51,7 +51,7 @@ import java.util.Map;
  * Test runs in Out of process (Oop) and In process (Ipc)
  * Test the behaviour of uninstalling and removing apps both from AllApps, Workspace and Hotseat.
  */
-public class TaplUninstallRemoveTest extends AbstractLauncherUiTest {
+public class TaplUninstallRemoveTest extends AbstractLauncherUiTest<Launcher> {
 
     /**
      * Deletes app both built-in and user-installed from the Workspace and makes sure it's no longer

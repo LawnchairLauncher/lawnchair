@@ -35,6 +35,7 @@ import android.view.MotionEvent;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.BorderAnimator;
 import com.android.quickstep.views.TaskView;
 
@@ -47,7 +48,7 @@ import org.mockito.MockitoAnnotations;
 public class TaskViewTest {
 
     @Mock
-    private StatefulActivity mContext;
+    private QuickstepLauncher mContext;
     @Mock
     private Resources mResource;
     @Mock

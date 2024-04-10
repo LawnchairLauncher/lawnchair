@@ -67,7 +67,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -259,7 +259,8 @@ public class AddItemActivity extends BaseActivity
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Launcher.ACTIVITY_TRACKER.registerCallback(listener, "AddItemActivity.onLongClick");
-        startActivity(homeIntent, ApiWrapper.createFadeOutAnimOptions(this).toBundle());
+        startActivity(homeIntent,
+                ApiWrapper.INSTANCE.get(this).createFadeOutAnimOptions().toBundle());
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED);
         mFinishOnPause = true;
         return false;

@@ -17,7 +17,6 @@
 package com.android.launcher3.pm;
 
 import static com.android.launcher3.Utilities.ATLEAST_U;
-import static com.android.launcher3.uioverrides.ApiWrapper.queryAllUsers;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
@@ -34,6 +33,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.UserBadgeDrawable;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SafeCloseable;
@@ -119,7 +119,7 @@ public class UserCache implements SafeCloseable {
 
     @WorkerThread
     private void updateCache() {
-        mUserToSerialMap = queryAllUsers(mContext);
+        mUserToSerialMap = ApiWrapper.INSTANCE.get(mContext).queryAllUsers();
     }
 
     /**

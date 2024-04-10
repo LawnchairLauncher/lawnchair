@@ -87,7 +87,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ActivityOptionsWrapper;
@@ -119,8 +118,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import kotlin.Unit;
-
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -128,6 +125,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -335,7 +334,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mNonGridScale = 1;
     private float mDismissScale = 1;
     protected final FullscreenDrawParams mCurrentFullscreenParams;
-    protected final StatefulActivity mActivity;
+    protected final RecentsViewContainer mContainer;
 
     // Various causes of changing primary translation, which we aggregate to setTranslationX/Y().
     private float mDismissTranslationX;
@@ -417,11 +416,11 @@ public class TaskView extends FrameLayout implements Reusable {
             int defStyleRes, BorderAnimator focusBorderAnimator,
             BorderAnimator hoverBorderAnimator) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mActivity = StatefulActivity.fromContext(context);
+        mContainer = RecentsViewContainer.containerFromContext(context);
         setOnClickListener(this::onClick);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
-        mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
+        mDigitalWellBeingToast = new DigitalWellBeingToast(mContainer, this);
 
         boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
                 || Flags.enableFocusOutline();
@@ -487,7 +486,11 @@ public class TaskView extends FrameLayout implements Reusable {
         return getItemInfo(mTask);
     }
 
-    protected WorkspaceItemInfo getItemInfo(@Nullable Task task) {
+    /**
+     * Builds proto for logging
+     */
+    @VisibleForTesting
+    public WorkspaceItemInfo getItemInfo(@Nullable Task task) {
         WorkspaceItemInfo stubInfo = new WorkspaceItemInfo();
         stubInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_TASK;
         stubInfo.container = LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
@@ -613,7 +616,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float viewHalfHeight = view.getHeight() / 2f;
         tempCenterCoords[0] = viewHalfWidth;
         tempCenterCoords[1] = viewHalfHeight;
-        getDescendantCoordRelativeToAncestor(view.asView(), mActivity.getDragLayer(),
+        getDescendantCoordRelativeToAncestor(view.asView(), mContainer.getDragLayer(),
                 tempCenterCoords, false);
         transformingTouchDelegate.setBounds(
                 (int) (tempCenterCoords[0] - viewHalfWidth),
@@ -813,13 +816,19 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void onClick(View view) {
         if (getTask() == null) {
+            Log.d("b/310064698", "onClick - task is null");
             return;
         }
         if (confirmSecondSplitSelectApp()) {
+            Log.d("b/310064698", mTask + " - onClick - split select is active");
             return;
         }
-        launchTasks();
-        mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+        RunnableList callbackList = launchTasks();
+        Log.d("b/310064698", mTask + " - onClick - callbackList: " + callbackList);
+        if (callbackList != null) {
+            callbackList.add(() -> Log.d("b/310064698", mTask + " - onClick - launchCompleted"));
+        }
+        mContainer.getStatsLogManager().logger().withItemInfo(getItemInfo())
                 .log(LAUNCHER_TASK_LAUNCH_TAP);
     }
 
@@ -861,7 +870,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     "TaskView.launchTaskAnimated: startActivityFromRecentsAsync");
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
-            ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
+            ActivityOptionsWrapper opts =  mContainer.getActivityLaunchOptions(this, null);
             opts.options.setLaunchDisplayId(
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (ActivityManagerWrapper.getInstance()
@@ -919,7 +928,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 // We only listen for failures to launch in quickswitch because the during this
                 // gesture launcher is in the background state, vs other launches which are in
                 // the actual overview state
-                failureListener.register(mActivity, mTask.key.id, () -> {
+                failureListener.register(mContainer, mTask.key.id, () -> {
                     notifyTaskLaunchFailed(TAG);
                     RecentsView rv = getRecentsView();
                     if (rv != null) {
@@ -1022,7 +1031,7 @@ public class TaskView extends FrameLayout implements Reusable {
             TaskViewUtils.composeRecentsLaunchAnimator(
                     anim, this, targets.apps,
                     targets.wallpapers, targets.nonApps, true /* launcherClosing */,
-                    mActivity.getStateManager(), recentsView,
+                    recentsView.getStateManager(), recentsView,
                     recentsView.getDepthController());
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -1133,12 +1142,12 @@ public class TaskView extends FrameLayout implements Reusable {
             return true;
         }
 
-        if (!mActivity.getDeviceProfile().isTablet
+        if (!mContainer.getDeviceProfile().isTablet
                 && !getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
             return false;
         } else {
-            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+            mContainer.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
             return showTaskMenuWithContainer(iconView);
         }
@@ -1147,7 +1156,7 @@ public class TaskView extends FrameLayout implements Reusable {
     protected boolean showTaskMenuWithContainer(TaskViewIcon iconView) {
         TaskIdAttributeContainer menuContainer =
                 mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1];
-        DeviceProfile dp = mActivity.getDeviceProfile();
+        DeviceProfile dp = mContainer.getDeviceProfile();
         if (enableOverviewIconMenu() && iconView instanceof IconAppChipView) {
             ((IconAppChipView) iconView).revealAnim(/* isRevealing= */ true);
             return TaskMenuView.showForTask(menuContainer,
@@ -1201,7 +1210,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected void setThumbnailOrientation(RecentsOrientedState orientationState) {
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
         int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
 
         // TODO(b/271468547), we should default to setting trasnlations only on the snapshot instead
@@ -1218,7 +1227,7 @@ public class TaskView extends FrameLayout implements Reusable {
      * Returns whether the task is part of overview grid and not being focused.
      */
     public boolean isGridTask() {
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
         return deviceProfile.isTablet && !isFocusedTask();
     }
 
@@ -1325,7 +1334,7 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mActivity.getDeviceProfile().isTablet) {
+        if (mContainer.getDeviceProfile().isTablet) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
         } else {
@@ -1682,10 +1691,10 @@ public class TaskView extends FrameLayout implements Reusable {
         mFullscreenProgress = progress;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         mSnapshotView.getTaskOverlay().setFullscreenProgress(progress);
-
+        RecentsView recentsView = mContainer.getOverviewPanel();
         // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
         // oversized and banner would look disproportionately large.
-        if (mActivity.getStateManager().getState() != BACKGROUND_APP) {
+        if (recentsView.getStateManager().getState() != BACKGROUND_APP) {
             setIconsAndBannersTransitionProgress(progress, true);
         }
 
@@ -1719,7 +1728,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float boxTranslationY;
         int expectedWidth;
         int expectedHeight;
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
         final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
         final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
         final int taskWidth = lastComputedTaskSize.width();

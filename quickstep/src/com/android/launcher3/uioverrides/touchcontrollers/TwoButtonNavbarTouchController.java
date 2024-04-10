@@ -27,10 +27,10 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.AllAppsEduView;
@@ -51,7 +51,7 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
 
     private int mContinuousTouchCount = 0;
 
-    public TwoButtonNavbarTouchController(Launcher l) {
+    public TwoButtonNavbarTouchController(QuickstepLauncher l) {
         super(l, l.getDeviceProfile().isVerticalBarLayout()
                 ? SingleAxisSwipeDetector.HORIZONTAL : SingleAxisSwipeDetector.VERTICAL);
         mIsTransposed = l.getDeviceProfile().isVerticalBarLayout();

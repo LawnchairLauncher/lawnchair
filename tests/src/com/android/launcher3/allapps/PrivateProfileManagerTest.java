@@ -47,8 +47,8 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ActivityContextWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.UserIconInfo;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
@@ -108,7 +108,8 @@ public class PrivateProfileManagerTest {
         when(mUserCache.getUserInfo(Process.myUserHandle())).thenReturn(MAIN_ICON_INFO);
         when(mUserCache.getUserInfo(PRIVATE_HANDLE)).thenReturn(PRIVATE_ICON_INFO);
         when(mAllApps.getContext()).thenReturn(mContext);
-        when(mAllApps.getContext().getResources()).thenReturn(mResources);
+        when(mContext.getResources()).thenReturn(mResources);
+        when(mContext.getApplicationContext()).thenReturn(getApplicationContext());
         when(mAllApps.getAppsStore()).thenReturn(mAllAppsStore);
         when(mAllApps.getActiveRecyclerView()).thenReturn(mAllAppsRecyclerView);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
@@ -200,14 +201,16 @@ public class PrivateProfileManagerTest {
 
     @Test
     public void openPrivateSpaceSettings_triggersCorrectIntent() {
-        Intent expectedIntent = ApiWrapper.getPrivateSpaceSettingsIntent(mContext);
+        Intent expectedIntent = ApiWrapper.INSTANCE.get(mContext).getPrivateSpaceSettingsIntent();
         ArgumentCaptor<Intent> acIntent = ArgumentCaptor.forClass(Intent.class);
         mPrivateProfileManager.setPrivateSpaceSettingsAvailable(true);
 
         mPrivateProfileManager.openPrivateSpaceSettings();
 
         Mockito.verify(mContext).startActivity(acIntent.capture());
-        assertEquals("Intent Action is different", expectedIntent, acIntent.getValue());
+        assertEquals("Intent Action is different",
+                expectedIntent == null ? null : expectedIntent.toUri(0),
+                acIntent.getValue() == null ? null : acIntent.getValue().toUri(0));
     }
 
     private static void awaitTasksCompleted() throws Exception {

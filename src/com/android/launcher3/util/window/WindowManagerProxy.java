@@ -94,6 +94,13 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     }
 
     /**
+     * Returns true if taskbar is drawn in process
+     */
+    public boolean isTaskbarDrawnInProcess() {
+        return mTaskbarDrawnInProcess;
+    }
+
+    /**
      * Returns a map of normalized info of internal displays to estimated window bounds
      * for that display
      */

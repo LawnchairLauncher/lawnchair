@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.util;
+
+import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.app.ActivityOptions;
 import android.app.Person;
@@ -28,10 +30,12 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
 
-import com.android.launcher3.Utilities;
-import com.android.launcher3.util.UserIconInfo;
+import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
+import com.android.launcher3.BuildConfig;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,30 +43,40 @@ import java.util.Map;
 /**
  * A wrapper for the hidden API calls
  */
-public class ApiWrapper {
+public class ApiWrapper implements ResourceBasedOverride, SafeCloseable {
 
-    public static final boolean TASKBAR_DRAWN_IN_PROCESS = false;
+    public static final MainThreadInitializedObject<ApiWrapper> INSTANCE =
+            forOverride(ApiWrapper.class, R.string.api_wrapper_class);
 
-    public static Person[] getPersons(ShortcutInfo si) {
+    protected final Context mContext;
+
+    public ApiWrapper(Context context) {
+        mContext = context;
+    }
+
+    /**
+     * Returns the list of persons associated with the provided shortcut info
+     */
+    public Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;
     }
 
-    public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
+    public Map<String, LauncherActivityInfo> getActivityOverrides() {
         return Collections.emptyMap();
     }
 
     /**
      * Creates an ActivityOptions to play fade-out animation on closing targets
      */
-    public static ActivityOptions createFadeOutAnimOptions(Context context) {
-        return ActivityOptions.makeCustomAnimation(context, 0, android.R.anim.fade_out);
+    public ActivityOptions createFadeOutAnimOptions() {
+        return ActivityOptions.makeCustomAnimation(mContext, 0, android.R.anim.fade_out);
     }
 
     /**
      * Returns a map of all users on the device to their corresponding UI properties
      */
-    public static Map<UserHandle, UserIconInfo> queryAllUsers(Context context) {
-        UserManager um = context.getSystemService(UserManager.class);
+    public Map<UserHandle, UserIconInfo> queryAllUsers() {
+        UserManager um = mContext.getSystemService(UserManager.class);
         Map<UserHandle, UserIconInfo> users = new ArrayMap<>();
         List<UserHandle> usersActual = um.getUserProfiles();
         if (usersActual != null) {
@@ -72,7 +86,7 @@ public class ApiWrapper {
                 // Simple check to check if the provided user is work profile
                 // TODO: Migrate to a better platform API
                 NoopDrawable d = new NoopDrawable();
-                boolean isWork = (d != context.getPackageManager().getUserBadgedIcon(d, user));
+                boolean isWork = (d != mContext.getPackageManager().getUserBadgedIcon(d, user));
                 UserIconInfo info = new UserIconInfo(
                         user,
                         isWork ? UserIconInfo.TYPE_WORK : UserIconInfo.TYPE_MAIN,
@@ -87,16 +101,15 @@ public class ApiWrapper {
      * Returns the list of the system packages that are installed at user creation.
      * An empty list denotes that all system packages are installed for that user at creation.
      */
-    public static List<String> getPreInstalledSystemPackages(Context context, UserHandle user) {
-        return new ArrayList<>();
+    public List<String> getPreInstalledSystemPackages(UserHandle user) {
+        return Collections.emptyList();
     }
 
     /**
      * Returns an intent which can be used to start the App Market activity (Installer
      * Activity).
      */
-    public static Intent getAppMarketActivityIntent(Context context, String packageName,
-            UserHandle user) {
+    public Intent getAppMarketActivityIntent(String packageName, UserHandle user) {
         return new Intent(Intent.ACTION_VIEW)
                 .setData(new Uri.Builder()
                         .scheme("market")
@@ -104,24 +117,27 @@ public class ApiWrapper {
                         .appendQueryParameter("id", packageName)
                         .build())
                 .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
-                        .authority(context.getPackageName()).build());
+                        .authority(BuildConfig.APPLICATION_ID).build());
     }
 
     /**
      * Returns an intent which can be used to open Private Space Settings.
      */
-    public static Intent getPrivateSpaceSettingsIntent(Context context) {
+    @Nullable
+    public Intent getPrivateSpaceSettingsIntent() {
         return null;
     }
 
     /**
      * Checks if an activity is flagged as non-resizeable.
      */
-    public static boolean isNonResizeableActivity(LauncherActivityInfo lai) {
+    public boolean isNonResizeableActivity(LauncherActivityInfo lai) {
         // Overridden in quickstep
         return false;
     }
 
+    @Override
+    public void close() { }
 
     private static class NoopDrawable extends ColorDrawable {
         @Override

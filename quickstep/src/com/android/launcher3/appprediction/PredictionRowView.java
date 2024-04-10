@@ -240,7 +240,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
             icon.reset();
             if (predictionCount > i) {
                 icon.setVisibility(View.VISIBLE);
-                icon.applyFromWorkspaceItem(mPredictedApps.get(i));
+                WorkspaceItemInfo predictedItem = mPredictedApps.get(i);
+                predictedItem.rank = i;
+                predictedItem.cellX = i;
+                predictedItem.cellY = 0;
+                icon.applyFromWorkspaceItem(predictedItem);
             } else {
                 icon.setVisibility(predictionCount == 0 ? GONE : INVISIBLE);
             }

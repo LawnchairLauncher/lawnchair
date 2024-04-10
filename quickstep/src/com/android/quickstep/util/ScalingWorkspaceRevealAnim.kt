@@ -20,7 +20,6 @@ import android.view.View
 import com.android.app.animation.Interpolators
 import com.android.app.animation.Interpolators.EMPHASIZED
 import com.android.app.animation.Interpolators.LINEAR
-import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY
 import com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WORKSPACE_STATE
 import com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY
@@ -39,7 +38,7 @@ import com.android.quickstep.views.RecentsView
  * Creates an animation where the workspace and hotseat fade in while revealing from the center of
  * the screen outwards radially. This is used in conjunction with the swipe up to home animation.
  */
-class ScalingWorkspaceRevealAnim(launcher: Launcher) {
+class ScalingWorkspaceRevealAnim(launcher: QuickstepLauncher) {
     companion object {
         private const val FADE_DURATION_MS = 200L
         private const val SCALE_DURATION_MS = 1000L

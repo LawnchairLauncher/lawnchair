@@ -22,7 +22,6 @@ import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITION
 import android.content.Context;
 import android.graphics.Color;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -63,7 +62,7 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return getOverviewScaleAndOffsetForBackgroundState(launcher);
+        return getOverviewScaleAndOffsetForBackgroundState(launcher.getOverviewPanel());
     }
 
     @Override
@@ -91,8 +90,8 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        if (Launcher.getLauncher(context).areFreeformTasksVisible()) {
-            // Don't blur the background while freeform tasks are visible
+        if (Launcher.getLauncher(context).areDesktopTasksVisible()) {
+            // Don't blur the background while desktop tasks are visible
             return BaseDepthController.DEPTH_0_PERCENT;
         } else if (enableScalingRevealHomeAnimation()) {
             return BaseDepthController.DEPTH_70_PERCENT;
@@ -125,9 +124,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     public static float[] getOverviewScaleAndOffsetForBackgroundState(
-            BaseDraggingActivity activity) {
-        return new float[] {
-                ((RecentsView) activity.getOverviewPanel()).getMaxScaleForFullScreen(),
-                NO_OFFSET};
+            RecentsView recentsView) {
+        return new float[] {recentsView.getMaxScaleForFullScreen(), NO_OFFSET};
     }
 }

@@ -45,8 +45,8 @@ public class QuickSwitchState extends BackgroundAppState {
 
     @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
-        if (launcher.areFreeformTasksVisible()) {
-            // No scrim while freeform tasks are visible
+        if (launcher.areDesktopTasksVisible()) {
+            // No scrim while desktop tasks are visible
             return Color.TRANSPARENT;
         }
         DeviceProfile dp = launcher.getDeviceProfile();

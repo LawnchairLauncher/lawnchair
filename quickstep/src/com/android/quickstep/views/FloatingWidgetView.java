@@ -33,10 +33,10 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.views.ListenerView;
@@ -49,7 +49,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         OnGlobalLayoutListener, FloatingView {
     private static final Matrix sTmpMatrix = new Matrix();
 
-    private final Launcher mLauncher;
+    private final QuickstepLauncher mLauncher;
     private final ListenerView mListenerView;
     private final FloatingWidgetBackgroundView mBackgroundView;
     private final RectF mBackgroundOffset = new RectF();
@@ -80,7 +80,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
 
     public FloatingWidgetView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = QuickstepLauncher.getLauncher(context);
         mListenerView = new ListenerView(context, attrs);
         mBackgroundView = new FloatingWidgetBackgroundView(context, attrs, defStyleAttr);
         addView(mBackgroundView);
@@ -283,7 +283,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
      * @param windowSize               the size of the window when launched
      * @param windowCornerRadius       the corner radius of the window
      */
-    public static FloatingWidgetView getFloatingWidgetView(Launcher launcher,
+    public static FloatingWidgetView getFloatingWidgetView(QuickstepLauncher launcher,
             LauncherAppWidgetHostView originalView, RectF widgetBackgroundPosition,
             Size windowSize, float windowCornerRadius, boolean appTargetsAreTranslucent,
             int fallbackBackgroundColor) {

@@ -48,7 +48,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -276,7 +276,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                             // In case an app is archived, we need to make sure that archived state
                             // in WorkspaceItemInfo is refreshed.
-                            if (Utilities.enableSupportForArchiving() && !activities.isEmpty()) {
+                            if (Flags.enableSupportForArchiving() && !activities.isEmpty()) {
                                 boolean newArchivalState = activities.get(
                                         0).getActivityInfo().isArchived;
                                 if (newArchivalState != si.isArchived()) {
@@ -286,7 +286,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             }
                             if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
                                 if (activities != null && !activities.isEmpty()) {
-                                    si.status = ApiWrapper
+                                    si.status = ApiWrapper.INSTANCE.get(context)
                                             .isNonResizeableActivity(activities.get(0))
                                             ? si.status | WorkspaceItemInfo.FLAG_NON_RESIZEABLE
                                             : si.status & ~WorkspaceItemInfo.FLAG_NON_RESIZEABLE;
