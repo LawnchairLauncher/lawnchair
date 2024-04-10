@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TaplTwoPanelWorkspaceTest extends AbstractLauncherUiTest<Launcher> {
+public class TaplTwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
     private AutoCloseable mLauncherLayout;
 

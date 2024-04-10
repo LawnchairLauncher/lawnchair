@@ -52,7 +52,7 @@ import java.util.UUID;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TaplPromiseIconUiTest extends AbstractLauncherUiTest<Launcher> {
+public class TaplPromiseIconUiTest extends AbstractLauncherUiTest {
 
     @Rule
     public final CheckFlagsRule mCheckFlagsRule =

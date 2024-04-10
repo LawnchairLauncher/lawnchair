@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.HomeAllApps;
@@ -31,7 +30,7 @@ import org.junit.Test;
  * The test runs in Out of process (Oop) and in process.
  * Makes sure the basic behaviors of Icons on AllApps are working.
  */
-public class TaplAllAppsIconsWorkingTest extends AbstractLauncherUiTest<Launcher> {
+public class TaplAllAppsIconsWorkingTest extends AbstractLauncherUiTest {
 
     /**
      * Makes sure we can launch an icon from All apps

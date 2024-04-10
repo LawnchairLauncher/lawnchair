@@ -25,7 +25,6 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.model.data.WorkspaceItemInfo
-import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.views.LauncherRecentsView
 import com.android.quickstep.views.TaskView
@@ -46,7 +45,7 @@ class DesktopSystemShortcutTest {
 
     @get:Rule val setFlagsRule = SetFlagsRule(SetFlagsRule.DefaultInitValueType.DEVICE_DEFAULT)
 
-    private val launcher: QuickstepLauncher = mock()
+    private val launcher: Launcher = mock()
     private val statsLogManager: StatsLogManager = mock()
     private val statsLogger: StatsLogManager.StatsLogger = mock()
     private val recentsView: LauncherRecentsView = mock()
