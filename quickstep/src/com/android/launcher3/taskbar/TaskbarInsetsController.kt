@@ -375,7 +375,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
             if (
-                controllers.uiController.isInOverview &&
+                controllers.uiController.isInOverviewUi &&
                     DisplayController.isTransientTaskbar(context)
             ) {
                 val region =

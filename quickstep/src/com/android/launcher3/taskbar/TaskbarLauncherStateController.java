@@ -666,8 +666,8 @@ public class TaskbarLauncherStateController {
                 && !mLauncher.getWorkspace().isOverlayShown();
     }
 
-    boolean isInOverview() {
-        return mLauncherState == LauncherState.OVERVIEW;
+    boolean isInOverviewUi() {
+        return mLauncherState.overviewUi;
     }
 
     private void playStateTransitionAnim(AnimatorSet animatorSet, long duration,
