@@ -65,4 +65,9 @@ public class LogConfig {
      * When turned on, we enable AGA related session summary logging.
      */
     public static final String AGA_SESSION_SUMMARY_LOG = "AGASessionSummaryLog";
+
+    /**
+     * When turned on, we enable long press nav handle related logging.
+     */
+    public static final String NAV_HANDLE_LONG_PRESS = "NavHandleLongPress";
 }
