@@ -82,9 +82,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean isTablet = activity.getDeviceProfile().isTablet;
 
         boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
-        // Add overview actions to the menu when in in-place rotate landscape mode, or in
-        // grid-only overview.
-        if ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview) {
+        // Add overview actions to the menu when:
+        // - single task is showing
+        // - in in-place rotate landscape mode, or in grid-only overview.
+        if (!hasMultipleTasks && ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview)) {
             // Add screenshot action to task menu.
             List<SystemShortcut> screenshotShortcuts = TaskShortcutFactory.SCREENSHOT
                     .getShortcuts(activity, taskContainer);
