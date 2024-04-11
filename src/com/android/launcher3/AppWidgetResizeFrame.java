@@ -46,6 +46,7 @@ import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
@@ -474,8 +475,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mLastDirectionVector[1] = mDirectionVector[1];
         }
 
-        if (mCellLayout.createAreaForResize(cellX, cellY, spanX, spanY, mWidgetView,
-                mDirectionVector, onDismiss)) {
+        // We don't want to evaluate resize if a widget was pending config activity and was already
+        // occupying a space on the screen. This otherwise will cause reorder algorithm evaluate a
+        // different location for the widget and cause a jump.
+        if (!(mWidgetView instanceof PendingAppWidgetHostView) && mCellLayout.createAreaForResize(
+                cellX, cellY, spanX, spanY, mWidgetView, mDirectionVector, onDismiss)) {
             if (mStateAnnouncer != null && (lp.cellHSpan != spanX || lp.cellVSpan != spanY) ) {
                 mStateAnnouncer.announce(
                         mLauncher.getString(R.string.widget_resized, spanX, spanY));
