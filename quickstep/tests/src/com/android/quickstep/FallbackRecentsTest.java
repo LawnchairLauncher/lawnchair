@@ -33,8 +33,6 @@ import static com.android.launcher3.ui.TaplTestsLauncher3Test.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -203,9 +201,6 @@ public class FallbackRecentsTest {
 
         mLauncher.getLaunchedAppState().switchToOverview();
     }
-
-    // Staging; will be promoted to presubmit if stable
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
 
     //@NavigationModeSwitch
     @Test
