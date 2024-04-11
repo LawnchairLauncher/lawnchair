@@ -112,7 +112,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             @NonNull ActivityInfo activityInfo,
             int appIconSizePx,
             @NonNull SurfaceControl leash,
-            @Nullable Rect sourceRectHint,
+            @NonNull Rect sourceRectHint,
             @NonNull Rect appBounds,
             @NonNull Matrix homeToWindowPositionMap,
             @NonNull RectF startBounds,
@@ -135,22 +135,25 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         mDestinationBoundsTransformed.set(destinationBoundsTransformed);
         mSurfaceTransactionHelper = new PipSurfaceTransactionHelper(cornerRadius, shadowRadius);
 
-        if (sourceRectHint != null && (sourceRectHint.width() < destinationBounds.width()
-                || sourceRectHint.height() < destinationBounds.height())) {
+        String reasonForCreateOverlay = null; // For debugging purpose.
+        if (sourceRectHint.isEmpty()) {
+            reasonForCreateOverlay = "Source rect hint is empty";
+        } else if (sourceRectHint.width() < destinationBounds.width()
+                || sourceRectHint.height() < destinationBounds.height()) {
             // This is a situation in which the source hint rect on at least one axis is smaller
             // than the destination bounds, which presents a problem because we would have to scale
             // up that axis to fit the bounds. So instead, just fallback to the non-source hint
             // animation in this case.
-            sourceRectHint = null;
-        }
-
-        if (sourceRectHint != null && !appBounds.contains(sourceRectHint)) {
+            reasonForCreateOverlay = "Source rect hint is too small " + sourceRectHint;
+            sourceRectHint.setEmpty();
+        } else if (!appBounds.contains(sourceRectHint)) {
             // This is a situation in which the source hint rect is outside the app bounds, so it is
             // not a valid rectangle to use for cropping app surface
-            sourceRectHint = null;
+            sourceRectHint.setEmpty();
+            reasonForCreateOverlay = "Source rect hint exceeds display bounds " + sourceRectHint;
         }
 
-        if (sourceRectHint == null) {
+        if (sourceRectHint.isEmpty()) {
             mSourceRectHint.setEmpty();
             mSourceHintRectInsets = null;
 
@@ -162,6 +165,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
                     new IconProvider(context).getIcon(mActivityInfo), appIconSizePx);
             final SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
             mPipContentOverlay.attach(tx, mLeash);
+            Log.d(TAG, getContentOverlay() + " is created: " + reasonForCreateOverlay);
         } else {
             mSourceRectHint.set(sourceRectHint);
             mSourceHintRectInsets = new Rect(sourceRectHint.left - appBounds.left,
