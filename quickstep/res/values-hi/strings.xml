@@ -21,9 +21,11 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन करें"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ़्रीफ़ॉर्म"</string>
-    <string name="recents_empty_message" msgid="7040467240571714191">"हाल ही में इस्तेमाल किया गया कोई ऐप्लिकेशन नहीं है"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
+    <string name="recents_empty_message" msgid="7040467240571714191">"हाल ही का कोई आइटम नहीं है"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ऐप्लिकेशन इस्तेमाल की सेटिंग"</string>
-    <string name="recents_clear_all" msgid="5328176793634888831">"सभी ऐप्लिकेशन बंद करें"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"सभी हटाएं"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"हाल ही में इस्तेमाल किए गए ऐप्लिकेशन"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"टास्क बंद किया गया"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
@@ -110,12 +112,14 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"स्क्रीन घुमाएं"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"टास्कबार का ट्यूटोरियल"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"किसी ऐप को किनारे की ओर ड्रैग करके 2 ऐप एक साथ इस्तेमाल करें"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार दिखाने के लिए, ऊपर की ओर धीरे से स्वाइप करें"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"डिवाइस के इस्तेमाल के आधार पर ऐप्लिकेशन के सुझाव पाएं"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार देखने के लिए, ऊपर की ओर धीरे से स्वाइप करें"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"इस्तेमाल के आधार पर ऐप्लिकेशन के सुझाव पाएं"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"टास्कबार को पिन करने के लिए डिवाइडर को दबाकर रखें"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार की मदद से कई और काम करें"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार के साथ कई और काम करें"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"टास्कबार को हमेशा दिखाएं"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"टास्कबार को हमेशा अपनी स्क्रीन के नीचे दिखाने के लिए, डिवाइडर दबाकर रखें"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"स्क्रीन में दिख रहे कॉन्टेंट को खोजने के लिए, ऐक्शन बटन को दबाकर रखें"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"यह प्रॉडक्ट, कॉन्टेंट खोजने के लिए स्क्रीन पर चुनिंदा हिस्से का इस्तेमाल करता है. Google की <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>निजता नीति<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> और <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>सेवा की शर्तें<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> लागू होती हैं."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करें"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"हो गया"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>

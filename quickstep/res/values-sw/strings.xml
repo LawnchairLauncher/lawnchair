@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Bandika"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Muundo huru"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Hakuna vipengee vya hivi karibuni"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Mipangilio ya matumizi ya programu"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Ondoa zote"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Kamilisha mengi kwa kutumia Upauzana huu"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Onyesha Upauzana kila wakati"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Ili uonyeshe Upauzana kila wakati chini ya skrini yako, gusa na ushikilie kitenganishi"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Gusa na ushikilie kitufe cha vitendo ili utafute kilicho kwenye skrini yako"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Bidhaa hii hutumia sehemu uliyochagua kwenye skrini yako kutafuta. <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Sera ya Faragha<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> na <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Sheria na Masharti<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> ya Google yatatumika."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Funga"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Imemaliza"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Mwanzo"</string>

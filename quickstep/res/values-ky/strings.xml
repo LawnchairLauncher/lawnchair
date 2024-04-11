@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Кадап коюу"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Эркин форма режими"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Акыркы колдонмолор жок"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу параметрлери"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Баарын тазалоо"</string>
@@ -109,13 +111,15 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Өткрп жиберүү"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Экранды буруу"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Тапшырмалар тактасы жөнүндө маалымат"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 колдонмону бир убакта пайдалануу үчүн капталга сүйрөңүз"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 колдонмону бир убакта пайдалануу үчүн капталга сүйрөйсүз"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Тапшырмалар тактасын көрүү үчүн экранды жай өйдө сүрүңүз"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Программаңыздын негизинде сунушталган колдонмолорду алуу"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Тапшырмалар панелин кадап коюу үчүн бөлгүчтү коё бербей басып туруңуз"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапшырмалар тактасы менен көбүрөөк нерселерди аткарыңыз"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Аракеттериңизге негизделген сунуштарды алып турасыз"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Тапшырмалар тактасын кадап коюу үчүн бөлгүчтү коё бербей басып турасыз"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапшырмалар тактасы менен көбүрөөк иш бүтүрөсүз"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Тапшырмалар панелин ар дайым көрсөтүү"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Тапшырмалар панелин экрандын ылдый жагында ар дайым көрсөтүү үчүн бөлгүчтү коё бербей басыңыз"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Экрандагы нерсени издөө үчүн аракет баскычын коё бербей кармап туруңуз"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Бул кызмат издөө үчүн экранда тандалган бөлүктү колдонот. Google\'дун <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Купуялык эрежелери<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> жана <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Тейлөө шарттары<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> колдонулат."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Жабуу"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Бүттү"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Башкы бет"</string>
@@ -129,7 +133,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Тапшырмалар панели көрсөтүлдү"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Тапшырмалар панели жашырылды"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Чабыттоо тилкеси"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Тапшырмалар панелин ар дайым көрсөтүү"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Такта ар дайым көрүнсүн"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Өтүү режимин өзгөртүү"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Тапшырмалар панелин бөлгүч"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Жогорку/сол бурчка жылдыруу"</string>

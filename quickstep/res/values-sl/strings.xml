@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Pripni"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Prosta oblika"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Ni nedavnih elementov"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Nastavitve uporabe aplikacij"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Počisti vse"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Naredite več z opravilno vrstico"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Stalni prikaz opravilne vrstice"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Če želite, da je opravilna vrstica vedno prikazana na dnu zaslona, pridržite razdelilno črto."</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Za iskanje po zaslonu se dotaknite in pridržite tipko za dejanja"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Ta izdelek za iskanje uporablja izbrani del zaslona. Veljajo Googlov <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>pravilnik o zasebnosti<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> in <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>pogoji storitve<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zapri"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Končano"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Začetni zaslon"</string>
@@ -129,7 +133,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Opravilna vrstica je prikazana"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Opravilna vrstica je skrita"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Vrstica za krmarjenje"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Stalen prikaz opravilne vrstice"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Stalen prikaz oprav. vrstice"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Spreminjanje načina navigacije"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Razdelilnik opravilne vrstice"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premakni na vrh/levo"</string>

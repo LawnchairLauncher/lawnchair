@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fastgør"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Frit format"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Ingen nye elementer"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Indstillinger for appforbrug"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Ryd alt"</string>
@@ -116,6 +118,10 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Få mere fra hånden med proceslinjen"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vis altid proceslinjen"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Hvis du vil have, at proceslinjen altid vises nederst på din skærm, skal du holde fingeren på skillelinjen"</string>
+    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
+    <skip />
     <string name="taskbar_edu_close" msgid="887022990168191073">"Luk"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Luk"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Hjem"</string>

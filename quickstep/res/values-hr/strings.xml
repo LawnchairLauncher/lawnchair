@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Prikvači"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Slobodni oblik"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Nema nedavnih stavki"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Postavke upotrebe aplikacija"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Izbriši sve"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Učinite više pomoću trake sa zadacima"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Uvijek prikazuj traku sa zadacima"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Da bi se traka prikazivala, dodirnite i držite razdjelnik"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Dodirnite i zadržite tipku za radnju da biste pretražili što se nalazi na zaslonu"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Ovaj proizvod upotrebljava odabrani dio zaslona za pretraživanje. Primjenjuju se Googleova <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>pravila o privatnosti<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> i <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>uvjeti pružanja usluge<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zatvori"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gotovo"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Početna"</string>
