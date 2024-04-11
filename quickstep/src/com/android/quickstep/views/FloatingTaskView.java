@@ -299,7 +299,6 @@ public class FloatingTaskView extends FrameLayout {
 
         ValueAnimator transitionAnimator = ValueAnimator.ofFloat(0, 1);
         animation.add(transitionAnimator);
-        long animDuration = animation.getDuration();
         RectF floatingTaskViewBounds = new RectF();
 
         if (fadeWithThumbnail) {
