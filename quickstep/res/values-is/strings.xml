@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Festa"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Frjálst snið"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Engin nýleg atriði"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Notkunarstillingar forrits"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Hreinsa allt"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Nýttu forritastikuna betur"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Halda forritastikunni sýnilegri"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Haltu skjáskiptingunni neðst á skjánum inni til að halda forritastikunni sýnilegri"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Haltu aðgerðalyklinum inni til að leita að því sem er á skjánum"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Þessi vara notar valinn hluta skjásins til að leita. <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Persónuverndarstefna<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> og <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>þjónustuskilmálar<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> Google gilda."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Loka"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Lokið"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Heim"</string>

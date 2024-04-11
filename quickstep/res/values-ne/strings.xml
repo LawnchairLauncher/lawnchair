@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन गर्नुहोस्"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ्रिफर्म"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"हालसालैको कुनै पनि वस्तु छैन"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"एपको उपयोगका सेटिङहरू"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सबै मेटाउनुहोस्"</string>
@@ -114,8 +116,10 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"आफ्नो रुटिनका आधारमा एपसम्बन्धी सुझावहरू प्राप्त गर्नुहोस्"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"टास्कबार पिन गर्न डिभाइडरमा केही बेरसम्म थिच्नुहोस्"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार प्रयोग गरेर अझ धेरै कार्य गर्नुहोस्"</string>
-    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"टास्कबार सधैँ देखाइयोस्"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"टास्कबार सधैँ देखाउनुहोस्"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"आफ्नो स्क्रिनको पुछारमा टास्कबार सधैँ देखाइराख्न डिभाइडर टच एन्ड होल्ड गर्नुहोस्"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"आफ्नो स्क्रिनमा भएका कुराहरू खोज्न एक्सन कीमा टच एण्ड होल्ड गर्नुहोस्"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"यो उत्पादनले तपाईंले चयन गर्नुभएको स्क्रिनको भाग प्रयोग गरेर खोजी गर्छ। Google को <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>गोपनीयता नीति<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> र <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>सेवाका सर्तहरू<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> लागू हुन्छन्।"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बन्द गर्नुहोस्"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"सम्पन्न भयो"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>
@@ -129,12 +133,12 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"टास्कबार देखाइएको छ"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"टास्कबार लुकाइएको छ"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"नेभिगेसन बार"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"टास्कबार सधैँ देखाइयोस्"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"टास्कबार सधैँ देखाउनुहोस्"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"नेभिगेसन मोड बदल्नुहोस्"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"टास्कबार डिभाइडर"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"सिरान/बायाँतिर सार्नुहोस्"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"फेद/दायाँतिर सार्नुहोस्"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{थप # एप देखाइयोस्।}other{थप # वटा एप देखाइयोस्।}}"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{थप # एप देखाउनुहोस्।}other{थप # वटा एप देखाउनुहोस्।}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> र <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"डेस्कटपमा एप हालिँदै छ"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"रद्द गर्नुहोस्"</string>

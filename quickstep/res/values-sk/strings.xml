@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Pripnúť"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Voľný režim"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Žiadne nedávne položky"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Nastavenia využívania aplikácie"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Vymazať všetko"</string>
@@ -97,7 +99,7 @@
     <string name="action_split" msgid="2098009717623550676">"Rozdeliť"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"Uložiť pár aplikácií"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Obrazovku rozdelíte klepnutím na inú aplikáciu"</string>
-    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Na použitie rozdelenej obrazovky vyberte inú aplikáciu"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Na použitie rozdelenej obrazovky vyberte ďalšiu aplikáciu"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Zrušiť"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Ukončite výber rozdelenej obrazovky"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Na použitie rozd. obrazovky vyberte inú aplikáciu"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Panel aplikácií vám ponúka ďalšie možnosti"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vždy zobrazovať panel aplikácií"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Ak chcete, aby sa panel aplikácií vždy zobrazoval v dolnej časti obrazovky, pridržte rozdeľovač"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Ak chcete vyhľadávať, čo je na obrazovke, pridržte akčný kláves."</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Táto služba používa na účely vyhľadávania vybranú časť obrazovky. Uplatňujú sa <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>pravidlá ochrany súkromia<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> a <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>zmluvné podmienky<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> spoločnosti Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zavrieť"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hotovo"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Plocha"</string>

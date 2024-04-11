@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Ta para aplikacji nie jest obsługiwana na tym urządzeniu"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Otwórz urządzenie, aby użyć tej pary aplikacji"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"Para aplikacji jest niedostępna"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Naciśnij i przytrzymaj, aby przenieść widżet."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Naciśnij dwukrotnie i przytrzymaj, aby przenieść widżet lub użyć działań niestandardowych."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -128,7 +129,7 @@
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Wymagany jest dostęp do powiadomień"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Aby pokazywać kropki powiadomień, włącz powiadomienia aplikacji <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Zmień ustawienia"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"Pokaż kropki powiadomień"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Pokazuj kropki powiadomień"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Opcje programisty"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Dodawaj ikony aplikacji do ekranu głównego"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"W przypadku nowych aplikacji"</string>
@@ -194,7 +195,7 @@
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Zablokuj/odblokuj obszar prywatny"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zablokuj"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Przenoszenie obszaru prywatnego"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Instalowanie aplikacji"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"Instaluj aplikacje"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Zainstaluj aplikacje w przestrzeni prywatnej"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Rozwiń menu"</string>
 </resources>

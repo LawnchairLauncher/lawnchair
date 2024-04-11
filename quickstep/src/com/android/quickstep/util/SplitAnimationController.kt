@@ -24,6 +24,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.ActivityManager.RunningTaskInfo
 import android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.graphics.RectF
@@ -41,7 +42,9 @@ import androidx.annotation.VisibleForTesting
 import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Flags.enableOverviewIconMenu
+import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.QuickstepTransitionManager
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.apppairs.AppPairIcon
@@ -266,6 +269,51 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 ObjectAnimator.ofFloat(thumbnail, TaskThumbnailView.SPLIT_SELECT_TRANSLATE_X, 0f)
             )
         }
+    }
+
+    /**
+     * Creates and returns a view to fade in at .4 animation progress and adds it to the provided
+     * [pendingAnimation]. Assumes that animation will be the final split placeholder launch anim.
+     *
+     * [secondPlaceholderEndingBounds] refers to the second placeholder view that gets added on
+     * screen, not the logical second app.
+     * For landscape it's the left app and for portrait the top one.
+     */
+    fun addDividerPlaceholderViewToAnim(pendingAnimation: PendingAnimation,
+                                        container: RecentsViewContainer,
+                                        secondPlaceholderEndingBounds: Rect,
+                                        context: Context) : View {
+        val mSplitDividerPlaceholderView = View(context)
+        val recentsView = container.getOverviewPanel<RecentsView<*, *>>()
+        val dp : com.android.launcher3.DeviceProfile = container.getDeviceProfile()
+        // Add it before/under the most recently added first floating taskView
+        val firstAddedSplitViewIndex: Int = container.getDragLayer().indexOfChild(
+                recentsView.splitSelectController.firstFloatingTaskView)
+        container.getDragLayer().addView(mSplitDividerPlaceholderView, firstAddedSplitViewIndex)
+        val lp = mSplitDividerPlaceholderView.layoutParams as InsettableFrameLayout.LayoutParams
+        lp.topMargin = 0
+
+        if (dp.isLeftRightSplit) {
+            lp.height = secondPlaceholderEndingBounds.height()
+            lp.width = container.asContext().resources.
+                getDimensionPixelSize(R.dimen.split_divider_handle_region_height)
+            mSplitDividerPlaceholderView.translationX = secondPlaceholderEndingBounds.right - lp.width / 2f
+            mSplitDividerPlaceholderView.translationY = 0f
+        } else {
+            lp.height = container.asContext().resources
+                    .getDimensionPixelSize(R.dimen.split_divider_handle_region_height)
+            lp.width = secondPlaceholderEndingBounds.width()
+            mSplitDividerPlaceholderView.translationY = secondPlaceholderEndingBounds.top - lp.height / 2f
+            mSplitDividerPlaceholderView.translationX = 0f
+        }
+
+        mSplitDividerPlaceholderView.alpha = 0f
+        mSplitDividerPlaceholderView.setBackgroundColor(container.asContext().resources
+                .getColor(R.color.taskbar_background_dark))
+        val timings = AnimUtils.getDeviceSplitToConfirmTimings(dp.isTablet)
+        pendingAnimation.setViewAlpha(mSplitDividerPlaceholderView, 1f,
+                Interpolators.clampToProgress(timings.stagedRectScaleXInterpolator, 0.4f, 1f))
+        return mSplitDividerPlaceholderView
     }
 
     /** Does not play any animation if user is not currently in split selection state. */
@@ -881,11 +929,30 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             }
         }
 
+        if (splitRoot1 != null) {
+            // Set the highest level split root alpha; we could technically use the parent of
+            // either splitRoot1 or splitRoot2
+            val parentToken = splitRoot1.parent
+            var rootLayer: Change? = null
+            if (parentToken != null) {
+                rootLayer = transitionInfo.getChange(parentToken)
+            }
+            if (rootLayer != null && rootLayer.leash != null) {
+                openingTargets.add(rootLayer.leash)
+            }
+        }
+
         val animTransaction = Transaction()
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.setDuration(QuickstepTransitionManager.SPLIT_LAUNCH_DURATION.toLong())
         animator.addUpdateListener { valueAnimator: ValueAnimator ->
-            val progress = valueAnimator.animatedFraction
+            val progress =
+                    Interpolators.clampToProgress(
+                            Interpolators.LINEAR,
+                            valueAnimator.animatedFraction,
+                            0.8f,
+                            1f
+                    )
             for (leash in openingTargets) {
                 animTransaction.setAlpha(leash, progress)
             }
@@ -906,19 +973,6 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 }
             }
         )
-
-        if (splitRoot1 != null) {
-            // Set the highest level split root alpha; we could technically use the parent of
-            // either splitRoot1 or splitRoot2
-            val parentToken = splitRoot1.parent
-            var rootLayer: Change? = null
-            if (parentToken != null) {
-                rootLayer = transitionInfo.getChange(parentToken)
-            }
-            if (rootLayer != null && rootLayer.leash != null) {
-                t.setAlpha(rootLayer.leash, 1f)
-            }
-        }
 
         t.apply()
         animator.start()

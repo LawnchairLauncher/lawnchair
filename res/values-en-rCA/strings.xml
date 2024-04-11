@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"This app pair isn\'t supported on this device"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Unfold device to use this app pair"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"App pair isn\'t available"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Touch and hold to move a widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Double-tap and hold to move a widget or use custom actions."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

@@ -163,6 +163,10 @@ public class SplitToWorkspaceController {
                 new RectF(firstTaskStartingBounds), firstTaskEndingBounds,
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
 
+        View mSplitDividerPlaceholderView = recentsView.getSplitSelectController()
+                .getSplitAnimationController().addDividerPlaceholderViewToAnim(pendingAnimation,
+                        mLauncher, secondTaskEndingBounds, view.getContext());
+
         FloatingTaskView secondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mLauncher,
                 view, bitmap, icon, secondTaskStartingBounds);
         secondFloatingTaskView.setAlpha(1);
@@ -173,6 +177,11 @@ public class SplitToWorkspaceController {
             private boolean mIsCancelled = false;
 
             @Override
+            public void onAnimationStart(Animator animation) {
+                mController.launchSplitTasks(aBoolean -> cleanUp());
+            }
+
+            @Override
             public void onAnimationCancel(Animator animation) {
                 mIsCancelled = true;
                 cleanUp();
@@ -181,7 +190,6 @@ public class SplitToWorkspaceController {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (!mIsCancelled) {
-                    mController.launchSplitTasks(aBoolean -> cleanUp());
                     InteractionJankMonitorWrapper.end(Cuj.CUJ_SPLIT_SCREEN_ENTER);
                 }
             }
@@ -189,6 +197,7 @@ public class SplitToWorkspaceController {
             private void cleanUp() {
                 mLauncher.getDragLayer().removeView(firstFloatingTaskView);
                 mLauncher.getDragLayer().removeView(secondFloatingTaskView);
+                mLauncher.getDragLayer().removeView(mSplitDividerPlaceholderView);
                 mController.getSplitAnimationController().removeSplitInstructionsView(mLauncher);
                 mController.resetState();
             }

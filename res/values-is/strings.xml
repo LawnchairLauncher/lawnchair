@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Þetta forritapar er ekki stutt í þessu tæki"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Opnaðu tæki til að nota þetta forritapar"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"Forritapar er ekki í boði"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Haltu fingri á græju til að færa hana."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ýttu tvisvar og haltu fingri á græju til að færa hana eða notaðu sérsniðnar aðgerðir."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -191,10 +192,10 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Ýttu til að setja upp eða opna"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Lokað"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Stillingar einkarýmis"</string>
-    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Læsaeinkarými/taka einkarými úr lás"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Læsa leynirými/taka leynirými úr lás"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Læsa"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Einkarými að breytast"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Setja upp forrit"</string>
-    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Setja upp forrit í einkarými"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Setja upp forrit í leynirými"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Yfirflæði"</string>
 </resources>

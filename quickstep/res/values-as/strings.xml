@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"পিন"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"কোনো শেহতীয়া বস্তু নাই"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"এপে ব্যৱহাৰ কৰা ডেটাৰ ছেটিং"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"আটাইবোৰ মচক"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"টাস্কবাৰৰ জৰিয়তে অধিক কাৰ্য সম্পাদন কৰক"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"টাস্কবাৰডাল সদায় দেখুৱাওক"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"আপোনাৰ স্ক্ৰীনৰ তলত সদায় টাস্কবাৰডাল দেখুৱাবলৈ বিভাজকডাল স্পৰ্শ কৰি ধৰি ৰাখক"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"আপোনাৰ স্ক্ৰীনখনত থকা সমল সন্ধান কৰিবলৈ কাৰ্য কীটো স্পৰ্শ কৰি ধৰি ৰাখক"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"এই প্ৰ’ডাক্টটোৱে সন্ধান কৰিবলৈ আপোনাৰ স্ক্ৰীনখনৰ বাছনি কৰা অংশ ব্যৱহাৰ কৰে। Googleৰ <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>গোপনীয়তাৰ নীতি<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> আৰু <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>সেৱাৰ চৰ্তাৱলী<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> প্ৰযোজ্য।"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ কৰক"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হ’ল"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"গৃহপৃষ্ঠা"</string>

@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ಪಿನ್ ಮಾಡಿ"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ಮುಕ್ತಸ್ವರೂಪ"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"ಯಾವುದೇ ಇತ್ತೀಚಿನ ಐಟಂಗಳಿಲ್ಲ"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ಆ್ಯಪ್‌ ಬಳಕೆಯ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ಎಲ್ಲವನ್ನೂ ತೆರವುಗೊಳಿಸಿ"</string>
@@ -116,6 +118,10 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ಟಾಸ್ಕ್‌ಬಾರ್ ಮೂಲಕ ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ಯಾವಾಗಲೂ ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ತೋರಿಸಿ"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ಯಾವಾಗಲೂ ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗದಲ್ಲಿ ಟಾಸ್ಕ್ ಬಾರ್ ಅನ್ನು ತೋರಿಸಲು, ಡಿವೈಡರ್ ಅನ್ನು ಸ್ಪರ್ಶಿಸಿ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳಿ"</string>
+    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
+    <skip />
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಆಯಿತು"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>

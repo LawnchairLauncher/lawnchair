@@ -308,7 +308,8 @@ public final class WellbeingModel extends BgObjectWithLooper {
     public static final SystemShortcut.Factory<ActivityContext> SHORTCUT_FACTORY =
             (context, info, originalView) ->
                     (info.getTargetComponent() == null) ? null
-                    : INSTANCE.get(originalView.getContext()).getShortcutForApp(
-                            info.getTargetComponent().getPackageName(), info.user.getIdentifier(),
-                            originalView.getContext(), info, originalView);
+                            : INSTANCE.get(originalView.getContext()).getShortcutForApp(
+                                    info.getTargetComponent().getPackageName(), info.user.getIdentifier(),
+                                    ActivityContext.lookupContext(originalView.getContext()),
+                                    info, originalView);
 }

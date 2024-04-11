@@ -283,8 +283,7 @@ public class AllAppsTransitionController
             return;
         }
 
-        float deceleratedProgress =
-                Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(backProgress);
+        float deceleratedProgress = Interpolators.BACK_GESTURE.getInterpolation(backProgress);
         float scaleProgress = ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE
                 + (1 - ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE)
                 * (1 - deceleratedProgress);

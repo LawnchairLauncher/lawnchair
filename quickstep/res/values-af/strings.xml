@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Speld vas"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Vormvry"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"Geen onlangse items nie"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Programgebruikinstellings"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Vee alles uit"</string>
@@ -93,7 +95,7 @@
     <string name="default_device_name" msgid="6660656727127422487">"toestel"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Stelselnavigasie-instellings"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Deel"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"Skermkiekie"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"Skermskoot"</string>
     <string name="action_split" msgid="2098009717623550676">"Verdeel"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"Stoor app-paar"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Tik op ’n ander app om verdeelde skerm te gebruik"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Doen meer met die Taakbalk"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Wys altyd die Taakbalk"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Raak en hou die verdeler in om altyd die Taakbalk onderaan jou skerm te wys"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Raak en hou die aksiesleutel om te soek wat op jou skerm is"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Hierdie produk gebruik die deel van jou skerm wat gekies is om te soek. Google se <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>privaatheidsbeleid<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> en <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>diensbepalings<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> geld."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Maak toe"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Tuis"</string>

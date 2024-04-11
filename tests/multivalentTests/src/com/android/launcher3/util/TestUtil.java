@@ -46,8 +46,6 @@ import android.util.Log;
 
 import androidx.test.uiautomator.UiDevice;
 
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.FeatureFlags.BooleanFlag;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.Workspace;
 
@@ -64,7 +62,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Predicate;
 
 public class TestUtil {
     private static final String TAG = "TestUtil";
@@ -141,21 +138,6 @@ public class TestUtil {
                 new Point(dimensions.x - 1, 1),
                 new Point(dimensions.x - 1, dimensions.y - 2),
                 new Point(dimensions.x / 2, dimensions.y / 2)
-        };
-    }
-
-    /**
-     * Utility class to override a boolean flag during test. Note that the returned SafeCloseable
-     * must be closed to restore the original state
-     */
-    public static SafeCloseable overrideFlag(BooleanFlag flag, boolean value) {
-        Predicate<BooleanFlag> originalProxy = FeatureFlags.sBooleanReader;
-        Predicate<BooleanFlag> testProxy = f -> f == flag ? value : originalProxy.test(f);
-        FeatureFlags.sBooleanReader = testProxy;
-        return () -> {
-            if (FeatureFlags.sBooleanReader == testProxy) {
-                FeatureFlags.sBooleanReader = originalProxy;
-            }
         };
     }
 

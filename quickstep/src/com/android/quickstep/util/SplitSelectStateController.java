@@ -63,9 +63,9 @@ import android.util.Pair;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
-import android.window.IRemoteTransition;
 import android.window.IRemoteTransitionFinishedCallback;
 import android.window.RemoteTransition;
+import android.window.RemoteTransitionStub;
 import android.window.TransitionInfo;
 
 import androidx.annotation.Nullable;
@@ -730,7 +730,7 @@ public class SplitSelectStateController {
     /**
      * Requires Shell Transitions
      */
-    private class RemoteSplitLaunchTransitionRunner extends IRemoteTransition.Stub {
+    private class RemoteSplitLaunchTransitionRunner extends RemoteTransitionStub {
 
         private final int mInitialTaskId;
         private final int mSecondTaskId;
@@ -776,13 +776,6 @@ public class SplitSelectStateController {
                             cleanup(true /*success*/);
                         });
             });
-        }
-
-        @Override
-        public void mergeAnimation(IBinder transition, TransitionInfo info,
-                SurfaceControl.Transaction t, IBinder mergeTarget,
-                IRemoteTransitionFinishedCallback finishedCallback) {
-            // Do not report finish if we don't know how to handle this transition.
         }
 
         @Override

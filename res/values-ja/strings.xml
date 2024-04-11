@@ -33,6 +33,8 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"このデバイスは、このアプリのペア設定に対応していません"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"このアプリのペア設定を使用するには、デバイスを開いてください"</string>
+    <!-- no translation found for app_pair_not_available (3556767440808032031) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"長押ししてウィジェットを移動させます。"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ウィジェットをダブルタップして長押ししながら移動するか、カスタム操作を使用してください。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$dx%2$d"</string>
@@ -128,7 +130,7 @@
     <string name="title_missing_notification_access" msgid="7503287056163941064">"通知へのアクセス権限が必要"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"通知ドットを表示するには、「<xliff:g id="NAME">%1$s</xliff:g>」のアプリ通知を ON にしてください"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"設定を変更"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"通知ドットの表示"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"通知ドットを表示"</string>
     <string name="developer_options_title" msgid="700788437593726194">"開発者向けオプション"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ホーム画面にアプリのアイコンを追加"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"新しいアプリをダウンロードしたときに自動で追加します"</string>
