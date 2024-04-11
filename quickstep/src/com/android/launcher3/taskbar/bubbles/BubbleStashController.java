@@ -23,6 +23,7 @@ import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.view.InsetsController;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.StashedHandleViewController;
@@ -32,6 +33,7 @@ import com.android.launcher3.taskbar.TaskbarInsetsController;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.wm.shell.common.bubbles.BubbleBarLocation;
+import com.android.wm.shell.shared.animation.PhysicsAnimator;
 
 /**
  * Coordinates between controllers such as BubbleBarView and BubbleHandleViewController to
@@ -51,15 +53,6 @@ public class BubbleStashController {
      */
     private static final float STASHED_BAR_SCALE = 0.5f;
 
-    /** The duration of hiding and showing the stashed handle as part of a new bubble animation. */
-    private static final long NEW_BUBBLE_HANDLE_ANIMATION_DURATION_MS = 200;
-
-    /** The translation Y value the handle animates to when hiding it for a new bubble. */
-    private static final int NEW_BUBBLE_HIDE_HANDLE_ANIMATION_TRANSLATION_Y = -20;
-
-    /** The alpha value the handle animates to when hiding it for a new bubble. */
-    public static final float NEW_BUBBLE_HIDE_HANDLE_ANIMATION_ALPHA = 0.5f;
-
     protected final TaskbarActivityContext mActivity;
 
     // Initialized in init.
@@ -73,7 +66,6 @@ public class BubbleStashController {
     private AnimatedFloat mIconScaleForStash;
     private AnimatedFloat mIconTranslationYForStash;
     private MultiPropertyFactory.MultiProperty mBubbleStashedHandleAlpha;
-    private AnimatedFloat mBubbleStashedHandleTranslationY;
 
     private boolean mRequestedStashState;
     private boolean mRequestedExpandedState;
@@ -105,7 +97,6 @@ public class BubbleStashController {
 
         mBubbleStashedHandleAlpha = mHandleViewController.getStashedHandleAlpha().get(
                 StashedHandleViewController.ALPHA_INDEX_STASHED);
-        mBubbleStashedHandleTranslationY = mHandleViewController.getStashedHandleTranslationY();
 
         mStashedHeight = mHandleViewController.getStashedHeight();
         mUnstashedHeight = mHandleViewController.getUnstashedHeight();
@@ -379,29 +370,8 @@ public class BubbleStashController {
         return mHandleViewController.getStashedHandleCenterX();
     }
 
-    /** Returns the animation for hiding the handle before a new bubble animates in. */
-    public AnimatorSet buildHideHandleAnimationForNewBubble() {
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(
-                mBubbleStashedHandleTranslationY.animateToValue(
-                        NEW_BUBBLE_HIDE_HANDLE_ANIMATION_TRANSLATION_Y),
-                mBubbleStashedHandleAlpha.animateToValue(NEW_BUBBLE_HIDE_HANDLE_ANIMATION_ALPHA));
-        animatorSet.setDuration(NEW_BUBBLE_HANDLE_ANIMATION_DURATION_MS);
-        return animatorSet;
-    }
-
-    /** Sets the alpha value of the stashed handle. */
-    public void setStashAlpha(float alpha) {
-        mBubbleStashedHandleAlpha.setValue(alpha);
-    }
-
-    /** Returns the animation for showing the handle after a new bubble animated in. */
-    public AnimatorSet buildShowHandleAnimationForNewBubble() {
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(
-                mBubbleStashedHandleTranslationY.animateToValue(0),
-                mBubbleStashedHandleAlpha.animateToValue(1));
-        animatorSet.setDuration(NEW_BUBBLE_HANDLE_ANIMATION_DURATION_MS);
-        return animatorSet;
+    /** Returns the [PhysicsAnimator] for the stashed handle view. */
+    public PhysicsAnimator<View> getStashedHandlePhysicsAnimator() {
+        return mHandleViewController.getPhysicsAnimator();
     }
 }

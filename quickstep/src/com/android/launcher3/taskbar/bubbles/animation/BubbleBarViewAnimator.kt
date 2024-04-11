@@ -18,16 +18,12 @@ package com.android.launcher3.taskbar.bubbles.animation
 
 import android.view.View
 import android.view.View.VISIBLE
-import androidx.core.animation.AnimatorSet
-import androidx.core.animation.ObjectAnimator
-import androidx.core.animation.doOnEnd
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import com.android.launcher3.taskbar.bubbles.BubbleBarBubble
 import com.android.launcher3.taskbar.bubbles.BubbleBarView
 import com.android.launcher3.taskbar.bubbles.BubbleStashController
 import com.android.launcher3.taskbar.bubbles.BubbleView
-import com.android.systemui.util.doOnEnd
 import com.android.wm.shell.shared.animation.PhysicsAnimator
 
 /** Handles animations for bubble bar bubbles. */
@@ -43,17 +39,19 @@ constructor(
         /** The time to show the flyout. */
         const val FLYOUT_DELAY_MS: Long = 2500
         /** The translation Y the new bubble will animate to. */
-        const val BUBBLE_ANIMATION_FINAL_TRANSLATION_Y = -50f
+        const val BUBBLE_ANIMATION_BUBBLE_TRANSLATION_Y = -50f
         /** The initial translation Y value the new bubble is set to before the animation starts. */
         // TODO(liranb): get rid of this and calculate this based on the y-distance between the
         // bubble and the stash handle.
-        const val BUBBLE_ANIMATION_INITIAL_TRANSLATION_Y = 50f
+        const val BUBBLE_ANIMATION_TRANSLATION_Y_OFFSET = 50f
         /** The initial scale Y value that the new bubble is set to before the animation starts. */
         const val BUBBLE_ANIMATION_INITIAL_SCALE_Y = 0.3f
-        /** The initial alpha value that the new bubble is set to before the animation starts. */
-        const val BUBBLE_ANIMATION_INITIAL_ALPHA = 0.5f
-        /** The duration of the hide bubble animation. */
-        const val HIDE_BUBBLE_ANIMATION_DURATION_MS = 250L
+        /**
+         * The distance the stashed handle will travel as it gets hidden as part of the new bubble
+         * animation.
+         */
+        // TODO(liranb): calculate this based on the position of the views
+        const val BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y = -20f
     }
 
     /** An interface for scheduling jobs. */
@@ -91,7 +89,7 @@ constructor(
         if (animator.isRunning()) animator.cancel()
         // the animation of a new bubble is divided into 2 parts. The first part shows the bubble
         // and the second part hides it after a delay.
-        val showAnimation = buildShowAnimation(bubbleView, b.key, animator)
+        val showAnimation = buildShowAnimation(bubbleView, b.key)
         val hideAnimation = buildHideAnimation(bubbleView)
         scheduler.post(showAnimation)
         scheduler.postDelayed(FLYOUT_DELAY_MS, hideAnimation)
@@ -100,71 +98,139 @@ constructor(
     /**
      * Returns a lambda that starts the animation that shows the new bubble.
      *
-     * The animation is divided into 2 parts. First the stash handle starts animating up and fades
-     * out. When it ends the bubble starts fading in. The bubble and stashed handle are aligned to
-     * give the impression of the stash handle morphing into the bubble.
+     * Visually, the animation is divided into 2 parts. The stash handle starts animating up and
+     * fading out and then the bubble starts animating up and fading in.
+     *
+     * To make the transition from the handle to the bubble smooth, the positions and movement of
+     * the 2 views must be synchronized. To do that we use a single spring path along the Y axis,
+     * starting from the handle's position to the eventual bubble's position. The path is split into
+     * 3 parts.
+     * 1. In the first part, we only animate the handle.
+     * 1. In the second part the handle is fully hidden, and the bubble is animating in.
+     * 1. The third part is the overshoot of the spring animation, where we make the bubble fully
+     *    visible which helps avoiding further updates when we re-enter the second part.
      */
     private fun buildShowAnimation(
         bubbleView: BubbleView,
         key: String,
-        bubbleAnimator: PhysicsAnimator<BubbleView>
     ): () -> Unit = {
+        bubbleBarView.prepareForAnimatingBubbleWhileStashed(key)
         // calculate the initial translation x the bubble should have in order to align it with the
         // stash handle.
         val initialTranslationX =
             bubbleStashController.stashedHandleCenterX - bubbleView.centerXOnScreen
-        bubbleBarView.prepareForAnimatingBubbleWhileStashed(key)
-        bubbleAnimator.setDefaultSpringConfig(springConfig)
-        bubbleAnimator
-            .spring(DynamicAnimation.ALPHA, 1f)
-            .spring(DynamicAnimation.TRANSLATION_Y, BUBBLE_ANIMATION_FINAL_TRANSLATION_Y)
-            .spring(DynamicAnimation.SCALE_Y, 1f)
         // prepare the bubble for the animation
         bubbleView.alpha = 0f
         bubbleView.translationX = initialTranslationX
-        bubbleView.translationY = BUBBLE_ANIMATION_INITIAL_TRANSLATION_Y
         bubbleView.scaleY = BUBBLE_ANIMATION_INITIAL_SCALE_Y
         bubbleView.visibility = VISIBLE
-        // start the stashed handle animation. when it ends, start the bubble animation.
-        val stashedHandleAnimation = bubbleStashController.buildHideHandleAnimationForNewBubble()
-        stashedHandleAnimation.doOnEnd {
-            bubbleView.alpha = BUBBLE_ANIMATION_INITIAL_ALPHA
-            bubbleAnimator.start()
-            bubbleStashController.setStashAlpha(0f)
+
+        // this is the total distance that both the stashed handle and the bubble will be traveling
+        val totalTranslationY =
+            BUBBLE_ANIMATION_BUBBLE_TRANSLATION_Y + BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y
+        val animator = bubbleStashController.stashedHandlePhysicsAnimator
+        animator.setDefaultSpringConfig(springConfig)
+        animator.spring(DynamicAnimation.TRANSLATION_Y, totalTranslationY)
+        animator.addUpdateListener { target, values ->
+            val ty = values[DynamicAnimation.TRANSLATION_Y]?.value ?: return@addUpdateListener
+            when {
+                ty >= BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y -> {
+                    // we're in the first leg of the animation. only animate the handle. the bubble
+                    // remains hidden during this part of the animation
+
+                    // map the path [0, BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y] to [0,1]
+                    val fraction = ty / BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y
+                    target.alpha = 1 - fraction / 2
+                }
+                ty >= totalTranslationY -> {
+                    // this is the second leg of the animation. the handle should be completely
+                    // hidden and the bubble should start animating in.
+                    // it's possible that we're re-entering this leg because this is a spring
+                    // animation, so only set the alpha and scale for the bubble if we didn't
+                    // already fully animate in.
+                    target.alpha = 0f
+                    bubbleView.translationY = ty + BUBBLE_ANIMATION_TRANSLATION_Y_OFFSET
+                    if (bubbleView.alpha != 1f) {
+                        // map the path
+                        // [BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y, totalTranslationY]
+                        // to [0, 1]
+                        val fraction =
+                            (ty - BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y) /
+                                BUBBLE_ANIMATION_BUBBLE_TRANSLATION_Y
+                        bubbleView.alpha = fraction
+                        bubbleView.scaleY =
+                            BUBBLE_ANIMATION_INITIAL_SCALE_Y +
+                                (1 - BUBBLE_ANIMATION_INITIAL_SCALE_Y) * fraction
+                    }
+                }
+                else -> {
+                    // we're past the target animated value, set the alpha and scale for the bubble
+                    // so that it's fully visible and no longer changing, but keep moving it along
+                    // the animation path
+                    bubbleView.alpha = 1f
+                    bubbleView.scaleY = 1f
+                    bubbleView.translationY = ty + BUBBLE_ANIMATION_TRANSLATION_Y_OFFSET
+                }
+            }
         }
-        stashedHandleAnimation.start()
+        animator.start()
     }
 
     /**
      * Returns a lambda that starts the animation that hides the new bubble.
      *
-     * Similarly to the show animation, this is divided into 2 parts. We first animate the bubble
-     * out, and then animate the stash handle in. At the end of the animation we reset the values of
-     * the bubble.
+     * Similarly to the show animation, this is visually divided into 2 parts. We first animate the
+     * bubble out, and then animate the stash handle in. At the end of the animation we reset the
+     * values of the bubble.
+     *
+     * This is a spring animation that goes along the same path of the show animation in the
+     * opposite order, and is split into 3 parts:
+     * 1. In the first part the bubble animates out.
+     * 1. In the second part the bubble is fully hidden and the handle animates in.
+     * 1. The third part is the overshoot. The handle is made fully visible.
      */
     private fun buildHideAnimation(bubbleView: BubbleView): () -> Unit = {
-        val stashAnimation = bubbleStashController.buildShowHandleAnimationForNewBubble()
-        val alphaAnimator =
-            ObjectAnimator.ofFloat(bubbleView, View.ALPHA, BUBBLE_ANIMATION_INITIAL_ALPHA)
-        val translationYAnimator =
-            ObjectAnimator.ofFloat(
-                bubbleView,
-                View.TRANSLATION_Y,
-                BUBBLE_ANIMATION_INITIAL_TRANSLATION_Y
-            )
-        val scaleYAnimator =
-            ObjectAnimator.ofFloat(bubbleView, View.SCALE_Y, BUBBLE_ANIMATION_INITIAL_SCALE_Y)
-        val hideBubbleAnimation = AnimatorSet()
-        hideBubbleAnimation.playTogether(alphaAnimator, translationYAnimator, scaleYAnimator)
-        hideBubbleAnimation.duration = HIDE_BUBBLE_ANIMATION_DURATION_MS
-        hideBubbleAnimation.doOnEnd {
-            // the bubble is now hidden, start the stash handle animation and reset bubble
-            // properties
-            bubbleStashController.setStashAlpha(
-                BubbleStashController.NEW_BUBBLE_HIDE_HANDLE_ANIMATION_ALPHA
-            )
+        // this is the total distance that both the stashed handle and the bubble will be traveling
+        val totalTranslationY =
+            BUBBLE_ANIMATION_BUBBLE_TRANSLATION_Y + BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y
+        val animator = bubbleStashController.stashedHandlePhysicsAnimator
+        animator.setDefaultSpringConfig(springConfig)
+        animator.spring(DynamicAnimation.TRANSLATION_Y, 0f)
+        animator.addUpdateListener { target, values ->
+            val ty = values[DynamicAnimation.TRANSLATION_Y]?.value ?: return@addUpdateListener
+            when {
+                ty <= BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y -> {
+                    // this is the first leg of the animation. only animate the bubble. the handle
+                    // is hidden during this part
+                    bubbleView.translationY = ty + BUBBLE_ANIMATION_TRANSLATION_Y_OFFSET
+                    // map the path
+                    // [totalTranslationY, BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y]
+                    // to [0, 1]
+                    val fraction = (totalTranslationY - ty) / BUBBLE_ANIMATION_BUBBLE_TRANSLATION_Y
+                    bubbleView.alpha = 1 - fraction / 2
+                    bubbleView.scaleY = 1 - (1 - BUBBLE_ANIMATION_INITIAL_SCALE_Y) * fraction
+                }
+                ty <= 0 -> {
+                    // this is the second part of the animation. make the bubble invisible and
+                    // start fading in the handle, but don't update the alpha if it's already fully
+                    // visible
+                    bubbleView.alpha = 0f
+                    if (target.alpha != 1f) {
+                        // map the path [BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y, 0] to [0, 1]
+                        val fraction =
+                            (BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y - ty) /
+                                BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y
+                        target.alpha = fraction
+                    }
+                }
+                else -> {
+                    // we reached the target value. set the alpha of the handle to 1
+                    target.alpha = 1f
+                }
+            }
+        }
+        animator.addEndListener { _, _, _, _, _, _, _ ->
             bubbleView.alpha = 0f
-            stashAnimation.start()
             bubbleView.translationY = 0f
             bubbleView.scaleY = 1f
             if (bubbleStashController.isStashed) {
@@ -172,7 +238,7 @@ constructor(
             }
             bubbleBarView.onAnimatingBubbleCompleted()
         }
-        hideBubbleAnimation.start()
+        animator.start()
     }
 }
 
