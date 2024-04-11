@@ -29,10 +29,12 @@
     <string name="home_screen" msgid="5629429142036709174">"Inicio"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Pantalla dividida"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Información da aplicación para %1$s"</string>
-    <string name="save_app_pair" msgid="5647523853662686243">"Gardar parella de aplicacións"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Gardar parella de apps"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"O dispositivo non admite este emparellamento de aplicacións"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Desprega o dispositivo para usar este emparellamento de aplicacións"</string>
+    <!-- no translation found for app_pair_not_available (3556767440808032031) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Mantén premido un widget para movelo."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Toca dúas veces un widget e manteno premido para movelo ou utiliza accións personalizadas."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -194,7 +196,7 @@
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Bloquear ou desbloquear o espazo privado"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloquear"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Transición ao espazo privado"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Instalar as aplicacións"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"Instalar apps"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalar as aplicacións no espazo privado"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Menú adicional"</string>
 </resources>
