@@ -17,11 +17,11 @@ package com.android.quickstep.util;
 
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
+import com.android.quickstep.views.RecentsViewContainer;
 
 import java.util.function.Supplier;
 
@@ -31,13 +31,13 @@ import java.util.function.Supplier;
  */
 public class InputProxyHandlerFactory implements Supplier<InputConsumer> {
 
-    private final BaseActivityInterface mActivityInterface;
+    private final BaseContainerInterface mContainerInterface;
     private final GestureState mGestureState;
 
     @UiThread
-    public InputProxyHandlerFactory(BaseActivityInterface activityInterface,
+    public InputProxyHandlerFactory(BaseContainerInterface activityInterface,
             GestureState gestureState) {
-        mActivityInterface = activityInterface;
+        mContainerInterface = activityInterface;
         mGestureState = gestureState;
     }
 
@@ -46,8 +46,8 @@ public class InputProxyHandlerFactory implements Supplier<InputConsumer> {
      */
     @Override
     public InputConsumer get() {
-        StatefulActivity activity = mActivityInterface.getCreatedActivity();
-        return activity == null ? InputConsumer.NO_OP
-                : new OverviewInputConsumer(mGestureState, activity, null, true);
+        RecentsViewContainer container = mContainerInterface.getCreatedContainer();
+        return container == null ? InputConsumer.NO_OP
+                : new OverviewInputConsumer(mGestureState, container, null, true);
     }
 }

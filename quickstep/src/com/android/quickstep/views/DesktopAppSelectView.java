@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 
 /**
  * Floating view show on launcher home screen that notifies the user that an app will be launched to
@@ -47,7 +48,7 @@ public class DesktopAppSelectView extends LinearLayout {
     private static final int SHOW_CONTENT_ALPHA_DURATION = 83;
     private static final int HIDE_DURATION = 83;
 
-    private final Launcher mLauncher;
+    private final RecentsViewContainer mContainer;
 
     private View mText;
     private View mCloseButton;
@@ -71,7 +72,7 @@ public class DesktopAppSelectView extends LinearLayout {
     public DesktopAppSelectView(Context context, AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mLauncher = Launcher.getLauncher(context);
+        mContainer = RecentsViewContainer.containerFromContext(context);
     }
 
     /**
@@ -104,7 +105,7 @@ public class DesktopAppSelectView extends LinearLayout {
     }
 
     private void show() {
-        mLauncher.getDragLayer().addView(this);
+        mContainer.getDragLayer().addView(this);
 
         // Set up initial values
         getBackground().setAlpha(0);
@@ -163,7 +164,7 @@ public class DesktopAppSelectView extends LinearLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                mLauncher.getDragLayer().removeView(DesktopAppSelectView.this);
+                mContainer.getDragLayer().removeView(DesktopAppSelectView.this);
                 mHideAnimation = null;
             }
         });

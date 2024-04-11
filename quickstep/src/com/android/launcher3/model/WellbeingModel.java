@@ -44,7 +44,6 @@ import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.RemoteActionShortcut;
@@ -53,6 +52,7 @@ import com.android.launcher3.util.BgObjectWithLooper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -147,7 +147,7 @@ public final class WellbeingModel extends BgObjectWithLooper {
 
     @MainThread
     private SystemShortcut getShortcutForApp(String packageName, int userId,
-            BaseDraggingActivity activity, ItemInfo info, View originalView) {
+            Context context, ItemInfo info, View originalView) {
         Preconditions.assertUIThread();
         // Work profile apps are not recognized by digital wellbeing.
         if (userId != UserHandle.myUserId()) {
@@ -171,7 +171,7 @@ public final class WellbeingModel extends BgObjectWithLooper {
                         "getShortcutForApp [" + packageName + "]: action: '" + action.getTitle()
                                 + "'");
             }
-            return new RemoteActionShortcut(action, activity, info, originalView);
+            return new RemoteActionShortcut(action, context, info, originalView);
         }
     }
 
@@ -305,9 +305,11 @@ public final class WellbeingModel extends BgObjectWithLooper {
     /**
      * Shortcut factory for generating wellbeing action
      */
-    public static final SystemShortcut.Factory<BaseDraggingActivity> SHORTCUT_FACTORY =
-            (activity, info, originalView) -> (info.getTargetComponent() == null) ? null
-                    : INSTANCE.get(activity).getShortcutForApp(
-                            info.getTargetComponent().getPackageName(), info.user.getIdentifier(),
-                            activity, info, originalView);
+    public static final SystemShortcut.Factory<ActivityContext> SHORTCUT_FACTORY =
+            (context, info, originalView) ->
+                    (info.getTargetComponent() == null) ? null
+                            : INSTANCE.get(originalView.getContext()).getShortcutForApp(
+                                    info.getTargetComponent().getPackageName(), info.user.getIdentifier(),
+                                    ActivityContext.lookupContext(originalView.getContext()),
+                                    info, originalView);
 }

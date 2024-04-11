@@ -50,7 +50,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
-import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
@@ -118,7 +118,7 @@ public class RecentsOrientedState implements
                     | FLAG_SWIPE_UP_NOT_RUNNING;
 
     private final Context mContext;
-    private final BaseActivityInterface mActivityInterface;
+    private final BaseContainerInterface mContainerInterface;
     private final OrientationEventListener mOrientationListener;
     private final SettingsCache mSettingsCache;
     private final SettingsCache.OnChangeListener mRotationChangeListener =
@@ -138,10 +138,10 @@ public class RecentsOrientedState implements
      *                              is enabled
      * @see #setRotationWatcherEnabled(boolean)
      */
-    public RecentsOrientedState(Context context, BaseActivityInterface activityInterface,
+    public RecentsOrientedState(Context context, BaseContainerInterface containerInterface,
             IntConsumer rotationChangeListener) {
         mContext = context;
-        mActivityInterface = activityInterface;
+        mContainerInterface = containerInterface;
         mOrientationListener = new OrientationEventListener(context) {
             @Override
             public void onOrientationChanged(int degrees) {
@@ -153,7 +153,7 @@ public class RecentsOrientedState implements
             }
         };
 
-        mFlags = mActivityInterface.rotationSupportedByActivity
+        mFlags = mContainerInterface.rotationSupportedByActivity
                 ? FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY : 0;
 
         mFlags |= FLAG_SWIPE_UP_NOT_RUNNING;
@@ -161,8 +161,8 @@ public class RecentsOrientedState implements
         initFlags();
     }
 
-    public BaseActivityInterface getActivityInterface() {
-        return mActivityInterface;
+    public BaseContainerInterface getContainerInterface() {
+        return mContainerInterface;
     }
 
     /**

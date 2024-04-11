@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class LauncherIntentTest extends AbstractLauncherUiTest {
+public class LauncherIntentTest extends AbstractLauncherUiTest<Launcher> {
 
     public final Intent allAppsIntent = new Intent(Intent.ACTION_ALL_APPS);
 

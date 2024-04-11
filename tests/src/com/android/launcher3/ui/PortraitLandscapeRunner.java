@@ -3,6 +3,7 @@ package com.android.launcher3.ui;
 import android.util.Log;
 import android.view.Surface;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.rule.FailureWatcher;
 
@@ -14,11 +15,12 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class PortraitLandscapeRunner implements TestRule {
+public class PortraitLandscapeRunner<LAUNCHER_TYPE extends Launcher> implements TestRule {
     private static final String TAG = "PortraitLandscapeRunner";
-    private AbstractLauncherUiTest mTest;
+    private AbstractLauncherUiTest<LAUNCHER_TYPE> mTest;
 
     // Annotation for tests that need to be run in portrait and landscape modes.
     @Retention(RetentionPolicy.RUNTIME)
@@ -26,7 +28,7 @@ public class PortraitLandscapeRunner implements TestRule {
     public @interface PortraitLandscape {
     }
 
-    public PortraitLandscapeRunner(AbstractLauncherUiTest test) {
+    public PortraitLandscapeRunner(AbstractLauncherUiTest<LAUNCHER_TYPE> test) {
         mTest = test;
     }
 
@@ -47,7 +49,7 @@ public class PortraitLandscapeRunner implements TestRule {
 
                         mTest.mDevice.pressHome();
                         mTest.waitForLauncherCondition("Launcher activity wasn't created",
-                                launcher -> launcher != null,
+                                Objects::nonNull,
                                 TimeUnit.SECONDS.toMillis(20));
 
                         mTest.executeOnLauncher(launcher ->

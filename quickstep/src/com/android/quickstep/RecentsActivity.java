@@ -33,6 +33,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -85,6 +86,7 @@ import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 
 import java.io.FileDescriptor;
@@ -95,7 +97,8 @@ import java.util.List;
  * A recents activity that shows the recently launched tasks as swipable task cards.
  * See {@link com.android.quickstep.views.RecentsView}.
  */
-public final class RecentsActivity extends StatefulActivity<RecentsState> {
+public final class RecentsActivity extends StatefulActivity<RecentsState> implements
+        RecentsViewContainer {
     private static final String TAG = "RecentsActivity";
 
     public static final ActivityTracker<RecentsActivity> ACTIVITY_TRACKER =
@@ -109,7 +112,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private RecentsDragLayer mDragLayer;
     private ScrimView mScrimView;
     private FallbackRecentsView mFallbackRecentsView;
-    private OverviewActionsView mActionsView;
+    private OverviewActionsView<?> mActionsView;
     private TISBindHelper mTISBindHelper;
     private @Nullable FallbackTaskbarUIController mTaskbarUIController;
 
@@ -224,11 +227,12 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     @Override
-    public <T extends View> T getOverviewPanel() {
-        return (T) mFallbackRecentsView;
+    public FallbackRecentsView getOverviewPanel() {
+        return mFallbackRecentsView;
     }
 
-    public OverviewActionsView getActionsView() {
+    @Override
+    public OverviewActionsView<?> getActionsView() {
         return mActionsView;
     }
 
