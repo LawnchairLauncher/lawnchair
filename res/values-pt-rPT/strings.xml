@@ -187,7 +187,7 @@
     <string name="ps_container_title" msgid="4391796149519594205">"Privado"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Definições do espaço privado"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Bloquear/desbloquear espaço privado"</string>
-    <string name="ps_container_lock_title" msgid="2640257399982364682">"Fechadura"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloquear"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Transição do espaço privado"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Instalar apps"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instale apps no espaço privado"</string>
