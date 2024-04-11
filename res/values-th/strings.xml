@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ไม่รองรับคู่แอปนี้ในอุปกรณ์เครื่องนี้"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"กางอุปกรณ์เพื่อใช้คู่แอปนี้"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"การจับคู่อุปกรณ์ไม่พร้อมให้บริการ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"แตะค้างไว้เพื่อย้ายวิดเจ็ต"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"แตะสองครั้งค้างไว้เพื่อย้ายวิดเจ็ตหรือใช้การดำเนินการที่กำหนดเอง"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -116,7 +117,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, อย่างน้อย <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"คู่แอป: <xliff:g id="APP1">%1$s</xliff:g> และ <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"วอลเปเปอร์และรูปแบบ"</string>
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"วอลเปเปอร์และสไตล์"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"แก้ไขหน้าจอหลัก"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าจอหลัก"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ปิดใช้โดยผู้ดูแลระบบ"</string>

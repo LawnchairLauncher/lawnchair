@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ఈ పరికరంలో ఈ యాప్ పెయిర్ సపోర్ట్ చేయదు"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"ఈ యాప్ పెయిర్‌ను ఉపయోగించడానికి పరికరాన్ని అన్‌ఫోల్డ్ చేయండి"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"యాప్ పెయిర్ అందుబాటులో లేదు"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"విడ్జెట్‌ను తరలించడానికి తాకి &amp; నొక్కి ఉంచండి."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"విడ్జెట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

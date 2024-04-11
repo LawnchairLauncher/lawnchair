@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"यस डिभाइसमा यो एप पेयर प्रयोग गर्न मिल्दैन"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"यो एप पेयर प्रयोग गर्न डिभाइस अनफोल्ड गर्नुहोस्"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"एप पेयर उपलब्ध छैन"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"कुनै विजेट सार्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"कुनै विजेट सार्न वा आफ्नो रोजाइका कारबाही प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -83,25 +84,25 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मन पर्ने ट्रे अब कुनै ठाँउ छैन"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"एपको सूची"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"खोज परिणामहरू"</string>
-    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत अनुप्रयोगहरूको सूची"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कार्यसम्बन्धी अनुप्रयोगहरूको सूची"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत एपहरूको सूची"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कार्यसम्बन्धी एपहरूको सूची"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाउनुहोस्"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइन्स्टल गर्नुहोस्"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"एपसम्बन्धी जानकारी"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"निजी प्रोफाइलमा इन्स्टल गर्नुहोस्"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"स्थापना गर्नुहोस्"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"एप सिफारिस नगरियोस्"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"एप सिफारिस नगर्नुहोस्"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"सिफारिस गरिएको एप पिन गर्नुहोस्"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा एपलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
-    <string name="permlab_read_settings" msgid="5136500343007704955">"होम स्क्रिनका सेटिङ र सर्टकटहरू रिड गरियोस्"</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"होम स्क्रिनका सेटिङ र सर्टकटहरू रिड गर्नुहोस्"</string>
     <string name="permdesc_read_settings" msgid="4208061150510996676">"एपलाई होम स्क्रिनबाट सेटिङ र सर्टकटहरू रिड गर्ने अनुमति दिन्छ।"</string>
-    <string name="permlab_write_settings" msgid="4820028712156303762">"होम स्क्रिनका सेटिङ र सर्टकटहरू राइट गरियोस्"</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"होम स्क्रिनका सेटिङ र सर्टकटहरू राइट गर्नुहोस्"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"एपलाई होम स्क्रिनबाट सेटिङ र सर्टकट बदल्ने अनुमति दिन्छ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"विजेट लोड गर्न सकिएन"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"विजेटका सेटिङ"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"सेटअप पूरा गर्न ट्याप गर्नुहोस्"</string>
-    <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली एप हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो सिस्टम एप हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"नाम सम्पादन गर्नुहोस्"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} सँग सम्बन्धित # सूचना छ}other{{app_name} सँग सम्बन्धित # वटा सूचना छन्}}"</string>
@@ -130,7 +131,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"नोटिफिकेसन डट देखाउनुहोस्"</string>
     <string name="developer_options_title" msgid="700788437593726194">"विकासकर्ताका लागि उपलब्ध विकल्पहरू"</string>
-    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"एपका आइकनहरू होम स्क्रिनमा राखियोस्"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"एपका आइकनहरू होम स्क्रिनमा राख्नुहोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ एपका लागि"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>

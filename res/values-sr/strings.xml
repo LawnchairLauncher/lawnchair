@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Овај пар апликација није подржан на овом уређају"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Отворите уређај да бисте користили овај пар апликација"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"Пар апликација није доступан"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Додирните и задржите ради померања виџета."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Двапут додирните и задржите да бисте померали виџет или користите прилагођене радње."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
@@ -87,7 +88,7 @@
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Листа пословних апликација"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Уклони"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Деинсталирај"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"Инфор. о апликацији"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Подаци о апликацији"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Инсталирај на приватни"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Инсталирај"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не предлажи апликацију"</string>
