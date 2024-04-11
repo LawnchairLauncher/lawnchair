@@ -112,7 +112,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arrastra unha aplicación cara a un lado para usar dúas á vez"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Pasa o dedo amodo cara arriba para ver a barra de tarefas"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtén suxestións de aplicacións en función da túa rutina"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Mantén premida a liña divisoria para fixar a Barra de tarefas"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Mantén premida a liña divisoria para fixar a barra de tarefas"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Tira máis proveito da barra de tarefas"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Mostrar sempre a barra de tarefas"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Para fixar a barra de tarefas na parte inferior, mantén premida a liña divisoria"</string>
