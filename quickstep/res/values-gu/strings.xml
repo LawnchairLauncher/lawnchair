@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"પિન કરો"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ફ્રિફોર્મ"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"તાજેતરની કોઈ આઇટમ નથી"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ઍપ વપરાશનું સેટિંગ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"બધું સાફ કરો"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ટાસ્કબાર વડે બીજું ઘણું કરો"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ટાસ્કબાર હંમેશાં બતાવો"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ટાસ્કબાર હંમેશાં તમારી સ્ક્રીનમાં સૌથી નીચે દેખાય તે માટે વિભાજકને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"તમારી સ્ક્રીન પર જે હોય તે શોધવા માટે, ઍક્શન કી ટચ કરીને દબાવી રાખો"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"શોધવા માટે, આ પ્રોડક્ટ તમારી સ્ક્રીનના પસંદ કરેલા ભાગનો ઉપયોગ કરે છે. Googleની <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>પ્રાઇવસી પૉલિસી<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> અને <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>સેવાની શરતો<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> લાગુ થાય છે."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"બંધ કરો"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"થઈ ગયું"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"હોમ"</string>

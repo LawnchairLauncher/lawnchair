@@ -21,6 +21,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ପିନ୍‍"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ଫ୍ରିଫର୍ମ"</string>
+    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
+    <skip />
     <string name="recents_empty_message" msgid="7040467240571714191">"ବର୍ତ୍ତମାନର କୌଣସି ଆଇଟମ ନାହିଁ"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ଆପ ବ୍ୟବହାର ସେଟିଂସ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ସବୁ ଖାଲି କରନ୍ତୁ"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ଟାସ୍କବାର ମାଧ୍ୟମରେ ଆହୁରି ଅନେକ କିଛି କରନ୍ତୁ"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ସର୍ବଦା ଟାସ୍କବାର ଦେଖାନ୍ତୁ"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ଆପଣଙ୍କ ସ୍କ୍ରିନର ନିମ୍ନରେ ସର୍ବଦା ଟାସ୍କବାର ଦେଖାଇବା ପାଇଁ ଡିଭାଇଡରକୁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ"</string>
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"ଆପଣଙ୍କ ସ୍କ୍ରିନରେ କଣ ଅଛି ତାହା ସର୍ଚ୍ଚ କରିବା ପାଇଁ ଆକ୍ସନ କୀ\'କୁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"ସର୍ଚ୍ଚ କରିବା ପାଇଁ ଏହି ପ୍ରଡକ୍ଟ ଆପଣଙ୍କ ସ୍କ୍ରିନର ଚୟନିତ ଅଂଶକୁ ବ୍ୟବହାର କରେ। Googleର <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>ଗୋପନୀୟତା ନୀତି<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> ଏବଂ <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>ସେବାର ସର୍ତ୍ତାବଳୀ<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> ଲାଗୁ ହୁଏ।"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ହୋଇଗଲା"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ହୋମ"</string>
