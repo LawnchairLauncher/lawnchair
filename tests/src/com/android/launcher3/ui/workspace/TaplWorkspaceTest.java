@@ -37,7 +37,7 @@ import org.junit.Test;
 /**
  * Test the basic interactions of the Workspace, adding pages, moving the pages and removing pages.
  */
-public class TaplWorkspaceTest extends AbstractLauncherUiTest {
+public class TaplWorkspaceTest extends AbstractLauncherUiTest<Launcher> {
 
     private AutoCloseable mLauncherLayout;
 
