@@ -189,7 +189,7 @@
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"သီးသန့်ချတ်ခန်း လော့ခ်ချ/ဖွင့်ရန်"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"လော့ခ်ချခြင်း"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"သီးသန့်ချတ်ခန်း အပြောင်းအလဲ"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"အက်ပ်များ ထည့်သွင်းခြင်း"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"အက်ပ်ထည့်ခြင်း"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"‘သီးသန့်နေရာ’ တွင် အက်ပ်များ ထည့်သွင်းနိုင်သည်"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"မီနူးအပို"</string>
 </resources>

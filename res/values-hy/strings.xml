@@ -184,9 +184,9 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Չհաջողվեց կատարել գործողությունը (<xliff:g id="WHAT">%1$s</xliff:g>)"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Անձնական տարածք"</string>
     <string name="private_space_secondary_label" msgid="611902414159280263">"Անձնական հավելվածները պահեք կողպված և թաքցված"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Անձնական"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Մասնավոր"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Անձնական տարածքի կարգավորումներ"</string>
-    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Կողպել/ապակողպել անձնական տարածքը"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Կողպել/ապակողպել մասնավոր տարածքը"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Կողպում"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Անցում մասնավոր տարածք"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Հավելվածների տեղադրում"</string>

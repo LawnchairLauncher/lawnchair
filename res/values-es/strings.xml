@@ -189,7 +189,7 @@
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Bloquear/Desbloquear espacio privado"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloquear"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Cambiar a espacio privado"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Descargar aplicaciones"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"Descarg. apps"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Descargar aplicaciones en el espacio privado"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Desplegable"</string>
 </resources>
