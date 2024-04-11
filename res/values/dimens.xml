@@ -398,7 +398,7 @@
     <dimen name="transient_taskbar_clamped_offset_bound">0dp</dimen>
     <dimen name="taskbar_icon_spacing">0dp</dimen>
     <dimen name="taskbar_nav_buttons_size">0dp</dimen>
-    <dimen name="taskbar_contextual_button_margin">0dp</dimen>
+    <dimen name="taskbar_contextual_button_suw_margin">0dp</dimen>
     <dimen name="taskbar_hotseat_nav_spacing">0dp</dimen>
     <dimen name="taskbar_button_margin_default">0dp</dimen>
     <dimen name="taskbar_button_space_inbetween">0dp</dimen>
