@@ -32,7 +32,7 @@ import com.android.launcher3.icons.FastBitmapDrawable;
  * A composed Drawable consisting of the two app pair icons and the background behind them (looks
  * like two rectangles).
  */
-class AppPairIconDrawable extends Drawable {
+public class AppPairIconDrawable extends Drawable {
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final AppPairIconDrawingParams mP;
     private final FastBitmapDrawable mIcon1;
@@ -102,6 +102,7 @@ class AppPairIconDrawable extends Drawable {
         }
 
         mIcon2.draw(canvas);
+        canvas.restore();
     }
 
     /**
@@ -204,5 +205,15 @@ class AppPairIconDrawable extends Drawable {
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
         mBackgroundPaint.setColorFilter(colorFilter);
+    }
+
+    @Override
+    public int getIntrinsicWidth() {
+        return mP.getIconSize();
+    }
+
+    @Override
+    public int getIntrinsicHeight() {
+        return mP.getIconSize();
     }
 }

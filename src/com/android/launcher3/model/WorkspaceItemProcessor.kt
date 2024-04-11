@@ -376,7 +376,7 @@ class WorkspaceItemProcessor(
             val folderInfo: FolderInfo = collection
             val newAppPair = AppPairInfo()
             // Move the placeholder's contents over to the new app pair.
-            folderInfo.contents.forEach(newAppPair::add)
+            folderInfo.getContents().forEach(newAppPair::add)
             collection = newAppPair
             // Remove the placeholder and add the app pair into the data model.
             bgDataModel.collections.remove(c.id)

@@ -81,7 +81,6 @@ import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
@@ -494,9 +493,7 @@ public class LoaderTask implements Runnable {
             }
 
             appPair.getContents().sort(Folder.ITEM_POS_COMPARATOR);
-            // Fetch hi-res icons if needed.
-            appPair.getContents().stream().filter(ItemInfoWithIcon::usingLowResIcon)
-                    .forEach(member -> mIconCache.getTitleAndIcon(member, false));
+            appPair.fetchHiResIconsIfNeeded(mIconCache);
         }
     }
 
@@ -566,12 +563,16 @@ public class LoaderTask implements Runnable {
             // Ranks are the source of truth for folder items, so cellX and cellY can be
             // ignored for now. Database will be updated once user manually modifies folder.
             for (int rank = 0; rank < size; ++rank) {
-                WorkspaceItemInfo info = folder.getContents().get(rank);
+                ItemInfo info = folder.getContents().get(rank);
                 info.rank = rank;
 
-                if (info.usingLowResIcon() && info.itemType == Favorites.ITEM_TYPE_APPLICATION
+                if (info instanceof WorkspaceItemInfo wii
+                        && wii.usingLowResIcon()
+                        && wii.itemType == Favorites.ITEM_TYPE_APPLICATION
                         && verifiers.stream().anyMatch(it -> it.isItemInPreview(info.rank))) {
-                    mIconCache.getTitleAndIcon(info, false);
+                    mIconCache.getTitleAndIcon(wii, false);
+                } else if (info instanceof AppPairInfo api) {
+                    api.fetchHiResIconsIfNeeded(mIconCache);
                 }
             }
         }
@@ -788,7 +789,7 @@ public class LoaderTask implements Runnable {
                 FolderNameInfos suggestionInfos = new FolderNameInfos();
                 CollectionInfo info = mBgDataModel.collections.valueAt(i);
                 if (info instanceof FolderInfo fi && fi.suggestedFolderNames == null) {
-                    provider.getSuggestedFolderName(mApp.getContext(), fi.getContents(),
+                    provider.getSuggestedFolderName(mApp.getContext(), fi.getAppContents(),
                             suggestionInfos);
                     fi.suggestedFolderNames = suggestionInfos;
                 }

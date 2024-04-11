@@ -115,7 +115,7 @@ public class FirstScreenBroadcast {
         for (ItemInfo info : firstScreenItems) {
             if (info instanceof CollectionInfo ci) {
                 String collectionItemInfoPackage;
-                for (ItemInfo collectionItemInfo : cloneOnMainThread(ci.getContents())) {
+                for (ItemInfo collectionItemInfo : cloneOnMainThread(ci.getAppContents())) {
                     collectionItemInfoPackage = getPackageName(collectionItemInfo);
                     if (collectionItemInfoPackage != null
                             && packages.contains(collectionItemInfoPackage)) {
