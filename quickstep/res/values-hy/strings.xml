@@ -97,10 +97,10 @@
     <string name="action_split" msgid="2098009717623550676">"Տրոհել"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"Պահել հավելվ․ զույգը"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Հպեք այլ հավելվածի՝ տրոհված էկրանից օգտվելու համար"</string>
-    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Ընտրեք այլ հավելված՝ կիսված էկրանից օգտվելու համար"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Ընտրեք այլ հավելված՝ տրոհված էկրանից օգտվելու համար"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Չեղարկել"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Դուրս գալ տրոհված էկրանի ռեժիմից"</string>
-    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Ընտրեք այլ հավելված՝ կիսված էկրանից օգտվելու համար"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Ընտրեք այլ հավելված՝ տրոհված էկրանից օգտվելու համար"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Այս գործողությունն արգելված է հավելվածի կամ ձեր կազմակերպության կողմից"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"Վիջեթները ներկայումս չեն աջակցվում. ընտրեք այլ հավելված"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Բաց թողնե՞լ նավիգացիայի ուղեցույցը"</string>
