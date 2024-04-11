@@ -19,39 +19,40 @@ import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_O
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 
 import androidx.dynamicanimation.animation.DynamicAnimation;
 
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
-import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.RecentsViewContainer;
 
-public class RecentsAtomicAnimationFactory<ACTIVITY_TYPE extends StatefulActivity, STATE_TYPE>
-        extends AtomicAnimationFactory<STATE_TYPE> {
+public class RecentsAtomicAnimationFactory<CONTAINER extends Context & RecentsViewContainer,
+        STATE_TYPE> extends AtomicAnimationFactory<STATE_TYPE> {
 
     public static final int INDEX_RECENTS_FADE_ANIM = AtomicAnimationFactory.NEXT_INDEX + 0;
     public static final int INDEX_RECENTS_TRANSLATE_X_ANIM = AtomicAnimationFactory.NEXT_INDEX + 1;
 
     private static final int MY_ANIM_COUNT = 2;
 
-    protected final ACTIVITY_TYPE mActivity;
+    protected final CONTAINER mContainer;
 
-    public RecentsAtomicAnimationFactory(ACTIVITY_TYPE activity) {
+    public RecentsAtomicAnimationFactory(CONTAINER container) {
         super(MY_ANIM_COUNT);
-        mActivity = activity;
+        mContainer = container;
     }
 
     @Override
     public Animator createStateElementAnimation(int index, float... values) {
         switch (index) {
             case INDEX_RECENTS_FADE_ANIM:
-                ObjectAnimator alpha = ObjectAnimator.ofFloat(mActivity.getOverviewPanel(),
+                ObjectAnimator alpha = ObjectAnimator.ofFloat(mContainer.getOverviewPanel(),
                         RecentsView.CONTENT_ALPHA, values);
                 return alpha;
             case INDEX_RECENTS_TRANSLATE_X_ANIM: {
-                RecentsView rv = mActivity.getOverviewPanel();
-                return new SpringAnimationBuilder(mActivity)
+                RecentsView rv = mContainer.getOverviewPanel();
+                return new SpringAnimationBuilder(mContainer)
                         .setMinimumVisibleChange(DynamicAnimation.MIN_VISIBLE_CHANGE_SCALE)
                         .setDampingRatio(0.8f)
                         .setStiffness(250)

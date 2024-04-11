@@ -21,15 +21,15 @@ import android.view.Surface
 import com.android.launcher3.Alarm
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener
-import com.android.launcher3.Launcher
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.config.FeatureFlags
+import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener
 
 /** Controls animations that are happening during unfolding foldable devices */
 class LauncherUnfoldTransitionController(
-    private val launcher: Launcher,
+    private val launcher: QuickstepLauncher,
     private val progressProvider: ProxyUnfoldTransitionProvider
 ) : OnDeviceProfileChangeListener, ActivityLifecycleCallbacksAdapter, TransitionProgressListener {
 

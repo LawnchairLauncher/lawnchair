@@ -345,14 +345,14 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     }
 
     void onEndTargetCalculated(GestureState.GestureEndTarget endTarget,
-            BaseActivityInterface activityInterface) {
+            BaseContainerInterface containerInterface) {
         if (endTarget == GestureState.GestureEndTarget.RECENTS) {
             mInOverview = true;
             if (!mTaskListFrozen) {
                 // If we're in landscape w/o ever quickswitching, show the navbar in landscape
                 enableMultipleRegions(true);
             }
-            activityInterface.onExitOverview(this, mExitOverviewRunnable);
+            containerInterface.onExitOverview(this, mExitOverviewRunnable);
         } else if (endTarget == GestureState.GestureEndTarget.HOME
                 || endTarget == GestureState.GestureEndTarget.ALL_APPS) {
             enableMultipleRegions(false);

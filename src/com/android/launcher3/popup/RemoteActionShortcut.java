@@ -33,22 +33,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.views.ActivityContext;
 
 import java.lang.ref.WeakReference;
 
-public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
+public class RemoteActionShortcut<T extends Context & ActivityContext> extends SystemShortcut<T> {
     private static final String TAG = "RemoteActionShortcut";
     private static final boolean DEBUG = Utilities.IS_DEBUG_DEVICE;
 
     private final RemoteAction mAction;
 
     public RemoteActionShortcut(RemoteAction action,
-            BaseDraggingActivity activity, ItemInfo itemInfo, View originalView) {
-        super(0, R.id.action_remote_action_shortcut, activity, itemInfo, originalView);
+            T context, ItemInfo itemInfo, View originalView) {
+        super(0, R.id.action_remote_action_shortcut, context, itemInfo, originalView);
         mAction = action;
     }
 
@@ -80,7 +80,7 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
         mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                 .log(LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP);
 
-        final WeakReference<BaseDraggingActivity> weakTarget = new WeakReference<>(mTarget);
+        final WeakReference<T> weakTarget = new WeakReference<>(mTarget);
         final String actionIdentity = mAction.getTitle() + ", "
                 + mItemInfo.getTargetComponent().getPackageName();
 
@@ -95,7 +95,7 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
                             mItemInfo.getTargetComponent().getPackageName()),
                     (pendingIntent, intent, resultCode, resultData, resultExtras) -> {
                         if (DEBUG) Log.d(TAG, "Action is complete: " + actionIdentity);
-                        final BaseDraggingActivity target = weakTarget.get();
+                        final T target = weakTarget.get();
                         if (resultData != null && !resultData.isEmpty()) {
                             Log.e(TAG, "Remote action returned result: " + actionIdentity
                                     + " : " + resultData);

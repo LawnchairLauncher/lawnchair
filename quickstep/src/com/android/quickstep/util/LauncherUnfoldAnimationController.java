@@ -30,9 +30,9 @@ import androidx.core.view.OneShotPreDrawListener;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Hotseat;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.unfold.LauncherJankMonitorTransitionProgressListener;
@@ -56,7 +56,7 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
     private static final FloatProperty<Hotseat> HOTSEAT_SCALE_PROPERTY =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_UNFOLD_ANIMATION);
 
-    private final Launcher mLauncher;
+    private final QuickstepLauncher mLauncher;
     private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
     private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
     private final UnfoldMoveFromCenterHotseatAnimator mUnfoldMoveFromCenterHotseatAnimator;
@@ -73,7 +73,7 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
     private HorizontalInsettableView mQsbInsettable;
 
     public LauncherUnfoldAnimationController(
-            Launcher launcher,
+            QuickstepLauncher launcher,
             WindowManager windowManager,
             UnfoldTransitionProgressProvider unfoldTransitionProgressProvider,
             RotationChangeProvider rotationChangeProvider) {

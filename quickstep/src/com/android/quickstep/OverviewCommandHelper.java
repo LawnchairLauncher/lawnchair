@@ -40,6 +40,7 @@ import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -191,7 +192,8 @@ public class OverviewCommandHelper {
      * Executes the task and returns true if next task can be executed. If false, then the next
      * task is deferred until {@link #scheduleNextTask} is called
      */
-    private <T extends StatefulActivity<?>> boolean executeCommand(CommandInfo cmd) {
+    private <T extends StatefulActivity<?> & RecentsViewContainer> boolean executeCommand(
+            CommandInfo cmd) {
         if (mWaitForToggleCommandComplete && cmd.type == TYPE_TOGGLE) {
             return true;
         }
@@ -200,7 +202,7 @@ public class OverviewCommandHelper {
         RecentsView visibleRecentsView = activityInterface.getVisibleRecentsView();
         RecentsView createdRecentsView;
         if (visibleRecentsView == null) {
-            T activity = activityInterface.getCreatedActivity();
+            T activity = activityInterface.getCreatedContainer();
             createdRecentsView = activity == null ? null : activity.getOverviewPanel();
             DeviceProfile dp = activity == null ? null : activity.getDeviceProfile();
             TaskbarUIController uiController = activityInterface.getTaskbarController();
@@ -296,7 +298,7 @@ public class OverviewCommandHelper {
             return false;
         }
 
-        final T activity = activityInterface.getCreatedActivity();
+        final T activity = activityInterface.getCreatedContainer();
         if (activity != null) {
             InteractionJankMonitorWrapper.begin(
                     activity.getRootView(),
@@ -327,7 +329,7 @@ public class OverviewCommandHelper {
                 interactionHandler.onGestureCancelled();
                 cmd.removeListener(this);
 
-                T createdActivity = activityInterface.getCreatedActivity();
+                T createdActivity = activityInterface.getCreatedContainer();
                 if (createdActivity == null) {
                     return;
                 }
