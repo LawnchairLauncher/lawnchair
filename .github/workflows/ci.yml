@@ -125,13 +125,16 @@ jobs:
     needs: build-debug-apk
     permissions:
       contents: write
+    env:
+      APK_NAME: Lawnchair.Debug.${{ github.ref_name }}.Nightly-${{ github.sha }}-(CI_#${{ github.run_number }}).apk
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
-      # Rename because the # symbol causes errors in GH release command.
       - name: Rename .apk file
-        run: mv ./Debug\ APK/lawnWithQuickstepGithub/debug/*.apk ./debug.apk
+        run: mv "./Debug APK/lawnWithQuickstepGithub/debug/"*.apk "./$APK_NAME"
       - name: Delete release if exist then create release
-        run: gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag ; gh release create "nightly" "./debug.apk" -p --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag
+          gh release create "nightly" "./$APK_NAME" -p -t "Lawnchair Nightly" --generate-notes
