@@ -149,9 +149,12 @@ public class ItemClickHandler {
      */
     private static void onClickAppPairIcon(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
-        AppPairIcon appPairIcon = (AppPairIcon) v;
-        if (!appPairIcon.getInfo().isLaunchable(launcher)) {
-            // Display a message for app pairs that are disabled due to screen size
+        AppPairIcon icon = (AppPairIcon) v;
+        AppPairInfo info = icon.getInfo();
+        boolean isApp1Launchable = info.isLaunchable(launcher).getFirst(),
+                isApp2Launchable = info.isLaunchable(launcher).getSecond();
+        if (!isApp1Launchable || !isApp2Launchable) {
+            // App pair is unlaunchable due to screen size.
             boolean isFoldable = InvariantDeviceProfile.INSTANCE.get(launcher)
                     .supportedProfiles.stream().anyMatch(dp -> dp.isTwoPanels);
             Toast.makeText(launcher, isFoldable
@@ -159,26 +162,27 @@ public class ItemClickHandler {
                             : R.string.app_pair_unlaunchable_at_screen_size,
                     Toast.LENGTH_SHORT).show();
             return;
-        } else if (appPairIcon.getInfo().isDisabled()) {
-            WorkspaceItemInfo app1 = appPairIcon.getInfo().getFirstApp();
-            WorkspaceItemInfo app2 = appPairIcon.getInfo().getSecondApp();
+        } else if (info.isDisabled()) {
+            // App pair is disabled for another reason.
+            WorkspaceItemInfo app1 = info.getFirstApp();
+            WorkspaceItemInfo app2 = info.getSecondApp();
             // Show the user why the app pair is disabled.
             if (app1.isDisabled() && app2.isDisabled()) {
-                // Both apps are disabled, show "app pair is not available" toast.
+                // Both apps are disabled, show generic "app pair is not available" toast.
                 Toast.makeText(launcher, R.string.app_pair_not_available, Toast.LENGTH_SHORT)
                         .show();
                 return;
             } else if ((app1.isDisabled() && handleDisabledItemClicked(app1, launcher))
                     || (app2.isDisabled() && handleDisabledItemClicked(app2, launcher))) {
-                // Only one is disabled, and handleDisabledItemClicked() will show a toast, so we
-                // are done.
+                // Only one is disabled, and handleDisabledItemClicked() showed a specific toast
+                // explaining why, so we are done.
                 return;
             }
         }
 
         // Either the app pair is not disabled, or it is a disabled state that can be handled by
         // framework directly (e.g. one app is paused), so go ahead and launch.
-        launcher.launchAppPair(appPairIcon);
+        launcher.launchAppPair(icon);
     }
 
     /**
