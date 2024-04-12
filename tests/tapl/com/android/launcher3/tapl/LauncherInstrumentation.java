@@ -1002,19 +1002,6 @@ public final class LauncherInstrumentation {
     }
 
     public void waitForLauncherInitialized() {
-        boolean isLauncherBinding = true;
-        for (int i = 0; i < 100; ++i) {
-            isLauncherBinding = getTestInfo(TestProtocol.REQUEST_IS_LAUNCHER_BINDING)
-                    .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-            if (!isLauncherBinding) {
-                break;
-            }
-            SystemClock.sleep(100);
-        }
-        if (isLauncherBinding) {
-            fail("Launcher didn't finish binding");
-        }
-
         for (int i = 0; i < 100; ++i) {
             if (getTestInfo(
                     TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
@@ -1023,6 +1010,7 @@ public final class LauncherInstrumentation {
             }
             SystemClock.sleep(100);
         }
+        checkForAnomaly();
         fail("Launcher didn't initialize");
     }
 
