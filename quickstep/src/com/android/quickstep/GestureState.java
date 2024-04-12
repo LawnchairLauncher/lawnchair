@@ -30,6 +30,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_NEW_TASK;
 
 import android.content.Intent;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
 
@@ -182,7 +183,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private HashMap<Integer, ThumbnailData> mRecentsAnimationCanceledSnapshots;
 
     /** The time when the swipe up gesture is triggered. */
-    private long mSwipeUpStartTimeMs;
+    private final long mSwipeUpStartTimeMs = SystemClock.uptimeMillis();
 
     private boolean mHandlingAtomicEvent;
 
@@ -506,10 +507,6 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
             return data;
         }
         return null;
-    }
-
-    void setSwipeUpStartTimeMs(long uptimeMs) {
-        mSwipeUpStartTimeMs = uptimeMs;
     }
 
     long getSwipeUpStartTimeMs() {
