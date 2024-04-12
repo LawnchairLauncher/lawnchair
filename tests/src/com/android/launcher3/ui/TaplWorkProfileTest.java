@@ -114,7 +114,7 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest<Launcher> {
         mLauncher.runToState(
                 () -> {
                     try {
-                        mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
+                        mDevice.executeShellCommand("pm remove-user --wait " + mProfileUserId);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
