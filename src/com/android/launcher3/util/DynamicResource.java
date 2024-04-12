@@ -22,7 +22,6 @@ import androidx.annotation.DimenRes;
 import androidx.annotation.FractionRes;
 import androidx.annotation.IntegerRes;
 
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.ResourceProvider;
 

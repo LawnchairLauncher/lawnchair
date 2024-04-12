@@ -34,6 +34,7 @@
     <string name="taskbar_model_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarModelCallbacksFactory</string>
     <string name="taskbar_view_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarViewCallbacksFactory</string>
     <string name="launcher_restore_event_logger_class" translatable="false">com.android.quickstep.LauncherRestoreEventLoggerImpl</string>
+    <string name="plugin_manager_wrapper_class" translatable="false">com.android.launcher3.uioverrides.plugins.PluginManagerWrapperImpl</string>
 
     <string name="nav_handle_long_press_handler_class" translatable="false"></string>
     <string name="assist_utils_class" translatable="false"></string>
