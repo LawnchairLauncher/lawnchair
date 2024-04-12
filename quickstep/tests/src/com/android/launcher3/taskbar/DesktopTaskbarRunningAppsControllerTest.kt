@@ -154,6 +154,29 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         assertThat(newHotseatItems?.map { it.targetPackage }).isEqualTo(expectedPackages)
     }
 
+    @Test
+    fun getRunningApps_notInDesktopMode_returnsEmptySet() {
+        setInDesktopMode(false)
+        val runningTasks =
+            createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
+        whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
+        taskbarRunningAppsController.updateRunningApps(createSparseArray(emptyList()))
+
+        assertThat(taskbarRunningAppsController.runningApps).isEqualTo(emptySet<String>())
+    }
+
+    @Test
+    fun getRunningApps_inDesktopMode_returnsRunningApps() {
+        setInDesktopMode(true)
+        val runningTasks =
+            createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
+        whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
+        taskbarRunningAppsController.updateRunningApps(createSparseArray(emptyList()))
+
+        assertThat(taskbarRunningAppsController.runningApps)
+            .isEqualTo(setOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
+    }
+
     private fun createHotseatItemsFromPackageNames(packageNames: List<String>): List<ItemInfo> {
         return packageNames.map { createTestAppInfo(packageName = it) }
     }

@@ -46,6 +46,7 @@ import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
+import android.util.Size;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -182,6 +183,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private Animator mDotScaleAnim;
     private boolean mForceHideDot;
 
+    // These fields, related to showing running apps, are only used for Taskbar.
+    private final Size mRunningAppIndicatorSize;
+    private final int mRunningAppIndicatorTopMargin;
+    private final Paint mRunningAppIndicatorPaint;
+    private final Rect mRunningAppIconBounds = new Rect();
+    private boolean mIsRunning;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -247,6 +255,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
         a.recycle();
+
+        mRunningAppIndicatorSize = new Size(
+                getResources().getDimensionPixelSize(R.dimen.taskbar_running_app_indicator_width),
+                getResources().getDimensionPixelSize(R.dimen.taskbar_running_app_indicator_height));
+        mRunningAppIndicatorTopMargin =
+                getResources().getDimensionPixelSize(
+                        R.dimen.taskbar_running_app_indicator_top_margin);
+        mRunningAppIndicatorPaint = new Paint();
+        mRunningAppIndicatorPaint.setColor(getResources().getColor(
+                R.color.taskbar_running_app_indicator_color, context.getTheme()));
 
         mLongPressHelper = new CheckLongPressHelper(this);
 
@@ -392,6 +410,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         verifyHighRes();
 
         setDownloadStateContentDescription(info, info.getProgressLevel());
+    }
+
+    /** Updates whether the app this view represents is currently running. */
+    @UiThread
+    public void updateRunningState(boolean isRunning) {
+        mIsRunning = isRunning;
     }
 
     protected void setItemInfo(ItemInfoWithIcon itemInfo) {
@@ -620,6 +644,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawDotIfNecessary(canvas);
+        drawRunningAppIndicatorIfNecessary(canvas);
     }
 
     /**
@@ -638,6 +663,22 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             mDotRenderer.draw(canvas, mDotParams);
             canvas.translate(-scrollX, -scrollY);
         }
+    }
+
+    /** Draws a line under the app icon if this is representing a running app in Desktop Mode. */
+    protected void drawRunningAppIndicatorIfNecessary(Canvas canvas) {
+        if (!mIsRunning || mDisplay != DISPLAY_TASKBAR) {
+            return;
+        }
+        getIconBounds(mRunningAppIconBounds);
+        // TODO(b/333872717): update color, shape, and size of indicator
+        int indicatorTop = mRunningAppIconBounds.bottom + mRunningAppIndicatorTopMargin;
+        canvas.drawRect(
+                mRunningAppIconBounds.centerX() - mRunningAppIndicatorSize.getWidth() / 2,
+                indicatorTop,
+                mRunningAppIconBounds.centerX() + mRunningAppIndicatorSize.getWidth() / 2,
+                indicatorTop + mRunningAppIndicatorSize.getHeight(),
+                mRunningAppIndicatorPaint);
     }
 
     @Override
@@ -1229,5 +1270,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      */
     public boolean canShowLongPressPopup() {
         return getTag() instanceof ItemInfo && ShortcutUtil.supportsShortcuts((ItemInfo) getTag());
+    }
+
+    /** Returns the package name of the app this icon represents. */
+    public String getTargetPackageName() {
+        Object tag = getTag();
+        if (tag instanceof ItemInfo itemInfo) {
+            return itemInfo.getTargetPackage();
+        }
+        return null;
     }
 }
