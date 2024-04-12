@@ -78,7 +78,8 @@
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_margin_split">88dp</dimen>
     <dimen name="taskbar_button_margin_6_5">219.6dp</dimen>
-    <dimen name="taskbar_contextual_button_margin">48dp</dimen>
+    <dimen name="taskbar_contextual_button_suw_margin">48dp</dimen>
+    <dimen name="taskbar_contextual_button_suw_height">48dp</dimen>
     <dimen name="taskbar_suw_frame">96dp</dimen>
     <dimen name="taskbar_suw_insets">24dp</dimen>
 
