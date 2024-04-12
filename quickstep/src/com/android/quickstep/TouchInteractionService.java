@@ -564,7 +564,11 @@ public class TouchInteractionService extends Service {
                     mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
         }
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
-        mInputConsumer.registerInputConsumer();
+        try {
+            mInputConsumer.registerInputConsumer();
+        } catch (Exception e) {
+            Log.e(TAG, "Failure registering InputConsumer", e);
+        }
         onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
         onAssistantVisibilityChanged();
 
