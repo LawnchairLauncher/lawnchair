@@ -205,6 +205,7 @@
     <!-- Margin applied to the recycler view with search bar & the list of widget apps below it. -->
     <dimen name="widget_list_left_pane_horizontal_margin">0dp</dimen>
     <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
+    <dimen name="widget_picker_vertical_margin_right_pane">24dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
