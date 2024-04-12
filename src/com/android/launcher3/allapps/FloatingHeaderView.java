@@ -466,9 +466,14 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     /**
-     * Returns visible height of FloatingHeaderView contents requiring header protection
+     * Returns visible height of FloatingHeaderView contents requiring header protection or the
+     * expected header protection height.
      */
-    int getPeripheralProtectionHeight() {
+    int getPeripheralProtectionHeight(boolean expected) {
+        if (expected) {
+            return getTabLayout().getBottom() - getPaddingTop() + getPaddingBottom()
+                    - mMaxTranslation;
+        }
         // we only want to show protection when work tab is available and header is either
         // collapsed or animating to/from collapsed state
         if (mTabsHidden || mFloatingRowsCollapsed || !mHeaderCollapsed) {
