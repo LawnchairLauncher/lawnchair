@@ -339,6 +339,7 @@ android_app {
     name: "Launcher3Go",
 
     static_libs: ["Launcher3GoLib"],
+    resource_dirs: [],
 
     platform_apis: true,
     min_sdk_version: "current",
@@ -374,6 +375,7 @@ android_app {
     name: "Launcher3QuickStepGo",
 
     static_libs: ["Launcher3GoLib"],
+    resource_dirs: [],
 
     platform_apis: true,
     min_sdk_version: "current",

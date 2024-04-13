@@ -87,7 +87,6 @@ public final class TestProtocol {
             "home-to-all-apps-swipe-height";
     public static final String REQUEST_ICON_HEIGHT =
             "icon-height";
-    public static final String REQUEST_IS_LAUNCHER_BINDING = "is-launcher-binding";
     public static final String REQUEST_IS_LAUNCHER_INITIALIZED = "is-launcher-initialized";
     public static final String REQUEST_IS_LAUNCHER_LAUNCHER_ACTIVITY_STARTED =
             "is-launcher-activity-started";
