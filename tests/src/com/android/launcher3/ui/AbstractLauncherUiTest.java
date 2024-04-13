@@ -300,7 +300,8 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
         if (userManager != null) {
             for (UserHandle userHandle : userManager.getUserProfiles()) {
                 if (!userHandle.isSystem()) {
-                    mDevice.executeShellCommand("pm remove-user " + userHandle.getIdentifier());
+                    mDevice.executeShellCommand(
+                            "pm remove-user --wait " + userHandle.getIdentifier());
                 }
             }
         }

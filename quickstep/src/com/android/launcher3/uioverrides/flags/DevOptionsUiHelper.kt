@@ -16,8 +16,12 @@
 
 package com.android.launcher3.uioverrides.flags
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Handler
 import android.provider.DeviceConfig
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.text.Html
 import android.view.inputmethod.EditorInfo
 import androidx.preference.Preference
@@ -26,9 +30,12 @@ import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
 import com.android.launcher3.ExtendedEditText
 import com.android.launcher3.R
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapperImpl
+import com.android.launcher3.util.PluginManagerWrapper
 import com.android.quickstep.util.DeviceConfigHelper
 import com.android.quickstep.util.DeviceConfigHelper.Companion.NAMESPACE_LAUNCHER
 import com.android.quickstep.util.DeviceConfigHelper.DebugInfo
+import com.android.systemui.shared.plugins.PluginEnabler
 
 /** Helper class to generate UI for Device Config */
 class DevOptionsUiHelper {
@@ -142,7 +149,92 @@ class DevOptionsUiHelper {
             .getInt(this.key, DeviceConfig.getInt(NAMESPACE_LAUNCHER, this.key, this.valueInCode))
             .toString()
 
+    /**
+     * Inflates the preferences for plugins
+     *
+     * A single pref is added for a plugin-group. A plugin-group is a collection of plugins in a
+     * single apk which have the same android:process tags defined. The apk should also hold the
+     * PLUGIN_PERMISSION. We collect all the plugin intents which Launcher listens for and fetch all
+     * corresponding plugins on the device. When a plugin-group is enabled/disabled we also need to
+     * notify the pluginManager manually since the broadcast-mechanism only works in sysui process
+     */
+    fun inflatePluginPrefs(parent: PreferenceGroup) {
+        val context = parent.context
+        val manager = PluginManagerWrapper.INSTANCE[context] as PluginManagerWrapperImpl
+        val pm = context.packageManager
+
+        val pluginPermissionApps =
+            pm.getPackagesHoldingPermissions(
+                    arrayOf(PLUGIN_PERMISSION),
+                    PackageManager.MATCH_DISABLED_COMPONENTS
+                )
+                .map { it.packageName }
+
+        manager.pluginActions
+            .flatMap { action ->
+                pm.queryIntentServices(
+                        Intent(action),
+                        PackageManager.MATCH_DISABLED_COMPONENTS or
+                            PackageManager.GET_RESOLVED_FILTER
+                    )
+                    .filter { pluginPermissionApps.contains(it.serviceInfo.packageName) }
+            }
+            .groupBy { "${it.serviceInfo.packageName}-${it.serviceInfo.processName}" }
+            .values
+            .forEach { infoList ->
+                val pluginInfo = infoList[0]!!
+                val pluginUri = Uri.fromParts("package", pluginInfo.serviceInfo.packageName, null)
+
+                object : SwitchPreference(context) {
+                        override fun onBindViewHolder(holder: PreferenceViewHolder) {
+                            super.onBindViewHolder(holder)
+                            holder.itemView.setOnLongClickListener {
+                                context.startActivity(
+                                    Intent(ACTION_APPLICATION_DETAILS_SETTINGS, pluginUri)
+                                )
+                                true
+                            }
+                        }
+                    }
+                    .apply {
+                        isPersistent = true
+                        title = pluginInfo.loadLabel(pm)
+                        isChecked =
+                            infoList.all {
+                                manager.pluginEnabler.isEnabled(it.serviceInfo.componentName)
+                            }
+                        summary =
+                            infoList
+                                .map { it.filter }
+                                .filter { it?.countActions() ?: 0 > 0 }
+                                .joinToString(prefix = "Plugins: ") {
+                                    it.getAction(0)
+                                        .replace("com.android.systemui.action.PLUGIN_", "")
+                                        .replace("com.android.launcher3.action.PLUGIN_", "")
+                                }
+
+                        setOnPreferenceChangeListener { _, newVal ->
+                            val disabledState =
+                                if (newVal as Boolean) PluginEnabler.ENABLED
+                                else PluginEnabler.DISABLED_MANUALLY
+                            infoList.forEach {
+                                manager.pluginEnabler.setDisabled(
+                                    it.serviceInfo.componentName,
+                                    disabledState
+                                )
+                            }
+                            manager.notifyChange(Intent(Intent.ACTION_PACKAGE_CHANGED, pluginUri))
+                            true
+                        }
+
+                        parent.addPreference(this)
+                    }
+            }
+    }
+
     companion object {
         const val TAG = "DeviceConfigUIHelper"
+
+        const val PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN"
     }
 }

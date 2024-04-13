@@ -60,7 +60,6 @@ import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.testing.TestInformationProvider;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.widget.custom.CustomWidgetManager;

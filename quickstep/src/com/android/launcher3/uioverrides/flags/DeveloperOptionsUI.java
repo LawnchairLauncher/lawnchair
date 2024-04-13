@@ -15,13 +15,7 @@
  */
 package com.android.launcher3.uioverrides.flags;
 
-import static android.content.pm.PackageManager.GET_RESOLVED_FILTER;
-import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_HIGHLIGHT_KEY;
-import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_COUNT;
 import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
@@ -29,18 +23,11 @@ import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_DISCOVERY_TIP_C
 import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN;
 import static com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.ArrayMap;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,20 +39,12 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
-import androidx.preference.PreferenceViewHolder;
-import androidx.preference.SwitchPreference;
 
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.systemui.shared.plugins.PluginEnabler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.android.systemui.shared.plugins.PluginPrefs;
 
 /**
  * Dev-build only UI allowing developers to toggle flag settings and plugins.
@@ -73,14 +52,8 @@ import java.util.stream.Collectors;
  */
 public class DeveloperOptionsUI {
 
-    private static final String ACTION_PLUGIN_SETTINGS =
-            "com.android.systemui.action.PLUGIN_SETTINGS";
-    private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
-
     private final PreferenceFragmentCompat mFragment;
     private final PreferenceScreen mPreferenceScreen;
-
-    private PreferenceCategory mPluginsCategory;
 
     public DeveloperOptionsUI(PreferenceFragmentCompat fragment, PreferenceCategory flags) {
         mFragment = fragment;
@@ -97,8 +70,10 @@ public class DeveloperOptionsUI {
 
         DevOptionsUiHelper uiHelper = new DevOptionsUiHelper();
         uiHelper.inflateServerFlags(newCategory("Server flags"));
+        if (PluginPrefs.hasPlugins(getContext())) {
+            uiHelper.inflatePluginPrefs(newCategory("Plugins"));
+        }
 
-        loadPluginPrefs();
         maybeAddSandboxCategory();
         addOnboardingPrefsCatergory();
     }
@@ -158,65 +133,6 @@ public class DeveloperOptionsUI {
 
     private Context getContext() {
         return mFragment.requireContext();
-    }
-
-    private void loadPluginPrefs() {
-        if (mPluginsCategory != null) {
-            mPreferenceScreen.removePreference(mPluginsCategory);
-        }
-        if (!PluginManagerWrapper.hasPlugins(getContext())) {
-            mPluginsCategory = null;
-            return;
-        }
-        mPluginsCategory = newCategory("Plugins");
-
-        PluginManagerWrapper manager = PluginManagerWrapper.INSTANCE.get(getContext());
-        Context prefContext = getContext();
-        PackageManager pm = getContext().getPackageManager();
-
-        Set<String> pluginActions = manager.getPluginActions();
-
-        ArrayMap<Pair<String, String>, ArrayList<Pair<String, ResolveInfo>>> plugins =
-                new ArrayMap<>();
-
-        Set<String> pluginPermissionApps = pm.getPackagesHoldingPermissions(
-                        new String[]{PLUGIN_PERMISSION}, MATCH_DISABLED_COMPONENTS)
-                .stream()
-                .map(pi -> pi.packageName)
-                .collect(Collectors.toSet());
-
-        for (String action : pluginActions) {
-            String name = toName(action);
-            List<ResolveInfo> result = pm.queryIntentServices(
-                    new Intent(action), MATCH_DISABLED_COMPONENTS | GET_RESOLVED_FILTER);
-            for (ResolveInfo info : result) {
-                String packageName = info.serviceInfo.packageName;
-                if (!pluginPermissionApps.contains(packageName)) {
-                    continue;
-                }
-
-                Pair<String, String> key = Pair.create(packageName, info.serviceInfo.processName);
-                if (!plugins.containsKey(key)) {
-                    plugins.put(key, new ArrayList<>());
-                }
-                plugins.get(key).add(Pair.create(name, info));
-            }
-        }
-
-        PluginEnabler enabler = manager.getPluginEnabler();
-        plugins.forEach((key, si) -> {
-            String packageName = key.first;
-            List<ComponentName> componentNames = si.stream()
-                    .map(p -> new ComponentName(packageName, p.second.serviceInfo.name))
-                    .collect(Collectors.toList());
-            if (!componentNames.isEmpty()) {
-                SwitchPreference pref = new PluginPreference(
-                        prefContext, si.get(0).second, enabler, componentNames);
-                pref.setSummary("Plugins: "
-                        + si.stream().map(p -> p.first).collect(Collectors.joining(", ")));
-                mPluginsCategory.addPreference(pref);
-            }
-        });
     }
 
     private void maybeAddSandboxCategory() {
@@ -320,103 +236,5 @@ public class DeveloperOptionsUI {
             return true;
         });
         return onboardingPref;
-    }
-
-    private String toName(String action) {
-        String str = action.replace("com.android.systemui.action.PLUGIN_", "")
-                .replace("com.android.launcher3.action.PLUGIN_", "");
-
-        StringBuilder b = new StringBuilder();
-        for (String s : str.split("_")) {
-            if (b.length() != 0) {
-                b.append(' ');
-            }
-            b.append(s.substring(0, 1));
-            b.append(s.substring(1).toLowerCase());
-        }
-        return b.toString();
-    }
-
-    private static class PluginPreference extends SwitchPreference {
-        private final String mPackageName;
-        private final ResolveInfo mSettingsInfo;
-        private final PluginEnabler mPluginEnabler;
-        private final List<ComponentName> mComponentNames;
-
-        PluginPreference(Context prefContext, ResolveInfo pluginInfo,
-                PluginEnabler pluginEnabler, List<ComponentName> componentNames) {
-            super(prefContext);
-            PackageManager pm = prefContext.getPackageManager();
-            mPackageName = pluginInfo.serviceInfo.applicationInfo.packageName;
-            Intent settingsIntent = new Intent(ACTION_PLUGIN_SETTINGS).setPackage(mPackageName);
-            // If any Settings activity in app has category filters, set plugin action as category.
-            List<ResolveInfo> settingsInfos =
-                    pm.queryIntentActivities(settingsIntent, GET_RESOLVED_FILTER);
-            if (pluginInfo.filter != null) {
-                for (ResolveInfo settingsInfo : settingsInfos) {
-                    if (settingsInfo.filter != null && settingsInfo.filter.countCategories() > 0) {
-                        settingsIntent.addCategory(pluginInfo.filter.getAction(0));
-                        break;
-                    }
-                }
-            }
-
-            mSettingsInfo = pm.resolveActivity(settingsIntent, 0);
-            mPluginEnabler = pluginEnabler;
-            mComponentNames = componentNames;
-            setTitle(pluginInfo.loadLabel(pm));
-            setChecked(isPluginEnabled());
-            setWidgetLayoutResource(R.layout.switch_preference_with_settings);
-        }
-
-        private boolean isPluginEnabled() {
-            for (ComponentName componentName : mComponentNames) {
-                if (!mPluginEnabler.isEnabled(componentName)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        @Override
-        protected boolean persistBoolean(boolean isEnabled) {
-            boolean shouldSendBroadcast = false;
-            for (ComponentName componentName : mComponentNames) {
-                if (mPluginEnabler.isEnabled(componentName) != isEnabled) {
-                    mPluginEnabler.setDisabled(componentName,
-                            isEnabled ? PluginEnabler.ENABLED : PluginEnabler.DISABLED_MANUALLY);
-                    shouldSendBroadcast = true;
-                }
-            }
-            if (shouldSendBroadcast) {
-                final String pkg = mPackageName;
-                final Intent intent = new Intent(PLUGIN_CHANGED,
-                        pkg != null ? Uri.fromParts("package", pkg, null) : null);
-                getContext().sendBroadcast(intent);
-            }
-            setChecked(isEnabled);
-            return true;
-        }
-
-        @Override
-        public void onBindViewHolder(PreferenceViewHolder holder) {
-            super.onBindViewHolder(holder);
-            boolean hasSettings = mSettingsInfo != null;
-            holder.findViewById(R.id.settings).setVisibility(hasSettings ? VISIBLE : GONE);
-            holder.findViewById(R.id.divider).setVisibility(hasSettings ? VISIBLE : GONE);
-            holder.findViewById(R.id.settings).setOnClickListener(v -> {
-                if (hasSettings) {
-                    v.getContext().startActivity(new Intent().setComponent(
-                            new ComponentName(mSettingsInfo.activityInfo.packageName,
-                                    mSettingsInfo.activityInfo.name)));
-                }
-            });
-            holder.itemView.setOnLongClickListener(v -> {
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.setData(Uri.fromParts("package", mPackageName, null));
-                getContext().startActivity(intent);
-                return true;
-            });
-        }
     }
 }

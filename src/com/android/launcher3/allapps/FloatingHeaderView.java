@@ -34,7 +34,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.PluginManagerWrapper;
 import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
@@ -466,9 +466,14 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     /**
-     * Returns visible height of FloatingHeaderView contents requiring header protection
+     * Returns visible height of FloatingHeaderView contents requiring header protection or the
+     * expected header protection height.
      */
-    int getPeripheralProtectionHeight() {
+    int getPeripheralProtectionHeight(boolean expected) {
+        if (expected) {
+            return getTabLayout().getBottom() - getPaddingTop() + getPaddingBottom()
+                    - mMaxTranslation;
+        }
         // we only want to show protection when work tab is available and header is either
         // collapsed or animating to/from collapsed state
         if (mTabsHidden || mFloatingRowsCollapsed || !mHeaderCollapsed) {
