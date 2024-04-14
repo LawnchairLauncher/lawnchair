@@ -28,7 +28,7 @@
     <string name="dock_description">Sökfält, ikonantal</string>
     <string name="app_drawer_label">Applåda</string>
     <string name="app_drawer_description">Dolda appar, kolumnantal, ikoner</string>
-    <string name="drawer_search_label">Sök i applådan</string>
+    <string name="drawer_search_label">Applådesökning</string>
     <string name="drawer_search_description">Webbförslag, global sökning</string>
     <string name="folders_label">Mappar</string>
     <string name="folders_description">Rad- och kolumnantal</string>
@@ -203,10 +203,10 @@
     <string name="color_dark">Mörkt</string>
     <string name="force_rounded_widgets">Rundade hörn</string>
     <string name="allow_widget_overlap">Tillåt överlappning</string>
-    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_widget_resize_label">Tvinga storleksändring av widgetar</string>
+    <string name="force_widget_resize_description">Tillåt storleksändring av widgetar som är begränsade till en viss storlek</string>
+    <string name="widget_unlimited_size_label">Ta bort storleksbegränsningar</string>
+    <string name="widget_unlimited_size_description">Ta bort begränsningarna av minimi- och maximistorlek på widgetar</string>
     <!-- HomeScreenGridPreferences -->
     <string name="columns">Kolumner</string>
     <string name="rows">Rader</string>
@@ -258,7 +258,7 @@
     <string name="dock_icons">Favoritfältsikoner</string>
     <string name="hotseat_bottom_space_label">Avstånd nederkant</string>
     <!-- SearchProviderPreferences -->
-    <string name="search_provider_app_search">Appsök</string>
+    <string name="search_provider_app_search">Appsökning</string>
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair har ett avtal om intäktsdelning.\n\nSökning med %1$s hjälper till att stödja Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Webbplats</string>
@@ -269,7 +269,7 @@
     <string name="show_enable_smart_hide">Visa när fullständigt namn skrivs</string>
     <string name="hide_hidden_apps_search">Dölj i sökresultat</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Ladda appar i klump</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Ladda och visa alla ikoner på en gång i stället för att ladda och visa ikoner var för sig. Kan åtgärda problem med sökning men kommer att öka laddningstiden.</string>
     <string name="pref_all_apps_remember_position_title">Kom ihåg position</string>
     <string name="pref_all_apps_remember_position_description">Kom ihåg applådeposition efter att ha lämnat applådan</string>
     <string name="pref_all_apps_show_scrollbar_title">Visa rullningslist</string>

@@ -62,8 +62,8 @@
     <string name="home_screen_rotation_description">Коли пристрій перевернуто</string>
     <string name="font_label">Шрифт (експериментально)</string>
     <string name="fontWorkspace">Загальні</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
+    <string name="fontHeading">Заголовки</string>
+    <string name="fontHeadingMedium">Заголовки (середні)</string>
     <string name="fontBody">Body</string>
     <string name="fontBodyMedium">Body (Medium)</string>
     <string name="icon_style">Стиль значка</string>
@@ -84,7 +84,7 @@
     <string name="notification_dots_color_contrast_warning_sometimes">Попередження: Точку повідомлень &amp; Колір прогалин не завжди може бути достатньо контрастності між собою</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Необхідний доступ до сповіщень</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
+    <string name="missing_notification_access_description">Потрібний доступ до сповіщень</string>
     <string name="msg_missing_notification_access">Щоб використовувати значки сповіщень, дозвольте <xliff:g id="name" example="My App">%1$s</xliff:g> доступ до сповіщень.</string>
     <string name="title_change_settings">Змінити налаштування</string>
     <string name="colors">Кольори</string>
@@ -119,7 +119,7 @@
     <string name="themed_icons_off_label">Вимкнено</string>
     <string name="themed_icons_home_label">Домашній Екран</string>
     <string name="themed_icons_home_and_drawer_label">Домашній екран &amp; Меню додатків</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="lawnicons_not_installed_description">Немає підтримуваних наборів значків</string>
     <!-- IconPickerPreference -->
     <string name="icon_shape_system">Системний</string>
     <string name="icon_shape_circle">Коло</string>
@@ -136,8 +136,8 @@
     <string name="icon_shape_teardrop">Краплеподібні</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Додати шрифти</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_add_fonts_summary">Підтримуються шрифти OTF &amp; TTF</string>
+    <string name="pref_fonts_missing_font">Шрифт не знайдений</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">Дуже тонкий</string>
@@ -172,7 +172,7 @@
     <!-- HomeScreenPreferences -->
     <string name="auto_add_shortcuts_label">Додавання Нових Програм на Головний Екран</string>
     <string name="minus_one_enable">Показати Стрічку</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="minus_one_unavailable">Не встановлено додатків стрічки</string>
     <string name="minus_one">Стрічка подій</string>
     <string name="feed_provider">Постачальник каналів</string>
     <string name="feed_default">За замовчуванням</string>
@@ -184,12 +184,12 @@
     <string name="layout">Макет</string>
     <string name="home_screen_grid">Сітка головного екрану</string>
     <string name="home_screen_lock">Заблокувати домашній екран</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="home_screen_lock_description">Заборонити зміни макета домашнього екрана</string>
     <string name="home_screen_unlock">Розблокувати домашній екран</string>
-    <string name="home_screen_locked">Home Screen is locked</string>
+    <string name="home_screen_locked">Головний екран заблокований</string>
     <string name="show_dot_pagination_label">Use Dot Pagination</string>
     <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use New Popup Style</string>
+    <string name="show_material_u_popup_label">Використовувати новий стиль спливаючих вікон</string>
     <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
     <string name="popup_menu">Спливаюче меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показувати кнопку блокування</string>
@@ -203,10 +203,10 @@
     <string name="color_dark">Темна</string>
     <string name="force_rounded_widgets">Закруглені кути</string>
     <string name="allow_widget_overlap">Дозволити перетин</string>
-    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_widget_resize_label">Примусова зміна розміру віджета</string>
+    <string name="force_widget_resize_description">Дозволити змінювати розмір віджетів, які обмежені до конкретного розміру</string>
+    <string name="widget_unlimited_size_label">Видалити обмеження розміру</string>
+    <string name="widget_unlimited_size_description">Видалити мінімальні та максимальні обмеження на розмір віджетів</string>
     <!-- HomeScreenGridPreferences -->
     <string name="columns">Стовпці</string>
     <string name="rows">Рядки</string>
@@ -240,7 +240,7 @@
     <string name="smartspace_calendar_persian">Перська</string>
     <string name="smartspace_preferences">Налаштування</string>
     <string name="smartspace_widget_toggle_label">Показувати на головному екрані</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
+    <string name="smartspace_widget_toggle_description">Віджет At a Glance можна додати вручну на робочий стіл, помістивши віджет \"Lawnchair\".</string>
     <string name="smartspace_mode_label">Постачальник \"At a Glance\"</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Пошук Google</string>
@@ -262,23 +262,23 @@
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair має угоду про розподіл доходів.\n\nПошук з %1$s допомагає Lawnchair.</string>
     <string name="app_label">Застосунок</string>
     <string name="website_label">Веб-сайт</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="qsb_search_provider_app_required">Необхідний додаток</string>
     <!-- AppDrawerPrefences -->
     <string name="background_opacity">Прозорість фону</string>
     <string name="hidden_apps_label">Приховані Додатки</string>
     <string name="show_enable_smart_hide">Показувати, коли Повне Ім\'я введено</string>
     <string name="hide_hidden_apps_search">Приховати в результатах пошуку</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Завантажити додатки в парному режимі</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Завантажити та показати всі піктограми одночасно замість того щоб завантажувати кожну окремо і показувати їх. Може виправити проблеми з пошуком, але збільшує час завантаження.</string>
+    <string name="pref_all_apps_remember_position_title">Запам\'ятовувати позицію</string>
+    <string name="pref_all_apps_remember_position_description">Пам\'ятати позицію у списку додатків після виходу зі списку додатків</string>
+    <string name="pref_all_apps_show_scrollbar_title">Показати панель прокрутки</string>
     <string name="pref_category_search">Пошук</string>
     <string name="show_app_search_bar">Показувати Рядок Пошуку</string>
     <string name="pref_search_auto_show_keyboard">Автоматично показувати клавіатуру</string>
     <string name="fuzzy_search_title">Приблизний Пошук</string>
     <string name="fuzzy_search_desc">Приблизна відповідність для пошуку додатків.</string>
-    <string name="clear_history">Clear Search History</string>
+    <string name="clear_history">Очистити історію пошуку</string>
     <string name="app_drawer_columns">Кількість стовпців меню додатків</string>
     <string name="row_height_label">Висота рядка</string>
     <string name="app_drawer_indent_label">Горизонтальний відступ</string>
@@ -293,8 +293,8 @@
     <!-- FolderPreferences -->
     <string name="folder_preview_bg_opacity_label">Прозорість фону значка</string>
     <string name="folder_preview_bg_color_label">Колір фону іконок</string>
-    <string name="max_folder_columns">Maximum Folder Columns</string>
-    <string name="max_folder_rows">Maximum Folder Rows</string>
+    <string name="max_folder_columns">Максимальна кількість колонок тек</string>
+    <string name="max_folder_rows">Максимальна кількість рядків тек</string>
     <!-- GesturePreference -->
     <string name="gesture_double_tap">Подвійне натискання</string>
     <string name="gesture_swipe_up">Провести вгору</string>
@@ -322,7 +322,7 @@
     <string name="override_window_corner_radius_label">Користувацький радіус кута екрана</string>
     <string name="window_corner_radius_description">Проведіть пальцем угору, щоб відкрити Нещодавні, поточний додаток слідує за вашим пальцем, стихаючи на картці. Використовуйте цей повзунок, щоб налаштувати радіус кута карти, коли він майже повноекранний режим, так щоб він співпадав з кутами вашого екрану.</string>
     <string name="taskbar_label">Панель задач</string>
-    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Показати Панель задач (експериментально)</string>
     <!-- about/About.kt -->
     <string name="news">Новини</string>
     <string name="support">Підтримка</string>
@@ -343,7 +343,7 @@
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Пошук додатків</string>
     <string name="settings_button_text">Налаштування домашнього екрану</string>
-    <string name="item_removed">Item removed</string>
+    <string name="item_removed">Елемент видалено</string>
     <string name="all_apps_no_search_results">Відповідних додатків не знайдено <xliff:g example="Android" id="query">%1$s</xliff:g>.</string>
     <string name="dt2s_admin_hint_title">Потрібен Дозвіл Адміністратора</string>
     <string name="dt2s_admin_hint">Щоб використовувати «Подвійне Натискання в Сплячий Режим», надайте дозвіл адміністратора. Натисніть «Відкрити Налаштування», потім натисніть «Активувати цю програму адміністратора пристрою.»</string>
@@ -357,7 +357,7 @@
     <string name="label">Мітка</string>
     <string name="hide_from_drawer">Сховати з панелі програм</string>
     <string name="suggestion_pref_screen_title">Пропозиції</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
+    <string name="show_suggested_apps_at_drawer_top">Показати запропоновані додатки зверху списку додатків</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Звіт про помилку Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Збій</string>
@@ -372,19 +372,19 @@
     <!-- Search ig -->
     <string name="action_apply">Застосувати</string>
     <string name="show_search_result_types">Показати в результатах пошуку</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Додатки &amp; Ярлики</string>
     <string name="search_pref_result_shortcuts_title">Ярлики додатків</string>
     <string name="search_pref_result_people_title">Люди</string>
     <string name="search_pref_result_tips_title">Поради Pixel</string>
-    <string name="search_pref_result_settings_title">Android Settings</string>
+    <string name="search_pref_result_settings_title">Налаштування Android</string>
     <string name="search_pref_result_files_title">Файли</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search History</string>
-    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_web_title">Веб-пропозиції</string>
+    <string name="search_pref_result_history_title">Історія пошуку</string>
+    <string name="search_pref_result_files_description">Медія, файли та інше</string>
     <string name="search_pref_result_contacts_description">Контакти та інше</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
-    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
+    <string name="search_pref_result_web_description">Через <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="warn_contact_permission_content">Щоб шукати контакти, надайте доступ Lawnchair до Контактів і Телефону.</string>
+    <string name="warn_files_permission_content">Щоб шукати файли, надайте доступ Lawnchair до сховища.</string>
     <string name="grant_requested_permissions">Надати дозвіл</string>
     <string name="pref_suggestion_label">Пропозиції</string>
     <string name="all_apps_device_search_hint">Пошук</string>
@@ -398,14 +398,14 @@
     <string name="label_voice_search">Голосовий пошук</string>
     <string name="pref_advance_search_category">Розширений пошук</string>
     <string name="perform_wide_search_title">Пошук пристрою</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="max_apps_result_count_title">Maximum App Result Count</string>
-    <string name="max_people_result_count_title">Maximum People Result Count</string>
-    <string name="max_file_result_count_title">Maximum Files Result Count</string>
-    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
-    <string name="max_recent_result_count_title">Maximum Search History Count</string>
-    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
-    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+    <string name="perform_wide_search_description">Шукайте контакти, файли та налаштування на вашому телефоні</string>
+    <string name="max_apps_result_count_title">Максимальна кількість програм у результаті</string>
+    <string name="max_people_result_count_title">Максимальна кількість контактів у результаті</string>
+    <string name="max_file_result_count_title">Максимальна кількість файлів у результаті</string>
+    <string name="max_settings_entry_result_count_title">Максимальна кількість налаштувань у результаті</string>
+    <string name="max_recent_result_count_title">Максимальна кількість елементів історії пошуку</string>
+    <string name="max_suggestion_result_count_title">Максимальна кількість веб-пропозицій у результатах пошуку</string>
+    <string name="max_web_suggestion_delay">Максимальна затримка веб-пропозицій</string>
     <string name="all_apps_search_market_message">Пошук інших додатків</string>
     <string name="all_apps_search_startpage_message">Шукати в <xliff:g id="Головна сторінка">Головна сторінка</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Не встановлено жодного магазину додатків або браузера.</string>
