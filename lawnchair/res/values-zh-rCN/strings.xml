@@ -64,7 +64,7 @@
     <string name="fontWorkspace">通用</string>
     <string name="fontHeading">标题</string>
     <string name="fontHeadingMedium">标题（中）</string>
-    <string name="fontBody">主体</string>
+    <string name="fontBody">正文</string>
     <string name="fontBodyMedium">正文（中等）</string>
     <string name="icon_style">图标样式</string>
     <string name="transparent_background_icons">透明的带主题图标</string>

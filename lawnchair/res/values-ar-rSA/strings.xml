@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">تعيين Lawnchair كمشغل افتراضي للوصول إلى الاختصارات والمزيد.</string>
     <string name="settings">الإعدادات</string>
     <string name="general_label">عام</string>
     <string name="general_description">الألوان، حزمة الأيقونة، نقاط الإشعار</string>
@@ -28,8 +28,8 @@
     <string name="dock_description">شريط البحث، عدد الأيقونات</string>
     <string name="app_drawer_label">قائمة التطبيقات</string>
     <string name="app_drawer_description">التطبيقات المخفية، عدد الأعمدة، الأيقونات</string>
-    <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="drawer_search_label">البحث في قائمة التطبيقات</string>
+    <string name="drawer_search_description">اقتراحات الويب، البحث العام</string>
     <string name="folders_label">المجلدات</string>
     <string name="folders_description">عدد الصفوف والأعمدة</string>
     <string name="gestures_label">الإيماءات</string>
@@ -43,15 +43,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">تخصيص الخط</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">لا يزال بعض النص دون تغيير</string>
     <string name="smartspace_calendar_label">تخصيص التقويم في اللمحة السريعة</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="smartspace_calendar_description">السماح بعرض التاريخ في أنظمة التقويم غير الميلادي</string>
+    <string name="workspace_increase_max_grid_size_label">زيادة الحد الأقصى لحجم شبكة الشاشة الرئيسة</string>
+    <string name="workspace_increase_max_grid_size_description">زيادة الحد الأقصى المسموح به لحجم شبكة الشاشة الرئيسة من 10 × 10 إلى 20 × 20</string>
     <string name="always_reload_icons_label">قم دائمًا بإعادة تحميل الأيقونات</string>
     <string name="always_reload_icons_description">تجنب استخدام الأيقونات المخزنة مؤقتًا من حزم الأيقونات</string>
     <string name="recents_lock_unlock">فتح/قفل</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <string name="recents_lock_unlock_description">منع التطبيق المحدد من الإغلاق عند الضغط على \"مسح الكل\"</string>
     <!-- Relating to label/icon size -->
     <string name="icons">الأيقونات</string>
     <string name="icon_size">حجم الأيقونات</string>
@@ -59,13 +59,13 @@
     <string name="label_size">حجم التسمية</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسة</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
+    <string name="home_screen_rotation_description">عند تدوير الجهاز</string>
     <string name="font_label">الخط (تجريبي)</string>
     <string name="fontWorkspace">عام</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
+    <string name="fontHeading">عناوين</string>
+    <string name="fontHeadingMedium">عناوين (متوسطة)</string>
+    <string name="fontBody">جسم</string>
+    <string name="fontBodyMedium">جسم (متوسط)</string>
     <string name="icon_style">نمط الأيقونة</string>
     <string name="transparent_background_icons">شفافيه مظهر الأيقونات</string>
     <string name="transparent_background_icons_description">استخدم خلفيه شفافه مع تغير مظهر الأيقونات</string>
@@ -84,7 +84,7 @@
     <string name="notification_dots_color_contrast_warning_sometimes">تحذير: لا تحتوي عداد نقطه تنبيه الإشعارات ألوان الإخطار &amp; على تباين كافٍ مع بعضها البعض</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">الوصول إلى الإشعارات مطلوب</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
+    <string name="missing_notification_access_description">صَلاحِيَة الوصول إلى الإشعارات مطلوبة</string>
     <string name="msg_missing_notification_access">لاستخدام نقاط الإشعارات، امنح <xliff:g id="name" example="My App">%1$s</xliff:g> حق الوصول إلى الإشعارات.</string>
     <string name="title_change_settings">تعديل الإعدادات</string>
     <string name="colors">الألوان</string>
@@ -110,16 +110,16 @@
     <string name="clipboard">الحافظة</string>
     <string name="export_to_clipboard">تصدير إلى الحافظة</string>
     <string name="import_from_clipboard">استيراد من الحافظة</string>
-    <string name="icon_shape_clipboard_import_error">الحافظة لا تحتوي على شكل رمز صالح</string>
+    <string name="icon_shape_clipboard_import_error">الحافظة لا تحتوي على شكل أيقونة صالح</string>
     <!-- IconPackPreferences -->
     <string name="icon_pack">حزمة أيقونات</string>
-    <string name="themed_icon_pack">مصدر أيقونة السمة</string>
+    <string name="themed_icon_pack">مصدر الأيقونات المخصصة</string>
     <string name="system_icons">أيقونات النظام</string>
     <string name="themed_icon_title">أيقونات تستمد خصائصها و لونها من الثيم</string>
     <string name="themed_icons_off_label">معطل</string>
     <string name="themed_icons_home_label">الشاشة الرئيسة</string>
     <string name="themed_icons_home_and_drawer_label">الشاشة الرئيسية &amp; قائمة التطبيقات</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="lawnicons_not_installed_description">لا يوجد حزم أيقونات مدعومة</string>
     <!-- IconPickerPreference -->
     <string name="icon_shape_system">نظام</string>
     <string name="icon_shape_circle">دائرة</string>
@@ -136,8 +136,8 @@
     <string name="icon_shape_teardrop">دمعة</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">إضافة خطوط</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; خطوط TTF مدعومة</string>
+    <string name="pref_fonts_missing_font">لم يتم العثور على الخط</string>
     <string name="font_variant_italic">مائل</string>
     <string name="font_weight_thin">رفيع</string>
     <string name="font_weight_extra_light">رفيع جداً</string>
@@ -172,23 +172,23 @@
     <!-- HomeScreenPreferences -->
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسة</string>
     <string name="minus_one_enable">اِعرض الحصاد</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="minus_one_unavailable">لا توجد تطبيقات عرض موجز مثبتة</string>
     <string name="minus_one">الموجز</string>
     <string name="feed_provider">مزود خدمة الأخبار</string>
     <string name="feed_default">الافتراضي</string>
     <string name="wallpaper">خلفية الخلفية</string>
     <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
     <string name="wallpaper_depth_effect_label">تأثير عمق الخلفية</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="wallpaper_depth_effect_description">تكبير وتصغير الخلفية عند الانتقال بين مناطق المشغل</string>
     <string name="show_sys_ui_scrim">الظل العلوي</string>
     <string name="layout">التصميم أو التخطيط</string>
     <string name="home_screen_grid">صفوف الشاشة الرئيسية</string>
     <string name="home_screen_lock">قفل الشاشة الرئيسية</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="home_screen_lock_description">منع التغييرات في تخطيط الشاشة الرئيسية</string>
     <string name="home_screen_unlock">فتح الشاشة الرئيسية</string>
-    <string name="home_screen_locked">Home Screen is locked</string>
-    <string name="show_dot_pagination_label">Use Dot Pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="home_screen_locked">الشاشة الرئيسية مقفلة</string>
+    <string name="show_dot_pagination_label">استخدام محدد صفحات بشكل نُقَط</string>
+    <string name="show_dot_pagination_description">استخدم النقاط بدلاً من الأسطر لإظهار رقم الصفحة</string>
     <string name="show_material_u_popup_label">Use New Popup Style</string>
     <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
     <string name="popup_menu">قائمة منبثقة</string>
@@ -203,10 +203,10 @@
     <string name="color_dark">الوضع الداكن</string>
     <string name="force_rounded_widgets">زوايا دائرية</string>
     <string name="allow_widget_overlap">السماح بالتداخل</string>
-    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_widget_resize_label">فرض تغيير حجم التطبيقات المصغرة</string>
+    <string name="force_widget_resize_description">السماح بإعادة تحديد حجم التطبيقات المصغرة المقيدة بحجم محدد</string>
+    <string name="widget_unlimited_size_label">إزالة قيود الحجم</string>
+    <string name="widget_unlimited_size_description">إزالة قيود الحد الأدنى والحد الأقصى لحجم التطبيقات المصغرة</string>
     <!-- HomeScreenGridPreferences -->
     <string name="columns">أعمدة</string>
     <string name="rows">صفوف</string>
@@ -262,23 +262,23 @@
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair لديه اتفاق لتقاسم الإيرادات.\n\nالبحث باستخدام %1$s يساعد على دعم Lawnchair.</string>
     <string name="app_label">التطبيق</string>
     <string name="website_label">الموقع</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="qsb_search_provider_app_required">التطبيق مطلوب</string>
     <!-- AppDrawerPrefences -->
     <string name="background_opacity">شفافية الخلفية</string>
     <string name="hidden_apps_label">التطبيقات المخفية</string>
     <string name="show_enable_smart_hide">إظهار عند كتابة الاسم الكامل</string>
     <string name="hide_hidden_apps_search">إخفاء في نتائج البحث</string>
     <string name="pref_all_apps_bulk_icon_loading_title">تحميل التطبيقات بكميات كبيرة</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">تحميل وعرض جميع أيقونات التطبيقات مرة واحدة بدلاً من تحميل وعرض أيقونات التطبيقات بشكل فردي. يمكن أن يحل المشكلات مع البحث ولكن سيزيد من وقت تحميل قائمة التطبيقات.</string>
     <string name="pref_all_apps_remember_position_title">تذكر المكان</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
+    <string name="pref_all_apps_remember_position_description">تذكر المكان الذي توقفت عنده في قائمة التطبيق بعد الخروج من القائمة</string>
     <string name="pref_all_apps_show_scrollbar_title">إظهار شريط التمرير</string>
     <string name="pref_category_search">البحث</string>
     <string name="show_app_search_bar">إظهار شريط البحث</string>
     <string name="pref_search_auto_show_keyboard">إظهار لوحة المفاتيح تلقائياً</string>
     <string name="fuzzy_search_title">بحث غامض</string>
     <string name="fuzzy_search_desc">قارب التطابقات لعمليات البحث عن التطبيقات.</string>
-    <string name="clear_history">Clear Search History</string>
+    <string name="clear_history">مسح سجل البحث</string>
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
     <string name="row_height_label">ارتفاع الصف</string>
     <string name="app_drawer_indent_label">الفراغ الأفقي</string>
@@ -295,8 +295,8 @@
     <!-- FolderPreferences -->
     <string name="folder_preview_bg_opacity_label">شفافية الخلفية</string>
     <string name="folder_preview_bg_color_label">لون خلفية الأيقونة</string>
-    <string name="max_folder_columns">Maximum Folder Columns</string>
-    <string name="max_folder_rows">Maximum Folder Rows</string>
+    <string name="max_folder_columns">الحد الأقصى لأعمدة المجلدات</string>
+    <string name="max_folder_rows">الحد الأقصى لصفوف المجلد</string>
     <!-- GesturePreference -->
     <string name="gesture_double_tap">النقر المزدوج</string>
     <string name="gesture_swipe_up">التمرير لأعلى</string>
@@ -324,7 +324,7 @@
     <string name="override_window_corner_radius_label">نصف قطر مخصص لزاوية الشاشة</string>
     <string name="window_corner_radius_description">عند السحب لأعلى لفتح التطبيقات الحديثة، يتبع التطبيق الحالي إصبعك، ويتقلص إلى بطاقة. استخدم شريط التمرير هذا لضبط تحدب الزاوية في البطاقة عندما تكون ملء الشاشة تقريباً بحيث تطابق تحدب زوايا الشاشة.</string>
     <string name="taskbar_label">شريط المهام</string>
-    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">تمكين شريط المهام (تجريبي)</string>
     <!-- about/About.kt -->
     <string name="news">الأخبار</string>
     <string name="support">الدعم</string>
@@ -345,7 +345,7 @@
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">البحث عن التطبيقات</string>
     <string name="settings_button_text">إعدادات الصفحة الرئيسة</string>
-    <string name="item_removed">Item removed</string>
+    <string name="item_removed">تم إزالة العنصر</string>
     <string name="all_apps_no_search_results">لم يُعثَر على تطبيقات مطابقة لـ \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
     <string name="dt2s_admin_hint_title">تحتاج إلى إذونات مشرف</string>
     <string name="dt2s_admin_hint">لاستخدام النقرة المزدوجة لإطفاء الشاشة، عيّن Lawnchair كتطبيق مشرف للجهاز. انقر على فتح الإعدادات، ثم انقر على \"فعِّل التطبيق كمشرف على الجهاز.\"</string>
@@ -359,7 +359,7 @@
     <string name="label">العلامة</string>
     <string name="hide_from_drawer">إخفاء من قائمة التطبيقات</string>
     <string name="suggestion_pref_screen_title">اقتراحات</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
+    <string name="show_suggested_apps_at_drawer_top">إظهار التطبيقات المقترحة في الجزء العلوي من قائمة التطبيقات</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">تقرير الأخطاء Lawnchair</string>
     <string name="crash_report_notif_title">%1$s توقف عن العمل</string>
@@ -374,27 +374,27 @@
     <!-- Search ig -->
     <string name="action_apply">تطبيق</string>
     <string name="show_search_result_types">إظهار نتائج البحث</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">التطبيقات والاختصارات</string>
     <string name="search_pref_result_shortcuts_title">اختصارات التطبيق</string>
     <string name="search_pref_result_people_title">الأشخاص</string>
     <string name="search_pref_result_tips_title">نصائح بكسل</string>
-    <string name="search_pref_result_settings_title">Android Settings</string>
+    <string name="search_pref_result_settings_title">إعدادات الأندرويد</string>
     <string name="search_pref_result_files_title">ملفات</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search History</string>
-    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_web_title">اقتراحات الويب</string>
+    <string name="search_pref_result_history_title">سجل البحث</string>
+    <string name="search_pref_result_files_description">الوسائط، الملفات، والمزيد</string>
     <string name="search_pref_result_contacts_description">جهات الاتصال والمزيد</string>
     <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
-    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
-    <string name="grant_requested_permissions">Grant Permissions</string>
+    <string name="warn_contact_permission_content">للبحث عن جهات الاتصال، قم بمنح صَلاحِيَة الوصول إلى جهات الاتصال والهاتف ل Lawnchair.</string>
+    <string name="warn_files_permission_content">للبحث عن ملفاتك، قم بمنح صلاحية التخزين ل Lawnchair.</string>
+    <string name="grant_requested_permissions">منح الصلاحيات</string>
     <string name="pref_suggestion_label">اقتراحات</string>
     <string name="all_apps_device_search_hint">البحث</string>
     <string name="search_input_action_clear_results">حذف صندوق البحث</string>
     <string name="all_apps_search_result_suggestions">من الويب</string>
     <string name="all_apps_search_result_contacts_from_device">من جهات اتصالاتك</string>
     <string name="all_apps_search_result_files">من ملفاتك</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
+    <string name="all_apps_search_result_settings_entry_from_device">من إعدادات الهاتف الخاص بك</string>
     <string name="label_search">البحث</string>
     <string name="label_lens">عدسة جوجل</string>
     <string name="label_voice_search">البحث الصوتي</string>

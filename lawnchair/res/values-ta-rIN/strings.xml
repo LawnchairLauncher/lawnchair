@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">குறுக்குவழிகள் மற்றும் பலவற்றை அணுக, லான்சேரை உங்கள் இயல்புநிலை துவக்கியாக அமைக்கவும்.</string>
     <string name="settings">அமைப்புகள்</string>
     <string name="general_label">பொது</string>
     <string name="general_description">நிறங்கள், சின்னச்சிப்பம், அறிவிப்பு புள்ளிகள்</string>
@@ -28,8 +28,8 @@
     <string name="dock_description">தேடல் பட்டி, சின்ன எண்ணிக்கை</string>
     <string name="app_drawer_label">செயலி அறை பெயர்கள்</string>
     <string name="app_drawer_description">மறைபட்டச் செயலி, நெடுவரிசை எண்ணிக்கை, சின்னம்</string>
-    <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="drawer_search_label">டிராயர் தேடல்</string>
+    <string name="drawer_search_description">இணைய பரிந்துரைகள், உலகளாவிய தேடல்</string>
     <string name="folders_label">கோப்புறை பெயர்கள்</string>
     <string name="folders_description">கோப்புறை விளக்கம்</string>
     <string name="gestures_label">சைகைகள்</string>
@@ -43,15 +43,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">எழுத்துரு தனிப்பயனாக்கம்</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">சில உரைகள் மாறாமல் இருக்கும்</string>
     <string name="smartspace_calendar_label">கிளான்ஸ் காலண்டரை தனிப்பயனாக்குதல்</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="smartspace_calendar_description">கிரிகோரியன் முறை அல்லாத காலண்டர் வகையில் தேதியைக் காண்பிக்க சம்மதி</string>
+    <string name="workspace_increase_max_grid_size_label">முகப்பு திரையின் கிரிட் அளவு அதிகபட்சம் உயர்த்தப்பட்டது</string>
+    <string name="workspace_increase_max_grid_size_description">முகப்பு திரையின் அனுமதிக்கப்பட்ட கிரிட் அளவான 10x10-இல் இருந்து 20x20-ஆக உயர்த்து</string>
     <string name="always_reload_icons_label">எப்போதும் ஐகான்களை மீண்டும் ஏற்றவும்</string>
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <string name="recents_lock_unlock">பூட்டு/திறத்தல்</string>
+    <string name="recents_lock_unlock_description">\"அனைத்தையும் அழி\" என்பதை அழுத்தும்போது தேர்ந்தெடுக்கப்பட்ட பயன்பாட்டை மூடுவதைத் தடுக்கவும்</string>
     <!-- Relating to label/icon size -->
     <string name="icons">சின்னங்கள்</string>
     <string name="icon_size">சின்னங்களின் அளவு</string>
@@ -59,32 +59,32 @@
     <string name="label_size">பெயர்கள் அளவு</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
+    <string name="home_screen_rotation_description">கருவி சுழற்றப்படும்போது</string>
     <string name="font_label">எழுத்துரு (பரீட்சார்த்த)</string>
     <string name="fontWorkspace">பொது</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
+    <string name="fontHeading">தலைப்புகள்</string>
+    <string name="fontHeadingMedium">தலைப்புகள் (நடுத்தர)</string>
+    <string name="fontBody">உடல்</string>
+    <string name="fontBodyMedium">உடல் (நடுத்தர)</string>
     <string name="icon_style">சின்னங்களின் பாங்கு</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons">வெளிப்படையான கருப்பொருள் சின்னங்கள்</string>
+    <string name="transparent_background_icons_description">கருப்பொருள் ஐகான்களில் வெளிப்படையான பின்னணியைப் பயன்படுத்தவும்</string>
     <string name="icon_shape_label">சின்னத்தின் வடிவம்</string>
     <string name="auto_adaptive_icons_label">தகவமைப்பு சின்னங்கள்</string>
     <string name="auto_adaptive_icons_description">எல்லா தகவமையா சின்னங்களுக்கும்.</string>
     <string name="background_lightness_label">பின்புல இலேசுத்தன்மை</string>
     <string name="adaptive_icon_background_description">வெள்ளைக்கு 100% பின்புல இலேசுத்தன்மை பயன்படுத்து.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="reset_custom_icons">தனிப்பயன் சின்னங்களை மீட்டமைக்கவும்</string>
+    <string name="reset_custom_icons_confirmation">அனைத்து தனிப்பயன் சின்னங்களும் மீட்டமைக்கப்படும். தொடர வேண்டுமா?</string>
     <string name="notification_dots">அறிவிப்பு புள்ளிகள்</string>
     <string name="show_notification_count">அறிவிப்புகளின் எண்ணிக்கையை காண்பி</string>
     <string name="notification_dots_color">அறிவிப்பு புள்ளிகளின் வண்ணம்</string>
     <string name="notification_dots_text_color">அறிவிப்பு எண்ணிக்கை நிறம்</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">எச்சரிக்கை: அறிவிப்புப் புள்ளி &amp; எதிர் நிறங்கள் ஒருவருக்கொருவர் போதுமான மாறுபாட்டைக் கொண்டிருக்கவில்லை</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">எச்சரிக்கை: அறிவிப்புப் புள்ளி &amp; எதிர் நிறங்கள் ஒருவருக்கொருவர் போதுமான மாறுபாட்டைக் கொண்டிருக்கவில்லை</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
+    <string name="missing_notification_access_description">அறிவிப்பணுகல் தேவை</string>
     <string name="msg_missing_notification_access">அறிவிப்புப் புள்ளிகள் பயன்படுத்த, அறிவிப்புகளுக்கு <xliff:g id="name" example="My App">%1$s</xliff:g> அணுகலை வழங்கு.</string>
     <string name="title_change_settings">அமைவை மாற்று</string>
     <string name="colors">நிறங்கள்</string>
@@ -95,16 +95,16 @@
     <string name="theme_follow_wallpaper">சுவர்த்தாளைப் பொருந்து</string>
     <string name="accent_color">உரப்பு நிறம்</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
+    <string name="custom_icon_shape">தனிப்பயன் ஐகான் வடிவம்</string>
+    <string name="custom_icon_shape_create">தனிப்பயன் ஐகான் வடிவத்தை உருவாக்கவும்</string>
+    <string name="custom_icon_shape_edit">தனிப்பயன் ஐகான் வடிவத்தைத் திருத்து</string>
+    <string name="icon_shape_corner">மூலை வடிவம்</string>
+    <string name="icon_shape_corner_round">சுற்று</string>
+    <string name="icon_shape_corner_squircle">மென்மையான</string>
+    <string name="icon_shape_corner_cut">வெட்டு</string>
+    <string name="icon_shape_top_left">மேல் இடது</string>
+    <string name="icon_shape_top_right">மேல் வலது</string>
+    <string name="icon_shape_bottom_left">கீழே இடது</string>
     <string name="icon_shape_bottom_right">Bottom Right</string>
     <string name="create">Create</string>
     <string name="clipboard">Clipboard</string>

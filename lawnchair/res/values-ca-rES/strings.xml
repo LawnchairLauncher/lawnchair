@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">Estableix Lawnchair com el teu launcher per defecte per accedir a dreceres i més.</string>
     <string name="settings">Configuració</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Paquet d\'icones, Punts de notificació</string>
@@ -43,15 +43,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Personalització de tipus de lletra</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">Alguns textos romanen sense canvis</string>
     <string name="smartspace_calendar_label">Personalització del calendari d\'una ullada</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
+    <string name="smartspace_calendar_description">Mostrant sempre la data en calendari de sistema no-Gregorià</string>
     <string name="workspace_increase_max_grid_size_label">Mida incrementada de la quadrícula de la pantalla d\'inici</string>
     <string name="workspace_increase_max_grid_size_description">Mida incrementada de la quadrícula de la pantalla d\'inici de 10 x 10 a 20 x 20o</string>
     <string name="always_reload_icons_label">Recarrega sempre les icones</string>
     <string name="always_reload_icons_description">Evita utilitzar icones a la memòria cau dels paquets d\'icones</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <string name="recents_lock_unlock">Bloquejar/Desbloquejar</string>
+    <string name="recents_lock_unlock_description">Prevenir que l\'aplicació seleccionada es tanqui quan premeu \"Esborra-ho tot\"</string>
     <!-- Relating to label/icon size -->
     <string name="icons">Icones</string>
     <string name="icon_size">Mida de les Icones</string>
@@ -59,13 +59,13 @@
     <string name="label_size">Mida de les etiquetes</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
+    <string name="home_screen_rotation_description">Quan el dispositiu es troba girat</string>
     <string name="font_label">Font (Experimental)</string>
     <string name="fontWorkspace">General</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
+    <string name="fontHeading">Encapçalaments</string>
+    <string name="fontHeadingMedium">Encapçalaments (Medià)</string>
+    <string name="fontBody">Cos</string>
+    <string name="fontBodyMedium">Cos (medià)</string>
     <string name="icon_style">Estil de les icones</string>
     <string name="transparent_background_icons">Icones temàtiques transparents</string>
     <string name="transparent_background_icons_description">Utilitza un fons transparent a les icones temàtiques</string>
@@ -84,7 +84,7 @@
     <string name="notification_dots_color_contrast_warning_sometimes">Avis: El color del punt de notificació &amp; potser no tindrà suficient contrast amb els altres</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Es necessita accés a les notificacions</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
+    <string name="missing_notification_access_description">Permís de notificacions necessari</string>
     <string name="msg_missing_notification_access">Per a utilitzar els punts de notificació, dona <xliff:g id="name" example="My App">%1$s</xliff:g> accés a les notificacions.</string>
     <string name="title_change_settings">Canviar ajustaments</string>
     <string name="colors">Colors</string>
@@ -119,7 +119,7 @@
     <string name="themed_icons_off_label">Desactivat</string>
     <string name="themed_icons_home_label">Pantalla d\'inici</string>
     <string name="themed_icons_home_and_drawer_label">Pàgina principal &amp; Calaix</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="lawnicons_not_installed_description">Paquet d\'icones no suportat</string>
     <!-- IconPickerPreference -->
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cercle</string>
@@ -136,8 +136,8 @@
     <string name="icon_shape_teardrop">Gota d\'aigua</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Afegir fonts de text</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; les fonts TTF són suportades</string>
+    <string name="pref_fonts_missing_font">Font no trobada</string>
     <string name="font_variant_italic">Italica</string>
     <string name="font_weight_thin">Fina</string>
     <string name="font_weight_extra_light">Extra lleugera</string>
@@ -172,23 +172,23 @@
     <!-- HomeScreenPreferences -->
     <string name="auto_add_shortcuts_label">Afegeix les apps noves a la Pantalla d\'inici</string>
     <string name="minus_one_enable">Mostra el Feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="minus_one_unavailable">No n\'hi ha aplicacions de feed instal·lades</string>
     <string name="minus_one">Canal de notícies</string>
     <string name="feed_provider">Proveïdor de feed</string>
     <string name="feed_default">Predeterminat</string>
     <string name="wallpaper">Fons de pantalla</string>
     <string name="wallpaper_scrolling_label">Desplaçament de fons de pantalla</string>
     <string name="wallpaper_depth_effect_label">Efecte de profunditat del fons de pantalla</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="wallpaper_depth_effect_description">Amplia i allunya el fons de pantalla quan n\'hi hagi una transició entre àrees del launcher</string>
     <string name="show_sys_ui_scrim">Ombra superior</string>
     <string name="layout">Diseny</string>
     <string name="home_screen_grid">Graella de la pantalla d\'inici</string>
     <string name="home_screen_lock">Bloquejar Pantalla Inicial</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="home_screen_lock_description">Prevenir canvis a la visualització del menú principal</string>
     <string name="home_screen_unlock">Desbloquejar Pantalla Inicial</string>
-    <string name="home_screen_locked">Home Screen is locked</string>
+    <string name="home_screen_locked">Pantalla d\'inici bloquejada</string>
     <string name="show_dot_pagination_label">Utilitzar Paginació de Punts</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_dot_pagination_description">Utilitzar punts al contrari de línies per a ensenyar el nombre de pàgina</string>
     <string name="show_material_u_popup_label">Utilitzar el nou estil de Finestra Emergent</string>
     <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
     <string name="popup_menu">Menú emergent</string>

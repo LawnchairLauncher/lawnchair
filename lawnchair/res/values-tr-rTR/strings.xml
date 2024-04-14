@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">Kısayollara ve daha fazlasına erişmek için Lawnchair\'i varsayılan başlatıcınız olarak ayarlayın.</string>
     <string name="settings">Ayarlar</string>
     <string name="general_label">Genel</string>
     <string name="general_description">Renkler, Simge Paketi, Bildirim Noktaları</string>
@@ -29,7 +29,7 @@
     <string name="app_drawer_label">Uygulama Çekmecesi</string>
     <string name="app_drawer_description">Gizlenmiş Uygulamalar, Sütun Sayısı, Simgeler</string>
     <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="drawer_search_description">Web Önerileri, Küresel Arama</string>
     <string name="folders_label">Klasörler</string>
     <string name="folders_description">Satır ve Sütun Sayısı</string>
     <string name="gestures_label">Hareketler</string>
@@ -43,15 +43,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Yazı Tipi Özelleştirmesi</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">Bazı metinler değişmeden kalır</string>
     <string name="smartspace_calendar_label">Bir Bakışta Takvim Özelleştirme</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="smartspace_calendar_description">Gregoryen olmayan takvim sistemlerinde tarihin gösterilmesine izin ver</string>
+    <string name="workspace_increase_max_grid_size_label">Arttırılmış Maksimum Ana Ekran Izgara Boyutu</string>
+    <string name="workspace_increase_max_grid_size_description">İzin verilen maksimum Ana Ekran ızgara boyutunu 10 x 10\'dan 20 x 20o\'ya artırın</string>
     <string name="always_reload_icons_label">Simgeleri Her Zaman Yeniden Yükle</string>
     <string name="always_reload_icons_description">Ön belleklenmiş ikonları kullanmaktan kaçın</string>
     <string name="recents_lock_unlock">Kilitle/Kilidi aç</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <string name="recents_lock_unlock_description">\"Tümünü Temizle\"ye basıldığında seçilen uygulamanın kapanmasını engelle</string>
     <!-- Relating to label/icon size -->
     <string name="icons">Simgeler</string>
     <string name="icon_size">Simge Büyüklüğü</string>
@@ -59,10 +59,10 @@
     <string name="label_size">Etiket Büyüklüğü</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
+    <string name="home_screen_rotation_description">Cihaz döndürüldüğünde</string>
     <string name="font_label">Yazı Tipi (Deneysel)</string>
     <string name="fontWorkspace">Genel</string>
-    <string name="fontHeading">Headings</string>
+    <string name="fontHeading">Başlıklar</string>
     <string name="fontHeadingMedium">Headings (Medium)</string>
     <string name="fontBody">Body</string>
     <string name="fontBodyMedium">Body (Medium)</string>

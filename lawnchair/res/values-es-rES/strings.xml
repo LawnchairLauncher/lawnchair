@@ -204,7 +204,7 @@
     <string name="force_rounded_widgets">Esquinas Redondeadas</string>
     <string name="allow_widget_overlap">Permitir superposición</string>
     <string name="force_widget_resize_label">Forzar el redimensionado de widgets</string>
-    <string name="force_widget_resize_description">Permitir redimensionar los widgets que están limitados a un tamaño específico</string>
+    <string name="force_widget_resize_description">Permite redimensionar los widgets que están limitados a un tamaño específico</string>
     <string name="widget_unlimited_size_label">Quitar restricciones de tamaño</string>
     <string name="widget_unlimited_size_description">Remueve las restricciones de tamaño mínimo y máximo de los widgets</string>
     <!-- HomeScreenGridPreferences -->

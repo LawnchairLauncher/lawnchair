@@ -28,8 +28,8 @@
     <string name="dock_description">Barra de Pesquisa, Contagem de Ícones</string>
     <string name="app_drawer_label">Gaveta de aplicações</string>
     <string name="app_drawer_description">Aplicações Ocultas, Contagem de Colunas, Ícones</string>
-    <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="drawer_search_label">Pesquisa de Gaveta</string>
+    <string name="drawer_search_description">Sugestões da Web, Pesquisa Global</string>
     <string name="folders_label">Pastas</string>
     <string name="folders_description">Número de Linhas e Colunas</string>
     <string name="gestures_label">Gestos</string>
@@ -46,8 +46,8 @@
     <string name="font_picker_description">Algum texto mantém-se inalterado</string>
     <string name="smartspace_calendar_label">Personalização do Calendário At a Glance</string>
     <string name="smartspace_calendar_description">Permitir mostrar data em sistemas de calendário não-Gregoriano</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="workspace_increase_max_grid_size_label">Tamanho Máximo da Grelha do Ecrã Inicial Aumentado</string>
+    <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha de Ecrã Inicial de 10 x 10 para 20 x 20o</string>
     <string name="always_reload_icons_label">Recarregar Ícones Sempre</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
     <string name="recents_lock_unlock">Bloquear/Desbloquear</string>
@@ -187,9 +187,9 @@
     <string name="home_screen_lock_description">Impedir mudanças ao esquema do ecrã inicial</string>
     <string name="home_screen_unlock">Desbloquear Ecrã Inicial</string>
     <string name="home_screen_locked">O ecrã inicial está bloqueado</string>
-    <string name="show_dot_pagination_label">Use Dot Pagination</string>
+    <string name="show_dot_pagination_label">Usar Paginação por Pontos</string>
     <string name="show_dot_pagination_description">Usar pontos em vez de linhas para mostrar o número da página</string>
-    <string name="show_material_u_popup_label">Use New Popup Style</string>
+    <string name="show_material_u_popup_label">Usar Novo Estilo de Popup</string>
     <string name="show_material_u_popup_description">Utilizar o estilo pop-up animado e ligeiramente consolidado do Material You</string>
     <string name="popup_menu">Menu Flutuante</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio</string>
@@ -203,10 +203,10 @@
     <string name="color_dark">Escuro</string>
     <string name="force_rounded_widgets">Cantos Arredondados</string>
     <string name="allow_widget_overlap">Permitir Sobreposição</string>
-    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_widget_resize_label">Forçar Redimensionar o Widget</string>
+    <string name="force_widget_resize_description">Permitir redimensionar widgets que são restritos a um tamanho específico</string>
+    <string name="widget_unlimited_size_label">Remover Restrições de Tamanho</string>
+    <string name="widget_unlimited_size_description">Remover as restrições de tamanho mínimo e máximo de widgets</string>
     <!-- HomeScreenGridPreferences -->
     <string name="columns">Colunas</string>
     <string name="rows">Linhas</string>
@@ -291,8 +291,8 @@
     <!-- FolderPreferences -->
     <string name="folder_preview_bg_opacity_label">Opacidade de Fundo dos Ícones</string>
     <string name="folder_preview_bg_color_label">Cor de Fundo do Ícone</string>
-    <string name="max_folder_columns">Maximum Folder Columns</string>
-    <string name="max_folder_rows">Maximum Folder Rows</string>
+    <string name="max_folder_columns">Máximo de Colunas da Pasta</string>
+    <string name="max_folder_rows">Máximo de Linhas da Pasta</string>
     <!-- GesturePreference -->
     <string name="gesture_double_tap">Duplo Toque</string>
     <string name="gesture_swipe_up">Deslizar para Cima</string>
@@ -370,40 +370,40 @@
     <!-- Search ig -->
     <string name="action_apply">Aplicar</string>
     <string name="show_search_result_types">Mostrar nos Resultados da Pesquisa</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Aplicações &amp; Atalhos</string>
     <string name="search_pref_result_shortcuts_title">Atalhos da Aplicação</string>
     <string name="search_pref_result_people_title">Pessoas</string>
     <string name="search_pref_result_tips_title">Dicas de Pixel</string>
-    <string name="search_pref_result_settings_title">Android Settings</string>
+    <string name="search_pref_result_settings_title">Definições do Android</string>
     <string name="search_pref_result_files_title">Ficheiros</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search History</string>
-    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_web_title">Sugestões da Web</string>
+    <string name="search_pref_result_history_title">Histórico de Pesquisa</string>
+    <string name="search_pref_result_files_description">Mídia, ficheiros e mais</string>
     <string name="search_pref_result_contacts_description">Contactos e mais</string>
     <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
-    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
-    <string name="grant_requested_permissions">Grant Permissions</string>
+    <string name="warn_contact_permission_content">Para pesquisar contactos, conceda permissões de Contactos e Telefone ao Lawnchair.</string>
+    <string name="warn_files_permission_content">Para pesquisar os seus ficheiros, conceda permissões de Armazenamento ao Lawnchair.</string>
+    <string name="grant_requested_permissions">Conceder Permisões</string>
     <string name="pref_suggestion_label">Sugestões</string>
     <string name="all_apps_device_search_hint">Pesquisar</string>
     <string name="search_input_action_clear_results">Limpar Caixa de Pesquisa</string>
     <string name="all_apps_search_result_suggestions">Da web</string>
     <string name="all_apps_search_result_contacts_from_device">Dos seus contactos</string>
     <string name="all_apps_search_result_files">Dos seus ficheiros</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Das definições do seu telefone</string>
     <string name="label_search">Pesquisar</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Pesquisa por Voz</string>
     <string name="pref_advance_search_category">Pesquisa Avançada</string>
     <string name="perform_wide_search_title">Pesquisa no dispositivo</string>
     <string name="perform_wide_search_description">Procurar os contactos, ficheiros e definições do telefone</string>
-    <string name="max_apps_result_count_title">Maximum App Result Count</string>
-    <string name="max_people_result_count_title">Maximum People Result Count</string>
-    <string name="max_file_result_count_title">Maximum Files Result Count</string>
-    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
-    <string name="max_recent_result_count_title">Maximum Search History Count</string>
-    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
-    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+    <string name="max_apps_result_count_title">Contagem Máxima dos Resultados das Aplicações</string>
+    <string name="max_people_result_count_title">Contagem Máxima dos Resultados de Pessoas</string>
+    <string name="max_file_result_count_title">Contagem Máxima dos Resultados de Ficheiros</string>
+    <string name="max_settings_entry_result_count_title">Contagem Máxima dos Resultados de Definições</string>
+    <string name="max_recent_result_count_title">Contagem Máxima dos do Histórico de Pesquisa</string>
+    <string name="max_suggestion_result_count_title">Contagem Máxima dos Resultados de Sugestões Web</string>
+    <string name="max_web_suggestion_delay">Atraso Máximo das Sugestões Web</string>
     <string name="all_apps_search_market_message">Procurar Mais Aplicações</string>
     <string name="all_apps_search_startpage_message">Pesquisar em <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Nenhuma loja de aplicações ou navegador instalado.</string>

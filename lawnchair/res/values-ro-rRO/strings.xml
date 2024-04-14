@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">Setează Lawnchair ca lansatorul tău implicit pentru a accesa comenzi rapide și multe altele.</string>
     <string name="settings">Setări</string>
     <string name="general_label">General</string>
     <string name="general_description">Pictograme pentru Notificări, Pachet Pictograme</string>
@@ -28,8 +28,8 @@
     <string name="dock_description">Bara de căutare, Numărul pictogramelor</string>
     <string name="app_drawer_label">Sertarul cu aplicații</string>
     <string name="app_drawer_description">Aplicații Ascunse, Număr de Coloane, Pictograme</string>
-    <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="drawer_search_label">Caută în sertar</string>
+    <string name="drawer_search_description">Sugestii de pe Internet, Căutare Globală</string>
     <string name="folders_label">Dosare</string>
     <string name="folders_description">Numărul de rânduri și de coloane</string>
     <string name="gestures_label">Gesturi</string>
@@ -43,14 +43,14 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Personalizare font</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">Unele porțiuni de text vor rămâne neschimbate</string>
     <string name="smartspace_calendar_label">Personalizarea calendarului din secțiunea „Informații pe scurt”</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="smartspace_calendar_description">Permite afișarea datei în sistemele de calendar non-Gregorian</string>
+    <string name="workspace_increase_max_grid_size_label">Mărimea Maximă a Ecranului de Pornire a fost crescută</string>
+    <string name="workspace_increase_max_grid_size_description">Mărește dimensiunea maximă permisă a grilei ecranului de pornire de la 10 x 10 la 20 x 20</string>
     <string name="always_reload_icons_label">Reîncarcă întotdeauna pictogramele</string>
     <string name="always_reload_icons_description">Evită utilizarea pictogramelor stocate în cache din pachetele de pictograme</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock">Blocare/Deblocare</string>
     <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
     <!-- Relating to label/icon size -->
     <string name="icons">Pictograme</string>
