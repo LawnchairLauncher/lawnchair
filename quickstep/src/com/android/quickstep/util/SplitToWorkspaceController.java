@@ -172,11 +172,6 @@ public class SplitToWorkspaceController {
             private boolean mIsCancelled = false;
 
             @Override
-            public void onAnimationStart(Animator animation) {
-                mController.launchSplitTasks(aBoolean -> cleanUp());
-            }
-
-            @Override
             public void onAnimationCancel(Animator animation) {
                 mIsCancelled = true;
                 cleanUp();
@@ -185,6 +180,7 @@ public class SplitToWorkspaceController {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (!mIsCancelled) {
+                    mController.launchSplitTasks(aBoolean -> cleanUp());
                     InteractionJankMonitorWrapper.end(Cuj.CUJ_SPLIT_SCREEN_ENTER);
                 }
             }
