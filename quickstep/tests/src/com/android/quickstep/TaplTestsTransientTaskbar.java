@@ -17,8 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
 import static org.junit.Assume.assumeTrue;
@@ -26,9 +24,6 @@ import static org.junit.Assume.assumeTrue;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
 import org.junit.Test;
@@ -72,9 +67,6 @@ public class TaplTestsTransientTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @TaskbarModeSwitch(mode = TRANSIENT)
-    @PortraitLandscape
-    @ScreenRecord // b/317798731
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/321083190
     public void testSwipeToStashAndUnstash() {
         getTaskbar().swipeDownToStash();
         mLauncher.getLaunchedAppState().swipeUpToUnstashTaskbar();
