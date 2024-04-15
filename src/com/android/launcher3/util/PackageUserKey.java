@@ -48,6 +48,10 @@ public class PackageUserKey {
         update(/* packageName= */ "", widgetCategory, user);
     }
 
+    public PackageUserKey(String packageName, int widgetCategory, UserHandle user) {
+        update(packageName, widgetCategory, user);
+    }
+
     public void update(String packageName, UserHandle user) {
         update(packageName, NO_CATEGORY, user);
     }

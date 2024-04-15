@@ -50,7 +50,7 @@ public final class WidgetSections {
     private static Map<ComponentName, IntSet> sWidgetsToCategories;
 
     /** Returns a list of widget sections that are shown in the widget picker. */
-    public static synchronized SparseArray<WidgetSection> getWidgetSections(Context context) {
+    public static synchronized SparseArray<WidgetSection> get(Context context) {
         if (sWidgetSections != null) {
             return sWidgetSections;
         }

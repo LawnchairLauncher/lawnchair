@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.Pair;
+import android.util.SparseArray;
 
 import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
@@ -201,8 +202,16 @@ public class WidgetsModel {
         // add and update.
         mWidgetsList.putAll(rawWidgetsShortcuts.stream()
                 .filter(new WidgetValidityCheck(app))
-                .flatMap(widgetItem -> getPackageUserKeys(app.getContext(), widgetItem).stream()
-                        .map(key -> new Pair<>(packageItemInfoCache.getOrCreate(key), widgetItem)))
+                .flatMap(
+                        widgetItem -> getPackageUserKeys(app.getContext(), widgetItem)
+                                .stream()
+                                .map(
+                                        key -> new Pair<>(
+                                                packageItemInfoCache.getOrCreate(key),
+                                                widgetItem
+                                        )
+                                )
+                )
                 .collect(groupingBy(pair -> pair.first, mapping(pair -> pair.second, toList()))));
 
         // Update each package entry
@@ -240,19 +249,26 @@ public class WidgetsModel {
     }
 
     public WidgetItem getWidgetProviderInfoByProviderName(
-            ComponentName providerName, UserHandle user) {
+            ComponentName providerName, UserHandle user, Context context) {
+        SparseArray<WidgetSections.WidgetSection> sections = WidgetSections.get(
+                context);
         if (!WIDGETS_ENABLED) {
             return null;
         }
-        List<WidgetItem> widgetsList = mWidgetsList.get(
-                new PackageItemInfo(providerName.getPackageName(), user));
-        if (widgetsList == null) {
-            return null;
-        }
 
-        for (WidgetItem item : widgetsList) {
-            if (item.componentName.equals(providerName)) {
-                return item;
+        // Checking if we hav ea provider in any of the categories.
+        for (int i = 0; i < sections.size(); i++) {
+            PackageItemInfo key = new PackageItemInfo(
+                    providerName.getPackageName(),
+                    sections.get(i).mCategory,
+                    user
+            );
+            if (mWidgetsList.containsKey(key)) {
+                return mWidgetsList.get(key).stream().filter(
+                                item -> item.componentName.equals(providerName)
+                        )
+                        .findFirst()
+                        .orElse(null);
             }
         }
         return null;
@@ -286,10 +302,12 @@ public class WidgetsModel {
         categories.forEach(category -> {
             if (category == NO_CATEGORY) {
                 packageUserKeys.add(
-                        new PackageUserKey(item.componentName.getPackageName(),
-                                item.user));
+                        new PackageUserKey(item.componentName.getPackageName(), item.user)
+                );
             } else {
-                packageUserKeys.add(new PackageUserKey(category, item.user));
+                packageUserKeys.add(
+                        new PackageUserKey(item.componentName.getPackageName(), category, item.user)
+                );
             }
         });
         return packageUserKeys;
