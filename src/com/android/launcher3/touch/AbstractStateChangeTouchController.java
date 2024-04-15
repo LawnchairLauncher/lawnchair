@@ -57,7 +57,7 @@ public abstract class AbstractStateChangeTouchController
     protected final SingleAxisSwipeDetector.Direction mSwipeDirection;
 
     protected final AnimatorListener mClearStateOnCancelListener =
-            newCancelListener(this::clearState);
+            newCancelListener(this::clearState, /* isSingleUse = */ false);
     private final FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
     protected int mStartContainerType;

@@ -97,6 +97,13 @@ public class RecentTasksList {
                     RecentTasksList.this.onRunningTaskVanished(taskInfo);
                 });
             }
+
+            @Override
+            public void onRunningTaskChanged(ActivityManager.RunningTaskInfo taskInfo) {
+                mMainThreadExecutor.execute(() -> {
+                    RecentTasksList.this.onRunningTaskChanged(taskInfo);
+                });
+            }
         });
         // We may receive onRunningTaskAppeared events later for tasks which have already been
         // included in the list returned by mSysUiProxy.getRunningTasks(), or may receive
@@ -237,6 +244,20 @@ public class RecentTasksList {
             if (existingTask.taskId != taskInfo.taskId) continue;
 
             mRunningTasks.remove(existingTask);
+            if (mRunningTasksListener != null) {
+                mRunningTasksListener.onRunningTasksChanged();
+            }
+            return;
+        }
+    }
+
+    private void onRunningTaskChanged(ActivityManager.RunningTaskInfo taskInfo) {
+        // Find the task from the list of running tasks, if it exists
+        for (ActivityManager.RunningTaskInfo existingTask : mRunningTasks) {
+            if (existingTask.taskId != taskInfo.taskId) continue;
+
+            mRunningTasks.remove(existingTask);
+            mRunningTasks.add(taskInfo);
             if (mRunningTasksListener != null) {
                 mRunningTasksListener.onRunningTasksChanged();
             }

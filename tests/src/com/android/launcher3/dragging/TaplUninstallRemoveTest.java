@@ -39,6 +39,7 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Test;
@@ -132,6 +133,7 @@ public class TaplUninstallRemoveTest extends AbstractLauncherUiTest<Launcher> {
      */
     @Test
     @PlatinumTest(focusArea = "launcher")
+    @ScreenRecordRule.ScreenRecord // b/319501259
     public void uninstallWorkspaceIcon() throws IOException {
         Point[] gridPositions = TestUtil.getCornersAndCenterPositions(mLauncher);
         StringBuilder sb = new StringBuilder();
@@ -162,12 +164,10 @@ public class TaplUninstallRemoveTest extends AbstractLauncherUiTest<Launcher> {
             mLauncher.getWorkspace().verifyWorkspaceAppIconIsGone(
                     DUMMY_APP_NAME + " was expected to disappear after uninstall.", DUMMY_APP_NAME);
 
-            if (!TestStabilityRule.isPresubmit()) { // b/315847371
-                Log.d(UIOBJECT_STALE_ELEMENT, "second getWorkspaceIconsPositions()");
-                Map<String, Point> finalPositions =
-                        mLauncher.getWorkspace().getWorkspaceIconsPositions();
-                assertThat(finalPositions).doesNotContainKey(DUMMY_APP_NAME);
-            }
+            Log.d(UIOBJECT_STALE_ELEMENT, "second getWorkspaceIconsPositions()");
+            Map<String, Point> finalPositions =
+                    mLauncher.getWorkspace().getWorkspaceIconsPositions();
+            assertThat(finalPositions).doesNotContainKey(DUMMY_APP_NAME);
         } finally {
             TestUtil.uninstallDummyApp();
         }
