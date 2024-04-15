@@ -41,6 +41,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -134,6 +135,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
                     final float distance = l.getAllAppsController().getShiftRange() * progress;
                     return (int) distance;
                 });
+            }
+
+            case TestProtocol.REQUEST_IS_LAUNCHER_BINDING: {
+                return getUIProperty(Bundle::putBoolean, t -> isLauncherBinding(), () -> true);
             }
 
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
@@ -482,6 +487,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
         target.set(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]);
         return target;
+    }
+
+    protected boolean isLauncherBinding() {
+        BaseActivity baseActivity = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+        return baseActivity != null && baseActivity.isBindingItems();
     }
 
     protected boolean isLauncherInitialized() {
