@@ -4237,30 +4237,31 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_TAB:
-                    return snapToPageRelative(event.isShiftPressed() ? -1 : 1, true /* cycle */,
-                            DIRECTION_TAB);
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    return snapToPageRelative(mIsRtl ? -1 : 1, true /* cycle */, DIRECTION_RIGHT);
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    return snapToPageRelative(mIsRtl ? 1 : -1, true /* cycle */, DIRECTION_LEFT);
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    return snapToPageRelative(1, false /* cycle */, DIRECTION_UP);
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    return snapToPageRelative(1, false /* cycle */, DIRECTION_DOWN);
-                case KeyEvent.KEYCODE_DEL:
-                case KeyEvent.KEYCODE_FORWARD_DEL:
+        if (isHandlingTouch() || event.getAction() != KeyEvent.ACTION_DOWN) {
+            return super.dispatchKeyEvent(event);
+        }
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_TAB:
+                return snapToPageRelative(event.isShiftPressed() ? -1 : 1, true /* cycle */,
+                        DIRECTION_TAB);
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                return snapToPageRelative(mIsRtl ? -1 : 1, true /* cycle */, DIRECTION_RIGHT);
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                return snapToPageRelative(mIsRtl ? 1 : -1, true /* cycle */, DIRECTION_LEFT);
+            case KeyEvent.KEYCODE_DPAD_UP:
+                return snapToPageRelative(1, false /* cycle */, DIRECTION_UP);
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                return snapToPageRelative(1, false /* cycle */, DIRECTION_DOWN);
+            case KeyEvent.KEYCODE_DEL:
+            case KeyEvent.KEYCODE_FORWARD_DEL:
+                dismissCurrentTask();
+                return true;
+            case KeyEvent.KEYCODE_NUMPAD_DOT:
+                if (event.isAltPressed()) {
+                    // Numpad DEL pressed while holding Alt.
                     dismissCurrentTask();
                     return true;
-                case KeyEvent.KEYCODE_NUMPAD_DOT:
-                    if (event.isAltPressed()) {
-                        // Numpad DEL pressed while holding Alt.
-                        dismissCurrentTask();
-                        return true;
-                    }
-            }
+                }
         }
         return super.dispatchKeyEvent(event);
     }
