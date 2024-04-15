@@ -31,7 +31,7 @@ import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
 import com.android.wm.shell.common.TriangleShape
 
 /** Drawable for the background of the bubble bar. */
-class BubbleBarBackground(context: Context, private val backgroundHeight: Float) : Drawable() {
+class BubbleBarBackground(context: Context, private var backgroundHeight: Float) : Drawable() {
 
     private val DARK_THEME_SHADOW_ALPHA = 51f
     private val LIGHT_THEME_SHADOW_ALPHA = 25f
@@ -170,5 +170,9 @@ class BubbleBarBackground(context: Context, private val backgroundHeight: Float)
 
     fun setArrowAlpha(alpha: Int) {
         arrowDrawable.paint.alpha = alpha
+    }
+
+    fun setHeight(newHeight: Float) {
+        backgroundHeight = newHeight
     }
 }

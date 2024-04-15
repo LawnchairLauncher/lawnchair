@@ -427,11 +427,14 @@
     <dimen name="bubblebar_drag_elevation">2dp</dimen>
     <dimen name="bubblebar_hotseat_adjustment_threshold">90dp</dimen>
 
-    <dimen name="bubblebar_icon_size">50dp</dimen>
+    <dimen name="bubblebar_icon_size_small">32dp</dimen>
+    <dimen name="bubblebar_icon_size">36dp</dimen>
     <dimen name="bubblebar_badge_size">24dp</dimen>
     <dimen name="bubblebar_icon_overlap">12dp</dimen>
-    <dimen name="bubblebar_overflow_inset">24dp</dimen>
-    <dimen name="bubblebar_icon_spacing">3dp</dimen>
+    <dimen name="bubblebar_overflow_inset">16dp</dimen>
+    <dimen name="bubblebar_icon_spacing">6dp</dimen>
+    <dimen name="bubblebar_icon_spacing_large">8dp</dimen>
+    <dimen name="bubblebar_expanded_icon_spacing">12dp</dimen>
     <dimen name="bubblebar_icon_elevation">1dp</dimen>
 
     <!-- Bubble bar dismiss view -->
