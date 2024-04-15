@@ -1440,6 +1440,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         updateTextViewFocus();
     }
 
+    @Override
+    public void onTitleChanged(CharSequence title) {
+        mFolderName.setText(title);
+    }
+
     /**
      * Utility methods to iterate over items of the view
      */
