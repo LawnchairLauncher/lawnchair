@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Doe meer met de taakbalk"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"De taakbalk altijd tonen"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Houd de scheidingslijn ingedrukt als je de taakbalk altijd onderaan je scherm wilt tonen"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Houd je vinger op de actietoets om te zoeken naar wat er op je scherm staat"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Dit product gebruikt het geselecteerde gedeelte van je scherm om te zoeken. Het <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Privacybeleid<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> en de <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Servicevoorwaarden<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> van Google zijn van toepassing."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sluiten"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>

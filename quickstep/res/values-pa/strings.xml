@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ਟਾਸਕਬਾਰ ਦਾ ਹੋਰ ਲਾਹਾ ਲਓ"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ਹਮੇਸ਼ਾਂ ਟਾਸਕਬਾਰ ਦਿਖਾਉਣਾ"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਹਮੇਸ਼ਾਂ ਟਾਸਕਬਾਰ ਦਿਖਾਉਣ ਲਈ, ਵਿਭਾਜਕ ਨੂੰ ਸਪਰਸ਼ ਕਰ ਕੇ ਰੱਖੋ"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"ਤੁਹਾਡੀ ਸਕ੍ਰੀਨ \'ਤੇ ਮੌਜੂਦ ਸਮੱਗਰੀ ਨੂੰ ਖੋਜਣ ਲਈ, ਕਾਰਵਾਈ ਕੁੰਜੀ ਨੂੰ ਸਪਰਸ਼ ਕਰ ਕੇ ਰੱਖੋ"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"ਇਹ ਉਤਪਾਦ ਖੋਜ ਕਰਨ ਲਈ ਤੁਹਾਡੀ ਸਕ੍ਰੀਨ ਦੇ ਚੁਣੇ ਹੋਏ ਹਿੱਸੇ ਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ। Google ਦੀ <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>ਪਰਦੇਦਾਰੀ ਨੀਤੀ<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> ਅਤੇ <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>ਸੇਵਾ ਦੇ ਨਿਯਮ<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> ਲਾਗੂ ਹੁੰਦੇ ਹਨ।"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ਬੰਦ ਕਰੋ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ਸਮਝ ਲਿਆ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ਘਰ"</string>

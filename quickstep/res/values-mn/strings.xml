@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Ажлын хэсгийн тусламжтай илүү ихийг хийгээрэй"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Ажлын хэсгийг үргэлж харуулах"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Дэлгэцийнхээ доод талд Ажлын хэсгийг үргэлж харуулахын тулд хуваагч дээр хүрээд удаан дарна уу"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Дэлгэц дээрээ байгаа зүйлийг хайхын тулд тусгай товчлуурыг удаан дарна уу"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Энэ бүтээгдэхүүн хайхын тулд таны дэлгэцийн сонгосон хэсгийг ашигладаг. Google-н <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>нууцлалын бодлого<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> болон <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>үйлчилгээний нөхцөл<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> хэрэгжинэ."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Хаах"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Дууссан"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Гэр"</string>

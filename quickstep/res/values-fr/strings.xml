@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Faites-en plus avec la barre des tâches"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Toujours afficher la barre des tâches"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Pour toujours afficher la barre des tâches en bas de votre écran, appuyez sur le séparateur de manière prolongée."</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Appuyez de manière prolongée sur la touche d\'action pour rechercher ce qui se trouve à l\'écran"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Ce produit utilise la zone sélectionnée de l\'écran pour rechercher. Les <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Règles de confidentialité<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> et les <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Conditions d\'utilisation<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> de Google s\'appliquent."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fermer"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"OK"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Accueil"</string>

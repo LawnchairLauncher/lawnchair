@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"פעולות נוספות שאפשר לעשות עם סרגל האפליקציות"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"תמיד להציג את סרגל האפליקציות"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"כדי להציג תמיד את סרגל האפליקציות בתחתית המסך, יש ללחוץ לחיצה ארוכה על המחיצה"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"כדי לחפש במסך, צריך ללחוץ לחיצה ארוכה על מקש הפעולה"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"‏המוצר הזה משתמש בחלק שבחרת במסך לצורך חיפוש, בכפוף ל<xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>מדיניות הפרטיות<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> ו<xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>התנאים וההגבלות<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> של Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"סגירה"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"סיום"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"בית"</string>
