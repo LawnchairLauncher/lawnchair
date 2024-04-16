@@ -16,12 +16,14 @@
 
 package com.android.quickstep
 
+import com.android.dx.mockito.inline.extended.ExtendedMockito.doReturn
+import com.android.dx.mockito.inline.extended.ExtendedMockito.mockitoSession
+import com.android.dx.mockito.inline.extended.StaticMockitoSession
 import android.content.ComponentName
 import android.content.Intent
 import android.platform.test.flag.junit.SetFlagsRule
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingViewHelper
-import com.android.launcher3.Launcher
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.model.data.WorkspaceItemInfo
@@ -33,8 +35,11 @@ import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.Task.TaskKey
 import com.android.window.flags.Flags
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.quality.Strictness
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -56,8 +61,23 @@ class DesktopSystemShortcutTest {
     private val factory: TaskShortcutFactory =
         DesktopSystemShortcut.createFactory(abstractFloatingViewHelper)
 
+    private lateinit var mockitoSession: StaticMockitoSession
+
+    @Before
+    fun setUp(){
+        mockitoSession = mockitoSession().strictness(Strictness.LENIENT)
+                .spyStatic(DesktopModeStatus::class.java).startMocking()
+        doReturn(true).`when` { DesktopModeStatus.enforceDeviceRestrictions() }
+        doReturn(true).`when` { DesktopModeStatus.isDesktopModeSupported(any()) }
+    }
+
+    @After
+    fun tearDown(){
+        mockitoSession.finishMocking()
+    }
+
     @Test
-    fun createDesktopTaskShortcutFactory_featureOff() {
+    fun createDesktopTaskShortcutFactory_desktopModeDisabled() {
         setFlagsRule.disableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE)
 
         val task =
@@ -74,6 +94,49 @@ class DesktopSystemShortcutTest {
 
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
         assertThat(shortcuts).isNull()
+    }
+
+    @Test
+    fun createDesktopTaskShortcutFactory_desktopModeEnabled_DeviceNotSupported() {
+        setFlagsRule.enableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE)
+        doReturn(false).`when` { DesktopModeStatus.isDesktopModeSupported(any()) }
+
+        val task =
+            Task(TaskKey(1, 0, Intent(), ComponentName("", ""), 0, 2000)).apply {
+                isDockable = true
+            }
+        val taskContainer =
+            taskView.TaskIdAttributeContainer(
+                task,
+                null,
+                null,
+                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+            )
+
+        val shortcuts = factory.getShortcuts(launcher, taskContainer)
+        assertThat(shortcuts).isNull()
+    }
+
+    @Test
+    fun createDesktopTaskShortcutFactory_desktopModeEnabled_DeviceNotSupported_OverrideEnabled() {
+        setFlagsRule.enableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE)
+        doReturn(false).`when` { DesktopModeStatus.isDesktopModeSupported(any()) }
+        doReturn(false).`when` { DesktopModeStatus.enforceDeviceRestrictions() }
+
+        val task =
+            Task(TaskKey(1, 0, Intent(), ComponentName("", ""), 0, 2000)).apply {
+                isDockable = true
+            }
+        val taskContainer =
+            taskView.TaskIdAttributeContainer(
+                task,
+                null,
+                null,
+                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+            )
+
+        val shortcuts = factory.getShortcuts(launcher, taskContainer)
+        assertThat(shortcuts).isNotNull()
     }
 
     @Test

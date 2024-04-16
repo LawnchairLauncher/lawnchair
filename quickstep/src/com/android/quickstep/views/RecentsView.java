@@ -68,7 +68,6 @@ import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_SPLIT_SCREEN;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_SPLIT_SELECT_ACTIVE;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -167,6 +166,7 @@ import com.android.launcher3.util.TranslateEdgeEffect;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.BaseContainerInterface;
+import com.android.quickstep.DesktopModeStatus;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsAnimationController;
@@ -2817,7 +2817,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     }
 
     private boolean hasDesktopTask(Task[] runningTasks) {
-        if (!enableDesktopWindowingMode()) {
+        if (!DesktopModeStatus.canEnterDesktopMode(mContext)) {
             return false;
         }
         for (Task task : runningTasks) {
@@ -6229,7 +6229,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      */
     public void moveTaskToDesktop(TaskIdAttributeContainer taskContainer,
             Runnable successCallback) {
-        if (!enableDesktopWindowingMode()) {
+        if (!DesktopModeStatus.canEnterDesktopMode(mContext)) {
             return;
         }
         switchToScreenshot(() -> finishRecentsAnimation(/* toRecents= */true, /* shouldPip= */false,

@@ -24,7 +24,6 @@ import com.android.launcher3.popup.SystemShortcut
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.RecentsViewContainer
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
-import com.android.window.flags.Flags
 
 /** A menu item, "Desktop", that allows the user to bring the current app into Desktop Windowing. */
 class DesktopSystemShortcut(
@@ -52,7 +51,7 @@ class DesktopSystemShortcut(
     }
 
     companion object {
-        /** Creates a factory for creating Desktop system shorcuts. */
+        /** Creates a factory for creating Desktop system shortcuts. */
         @JvmOverloads
         fun createFactory(
             abstractFloatingViewHelper: AbstractFloatingViewHelper = AbstractFloatingViewHelper()
@@ -62,7 +61,7 @@ class DesktopSystemShortcut(
                     container: RecentsViewContainer,
                     taskContainer: TaskIdAttributeContainer
                 ): List<DesktopSystemShortcut>? {
-                    return if (!Flags.enableDesktopWindowingMode()) null
+                    return if (!DesktopModeStatus.canEnterDesktopMode(container.asContext())) null
                     else if (!taskContainer.task.isDockable) null
                     else
                         listOf(
