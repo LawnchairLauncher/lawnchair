@@ -88,8 +88,11 @@ public class LauncherSwipeHandlerV2 extends
 
         final View workspaceView = findWorkspaceView(launchCookies,
                 mRecentsView.getRunningTaskView());
-        boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow()
-                && workspaceView.getHeight() > 0;
+        boolean canUseWorkspaceView = workspaceView != null
+                && workspaceView.isAttachedToWindow()
+                && workspaceView.getHeight() > 0
+                && (mContainer.getDesktopVisibilityController() == null
+                || !mContainer.getDesktopVisibilityController().areDesktopTasksVisible());
 
         mContainer.getRootView().setForceHideBackArrow(true);
         if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
