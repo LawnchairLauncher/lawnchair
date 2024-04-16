@@ -33,7 +33,7 @@ class DeviceConfigWrapper private constructor(propReader: PropReader) {
     val customLphThresholds =
         propReader.get(
             "CUSTOM_LPH_THRESHOLDS",
-            false,
+            true,
             "Server side control to customize LPH timeout and touch slop"
         )
 
