@@ -40,6 +40,7 @@
 <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
     <dimen name="spring_loaded_hotseat_top_margin">65dp</dimen>
+    <dimen name="min_hotseat_icon_space">17dp</dimen>
 
 <!-- Dragging -->
     <dimen name="drop_target_top_margin">64dp</dimen>
