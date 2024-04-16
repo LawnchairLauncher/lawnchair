@@ -33,8 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"See rakendusepaar ei ole selles seadmes toetatud"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Selle rakendusepaari kasutamiseks voltige seade lahti"</string>
-    <!-- no translation found for app_pair_not_available (3556767440808032031) -->
-    <skip />
+    <string name="app_pair_not_available" msgid="3556767440808032031">"Rakendusepaar ei ole saadaval"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Vidina teisaldamiseks puudutage ja hoidke all."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Vidina teisaldamiseks või kohandatud toimingute kasutamiseks topeltpuudutage ja hoidke all."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -45,7 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Lisa avakuvale"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g> lisati avakuvale"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Soovitused"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Alustalad"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Põhiasjad"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Uudised ja ajakirjad"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Teie lõõgastumiskoht"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Meelelahutus"</string>

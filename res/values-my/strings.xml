@@ -33,8 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ဤအက်ပ်တွဲချိတ်ခြင်းကို ဤစက်တွင် ပံ့ပိုးမထားပါ"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"ဤအက်ပ်တွဲချိတ်ခြင်းကို သုံးရန် စက်ကိုဖြန့်ပါ"</string>
-    <!-- no translation found for app_pair_not_available (3556767440808032031) -->
-    <skip />
+    <string name="app_pair_not_available" msgid="3556767440808032031">"အက်ပ်တွဲချိတ်ခြင်းကို မရနိုင်ပါ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ဝိဂျက်ကို ရွှေ့ရန် တို့ပြီး ဖိထားပါ။"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ဝိဂျက်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -46,7 +45,7 @@
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်ကို ပင်မစာမျက်နှာတွင် ထည့်လိုက်ပြီ"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"အကြံပြုချက်"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"မရှိမဖြစ်များ"</string>
-    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"သတင်းနှင့် မဂ္ဂဇင်းများ"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"သတင်းနှင့် မဂ္ဂဇင်း"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"သင်အနားယူသောနေရာ"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ဖျော်ဖြေရေး"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"လူမှုရေး"</string>
