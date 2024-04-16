@@ -41,7 +41,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartScreenCallback;
@@ -53,9 +52,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.states.RotationHelper;
-import com.android.launcher3.uioverrides.flags.DeveloperOptionsUI;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.SettingsCache;
 
 /**
@@ -255,12 +252,6 @@ public class SettingsActivity extends FragmentActivity
                         preference.setOrder(0);
                     }
                     return mDeveloperOptionsEnabled;
-                case "pref_developer_flags":
-                    if (mDeveloperOptionsEnabled && preference instanceof PreferenceCategory pc) {
-                        Executors.MAIN_EXECUTOR.post(() -> new DeveloperOptionsUI(this, pc));
-                        return true;
-                    }
-                    return false;
             }
 
             return true;
