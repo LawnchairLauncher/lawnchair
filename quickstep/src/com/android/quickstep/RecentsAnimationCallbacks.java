@@ -39,6 +39,7 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -217,6 +218,13 @@ public class RecentsAnimationCallbacks implements
                 apps.add(target);
             }
         }
+    }
+
+    public void dump(String prefix, PrintWriter pw) {
+        pw.println(prefix + "RecentsAnimationCallbacks:");
+
+        pw.println(prefix + "\tmAllowMinimizeSplitScreen=" + mAllowMinimizeSplitScreen);
+        pw.println(prefix + "\tmCancelled=" + mCancelled);
     }
 
     /**

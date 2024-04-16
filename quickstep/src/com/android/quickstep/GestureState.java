@@ -513,13 +513,14 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         return mSwipeUpStartTimeMs;
     }
 
-    public void dump(PrintWriter pw) {
-        pw.println("GestureState:");
-        pw.println("  gestureID=" + mGestureId);
-        pw.println("  runningTask=" + mRunningTask);
-        pw.println("  endTarget=" + mEndTarget);
-        pw.println("  lastAppearedTaskTargetId=" + Arrays.toString(mLastAppearedTaskTargets));
-        pw.println("  lastStartedTaskId=" + Arrays.toString(mLastStartedTaskId));
-        pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
+    public void dump(String prefix, PrintWriter pw) {
+        pw.println(prefix + "GestureState:");
+        pw.println(prefix + "\tgestureID=" + mGestureId);
+        pw.println(prefix + "\trunningTask=" + mRunningTask);
+        pw.println(prefix + "\tendTarget=" + mEndTarget);
+        pw.println(prefix + "\tlastAppearedTaskTargetId="
+                + Arrays.toString(mLastAppearedTaskTargets));
+        pw.println(prefix + "\tlastStartedTaskId=" + Arrays.toString(mLastStartedTaskId));
+        pw.println(prefix + "\tisRecentsAnimationRunning=" + isRecentsAnimationRunning());
     }
 }
