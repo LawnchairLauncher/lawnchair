@@ -89,6 +89,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.IntArray;
@@ -694,7 +695,8 @@ public class LoaderTask implements Runnable {
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
-                AppInfo appInfo = new AppInfo(app, mUserCache.getUserInfo(user), quietMode);
+                AppInfo appInfo = new AppInfo(app, mUserCache.getUserInfo(user),
+                        ApiWrapper.INSTANCE.get(mApp.getContext()), quietMode);
                 if (Flags.enableSupportForArchiving() && app.getApplicationInfo().isArchived) {
                     // For archived apps, include progress info in case there is a pending
                     // install session post restart of device.

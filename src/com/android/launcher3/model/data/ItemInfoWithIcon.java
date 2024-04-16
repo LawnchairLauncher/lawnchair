@@ -122,6 +122,11 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_ARCHIVED = 1 << 14;
 
     /**
+     * Flag indicating whether the package related to the item & user does not support resizing.
+     */
+    public static final int FLAG_NOT_RESIZEABLE = 1 << 15;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
@@ -244,6 +249,24 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
             runtimeStatusFlags &= ~FLAG_INSTALL_SESSION_ACTIVE;
             runtimeStatusFlags &= ~FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
         }
+    }
+
+    /**
+     * Sets whether this app info is non-resizeable.
+     */
+    public void setNonResizeable(boolean nonResizeable) {
+        if (nonResizeable) {
+            runtimeStatusFlags |= FLAG_NOT_RESIZEABLE;
+        } else {
+            runtimeStatusFlags &= ~FLAG_NOT_RESIZEABLE;
+        }
+    }
+
+    /**
+     * Returns whether this app info is resizeable.
+     */
+    public boolean isNonResizeable() {
+        return (runtimeStatusFlags & FLAG_NOT_RESIZEABLE) != 0;
     }
 
     /** Creates an intent to that launches the app store at this app's page. */

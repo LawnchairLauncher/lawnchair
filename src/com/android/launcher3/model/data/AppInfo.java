@@ -35,6 +35,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.UserIconInfo;
 
@@ -89,10 +90,12 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      */
     public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
         this(info, UserCache.INSTANCE.get(context).getUserInfo(user),
+                ApiWrapper.INSTANCE.get(context),
                 context.getSystemService(UserManager.class).isQuietModeEnabled(user));
     }
 
-    public AppInfo(LauncherActivityInfo info, UserIconInfo userIconInfo, boolean quietModeEnabled) {
+    public AppInfo(LauncherActivityInfo info, UserIconInfo userIconInfo,
+            ApiWrapper apiWrapper, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = CONTAINER_ALL_APPS;
         this.user = userIconInfo.user;
@@ -102,7 +105,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
             runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
         }
         uid = info.getApplicationInfo().uid;
-        updateRuntimeFlagsForActivityTarget(this, info, userIconInfo);
+        updateRuntimeFlagsForActivityTarget(this, info, userIconInfo, apiWrapper);
     }
 
     public AppInfo(AppInfo info) {
@@ -180,7 +183,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      * activity.
      */
     public static boolean updateRuntimeFlagsForActivityTarget(
-            ItemInfoWithIcon info, LauncherActivityInfo lai, UserIconInfo userIconInfo) {
+            ItemInfoWithIcon info, LauncherActivityInfo lai, UserIconInfo userIconInfo,
+            ApiWrapper apiWrapper) {
         final int oldProgressLevel = info.getProgressLevel();
         final int oldRuntimeStatusFlags = info.runtimeStatusFlags;
         ApplicationInfo appInfo = lai.getApplicationInfo();
@@ -211,6 +215,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         info.setProgressLevel(
                 PackageManagerHelper.getLoadingProgress(lai),
                 PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
+        info.setNonResizeable(apiWrapper.isNonResizeableActivity(lai));
         return (oldProgressLevel != info.getProgressLevel())
                 || (oldRuntimeStatusFlags != info.runtimeStatusFlags);
     }

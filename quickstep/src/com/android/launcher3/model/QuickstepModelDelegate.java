@@ -70,6 +70,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.PersistedItemArray;
@@ -557,6 +558,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
                     AppInfo info = new AppInfo(
                             lai,
                             UserCache.INSTANCE.get(mAppState.getContext()).getUserInfo(user),
+                            ApiWrapper.INSTANCE.get(mAppState.getContext()),
                             mUMS.isUserQuiet(user));
                     info.container = mContainer;
                     mAppState.getIconCache().getTitleAndIcon(info, lai, false);

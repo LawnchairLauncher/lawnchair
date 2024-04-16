@@ -329,11 +329,8 @@ class WorkspaceItemProcessor(
             }
             val activityInfo = c.launcherActivityInfo
             if (activityInfo != null) {
-                if (ApiWrapper.INSTANCE.get(app.context).isNonResizeableActivity(activityInfo)) {
-                    info.status = info.status or WorkspaceItemInfo.FLAG_NON_RESIZEABLE
-                }
                 AppInfo.updateRuntimeFlagsForActivityTarget(info, activityInfo,
-                    userCache.getUserInfo(c.user))
+                    userCache.getUserInfo(c.user), ApiWrapper.INSTANCE[app.context])
             }
             if (
                 (c.restoreFlag != 0 ||

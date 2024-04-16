@@ -73,8 +73,8 @@ class AppPairInfo() : CollectionInfo() {
         val isTablet =
             (ActivityContext.lookupContext(context) as ActivityContext).getDeviceProfile().isTablet
         return Pair(
-            isTablet || !getFirstApp().hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE),
-            isTablet || !getSecondApp().hasStatusFlag(WorkspaceItemInfo.FLAG_NON_RESIZEABLE)
+            isTablet || !getFirstApp().isNonResizeable(),
+            isTablet || !getSecondApp().isNonResizeable()
         )
     }
 
