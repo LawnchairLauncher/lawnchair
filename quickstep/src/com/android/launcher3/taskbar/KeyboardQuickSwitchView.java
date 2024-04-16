@@ -362,8 +362,9 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                                         OPEN_OUTLINE_INTERPOLATOR));
                     }
                 });
-                animateFocusMove(-1, currentFocusIndexOverride == -1
-                        ? Math.min(mContent.getChildCount(), 1) : currentFocusIndexOverride);
+                animateFocusMove(-1, Math.min(
+                        mContent.getChildCount() - 1,
+                        currentFocusIndexOverride == -1 ? 1 : currentFocusIndexOverride));
                 displayedContent.setVisibility(VISIBLE);
                 setVisibility(VISIBLE);
                 requestFocus();
