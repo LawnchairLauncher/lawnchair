@@ -34,6 +34,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.logging.FileLog
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.AppPairInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.IconRequestInfo
@@ -41,6 +42,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.pm.PackageInstallInfo
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.util.ApiWrapper
 import com.android.launcher3.util.ComponentKey
@@ -60,6 +62,7 @@ import com.android.launcher3.widget.util.WidgetSizes
 class WorkspaceItemProcessor(
     private val c: LoaderCursor,
     private val memoryLogger: LoaderMemoryLogger?,
+    private val userCache: UserCache,
     private val userManagerState: UserManagerState,
     private val launcherApps: LauncherApps,
     private val pendingPackages: MutableSet<PackageUserKey>,
@@ -326,13 +329,8 @@ class WorkspaceItemProcessor(
             }
             val activityInfo = c.launcherActivityInfo
             if (activityInfo != null) {
-                if (ApiWrapper.INSTANCE.get(app.context).isNonResizeableActivity(activityInfo)) {
-                    info.status = info.status or WorkspaceItemInfo.FLAG_NON_RESIZEABLE
-                }
-                info.setProgressLevel(
-                    PackageManagerHelper.getLoadingProgress(activityInfo),
-                    PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING
-                )
+                AppInfo.updateRuntimeFlagsForActivityTarget(info, activityInfo,
+                    userCache.getUserInfo(c.user), ApiWrapper.INSTANCE[app.context])
             }
             if (
                 (c.restoreFlag != 0 ||

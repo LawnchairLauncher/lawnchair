@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Få mere fra hånden med proceslinjen"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vis altid proceslinjen"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Hvis du vil have, at proceslinjen altid vises nederst på din skærm, skal du holde fingeren på skillelinjen"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Hold fingeren på handlingstasten for at søge efter det, der vises på din skærm"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Dette produkt bruger den valgte del af din skærm til at søge. Googles <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>privatlivspolitik<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> og <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>servicevilkår<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> er gældende."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Luk"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Luk"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Hjem"</string>

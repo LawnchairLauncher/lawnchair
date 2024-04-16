@@ -222,8 +222,10 @@ public class RemoteTargetGluer {
 
         for (int i = 0; i < mRemoteTargetHandles.length; i++) {
             RemoteAnimationTarget primaryTaskTarget = targets.apps[i];
+            List<RemoteAnimationTarget> excludeTargets = Arrays.stream(targets.apps)
+                    .filter(target -> target.taskId != primaryTaskTarget.taskId).toList();
             mRemoteTargetHandles[i].mTransformParams.setTargetSet(
-                    createRemoteAnimationTargetsForTaskId(targets, primaryTaskTarget.taskId));
+                    createRemoteAnimationTargetsForTarget(targets, excludeTargets));
             mRemoteTargetHandles[i].mTaskViewSimulator.setPreview(primaryTaskTarget, null);
         }
         return mRemoteTargetHandles;
@@ -287,33 +289,6 @@ public class RemoteTargetGluer {
                 new RemoteAnimationTarget[0]);
         return new RemoteAnimationTargets(
                 filteredApps, targets.wallpapers, targets.nonApps, targets.targetMode);
-    }
-
-    /**
-     * Ensures that we only animate one specific app target. Includes ancillary targets such as
-     * home/recents
-     *
-     * @param targets remote animation targets to filter
-     * @param taskId  id for a task that we want this remote animation to apply to
-     * @return {@link RemoteAnimationTargets} where app target only includes the app that has the
-     * {@code taskId} that was passed in
-     */
-    private RemoteAnimationTargets createRemoteAnimationTargetsForTaskId(
-            RemoteAnimationTargets targets, int taskId) {
-        RemoteAnimationTarget[] targetApp = null;
-        for (RemoteAnimationTarget targetCompat : targets.unfilteredApps) {
-            if (targetCompat.taskId == taskId) {
-                targetApp = new RemoteAnimationTarget[]{targetCompat};
-                break;
-            }
-        }
-
-        if (targetApp == null) {
-            targetApp = new RemoteAnimationTarget[0];
-        }
-
-        return new RemoteAnimationTargets(targetApp, targets.wallpapers, targets.nonApps,
-                targets.targetMode);
     }
 
     /**

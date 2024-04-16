@@ -265,9 +265,7 @@ public class AppPairsController {
         }
 
         if (ai != null) {
-            wii.status = ai.resizeMode == ActivityInfo.RESIZE_MODE_UNRESIZEABLE
-                    ? wii.status | WorkspaceItemInfo.FLAG_NON_RESIZEABLE
-                    : wii.status & ~WorkspaceItemInfo.FLAG_NON_RESIZEABLE;
+            wii.setNonResizeable(ai.resizeMode == ActivityInfo.RESIZE_MODE_UNRESIZEABLE);
         }
     }
 

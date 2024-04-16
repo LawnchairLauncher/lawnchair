@@ -21,6 +21,7 @@ import static com.android.launcher3.statemanager.BaseState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.taskbar.TaskbarEduTooltipControllerKt.TOOLTIP_STEP_FEATURES;
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_VISIBLE;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
+import static com.android.window.flags.Flags.enableDesktopWindowingWallpaperActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -218,14 +219,19 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
-        final boolean onDesktop =
-                desktopController != null && desktopController.areDesktopTasksVisible();
-        if (onDesktop) {
+        if (!enableDesktopWindowingWallpaperActivity()
+                && desktopController != null
+                && desktopController.areDesktopTasksVisible()) {
+            // TODO: b/333533253 - Remove after flag rollout
             isVisible = false;
         }
 
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_VISIBLE, isVisible);
-        if (fromInit) {
+        // TODO(b/308851855): Skip animation for launching split from home, will refine later
+        boolean skipAnimForSplit = enableSplitContextually() &&
+                mLauncher.areBothSplitAppsConfirmed() &&
+                mLauncher.getStateManager().getState() == LauncherState.NORMAL;
+        if (skipAnimForSplit || fromInit) {
             duration = 0;
         }
         return mTaskbarLauncherStateController.applyState(duration, startAnimation);

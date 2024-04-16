@@ -64,6 +64,7 @@ import static com.android.quickstep.util.AnimUtils.completeRunnableListCallback;
 import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 import static com.android.window.flags.Flags.enableDesktopWindowingMode;
+import static com.android.window.flags.Flags.enableDesktopWindowingWallpaperActivity;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
 
 import android.animation.Animator;
@@ -87,6 +88,7 @@ import android.os.Trace;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AnalogClock;
 import android.widget.TextClock;
@@ -840,6 +842,28 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return tryHandleBackKey(event) || super.dispatchKeyEvent(event);
+    }
+
+    // TODO (b/267248420) Once the recents input consumer has been removed, there is no need to
+    //  handle the back key specially.
+    private boolean tryHandleBackKey(KeyEvent event) {
+        // Unlike normal activity, recents can receive input event from InputConsumer, so the input
+        // event won't go through ViewRootImpl#InputStage#onProcess.
+        // So when receive back key, try to do the same check thing in
+        // ViewRootImpl#NativePreImeInputStage#onProcess
+        if (!Utilities.ATLEAST_U || !enablePredictiveBackGesture()
+                || event.getKeyCode() != KeyEvent.KEYCODE_BACK
+                || event.getAction() != KeyEvent.ACTION_UP || event.isCanceled()) {
+            return false;
+        }
+
+        getOnBackAnimationCallback().onBackInvoked();
+        return true;
+    }
+
+    @Override
     protected void registerBackDispatcher() {
         if (!enablePredictiveBackGesture()) {
             super.registerBackDispatcher();
@@ -942,12 +966,12 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
 
     @Override
     public void setResumed() {
-        if (mDesktopVisibilityController != null
+        if (!enableDesktopWindowingWallpaperActivity()
+                && mDesktopVisibilityController != null
                 && mDesktopVisibilityController.areDesktopTasksVisible()
                 && !mDesktopVisibilityController.isRecentsGestureInProgress()) {
             // Return early to skip setting activity to appear as resumed
-            // TODO(b/255649902): shouldn't be needed when we have a separate launcher state
-            //  for desktop that we can use to control other parts of launcher
+            // TODO: b/333533253 - Remove after flag rollout
             return;
         }
         super.setResumed();

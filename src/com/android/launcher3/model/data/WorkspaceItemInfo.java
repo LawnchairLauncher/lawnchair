@@ -75,12 +75,6 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public static final int FLAG_START_FOR_RESULT = 1 << 4;
 
     /**
-     * The app is flagged non-resizeable, meaning that it does not support multi-window on small
-     * screens.
-     */
-    public static final int FLAG_NON_RESIZEABLE = 1 << 5;
-
-    /**
      * The intent used to start the application.
      */
     @NonNull

@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Mehr Möglichkeiten mit der Taskleiste"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Taskleiste immer anzeigen"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Damit die Taskleiste immer unten angezeigt wird, halte den Teiler gedrückt"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Aktionstaste gedrückt halten, um auf dem Bildschirm zu suchen"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Dieses Produkt verwendet den ausgewählten Teil deines Bildschirms für die Suche. Es gelten die <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Datenschutzerklärung<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> und die <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Nutzungsbedingungen<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> von Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Schließen"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fertig"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Startbildschirm"</string>

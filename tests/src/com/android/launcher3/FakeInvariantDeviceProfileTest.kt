@@ -157,7 +157,6 @@ abstract class FakeInvariantDeviceProfileTest {
 
                 numDatabaseHotseatIcons = 4
 
-                hotseatColumnSpan = IntArray(4) { 4 }
                 hotseatBarBottomSpace = FloatArray(4) { 48f }
                 hotseatQsbSpace = FloatArray(4) { 36f }
 
@@ -240,7 +239,6 @@ abstract class FakeInvariantDeviceProfileTest {
 
                 numDatabaseHotseatIcons = 6
 
-                hotseatColumnSpan = intArrayOf(6, 4, 6, 6)
                 hotseatBarBottomSpace = floatArrayOf(36f, 40f, 36f, 36f)
                 hotseatQsbSpace = FloatArray(4) { 32f }
 
@@ -259,8 +257,10 @@ abstract class FakeInvariantDeviceProfileTest {
     }
 
     protected fun initializeVarsForTwoPanel(
-        isLandscape: Boolean = false,
-        isGestureMode: Boolean = true
+            isLandscape: Boolean = false,
+            isGestureMode: Boolean = true,
+            rows: Int = 4,
+            cols: Int = 4,
     ) {
         val (x, y) = if (isLandscape) Pair(2208, 1840) else Pair(1840, 2208)
 
@@ -276,9 +276,9 @@ abstract class FakeInvariantDeviceProfileTest {
 
         inv =
             InvariantDeviceProfile().apply {
-                numRows = 4
-                numColumns = 4
-                numSearchContainerColumns = 4
+                numRows = rows
+                numColumns = cols
+                numSearchContainerColumns = cols
 
                 iconSize = floatArrayOf(60f, 52f, 52f, 60f)
                 iconTextSize = floatArrayOf(14f, 14f, 12f, 14f)
@@ -319,7 +319,6 @@ abstract class FakeInvariantDeviceProfileTest {
 
                 numDatabaseHotseatIcons = 6
 
-                hotseatColumnSpan = IntArray(4) { 6 }
                 hotseatBarBottomSpace = floatArrayOf(48f, 48f, 36f, 20f)
                 hotseatQsbSpace = floatArrayOf(36f, 36f, 36f, 28f)
 

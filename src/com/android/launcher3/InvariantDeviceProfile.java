@@ -163,7 +163,6 @@ public class InvariantDeviceProfile {
      */
     public int numDatabaseHotseatIcons;
 
-    public int[] hotseatColumnSpan;
     public float[] hotseatBarBottomSpace;
     public float[] hotseatQsbSpace;
 
@@ -429,7 +428,6 @@ public class InvariantDeviceProfile {
         numShownHotseatIcons = closestProfile.numHotseatIcons;
         numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
-        hotseatColumnSpan = closestProfile.hotseatColumnSpan;
         hotseatBarBottomSpace = displayOption.hotseatBarBottomSpace;
         hotseatQsbSpace = displayOption.hotseatQsbSpace;
 
@@ -879,8 +877,6 @@ public class InvariantDeviceProfile {
         private final int numHotseatIcons;
         private final int numDatabaseHotseatIcons;
 
-        private final int[] hotseatColumnSpan = new int[COUNT_SIZES];
-
         private final boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
         private @DimenRes int inlineNavButtonsEndSpacing;
@@ -930,17 +926,6 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_numHotseatIcons, numColumns);
             numDatabaseHotseatIcons = a.getInt(
                     R.styleable.GridDisplayOption_numExtendedHotseatIcons, 2 * numHotseatIcons);
-
-            hotseatColumnSpan[INDEX_DEFAULT] = a.getInt(
-                    R.styleable.GridDisplayOption_hotseatColumnSpan, numColumns);
-            hotseatColumnSpan[INDEX_LANDSCAPE] = a.getInt(
-                    R.styleable.GridDisplayOption_hotseatColumnSpanLandscape, numColumns);
-            hotseatColumnSpan[INDEX_TWO_PANEL_LANDSCAPE] = a.getInt(
-                    R.styleable.GridDisplayOption_hotseatColumnSpanTwoPanelLandscape,
-                    numColumns);
-            hotseatColumnSpan[INDEX_TWO_PANEL_PORTRAIT] = a.getInt(
-                    R.styleable.GridDisplayOption_hotseatColumnSpanTwoPanelPortrait,
-                    numColumns);
 
             inlineNavButtonsEndSpacing =
                     a.getResourceId(R.styleable.GridDisplayOption_inlineNavButtonsEndSpacing,

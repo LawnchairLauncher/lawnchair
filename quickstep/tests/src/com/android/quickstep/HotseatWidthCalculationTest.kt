@@ -42,6 +42,8 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         assertThat(dp.hotseatBarEndOffset).isEqualTo(510)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(70)
+        assertThat(dp.hotseatColumnSpan).isEqualTo(6)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1445)
 
         assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(150)
         assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(580)
@@ -64,6 +66,8 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         assertThat(dp.hotseatBarEndOffset).isEqualTo(510)
         assertThat(dp.numShownHotseatIcons).isEqualTo(4)
         assertThat(dp.hotseatBorderSpace).isEqualTo(40)
+        assertThat(dp.hotseatColumnSpan).isEqualTo(6)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1080)
 
         assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(150)
         assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(550)
@@ -85,6 +89,8 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         assertThat(dp.hotseatBarEndOffset).isEqualTo(705)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(54)
+        assertThat(dp.hotseatColumnSpan).isEqualTo(6)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1468)
 
         assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(231)
         assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(759)
@@ -100,22 +106,21 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
     @Test
     fun nav_buttons_dont_interfere_with_required_hotseat_width() {
         initializeVarsForTablet(isGestureMode = false, isLandscape = true)
-        inv?.apply {
-            hotseatColumnSpan = IntArray(4) { 4 }
-            inlineQsb = BooleanArray(4) { false }
-        }
+        inv?.apply { inlineQsb = BooleanArray(4) { false } }
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
         assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(100)
+        assertThat(dp.hotseatColumnSpan).isEqualTo(6)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1975)
 
         assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(300)
         assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(1040)
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.hotseatQsbWidth).isEqualTo(1223)
+        assertThat(dp.hotseatQsbWidth).isEqualTo(1965)
     }
 
     /** This is a case when after setting the hotseat, the QSB width needs to be changed to fit */
@@ -128,13 +133,15 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
 
         assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(36)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(34)
+        assertThat(dp.hotseatColumnSpan).isEqualTo(4)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1179)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(864)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(696)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(876)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(694)
 
         assertThat(dp.isQsbInline).isTrue()
-        assertThat(dp.hotseatQsbWidth).isEqualTo(528)
+        assertThat(dp.hotseatQsbWidth).isEqualTo(542)
     }
 
     /**
@@ -151,11 +158,32 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(5)
         assertThat(dp.hotseatBorderSpace).isEqualTo(36)
+        assertThat(dp.hotseatColumnSpan).isEqualTo(4)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1095)
 
         assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(816)
         assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(700)
 
         assertThat(dp.isQsbInline).isTrue()
         assertThat(dp.hotseatQsbWidth).isEqualTo(480)
+    }
+
+    @Test
+    fun increase_span_when_space_between_icons_is_less_than_minimum() {
+        initializeVarsForTwoPanel(isGestureMode = false, isLandscape = false, rows = 5, cols = 5)
+        val dp = newDP()
+        dp.isTaskbarPresentInApps = true
+
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(600)
+        assertThat(dp.numShownHotseatIcons).isEqualTo(6)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(48)
+        assertThat(dp.hotseatColumnSpan).isEqualTo(8)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1383)
+
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(126)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(652)
+
+        assertThat(dp.isQsbInline).isFalse()
+        assertThat(dp.hotseatQsbWidth).isEqualTo(1372)
     }
 }

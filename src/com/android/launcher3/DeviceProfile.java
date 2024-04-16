@@ -47,6 +47,7 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.android.launcher3.CellLayout.ContainerType;
@@ -212,6 +213,8 @@ public class DeviceProfile {
     // Hotseat
     public int numShownHotseatIcons;
     public int hotseatCellHeightPx;
+    private int mHotseatColumnSpan;
+    private int mHotseatWidthPx; // not used in vertical bar layout
     public final boolean areNavButtonsInline;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
@@ -551,6 +554,7 @@ public class DeviceProfile {
         areNavButtonsInline = isTaskbarPresent && !isGestureMode;
         numShownHotseatIcons =
                 isTwoPanels ? inv.numDatabaseHotseatIcons : inv.numShownHotseatIcons;
+        mHotseatColumnSpan = inv.numColumns;
 
         numShownAllAppsColumns =
                 isTwoPanels ? inv.numDatabaseAllAppsColumns : inv.numAllAppsColumns;
@@ -818,8 +822,7 @@ public class DeviceProfile {
                     - hotseatBorderSpace * numShownHotseatIcons
                     - iconExtraSpacePx;
         } else {
-            int columns = inv.hotseatColumnSpan[mTypeIndex];
-            return getIconToIconWidthForColumns(columns) - iconExtraSpacePx;
+            return getIconToIconWidthForColumns(mHotseatColumnSpan) - iconExtraSpacePx;
         }
     }
 
@@ -890,10 +893,31 @@ public class DeviceProfile {
     public void recalculateHotseatWidthAndBorderSpace() {
         if (!mIsScalableGrid) return;
 
-        int columns = inv.hotseatColumnSpan[mTypeIndex];
-        float hotseatWidthPx = getIconToIconWidthForColumns(columns);
-        hotseatBorderSpace = calculateHotseatBorderSpace(hotseatWidthPx, /* numExtraBorder= */ 0);
+        updateHotseatWidthAndBorderSpace(inv.numColumns);
+        int numWorkspaceColumns = getPanelCount() * inv.numColumns;
+        if (isTwoPanels) {
+            updateHotseatWidthAndBorderSpace(inv.numDatabaseHotseatIcons);
+            // If hotseat doesn't fit with current width, increase column span to fit by multiple
+            // of 2.
+            while (hotseatBorderSpace < mMinHotseatIconSpacePx
+                    && mHotseatColumnSpan < numWorkspaceColumns) {
+                updateHotseatWidthAndBorderSpace(mHotseatColumnSpan + 2);
+            }
+        }
+        if (isQsbInline) {
+            // If QSB is inline, reduce column span until it fits.
+            int maxHotseatWidthAllowedPx = getIconToIconWidthForColumns(numWorkspaceColumns);
+            int minHotseatWidthRequiredPx =
+                    mMinHotseatQsbWidthPx + hotseatBorderSpace + mHotseatWidthPx;
+            while (minHotseatWidthRequiredPx > maxHotseatWidthAllowedPx
+                    && mHotseatColumnSpan > 1) {
+                updateHotseatWidthAndBorderSpace(mHotseatColumnSpan - 1);
+                minHotseatWidthRequiredPx =
+                        mMinHotseatQsbWidthPx + hotseatBorderSpace + mHotseatWidthPx;
+            }
+        }
         hotseatQsbWidth = calculateQsbWidth(hotseatBorderSpace);
+
         // Spaces should be correct when the nav buttons are not inline
         if (!areNavButtonsInline) {
             return;
@@ -935,6 +959,12 @@ public class DeviceProfile {
         } while (hotseatBorderSpace < mMinHotseatIconSpacePx && numShownHotseatIcons > 1);
     }
 
+    private void updateHotseatWidthAndBorderSpace(int columns) {
+        mHotseatColumnSpan = columns;
+        mHotseatWidthPx = getIconToIconWidthForColumns(mHotseatColumnSpan);
+        hotseatBorderSpace = calculateHotseatBorderSpace(mHotseatWidthPx, /* numExtraBorder= */ 0);
+    }
+
     private Point getCellLayoutBorderSpace(InvariantDeviceProfile idp) {
         return getCellLayoutBorderSpace(idp, 1f);
     }
@@ -956,6 +986,16 @@ public class DeviceProfile {
 
     public Info getDisplayInfo() {
         return mInfo;
+    }
+
+    @VisibleForTesting
+    public int getHotseatColumnSpan() {
+        return mHotseatColumnSpan;
+    }
+
+    @VisibleForTesting
+    public int getHotseatWidthPx() {
+        return mHotseatWidthPx;
     }
 
     public Builder toBuilder(Context context) {
@@ -2120,7 +2160,8 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("allAppsLeftRightMargin", allAppsLeftRightMargin));
 
         writer.println(prefix + pxToDpStr("hotseatBarSizePx", hotseatBarSizePx));
-        writer.println(prefix + "\tinv.hotseatColumnSpan: " + inv.hotseatColumnSpan[mTypeIndex]);
+        writer.println(prefix + "\tmHotseatColumnSpan: " + mHotseatColumnSpan);
+        writer.println(prefix + pxToDpStr("mHotseatWidthPx", mHotseatWidthPx));
         writer.println(prefix + pxToDpStr("hotseatCellHeightPx", hotseatCellHeightPx));
         writer.println(prefix + pxToDpStr("hotseatBarBottomSpacePx", hotseatBarBottomSpacePx));
         writer.println(prefix + pxToDpStr("mHotseatBarEdgePaddingPx",

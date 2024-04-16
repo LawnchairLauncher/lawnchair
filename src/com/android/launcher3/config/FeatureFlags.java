@@ -80,13 +80,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DISMISS_PREDICTION_UNDO = getDebugFlag(270394476,
             "ENABLE_DISMISS_PREDICTION_UNDO", DISABLED,
             "Show an 'Undo' snackbar when users dismiss a predicted hotseat item");
-
-    public static final BooleanFlag MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE = getDebugFlag(
-            251502424, "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED,
-            "Marks LauncherPref data as (and allows it to) available while the device is"
-                    + " locked. Enabling this causes a 1-time movement of certain SharedPreferences"
-                    + " data. Improves startup latency.");
-
     public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(270395171,
             "CONTINUOUS_VIEW_TREE_CAPTURE", ENABLED, "Capture View tree every frame");
 

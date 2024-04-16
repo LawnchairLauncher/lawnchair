@@ -83,6 +83,7 @@
              android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
              android:resizeableActivity="true"
              android:resumeWhilePausing="true"
+             android:enableOnBackInvokedCallback="false"
              android:taskAffinity=""/>
 
         <!-- Content provider to settings search. The autority should be same as the packageName -->

@@ -18,7 +18,6 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
-import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ARCHIVED;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,14 +32,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AppFilter;
-import com.android.launcher3.Flags;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SafeCloseable;
@@ -300,6 +299,8 @@ public class AllAppsList {
      */
     public List<LauncherActivityInfo> updatePackage(
             Context context, String packageName, UserHandle user) {
+        final ApiWrapper apiWrapper = ApiWrapper.INSTANCE.get(context);
+        final UserCache userCache = UserCache.getInstance(context);
         final List<LauncherActivityInfo> matches = context.getSystemService(LauncherApps.class)
                 .getActivityList(packageName, user);
         if (matches.size() > 0) {
@@ -327,19 +328,9 @@ public class AllAppsList {
 
                     mIconCache.getTitleAndIcon(applicationInfo, info, false /* useLowResIcon */);
                     applicationInfo.sectionName = mIndex.computeSectionName(applicationInfo.title);
-                    applicationInfo.setProgressLevel(
-                            PackageManagerHelper.getLoadingProgress(info),
-                            PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                     applicationInfo.intent = launchIntent;
-                    if (Flags.enableSupportForArchiving()) {
-                        // In case an app is archived, the respective item flag corresponding to
-                        // archiving should also be applied during package updates
-                        if (info.getActivityInfo().isArchived) {
-                            applicationInfo.runtimeStatusFlags |= FLAG_ARCHIVED;
-                        } else {
-                            applicationInfo.runtimeStatusFlags &= (~FLAG_ARCHIVED);
-                        }
-                    }
+                    AppInfo.updateRuntimeFlagsForActivityTarget(applicationInfo, info,
+                            userCache.getUserInfo(user), apiWrapper);
                     mDataChanged = true;
                 }
             }

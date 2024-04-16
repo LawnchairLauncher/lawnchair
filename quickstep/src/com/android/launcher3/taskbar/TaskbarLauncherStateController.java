@@ -837,6 +837,7 @@ public class TaskbarLauncherStateController {
         appendFlag(result, flags, FLAG_LAUNCHER_WAS_ACTIVE_WHILE_AWAKE,
                 "was_active_while_awake");
         appendFlag(result, flags, FLAG_DEVICE_LOCKED, "device_locked");
+        appendFlag(result, flags, FLAG_TASKBAR_HIDDEN, "taskbar_hidden");
         return result.toString();
     }
 

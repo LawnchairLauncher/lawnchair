@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ಟಾಸ್ಕ್‌ಬಾರ್ ಮೂಲಕ ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ಯಾವಾಗಲೂ ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ತೋರಿಸಿ"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ಯಾವಾಗಲೂ ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗದಲ್ಲಿ ಟಾಸ್ಕ್ ಬಾರ್ ಅನ್ನು ತೋರಿಸಲು, ಡಿವೈಡರ್ ಅನ್ನು ಸ್ಪರ್ಶಿಸಿ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳಿ"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಮೇಲೆ ಏನಿದೆ ಎಂಬುದನ್ನು ಹುಡುಕಲು ಆ್ಯಕ್ಷನ್ ಕೀಯನ್ನು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಒತ್ತಿ ಹಿಡಿದುಕೊಳ್ಳಿ"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"ಈ ಉತ್ಪನ್ನವು ಹುಡುಕಲು ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಆಯ್ದ ಭಾಗವನ್ನು ಬಳಸುತ್ತದೆ. Google ನ <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>ಗೌಪ್ಯತೆ ನೀತಿ<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> ಮತ್ತು <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>ಸೇವಾ ನಿಯಮಗಳು<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> ಅನ್ವಯಿಸುತ್ತವೆ."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಆಯಿತು"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>

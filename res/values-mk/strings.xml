@@ -33,8 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Паров апликации не е поддржан на уредов"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Отворете го уредот за да го користите паров апликации"</string>
-    <!-- no translation found for app_pair_not_available (3556767440808032031) -->
-    <skip />
+    <string name="app_pair_not_available" msgid="3556767440808032031">"Парот апликации не е достапен"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Допрете и задржете за да преместите виџет."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Допрете двапати и задржете за да преместите виџет или користете приспособени дејства."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -191,10 +190,10 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Не успеа: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Приватен простор"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Допрете за да поставите или отворите"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Приватен"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Приватен простор"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Поставки за „Приватен простор“"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Заклучување/отклучување на „Приватен простор“"</string>
-    <string name="ps_container_lock_title" msgid="2640257399982364682">"Брава"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Заклучи"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Префрлање на „Приватен простор“"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Инсталирајте апликации"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Инсталирање апликации во „Приватен простор“"</string>

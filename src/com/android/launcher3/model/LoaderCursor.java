@@ -52,6 +52,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
@@ -366,7 +367,8 @@ public class LoaderCursor extends CursorWrapper {
         }
 
         if (mActivityInfo != null) {
-            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo, userIconInfo);
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo, userIconInfo,
+                    ApiWrapper.INSTANCE.get(mContext));
         }
 
         // from the db

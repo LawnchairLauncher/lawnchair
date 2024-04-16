@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.view.View.GONE;
+
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
@@ -42,6 +44,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -263,15 +266,25 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 icon.applyFromApplicationInfo(adapterItem.itemInfo);
                 icon.setOnFocusChangeListener(mIconFocusListener);
                 PrivateProfileManager privateProfileManager = mApps.getPrivateProfileManager();
-                // Set the alpha of the private space icon to 0 upon expanding the header so the
-                // alpha can animate -> 1.
-                if (icon.getAlpha() == 0 || icon.getAlpha() == 1) {
-                    icon.setAlpha(privateProfileManager != null
-                            && privateProfileManager.isPrivateSpaceItem(adapterItem)
-                            && privateProfileManager.getAnimationScrolling()
-                            && privateProfileManager.getAnimate()
-                            && privateProfileManager.getCurrentState() == STATE_ENABLED
-                            ? 0 : 1);
+                if (privateProfileManager != null) {
+                    // Set the alpha of the private space icon to 0 upon expanding the header so the
+                    // alpha can animate -> 1.
+                    boolean isPrivateSpaceItem =
+                            privateProfileManager.isPrivateSpaceItem(adapterItem);
+                    if (icon.getAlpha() == 0 || icon.getAlpha() == 1) {
+                        icon.setAlpha(isPrivateSpaceItem
+                                && privateProfileManager.getAnimationScrolling()
+                                && privateProfileManager.getAnimate()
+                                && privateProfileManager.getCurrentState() == STATE_ENABLED
+                                ? 0 : 1);
+                    }
+                    // Views can still be bounded before the app list is updated hence showing icons
+                    // after collapsing.
+                    if (privateProfileManager.getCurrentState() == STATE_DISABLED
+                            && isPrivateSpaceItem) {
+                        adapterItem.decorationInfo = null;
+                        icon.setVisibility(GONE);
+                    }
                 }
                 break;
             }
@@ -298,7 +311,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 break;
             case VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER:
                 adapterItem = mApps.getAdapterItems().get(position);
-                adapterItem.decorationInfo = new SectionDecorationInfo(mActivityContext,
+                adapterItem.decorationInfo = mApps.getPrivateProfileManager().getCurrentState()
+                        == STATE_DISABLED ? null : new SectionDecorationInfo(mActivityContext,
                         ROUND_NOTHING, true /* decorateTogether */);
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:

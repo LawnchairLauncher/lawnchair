@@ -35,6 +35,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.UserIconInfo;
 
@@ -89,10 +90,12 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      */
     public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
         this(info, UserCache.INSTANCE.get(context).getUserInfo(user),
+                ApiWrapper.INSTANCE.get(context),
                 context.getSystemService(UserManager.class).isQuietModeEnabled(user));
     }
 
-    public AppInfo(LauncherActivityInfo info, UserIconInfo userIconInfo, boolean quietModeEnabled) {
+    public AppInfo(LauncherActivityInfo info, UserIconInfo userIconInfo,
+            ApiWrapper apiWrapper, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = CONTAINER_ALL_APPS;
         this.user = userIconInfo.user;
@@ -102,7 +105,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
             runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
         }
         uid = info.getApplicationInfo().uid;
-        updateRuntimeFlagsForActivityTarget(this, info, userIconInfo);
+        updateRuntimeFlagsForActivityTarget(this, info, userIconInfo, apiWrapper);
     }
 
     public AppInfo(AppInfo info) {
@@ -175,14 +178,27 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         return componentName;
     }
 
-    public static void updateRuntimeFlagsForActivityTarget(
-            ItemInfoWithIcon info, LauncherActivityInfo lai, UserIconInfo userIconInfo) {
+    /**
+     * Updates the runtime status flags for the given info based on the state of the specified
+     * activity.
+     */
+    public static boolean updateRuntimeFlagsForActivityTarget(
+            ItemInfoWithIcon info, LauncherActivityInfo lai, UserIconInfo userIconInfo,
+            ApiWrapper apiWrapper) {
+        final int oldProgressLevel = info.getProgressLevel();
+        final int oldRuntimeStatusFlags = info.runtimeStatusFlags;
         ApplicationInfo appInfo = lai.getApplicationInfo();
         if (PackageManagerHelper.isAppSuspended(appInfo)) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
+        } else {
+            info.runtimeStatusFlags &= ~FLAG_DISABLED_SUSPENDED;
         }
-        if (Flags.enableSupportForArchiving() && lai.getActivityInfo().isArchived) {
-            info.runtimeStatusFlags |= FLAG_ARCHIVED;
+        if (Flags.enableSupportForArchiving()) {
+            if (lai.getActivityInfo().isArchived) {
+                info.runtimeStatusFlags |= FLAG_ARCHIVED;
+            } else {
+                info.runtimeStatusFlags &= ~FLAG_ARCHIVED;
+            }
         }
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
                 ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
@@ -190,6 +206,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         if (Flags.privateSpaceRestrictAccessibilityDrag()) {
             if (userIconInfo.isPrivate()) {
                 info.runtimeStatusFlags |= FLAG_NOT_PINNABLE;
+            } else {
+                info.runtimeStatusFlags &= ~FLAG_NOT_PINNABLE;
             }
         }
 
@@ -197,6 +215,9 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         info.setProgressLevel(
                 PackageManagerHelper.getLoadingProgress(lai),
                 PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
+        info.setNonResizeable(apiWrapper.isNonResizeableActivity(lai));
+        return (oldProgressLevel != info.getProgressLevel())
+                || (oldRuntimeStatusFlags != info.runtimeStatusFlags);
     }
 
     @Override

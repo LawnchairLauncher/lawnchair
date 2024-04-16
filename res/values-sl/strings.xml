@@ -44,7 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Dodaj na začetni zaslon"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Pripomoček »<xliff:g id="WIDGET_NAME">%1$s</xliff:g>« je dodan na začetni zaslon."</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Predlogi"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Nepogrešljivo"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Osnove"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Novice in revije"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Vaš kotiček za sprostitev"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Razvedrilo"</string>
