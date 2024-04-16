@@ -149,6 +149,13 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
         runTest(TestSurface.WIDGETS, TestCase.LAUNCH_OVERVIEW);
     }
 
+    @Test
+    public void testLaunchSingleRecentTask() {
+        mLauncher.getLaunchedAppState().switchToOverview().dismissAllTasks();
+        startAppFast(CALCULATOR_APP_PACKAGE);
+        mLauncher.goHome().showQuickSwitchView().launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
+    }
+
     private void runTest(@NonNull TestSurface testSurface, @NonNull TestCase testCase) {
         for (int i = 0; i < testCase.mNumAdditionalRunningTasks; i++) {
             startTestActivity(3 + i);
