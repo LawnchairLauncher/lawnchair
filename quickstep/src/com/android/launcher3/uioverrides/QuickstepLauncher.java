@@ -87,6 +87,7 @@ import android.os.Trace;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AnalogClock;
 import android.widget.TextClock;
@@ -837,6 +838,28 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
             getDepthController().widgetDepth.setValue(Utilities.mapToRange(
                     progress, 0f, 1f, 0f, getDeviceProfile().bottomSheetDepth, EMPHASIZED));
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return tryHandleBackKey(event) || super.dispatchKeyEvent(event);
+    }
+
+    // TODO (b/267248420) Once the recents input consumer has been removed, there is no need to
+    //  handle the back key specially.
+    private boolean tryHandleBackKey(KeyEvent event) {
+        // Unlike normal activity, recents can receive input event from InputConsumer, so the input
+        // event won't go through ViewRootImpl#InputStage#onProcess.
+        // So when receive back key, try to do the same check thing in
+        // ViewRootImpl#NativePreImeInputStage#onProcess
+        if (!Utilities.ATLEAST_U || !enablePredictiveBackGesture()
+                || event.getKeyCode() != KeyEvent.KEYCODE_BACK
+                || event.getAction() != KeyEvent.ACTION_UP || event.isCanceled()) {
+            return false;
+        }
+
+        getOnBackAnimationCallback().onBackInvoked();
+        return true;
     }
 
     @Override
