@@ -33,8 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"या ॲपची जोडीला या डिव्हाइसवर सपोर्ट नाही"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"ही ॲपची जोडी वापरण्यासाठी डिव्हाइस अनफोल्ड करा"</string>
-    <!-- no translation found for app_pair_not_available (3556767440808032031) -->
-    <skip />
+    <string name="app_pair_not_available" msgid="3556767440808032031">"ॲपची जोडी उपलब्ध नाही"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"विजेट हलवण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"विजेट हलवण्यासाठी किंवा कस्टम कृती वापरण्यासाठी दोनदा टॅप करा आणि धरून ठेवा."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
