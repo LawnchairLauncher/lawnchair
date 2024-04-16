@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -150,6 +151,7 @@ public class PrivateProfileManagerTest {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
         doNothing().when(privateProfileManager).executeLock();
+        doReturn(mAllAppsRecyclerView).when(privateProfileManager).getMainRecyclerView();
         when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
                 .thenReturn(false, true);
 
@@ -169,6 +171,7 @@ public class PrivateProfileManagerTest {
     public void transitioningToUnlocked_resetCallsPostUnlock() throws Exception {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
+        doReturn(mAllAppsRecyclerView).when(privateProfileManager).getMainRecyclerView();
         when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
                 .thenReturn(false);
         doNothing().when(privateProfileManager).expandPrivateSpace();
@@ -187,6 +190,7 @@ public class PrivateProfileManagerTest {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
         doNothing().when(privateProfileManager).executeLock();
+        doReturn(mAllAppsRecyclerView).when(privateProfileManager).getMainRecyclerView();
         when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
                 .thenReturn(true);
         doNothing().when(privateProfileManager).expandPrivateSpace();
