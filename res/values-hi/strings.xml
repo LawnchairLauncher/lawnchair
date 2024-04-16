@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"साथ में इस्तेमाल किए जा सकने वाले ये ऐप्लिकेशन, इस डिवाइस पर काम नहीं कर सकते"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"साथ में इस्तेमाल किए जा सकने वाले ये ऐप्लिकेशन इस्तेमाल करने के लिए डिवाइस को अनफ़ोल्ड करें"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"साथ में इस्तेमाल किए जा सकने वाले ऐप्लिकेशन की सुविधा उपलब्ध नहीं है"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उसे दबाकर रखें."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उस पर दो बार टैप करके दबाकर रखें या पसंद के मुताबिक कार्रवाइयां इस्तेमाल करें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

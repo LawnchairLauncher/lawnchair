@@ -33,6 +33,7 @@
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ଏହି ଆପ ପେୟାର ଏ ଡିଭାଇସରେ ସମର୍ଥିତ ନୁହେଁ"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"ଏହି ଆପ ପେୟାରକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ଡିଭାଇସକୁ ଅନଫୋଲ୍ଡ କରନ୍ତୁ"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"ଆପ ପେୟାର ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ଏକ ୱିଜେଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ଏକ ୱିଜେଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ଦୁଇଥର-ଟାପ୍ କରି ଧରି ରଖନ୍ତୁ କିମ୍ବା କଷ୍ଟମ୍ କାର୍ଯ୍ୟଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
