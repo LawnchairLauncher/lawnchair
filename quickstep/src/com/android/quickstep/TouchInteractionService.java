@@ -750,7 +750,6 @@ public class TouchInteractionService extends Service {
                 GestureState prevGestureState = new GestureState(mGestureState);
                 GestureState newGestureState = createGestureState(mGestureState,
                         getTrackpadGestureType(event));
-                newGestureState.setSwipeUpStartTimeMs(SystemClock.uptimeMillis());
                 mConsumer.onConsumerAboutToBeSwitched();
                 mGestureState = newGestureState;
                 mConsumer = newConsumer(prevGestureState, mGestureState, event);
