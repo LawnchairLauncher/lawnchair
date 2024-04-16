@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Plašākas iespējas, izmantojot uzdevumu joslu"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vienmēr rādīt uzdevumu joslu"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Lai uzdevumu joslu rādītu apakšdaļā, pieskarieties atdalītājam un turiet"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Pieskarieties darbību taustiņam un turiet to, lai meklētu ekrānā redzamo saturu"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Šis produkts meklēšanai izmanto atlasīto ekrāna daļu. Ir spēkā Google <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>konfidencialitātes politika<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> un <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>pakalpojumu sniegšanas noteikumi<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Aizvērt"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gatavs"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Sākums"</string>

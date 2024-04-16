@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Treu més partit de la Barra de tasques"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Mostra sempre la Barra de tasques"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Perquè es mostri sempre la Barra de tasques a la part inferior de la pantalla, mantén premut el separador"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Mantén premuda la tecla d\'acció per cercar què es mostra a la pantalla"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Aquest producte utilitza la part seleccionada de la pantalla per fer cerques. S\'apliquen la <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>política de privadesa<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> i les <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>condicions del servei de Google<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Tanca"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fet"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Inici"</string>

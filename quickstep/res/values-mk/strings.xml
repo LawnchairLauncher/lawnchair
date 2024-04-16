@@ -118,10 +118,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете сешто со „Лентата со задачи“"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Како секогаш да се прикажува „Лентата со задачи“"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Допрете и задржете го разделникот за да може „Лентата со задачи“ секогаш да се прикажува на дното на екранот"</string>
-    <!-- no translation found for taskbar_edu_circle_to_search_title (4322780398403949508) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_circle_to_search_disclosure (5841648785867787221) -->
-    <skip />
+    <string name="taskbar_edu_circle_to_search_title" msgid="4322780398403949508">"Допрете и задржете го копчето за дејство за да пребарувате на екранот"</string>
+    <string name="taskbar_edu_circle_to_search_disclosure" msgid="5841648785867787221">"Производов го користи избраниот дел од екранот за пребарување. Важат <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Политиката за приватност<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> и <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Условите за користење<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> на Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затвори"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Дома"</string>
