@@ -175,14 +175,26 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         return componentName;
     }
 
-    public static void updateRuntimeFlagsForActivityTarget(
+    /**
+     * Updates the runtime status flags for the given info based on the state of the specified
+     * activity.
+     */
+    public static boolean updateRuntimeFlagsForActivityTarget(
             ItemInfoWithIcon info, LauncherActivityInfo lai, UserIconInfo userIconInfo) {
+        final int oldProgressLevel = info.getProgressLevel();
+        final int oldRuntimeStatusFlags = info.runtimeStatusFlags;
         ApplicationInfo appInfo = lai.getApplicationInfo();
         if (PackageManagerHelper.isAppSuspended(appInfo)) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
+        } else {
+            info.runtimeStatusFlags &= ~FLAG_DISABLED_SUSPENDED;
         }
-        if (Flags.enableSupportForArchiving() && lai.getActivityInfo().isArchived) {
-            info.runtimeStatusFlags |= FLAG_ARCHIVED;
+        if (Flags.enableSupportForArchiving()) {
+            if (lai.getActivityInfo().isArchived) {
+                info.runtimeStatusFlags |= FLAG_ARCHIVED;
+            } else {
+                info.runtimeStatusFlags &= ~FLAG_ARCHIVED;
+            }
         }
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
                 ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
@@ -190,6 +202,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         if (Flags.privateSpaceRestrictAccessibilityDrag()) {
             if (userIconInfo.isPrivate()) {
                 info.runtimeStatusFlags |= FLAG_NOT_PINNABLE;
+            } else {
+                info.runtimeStatusFlags &= ~FLAG_NOT_PINNABLE;
             }
         }
 
@@ -197,6 +211,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         info.setProgressLevel(
                 PackageManagerHelper.getLoadingProgress(lai),
                 PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
+        return (oldProgressLevel != info.getProgressLevel())
+                || (oldRuntimeStatusFlags != info.runtimeStatusFlags);
     }
 
     @Override
