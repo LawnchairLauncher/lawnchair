@@ -15,12 +15,9 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.WindowInsets;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +50,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     private final Rect mImeInsets = new Rect();
     private int mFlags;
     private final ActivityContext mActivityContext;
+    private final Context mContext;
 
     // Threshold when user scrolls up/down to determine when should button extend/collapse
     private final int mScrollThreshold;
@@ -71,6 +69,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public WorkModeSwitch(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
         mActivityContext = ActivityContext.lookupContext(getContext());
         mStatsLogManager = mActivityContext.getStatsLogManager();
@@ -114,13 +113,8 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        View parent = (View) getParent();
         boolean isRtl = Utilities.isRtl(getResources());
-        Rect allAppsPadding = mActivityContext.getDeviceProfile().allAppsPadding;
-        int size = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight()
-                - (allAppsPadding.left + allAppsPadding.right);
-        int tabWidth = getTabWidth(getContext(), size);
-        int shift = (size - tabWidth) / 2 + (isRtl ? allAppsPadding.left : allAppsPadding.right);
+        int shift = mActivityContext.getDeviceProfile().getAllAppsIconStartMargin(mContext);
         setTranslationX(isRtl ? shift : -shift);
     }
 
