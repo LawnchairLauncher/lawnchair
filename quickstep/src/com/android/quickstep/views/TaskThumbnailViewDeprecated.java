@@ -62,61 +62,66 @@ import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 
 /**
  * A task in the Recents view.
+ *
+ * @deprecated This class will be replaced by the new [TaskThumbnailView].
  */
-public class TaskThumbnailView extends View {
+@Deprecated
+public class TaskThumbnailViewDeprecated extends View {
     private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
             new MainThreadInitializedObject<>(FullscreenDrawParams::new);
 
-    public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
-            new FloatProperty<TaskThumbnailView>("dimAlpha") {
+    public static final Property<TaskThumbnailViewDeprecated, Float> DIM_ALPHA =
+            new FloatProperty<TaskThumbnailViewDeprecated>("dimAlpha") {
                 @Override
-                public void setValue(TaskThumbnailView thumbnail, float dimAlpha) {
+                public void setValue(TaskThumbnailViewDeprecated thumbnail, float dimAlpha) {
                     thumbnail.setDimAlpha(dimAlpha);
                 }
 
                 @Override
-                public Float get(TaskThumbnailView thumbnailView) {
+                public Float get(TaskThumbnailViewDeprecated thumbnailView) {
                     return thumbnailView.mDimAlpha;
                 }
             };
 
-    public static final Property<TaskThumbnailView, Float> SPLASH_ALPHA =
-            new FloatProperty<TaskThumbnailView>("splashAlpha") {
+    public static final Property<TaskThumbnailViewDeprecated, Float> SPLASH_ALPHA =
+            new FloatProperty<TaskThumbnailViewDeprecated>("splashAlpha") {
                 @Override
-                public void setValue(TaskThumbnailView thumbnail, float splashAlpha) {
+                public void setValue(TaskThumbnailViewDeprecated thumbnail, float splashAlpha) {
                     thumbnail.setSplashAlpha(splashAlpha);
                 }
 
                 @Override
-                public Float get(TaskThumbnailView thumbnailView) {
+                public Float get(TaskThumbnailViewDeprecated thumbnailView) {
                     return thumbnailView.mSplashAlpha / 255f;
                 }
             };
 
     /** Use to animate thumbnail translationX while first app in split selection is initiated */
-    public static final Property<TaskThumbnailView, Float> SPLIT_SELECT_TRANSLATE_X =
-            new FloatProperty<TaskThumbnailView>("splitSelectTranslateX") {
+    public static final Property<TaskThumbnailViewDeprecated, Float> SPLIT_SELECT_TRANSLATE_X =
+            new FloatProperty<TaskThumbnailViewDeprecated>("splitSelectTranslateX") {
                 @Override
-                public void setValue(TaskThumbnailView thumbnail, float splitSelectTranslateX) {
+                public void setValue(TaskThumbnailViewDeprecated thumbnail,
+                        float splitSelectTranslateX) {
                     thumbnail.applySplitSelectTranslateX(splitSelectTranslateX);
                 }
 
                 @Override
-                public Float get(TaskThumbnailView thumbnailView) {
+                public Float get(TaskThumbnailViewDeprecated thumbnailView) {
                     return thumbnailView.mSplitSelectTranslateX;
                 }
             };
 
     /** Use to animate thumbnail translationY while first app in split selection is initiated */
-    public static final Property<TaskThumbnailView, Float> SPLIT_SELECT_TRANSLATE_Y =
-            new FloatProperty<TaskThumbnailView>("splitSelectTranslateY") {
+    public static final Property<TaskThumbnailViewDeprecated, Float> SPLIT_SELECT_TRANSLATE_Y =
+            new FloatProperty<TaskThumbnailViewDeprecated>("splitSelectTranslateY") {
                 @Override
-                public void setValue(TaskThumbnailView thumbnail, float splitSelectTranslateY) {
+                public void setValue(TaskThumbnailViewDeprecated thumbnail,
+                        float splitSelectTranslateY) {
                     thumbnail.applySplitSelectTranslateY(splitSelectTranslateY);
                 }
 
                 @Override
-                public Float get(TaskThumbnailView thumbnailView) {
+                public Float get(TaskThumbnailViewDeprecated thumbnailView) {
                     return thumbnailView.mSplitSelectTranslateY;
                 }
             };
@@ -156,15 +161,16 @@ public class TaskThumbnailView extends View {
     private float mSplitSelectTranslateX;
     private float mSplitSelectTranslateY;
 
-    public TaskThumbnailView(Context context) {
+    public TaskThumbnailViewDeprecated(Context context) {
         this(context, null);
     }
 
-    public TaskThumbnailView(Context context, @Nullable AttributeSet attrs) {
+    public TaskThumbnailViewDeprecated(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TaskThumbnailView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TaskThumbnailViewDeprecated(Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
@@ -180,7 +186,6 @@ public class TaskThumbnailView extends View {
 
     /**
      * Updates the thumbnail to draw the provided task
-     * @param task
      */
     public void bind(Task task) {
         getTaskOverlay().reset();
@@ -194,6 +199,7 @@ public class TaskThumbnailView extends View {
 
     /**
      * Updates the thumbnail.
+     *
      * @param refreshNow whether the {@code thumbnailData} will be used to redraw immediately.
      *                   In most cases, we use the {@link #setThumbnail(Task, ThumbnailData)}
      *                   version with {@code refreshNow} is true. The only exception is
@@ -227,6 +233,7 @@ public class TaskThumbnailView extends View {
 
     /**
      * Updates the shader, paint, matrix to redraw.
+     *
      * @param shouldRefreshOverlay whether to re-initialize overlay
      */
     private void refresh(boolean shouldRefreshOverlay) {
@@ -253,7 +260,6 @@ public class TaskThumbnailView extends View {
      * <p>
      * If dimAlpha is 0, no dimming is applied; if dimAlpha is 1, the thumbnail will be the
      * extracted background color.
-     *
      */
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
@@ -286,6 +292,7 @@ public class TaskThumbnailView extends View {
     /**
      * Get the scaled insets that are being used to draw the task view. This is a subsection of
      * the full snapshot.
+     *
      * @return the insets in snapshot bitmap coordinates.
      */
     @RequiresApi(api = Build.VERSION_CODES.Q)

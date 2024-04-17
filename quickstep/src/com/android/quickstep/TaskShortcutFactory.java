@@ -53,7 +53,7 @@ import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
-import com.android.quickstep.views.TaskThumbnailView;
+import com.android.quickstep.views.TaskThumbnailViewDeprecated;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 import com.android.systemui.shared.recents.model.Task;
@@ -158,7 +158,7 @@ public interface TaskShortcutFactory {
         private Handler mHandler;
 
         private final RecentsView mRecentsView;
-        private final TaskThumbnailView mThumbnailView;
+        private final TaskThumbnailViewDeprecated mThumbnailView;
         private final TaskView mTaskView;
         private final LauncherEvent mLauncherEvent;
 

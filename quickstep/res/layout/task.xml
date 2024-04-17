@@ -28,7 +28,7 @@
     launcher:focusBorderColor="?androidprv:attr/materialColorOutline"
     launcher:hoverBorderColor="?androidprv:attr/materialColorPrimary">
 
-    <com.android.quickstep.views.TaskThumbnailView
+    <com.android.quickstep.views.TaskThumbnailViewDeprecated
         android:id="@+id/snapshot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

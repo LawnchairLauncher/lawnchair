@@ -25,6 +25,7 @@ import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.Flags.enableOverviewIconMenu;
+import static com.android.launcher3.Flags.enableRefactorTaskThumbnail;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
@@ -106,6 +107,8 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
+import com.android.quickstep.task.thumbnail.TaskThumbnail;
+import com.android.quickstep.task.thumbnail.TaskThumbnailView;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.BorderAnimator;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -126,6 +129,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
 
 /**
  * A task in the Recents view.
@@ -318,13 +322,15 @@ public class TaskView extends FrameLayout implements Reusable {
 
                 @Override
                 public Float get(TaskView taskView) {
-                    return taskView.mSnapshotView.getScaleX();
+                    return taskView.mTaskThumbnailViewDeprecated.getScaleX();
                 }
             };
 
     @Nullable
     protected Task mTask;
-    protected TaskThumbnailView mSnapshotView;
+    @Nullable // can be null when enableRefactorTaskThumbnail() == true
+    protected TaskThumbnailViewDeprecated mTaskThumbnailViewDeprecated;
+    protected TaskThumbnailView mTaskThumbnailView;
     protected TaskViewIcon mIconView;
     protected final DigitalWellBeingToast mDigitalWellBeingToast;
     protected float mFullscreenProgress;
@@ -463,10 +469,11 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected Unit updateBorderBounds(@NonNull Rect bounds) {
-        bounds.set(mSnapshotView.getLeft() + Math.round(mSnapshotView.getTranslationX()),
-                mSnapshotView.getTop() + Math.round(mSnapshotView.getTranslationY()),
-                mSnapshotView.getRight() + Math.round(mSnapshotView.getTranslationX()),
-                mSnapshotView.getBottom() + Math.round(mSnapshotView.getTranslationY()));
+        View snapshotView = getSnapshotView();
+        bounds.set(snapshotView.getLeft() + Math.round(snapshotView.getTranslationX()),
+                snapshotView.getTop() + Math.round(snapshotView.getTranslationY()),
+                snapshotView.getRight() + Math.round(snapshotView.getTranslationX()),
+                snapshotView.getBottom() + Math.round(snapshotView.getTranslationY()));
         return Unit.INSTANCE;
     }
 
@@ -476,6 +483,17 @@ public class TaskView extends FrameLayout implements Reusable {
 
     public int getTaskViewId() {
         return mTaskViewId;
+    }
+
+    /**
+     * Updates [TaskThumbnailView] to reflect the latest [Task] state (i.e., task isRunning).
+     */
+    public void notifyIsRunningTaskUpdated() {
+        // TODO(b/335649589): TaskView's VM will already have access to TaskThumbnailView's VM
+        //  so there will be no need to access TaskThumbnailView's VM through the TaskThumbnailView
+        if (mTask != null) {
+            bindTaskThumbnailView();
+        }
     }
 
     /**
@@ -515,7 +533,14 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mSnapshotView = findViewById(R.id.snapshot);
+        mTaskThumbnailViewDeprecated = findViewById(R.id.snapshot);
+        if (enableRefactorTaskThumbnail()) {
+            mTaskThumbnailView = new TaskThumbnailView(mContext);
+            mTaskThumbnailView.setLayoutParams(mTaskThumbnailViewDeprecated.getLayoutParams());
+            int indexOfSnapshotView = indexOfChild(mTaskThumbnailViewDeprecated);
+            addView(mTaskThumbnailView, indexOfSnapshotView);
+            mTaskThumbnailViewDeprecated.setVisibility(View.GONE);
+        }
         ViewStub iconViewStub = findViewById(R.id.icon);
         if (enableOverviewIconMenu()) {
             iconViewStub.setLayoutResource(R.layout.icon_app_chip_view);
@@ -650,10 +675,21 @@ public class TaskView extends FrameLayout implements Reusable {
         cancelPendingLoadTasks();
         mTask = task;
         mTaskIdContainer[0] = mTask.key.id;
-        mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task, mSnapshotView, mIconView,
+        mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task,
+                mTaskThumbnailViewDeprecated, mIconView,
                 STAGE_POSITION_UNDEFINED);
-        mSnapshotView.bind(task);
+        if (enableRefactorTaskThumbnail()) {
+            bindTaskThumbnailView();
+        } else {
+            mTaskThumbnailViewDeprecated.bind(task);
+        }
         setOrientationState(orientedState);
+    }
+
+    private void bindTaskThumbnailView() {
+        // TODO(b/335649589): TaskView's VM will already have access to TaskThumbnailView's VM
+        //  so there will be no need to access TaskThumbnailView's VM through the TaskThumbnailView
+        mTaskThumbnailView.getViewModel().bind(new TaskThumbnail(mTask, isRunningTask()));
     }
 
     /**
@@ -745,25 +781,29 @@ public class TaskView extends FrameLayout implements Reusable {
         return null;
     }
 
-    public TaskThumbnailView getThumbnail() {
-        return mSnapshotView;
+    public TaskThumbnailViewDeprecated getThumbnail() {
+        return mTaskThumbnailViewDeprecated;
     }
 
     void refreshThumbnails(@Nullable HashMap<Integer, ThumbnailData> thumbnailDatas) {
+        if (enableRefactorTaskThumbnail()) {
+            // TODO(b/334825222) add thumbnail logic
+            return;
+        }
         if (mTask != null && thumbnailDatas != null) {
             final ThumbnailData thumbnailData = thumbnailDatas.get(mTask.key.id);
             if (thumbnailData != null) {
-                mSnapshotView.setThumbnail(mTask, thumbnailData);
+                mTaskThumbnailViewDeprecated.setThumbnail(mTask, thumbnailData);
                 return;
             }
         }
 
-        mSnapshotView.refresh();
+        mTaskThumbnailViewDeprecated.refresh();
     }
 
     /** TODO(b/197033698) Remove all usages of above method and migrate to this one */
-    public TaskThumbnailView[] getThumbnails() {
-        return new TaskThumbnailView[]{mSnapshotView};
+    public TaskThumbnailViewDeprecated[] getThumbnails() {
+        return new TaskThumbnailViewDeprecated[]{mTaskThumbnailViewDeprecated};
     }
 
     public TaskViewIcon getIconView() {
@@ -948,7 +988,10 @@ public class TaskView extends FrameLayout implements Reusable {
             if (isQuickswitch) {
                 opts.setFreezeRecentTasksReordering();
             }
-            opts.setDisableStartingWindow(mSnapshotView.shouldShowSplashView());
+            // TODO(b/334826842) add splash functionality to new TTV
+            if (!enableRefactorTaskThumbnail()) {
+                opts.setDisableStartingWindow(mTaskThumbnailViewDeprecated.shouldShowSplashView());
+            }
             Task.TaskKey key = mTask.key;
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (!ActivityManagerWrapper.getInstance().startActivityFromRecents(key, opts)) {
@@ -1069,7 +1112,10 @@ public class TaskView extends FrameLayout implements Reusable {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
                 mThumbnailLoadRequest = thumbnailCache.updateThumbnailInBackground(
                         mTask, thumbnail -> {
-                            mSnapshotView.setThumbnail(mTask, thumbnail);
+                            if (!enableRefactorTaskThumbnail()) {
+                                // TODO(b/334825222) add thumbnail state
+                                mTaskThumbnailViewDeprecated.setThumbnail(mTask, thumbnail);
+                            }
                         });
             }
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
@@ -1087,7 +1133,10 @@ public class TaskView extends FrameLayout implements Reusable {
             }
         } else {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
-                mSnapshotView.setThumbnail(null, null);
+                if (!enableRefactorTaskThumbnail()) {
+                    // TODO(b/334825222) add thumbnail state
+                    mTaskThumbnailViewDeprecated.setThumbnail(null, null);
+                }
                 // Reset the task thumbnail reference as well (it will be fetched from the cache or
                 // reloaded next time we need it)
                 mTask.thumbnail = null;
@@ -1195,11 +1244,15 @@ public class TaskView extends FrameLayout implements Reusable {
 
         // TODO(b/271468547), we should default to setting trasnlations only on the snapshot instead
         //  of a hybrid of both margins and translations
-        LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
+        LayoutParams snapshotParams = (LayoutParams) getSnapshotView().getLayoutParams();
         snapshotParams.topMargin = thumbnailTopMargin;
-        mSnapshotView.setLayoutParams(snapshotParams);
+        getSnapshotView().setLayoutParams(snapshotParams);
 
-        mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
+        // TODO(b/335606129) Investigate the usage of [TaskOverlay] in the new TaskThumbnailView.
+        //  and if it's still necessary we should support that in the new TTV class.
+        if (!enableRefactorTaskThumbnail()) {
+            mTaskThumbnailViewDeprecated.getTaskOverlay().updateOrientationState(orientationState);
+        }
         mDigitalWellBeingToast.initialize(mTask);
     }
 
@@ -1288,7 +1341,10 @@ public class TaskView extends FrameLayout implements Reusable {
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
         setColorTint(0, 0);
-        mSnapshotView.resetViewTransforms();
+        if (!enableRefactorTaskThumbnail()) {
+            // TODO(b/335399428) add split select functionality to new TTV
+            mTaskThumbnailViewDeprecated.resetViewTransforms();
+        }
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -1301,7 +1357,12 @@ public class TaskView extends FrameLayout implements Reusable {
         resetPersistentViewTransforms();
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
-        mSnapshotView.setThumbnail(mTask, null);
+        // TODO(b/334825222): Implement thumbnail/snapshot for the new [TaskThumbnailView].
+        if (enableRefactorTaskThumbnail()) {
+            notifyIsRunningTaskUpdated();
+        } else {
+            mTaskThumbnailViewDeprecated.setThumbnail(mTask, null);
+        }
         setOverlayEnabled(false);
         onTaskListVisibilityChanged(false);
         mBorderEnabled = false;
@@ -1316,10 +1377,10 @@ public class TaskView extends FrameLayout implements Reusable {
         super.onLayout(changed, left, top, right, bottom);
         if (mContainer.getDeviceProfile().isTablet) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
-            setPivotY(mSnapshotView.getTop());
+            setPivotY(getSnapshotView().getTop());
         } else {
             setPivotX((right - left) * 0.5f);
-            setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
+            setPivotY(getSnapshotView().getTop() + getSnapshotView().getHeight() * 0.5f);
         }
         SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
         setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
@@ -1387,11 +1448,17 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected void applyThumbnailSplashAlpha() {
-        mSnapshotView.setSplashAlpha(mTaskThumbnailSplashAlpha);
+        if (!enableRefactorTaskThumbnail()) {
+            // TODO(b/334826842) add splash functionality to new TTV
+            mTaskThumbnailViewDeprecated.setSplashAlpha(mTaskThumbnailSplashAlpha);
+        }
     }
 
     protected void refreshTaskThumbnailSplash() {
-        mSnapshotView.refreshSplashView();
+        if (!enableRefactorTaskThumbnail()) {
+            // TODO(b/334826842) add splash functionality to new TTV
+            mTaskThumbnailViewDeprecated.refreshSplashView();
+        }
     }
 
     private void setSplitSelectTranslationX(float x) {
@@ -1670,7 +1737,11 @@ public class TaskView extends FrameLayout implements Reusable {
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        mSnapshotView.getTaskOverlay().setFullscreenProgress(progress);
+        if (!enableRefactorTaskThumbnail()) {
+            // TODO(b/334826840) Add corner rounding to new TTV
+            mTaskThumbnailViewDeprecated.getTaskOverlay().setFullscreenProgress(progress);
+        }
+
         RecentsView recentsView = mContainer.getOverviewPanel();
         // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
         // oversized and banner would look disproportionately large.
@@ -1683,7 +1754,10 @@ public class TaskView extends FrameLayout implements Reusable {
 
     protected void updateSnapshotRadius() {
         updateCurrentFullscreenParams();
-        mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
+        if (!enableRefactorTaskThumbnail()) {
+            // TODO(b/334826840) Add corner rounding to new TTV
+            mTaskThumbnailViewDeprecated.setFullscreenParams(mCurrentFullscreenParams);
+        }
     }
 
     void updateCurrentFullscreenParams() {
@@ -1796,7 +1870,11 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public void setOverlayEnabled(boolean overlayEnabled) {
-        mSnapshotView.setOverlayEnabled(overlayEnabled);
+        // TODO(b/335606129) Investigate the usage of [TaskOverlay] in the new TaskThumbnailView.
+        //  and if it's still necessary we should support that in the new TTV class.
+        if (!enableRefactorTaskThumbnail()) {
+            mTaskThumbnailViewDeprecated.setOverlayEnabled(overlayEnabled);
+        }
     }
 
     public void initiateSplitSelect(SplitPositionOption splitPositionOption) {
@@ -1808,7 +1886,10 @@ public class TaskView extends FrameLayout implements Reusable {
      * Set a color tint on the snapshot and supporting views.
      */
     public void setColorTint(float amount, int tintColor) {
-        mSnapshotView.setDimAlpha(amount);
+        if (!enableRefactorTaskThumbnail()) {
+            // TODO(b/334832108) Add scrim to new TTV
+            mTaskThumbnailViewDeprecated.setDimAlpha(amount);
+        }
         mIconView.setIconColorTint(tintColor, amount);
         mDigitalWellBeingToast.setBannerColorTint(tintColor, amount);
     }
@@ -1832,6 +1913,10 @@ public class TaskView extends FrameLayout implements Reusable {
                 child.setVisibility(visibility);
             }
         }
+    }
+
+    private View getSnapshotView() {
+        return enableRefactorTaskThumbnail() ? mTaskThumbnailView : mTaskThumbnailViewDeprecated;
     }
 
     /**
@@ -1878,7 +1963,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public class TaskIdAttributeContainer {
-        private final TaskThumbnailView mThumbnailView;
+        private final TaskThumbnailViewDeprecated mThumbnailView;
         private final Task mTask;
         private final TaskViewIcon mIconView;
         /** Defaults to STAGE_POSITION_UNDEFINED if in not a split screen task view */
@@ -1886,7 +1971,7 @@ public class TaskView extends FrameLayout implements Reusable {
         @IdRes
         private final int mA11yNodeId;
 
-        public TaskIdAttributeContainer(Task task, TaskThumbnailView thumbnailView,
+        public TaskIdAttributeContainer(Task task, TaskThumbnailViewDeprecated thumbnailView,
                 TaskViewIcon iconView, int stagePosition) {
             this.mTask = task;
             this.mThumbnailView = thumbnailView;
@@ -1896,7 +1981,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     R.id.split_bottomRight_appInfo : R.id.split_topLeft_appInfo;
         }
 
-        public TaskThumbnailView getThumbnailView() {
+        public TaskThumbnailViewDeprecated getThumbnailView() {
             return mThumbnailView;
         }
 

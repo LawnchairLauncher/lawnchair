@@ -46,7 +46,7 @@ import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
-import com.android.quickstep.views.TaskThumbnailView;
+import com.android.quickstep.views.TaskThumbnailViewDeprecated;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 import com.android.systemui.shared.recents.model.Task;
@@ -107,7 +107,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         return shortcuts;
     }
 
-    public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
+    public TaskOverlay createOverlay(TaskThumbnailViewDeprecated thumbnailView) {
         return new TaskOverlay(thumbnailView);
     }
 
@@ -149,14 +149,14 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     public static class TaskOverlay<T extends OverviewActionsView> {
 
         protected final Context mApplicationContext;
-        protected final TaskThumbnailView mThumbnailView;
+        protected final TaskThumbnailViewDeprecated mThumbnailView;
 
         private T mActionsView;
         protected ImageActionsApi mImageApi;
 
-        protected TaskOverlay(TaskThumbnailView taskThumbnailView) {
-            mApplicationContext = taskThumbnailView.getContext().getApplicationContext();
-            mThumbnailView = taskThumbnailView;
+        protected TaskOverlay(TaskThumbnailViewDeprecated taskThumbnailViewDeprecated) {
+            mApplicationContext = taskThumbnailViewDeprecated.getContext().getApplicationContext();
+            mThumbnailView = taskThumbnailViewDeprecated;
             mImageApi = new ImageActionsApi(
                     mApplicationContext, mThumbnailView::getThumbnail);
         }
@@ -169,7 +169,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             return mActionsView;
         }
 
-        public TaskThumbnailView getThumbnailView() {
+        public TaskThumbnailViewDeprecated getThumbnailView() {
             return mThumbnailView;
         }
 

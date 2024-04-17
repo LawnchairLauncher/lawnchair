@@ -130,6 +130,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.BaseActivity.MultiWindowModeChangedListener;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.PagedView;
@@ -1045,8 +1046,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 continue;
             }
             Task task = taskAttributes.getTask();
-            TaskThumbnailView taskThumbnailView = taskAttributes.getThumbnailView();
-            taskThumbnailView.setThumbnail(task, thumbnail, refreshNow);
+            TaskThumbnailViewDeprecated taskThumbnailViewDeprecated =
+                    taskAttributes.getThumbnailView();
+            taskThumbnailViewDeprecated.setThumbnail(task, thumbnail, refreshNow);
             // thumbnailData can contain 1-2 ids, but they should correspond to the same
             // TaskView, so overwriting is ok
             updatedTaskView = taskView;
@@ -1833,7 +1835,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             // the full list of tasks to taskViews
             newRunningTaskView = getTaskViewByTaskIds(runningTaskId);
             if (newRunningTaskView != null) {
-                mRunningTaskViewId = newRunningTaskView.getTaskViewId();
+                setRunningTaskViewId(newRunningTaskView.getTaskViewId());
             } else {
                 if (mActiveGestureRunningTasks != null) {
                     // This will update mRunningTaskViewId and create a stub view if necessary.
@@ -1842,7 +1844,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                     // the current running task is excludedFromRecents.)
                     showCurrentTask(mActiveGestureRunningTasks);
                 } else {
-                    mRunningTaskViewId = INVALID_TASK_ID;
+                    setRunningTaskViewId(INVALID_TASK_ID);
                 }
             }
         }
@@ -2842,7 +2844,23 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             setRunningTaskViewShowScreenshot(true);
             setRunningTaskHidden(false);
         }
+        setRunningTaskViewId(runningTaskViewId);
+    }
+
+    private void setRunningTaskViewId(int runningTaskViewId) {
+        int prevRunningTaskViewId = mRunningTaskViewId;
         mRunningTaskViewId = runningTaskViewId;
+
+        if (Flags.enableRefactorTaskThumbnail()) {
+            TaskView previousRunningTaskView = getTaskViewFromTaskViewId(prevRunningTaskViewId);
+            if (previousRunningTaskView != null) {
+                previousRunningTaskView.notifyIsRunningTaskUpdated();
+            }
+            TaskView newRunningTaskView = getTaskViewFromTaskViewId(runningTaskViewId);
+            if (newRunningTaskView != null) {
+                newRunningTaskView.notifyIsRunningTaskUpdated();
+            }
+        }
     }
 
     private int getTaskViewIdFromTaskId(int taskId) {
@@ -4762,7 +4780,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                             mSplitSelectStateController.getInitialTaskId();
             TaskIdAttributeContainer taskIdAttributeContainer = mSplitHiddenTaskView
                     .getTaskIdAttributeContainers()[primaryTaskSelected ? 1 : 0];
-            TaskThumbnailView thumbnail = taskIdAttributeContainer.getThumbnailView();
+            TaskThumbnailViewDeprecated thumbnail = taskIdAttributeContainer.getThumbnailView();
             mSplitSelectStateController.getSplitAnimationController()
                     .addInitialSplitFromPair(taskIdAttributeContainer, builder,
                             mContainer.getDeviceProfile(),
@@ -5865,7 +5883,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
 
             ThumbnailData td =
                     mRecentsAnimationController.screenshotTask(container.getTask().key.id);
-            TaskThumbnailView thumbnailView = container.getThumbnailView();
+            TaskThumbnailViewDeprecated thumbnailView = container.getThumbnailView();
             if (td != null) {
                 thumbnailView.setThumbnail(container.getTask(), td);
             } else {

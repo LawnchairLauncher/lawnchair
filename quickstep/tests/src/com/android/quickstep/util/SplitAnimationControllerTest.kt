@@ -31,7 +31,7 @@ import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.views.GroupedTaskView
 import com.android.quickstep.views.IconView
-import com.android.quickstep.views.TaskThumbnailView
+import com.android.quickstep.views.TaskThumbnailViewDeprecated
 import com.android.quickstep.views.TaskView
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
 import com.android.systemui.shared.recents.model.Task
@@ -55,7 +55,7 @@ class SplitAnimationControllerTest {
     private val mockSplitSelectStateController: SplitSelectStateController = mock()
     // TaskView
     private val mockTaskView: TaskView = mock()
-    private val mockThumbnailView: TaskThumbnailView = mock()
+    private val mockThumbnailView: TaskThumbnailViewDeprecated = mock()
     private val mockBitmap: Bitmap = mock()
     private val mockIconView: IconView = mock()
     private val mockTaskViewDrawable: Drawable = mock()
@@ -200,7 +200,16 @@ class SplitAnimationControllerTest {
         doNothing()
             .whenever(spySplitAnimationController)
             .composeRecentsSplitLaunchAnimatorLegacy(
-                any(), any(), any(), any(), any(), any(), any(), any(), any())
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
 
         spySplitAnimationController.playSplitLaunchAnimation(
             mockGroupedTaskView,
@@ -219,7 +228,16 @@ class SplitAnimationControllerTest {
 
         verify(spySplitAnimationController)
             .composeRecentsSplitLaunchAnimatorLegacy(
-                any(), any(), any(), any(), any(), any(), any(), any(), any())
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
     }
 
     @Test
