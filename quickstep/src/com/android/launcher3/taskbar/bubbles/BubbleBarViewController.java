@@ -266,6 +266,11 @@ public class BubbleBarViewController {
         mBarView.setUpdateSelectedBubbleAfterCollapse(updateSelectedBubbleAfterCollapse);
     }
 
+    /** Returns whether the bubble bar should be hidden because of the current sysui state. */
+    boolean isHiddenForSysui() {
+        return mHiddenForSysui;
+    }
+
     /**
      * Sets whether the bubble bar should be hidden due to SysUI state (e.g. on lockscreen).
      */
