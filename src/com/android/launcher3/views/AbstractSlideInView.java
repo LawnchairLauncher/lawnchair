@@ -25,6 +25,8 @@ import static com.android.launcher3.LauncherAnimUtils.TABLET_BOTTOM_SHEET_SUCCES
 import static com.android.launcher3.allapps.AllAppsTransitionController.REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS;
 import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -135,6 +137,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected final AnimatedFloat mSwipeToDismissProgress =
             new AnimatedFloat(this::onUserSwipeToDismissProgressChanged, 0f);
     protected boolean mIsDismissInProgress;
+    protected View mViewToAnimateInSwipeToDismiss = this;
     private @Nullable Drawable mContentBackground;
     private @Nullable View mContentBackgroundParentView;
 
@@ -297,7 +300,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         mIsDismissInProgress = progress > 0f;
 
         float scale = PREDICTIVE_BACK_MIN_SCALE + (1 - PREDICTIVE_BACK_MIN_SCALE) * (1f - progress);
-        SCALE_PROPERTY.set(this, scale);
+        SCALE_PROPERTY.set(mViewToAnimateInSwipeToDismiss, scale);
         setClipChildren(!mIsDismissInProgress);
         setClipToPadding(!mIsDismissInProgress);
         mContent.setClipChildren(!mIsDismissInProgress);
@@ -312,9 +315,32 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     protected void animateSwipeToDismissProgressToStart() {
-        mSwipeToDismissProgress.animateToValue(0f)
-                .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS)
-                .start();
+        ObjectAnimator objectAnimator = mSwipeToDismissProgress.animateToValue(0f)
+                .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS);
+
+        // If we are animating a different view, we should reset the animating view back to
+        // AbstractSlideInView as it is the default view to animate.
+        if (this != mViewToAnimateInSwipeToDismiss) {
+            objectAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                    mViewToAnimateInSwipeToDismiss = AbstractSlideInView.this;
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    mViewToAnimateInSwipeToDismiss = AbstractSlideInView.this;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {}
+
+                @Override
+                public void onAnimationStart(Animator animator) {}
+            });
+        }
+
+        objectAnimator.start();
     }
 
     @Override

@@ -45,6 +45,7 @@ import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.window.BackEvent;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
@@ -897,6 +898,17 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                         && oldDp.isLandscape != newDp.isLandscape));
 
         return isFoldUnFold || useDifferentLayoutOnOrientationChange;
+    }
+
+    @Override
+    public void onBackStarted(BackEvent backEvent) {
+        super.onBackStarted(backEvent);
+        // In widget search mode, we should scale down content inside widget bottom sheet, rather
+        // than the whole bottom sheet, to indicate we will navigate back within the widget
+        // bottom sheet.
+        if (mIsInSearchMode) {
+            mViewToAnimateInSwipeToDismiss = mContent;
+        }
     }
 
     @Override
