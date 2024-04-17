@@ -559,7 +559,7 @@ public class IconCache extends BaseIconCache {
             return;
         }
 
-        WidgetSection widgetSection = WidgetSections.getWidgetSections(mContext)
+        WidgetSection widgetSection = WidgetSections.get(mContext)
                 .get(infoInOut.widgetCategory);
         infoInOut.title = mContext.getString(widgetSection.mSectionTitle);
         infoInOut.contentDescription = getUserBadgedLabel(infoInOut.title, infoInOut.user);
