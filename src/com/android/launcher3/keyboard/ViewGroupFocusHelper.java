@@ -19,6 +19,7 @@ package com.android.launcher3.keyboard;
 import android.graphics.Rect;
 import android.view.View;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.PagedView;
 
 /**
@@ -32,6 +33,28 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
     public ViewGroupFocusHelper(View container) {
         super(container);
         mContainer = container;
+    }
+
+    @Override
+    protected boolean shouldDraw(View item) {
+        if (Flags.enableFocusOutline()) {
+            // Not draw outline in page transition because the outline just remains fully
+            // persistent during the transition and does not look smooth
+            return super.shouldDraw(item) && !isInPageTransition(item);
+        } else {
+            return super.shouldDraw(item);
+        }
+    }
+
+    private boolean isInPageTransition(View view) {
+        if (view == null || !(view.getParent() instanceof View)) {
+            return false;
+        }
+        boolean isInTransition = false;
+        if (view instanceof PagedView) {
+            isInTransition = ((PagedView<?>) view).isPageInTransition();
+        }
+        return isInTransition || isInPageTransition((View) view.getParent());
     }
 
     @Override
