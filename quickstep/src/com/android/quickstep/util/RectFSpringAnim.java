@@ -171,8 +171,13 @@ public class RectFSpringAnim extends ReleaseCheck {
 
     public void onTargetPositionChanged() {
         if (enableScalingRevealHomeAnimation()) {
+            if (isEnded()) {
+                return;
+            }
+
             if (mRectXSpring != null) {
                 mRectXSpring.animateToFinalPosition(mTargetRect.centerX());
+                mRectXAnimEnded = false;
             }
 
             if (mRectYSpring != null) {
@@ -187,6 +192,7 @@ public class RectFSpringAnim extends ReleaseCheck {
                         mRectYSpring.animateToFinalPosition(mTargetRect.centerY());
                         break;
                 }
+                mRectYAnimEnded = false;
             }
         } else {
             if (mRectXAnim != null && mRectXAnim.getTargetPosition() != mTargetRect.centerX()) {
@@ -297,6 +303,7 @@ public class RectFSpringAnim extends ReleaseCheck {
                                             .setStiffness(stiffnessZ)
                                             .setDampingRatio(dampingZ))
                             .setStartVelocity(velocityPxPerMs.y * minVisibleChange)
+                            .setMaxValue(1f)
                             .setMinimumVisibleChange(minVisibleChange)
                             .addEndListener((animation, canceled, value, velocity) -> {
                                 mRectScaleAnimEnded = true;
