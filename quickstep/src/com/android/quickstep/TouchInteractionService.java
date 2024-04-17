@@ -24,6 +24,7 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.Flags.enableHandleDelayedGestureCallbacks;
 import static com.android.launcher3.Flags.useActivityOverlay;
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
 import static com.android.launcher3.LauncherPrefs.backedUpItem;
@@ -41,6 +42,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_MOVE;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_UP;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.RECENTS_ANIMATION_START_PENDING;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER;
@@ -715,16 +717,22 @@ public class TouchInteractionService extends Service {
         boolean isHoverActionWithoutConsumer = enableCursorHoverStates()
                 && isHoverActionWithoutConsumer(event);
 
-        // TODO(b/285636175): Uncomment this once WM can properly guarantee all animation callbacks
-//        if (mTaskAnimationManager.isRecentsAnimationStartPending()
-//                && (action == ACTION_DOWN || isHoverActionWithoutConsumer)) {
-//            ActiveGestureLog.INSTANCE.addLog(
-//                    new CompoundString("TIS.onInputEvent: ")
-//                            .append("Cannot process input event: a recents animation has been ")
-//                            .append("requested, but hasn't started."),
-//                    RECENTS_ANIMATION_START_PENDING);
-//            return;
-//        }
+        if (enableHandleDelayedGestureCallbacks()) {
+            if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
+                mTaskAnimationManager.notifyNewGestureStart();
+            }
+            if (mTaskAnimationManager.shouldIgnoreMotionEvents()) {
+                if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
+                    ActiveGestureLog.INSTANCE.addLog(
+                            new CompoundString("TIS.onMotionEvent: A new gesture has been ")
+                                    .append("started, but a previously-requested recents ")
+                                    .append("animation hasn't started. Ignoring all following ")
+                                    .append("motion events."),
+                            RECENTS_ANIMATION_START_PENDING);
+                }
+                return;
+            }
+        }
 
         SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
 
@@ -1429,28 +1437,31 @@ public class TouchInteractionService extends Service {
             mOverviewCommandHelper.dump(pw);
         }
         if (mGestureState != null) {
-            mGestureState.dump(pw);
+            mGestureState.dump("", pw);
         }
         pw.println("Input state:");
-        pw.println("  mInputMonitorCompat=" + mInputMonitorCompat);
-        pw.println("  mInputEventReceiver=" + mInputEventReceiver);
+        pw.println("\tmInputMonitorCompat=" + mInputMonitorCompat);
+        pw.println("\tmInputEventReceiver=" + mInputEventReceiver);
         DisplayController.INSTANCE.get(this).dump(pw);
         pw.println("TouchState:");
         BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
                 : mOverviewComponentObserver.getActivityInterface().getCreatedContainer();
         boolean resumed = mOverviewComponentObserver != null
                 && mOverviewComponentObserver.getActivityInterface().isResumed();
-        pw.println("  createdOverviewActivity=" + createdOverviewActivity);
-        pw.println("  resumed=" + resumed);
-        pw.println("  mConsumer=" + mConsumer.getName());
+        pw.println("\tcreatedOverviewActivity=" + createdOverviewActivity);
+        pw.println("\tresumed=" + resumed);
+        pw.println("\tmConsumer=" + mConsumer.getName());
         ActiveGestureLog.INSTANCE.dump("", pw);
         RecentsModel.INSTANCE.get(this).dump("", pw);
+        if (mTaskAnimationManager != null) {
+            mTaskAnimationManager.dump("", pw);
+        }
         if (createdOverviewActivity != null) {
             createdOverviewActivity.getDeviceProfile().dump(this, "", pw);
         }
         mTaskbarManager.dumpLogs("", pw);
         pw.println("AssistStateManager:");
-        AssistStateManager.INSTANCE.get(this).dump("  ", pw);
+        AssistStateManager.INSTANCE.get(this).dump("\t", pw);
         SystemUiProxy.INSTANCE.get(this).dump(pw);
         DeviceConfigWrapper.get().dump("   ", pw);
     }

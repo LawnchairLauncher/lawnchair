@@ -229,3 +229,13 @@ flag {
     description: "Enables an add button in the widget picker"
     bug: "323886237"
 }
+
+flag {
+  name: "enable_handle_delayed_gesture_callbacks"
+  namespace: "launcher"
+  description: "Enables additional handling for delayed mid-gesture callbacks"
+  bug: "285636175"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}

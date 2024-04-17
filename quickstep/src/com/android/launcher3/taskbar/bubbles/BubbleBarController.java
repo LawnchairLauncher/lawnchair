@@ -313,8 +313,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 || (!update.expandedChanged && !mBubbleBarViewController.isExpanded());
         final boolean isExpanding = update.expandedChanged && update.expanded;
         // don't animate bubbles if this is the initial state because we may be unfolding or
-        // enabling gesture nav
-        final boolean suppressAnimation = update.initialState;
+        // enabling gesture nav. also suppress animation if the bubble bar is hidden for sysui e.g.
+        // the shade is open, or we're locked.
+        final boolean suppressAnimation =
+                update.initialState || mBubbleBarViewController.isHiddenForSysui();
+
         BubbleBarItem previouslySelectedBubble = mSelectedBubble;
         BubbleBarBubble bubbleToSelect = null;
         if (!update.removedBubbles.isEmpty()) {

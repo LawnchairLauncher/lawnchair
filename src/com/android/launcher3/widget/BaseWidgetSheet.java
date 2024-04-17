@@ -27,6 +27,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -141,6 +142,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         }
 
         if (enableWidgetTapToAdd()) {
+            scrollToWidgetCell(wc);
             if (mWidgetCellWithAddButton != null) {
                 // If there is a add button currently showing, hide it.
                 mWidgetCellWithAddButton.hideAddButton(/* animate= */ true);
@@ -185,6 +187,52 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
             }
         });
         handleClose(true);
+    }
+
+    /**
+     * Scroll to show the widget cell. If both the bottom and top of the cell are clipped, this will
+     * prioritize showing the bottom of the cell (where the add button is).
+     */
+    private void scrollToWidgetCell(@NonNull WidgetCell wc) {
+        final int headerTopClip = getHeaderTopClip(wc);
+        final Rect visibleRect = new Rect();
+        final boolean isPartiallyVisible = wc.getLocalVisibleRect(visibleRect);
+        int scrollByY = 0;
+        if (isPartiallyVisible) {
+            final int scrollPadding = getResources()
+                    .getDimensionPixelSize(R.dimen.widget_cell_add_button_scroll_padding);
+            final int topClip = visibleRect.top + headerTopClip;
+            final int bottomClip = wc.getHeight() - visibleRect.bottom;
+            if (bottomClip != 0) {
+                scrollByY = bottomClip + scrollPadding;
+            } else if (topClip != 0) {
+                scrollByY = -topClip - scrollPadding;
+            }
+        }
+
+        if (isPartiallyVisible && scrollByY == 0) {
+            // Widget is fully visible.
+            return;
+        } else if (!isPartiallyVisible) {
+            Log.e("BaseWidgetSheet", "click on invisible WidgetCell should not be possible");
+            return;
+        }
+
+        scrollCellContainerByY(wc, scrollByY);
+    }
+
+    /**
+     * Find the nearest scrollable container of the given WidgetCell, and scroll by the given
+     * amount.
+     */
+    protected abstract void scrollCellContainerByY(WidgetCell wc, int scrollByY);
+
+
+    /**
+     * Return the top clip of any sticky headers over the given cell.
+     */
+    protected int getHeaderTopClip(@NonNull WidgetCell cell) {
+        return 0;
     }
 
     @Override

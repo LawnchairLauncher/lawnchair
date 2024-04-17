@@ -52,11 +52,11 @@ class ScalingWorkspaceRevealAnim(launcher: QuickstepLauncher) {
 
     init {
         // Make sure the starting state is right for the animation.
-        val config = StateAnimationConfig()
-        config.animFlags = SKIP_OVERVIEW.or(SKIP_DEPTH_CONTROLLER).or(SKIP_SCRIM)
-        config.duration = 0
+        val setupConfig = StateAnimationConfig()
+        setupConfig.animFlags = SKIP_OVERVIEW.or(SKIP_DEPTH_CONTROLLER).or(SKIP_SCRIM)
+        setupConfig.duration = 0
         launcher.stateManager
-            .createAtomicAnimation(LauncherState.BACKGROUND_APP, LauncherState.NORMAL, config)
+            .createAtomicAnimation(LauncherState.BACKGROUND_APP, LauncherState.NORMAL, setupConfig)
             .start()
         launcher
             .getOverviewPanel<RecentsView<QuickstepLauncher, LauncherState>>()
@@ -64,7 +64,7 @@ class ScalingWorkspaceRevealAnim(launcher: QuickstepLauncher) {
         launcher.workspace.stateTransitionAnimation.setScrim(
             PropertySetter.NO_ANIM_PROPERTY_SETTER,
             LauncherState.BACKGROUND_APP,
-            config
+            setupConfig
         )
 
         val workspace = launcher.workspace
@@ -103,11 +103,20 @@ class ScalingWorkspaceRevealAnim(launcher: QuickstepLauncher) {
             Interpolators.clampToProgress(LINEAR, 0f, fadeClamp)
         )
 
+        val transitionConfig = StateAnimationConfig()
+
         // Match the Wallpaper animation to the rest of the content.
         val depthController = (launcher as? QuickstepLauncher)?.depthController
-        val depthConfig = StateAnimationConfig()
-        depthConfig.setInterpolator(StateAnimationConfig.ANIM_DEPTH, EMPHASIZED)
-        depthController?.setStateWithAnimation(LauncherState.NORMAL, depthConfig, animation)
+        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_DEPTH, EMPHASIZED)
+        depthController?.setStateWithAnimation(LauncherState.NORMAL, transitionConfig, animation)
+
+        // Make sure that the contrast scrim animates correctly if needed.
+        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_SCRIM_FADE, EMPHASIZED)
+        launcher.workspace.stateTransitionAnimation.setScrim(
+            animation,
+            LauncherState.NORMAL,
+            transitionConfig
+        )
 
         // Needed to avoid text artefacts during the scale animation.
         workspace.setLayerType(View.LAYER_TYPE_HARDWARE, null)

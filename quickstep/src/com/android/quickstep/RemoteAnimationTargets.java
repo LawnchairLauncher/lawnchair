@@ -22,6 +22,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 import android.os.Bundle;
 import android.view.RemoteAnimationTarget;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -147,6 +148,14 @@ public class RemoteAnimationTargets {
                 target.startLeash.release();
             }
         }
+    }
+
+    public void dump(String prefix, PrintWriter pw) {
+        pw.println(prefix + "RemoteAnimationTargets:");
+
+        pw.println(prefix + "\ttargetMode=" + targetMode);
+        pw.println(prefix + "\thasRecents=" + hasRecents);
+        pw.println(prefix + "\tmReleased=" + mReleased);
     }
 
     /**
