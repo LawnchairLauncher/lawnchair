@@ -84,11 +84,12 @@ public class RoundedArrowDrawable extends Drawable {
      * @param width        of the arrow.
      * @param height       of the arrow.
      * @param radius       of the tip of the arrow.
-     * @param isPointingLeft or not.
+     * @param isHorizontal or not.
+     * @param isLeftOrTop  or not.
      * @param color        to draw the triangle.
      */
-    public RoundedArrowDrawable(float width, float height, float radius, boolean isPointingLeft,
-            int color) {
+    private RoundedArrowDrawable(float width, float height, float radius, boolean isHorizontal,
+            boolean isLeftOrTop, int color) {
         mPath = new Path();
         mPaint = new Paint();
         mPaint.setColor(color);
@@ -98,10 +99,47 @@ public class RoundedArrowDrawable extends Drawable {
         // Make the drawable with the triangle pointing down...
         addDownPointingRoundedTriangleToPath(width, height, radius, mPath);
 
-        // ... then rotate it to the side it needs to point.
-        Matrix pathTransform = new Matrix();
-        pathTransform.setRotate(isPointingLeft ? 90 : -90, width * 0.5f, height * 0.5f);
-        mPath.transform(pathTransform);
+        if (isHorizontal || isLeftOrTop) {
+            // ... then rotate it to the side it needs to point.
+            Matrix pathTransform = new Matrix();
+            int rotationAngle;
+            if (isHorizontal) {
+                rotationAngle = isLeftOrTop ? 90 : -90;
+            } else {
+                // it could only be vertical arrow pointing up
+                rotationAngle = 180;
+            }
+            pathTransform.setRotate(rotationAngle, width * 0.5f, height * 0.5f);
+            mPath.transform(pathTransform);
+        }
+    }
+
+    /**
+     * factory method for an arrow that points to the left or right.
+     *
+     * @param width          of the arrow.
+     * @param height         of the arrow.
+     * @param radius         of the tip of the arrow.
+     * @param isPointingLeft or not.
+     * @param color          to draw the triangle.
+     */
+    public static RoundedArrowDrawable createHorizontalRoundedArrow(float width, float height,
+            float radius, boolean isPointingLeft, int color) {
+        return new RoundedArrowDrawable(width, height, radius, true, isPointingLeft, color);
+    }
+
+    /**
+     * factory method for an arrow that points to the left or right.
+     *
+     * @param width        of the arrow.
+     * @param height       of the arrow.
+     * @param radius       of the tip of the arrow.
+     * @param isPointingUp or not.
+     * @param color        to draw the triangle.
+     */
+    public static RoundedArrowDrawable createVerticalRoundedArrow(float width, float height,
+            float radius, boolean isPointingUp, int color) {
+        return new RoundedArrowDrawable(width, height, radius, false, isPointingUp, color);
     }
 
     @Override
@@ -127,6 +165,14 @@ public class RoundedArrowDrawable extends Drawable {
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
         mPaint.setColorFilter(colorFilter);
+    }
+
+    /**
+     * Set shadow layer to internal {@link Paint#setShadowLayer(float, float, float, int) paint}
+     * object
+     */
+    public void setShadowLayer(float shadowBlur, float dx, float dy, int shadowColor) {
+        mPaint.setShadowLayer(shadowBlur, dx, dy, shadowColor);
     }
 
     private static void addDownPointingRoundedTriangleToPath(float width, float height,
