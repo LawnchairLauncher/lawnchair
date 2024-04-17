@@ -42,6 +42,7 @@ import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCall
 import com.android.launcher3.taskbar.bubbles.BubbleControllers;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.util.DisplayController;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -76,10 +77,11 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
     private final int mStashedTaskbarBottomEdge;
 
     private final @Nullable TransitionCallback mTransitionCallback;
+    private final GestureState mGestureState;
 
     public TaskbarUnstashInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, TaskbarActivityContext taskbarActivityContext,
-            OverviewCommandHelper overviewCommandHelper) {
+            OverviewCommandHelper overviewCommandHelper, GestureState gestureState) {
         super(delegate, inputMonitor);
         mTaskbarActivityContext = taskbarActivityContext;
         mOverviewCommandHelper = overviewCommandHelper;
@@ -103,11 +105,17 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
         mTransitionCallback = mIsTransientTaskbar
                 ? taskbarActivityContext.getTranslationCallbacks()
                 : null;
+        mGestureState = gestureState;
     }
 
     @Override
     public int getType() {
         return TYPE_TASKBAR_STASH | TYPE_CURSOR_HOVER | mDelegate.getType();
+    }
+
+    @Override
+    public boolean allowInterceptByParent() {
+        return super.allowInterceptByParent() && !mHasPassedTaskbarNavThreshold;
     }
 
     @Override
@@ -173,7 +181,8 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                             boolean passedTaskbarNavThreshold = dY < 0
                                     && Math.abs(dY) >= mTaskbarNavThreshold;
 
-                            if (!mHasPassedTaskbarNavThreshold && passedTaskbarNavThreshold) {
+                            if (!mHasPassedTaskbarNavThreshold && passedTaskbarNavThreshold
+                                    && !mGestureState.isInExtendedSlopRegion()) {
                                 mHasPassedTaskbarNavThreshold = true;
                                 if (mIsInBubbleBarArea && mIsVerticalGestureOverBubbleBar) {
                                     mTaskbarActivityContext.onSwipeToOpenBubblebar();

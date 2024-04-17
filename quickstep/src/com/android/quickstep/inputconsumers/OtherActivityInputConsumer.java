@@ -284,8 +284,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 float horizontalDist = Math.abs(displacementX);
                 float upDist = -displacement;
-                boolean passedSlop = mGestureState.isTrackpadGesture() || squaredHypot(
-                        displacementX, displacementY) >= mSquaredTouchSlop;
+                boolean passedSlop = mGestureState.isTrackpadGesture()
+                        || (squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop
+                            && !mGestureState.isInExtendedSlopRegion());
 
                 if (!mPassedSlopOnThisGesture && passedSlop) {
                     mPassedSlopOnThisGesture = true;
