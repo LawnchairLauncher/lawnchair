@@ -26,9 +26,11 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 
 import com.android.internal.policy.SystemBarUtils;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
+import com.android.quickstep.LauncherActivityInterface;
 
 import java.util.List;
 import java.util.Set;
@@ -46,6 +48,13 @@ public class SystemWindowManagerProxy extends WindowManagerProxy {
     public Rect getCurrentBounds(Context displayInfoContext) {
         return displayInfoContext.getResources().getConfiguration().windowConfiguration
                 .getMaxBounds();
+    }
+
+    @Override
+    public boolean isInDesktopMode() {
+        DesktopVisibilityController desktopController =
+                LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+        return desktopController != null && desktopController.areDesktopTasksVisible();
     }
 
     @Override

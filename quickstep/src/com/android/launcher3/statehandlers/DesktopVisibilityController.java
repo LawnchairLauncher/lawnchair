@@ -32,6 +32,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.DesktopAppSelectView;
@@ -229,6 +230,7 @@ public class DesktopVisibilityController {
         for (DesktopVisibilityListener listener : mDesktopVisibilityListeners) {
             listener.onDesktopVisibilityChanged(areDesktopTasksVisible);
         }
+        DisplayController.handleInfoChangeForDesktopMode(mLauncher);
     }
 
     /**

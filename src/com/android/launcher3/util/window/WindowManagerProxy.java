@@ -115,6 +115,13 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
     }
 
     /**
+     * Returns if we are in desktop mode or not.
+     */
+    public boolean isInDesktopMode() {
+        return false;
+    }
+
+    /**
      * Returns the real bounds for the provided display after applying any insets normalization
      */
     public WindowBounds getRealBounds(Context displayInfoContext, CachedDisplayInfo info) {

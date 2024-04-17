@@ -301,7 +301,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 createTaskbarRecentAppsController(),
                 TaskbarEduTooltipController.newInstance(this),
                 new KeyboardQuickSwitchController(),
-                new TaskbarPinningController(this),
+                new TaskbarPinningController(this, () ->
+                        DisplayController.INSTANCE.get(this).getInfo().isInDesktopMode()),
                 bubbleControllersOptional);
 
         mLauncherPrefs = LauncherPrefs.get(this);
