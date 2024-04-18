@@ -26,6 +26,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.android.launcher3.Flags;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -270,6 +271,12 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 addApps = mWorkProviderManager.shouldShowWorkApps();
             }
             if (addApps) {
+                if (/* education card was added */ position == 1) {
+                    // Add work educard section with "info icon" at 0th position.
+                    mFastScrollerSections.add(new FastScrollSectionInfo(
+                            mActivityContext.getResources().getString(
+                                    R.string.work_profile_edu_section), 0));
+                }
                 position = addAppsWithSections(mApps, position);
             }
             if (Flags.enablePrivateSpace()) {

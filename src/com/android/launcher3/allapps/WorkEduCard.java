@@ -103,6 +103,8 @@ public class WorkEduCard extends FrameLayout implements
             AllAppsRecyclerView rv = mActivityContext.getAppsView().mAH.get(
                     ActivityAllAppsContainerView.AdapterHolder.WORK).mRecyclerView;
             rv.getApps().getAdapterItems().remove(mPosition);
+            // Remove the educard fast scroll section.
+            rv.getApps().getFastScrollerSections().remove(0);
             rv.getAdapter().notifyItemRemoved(mPosition);
         }
     }
