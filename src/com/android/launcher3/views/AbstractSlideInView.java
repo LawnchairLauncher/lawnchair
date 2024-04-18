@@ -137,7 +137,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected final AnimatedFloat mSwipeToDismissProgress =
             new AnimatedFloat(this::onUserSwipeToDismissProgressChanged, 0f);
     protected boolean mIsDismissInProgress;
-    protected View mViewToAnimateInSwipeToDismiss = this;
+    private View mViewToAnimateInSwipeToDismiss = this;
     private @Nullable Drawable mContentBackground;
     private @Nullable View mContentBackgroundParentView;
 
