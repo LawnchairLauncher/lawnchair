@@ -17,8 +17,6 @@ import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATI
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_CONTEXTUAL_BUTTONS
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_NAV_BUTTONS
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_START_CONTEXTUAL_BUTTONS
-import com.android.systemui.shared.rotation.RotationButton
-import java.lang.IllegalStateException
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
@@ -39,10 +37,9 @@ class NavButtonLayoutFactoryTest {
     private val mockRecentsButton: ImageView = mock()
     private val mockHomeButton: ImageView = mock()
     private val mockImeSwitcher: ImageView = mock()
-    private val mockRotationButton: RotationButton = mock()
     private val mockA11yButton: ImageView = mock()
     private val mockSpace: Space = mock()
-    private val mockConfiguration: Configuration = mock();
+    private val mockConfiguration: Configuration = mock()
 
     private var surfaceRotation = Surface.ROTATION_0
 
@@ -210,7 +207,6 @@ class NavButtonLayoutFactoryTest {
             phoneMode = phoneMode,
             surfaceRotation = surfaceRotation,
             imeSwitcher = mockImeSwitcher,
-            rotationButton = mockRotationButton,
             a11yButton = mockA11yButton,
             space = mockSpace,
         )
