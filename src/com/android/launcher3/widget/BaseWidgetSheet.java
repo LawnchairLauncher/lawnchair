@@ -16,8 +16,6 @@
 package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
-import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
-import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.Flags.enableWidgetTapToAdd;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_TIP_SEEN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
@@ -272,19 +270,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
                 MeasureSpec.getSize(heightMeasureSpec));
     }
 
-    private int getTabletHorizontalMargin(DeviceProfile deviceProfile) {
-        // All bottom-sheets showing widgets will be full-width across all devices.
-        if (enableCategorizedWidgetSuggestions()) {
-            return 0;
-        }
-        if (deviceProfile.isLandscape && !deviceProfile.isTwoPanels) {
-            return getResources().getDimensionPixelSize(
-                    R.dimen.widget_picker_landscape_tablet_left_right_margin);
-        }
-        if (deviceProfile.isTwoPanels && enableUnfoldedTwoPanePicker()) {
-            return getResources().getDimensionPixelSize(
-                    R.dimen.widget_picker_two_panels_left_right_margin);
-        }
+    /** Returns the horizontal margins to be applied to the widget sheet. **/
+    protected int getTabletHorizontalMargin(DeviceProfile deviceProfile) {
         return deviceProfile.allAppsLeftRightMargin;
     }
 
