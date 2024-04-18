@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.taskbar.StashedHandleView;
@@ -40,6 +39,7 @@ import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
 import com.android.wm.shell.common.bubbles.BubbleBarLocation;
+import com.android.wm.shell.shared.animation.PhysicsAnimator;
 
 /**
  * Handles properties/data collection, then passes the results to our stashed handle View to render.
@@ -58,12 +58,6 @@ public class BubbleStashedHandleViewController {
     private int mStashedTaskbarHeight;
     private int mStashedHandleWidth;
     private int mStashedHandleHeight;
-
-    private final AnimatedFloat mStashedHandleTranslationY =
-            new AnimatedFloat(this::updateTranslationY);
-
-    // Modified when swipe up is happening on the stashed handle or task bar.
-    private float mSwipeUpTranslationY;
 
     // The bounds we want to clip to in the settled state when showing the stashed handle.
     private final Rect mStashedHandleBounds = new Rect();
@@ -127,6 +121,11 @@ public class BubbleStashedHandleViewController {
 
         mStashedHandleView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
                 updateBounds(mBarViewController.getBubbleBarLocation()));
+    }
+
+    /** Returns the [PhysicsAnimator] for the stashed handle view. */
+    public PhysicsAnimator<View> getPhysicsAnimator() {
+        return PhysicsAnimator.getInstance(mStashedHandleView);
     }
 
     private void updateBounds(BubbleBarLocation bubbleBarLocation) {
@@ -238,21 +237,11 @@ public class BubbleStashedHandleViewController {
         }
     }
 
-    /** Returns an animator for translation Y. */
-    public AnimatedFloat getStashedHandleTranslationY() {
-        return mStashedHandleTranslationY;
-    }
-
     /**
      * Sets the translation of the stashed handle during the swipe up gesture.
      */
     public void setTranslationYForSwipe(float transY) {
-        mSwipeUpTranslationY = transY;
-        updateTranslationY();
-    }
-
-    private void updateTranslationY() {
-        mStashedHandleView.setTranslationY(mStashedHandleTranslationY.value + mSwipeUpTranslationY);
+        mStashedHandleView.setTranslationY(transY);
     }
 
     /**
