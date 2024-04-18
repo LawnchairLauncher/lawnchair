@@ -180,7 +180,7 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
     @Override
-    public String scrollToPositionAtProgress(float touchFraction) {
+    public CharSequence scrollToPositionAtProgress(float touchFraction) {
         int rowCount = mApps.getNumAppRows();
         if (rowCount == 0) {
             return "";

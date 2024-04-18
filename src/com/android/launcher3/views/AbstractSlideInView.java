@@ -289,10 +289,29 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
 
     @Override
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onBackStarted(BackEvent backEvent) {
+        super.onBackStarted(backEvent);
+        mViewToAnimateInSwipeToDismiss = shouldAnimateContentViewInBackSwipe() ? mContent : this;
+    }
+
+    @Override
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public void onBackProgressed(BackEvent backEvent) {
         final float progress = backEvent.getProgress();
         float deceleratedProgress = Interpolators.BACK_GESTURE.getInterpolation(progress);
         mSwipeToDismissProgress.updateValue(deceleratedProgress);
+    }
+
+    /**
+     * During predictive back swipe, the default behavior is to scale {@link AbstractSlideInView}
+     * during back swipe. This method allow subclass to scale {@link #mContent}, typically to exit
+     * search mode.
+     *
+     * <p>Note that this method can be expensive, and should only be called from
+     * {@link #onBackStarted(BackEvent)}, not from {@link #onBackProgressed(BackEvent)}.
+     */
+    protected boolean shouldAnimateContentViewInBackSwipe() {
+        return false;
     }
 
     protected void onUserSwipeToDismissProgressChanged() {

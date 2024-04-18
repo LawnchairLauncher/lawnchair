@@ -19,6 +19,9 @@ import static android.content.Intent.ACTION_CONFIGURATION_CHANGED;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE;
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_TABLET;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
 import static com.android.launcher3.Utilities.dpiFromPx;
@@ -47,6 +50,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.InvariantDeviceProfile.DeviceType;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
@@ -465,6 +469,23 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
         public int getDensityDpi() {
             return densityDpi;
+        }
+
+        public @DeviceType int getDeviceType() {
+            int flagPhone = 1 << 0;
+            int flagTablet = 1 << 1;
+
+            int type = supportedBounds.stream()
+                    .mapToInt(bounds -> isTablet(bounds) ? flagTablet : flagPhone)
+                    .reduce(0, (a, b) -> a | b);
+            if (type == (flagPhone | flagTablet)) {
+                // device has profiles supporting both phone and tablet modes
+                return TYPE_MULTI_DISPLAY;
+            } else if (type == flagTablet) {
+                return TYPE_TABLET;
+            } else {
+                return TYPE_PHONE;
+            }
         }
     }
 

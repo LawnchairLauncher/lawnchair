@@ -143,6 +143,11 @@ final class TaskbarAllAppsViewController {
             }
         }
 
+        /** Check if search session can handle back. This check doesn't perform any action. */
+        boolean canHandleSearchBackInvoked() {
+            return mSearchSessionController.canHandleBackInvoked();
+        }
+
         /** Invoked on back press, returning {@code true} if the search session handled it. */
         boolean handleSearchBackInvoked() {
             return mSearchSessionController.handleBackInvoked();

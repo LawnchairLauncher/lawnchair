@@ -262,7 +262,7 @@ public class InvariantDeviceProfile {
 
         // Get the display info based on default display and interpolate it to existing display
         Info defaultInfo = DisplayController.INSTANCE.get(context).getInfo();
-        @DeviceType int defaultDeviceType = getDeviceType(defaultInfo);
+        @DeviceType int defaultDeviceType = defaultInfo.getDeviceType();
         DisplayOption defaultDisplayOption = invDistWeightedInterpolate(
                 defaultInfo,
                 getPredefinedDeviceProfiles(context, gridName, defaultDeviceType,
@@ -271,7 +271,7 @@ public class InvariantDeviceProfile {
 
         Context displayContext = context.createDisplayContext(display);
         Info myInfo = new Info(displayContext);
-        @DeviceType int deviceType = getDeviceType(myInfo);
+        @DeviceType int deviceType = myInfo.getDeviceType();
         DisplayOption myDisplayOption = invDistWeightedInterpolate(
                 myInfo,
                 getPredefinedDeviceProfiles(context, gridName, deviceType,
@@ -324,30 +324,13 @@ public class InvariantDeviceProfile {
         }
     }
 
-    private static @DeviceType int getDeviceType(Info displayInfo) {
-        int flagPhone = 1 << 0;
-        int flagTablet = 1 << 1;
-
-        int type = displayInfo.supportedBounds.stream()
-                .mapToInt(bounds -> displayInfo.isTablet(bounds) ? flagTablet : flagPhone)
-                .reduce(0, (a, b) -> a | b);
-        if (type == (flagPhone | flagTablet)) {
-            // device has profiles supporting both phone and table modes
-            return TYPE_MULTI_DISPLAY;
-        } else if (type == flagTablet) {
-            return TYPE_TABLET;
-        } else {
-            return TYPE_PHONE;
-        }
-    }
-
     public static String getCurrentGridName(Context context) {
         return LauncherPrefs.get(context).get(GRID_NAME);
     }
 
     private String initGrid(Context context, String gridName) {
         Info displayInfo = DisplayController.INSTANCE.get(context).getInfo();
-        @DeviceType int deviceType = getDeviceType(displayInfo);
+        @DeviceType int deviceType = displayInfo.getDeviceType();
 
         ArrayList<DisplayOption> allOptions =
                 getPredefinedDeviceProfiles(context, gridName, deviceType,
