@@ -239,3 +239,10 @@ flag {
     purpose: PURPOSE_BUGFIX
   }
 }
+
+flag {
+    name: "enable_fallback_overview_in_window"
+    namespace: "launcher"
+    description: "Enables fallback recents opening inside of a window instead of an activity."
+    bug: "292269949"
+}
