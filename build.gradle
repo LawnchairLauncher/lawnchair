@@ -6,7 +6,7 @@ plugins {
     id 'com.android.application' version "8.3.2"
     id 'com.android.library' version "8.3.2" apply false
     id 'com.android.test' version '8.3.2' apply false
-    id 'androidx.baselineprofile' version '1.2.3'
+    id 'androidx.baselineprofile' version '1.2.4'
     id 'org.jetbrains.kotlin.android' version "1.9.23"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.23"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.23"
