@@ -184,7 +184,7 @@ public class AddItemActivity extends BaseActivity
         // user sees
         TextView widgetAppName = findViewById(R.id.widget_appName);
         WidgetSections.WidgetSection section = targetApp.widgetCategory == NO_CATEGORY ? null
-                : WidgetSections.get(this).get(targetApp.widgetCategory);
+                : WidgetSections.getWidgetSections(this).get(targetApp.widgetCategory);
         widgetAppName.setText(section == null ? info.loadLabel(getPackageManager())
                 : getString(section.mSectionTitle));
 
