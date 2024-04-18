@@ -324,6 +324,12 @@
             other{Show # more apps.}
         }</string>
 
+    <!-- Label for quick switch tile showing how many apps are available in desktop mode [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_desktop">{count, plural,
+            =1{Show # desktop app.}
+            other{Show # desktop apps.}
+        }</string>
+
     <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
     <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
 

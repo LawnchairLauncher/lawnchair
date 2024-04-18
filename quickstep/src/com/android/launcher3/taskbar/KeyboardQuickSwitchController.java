@@ -151,20 +151,10 @@ public final class KeyboardQuickSwitchController implements
     private void processLoadedTasks(ArrayList<GroupTask> tasks) {
         // Only store MAX_TASK tasks, from most to least recent
         Collections.reverse(tasks);
-
-        // Hide all desktop tasks and show them on the hidden tile
-        int hiddenDesktopTasks = 0;
-        DesktopTask desktopTask = findDesktopTask(tasks);
-        if (desktopTask != null) {
-            hiddenDesktopTasks = desktopTask.tasks.size();
-            tasks = tasks.stream()
-                    .filter(t -> !(t instanceof DesktopTask))
-                    .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
-        }
         mTasks = tasks.stream()
                 .limit(MAX_TASKS)
                 .collect(Collectors.toList());
-        mNumHiddenTasks = Math.max(0, tasks.size() - MAX_TASKS) + hiddenDesktopTasks;
+        mNumHiddenTasks = Math.max(0, tasks.size() - MAX_TASKS);
     }
 
     private void processLoadedTasksOnDesktop(ArrayList<GroupTask> tasks) {
