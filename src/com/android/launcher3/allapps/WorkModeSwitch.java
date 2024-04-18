@@ -19,7 +19,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.WindowInsets;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,7 +31,6 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
-import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 /**
@@ -54,9 +52,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     // Threshold when user scrolls up/down to determine when should button extend/collapse
     private final int mScrollThreshold;
-    private ImageView mIcon;
     private TextView mTextView;
-    private final StatsLogManager mStatsLogManager;
 
 
     public WorkModeSwitch(@NonNull Context context) {
@@ -72,14 +68,12 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         mContext = context;
         mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
         mActivityContext = ActivityContext.lookupContext(getContext());
-        mStatsLogManager = mActivityContext.getStatsLogManager();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mIcon = findViewById(R.id.work_icon);
         mTextView = findViewById(R.id.pause_text);
         setSelected(true);
         KeyboardInsetAnimationCallback keyboardInsetAnimationCallback =

@@ -24,12 +24,15 @@
     android:background="@drawable/work_mode_fab_background"
     android:forceHasOverlappingRendering="false"
     android:contentDescription="@string/work_apps_pause_btn_text"
+    android:paddingStart="@dimen/work_mode_fab_background_start_padding"
+    android:paddingEnd="@dimen/work_mode_fab_background_end_padding"
     android:animateLayoutChanges="true">
     <ImageView
         android:id="@+id/work_icon"
         android:layout_width="@dimen/work_fab_icon_size"
         android:layout_height="@dimen/work_fab_icon_size"
         android:importantForAccessibility="no"
+        android:layout_marginEnd="@dimen/work_fab_icon_end_margin"
         android:src="@drawable/ic_corp_off"
         android:tint="@color/work_fab_icon_color"
         android:scaleType="center"/>
@@ -43,7 +46,7 @@
         android:includeFontPadding="false"
         android:textDirection="locale"
         android:text="@string/work_apps_pause_btn_text"
-        android:layout_marginStart="@dimen/work_fab_text_start_margin"
+        android:layout_marginEnd="@dimen/work_fab_text_end_margin"
         android:ellipsize="end"
         android:maxLines="1"
         style="@style/TextHeadline"/>
