@@ -24,6 +24,7 @@
         android:background="@drawable/bg_ps_header"
         android:clipToOutline="true"
         android:gravity="center_vertical"
+        android:textDirection="locale"
         android:orientation="horizontal">
 
     <LinearLayout
