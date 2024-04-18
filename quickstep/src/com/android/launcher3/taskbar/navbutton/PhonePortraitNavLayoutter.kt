@@ -26,34 +26,32 @@ import android.widget.LinearLayout
 import android.widget.Space
 import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarActivityContext
-import com.android.systemui.shared.rotation.RotationButton
 
 class PhonePortraitNavLayoutter(
-        resources: Resources,
-        navBarContainer: LinearLayout,
-        endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup,
-        imeSwitcher: ImageView?,
-        rotationButton: RotationButton?,
-        a11yButton: ImageView?,
-        space: Space?
+    resources: Resources,
+    navBarContainer: LinearLayout,
+    endContextualContainer: ViewGroup,
+    startContextualContainer: ViewGroup,
+    imeSwitcher: ImageView?,
+    a11yButton: ImageView?,
+    space: Space?
 ) :
     AbstractNavButtonLayoutter(
-            resources,
-            navBarContainer,
-            endContextualContainer,
-            startContextualContainer,
-            imeSwitcher,
-            rotationButton,
-            a11yButton,
-            space
+        resources,
+        navBarContainer,
+        endContextualContainer,
+        startContextualContainer,
+        imeSwitcher,
+        a11yButton,
+        space
     ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         val totalWidth = context.deviceProfile.widthPx
-        val homeButtonWidth = resources.getDimensionPixelSize(R.dimen.taskbar_phone_home_button_size)
-        val roundedCornerContentMargin = resources.getDimensionPixelSize(
-                R.dimen.taskbar_phone_rounded_corner_content_margin)
+        val homeButtonWidth =
+            resources.getDimensionPixelSize(R.dimen.taskbar_phone_home_button_size)
+        val roundedCornerContentMargin =
+            resources.getDimensionPixelSize(R.dimen.taskbar_phone_rounded_corner_content_margin)
         val contentPadding = resources.getDimensionPixelSize(R.dimen.taskbar_phone_content_padding)
         val contentWidth = totalWidth - roundedCornerContentMargin * 2 - contentPadding * 2
 
@@ -62,15 +60,18 @@ class PhonePortraitNavLayoutter(
         val sideButtonWidth = contextualButtonWidth * 2
         val navButtonContainerWidth = contentWidth - contextualButtonWidth * 2
 
-        val navContainerParams = FrameLayout.LayoutParams(navButtonContainerWidth.toInt(),
-                ViewGroup.LayoutParams.MATCH_PARENT)
+        val navContainerParams =
+            FrameLayout.LayoutParams(
+                navButtonContainerWidth.toInt(),
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
         navContainerParams.apply {
             topMargin = 0
             bottomMargin = 0
             marginEnd =
-                    (contextualButtonWidth + contentPadding + roundedCornerContentMargin).toInt()
+                (contextualButtonWidth + contentPadding + roundedCornerContentMargin).toInt()
             marginStart =
-                    (contextualButtonWidth + contentPadding + roundedCornerContentMargin).toInt()
+                (contextualButtonWidth + contentPadding + roundedCornerContentMargin).toInt()
         }
 
         // Ensure order of buttons is correct
@@ -85,8 +86,8 @@ class PhonePortraitNavLayoutter(
         navButtonContainer.gravity = Gravity.CENTER
 
         // Add the spaces in between the nav buttons
-        val spaceInBetween = (navButtonContainerWidth - homeButtonWidth -
-                sideButtonWidth * 2) / 2.0f
+        val spaceInBetween =
+            (navButtonContainerWidth - homeButtonWidth - sideButtonWidth * 2) / 2.0f
         for (i in 0 until navButtonContainer.childCount) {
             val navButton = navButtonContainer.getChildAt(i)
             val buttonLayoutParams = navButton.layoutParams as LinearLayout.LayoutParams
@@ -114,10 +115,20 @@ class PhonePortraitNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        repositionContextualContainer(startContextualContainer, contextualButtonWidth.toInt(),
-                roundedCornerContentMargin + contentPadding, 0, Gravity.START)
-        repositionContextualContainer(endContextualContainer, contextualButtonWidth.toInt(), 0,
-                roundedCornerContentMargin + contentPadding, Gravity.END)
+        repositionContextualContainer(
+            startContextualContainer,
+            contextualButtonWidth.toInt(),
+            roundedCornerContentMargin + contentPadding,
+            0,
+            Gravity.START
+        )
+        repositionContextualContainer(
+            endContextualContainer,
+            contextualButtonWidth.toInt(),
+            0,
+            roundedCornerContentMargin + contentPadding,
+            Gravity.END
+        )
 
         startContextualContainer.addView(space, MATCH_PARENT, MATCH_PARENT)
         if (imeSwitcher != null) {
@@ -127,10 +138,6 @@ class PhonePortraitNavLayoutter(
         if (a11yButton != null) {
             endContextualContainer.addView(a11yButton)
             a11yButton.layoutParams = getParamsToCenterView()
-        }
-        if (rotationButton != null) {
-            endContextualContainer.addView(rotationButton.currentView)
-            rotationButton.currentView.layoutParams = getParamsToCenterView()
         }
     }
 }
