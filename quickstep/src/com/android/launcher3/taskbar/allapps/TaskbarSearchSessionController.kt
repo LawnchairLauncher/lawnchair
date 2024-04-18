@@ -49,6 +49,8 @@ open class TaskbarSearchSessionController : ResourceBasedOverride, AllAppsTransi
     /** Creates a [PreDragCondition] for [view], if it is a search result that requires one. */
     open fun createPreDragConditionForSearch(view: View): PreDragCondition? = null
 
+    open fun canHandleBackInvoked(): Boolean = false
+
     open fun handleBackInvoked(): Boolean = false
 
     open fun onAllAppsAnimationPending(

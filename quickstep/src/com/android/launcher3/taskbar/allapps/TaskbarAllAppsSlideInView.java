@@ -207,13 +207,6 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     }
 
     @Override
-    protected void onUserSwipeToDismissProgressChanged() {
-        super.onUserSwipeToDismissProgressChanged();
-        mAppsView.setClipChildren(!mIsDismissInProgress);
-        mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsDismissInProgress);
-    }
-
-    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         setTranslationShift(mTranslationShift);
@@ -259,12 +252,28 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         return getPopupContainer().isEventOverView(mAppsView.getVisibleContainerView(), ev);
     }
 
+    /**
+     * In taskbar all apps search mode, we should scale down content inside all apps, rather
+     * than the whole all apps bottom sheet, to indicate we will navigate back within the all apps.
+     */
+    @Override
+    public boolean shouldAnimateContentViewInBackSwipe() {
+        return mAllAppsCallbacks.canHandleSearchBackInvoked();
+    }
+
+    @Override
+    protected void onUserSwipeToDismissProgressChanged() {
+        super.onUserSwipeToDismissProgressChanged();
+        mAppsView.setClipChildren(!mIsDismissInProgress);
+        mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsDismissInProgress);
+    }
+
     @Override
     public void onBackInvoked() {
         if (mAllAppsCallbacks.handleSearchBackInvoked()) {
             // We need to scale back taskbar all apps if we navigate back within search inside all
             // apps
-            animateSwipeToDismissProgressToStart();
+            post(this::animateSwipeToDismissProgressToStart);
         } else {
             super.onBackInvoked();
         }
