@@ -159,7 +159,6 @@ public class PrivateProfileManager extends UserProfileManager {
         itemInfo.contentDescription = context.getResources().getString(
                 com.android.launcher3.R.string.ps_add_button_content_description);
         itemInfo.runtimeStatusFlags |= FLAG_NOT_PINNABLE;
-        itemInfo.user = getProfileUser();
 
         BaseAllAppsAdapter.AdapterItem item = new BaseAllAppsAdapter.AdapterItem(VIEW_TYPE_ICON);
         item.itemInfo = itemInfo;
@@ -747,6 +746,7 @@ public class PrivateProfileManager extends UserProfileManager {
     }
 
     boolean isPrivateSpaceItem(BaseAllAppsAdapter.AdapterItem item) {
-        return getItemInfoMatcher().test(item.itemInfo) || item.decorationInfo != null;
+        return getItemInfoMatcher().test(item.itemInfo) || item.decorationInfo != null
+                || (item.itemInfo instanceof PrivateSpaceInstallAppButtonInfo);
     }
 }
