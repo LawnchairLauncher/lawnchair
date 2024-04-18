@@ -279,7 +279,7 @@ public class TaskbarModelCallbacks implements
 
     /** Call TaskbarRecentAppsController to update running apps with mHotseatItems. */
     public void updateRunningApps() {
-        mControllers.taskbarRecentAppsController.updateRunningApps(mHotseatItems);
+        mControllers.taskbarRecentAppsController.updateRunningApps();
     }
 
     @Override
