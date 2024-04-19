@@ -1254,10 +1254,12 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
             return LAST_TASK;
         }
 
-        if (((mRecentsView.getNextPageTaskView() != null
-                && mRecentsView.getNextPageTaskView().isDesktopTask())
-                || (mRecentsView.getCurrentPageTaskView() != null
-                && mRecentsView.getCurrentPageTaskView().isDesktopTask()))
+        TaskView nextPageTaskView = mRecentsView != null
+                ? mRecentsView.getNextPageTaskView() : null;
+        TaskView currentPageTaskView = mRecentsView != null
+                ? mRecentsView.getCurrentPageTaskView() : null;
+        if (((nextPageTaskView != null && nextPageTaskView.isDesktopTask())
+                || (currentPageTaskView != null && currentPageTaskView.isDesktopTask()))
                 && endTarget == NEW_TASK) {
             // TODO(b/268075592): add support for quickswitch to/from desktop
             return LAST_TASK;
