@@ -124,7 +124,7 @@
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ସ୍ୱିଚର"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ବର୍ତ୍ତମାନର"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ"</string>
-    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"କ୍ୱିକ ସେଟିଂସ"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"କୁଇକ ସେଟିଂସ"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ଟାସ୍କବାର"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ଟାସ୍କବାର ଦେଖାଯାଇଛି"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"ଟାସ୍କବାର ଲୁଚାଯାଇଛି"</string>
