@@ -928,11 +928,30 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             }
         }
 
+        if (splitRoot1 != null) {
+            // Set the highest level split root alpha; we could technically use the parent of
+            // either splitRoot1 or splitRoot2
+            val parentToken = splitRoot1.parent
+            var rootLayer: Change? = null
+            if (parentToken != null) {
+                rootLayer = transitionInfo.getChange(parentToken)
+            }
+            if (rootLayer != null && rootLayer.leash != null) {
+                openingTargets.add(rootLayer.leash)
+            }
+        }
+
         val animTransaction = Transaction()
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.setDuration(QuickstepTransitionManager.SPLIT_LAUNCH_DURATION.toLong())
         animator.addUpdateListener { valueAnimator: ValueAnimator ->
-            val progress = valueAnimator.animatedFraction
+            val progress =
+                    Interpolators.clampToProgress(
+                            Interpolators.LINEAR,
+                            valueAnimator.animatedFraction,
+                            0.8f,
+                            1f
+                    )
             for (leash in openingTargets) {
                 animTransaction.setAlpha(leash, progress)
             }
@@ -953,19 +972,6 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 }
             }
         )
-
-        if (splitRoot1 != null) {
-            // Set the highest level split root alpha; we could technically use the parent of
-            // either splitRoot1 or splitRoot2
-            val parentToken = splitRoot1.parent
-            var rootLayer: Change? = null
-            if (parentToken != null) {
-                rootLayer = transitionInfo.getChange(parentToken)
-            }
-            if (rootLayer != null && rootLayer.leash != null) {
-                t.setAlpha(rootLayer.leash, 1f)
-            }
-        }
 
         t.apply()
         animator.start()

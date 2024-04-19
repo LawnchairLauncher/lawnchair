@@ -217,11 +217,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         }
 
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_VISIBLE, isVisible);
-        // TODO(b/308851855): Skip animation for launching split from home, will refine later
-        boolean skipAnimForSplit = enableSplitContextually() &&
-                mLauncher.areBothSplitAppsConfirmed() &&
-                mLauncher.getStateManager().getState() == LauncherState.NORMAL;
-        if (skipAnimForSplit || fromInit) {
+        if (fromInit) {
             duration = 0;
         }
         return mTaskbarLauncherStateController.applyState(duration, startAnimation);
