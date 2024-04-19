@@ -44,7 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"మొదటి స్క్రీన్‌కు జోడించండి"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"మొదటి స్క్రీన్‌కు <xliff:g id="WIDGET_NAME">%1$s</xliff:g> విడ్జెట్ జోడించబడింది"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"సూచనలు"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Essentials"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"నిత్యావసరాలు"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"వార్తలు &amp; మ్యాగజైన్లు"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"మీరు ప్రశాంతంగా ఉండే ప్రదేశం"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"వినోదం"</string>
