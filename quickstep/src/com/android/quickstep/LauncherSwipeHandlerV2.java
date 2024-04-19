@@ -122,6 +122,10 @@ public class LauncherSwipeHandlerV2 extends
         float windowAlphaThreshold = 1f - SHAPE_PROGRESS_DURATION;
 
         return new FloatingViewHomeAnimationFactory(floatingIconView) {
+            @Nullable
+            private RectF mTargetRect;
+            @Nullable
+            private RectFSpringAnim mSiblingAnimation;
 
             @Nullable
             @Override
@@ -138,15 +142,36 @@ public class LauncherSwipeHandlerV2 extends
             @NonNull
             @Override
             public RectF getWindowTargetRect() {
-                return iconLocation;
+                if (enableScalingRevealHomeAnimation()) {
+                    if (mTargetRect == null) {
+                        mTargetRect = new RectF(iconLocation);
+                    }
+                    return mTargetRect;
+                } else {
+                    return iconLocation;
+                }
+            }
+
+            @Override
+            public void playAtomicAnimation(float velocity) {
+                if (enableScalingRevealHomeAnimation()) {
+                    if (mContainer != null) {
+                        new ScalingWorkspaceRevealAnim(
+                                mContainer, mSiblingAnimation, getWindowTargetRect()).start();
+                    }
+                } else {
+                    super.playAtomicAnimation(velocity);
+                }
             }
 
             @Override
             public void setAnimation(RectFSpringAnim anim) {
                 super.setAnimation(anim);
-                anim.addAnimatorListener(floatingIconView);
-                floatingIconView.setOnTargetChangeListener(anim::onTargetPositionChanged);
-                floatingIconView.setFastFinishRunnable(anim::end);
+                mSiblingAnimation = anim;
+                mSiblingAnimation.addAnimatorListener(floatingIconView);
+                floatingIconView.setOnTargetChangeListener(
+                        mSiblingAnimation::onTargetPositionChanged);
+                floatingIconView.setFastFinishRunnable(mSiblingAnimation::end);
             }
 
             @Override
@@ -301,15 +326,9 @@ public class LauncherSwipeHandlerV2 extends
 
         @Override
         public void playAtomicAnimation(float velocity) {
-            if (enableScalingRevealHomeAnimation()) {
-                if (mContainer != null) {
-                    new ScalingWorkspaceRevealAnim(mContainer).start();
-                }
-            } else {
-                new StaggeredWorkspaceAnim(mContainer, velocity, true /* animateOverviewScrim */,
-                        getViewIgnoredInWorkspaceRevealAnimation())
-                        .start();
-            }
+            new StaggeredWorkspaceAnim(mContainer, velocity, true /* animateOverviewScrim */,
+                    getViewIgnoredInWorkspaceRevealAnimation())
+                    .start();
         }
     }
 }
