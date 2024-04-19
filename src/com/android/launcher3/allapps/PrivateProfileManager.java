@@ -21,6 +21,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PRIVATESPACE;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
@@ -215,11 +216,27 @@ public class PrivateProfileManager extends UserProfileManager {
         resetPrivateSpaceDecorator(updatedState);
     }
 
-    /** Opens the Private Space Settings Page. */
-    public void openPrivateSpaceSettings() {
+    /**
+     * Opens the Private Space Settings Page.
+     *
+     * @param view the view that was clicked to open the settings page and which will be the same
+     *             view to animate back. Otherwise if there is no view, simply start the activity.
+     */
+    public void openPrivateSpaceSettings(View view) {
         if (mPrivateSpaceSettingsAvailable) {
-            mAllApps.getContext().startActivity(
-                    ApiWrapper.INSTANCE.get(mAllApps.getContext()).getPrivateSpaceSettingsIntent());
+            Context context = mAllApps.getContext();
+            Intent intent = ApiWrapper.INSTANCE.get(context).getPrivateSpaceSettingsIntent();
+            if (view == null) {
+                context.startActivity(intent);
+                return;
+            }
+            ActivityContext activityContext = ActivityContext.lookupContext(context);
+            AppInfo itemInfo = new AppInfo();
+            itemInfo.id = CONTAINER_PRIVATESPACE;
+            itemInfo.componentName = intent.getComponent();
+            itemInfo.container = CONTAINER_PRIVATESPACE;
+            view.setTag(itemInfo);
+            activityContext.startActivitySafely(view, intent, itemInfo);
         }
     }
 
@@ -422,7 +439,7 @@ public class PrivateProfileManager extends UserProfileManager {
             settingsButton.setOnClickListener(
                     view -> {
                         logEvents(LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP);
-                        openPrivateSpaceSettings();
+                        openPrivateSpaceSettings(view);
                     });
         } else {
             settingsButton.setVisibility(GONE);
