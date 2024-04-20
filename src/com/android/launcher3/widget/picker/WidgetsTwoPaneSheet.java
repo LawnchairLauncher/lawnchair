@@ -23,14 +23,12 @@ import static com.android.launcher3.UtilitiesKt.modifyAttributesOnViewTree;
 import static com.android.launcher3.UtilitiesKt.restoreAttributesOnViewTree;
 
 import android.content.Context;
-import android.graphics.Outline;
 import android.graphics.Rect;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -80,21 +78,6 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     private int mActivePage = -1;
     private PackageUserKey mSelectedHeader;
 
-    private final ViewOutlineProvider mViewOutlineProviderRightPane = new ViewOutlineProvider() {
-        @Override
-        public void getOutline(View view, Outline outline) {
-            outline.setRoundRect(
-                    0,
-                    0,
-                    view.getMeasuredWidth(),
-                    view.getMeasuredHeight() - getResources().getDimensionPixelSize(
-                            R.dimen.widget_list_horizontal_margin_two_pane),
-                    view.getResources().getDimensionPixelSize(
-                            R.dimen.widget_list_top_bottom_corner_radius)
-            );
-        }
-    };
-
     public WidgetsTwoPaneSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
@@ -138,11 +121,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         mHeaderTitle = mContent.findViewById(R.id.title);
         mRightPane = mContent.findViewById(R.id.right_pane);
-        mRightPane.setOutlineProvider(mViewOutlineProviderRightPane);
         mRightPaneScrollView = mContent.findViewById(R.id.right_pane_scroll_view);
         mRightPaneScrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        mRightPaneScrollView.setOutlineProvider(mViewOutlineProvider);
-        mRightPaneScrollView.setClipToOutline(true);
 
         mPrimaryWidgetListView = findViewById(R.id.primary_widgets_list_view);
         mPrimaryWidgetListView.setOutlineProvider(mViewOutlineProvider);

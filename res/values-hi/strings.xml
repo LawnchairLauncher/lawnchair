@@ -47,8 +47,8 @@
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ज़रूरी ऐप्लिकेशन"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"खबरों और पत्रिकाओं वाले ऐप्लिकेशन"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"आपके मनोरंजन के लिए"</string>
-    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"मनोरंजन वाले ऐप्लिकेशन"</string>
-    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"सोशल"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"मनोरंजन से जुड़े ऐप्लिकेशन"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"सोशल मीडिया ऐप्लिकेशन"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"हेल्थ और फ़िटनेस वाले ऐप्लिकेशन"</string>
     <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"मौसम"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"आपके लिए सुझाए गए ऐप्लिकेशन"</string>

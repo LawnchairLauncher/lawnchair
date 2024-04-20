@@ -94,42 +94,49 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/right_pane_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.67"
-                android:layout_marginEnd="@dimen/widget_list_horizontal_margin_two_pane"
-                android:paddingTop="@dimen/widget_list_horizontal_margin_two_pane"
-                android:gravity="end"
-                android:layout_gravity="end"
-                android:orientation="horizontal">
-                <ScrollView
-                    android:id="@+id/right_pane_scroll_view"
+                android:layout_weight="0.67">
+                <FrameLayout
+                    android:id="@+id/right_pane_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fillViewport="true">
-                    <LinearLayout
-                        android:orientation="vertical"
+                    android:layout_marginVertical="@dimen/widget_picker_vertical_margin_right_pane"
+                    android:layout_marginEnd="@dimen/widget_list_horizontal_margin_two_pane"
+                    android:gravity="end"
+                    android:layout_gravity="end"
+                    android:orientation="horizontal">
+                    <ScrollView
+                        android:id="@+id/right_pane_scroll_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clipToOutline="true"
-                        android:paddingBottom="36dp"
+                        android:layout_height="match_parent"
                         android:background="@drawable/widgets_surface_background"
-                        android:importantForAccessibility="yes"
-                        android:id="@+id/right_pane">
-                        <!-- Shown when there are recommendations to display -->
+                        android:scrollbarThumbVertical="@drawable/widget_picker_preview_pane_scroll_thumb"
+                        android:clipToOutline="true"
+                        android:fillViewport="true">
                         <LinearLayout
-                            android:id="@+id/widget_recommendations_container"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/widgets_surface_background"
                             android:orientation="vertical"
-                            android:visibility="gone">
-                            <include layout="@layout/widget_recommendations" />
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:clipToOutline="true"
+                            android:paddingBottom="36dp"
+                            android:background="@drawable/widgets_surface_background"
+                            android:importantForAccessibility="yes"
+                            android:id="@+id/right_pane">
+                            <!-- Shown when there are recommendations to display -->
+                            <LinearLayout
+                                android:id="@+id/widget_recommendations_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/widgets_surface_background"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+                                <include layout="@layout/widget_recommendations" />
+                            </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
-                </ScrollView>
+                    </ScrollView>
+                </FrameLayout>
             </FrameLayout>
         </LinearLayout>
     </com.android.launcher3.views.SpringRelativeLayout>
