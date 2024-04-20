@@ -45,7 +45,7 @@
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>ର ୱିଜେଟ ହୋମ ସ୍କ୍ରିନରେ ଯୋଡ଼ାଗଲା"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ପରାମର୍ଶଗୁଡ଼ିକ"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ଅତ୍ୟାବଶ୍ୟକୀୟ"</string>
-    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ନ୍ୟୁଜ ଓ ମେଗାଜିନ"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ନ୍ୟୁଜ ଓ ମାଗାଜିନ"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ଆପଣଙ୍କ ଚିଲ ଜୋନ"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ମନୋରଞ୍ଜନ"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"ସୋସିଆଲ"</string>

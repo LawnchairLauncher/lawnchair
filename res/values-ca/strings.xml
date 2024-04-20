@@ -51,7 +51,7 @@
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Social"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Salut i fitnes"</string>
     <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Temps"</string>
-    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Suggeriments personalitzats"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Suggeriments per a tu"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Widgets de <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> a la dreta, cerca i opcions a l\'esquerra"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# drecera}other{# dreceres}}"</string>

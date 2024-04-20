@@ -44,7 +44,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Lägg till på startskärmen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget för <xliff:g id="WIDGET_NAME">%1$s</xliff:g> har lagts till på startskärmen"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Förslag"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Favoriter"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Viktigt"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Nyheter och tidskrifter"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Koppla av"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Underhållning"</string>

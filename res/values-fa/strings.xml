@@ -44,14 +44,14 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"افزودن به صفحه اصلی"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"ابزارک <xliff:g id="WIDGET_NAME">%1$s</xliff:g> به صفحه اصلی اضافه شد"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"پیشنهادها"</string>
-    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ضروریات"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"بایدها"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"اخبار و مجله"</string>
     <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"منطقه آرامش شما"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"سرگرمی"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"اجتماعی"</string>
     <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"سلامتی و تناسب اندام"</string>
     <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"آب‌وهوا"</string>
-    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"پیشنهادشده برای شما"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"پیشنهاداتی برای شما"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"ابزارک‌های <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> در سمت چپ، جستجو و گزینه‌ها در سمت راست"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{‏# ابزارک}one{‏# ابزارک}other{‏# ابزارک}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{‏# میان‌بر}one{‏# میان‌بر}other{‏# میان‌بر}}"</string>
