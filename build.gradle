@@ -154,6 +154,10 @@ android {
         }
     }
 
+    androidResources {
+        generateLocaleConfig true
+    }
+
     buildFeatures {
         aidl true
         buildConfig true
