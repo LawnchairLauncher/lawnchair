@@ -2759,18 +2759,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Returns true if we should add a stub taskView for the running task id
      */
     protected boolean shouldAddStubTaskView(Task[] runningTasks) {
-        if (runningTasks.length > 1) {
-            TaskView primaryTaskView = getTaskViewByTaskId(runningTasks[0].key.id);
-            TaskView secondaryTaskView = getTaskViewByTaskId(runningTasks[1].key.id);
-            int leftTopTaskViewId =
-                    (primaryTaskView == null) ? -1 : primaryTaskView.getTaskViewId();
-            int rightBottomTaskViewId =
-                    (secondaryTaskView == null) ? -1 : secondaryTaskView.getTaskViewId();
-            // Add a new stub view if both taskIds don't match any taskViews
-            return leftTopTaskViewId != rightBottomTaskViewId || leftTopTaskViewId == -1;
+        TaskView taskView = getTaskViewByTaskId(runningTasks[0].key.id);
+        if (taskView == null) {
+            // No TaskView found, add a stub task.
+            return true;
         }
-        Task runningTaskInfo = runningTasks[0];
-        return runningTaskInfo != null && getTaskViewByTaskId(runningTaskInfo.key.id) == null;
+
+        if (runningTasks.length > 1) {
+            // Ensure all taskIds matches the TaskView, otherwise add a stub task.
+            return Arrays.stream(runningTasks).anyMatch(
+                    runningTask -> !taskView.containsTaskId(runningTask.key.id));
+        } else {
+            // Ensure the TaskView only contains a single taskId, otherwise add a stub task.
+            return taskView.containsMultipleTasks();
+        }
     }
 
     /**
