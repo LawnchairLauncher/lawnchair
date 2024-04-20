@@ -39,6 +39,7 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Px;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.PackageItemInfo;
@@ -152,6 +153,26 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         // Set the fast scroller as not visible for two pane layout.
         mFastScroller.setVisibility(GONE);
+    }
+
+    @Override
+    protected int getTabletHorizontalMargin(DeviceProfile deviceProfile) {
+        if (enableCategorizedWidgetSuggestions()) {
+            // two pane picker is full width for fold as well as tablet.
+            return getResources().getDimensionPixelSize(
+                    R.dimen.widget_picker_two_panels_left_right_margin);
+        }
+        if (deviceProfile.isTwoPanels && enableUnfoldedTwoPanePicker()) {
+            // enableUnfoldedTwoPanePicker made two pane picker full-width for fold only.
+            return getResources().getDimensionPixelSize(
+                    R.dimen.widget_picker_two_panels_left_right_margin);
+        }
+        if (deviceProfile.isLandscape && !deviceProfile.isTwoPanels) {
+            // non-fold tablet landscape margins (ag/22163531)
+            return getResources().getDimensionPixelSize(
+                    R.dimen.widget_picker_landscape_tablet_left_right_margin);
+        }
+        return deviceProfile.allAppsLeftRightMargin;
     }
 
     @Override

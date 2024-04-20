@@ -414,7 +414,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
 
-                bindItem(item, accessibility, finishCallback);
+                bindItem(info, accessibility, finishCallback);
                 announceConfirmation(R.string.item_added_to_workspace);
             } else if (item instanceof PendingAddItemInfo) {
                 PendingAddItemInfo info = (PendingAddItemInfo) item;

@@ -183,6 +183,7 @@ public class LauncherSettings {
         public static final int CONTAINER_SHORTCUTS = -107;
         public static final int CONTAINER_SETTINGS = -108;
         public static final int CONTAINER_TASKSWITCHER = -109;
+        public static final int CONTAINER_PRIVATESPACE = -110;
 
         // Represents any of the extended containers implemented in non-AOSP variants.
         public static final int EXTENDED_CONTAINERS = -200;

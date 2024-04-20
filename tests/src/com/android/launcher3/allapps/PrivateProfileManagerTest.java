@@ -209,7 +209,7 @@ public class PrivateProfileManagerTest {
         ArgumentCaptor<Intent> acIntent = ArgumentCaptor.forClass(Intent.class);
         mPrivateProfileManager.setPrivateSpaceSettingsAvailable(true);
 
-        mPrivateProfileManager.openPrivateSpaceSettings();
+        mPrivateProfileManager.openPrivateSpaceSettings(null);
 
         Mockito.verify(mContext).startActivity(acIntent.capture());
         assertEquals("Intent Action is different",

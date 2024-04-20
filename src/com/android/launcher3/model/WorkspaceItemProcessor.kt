@@ -184,6 +184,9 @@ class WorkspaceItemProcessor(
                 }
             }
         }
+        if (intent.`package` == null) {
+            intent.`package` = targetPkg
+        }
         // else if cn == null => can't infer much, leave it
         // else if !validPkg => could be restored icon or missing sd-card
         when {
@@ -329,8 +332,12 @@ class WorkspaceItemProcessor(
             }
             val activityInfo = c.launcherActivityInfo
             if (activityInfo != null) {
-                AppInfo.updateRuntimeFlagsForActivityTarget(info, activityInfo,
-                    userCache.getUserInfo(c.user), ApiWrapper.INSTANCE[app.context])
+                AppInfo.updateRuntimeFlagsForActivityTarget(
+                    info,
+                    activityInfo,
+                    userCache.getUserInfo(c.user),
+                    ApiWrapper.INSTANCE[app.context]
+                )
             }
             if (
                 (c.restoreFlag != 0 ||

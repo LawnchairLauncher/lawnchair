@@ -50,7 +50,7 @@
     <uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES_FULL" />
 
     <!-- Permission required to start a WidgetPickerActivity. -->
-    <permission android:name="${packageName}.permission.START_WIDGET_PICKER_ACTIVITY"
+    <permission android:name="${applicationId}.permission.START_WIDGET_PICKER_ACTIVITY"
         android:protectionLevel="signature|privileged" />
 
     <application android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -88,7 +88,7 @@
 
         <!-- Content provider to settings search. The autority should be same as the packageName -->
         <provider android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
-             android:authorities="${packageName}"
+             android:authorities="${applicationId}"
              android:grantUriPermissions="true"
              android:multiprocess="true"
              android:permission="android.permission.READ_SEARCH_INDEXABLES"
@@ -100,7 +100,7 @@
 
         <!-- FileProvider used for sharing images. -->
         <provider android:name="androidx.core.content.FileProvider"
-             android:authorities="${packageName}.overview.fileprovider"
+             android:authorities="${applicationId}.overview.fileprovider"
              android:exported="false"
              android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
