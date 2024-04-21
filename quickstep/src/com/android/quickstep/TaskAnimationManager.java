@@ -59,6 +59,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     public static final boolean SHELL_TRANSITIONS_ROTATION = ENABLE_SHELL_TRANSITIONS
             && SystemProperties.getBoolean("persist.wm.debug.shell_transit_rotate", false);
 
+    private final Context mCtx;
     private RecentsAnimationController mController;
     private RecentsAnimationCallbacks mCallbacks;
     private RecentsAnimationTargets mTargets;
@@ -66,7 +67,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     private GestureState mLastGestureState;
     private RemoteAnimationTarget[] mLastAppearedTaskTargets;
     private Runnable mLiveTileCleanUpHandler;
-    private Context mCtx;
 
     private boolean mRecentsAnimationStartPending = false;
     private boolean mShouldIgnoreMotionEvents = false;
@@ -329,7 +329,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 options.setTransientLaunch();
             }
             options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
-            mRecentsAnimationStartPending = SystemUiProxy.INSTANCE.getNoCreate()
+            mRecentsAnimationStartPending = SystemUiProxy.INSTANCE.get(mCtx)
                     .startRecentsActivity(intent, options, mCallbacks);
             if (enableHandleDelayedGestureCallbacks()) {
                 ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(

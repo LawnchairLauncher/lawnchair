@@ -52,17 +52,11 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.model.ItemInstallQueue;
-import com.android.launcher3.pm.InstallSessionHelper;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.testing.TestInformationProvider;
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
-import com.android.launcher3.util.window.WindowManagerProxy;
-import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -233,13 +227,7 @@ public class LauncherModelHelper {
         private final File mDbDir;
 
         public SandboxModelContext() {
-            super(ApplicationProvider.getApplicationContext(),
-                    UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
-                    LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
-                    DisplayController.INSTANCE, CustomWidgetManager.INSTANCE,
-                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE,
-                    LockedUserState.INSTANCE, WallpaperColorHints.INSTANCE,
-                    ItemInstallQueue.INSTANCE, WindowManagerProxy.INSTANCE);
+            super(ApplicationProvider.getApplicationContext());
 
             // System settings cache content provider. Ensure that they are statically initialized
             Settings.Secure.getString(
@@ -254,16 +242,11 @@ public class LauncherModelHelper {
         }
 
         @Override
-        protected <T> T createObject(MainThreadInitializedObject<T> object) {
+        public <T extends SafeCloseable> T createObject(MainThreadInitializedObject<T> object) {
             if (object == LauncherAppState.INSTANCE) {
                 return (T) new LauncherAppState(this, null /* iconCacheFileName */);
             }
             return super.createObject(object);
-        }
-
-        public SandboxModelContext allow(MainThreadInitializedObject object) {
-            mAllowedObjects.add(object);
-            return this;
         }
 
         @Override

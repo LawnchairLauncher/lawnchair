@@ -93,6 +93,7 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TraceHelper;
@@ -118,6 +119,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import kotlin.Unit;
+
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -125,8 +128,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -922,8 +923,8 @@ public class TaskView extends FrameLayout implements Reusable {
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
 
-            final TaskRemovedDuringLaunchListener
-                    failureListener = new TaskRemovedDuringLaunchListener();
+            TaskRemovedDuringLaunchListener failureListener = new TaskRemovedDuringLaunchListener(
+                    getContext().getApplicationContext());
             if (isQuickswitch) {
                 // We only listen for failures to launch in quickswitch because the during this
                 // gesture launcher is in the background state, vs other launches which are in
@@ -950,12 +951,8 @@ public class TaskView extends FrameLayout implements Reusable {
             // Indicate success once the system has indicated that the transition has started
             ActivityOptions opts = ActivityOptions.makeCustomTaskAnimation(getContext(), 0, 0,
                     MAIN_EXECUTOR.getHandler(),
-                    elapsedRealTime -> {
-                        callback.accept(true);
-                    },
-                    elapsedRealTime -> {
-                        failureListener.onTransitionFinished();
-                    });
+                    elapsedRealTime -> callback.accept(true),
+                    elapsedRealTime -> failureListener.onTransitionFinished());
             opts.setLaunchDisplayId(
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (isQuickswitch) {
@@ -1857,7 +1854,7 @@ public class TaskView extends FrameLayout implements Reusable {
     /**
      * We update and subsequently draw these in {@link #setFullscreenProgress(float)}.
      */
-    public static class FullscreenDrawParams {
+    public static class FullscreenDrawParams implements SafeCloseable {
 
         private float mCornerRadius;
         private float mWindowCornerRadius;
@@ -1892,6 +1889,9 @@ public class TaskView extends FrameLayout implements Reusable {
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, mWindowCornerRadius)
                             / parentScale / taskViewScale;
         }
+
+        @Override
+        public void close() { }
     }
 
     public class TaskIdAttributeContainer {

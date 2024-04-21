@@ -22,6 +22,8 @@ import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
 import static com.android.launcher3.BaseActivity.EVENT_RESUMED;
 import static com.android.launcher3.BaseActivity.EVENT_STOPPED;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.android.quickstep.RecentsModel;
@@ -44,6 +46,12 @@ public class TaskRemovedDuringLaunchListener {
 
     private final Runnable mUnregisterCallback = this::unregister;
     private final Runnable mResumeCallback = this::checkTaskLaunchFailed;
+
+    private final Context mContext;
+
+    public TaskRemovedDuringLaunchListener(Context context) {
+        mContext = context;
+    }
 
     /**
      * Registers a failure listener callback if it detects a scenario in which an app launch
@@ -88,7 +96,7 @@ public class TaskRemovedDuringLaunchListener {
         if (mLaunchedTaskId != INVALID_TASK_ID) {
             final int launchedTaskId = mLaunchedTaskId;
             final Runnable taskLaunchFailedCallback = mTaskLaunchFailedCallback;
-            RecentsModel.INSTANCE.getNoCreate().isTaskRemoved(mLaunchedTaskId, (taskRemoved) -> {
+            RecentsModel.INSTANCE.get(mContext).isTaskRemoved(mLaunchedTaskId, (taskRemoved) -> {
                 if (taskRemoved) {
                     ActiveGestureLog.INSTANCE.addLog(
                             new ActiveGestureLog.CompoundString("Launch failed, task (id=")
