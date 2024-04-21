@@ -208,16 +208,18 @@ android {
         .toArray()
 
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+        all {
             signingConfig releaseSigning
             pseudoLocalesEnabled true
         }
 
+        debug {
+            applicationIdSuffix ".debug"
+            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+        }
+
         release {
             resValue("string", "derived_app_name", "Lawnchair")
-            signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
             proguardFiles proguardFilesFromAosp + "proguard.pro"
