@@ -71,6 +71,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -279,10 +280,8 @@ public class PrivateSpaceHeaderViewTest {
         when(mAllAppsStore.getApps()).thenReturn(createAppInfoList());
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(privateProfileManager.splitIntoUserInstalledAndSystemApps())
-                .thenReturn(iteminfo -> iteminfo.componentName == null
-                        || !iteminfo.componentName.getPackageName()
-                        .equals(CAMERA_PACKAGE_NAME));
+        doReturn(splitIntoUserInstalledAndSystemApps()).when(privateProfileManager)
+                .splitIntoUserInstalledAndSystemApps(any());
         doReturn(0).when(privateProfileManager).addPrivateSpaceHeader(any());
         doAnswer(answer(this::addPrivateSpaceHeader)).when(privateProfileManager)
                 .addPrivateSpaceHeader(any());
@@ -316,10 +315,8 @@ public class PrivateSpaceHeaderViewTest {
         when(mAllAppsStore.getApps()).thenReturn(createAppInfoList());
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(privateProfileManager.splitIntoUserInstalledAndSystemApps())
-                .thenReturn(iteminfo -> iteminfo.componentName == null
-                        || !iteminfo.componentName.getPackageName()
-                        .equals(CAMERA_PACKAGE_NAME));
+        doReturn(splitIntoUserInstalledAndSystemApps()).when(privateProfileManager)
+                .splitIntoUserInstalledAndSystemApps(any());
         doReturn(0).when(privateProfileManager).addPrivateSpaceHeader(any());
         doAnswer(answer(this::addPrivateSpaceHeader)).when(privateProfileManager)
                 .addPrivateSpaceHeader(any());
@@ -353,10 +350,8 @@ public class PrivateSpaceHeaderViewTest {
         when(mAllAppsStore.getApps()).thenReturn(createAppInfoList());
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(privateProfileManager.splitIntoUserInstalledAndSystemApps())
-                .thenReturn(iteminfo -> iteminfo.componentName == null
-                        || !iteminfo.componentName.getPackageName()
-                        .equals(CAMERA_PACKAGE_NAME));
+        doReturn(splitIntoUserInstalledAndSystemApps()).when(privateProfileManager)
+                .splitIntoUserInstalledAndSystemApps(any());
         doReturn(0).when(privateProfileManager).addPrivateSpaceHeader(any());
         doAnswer(answer(this::addPrivateSpaceHeader)).when(privateProfileManager)
                 .addPrivateSpaceHeader(any());
@@ -390,10 +385,8 @@ public class PrivateSpaceHeaderViewTest {
         when(mAllAppsStore.getApps()).thenReturn(createAppInfoList());
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(privateProfileManager.splitIntoUserInstalledAndSystemApps())
-                .thenReturn(iteminfo -> iteminfo.componentName == null
-                        || !iteminfo.componentName.getPackageName()
-                        .equals(CAMERA_PACKAGE_NAME));
+        doReturn(splitIntoUserInstalledAndSystemApps()).when(privateProfileManager)
+                .splitIntoUserInstalledAndSystemApps(any());
         doReturn(0).when(privateProfileManager).addPrivateSpaceHeader(any());
         doNothing().when(privateProfileManager).addPrivateSpaceInstallAppButton(any());
         doReturn(0).when(privateProfileManager).addSystemAppsDivider(any());
@@ -464,5 +457,11 @@ public class PrivateSpaceHeaderViewTest {
             appInfos.add(privateCameraAppInfo);
         }
         return appInfos.toArray(AppInfo[]::new);
+    }
+
+    private Predicate<AppInfo> splitIntoUserInstalledAndSystemApps() {
+        return iteminfo -> iteminfo.componentName == null
+                || !iteminfo.componentName.getPackageName()
+                .equals(CAMERA_PACKAGE_NAME);
     }
 }
