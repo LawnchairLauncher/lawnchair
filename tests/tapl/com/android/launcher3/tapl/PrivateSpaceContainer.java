@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import android.graphics.Point;
+
 import androidx.test.uiautomator.UiObject2;
 
 /**
@@ -56,5 +58,17 @@ public class PrivateSpaceContainer {
     // Assert Sys App Divider is present in view.
     private void verifyDividerIsPresent() {
         mLauncher.waitForObjectInContainer(mAppListRecycler, DIVIDER_RES_ID);
+    }
+
+    /**
+     * Verifies that a user installed app is present above the divider.
+     */
+    public void verifyInstalledAppIsPresent(String appName) {
+        HomeAppIcon appIcon = mLauncher.getAllApps().getAppIcon(appName);
+        final Point iconCenter = appIcon.mObject.getVisibleCenter();
+        UiObject2 divider = mLauncher.waitForObjectInContainer(mAppListRecycler, DIVIDER_RES_ID);
+        final Point dividerCenter = divider.getVisibleCenter();
+        mLauncher.assertTrue("Installed App: " + appName + " is not above the divider",
+                iconCenter.y < dividerCenter.y);
     }
 }
