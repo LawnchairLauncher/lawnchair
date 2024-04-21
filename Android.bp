@@ -141,6 +141,7 @@ android_library {
     static_libs: [
         "LauncherPluginLib",
         "launcher_quickstep_log_protos_lite",
+        "android.os.flags-aconfig-java",
         "androidx-constraintlayout_constraintlayout",
         "androidx.recyclerview_recyclerview",
         "androidx.dynamicanimation_dynamicanimation",
