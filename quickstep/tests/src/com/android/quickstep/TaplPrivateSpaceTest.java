@@ -29,6 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 
 import org.junit.After;
 import org.junit.Test;
@@ -91,6 +92,7 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
     }
 
     @Test
+    @ScreenRecordRule.ScreenRecord // b/334946529
     public void testPrivateSpaceContainerIsPresent() {
         assumeTrue(mPrivateProfileSetupSuccessful);
         // Scroll to the bottom of All Apps
