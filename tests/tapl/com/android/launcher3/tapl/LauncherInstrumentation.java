@@ -31,10 +31,8 @@ import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_GET_SPLIT_SELECTION_ACTIVE;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS;
-import static com.android.launcher3.testing.shared.TestProtocol.SUCCESSFUL_GESTURE_MISMATCH_EVENTS;
 import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
 import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -2400,13 +2398,9 @@ public final class LauncherInstrumentation {
             }
 
             if (mEventChecker != null) {
-                testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "eventsCheck: mEventChecker exists");
                 mEventChecker = null;
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = eventChecker.verify(WAIT_TIME_MS, true);
-                    testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
-                            "mCheckEventsForSuccessfulGestures = true | eventsCheck: message="
-                                    + message);
                     if (message != null) {
                         dumpDiagnostics(message);
                         checkForAnomaly();

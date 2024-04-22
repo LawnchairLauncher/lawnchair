@@ -174,7 +174,6 @@ public final class TestProtocol {
     public static final String ICON_MISSING = "b/282963545";
     public static final String OVERVIEW_OVER_HOME = "b/279059025";
     public static final String UIOBJECT_STALE_ELEMENT = "b/319501259";
-    public static final String SUCCESSFUL_GESTURE_MISMATCH_EVENTS = "b/324940434";
     public static final String TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE = "b/326908466";
     public static final String TEST_TAPL_OVERVIEW_ACTIONS_MENU_FAILURE = "b/326073471";
     public static final String WIDGET_CONFIG_NULL_EXTRA_INTENT = "b/324419890";

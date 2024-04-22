@@ -30,8 +30,6 @@ import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncest
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
-import static com.android.launcher3.testing.shared.TestProtocol.SUCCESSFUL_GESTURE_MISMATCH_EVENTS;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -649,7 +647,6 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
-        testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "TaskView.bind: task=" + task);
         mTask = task;
         mTaskIdContainer[0] = mTask.key.id;
         mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task, mSnapshotView, mIconView,
@@ -863,11 +860,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     @Nullable
     public RunnableList launchTaskAnimated() {
-        testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
-                "TaskView.launchTaskAnimated: mTask=" + mTask);
         if (mTask != null) {
-            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
-                    "TaskView.launchTaskAnimated: startActivityFromRecentsAsync");
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mContainer.getActivityLaunchOptions(this, null);
@@ -915,10 +908,7 @@ public class TaskView extends FrameLayout implements Reusable {
      * Starts the task associated with this view without any animation
      */
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
-        testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "TaskView.launchTask: mTask=" + mTask);
         if (mTask != null) {
-            testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
-                    "TaskView.launchTask: startActivityFromRecentsAsync");
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
 
@@ -986,9 +976,6 @@ public class TaskView extends FrameLayout implements Reusable {
     public RunnableList launchTasks() {
         RecentsView recentsView = getRecentsView();
         RemoteTargetHandle[] remoteTargetHandles = recentsView.mRemoteTargetHandles;
-        testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
-                "TaskView.launchTasks: isRunningTask=" + isRunningTask() + ", "
-                        + "remoteTargetHandles == null?" + (remoteTargetHandles == null));
         if (isRunningTask() && remoteTargetHandles != null) {
             if (!mIsClickableAsLiveTile) {
                 Log.e(TAG, "TaskView is not clickable as a live tile; returning to home.");
@@ -1015,8 +1002,6 @@ public class TaskView extends FrameLayout implements Reusable {
             if (targets == null) {
                 // If the recents animation is cancelled somehow between the parent if block and
                 // here, try to launch the task as a non live tile task.
-                testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
-                        "TaskView.launchTasks: recents animation is cancelled");
                 RunnableList runnableList = launchTaskAnimated();
                 if (runnableList == null) {
                     Log.e(TAG, "Recents animation cancelled and cannot launch task as non-live tile"
@@ -1037,8 +1022,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     if (mTask != null && mTask.key.displayId != getRootViewDisplayId()) {
-                        testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS,
-                                "TaskView.launchTasks: onAnimationEnd");
                         launchTaskAnimated();
                     }
                     mIsClickableAsLiveTile = true;
