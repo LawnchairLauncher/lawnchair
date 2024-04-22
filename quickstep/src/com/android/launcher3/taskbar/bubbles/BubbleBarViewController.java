@@ -373,7 +373,7 @@ public class BubbleBarViewController {
 
             boolean isInApp = mTaskbarStashController.isInApp();
             // only animate the new bubble if we're in an app and not auto expanding
-            if (b instanceof BubbleBarBubble && isInApp && !isExpanding) {
+            if (b instanceof BubbleBarBubble && isInApp && !isExpanding && !isExpanded()) {
                 mBubbleBarViewAnimator.animateBubbleInForStashed((BubbleBarBubble) b);
             }
         } else {
