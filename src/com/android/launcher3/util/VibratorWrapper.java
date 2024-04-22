@@ -19,14 +19,12 @@ import static android.os.VibrationEffect.Composition.PRIMITIVE_LOW_TICK;
 import static android.os.VibrationEffect.createPredefined;
 import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -51,6 +49,8 @@ public class VibratorWrapper implements SafeCloseable {
 
     public static final VibrationEffect EFFECT_CLICK =
             createPredefined(VibrationEffect.EFFECT_CLICK);
+    private static final Uri HAPTIC_FEEDBACK_URI =
+            Settings.System.getUriFor(HAPTIC_FEEDBACK_ENABLED);
 
     private static final float LOW_TICK_SCALE = 0.9f;
     private static final float DRAG_TEXTURE_SCALE = 0.03f;
@@ -76,8 +76,9 @@ public class VibratorWrapper implements SafeCloseable {
     private final Context mContext;
     private final Vibrator mVibrator;
     private final boolean mHasVibrator;
+    private final SettingsCache.OnChangeListener mHapticChangeListener =
+            isEnabled -> mIsHapticFeedbackEnabled = isEnabled;
 
-    private ContentObserver mHapticFeedbackObserver;
     private boolean mIsHapticFeedbackEnabled;
 
     private VibratorWrapper(Context context) {
@@ -85,16 +86,9 @@ public class VibratorWrapper implements SafeCloseable {
         mVibrator = context.getSystemService(Vibrator.class);
         mHasVibrator = mVibrator.hasVibrator();
         if (mHasVibrator) {
-            final ContentResolver resolver = context.getContentResolver();
-            mIsHapticFeedbackEnabled = isHapticFeedbackEnabled(resolver);
-            mHapticFeedbackObserver = new ContentObserver(MAIN_EXECUTOR.getHandler()) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    mIsHapticFeedbackEnabled = isHapticFeedbackEnabled(resolver);
-                }
-            };
-            resolver.registerContentObserver(Settings.System.getUriFor(HAPTIC_FEEDBACK_ENABLED),
-                    false /* notifyForDescendants */, mHapticFeedbackObserver);
+            SettingsCache cache = SettingsCache.INSTANCE.get(mContext);
+            cache.register(HAPTIC_FEEDBACK_URI, mHapticChangeListener);
+            mIsHapticFeedbackEnabled = cache.getValue(HAPTIC_FEEDBACK_URI, 0);
         } else {
             mIsHapticFeedbackEnabled = false;
         }
@@ -129,8 +123,9 @@ public class VibratorWrapper implements SafeCloseable {
 
     @Override
     public void close() {
-        if (mHapticFeedbackObserver != null) {
-            mContext.getContentResolver().unregisterContentObserver(mHapticFeedbackObserver);
+        if (mHasVibrator) {
+            SettingsCache.INSTANCE.get(mContext)
+                    .unregister(HAPTIC_FEEDBACK_URI, mHapticChangeListener);
         }
     }
 
@@ -181,10 +176,6 @@ public class VibratorWrapper implements SafeCloseable {
         UI_HELPER_EXECUTOR.execute(mVibrator::cancel);
         // reset dragTexture timestamp to be able to play dragTexture again whenever cancelled
         mLastDragTime = 0;
-    }
-
-    private boolean isHapticFeedbackEnabled(ContentResolver resolver) {
-        return Settings.System.getInt(resolver, HAPTIC_FEEDBACK_ENABLED, 0) == 1;
     }
 
     /** Vibrates with the given effect if haptic feedback is available and enabled. */
