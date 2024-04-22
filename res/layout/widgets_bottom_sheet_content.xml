@@ -41,8 +41,13 @@
             android:id="@+id/widgets_table_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fadeScrollbars="false"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginHorizontal="@dimen/widget_bottom_sheet_horizontal_margin"
+            android:background="@drawable/widgets_surface_background"
+            android:scrollbarThumbVertical="@drawable/widget_picker_preview_pane_scroll_thumb"
+            android:clipToOutline="true"
+            android:clipChildren="true">
             <include layout="@layout/widgets_table_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
