@@ -53,6 +53,13 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     private final @DeviceType int mDeviceType;
     private final String mDbFile;
 
+    public DeviceGridState(int columns, int row, int numHotseat, int deviceType, String dbFile) {
+        mGridSizeString = String.format(Locale.ENGLISH, "%d,%d", columns, row);
+        mNumHotseat = numHotseat;
+        mDeviceType = deviceType;
+        mDbFile = dbFile;
+    }
+
     public DeviceGridState(InvariantDeviceProfile idp) {
         mGridSizeString = String.format(Locale.ENGLISH, "%d,%d", idp.numColumns, idp.numRows);
         mNumHotseat = idp.numDatabaseHotseatIcons;

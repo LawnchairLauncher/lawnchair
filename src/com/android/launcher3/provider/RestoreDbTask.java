@@ -50,8 +50,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -73,9 +75,11 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
 
+import java.io.File;
 import java.io.InvalidObjectException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -121,7 +125,66 @@ public class RestoreDbTask {
         // executed again.
         LauncherPrefs.get(context).removeSync(RESTORE_DEVICE);
 
-        idp.reinitializeAfterRestore(context);
+        if (Flags.enableNarrowGridRestore()) {
+            String oldPhoneFileName = idp.dbFile;
+            List<String> previousDbs = existingDbs();
+            removeOldDBs(context, oldPhoneFileName);
+            // The idp before this contains data about the old phone, after this it becomes the idp
+            // of the current phone.
+            idp.reset(context);
+            trySettingPreviousGidAsCurrent(context, idp, oldPhoneFileName, previousDbs);
+        } else {
+            idp.reinitializeAfterRestore(context);
+        }
+    }
+
+
+    /**
+     * Try setting the gird used in the previous phone to the new one. If the current device doesn't
+     * support the previous grid option it will not be set.
+     */
+    private static void trySettingPreviousGidAsCurrent(Context context, InvariantDeviceProfile idp,
+            String oldPhoneDbFileName, List<String> previousDbs) {
+        InvariantDeviceProfile.GridOption oldPhoneGridOption = idp.getGridOptionFromFileName(
+                context, oldPhoneDbFileName);
+        // The grid option could be null if current phone doesn't support the previous db.
+        if (oldPhoneGridOption != null) {
+            /* If the user only used the default db on the previous phone and the new default db is
+             * bigger than or equal to the previous one, then keep the new default db */
+            if (previousDbs.size() == 1 && oldPhoneGridOption.numColumns <= idp.numColumns
+                    && oldPhoneGridOption.numRows <= idp.numRows) {
+                /* Keep the user in default grid */
+                return;
+            }
+            /*
+             * Here we are setting the previous db as the current one.
+             */
+            idp.setCurrentGrid(context, oldPhoneGridOption.name);
+        }
+    }
+
+    /**
+     * Returns a list of paths of the existing launcher dbs.
+     */
+    private static List<String> existingDbs() {
+        // At this point idp.dbFile contains the name of the dbFile from the previous phone
+        return LauncherFiles.GRID_DB_FILES.stream()
+                .filter(dbName -> new File(dbName).exists())
+                .toList();
+    }
+
+    /**
+     * Only keep the last database used on the previous device.
+     */
+    private static void removeOldDBs(Context context, String oldPhoneDbFileName) {
+        // At this point idp.dbFile contains the name of the dbFile from the previous phone
+        LauncherFiles.GRID_DB_FILES.stream()
+                .filter(dbName -> !dbName.equals(oldPhoneDbFileName))
+                .forEach(dbName -> {
+                    if (context.getDatabasePath(dbName).delete()) {
+                        FileLog.d(TAG, "Removed old grid db file: " + dbName);
+                    }
+                });
     }
 
     private static boolean performRestore(Context context, ModelDbController controller) {

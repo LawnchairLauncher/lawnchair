@@ -199,6 +199,19 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         return 'z';
     }
 
+    /**
+     * Check if the given area is empty.
+     */
+    public boolean isEmpty(int x, int y, int spanX, int spanY) {
+        for (int xi = x; xi < x + spanX; xi++) {
+            for (int yi = y; yi < y + spanY; yi++) {
+                if (mWidget[xi][yi] == CellType.IGNORE) continue;
+                if (mWidget[xi][yi] != CellType.EMPTY) return false;
+            }
+        }
+        return true;
+    }
+
     public void addWidget(int x, int y, int spanX, int spanY, char type) {
         Rect rect = new Rect(x, y + spanY - 1, x + spanX - 1, y);
         removeOverlappingItems(rect);

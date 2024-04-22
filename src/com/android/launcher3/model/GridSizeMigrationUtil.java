@@ -38,7 +38,9 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
@@ -94,6 +96,15 @@ public class GridSizeMigrationUtil {
         return needsToMigrate;
     }
 
+    @VisibleForTesting
+    public static List<DbEntry> readAllEntries(SQLiteDatabase db, String tableName,
+            Context context) {
+        DbReader dbReader = new DbReader(db, tableName, context, getValidPackages(context));
+        List<DbEntry> result = dbReader.loadAllWorkspaceEntries();
+        result.addAll(dbReader.loadHotseatEntries());
+        return result;
+    }
+
     /**
      * When migrating the grid, we copy the table
      * {@link LauncherSettings.Favorites#TABLE_NAME} from {@code source} into
@@ -105,13 +116,21 @@ public class GridSizeMigrationUtil {
      */
     public static boolean migrateGridIfNeeded(
             @NonNull Context context,
-            @NonNull InvariantDeviceProfile idp,
+            @NonNull DeviceGridState srcDeviceState,
+            @NonNull DeviceGridState destDeviceState,
             @NonNull DatabaseHelper target,
             @NonNull SQLiteDatabase source) {
-
-        DeviceGridState srcDeviceState = new DeviceGridState(context);
-        DeviceGridState destDeviceState = new DeviceGridState(idp);
         if (!needsToMigrate(srcDeviceState, destDeviceState)) {
+            return true;
+        }
+
+        if (Flags.enableGridMigrationFix()
+                && srcDeviceState.getColumns().equals(destDeviceState.getColumns())
+                && srcDeviceState.getRows() < destDeviceState.getRows()) {
+            // Only use this strategy when comparing the previous grid to the new grid and the
+            // columns are the same and the destination has more rows
+            copyTable(source, TABLE_NAME, target.getWritableDatabase(), TABLE_NAME, context);
+            destDeviceState.writeToPrefs(context);
             return true;
         }
         copyTable(source, TABLE_NAME, target.getWritableDatabase(), TMP_TABLE, context);
@@ -656,7 +675,7 @@ public class GridSizeMigrationUtil {
         }
     }
 
-    protected static class DbEntry extends ItemInfo implements Comparable<DbEntry> {
+    public static class DbEntry extends ItemInfo implements Comparable<DbEntry> {
 
         private String mIntent;
         private String mProvider;

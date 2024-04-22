@@ -188,19 +188,21 @@ flag {
 }
 
 flag {
-    name: "grid_migration_fix"
+    name: "enable_grid_migration_fix"
     namespace: "launcher"
     description: "Keep items in place when migrating to a bigger grid"
     bug: "325286145"
+    is_fixed_read_only: true
     metadata {
       purpose: PURPOSE_BUGFIX
     }
 }
 
 flag {
-    name: "narrow_grid_restore"
+    name: "enable_narrow_grid_restore"
     namespace: "launcher"
     description: "Using only the most recent workspace when restoring to avoid confusion."
+    is_fixed_read_only: true
     bug: "325285743"
     metadata {
       purpose: PURPOSE_BUGFIX
