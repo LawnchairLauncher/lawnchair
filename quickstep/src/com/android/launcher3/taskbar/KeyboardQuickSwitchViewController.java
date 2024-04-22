@@ -32,6 +32,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.SlideInRemoteTransition;
 import com.android.systemui.shared.recents.model.Task;
@@ -157,7 +158,13 @@ public class KeyboardQuickSwitchViewController {
                 AnimationUtils.loadInterpolator(
                         context, android.R.interpolator.fast_out_extra_slow_in)),
                 "SlideInTransition");
-        if (mOnDesktop) {
+        if (task instanceof DesktopTask) {
+            UI_HELPER_EXECUTOR.execute(() ->
+                    SystemUiProxy.INSTANCE.get(mKeyboardQuickSwitchView.getContext())
+                            .showDesktopApps(
+                                    mKeyboardQuickSwitchView.getDisplay().getDisplayId(),
+                                    remoteTransition));
+        } else if (mOnDesktop) {
             UI_HELPER_EXECUTOR.execute(() ->
                     SystemUiProxy.INSTANCE.get(mKeyboardQuickSwitchView.getContext())
                             .showDesktopApp(task.task1.key.id));
