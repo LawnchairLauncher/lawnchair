@@ -160,6 +160,7 @@ public final class WidgetsListTableViewHolderBinder
                     WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
                             R.layout.widget_cell, tableRow, false);
                     // set up touch.
+                    widget.setOnClickListener(mIconClickListener);
                     View preview = widget.findViewById(R.id.widget_preview_container);
                     preview.setOnClickListener(mIconClickListener);
                     preview.setOnLongClickListener(mIconLongClickListener);
