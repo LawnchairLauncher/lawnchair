@@ -30,6 +30,7 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.After;
@@ -84,6 +85,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     @NavigationModeSwitch
+    @ScreenRecordRule.ScreenRecord // b/335674307
     public void switchToOverview() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
