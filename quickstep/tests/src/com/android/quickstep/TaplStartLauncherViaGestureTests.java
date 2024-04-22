@@ -35,7 +35,6 @@ public class TaplStartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        // b/143488140
         mLauncher.goHome();
         // Start an activity where the gestures start.
         startTestActivity(2);
