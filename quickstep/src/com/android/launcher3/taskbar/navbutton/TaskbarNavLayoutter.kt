@@ -28,35 +28,39 @@ import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.systemui.shared.rotation.RotationButton
 
-/**
- * Layoutter for rendering task bar in large screen, both in 3-button and gesture nav mode.
- */
+/** Layoutter for rendering task bar in large screen, both in 3-button and gesture nav mode. */
 class TaskbarNavLayoutter(
-        resources: Resources,
-        navBarContainer: LinearLayout,
-        endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup,
-        imeSwitcher: ImageView?,
-        rotationButton: RotationButton?,
-        a11yButton: ImageView?,
-        space: Space?
+    resources: Resources,
+    navBarContainer: LinearLayout,
+    endContextualContainer: ViewGroup,
+    startContextualContainer: ViewGroup,
+    imeSwitcher: ImageView?,
+    rotationButton: RotationButton?,
+    a11yButton: ImageView?,
+    space: Space?
 ) :
     AbstractNavButtonLayoutter(
-            resources,
-            navBarContainer,
-            endContextualContainer,
-            startContextualContainer,
-            imeSwitcher,
-            rotationButton,
-            a11yButton,
-            space
+        resources,
+        navBarContainer,
+        endContextualContainer,
+        startContextualContainer,
+        imeSwitcher,
+        rotationButton,
+        a11yButton,
+        space
     ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         // Add spacing after the end of the last nav button
-        var navMarginEnd = resources
-                .getDimension(context.deviceProfile.inv.inlineNavButtonsEndSpacing)
-                .toInt()
+        var navMarginEnd =
+            resources.getDimension(context.deviceProfile.inv.inlineNavButtonsEndSpacing).toInt()
+
+        val cutout = context.display.cutout
+        val bottomRect = cutout?.boundingRectBottom
+        if (bottomRect != null && !bottomRect.isEmpty) {
+            navMarginEnd = bottomRect.width()
+        }
+
         val contextualWidth = endContextualContainer.width
         // If contextual buttons are showing, we check if the end margin is enough for the
         // contextual button to be showing - if not, move the nav buttons over a smidge
@@ -65,8 +69,11 @@ class TaskbarNavLayoutter(
             navMarginEnd += resources.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing) / 2
         }
 
-        val navButtonParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val navButtonParams =
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
         navButtonParams.apply {
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
             marginEnd = navMarginEnd
