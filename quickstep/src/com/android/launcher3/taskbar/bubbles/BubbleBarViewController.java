@@ -371,10 +371,9 @@ public class BubbleBarViewController {
                 return;
             }
 
-            boolean isStashedOrGone =
-                    mBubbleStashController.isStashed() || mBarView.getVisibility() != VISIBLE;
-            // don't animate the new bubble if we're auto expanding from stashed
-            if (b instanceof BubbleBarBubble && isStashedOrGone && !isExpanding) {
+            boolean isInApp = mTaskbarStashController.isInApp();
+            // only animate the new bubble if we're in an app and not auto expanding
+            if (b instanceof BubbleBarBubble && isInApp && !isExpanding) {
                 mBubbleBarViewAnimator.animateBubbleInForStashed((BubbleBarBubble) b);
             }
         } else {
