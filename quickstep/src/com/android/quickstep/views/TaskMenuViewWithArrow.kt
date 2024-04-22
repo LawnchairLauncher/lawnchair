@@ -347,7 +347,7 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
 
     override fun updateArrowColor() {
         mArrow.background =
-            RoundedArrowDrawable(
+            RoundedArrowDrawable.createHorizontalRoundedArrow(
                 mArrowWidth.toFloat(),
                 mArrowHeight.toFloat(),
                 mArrowPointRadius.toFloat(),

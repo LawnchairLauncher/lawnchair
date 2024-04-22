@@ -22,7 +22,6 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
-import static com.android.launcher3.testing.shared.TestProtocol.UPDATE_OVERVIEW_TARGETS_RUNNING_LATE;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_ACTIVITY_TIMEOUT;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_BROADCAST_TIMEOUT_SECS;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT;
@@ -43,7 +42,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.RemoteException;
-import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -116,8 +114,6 @@ public class FallbackRecentsTest {
         mDevice.setOrientationNatural();
         mLauncher = AbstractLauncherUiTest.createLauncherInstrumentation();
         mLauncher.enableDebugTracing();
-        // b/143488140
-        //mLauncher.enableCheckEventsForSuccessfulGestures();
 
         if (TestHelpers.isInLauncherProcess()) {
             Utilities.enableRunningInTestHarnessForTests();
@@ -133,13 +129,6 @@ public class FallbackRecentsTest {
                         getLauncherCommand(mOtherLauncherActivity));
                 updateHandler.mChangeCounter
                         .await(DEFAULT_BROADCAST_TIMEOUT_SECS, TimeUnit.SECONDS);
-                Log.d(UPDATE_OVERVIEW_TARGETS_RUNNING_LATE,
-                        "AFTER AWAIT: mObserver home intent package name="
-                                + updateHandler.mObserver.getHomeIntent()
-                                        .getComponent().getPackageName());
-                Log.d(UPDATE_OVERVIEW_TARGETS_RUNNING_LATE,
-                        "AFTER AWAIT: mOtherLauncherActivity package name="
-                                + mOtherLauncherActivity.packageName);
                 try {
                     base.evaluate();
                 } finally {
@@ -147,7 +136,6 @@ public class FallbackRecentsTest {
                     TestCommandReceiver.callCommand(TestCommandReceiver.DISABLE_TEST_LAUNCHER);
                     UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                             getLauncherCommand(getLauncherInMyProcess()));
-                    // b/143488140
                     pressHomeAndWaitForOverviewClose();
                 }
             }
@@ -191,8 +179,6 @@ public class FallbackRecentsTest {
         }
     }
 
-    // b/143488140
-    //@NavigationModeSwitch
     @Test
     public void goToOverviewFromHome() {
         mDevice.pressHome();
@@ -261,10 +247,7 @@ public class FallbackRecentsTest {
                 DEFAULT_UI_TIMEOUT, mLauncher);
     }
 
-    // b/143488140
-    //@NavigationModeSwitch
     @Test
-    @ScreenRecordRule.ScreenRecord // b/321775748
     public void testOverview() throws IOException {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
@@ -348,25 +331,12 @@ public class FallbackRecentsTest {
             mRads = new RecentsAnimationDeviceState(ctx);
             mObserver = new OverviewComponentObserver(ctx, mRads);
             mChangeCounter = new CountDownLatch(1);
-            Log.d(UPDATE_OVERVIEW_TARGETS_RUNNING_LATE,
-                    "OverviewUpdateHandler(Constructor): mObserver home intent package name="
-                            + mObserver.getHomeIntent().getComponent().getPackageName());
-            Log.d(UPDATE_OVERVIEW_TARGETS_RUNNING_LATE,
-                    "OverviewUpdateHandler(Constructor): mOtherLauncherActivity package name="
-                            + mOtherLauncherActivity.packageName);
             if (mObserver.getHomeIntent().getComponent()
                     .getPackageName().equals(mOtherLauncherActivity.packageName)) {
                 // Home already same
                 mChangeCounter.countDown();
             } else {
-                mObserver.setOverviewChangeListener(b -> {
-                    Log.d(UPDATE_OVERVIEW_TARGETS_RUNNING_LATE,
-                            "OverviewChangeListener(Callback): isHomeAndOverviewSame=" + b);
-                    Log.d(UPDATE_OVERVIEW_TARGETS_RUNNING_LATE,
-                            "OverviewChangeListener(Callback): mObserver home intent package name="
-                                    + mObserver.getHomeIntent().getComponent().getPackageName());
-                    mChangeCounter.countDown();
-                });
+                mObserver.setOverviewChangeListener(b -> mChangeCounter.countDown());
             }
         }
 

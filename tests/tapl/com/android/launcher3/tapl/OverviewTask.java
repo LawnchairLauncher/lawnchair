@@ -19,10 +19,8 @@ package com.android.launcher3.tapl;
 import static com.android.launcher3.tapl.OverviewTask.OverviewSplitTask.DEFAULT;
 import static com.android.launcher3.tapl.OverviewTask.OverviewSplitTask.SPLIT_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.tapl.OverviewTask.OverviewSplitTask.SPLIT_TOP_OR_LEFT;
-import static com.android.launcher3.testing.shared.TestProtocol.SUCCESSFUL_GESTURE_MISMATCH_EVENTS;
 
 import android.graphics.Rect;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -222,7 +220,6 @@ public final class OverviewTask {
                     return new LaunchedAppState(mLauncher);
                 }
             } else {
-                Log.d(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "TaskView.launchTaskAnimated");
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
                 return new LaunchedAppState(mLauncher);
             }
