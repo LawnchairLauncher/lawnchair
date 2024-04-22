@@ -19,7 +19,7 @@ package com.android.quickstep.views;
 import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
 
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
-import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
+import static com.android.launcher3.util.Executors.ORDERED_BG_EXECUTOR;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
@@ -140,7 +140,7 @@ public final class DigitalWellBeingToast {
     public void initialize(Task task) {
         mAppUsageLimitTimeMs = mAppRemainingTimeMs = -1;
         mTask = task;
-        THREAD_POOL_EXECUTOR.execute(() -> {
+        ORDERED_BG_EXECUTOR.execute(() -> {
                     AppUsageLimit usageLimit = null;
                     try {
                         usageLimit = mLauncherApps.getAppUsageLimit(
