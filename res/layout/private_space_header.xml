@@ -40,7 +40,6 @@
             android:layout_width="@dimen/ps_header_image_height"
             android:layout_height="@dimen/ps_header_image_height"
             android:background="@drawable/ps_settings_background"
-            android:layout_marginEnd="@dimen/ps_header_settings_icon_margin_end"
             android:src="@drawable/ic_ps_settings"
             android:contentDescription="@string/ps_container_settings" />
         <LinearLayout
@@ -49,7 +48,7 @@
             android:layout_height="@dimen/ps_header_image_height"
             android:background="@drawable/ps_lock_background"
             android:gravity="center_vertical"
-            android:layout_marginEnd="@dimen/ps_header_layout_margin"
+            android:layout_marginEnd="@dimen/ps_lock_button_margin_end"
             android:contentDescription="@string/ps_container_lock_unlock_button">
             <ImageView
                 android:id="@+id/lock_icon"
