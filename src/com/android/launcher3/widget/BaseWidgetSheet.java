@@ -141,9 +141,17 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
         if (enableWidgetTapToAdd()) {
             scrollToWidgetCell(wc);
+
             if (mWidgetCellWithAddButton != null) {
-                // If there is a add button currently showing, hide it.
-                mWidgetCellWithAddButton.hideAddButton(/* animate= */ true);
+                if (mWidgetCellWithAddButton.isShowingAddButton()) {
+                    // If there is a add button currently showing, hide it.
+                    mWidgetCellWithAddButton.hideAddButton(/* animate= */ true);
+                } else {
+                    // The last recorded widget cell to show an add button is no longer showing it,
+                    // likely because the widget cell has been recycled or lost focus. If this is
+                    // the cell that has been clicked, we will show it below.
+                    mWidgetCellWithAddButton = null;
+                }
             }
 
             if (mWidgetCellWithAddButton != wc) {

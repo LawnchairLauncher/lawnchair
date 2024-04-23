@@ -110,6 +110,7 @@ public class WidgetCell extends LinearLayout {
     private int mSourceContainer = CONTAINER_WIDGETS_TRAY;
 
     private CancellableTask mIconLoadRequest;
+    private boolean mIsShowingAddButton = false;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -534,6 +535,9 @@ public class WidgetCell extends LinearLayout {
      * @param callback Callback to be set on the button.
      */
     public void showAddButton(View.OnClickListener callback) {
+        if (mIsShowingAddButton) return;
+        mIsShowingAddButton = true;
+
         mWidgetAddButton.setAlpha(0F);
         mWidgetAddButton.setVisibility(VISIBLE);
         mWidgetAddButton.setOnClickListener(callback);
@@ -555,6 +559,9 @@ public class WidgetCell extends LinearLayout {
      * Hide tap to add button.
      */
     public void hideAddButton(boolean animate) {
+        if (!mIsShowingAddButton) return;
+        mIsShowingAddButton = false;
+
         mWidgetAddButton.setOnClickListener(null);
         mWidgetAddButton.animate().cancel();
         mWidgetTextContainer.animate().cancel();
@@ -578,5 +585,9 @@ public class WidgetCell extends LinearLayout {
         mWidgetTextContainer.animate()
                 .alpha(1F)
                 .setDuration(ADD_BUTTON_FADE_DURATION_MS);
+    }
+
+    public boolean isShowingAddButton() {
+        return mIsShowingAddButton;
     }
 }
