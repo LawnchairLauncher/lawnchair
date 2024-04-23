@@ -294,7 +294,9 @@ public class AllAppsTransitionController
     private void onScaleProgressChanged() {
         final float scaleProgress = mAllAppScale.value;
         SCALE_PROPERTY.set(mLauncher.getAppsView(), scaleProgress);
-        mLauncher.getScrimView().setScrimHeaderScale(scaleProgress);
+        if (!mLauncher.getAppsView().isSearching() || !mLauncher.getDeviceProfile().isTablet) {
+            mLauncher.getScrimView().setScrimHeaderScale(scaleProgress);
+        }
 
         AllAppsRecyclerView rv = mLauncher.getAppsView().getActiveRecyclerView();
 

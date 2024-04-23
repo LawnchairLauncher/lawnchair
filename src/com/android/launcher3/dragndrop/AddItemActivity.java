@@ -162,7 +162,7 @@ public class AddItemActivity extends BaseActivity
             finish();
             return;
         }
-        ApplicationInfo info = new PackageManagerHelper(this)
+        ApplicationInfo info = PackageManagerHelper.INSTANCE.get(this)
                 .getApplicationInfo(targetApp.packageName, targetApp.user, 0);
         if (info == null) {
             finish();

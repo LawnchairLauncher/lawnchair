@@ -39,6 +39,7 @@ import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.NavigationMode;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
@@ -50,7 +51,7 @@ import java.util.ArrayList;
 /**
  * Helper class for transforming touch events
  */
-public class RotationTouchHelper implements DisplayInfoChangeListener {
+public class RotationTouchHelper implements DisplayInfoChangeListener, SafeCloseable {
 
     public static final MainThreadInitializedObject<RotationTouchHelper> INSTANCE =
             new MainThreadInitializedObject<>(RotationTouchHelper::new);
@@ -195,6 +196,11 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
 
     private void runOnDestroy(Runnable action) {
         mOnDestroyActions.add(action);
+    }
+
+    @Override
+    public void close() {
+        destroy();
     }
 
     /**

@@ -123,6 +123,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
     private WidgetCell addItemCell(ViewGroup parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(
                 getContext()).inflate(R.layout.widget_cell, parent, false);
+        widget.setOnClickListener(mWidgetCellOnClickListener);
 
         View previewContainer = widget.findViewById(R.id.widget_preview_container);
         previewContainer.setOnClickListener(mWidgetCellOnClickListener);

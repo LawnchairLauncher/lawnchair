@@ -316,7 +316,7 @@ public class AppPairsController {
                 itemInfos.stream().map(ItemInfo::getComponentKey).toList();
 
         // Use TopTaskTracker to find the currently running app (or apps)
-        TopTaskTracker topTaskTracker = getTopTaskTracker(context);
+        TopTaskTracker topTaskTracker = getTopTaskTracker();
 
         // getRunningSplitTasksIds() will return a pair of ids if we are currently running a
         // split pair, or an empty array with zero length if we are running a single app.
@@ -489,7 +489,7 @@ public class AppPairsController {
      * Gets the TopTaskTracker, which is a cached record of the top running Task.
      */
     @VisibleForTesting
-    public TopTaskTracker getTopTaskTracker(Context context) {
-        return TopTaskTracker.INSTANCE.get(context);
+    public TopTaskTracker getTopTaskTracker() {
+        return TopTaskTracker.INSTANCE.get(mContext);
     }
 }

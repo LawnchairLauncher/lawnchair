@@ -52,7 +52,7 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
-        final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
+        final PackageManagerHelper pmHelper = PackageManagerHelper.INSTANCE.get(context);
         for (PackageUserKey puk : mPackages) {
             UserHandle user = puk.mUser;
 

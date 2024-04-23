@@ -181,8 +181,8 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
         public void onClick(View view) {
             dismissTaskMenuView();
             Rect sourceBounds = Utilities.getViewBounds(view);
-            new PackageManagerHelper(view.getContext()).startDetailsActivityForInfo(
-                    mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
+            PackageManagerHelper.startDetailsActivityForInfo(view.getContext(), mItemInfo,
+                    sourceBounds, ActivityOptions.makeBasic().toBundle());
             mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP);
         }

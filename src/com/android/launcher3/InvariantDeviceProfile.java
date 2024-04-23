@@ -59,6 +59,7 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Partner;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.WindowManagerProxy;
 
@@ -75,7 +76,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class InvariantDeviceProfile {
+public class InvariantDeviceProfile implements SafeCloseable {
 
     public static final String TAG = "IDP";
     // We do not need any synchronization for this variable as its only written on UI thread.
@@ -229,9 +230,8 @@ public class InvariantDeviceProfile {
         if (!newGridName.equals(gridName)) {
             LauncherPrefs.get(context).put(GRID_NAME, newGridName);
         }
-        LockedUserState.get(context).runOnUserUnlocked(() -> {
-            new DeviceGridState(this).writeToPrefs(context);
-        });
+        LockedUserState.get(context).runOnUserUnlocked(() ->
+            new DeviceGridState(this).writeToPrefs(context));
 
         DisplayController.INSTANCE.get(context).setPriorityListener(
                 (displayContext, info, flags) -> {
@@ -293,6 +293,11 @@ public class InvariantDeviceProfile {
                 COUNT_SIZES);
 
         initGrid(context, myInfo, result, deviceType);
+    }
+
+    @Override
+    public void close() {
+        DisplayController.INSTANCE.executeIfCreated(dc -> dc.setPriorityListener(null));
     }
 
     /**

@@ -21,8 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Kitűzés"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Szabad forma"</string>
-    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
-    <skip />
+    <string name="recent_task_option_desktop" msgid="8280879717125435668">"Asztali"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Nincsenek mostanában használt elemek"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Alkalmazáshasználati beállítások"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Összes törlése"</string>

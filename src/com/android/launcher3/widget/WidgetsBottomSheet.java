@@ -216,6 +216,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     protected WidgetCell addItemCell(ViewGroup parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext())
                 .inflate(R.layout.widget_cell, parent, false);
+        widget.setOnClickListener(this);
 
         View previewContainer = widget.findViewById(R.id.widget_preview_container);
         previewContainer.setOnClickListener(this);

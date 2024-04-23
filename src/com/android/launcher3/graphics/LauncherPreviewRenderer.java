@@ -66,7 +66,6 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -88,14 +87,11 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.pm.InstallSessionHelper;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
-import com.android.launcher3.util.PluginManagerWrapper;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.ActivityContext;
@@ -104,7 +100,6 @@ import com.android.launcher3.widget.BaseLauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.LocalColorExtractor;
-import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
@@ -136,13 +131,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 new ConcurrentLinkedQueue<>();
 
         public PreviewContext(Context base, InvariantDeviceProfile idp) {
-            super(base, UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
-                    LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
-                    CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE,
-                    WindowManagerProxy.INSTANCE, DisplayController.INSTANCE);
+            super(base);
             mIdp = idp;
-            mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
-            mObjectMap.put(LauncherAppState.INSTANCE,
+            putObject(InvariantDeviceProfile.INSTANCE, idp);
+            putObject(LauncherAppState.INSTANCE,
                     new LauncherAppState(this, null /* iconCacheFileName */));
         }
 
@@ -419,7 +411,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void inflateAndAddWidgets(LauncherAppWidgetInfo info, WidgetsModel widgetsModel) {
         WidgetItem widgetItem = widgetsModel.getWidgetProviderInfoByProviderName(
-                info.providerName, info.user);
+                info.providerName, info.user, mContext);
         if (widgetItem == null) {
             return;
         }

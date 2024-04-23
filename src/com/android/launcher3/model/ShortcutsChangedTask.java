@@ -78,7 +78,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
 
         if (!matchingWorkspaceItems.isEmpty()) {
             if (mShortcuts.isEmpty()) {
-                PackageManagerHelper packageManagerHelper = new PackageManagerHelper(
+                PackageManagerHelper packageManagerHelper = PackageManagerHelper.INSTANCE.get(
                         app.getContext());
                 // Verify that the app is indeed installed.
                 if (!packageManagerHelper.isAppInstalled(mPackageName, mUser)

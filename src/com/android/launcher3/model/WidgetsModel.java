@@ -118,8 +118,8 @@ public class WidgetsModel {
         Map<PackageUserKey, List<WidgetItem>> packagesToWidgets = new HashMap<>();
         mWidgetsList.forEach((packageItemInfo, widgetsAndShortcuts) -> {
             List<WidgetItem> widgets = widgetsAndShortcuts.stream()
-                        .filter(item -> item.widgetInfo != null)
-                        .collect(toList());
+                    .filter(item -> item.widgetInfo != null)
+                    .collect(toList());
             if (widgets.size() > 0) {
                 packagesToWidgets.put(
                         new PackageUserKey(packageItemInfo.packageName, packageItemInfo.user),
@@ -239,20 +239,45 @@ public class WidgetsModel {
         }
     }
 
+    private PackageItemInfo createPackageItemInfo(
+            ComponentName providerName,
+            UserHandle user,
+            int category
+    ) {
+        if (category == NO_CATEGORY) {
+            return new PackageItemInfo(providerName.getPackageName(), user);
+        } else {
+            return new PackageItemInfo("" , category, user);
+        }
+    }
+
+    private IntSet getCategories(ComponentName providerName, Context context) {
+        IntSet categories = WidgetSections.getWidgetsToCategory(context).get(providerName);
+        if (categories != null) {
+            return categories;
+        }
+        categories = new IntSet();
+        categories.add(NO_CATEGORY);
+        return categories;
+    }
+
     public WidgetItem getWidgetProviderInfoByProviderName(
-            ComponentName providerName, UserHandle user) {
+            ComponentName providerName, UserHandle user, Context context) {
         if (!WIDGETS_ENABLED) {
             return null;
         }
-        List<WidgetItem> widgetsList = mWidgetsList.get(
-                new PackageItemInfo(providerName.getPackageName(), user));
-        if (widgetsList == null) {
-            return null;
-        }
+        IntSet categories = getCategories(providerName, context);
 
-        for (WidgetItem item : widgetsList) {
-            if (item.componentName.equals(providerName)) {
-                return item;
+        // Checking if we have a provider in any of the categories.
+        for (Integer category: categories) {
+            PackageItemInfo key = createPackageItemInfo(providerName, user, category);
+            List<WidgetItem> widgets = mWidgetsList.get(key);
+            if (widgets != null) {
+                return widgets.stream().filter(
+                                item -> item.componentName.equals(providerName)
+                        )
+                        .findFirst()
+                        .orElse(null);
             }
         }
         return null;

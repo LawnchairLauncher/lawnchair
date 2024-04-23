@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitStageInfo;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -57,7 +58,8 @@ import java.util.List;
  * This class tracked the top-most task and  some 'approximate' task history to allow faster
  * system state estimation during touch interaction
  */
-public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskStackChangeListener {
+public class TopTaskTracker extends ISplitScreenListener.Stub
+        implements TaskStackChangeListener, SafeCloseable {
 
     public static MainThreadInitializedObject<TopTaskTracker> INSTANCE =
             new MainThreadInitializedObject<>(TopTaskTracker::new);
@@ -67,17 +69,24 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
     // Ordered list with first item being the most recent task.
     private final LinkedList<RunningTaskInfo> mOrderedTaskList = new LinkedList<>();
 
-
+    private final Context mContext;
     private final SplitStageInfo mMainStagePosition = new SplitStageInfo();
     private final SplitStageInfo mSideStagePosition = new SplitStageInfo();
     private int mPinnedTaskId = INVALID_TASK_ID;
 
     private TopTaskTracker(Context context) {
+        mContext = context;
         mMainStagePosition.stageType = SplitConfigurationOptions.STAGE_TYPE_MAIN;
         mSideStagePosition.stageType = SplitConfigurationOptions.STAGE_TYPE_SIDE;
 
         TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
         SystemUiProxy.INSTANCE.get(context).registerSplitScreenListener(this);
+    }
+
+    @Override
+    public void close() {
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(this);
+        SystemUiProxy.INSTANCE.get(mContext).unregisterSplitScreenListener(this);
     }
 
     @Override

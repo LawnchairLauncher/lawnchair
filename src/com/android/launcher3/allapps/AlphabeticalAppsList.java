@@ -22,7 +22,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_USER_INSTALLED_APPS_COUNT;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -362,7 +361,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         // Split of private space apps into user-installed and system apps.
         Map<Boolean, List<AppInfo>> split = mPrivateApps.stream()
                 .collect(Collectors.partitioningBy(mPrivateProviderManager
-                                .splitIntoUserInstalledAndSystemApps()));
+                                .splitIntoUserInstalledAndSystemApps(mActivityContext)));
 
         // TODO(b/329688630): switch to the pulled LayoutStaticSnapshot atom
         mActivityContext

@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static androidx.test.InstrumentationRegistry.getTargetContext;
+
 import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.PERSISTENT;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
@@ -53,7 +55,7 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
 
     @Override
     public void setUp() throws Exception {
-        mTaskbarWasInTransientMode = isTaskbarInTransientMode(mTargetContext);
+        mTaskbarWasInTransientMode = isTaskbarInTransientMode(getTargetContext());
         setTaskbarMode(mLauncher, isTaskbarTestModeTransient());
         super.setUp();
     }

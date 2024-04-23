@@ -326,8 +326,12 @@ public class QuickstepModelDelegate extends ModelDelegate {
         super.destroy();
         mActive = false;
         StatsLogCompatManager.LOGS_CONSUMER.remove(mAppEventProducer);
-        if (mIsPrimaryInstance) {
-            mStatsManager.clearPullAtomCallback(SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT);
+        if (mIsPrimaryInstance && mStatsManager != null) {
+            try {
+                mStatsManager.clearPullAtomCallback(SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT);
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Failed to unregister snapshot logging callback with StatsManager", e);
+            }
         }
         destroyPredictors();
     }

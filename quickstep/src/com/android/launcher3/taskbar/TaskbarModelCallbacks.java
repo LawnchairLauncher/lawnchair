@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
+import static com.android.window.flags.Flags.enableDesktopWindowingTaskbarRunningApps;
+
 import android.util.SparseArray;
 import android.view.View;
 
@@ -26,6 +29,7 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -33,6 +37,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsModel;
 
 import java.io.PrintWriter;
@@ -62,6 +67,8 @@ public class TaskbarModelCallbacks implements
     // Used to defer any UI updates during the SUW unstash animation.
     private boolean mDeferUpdatesForSUW;
     private Runnable mDeferredUpdates;
+    private DesktopVisibilityController.DesktopVisibilityListener mDesktopVisibilityListener =
+            visible -> updateRunningApps();
 
     public TaskbarModelCallbacks(
             TaskbarActivityContext context, TaskbarView container) {
@@ -73,6 +80,15 @@ public class TaskbarModelCallbacks implements
         mControllers = controllers;
         if (mControllers.taskbarRecentAppsController.isEnabled()) {
             RecentsModel.INSTANCE.get(mContext).registerRunningTasksListener(this);
+
+            if (shouldShowRunningAppsInDesktopMode()) {
+                DesktopVisibilityController desktopVisibilityController =
+                        LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+                if (desktopVisibilityController != null) {
+                    desktopVisibilityController.registerDesktopVisibilityListener(
+                            mDesktopVisibilityListener);
+                }
+            }
         }
     }
 
@@ -81,6 +97,20 @@ public class TaskbarModelCallbacks implements
      */
     public void unregisterListeners() {
         RecentsModel.INSTANCE.get(mContext).unregisterRunningTasksListener();
+
+        if (shouldShowRunningAppsInDesktopMode()) {
+            DesktopVisibilityController desktopVisibilityController =
+                    LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+            if (desktopVisibilityController != null) {
+                desktopVisibilityController.unregisterDesktopVisibilityListener(
+                        mDesktopVisibilityListener);
+            }
+        }
+    }
+
+    private boolean shouldShowRunningAppsInDesktopMode() {
+        // TODO(b/335401172): unify DesktopMode checks in Launcher
+        return enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps();
     }
 
     @Override

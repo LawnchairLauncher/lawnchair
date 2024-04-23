@@ -45,6 +45,7 @@ import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.ScreenRecordRule.KeepRecordOnSuccess;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 
@@ -196,6 +197,7 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest<Launcher> {
 
     }
 
+    @KeepRecordOnSuccess
     @ScreenRecord // b/322823478
     @Test
     public void testEdu() {

@@ -63,7 +63,7 @@ public class SplitToWorkspaceController {
             SplitSelectStateController controller) {
         mLauncher = launcher;
         mController = controller;
-        mIconCache = LauncherAppState.getInstanceNoCreate().getIconCache();
+        mIconCache = LauncherAppState.getInstance(launcher).getIconCache();
         mHalfDividerSize = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.multi_window_task_divider_size) / 2;
     }

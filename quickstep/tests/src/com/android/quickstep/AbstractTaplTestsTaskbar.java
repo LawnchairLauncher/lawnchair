@@ -55,7 +55,7 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
                 "com.android.launcher3.testcomponent.BaseTestingActivity");
         mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, layoutBuilder);
         AbstractLauncherUiTest.initialize(this);
-        startAppFast(CALCULATOR_APP_PACKAGE);
+        startAppFastInFullscreen(CALCULATOR_APP_PACKAGE);
         mLauncher.enableBlockTimeout(true);
         mLauncher.showTaskbarIfHidden();
     }

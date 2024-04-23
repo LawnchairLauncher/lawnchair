@@ -59,6 +59,7 @@ import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.WindowBounds;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ import java.util.List;
 /**
  * Utility class for mocking some window manager behaviours
  */
-public class WindowManagerProxy implements ResourceBasedOverride {
+public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable {
 
     private static final String TAG = "WindowManagerProxy";
     public static final int MIN_TABLET_WIDTH = 600;
@@ -305,12 +306,12 @@ public class WindowManagerProxy implements ResourceBasedOverride {
 
         navBarHeightPortrait = isTablet
                 ? (mTaskbarDrawnInProcess
-                        ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
+                        ? 0 : context.getResources().getDimensionPixelSize(R.dimen.taskbar_size))
                 : getDimenByName(systemRes, NAVBAR_HEIGHT);
 
         navBarHeightLandscape = isTablet
                 ? (mTaskbarDrawnInProcess
-                        ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
+                        ? 0 : context.getResources().getDimensionPixelSize(R.dimen.taskbar_size))
                 : (isTabletOrGesture
                         ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE) : 0);
         navbarWidthLandscape = isTabletOrGesture
@@ -473,6 +474,9 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         return Utilities.ATLEAST_S ? NavigationMode.NO_BUTTON :
                 NavigationMode.THREE_BUTTONS;
     }
+
+    @Override
+    public void close() { }
 
     /**
      * @see DisplayCutout#getSafeInsets
