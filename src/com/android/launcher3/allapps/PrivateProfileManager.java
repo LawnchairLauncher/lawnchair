@@ -80,9 +80,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -105,7 +103,6 @@ public class PrivateProfileManager extends UserProfileManager {
             }
         }
     };
-    private Set<String> mPreInstalledSystemPackages = new HashSet<>();
     private Intent mAppInstallerIntent = new Intent();
     private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
     private boolean mPrivateSpaceSettingsAvailable;
@@ -264,8 +261,6 @@ public class PrivateProfileManager extends UserProfileManager {
         ApiWrapper apiWrapper = ApiWrapper.INSTANCE.get(appContext);
         UserHandle profileUser = getProfileUser();
         if (profileUser != null) {
-            mPreInstalledSystemPackages = new HashSet<>(
-                    apiWrapper.getPreInstalledSystemPackages(profileUser));
             mAppInstallerIntent = apiWrapper
                     .getAppMarketActivityIntent(BuildConfig.APPLICATION_ID, profileUser);
         }
@@ -349,10 +344,12 @@ public class PrivateProfileManager extends UserProfileManager {
      * Splits private apps into user installed and system apps.
      * When the list of system apps is empty, all apps are treated as system.
      */
-    public Predicate<AppInfo> splitIntoUserInstalledAndSystemApps() {
-        return appInfo -> !mPreInstalledSystemPackages.isEmpty()
+    public Predicate<AppInfo> splitIntoUserInstalledAndSystemApps(Context context) {
+        List<String> preInstallApps = UserCache.getInstance(context)
+                .getPreInstallApps(getProfileUser());
+        return appInfo -> !preInstallApps.isEmpty()
                 && (appInfo.componentName == null
-                || !(mPreInstalledSystemPackages.contains(appInfo.componentName.getPackageName())));
+                || !(preInstallApps.contains(appInfo.componentName.getPackageName())));
     }
 
     /** Add Private Space Header view elements based upon {@link UserProfileState} */

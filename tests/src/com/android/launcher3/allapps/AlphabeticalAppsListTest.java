@@ -98,7 +98,7 @@ public class AlphabeticalAppsListTest {
         when(mPrivateProfileManager.addPrivateSpaceHeader(any()))
                 .thenAnswer(answer(this::addPrivateSpaceHeader));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps())
+        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps(any()))
                 .thenReturn(iteminfo -> iteminfo.componentName == null
                         || !iteminfo.componentName.getPackageName()
                         .equals("com.android.launcher3.tests.camera"));
@@ -127,7 +127,7 @@ public class AlphabeticalAppsListTest {
         when(mPrivateProfileManager.addSystemAppsDivider(any()))
                 .thenAnswer(answer(this::addSystemAppsDivider));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps())
+        when(mPrivateProfileManager.splitIntoUserInstalledAndSystemApps(mContext))
                 .thenReturn(iteminfo -> iteminfo.componentName == null
                         || !iteminfo.componentName.getPackageName()
                         .equals("com.android.launcher3.tests.camera"));
