@@ -300,13 +300,7 @@ abstract class AbstractDeviceProfileTest {
                 smallestScreenWidthDp = min(screenWidthDp, screenHeightDp)
             }
         val configurationContext = runningContext.createConfigurationContext(config)
-        context =
-            SandboxContext(
-                configurationContext,
-                DisplayController.INSTANCE,
-                WindowManagerProxy.INSTANCE,
-                LauncherPrefs.INSTANCE
-            )
+        context = SandboxContext(configurationContext)
         context.putObject(DisplayController.INSTANCE, displayController)
         context.putObject(WindowManagerProxy.INSTANCE, windowManagerProxy)
         context.putObject(LauncherPrefs.INSTANCE, launcherPrefs)

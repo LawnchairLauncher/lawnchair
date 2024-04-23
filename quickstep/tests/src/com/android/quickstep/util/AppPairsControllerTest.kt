@@ -43,6 +43,7 @@ import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.spy
@@ -100,8 +101,7 @@ class AppPairsControllerTest {
         // Stub methods on appPairsController so that they return mocks
         spyAppPairsController = spy(appPairsController)
         whenever(mockAppPairIcon.context).thenReturn(mockTaskbarActivityContext)
-        whenever(spyAppPairsController.getTopTaskTracker(mockTaskbarActivityContext))
-            .thenReturn(mockTopTaskTracker)
+        doReturn(mockTopTaskTracker).whenever(spyAppPairsController).topTaskTracker
         whenever(mockTopTaskTracker.getCachedTopTask(any())).thenReturn(mockCachedTaskInfo)
         whenever(mockTask1.getKey()).thenReturn(mockTaskKey1)
         whenever(mockTask2.getKey()).thenReturn(mockTaskKey2)

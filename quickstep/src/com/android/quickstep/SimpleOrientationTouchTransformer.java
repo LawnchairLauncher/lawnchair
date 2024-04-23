@@ -24,19 +24,27 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 
 public class SimpleOrientationTouchTransformer implements
-        DisplayController.DisplayInfoChangeListener {
+        DisplayController.DisplayInfoChangeListener, SafeCloseable {
 
     public static final MainThreadInitializedObject<SimpleOrientationTouchTransformer> INSTANCE =
             new MainThreadInitializedObject<>(SimpleOrientationTouchTransformer::new);
 
+    private final Context mContext;
     private OrientationRectF mOrientationRectF;
 
     public SimpleOrientationTouchTransformer(Context context) {
+        mContext = context;
         DisplayController.INSTANCE.get(context).addChangeListener(this);
         onDisplayInfoChanged(context, DisplayController.INSTANCE.get(context).getInfo(),
                 CHANGE_ALL);
+    }
+
+    @Override
+    public void close() {
+        DisplayController.INSTANCE.get(mContext).removeChangeListener(this);
     }
 
     @Override

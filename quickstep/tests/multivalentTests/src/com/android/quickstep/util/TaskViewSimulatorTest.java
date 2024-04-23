@@ -44,7 +44,6 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.FallbackActivityInterface;
-import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.SurfaceTransaction.MockProperties;
 
 import org.hamcrest.Description;
@@ -160,7 +159,6 @@ public class TaskViewSimulatorTest {
         void verifyNoTransforms() {
             LauncherModelHelper helper = new LauncherModelHelper();
             try {
-                helper.sandboxContext.allow(SystemUiProxy.INSTANCE);
                 int rotation = mDisplaySize.x > mDisplaySize.y
                         ? Surface.ROTATION_90 : Surface.ROTATION_0;
                 CachedDisplayInfo cdi = new CachedDisplayInfo(mDisplaySize, rotation);

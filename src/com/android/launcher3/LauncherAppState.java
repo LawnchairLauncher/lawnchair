@@ -78,12 +78,8 @@ public class LauncherAppState implements SafeCloseable {
 
     private final RunnableList mOnTerminateCallback = new RunnableList();
 
-    public static LauncherAppState getInstance(final Context context) {
+    public static LauncherAppState getInstance(Context context) {
         return INSTANCE.get(context);
-    }
-
-    public static LauncherAppState getInstanceNoCreate() {
-        return INSTANCE.getNoCreate();
     }
 
     public Context getContext() {

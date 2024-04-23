@@ -28,17 +28,15 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 /**
  * Utility class for defining singletons which are initiated on main thread.
  */
-public class MainThreadInitializedObject<T> {
+public class MainThreadInitializedObject<T extends SafeCloseable> {
 
     private final ObjectProvider<T> mProvider;
     private T mValue;
@@ -48,14 +46,14 @@ public class MainThreadInitializedObject<T> {
     }
 
     public T get(Context context) {
-        if (context instanceof SandboxContext sc) {
+        Context app = context.getApplicationContext();
+        if (app instanceof SandboxApplication sc) {
             return sc.getObject(this);
         }
 
         if (mValue == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                mValue = TraceHelper.allowIpcs("main.thread.object",
-                        () -> mProvider.get(context.getApplicationContext()));
+                mValue = TraceHelper.allowIpcs("main.thread.object", () -> mProvider.get(app));
             } else {
                 try {
                     return MAIN_EXECUTOR.submit(() -> get(context)).get();
@@ -67,8 +65,18 @@ public class MainThreadInitializedObject<T> {
         return mValue;
     }
 
-    public T getNoCreate() {
-        return mValue;
+    /**
+     * Executes the callback is the value is already created
+     * @return true if the callback was executed, false otherwise
+     */
+    public boolean executeIfCreated(Consumer<T> callback) {
+        T v = mValue;
+        if (v != null) {
+            callback.accept(v);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @VisibleForTesting
@@ -79,8 +87,8 @@ public class MainThreadInitializedObject<T> {
     /**
      * Initializes a provider based on resource overrides
      */
-    public static <T extends ResourceBasedOverride> MainThreadInitializedObject<T> forOverride(
-            Class<T> clazz, int resourceId) {
+    public static <T extends ResourceBasedOverride & SafeCloseable> MainThreadInitializedObject<T>
+            forOverride(Class<T> clazz, int resourceId) {
         return new MainThreadInitializedObject<>(c -> Overrides.getObject(clazz, c, resourceId));
     }
 
@@ -89,24 +97,36 @@ public class MainThreadInitializedObject<T> {
         T get(Context context);
     }
 
+    public interface SandboxApplication {
+
+        /**
+         * Find a cached object from mObjectMap if we have already created one. If not, generate
+         * an object using the provider.
+         */
+        <T extends SafeCloseable> T getObject(MainThreadInitializedObject<T> object);
+
+        @UiThread
+        default <T extends SafeCloseable> T createObject(MainThreadInitializedObject<T> object) {
+            return object.mProvider.get((Context) this);
+        }
+    }
+
     /**
      * Abstract Context which allows custom implementations for
      * {@link MainThreadInitializedObject} providers
      */
-    public static class SandboxContext extends ContextWrapper {
+    public static class SandboxContext extends ContextWrapper implements SandboxApplication {
 
         private static final String TAG = "SandboxContext";
 
-        protected final Set<MainThreadInitializedObject> mAllowedObjects;
-        protected final Map<MainThreadInitializedObject, Object> mObjectMap = new HashMap<>();
-        protected final ArrayList<Object> mOrderedObjects = new ArrayList<>();
+        private final Map<MainThreadInitializedObject, Object> mObjectMap = new HashMap<>();
+        private final ArrayList<SafeCloseable> mOrderedObjects = new ArrayList<>();
 
         private final Object mDestroyLock = new Object();
         private boolean mDestroyed = false;
 
-        public SandboxContext(Context base, MainThreadInitializedObject... allowedObjects) {
+        public SandboxContext(Context base) {
             super(base);
-            mAllowedObjects = new HashSet<>(Arrays.asList(allowedObjects));
         }
 
         @Override
@@ -118,20 +138,14 @@ public class MainThreadInitializedObject<T> {
             synchronized (mDestroyLock) {
                 // Destroy in reverse order
                 for (int i = mOrderedObjects.size() - 1; i >= 0; i--) {
-                    Object o = mOrderedObjects.get(i);
-                    if (o instanceof SafeCloseable) {
-                        ((SafeCloseable) o).close();
-                    }
+                    mOrderedObjects.get(i).close();
                 }
                 mDestroyed = true;
             }
         }
 
-        /**
-         * Find a cached object from mObjectMap if we have already created one. If not, generate
-         * an object using the provider.
-         */
-        protected <T> T getObject(MainThreadInitializedObject<T> object) {
+        @Override
+        public <T extends SafeCloseable> T getObject(MainThreadInitializedObject<T> object) {
             synchronized (mDestroyLock) {
                 if (mDestroyed) {
                     Log.e(TAG, "Static object access with a destroyed context");
@@ -142,12 +156,6 @@ public class MainThreadInitializedObject<T> {
                 }
                 if (Looper.myLooper() == Looper.getMainLooper()) {
                     t = createObject(object);
-                    // Check if we've explicitly allowed the object or if it's a SafeCloseable,
-                    // it will get destroyed in onDestroy()
-                    if (!mAllowedObjects.contains(object) && !(t instanceof SafeCloseable)) {
-                        throw new IllegalStateException("Leaking unknown objects "
-                                + object + "  " + object.mProvider + " " + t);
-                    }
                     mObjectMap.put(object, t);
                     mOrderedObjects.add(t);
                     return t;
@@ -161,17 +169,12 @@ public class MainThreadInitializedObject<T> {
             }
         }
 
-        @UiThread
-        protected <T> T createObject(MainThreadInitializedObject<T> object) {
-            return object.mProvider.get(this);
-        }
-
         /**
          * Put a value into mObjectMap, can be used to put mocked MainThreadInitializedObject
          * instances into SandboxContext.
          */
-        @VisibleForTesting
-        public <T> void putObject(MainThreadInitializedObject<T> object, T value) {
+        public <T extends SafeCloseable> void putObject(
+                MainThreadInitializedObject<T> object, T value) {
             mObjectMap.put(object, value);
         }
     }

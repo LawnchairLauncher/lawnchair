@@ -427,12 +427,10 @@ public class ItemInfo {
     @NonNull
     protected LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
-        UserIconInfo info = getUserInfo();
-        itemBuilder.setIsWork(info != null && info.isWork());
-        itemBuilder.setUserType(getUserType(info));
-        SettingsCache settingsCache = SettingsCache.INSTANCE.getNoCreate();
-        boolean isKidsMode = settingsCache != null && settingsCache.getValue(NAV_BAR_KIDS_MODE, 0);
-        itemBuilder.setIsKidsMode(isKidsMode);
+        SettingsCache.INSTANCE.executeIfCreated(cache ->
+                itemBuilder.setIsKidsMode(cache.getValue(NAV_BAR_KIDS_MODE, 0)));
+        UserCache.INSTANCE.executeIfCreated(cache ->
+                itemBuilder.setUserType(getUserType(cache.getUserInfo(user))));
         itemBuilder.setRank(rank);
         return itemBuilder;
     }
@@ -524,15 +522,6 @@ public class ItemInfo {
     public void setTitle(@Nullable final CharSequence title,
             @Nullable final ModelWriter modelWriter) {
         this.title = title;
-    }
-
-    private UserIconInfo getUserInfo() {
-        UserCache userCache = UserCache.INSTANCE.getNoCreate();
-        if (userCache == null) {
-            return null;
-        }
-
-        return userCache.getUserInfo(user);
     }
 
     private int getUserType(UserIconInfo info) {

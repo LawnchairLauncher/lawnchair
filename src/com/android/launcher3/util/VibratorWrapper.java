@@ -39,7 +39,7 @@ import com.android.launcher3.Utilities;
 /**
  * Wrapper around {@link Vibrator} to easily perform haptic feedback where necessary.
  */
-public class VibratorWrapper {
+public class VibratorWrapper implements SafeCloseable {
 
     public static final MainThreadInitializedObject<VibratorWrapper> INSTANCE =
             new MainThreadInitializedObject<>(VibratorWrapper::new);
@@ -77,6 +77,7 @@ public class VibratorWrapper {
     private final Vibrator mVibrator;
     private final boolean mHasVibrator;
 
+    private ContentObserver mHapticFeedbackObserver;
     private boolean mIsHapticFeedbackEnabled;
 
     private VibratorWrapper(Context context) {
@@ -86,14 +87,14 @@ public class VibratorWrapper {
         if (mHasVibrator) {
             final ContentResolver resolver = context.getContentResolver();
             mIsHapticFeedbackEnabled = isHapticFeedbackEnabled(resolver);
-            final ContentObserver observer = new ContentObserver(MAIN_EXECUTOR.getHandler()) {
+            mHapticFeedbackObserver = new ContentObserver(MAIN_EXECUTOR.getHandler()) {
                 @Override
                 public void onChange(boolean selfChange) {
                     mIsHapticFeedbackEnabled = isHapticFeedbackEnabled(resolver);
                 }
             };
             resolver.registerContentObserver(Settings.System.getUriFor(HAPTIC_FEEDBACK_ENABLED),
-                    false /* notifyForDescendants */, observer);
+                    false /* notifyForDescendants */, mHapticFeedbackObserver);
         } else {
             mIsHapticFeedbackEnabled = false;
         }
@@ -123,6 +124,13 @@ public class VibratorWrapper {
             mCommitEffect = null;
             mBumpEffect = null;
             mThresholdUntilNextDragCallMillis = 0;
+        }
+    }
+
+    @Override
+    public void close() {
+        if (mHapticFeedbackObserver != null) {
+            mContext.getContentResolver().unregisterContentObserver(mHapticFeedbackObserver);
         }
     }
 

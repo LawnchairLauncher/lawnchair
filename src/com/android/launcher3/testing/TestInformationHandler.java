@@ -94,13 +94,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
     protected Context mContext;
     protected DeviceProfile mDeviceProfile;
-    protected LauncherAppState mLauncherAppState;
 
     public void init(Context context) {
         mContext = context;
-        mDeviceProfile = InvariantDeviceProfile.INSTANCE.
-                get(context).getDeviceProfile(context);
-        mLauncherAppState = LauncherAppState.getInstanceNoCreate();
+        mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context);
         if (sActivityLifecycleCallbacks == null) {
             sActivityLifecycleCallbacks = new ActivityLifecycleCallbacksAdapter() {
                 @Override

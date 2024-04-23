@@ -30,6 +30,7 @@ import com.android.launcher3.provider.RestoreDbTask.FIRST_LOAD_AFTER_RESTORE_KEY
 import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import com.android.launcher3.util.Themes
 
 /**
@@ -37,7 +38,7 @@ import com.android.launcher3.util.Themes
  *
  * TODO(b/262721340): Replace all direct SharedPreference refs with LauncherPrefs / Item methods.
  */
-class LauncherPrefs(private val encryptedContext: Context) {
+class LauncherPrefs(private val encryptedContext: Context) : SafeCloseable {
     private val deviceProtectedStorageContext =
         encryptedContext.createDeviceProtectedStorageContext()
 
@@ -241,6 +242,8 @@ class LauncherPrefs(private val encryptedContext: Context) {
             }
         }
     }
+
+    override fun close() {}
 
     companion object {
         @VisibleForTesting const val BOOT_AWARE_PREFS_KEY = "boot_aware_prefs"

@@ -32,7 +32,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
@@ -48,9 +47,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.RemoteActionShortcut;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.util.BgObjectWithLooper;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.views.ActivityContext;
 
@@ -61,7 +61,7 @@ import java.util.Map;
 /**
  * Data model for digital wellbeing status of apps.
  */
-public final class WellbeingModel extends BgObjectWithLooper {
+public final class WellbeingModel implements SafeCloseable {
     private static final String TAG = "WellbeingModel";
     private static final int[] RETRY_TIMES_MS = {5000, 15000, 30000};
     private static final boolean DEBUG = false;
@@ -81,8 +81,12 @@ public final class WellbeingModel extends BgObjectWithLooper {
     private final Context mContext;
     private final String mWellbeingProviderPkg;
 
-    private Handler mWorkerHandler;
-    private ContentObserver mContentObserver;
+    private final Handler mWorkerHandler;
+    private final ContentObserver mContentObserver;
+    private final SimpleBroadcastReceiver mWellbeingAppChangeReceiver =
+            new SimpleBroadcastReceiver(t -> restartObserver());
+    private final SimpleBroadcastReceiver mAppAddRemoveReceiver =
+            new SimpleBroadcastReceiver(this::onAppPackageChanged);
 
     private final Object mModelLock = new Object();
     // Maps the action Id to the corresponding RemoteAction
@@ -94,16 +98,23 @@ public final class WellbeingModel extends BgObjectWithLooper {
     private WellbeingModel(final Context context) {
         mContext = context;
         mWellbeingProviderPkg = mContext.getString(R.string.wellbeing_provider_pkg);
-        initializeInBackground("WellbeingHandler");
+        mWorkerHandler = new Handler(TextUtils.isEmpty(mWellbeingProviderPkg)
+                ? Executors.UI_HELPER_EXECUTOR.getLooper()
+                : Executors.getPackageExecutor(mWellbeingProviderPkg).getLooper());
+
+        mContentObserver = new ContentObserver(mWorkerHandler) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                updateAllPackages();
+            }
+        };
+        mWorkerHandler.post(this::initializeInBackground);
     }
 
-    @Override
-    protected void onInitialized(Looper looper) {
-        mWorkerHandler = new Handler(looper);
-        mContentObserver = newContentObserver(mWorkerHandler, this::onWellbeingUriChanged);
+    private void initializeInBackground() {
         if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
             mContext.registerReceiver(
-                    new SimpleBroadcastReceiver(t -> restartObserver()),
+                    mWellbeingAppChangeReceiver,
                     getPackageFilter(mWellbeingProviderPkg,
                             Intent.ACTION_PACKAGE_ADDED, Intent.ACTION_PACKAGE_CHANGED,
                             Intent.ACTION_PACKAGE_REMOVED, Intent.ACTION_PACKAGE_DATA_CLEARED,
@@ -113,17 +124,21 @@ public final class WellbeingModel extends BgObjectWithLooper {
             IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
             filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
             filter.addDataScheme("package");
-            mContext.registerReceiver(new SimpleBroadcastReceiver(this::onAppPackageChanged),
-                    filter, null, mWorkerHandler);
+            mContext.registerReceiver(mAppAddRemoveReceiver, filter, null, mWorkerHandler);
 
             restartObserver();
         }
     }
 
-    @WorkerThread
-    private void onWellbeingUriChanged(Uri uri) {
-        Preconditions.assertNonUiThread();
-        updateAllPackages();
+    @Override
+    public void close() {
+        if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
+            mWorkerHandler.post(() -> {
+                mWellbeingAppChangeReceiver.unregisterReceiverSafely(mContext);
+                mAppAddRemoveReceiver.unregisterReceiverSafely(mContext);
+                mContext.getContentResolver().unregisterContentObserver(mContentObserver);
+            });
+        }
     }
 
     public void setInTest(boolean inTest) {

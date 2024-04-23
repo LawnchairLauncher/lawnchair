@@ -347,7 +347,6 @@ public class StatsLogCompatManager extends StatsLogManager {
                         event.getId() + "";
                 Log.d(TAG, name);
             }
-            LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
 
             if (mSlice == null && mSliceItem != null) {
                 mSlice = LauncherAtom.Slice.newBuilder().setUri(
@@ -369,15 +368,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return;
             }
 
-            if (mItemInfo.container < 0 || appState == null) {
-                // Write log on the model thread so that logs do not go out of order
-                // (for eg: drop comes after drag)
-                Executors.MODEL_EXECUTOR.execute(
-                        () -> write(event, applyOverwrites(mItemInfo.buildProto())));
-            } else {
+            if (mItemInfo.container < 0 || !LauncherAppState.INSTANCE.executeIfCreated(app -> {
                 // Item is inside a collection, fetch collection info in a BG thread
                 // and then write to StatsLog.
-                appState.getModel().enqueueModelUpdateTask(
+                app.getModel().enqueueModelUpdateTask(
                         new BaseModelUpdateTask() {
                             @Override
                             public void execute(@NonNull final LauncherAppState app,
@@ -388,6 +382,11 @@ public class StatsLogCompatManager extends StatsLogManager {
                                 write(event, applyOverwrites(mItemInfo.buildProto(collectionInfo)));
                             }
                         });
+            })) {
+                // Write log on the model thread so that logs do not go out of order
+                // (for eg: drop comes after drag)
+                Executors.MODEL_EXECUTOR.execute(
+                        () -> write(event, applyOverwrites(mItemInfo.buildProto())));
             }
         }
 

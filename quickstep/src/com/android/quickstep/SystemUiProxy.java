@@ -67,6 +67,7 @@ import com.android.internal.util.ScreenshotRequest;
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistUtils;
 import com.android.quickstep.util.unfold.ProxyUnfoldTransitionProvider;
@@ -110,7 +111,7 @@ import java.util.List;
 /**
  * Holds the reference to SystemUI.
  */
-public class SystemUiProxy implements ISystemUiProxy, NavHandle {
+public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
     private static final String TAG = SystemUiProxy.class.getSimpleName();
 
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
@@ -199,6 +200,9 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
                 (enableUnfoldStateAnimation() && new ResourceUnfoldTransitionConfig().isEnabled())
                          ? new ProxyUnfoldTransitionProvider() : null;
     }
+
+    @Override
+    public void close() { }
 
     @Override
     public void onBackPressed() {
