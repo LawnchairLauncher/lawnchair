@@ -65,7 +65,7 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     public void setUp() throws Exception {
         Assume.assumeTrue(mLauncher.isTablet());
         super.setUp();
-        startAppFast(CALCULATOR_APP_PACKAGE);
+        startAppFastInFullscreen(CALCULATOR_APP_PACKAGE);
         startTestActivity(2);
     }
 
