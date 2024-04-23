@@ -171,7 +171,7 @@ public class InstallSessionHelper implements SafeCloseable {
         synchronized (mSessionVerifiedMap) {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
                 boolean hasSystemFlag = DEBUG || mAppContext.getPackageName().equals(pkg)
-                        || new PackageManagerHelper(mAppContext)
+                        || PackageManagerHelper.INSTANCE.get(mAppContext)
                                 .getApplicationInfo(pkg, user, ApplicationInfo.FLAG_SYSTEM) != null;
                 mSessionVerifiedMap.put(pkg, hasSystemFlag);
             }
@@ -245,7 +245,7 @@ public class InstallSessionHelper implements SafeCloseable {
                 && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
                 && sessionInfo.getAppIcon() != null
                 && !TextUtils.isEmpty(sessionInfo.getAppLabel())
-                && !new PackageManagerHelper(mAppContext).isAppInstalled(
+                && !PackageManagerHelper.INSTANCE.get(mAppContext).isAppInstalled(
                         sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
     }
 

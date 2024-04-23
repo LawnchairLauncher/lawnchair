@@ -62,16 +62,17 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
         // via the overridden WidgetRecommendationCategoryProvider resource.
 
         Preconditions.assertWorkerThread();
-        PackageManagerHelper pmHelper = new PackageManagerHelper(context);
-        if (item.widgetInfo != null && item.widgetInfo.getComponent() != null) {
-            String widgetComponentName = item.widgetInfo.getComponent().getClassName();
-            ApplicationInfo applicationInfo = pmHelper.getApplicationInfo(
-                    item.widgetInfo.getComponent().getPackageName(), item.widgetInfo.getUser(),
-                    0 /* flags */);
-            if (applicationInfo != null) {
-                int predictionCategory = applicationInfo.category;
-                return getCategoryFromApplicationCategory(context, predictionCategory,
-                        widgetComponentName);
+        try (PackageManagerHelper pmHelper = new PackageManagerHelper(context)) {
+            if (item.widgetInfo != null && item.widgetInfo.getComponent() != null) {
+                String widgetComponentName = item.widgetInfo.getComponent().getClassName();
+                ApplicationInfo applicationInfo = pmHelper.getApplicationInfo(
+                        item.widgetInfo.getComponent().getPackageName(), item.widgetInfo.getUser(),
+                        0 /* flags */);
+                if (applicationInfo != null) {
+                    int predictionCategory = applicationInfo.category;
+                    return getCategoryFromApplicationCategory(context, predictionCategory,
+                            widgetComponentName);
+                }
             }
         }
         return null;

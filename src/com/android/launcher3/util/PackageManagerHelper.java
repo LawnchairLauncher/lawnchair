@@ -56,9 +56,13 @@ import java.util.Objects;
 /**
  * Utility methods using package manager
  */
-public class PackageManagerHelper {
+public class PackageManagerHelper implements SafeCloseable{
 
     private static final String TAG = "PackageManagerHelper";
+
+    @NonNull
+    public static final MainThreadInitializedObject<PackageManagerHelper> INSTANCE =
+            new MainThreadInitializedObject<>(PackageManagerHelper::new);
 
     @NonNull
     private final Context mContext;
@@ -74,6 +78,9 @@ public class PackageManagerHelper {
         mPm = context.getPackageManager();
         mLauncherApps = Objects.requireNonNull(context.getSystemService(LauncherApps.class));
     }
+
+    @Override
+    public void close() { }
 
     /**
      * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
@@ -170,10 +177,11 @@ public class PackageManagerHelper {
     /**
      * Starts the details activity for {@code info}
      */
-    public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
+    public static void startDetailsActivityForInfo(Context context, ItemInfo info,
+            Rect sourceBounds, Bundle opts) {
         if (info instanceof ItemInfoWithIcon appInfo
                 && (appInfo.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-            mContext.startActivity(ApiWrapper.INSTANCE.get(mContext).getAppMarketActivityIntent(
+            context.startActivity(ApiWrapper.INSTANCE.get(context).getAppMarketActivityIntent(
                     appInfo.getTargetComponent().getPackageName(), Process.myUserHandle()));
             return;
         }
@@ -189,9 +197,10 @@ public class PackageManagerHelper {
         }
         if (componentName != null) {
             try {
-                mLauncherApps.startAppDetailsActivity(componentName, info.user, sourceBounds, opts);
+                context.getSystemService(LauncherApps.class).startAppDetailsActivity(componentName,
+                        info.user, sourceBounds, opts);
             } catch (SecurityException | ActivityNotFoundException e) {
-                Toast.makeText(mContext, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Unable to launch settings", e);
             }
         }
