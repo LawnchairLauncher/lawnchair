@@ -478,6 +478,7 @@
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
     <dimen name="bottom_sheet_handle_margin">16dp</dimen>
+    <dimen name="widgets_bottom_sheet_handle_margin">24dp</dimen>
     <dimen name="bottom_sheet_handle_corner_radius">2dp</dimen>
 
     <!-- State transition -->
