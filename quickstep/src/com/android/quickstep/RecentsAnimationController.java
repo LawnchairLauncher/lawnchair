@@ -41,6 +41,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
+import java.io.PrintWriter;
 import java.util.function.Consumer;
 
 /**
@@ -266,5 +267,15 @@ public class RecentsAnimationController {
      */
     public boolean getFinishTargetIsLauncher() {
         return mFinishTargetIsLauncher;
+    }
+
+    public void dump(String prefix, PrintWriter pw) {
+        pw.println(prefix + "RecentsAnimationController:");
+
+        pw.println(prefix + "\tmAllowMinimizeSplitScreen=" + mAllowMinimizeSplitScreen);
+        pw.println(prefix + "\tmUseLauncherSysBarFlags=" + mUseLauncherSysBarFlags);
+        pw.println(prefix + "\tmSplitScreenMinimized=" + mSplitScreenMinimized);
+        pw.println(prefix + "\tmFinishRequested=" + mFinishRequested);
+        pw.println(prefix + "\tmFinishTargetIsLauncher=" + mFinishTargetIsLauncher);
     }
 }
