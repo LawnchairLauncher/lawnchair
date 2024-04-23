@@ -49,6 +49,9 @@ public class ScreenRecordRule implements TestRule {
             return base;
         }
 
+        final Boolean keepRecordOnSuccess = description.getAnnotation(KeepRecordOnSuccess.class)
+                != null;
+
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -70,7 +73,7 @@ public class ScreenRecordRule implements TestRule {
                     device.executeShellCommand("kill -INT " + screenRecordPid);
                     Log.e(TAG, "Screenrecord captured at: " + outputFile);
                     output.close();
-                    if (success) {
+                    if (success && !keepRecordOnSuccess) {
                         automation.executeShellCommand("rm " + outputFile);
                     }
                 }
@@ -84,5 +87,15 @@ public class ScreenRecordRule implements TestRule {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface ScreenRecord {
+    }
+
+
+    /**
+     * Interface to indicate that we should keep the screen record even if the test succeeds, use
+     * sparingly since it uses a lof of memory.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface KeepRecordOnSuccess {
     }
 }
