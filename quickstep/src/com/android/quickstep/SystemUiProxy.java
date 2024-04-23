@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
+import static android.content.pm.PackageManager.FEATURE_PC;
 
 import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -23,6 +24,8 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.RECENT_TASKS_MISSING;
 import static com.android.quickstep.util.LogUtils.splitFailureMessage;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
+import static com.android.window.flags.Flags.enableDesktopWindowingTaskbarRunningApps;
 
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -32,7 +35,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -1366,8 +1368,7 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
      * Gets the set of running tasks.
      */
     public ArrayList<ActivityManager.RunningTaskInfo> getRunningTasks(int numTasks) {
-        if (mRecentTasks != null
-                && mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)) {
+        if (mRecentTasks != null && shouldEnableRunningTasksForDesktopMode()) {
             try {
                 return new ArrayList<>(Arrays.asList(mRecentTasks.getRunningTasks(numTasks)));
             } catch (RemoteException e) {
@@ -1375,6 +1376,12 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
             }
         }
         return new ArrayList<>();
+    }
+
+    private boolean shouldEnableRunningTasksForDesktopMode() {
+        // TODO(b/335401172): unify DesktopMode checks in Launcher
+        return (enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps())
+                || mContext.getPackageManager().hasSystemFeature(FEATURE_PC);
     }
 
     private boolean handleMessageAsync(Message msg) {
