@@ -456,6 +456,9 @@
 
     <!-- Bubble bar drop target -->
     <dimen name="bubblebar_drop_target_corner_radius">36dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_corner_radius">16dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_width">412dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_margin">16dp</dimen>
 
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
