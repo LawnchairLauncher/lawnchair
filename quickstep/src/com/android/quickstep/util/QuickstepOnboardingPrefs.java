@@ -136,21 +136,16 @@ public class QuickstepOnboardingPrefs {
             });
         }
 
-        if (!ALL_APPS_VISITED_COUNT.hasReachedMax(launcher)) {
+        if (!Utilities.isRunningInTestHarness()) {
             launcher.getStateManager().addStateListener(new StateListener<LauncherState>() {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     if (finalState == ALL_APPS) {
                         ALL_APPS_VISITED_COUNT.increment(launcher);
-                        return;
                     }
-
-                    boolean hasReachedMaxCount = ALL_APPS_VISITED_COUNT.hasReachedMax(launcher);
-                    launcher.getAppsView().getFloatingHeaderView().findFixedRowByType(
-                            AppsDividerView.class).setShowAllAppsLabel(!hasReachedMaxCount);
-                    if (hasReachedMaxCount) {
-                        launcher.getStateManager().removeStateListener(this);
-                    }
+                    launcher.getAppsView().getFloatingHeaderView()
+                            .findFixedRowByType(AppsDividerView.class)
+                            .setShowAllAppsLabel(!ALL_APPS_VISITED_COUNT.hasReachedMax(launcher));
                 }
             });
         }
