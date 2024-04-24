@@ -17,7 +17,6 @@ package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
-import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -57,19 +56,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.views.StickyHeaderLayout;
-import com.android.launcher3.views.WidgetsEduView;
 import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -93,8 +88,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
 
     private static final long FADE_IN_DURATION = 150;
-    private static final long EDUCATION_TIP_DELAY_MS = 200;
-    private static final long EDUCATION_DIALOG_DELAY_MS = 500;
 
     // The widget recommendation table can easily take over the entire screen on devices with small
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
@@ -117,36 +110,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             new HashMap<>();
     protected int mRecommendationsCurrentPage = 0;
     protected final SparseArray<AdapterHolder> mAdapters = new SparseArray();
-    @Nullable
-    private ArrowTipView mLatestEducationalTip;
-    private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
-            new OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    if (hasSeenEducationTip()) {
-                        removeOnLayoutChangeListener(this);
-                        return;
-                    }
-
-                    // Widgets are loaded asynchronously, We are adding a delay because we only want
-                    // to show the tip when the widget preview has finished loading and rendering in
-                    // this view.
-                    removeCallbacks(mShowEducationTipTask);
-                    postDelayed(mShowEducationTipTask, EDUCATION_TIP_DELAY_MS);
-                }
-            };
-
-    private final Runnable mShowEducationTipTask = () -> {
-        if (hasSeenEducationTip()) {
-            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-            return;
-        }
-        mLatestEducationalTip = showEducationTipOnViewIfPossible(getViewToShowEducationTip());
-        if (mLatestEducationalTip != null) {
-            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-        }
-    };
 
     private final OnAttachStateChangeListener mBindScrollbarInSearchMode =
             new OnAttachStateChangeListener() {
@@ -251,7 +214,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mHeaderTitle = mSearchScrollView.findViewById(R.id.title);
 
         onWidgetsBound();
-        setUpEducationViewsIfNeeded();
     }
 
     protected void setupViews() {
@@ -816,10 +778,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onCloseComplete() {
         super.onCloseComplete();
-        removeCallbacks(mShowEducationTipTask);
-        if (mLatestEducationalTip != null) {
-            mLatestEducationalTip.close(true);
-        }
         AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
 
@@ -957,36 +915,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         return null;
-    }
-
-    /** Shows education dialog for widgets. */
-    private WidgetsEduView showEducationDialog() {
-        LauncherPrefs.get(getContext()).put(WIDGETS_EDUCATION_DIALOG_SEEN, true);
-        return WidgetsEduView.showEducationDialog(mActivityContext);
-    }
-
-    /** Returns {@code true} if education dialog has previously been shown. */
-    protected boolean hasSeenEducationDialog() {
-        return LauncherPrefs.get(getContext()).get(WIDGETS_EDUCATION_DIALOG_SEEN)
-                || Utilities.isRunningInTestHarness();
-    }
-
-    protected void setUpEducationViewsIfNeeded() {
-        if (!hasSeenEducationDialog()) {
-            postDelayed(() -> {
-                WidgetsEduView eduDialog = showEducationDialog();
-                eduDialog.addOnCloseListener(() -> {
-                    if (!hasSeenEducationTip()) {
-                        addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-                        // Call #requestLayout() to trigger layout change listener in order to show
-                        // arrow tip immediately if there is a widget to show it on.
-                        requestLayout();
-                    }
-                });
-            }, EDUCATION_DIALOG_DELAY_MS);
-        } else if (!hasSeenEducationTip()) {
-            addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-        }
     }
 
     protected boolean isTwoPane() {

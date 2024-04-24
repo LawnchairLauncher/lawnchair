@@ -20,15 +20,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.UtilitiesKt.CLIP_CHILDREN_FALSE_MODIFIER
 import com.android.launcher3.UtilitiesKt.CLIP_TO_PADDING_FALSE_MODIFIER
 import com.android.launcher3.UtilitiesKt.modifyAttributesOnViewTree
 import com.android.launcher3.UtilitiesKt.restoreAttributesOnViewTree
-import com.android.launcher3.util.ActivityContextWrapper
-import com.android.launcher3.views.WidgetsEduView
+import com.android.launcher3.tests.R
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -38,17 +37,17 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class UtilitiesKtTest {
 
-    val context: Context = ActivityContextWrapper(ApplicationProvider.getApplicationContext())
+    val context: Context = InstrumentationRegistry.getInstrumentation().context
 
-    private lateinit var rootView: WidgetsEduView
+    private lateinit var rootView: ViewGroup
     private lateinit var midView: ViewGroup
     private lateinit var childView: View
     @Before
     fun setup() {
         rootView =
-            LayoutInflater.from(context).inflate(R.layout.widgets_edu, null) as WidgetsEduView
-        midView = rootView.requireViewById(R.id.edu_view)
-        childView = rootView.requireViewById(R.id.edu_header)
+            LayoutInflater.from(context).inflate(R.layout.utilities_test_view, null) as ViewGroup
+        midView = rootView.requireViewById(R.id.mid_view)
+        childView = rootView.requireViewById(R.id.child_view)
     }
 
     @Test

@@ -139,19 +139,9 @@
          placeholder text is the widget name. [CHAR_LIMIT=none] -->
     <string name="widget_add_button_content_description">Add <xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
 
-    <!-- Title of a dialog. This dialog lets a user know how they can use widgets on their phone.
-         [CHAR_LIMIT=NONE] -->
-    <string name="widget_education_header">Useful info at your fingertips</string>
-    <!-- Dialog text. This dialog lets a user know how they can use widgets on their phone.
-         [CHAR_LIMIT=NONE] -->
-    <string name="widget_education_content">To get info without opening apps, you can add widgets to your home screen</string>
-
     <!-- Text on an educational tip on widget informing users that they can change widget settings.
          [CHAR_LIMIT=NONE] -->
     <string name="reconfigurable_widget_education_tip">Tap to change widget settings</string>
-
-    <!-- Text on the button that closes the education dialog about widgets. [CHAR_LIMIT=50] -->
-    <string name="widget_education_close_button">Got it</string>
 
     <!-- Spoken text for screen readers. This text is for an icon that lets the user change a
          widget's settings. [CHAR_LIMIT=50] -->
