@@ -42,7 +42,7 @@
          views that do not inherint from TaskView only or create a generic TaskView that have
          N number of tasks.
      -->
-    <com.android.quickstep.views.TaskThumbnailView
+    <com.android.quickstep.views.TaskThumbnailViewDeprecated
         android:id="@+id/snapshot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
