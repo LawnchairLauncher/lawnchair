@@ -869,6 +869,8 @@ public class TaskView extends FrameLayout implements Reusable {
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
+                Log.d(TAG, "launchTaskAnimated - startActivityFromRecents: " + Arrays.toString(
+                        getTaskIds()));
                 ActiveGestureLog.INSTANCE.trackEvent(EXPECTING_TASK_APPEARED);
                 RecentsView recentsView = getRecentsView();
                 if (recentsView.getRunningTaskViewId() != -1) {
@@ -894,6 +896,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 return null;
             }
         } else {
+            Log.d(TAG, "launchTaskAnimated - mTask is null");
             return null;
         }
     }
@@ -1035,6 +1038,8 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             });
             anim.start();
+            Log.d(TAG, "launchTasks - composeRecentsLaunchAnimator: " + Arrays.toString(
+                    getTaskIds()));
             recentsView.onTaskLaunchedInLiveTileMode();
             return runnableList;
         } else {
