@@ -167,7 +167,6 @@ public class PrivateProfileManagerTest {
     }
 
     @Test
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/320703862
     public void transitioningToUnlocked_resetCallsPostUnlock() throws Exception {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
@@ -185,7 +184,6 @@ public class PrivateProfileManagerTest {
     }
 
     @Test
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
     public void transitioningToLocked_resetCallsExecuteLock() throws Exception {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
