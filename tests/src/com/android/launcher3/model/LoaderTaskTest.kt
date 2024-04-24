@@ -54,7 +54,7 @@ class LoaderTaskTest {
 
     @get:Rule(order = 0) val staticMockitoRule = StaticMockitoRule(UserCache::class.java)
     @get:Rule(order = 1)
-    val setFlagsRule = SetFlagsRule().apply { initAllFlagsToReleaseConfigDefault() }
+    val setFlagsRule = SetFlagsRule()
 
     @Before
     fun setup() {
