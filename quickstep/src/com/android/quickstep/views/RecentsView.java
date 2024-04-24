@@ -2747,8 +2747,10 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             return Arrays.stream(runningTasks).anyMatch(
                     runningTask -> !taskView.containsTaskId(runningTask.key.id));
         } else {
-            // Ensure the TaskView only contains a single taskId, otherwise add a stub task.
-            return taskView.containsMultipleTasks();
+            // Ensure the TaskView only contains a single taskId, or is a DesktopTask,
+            // otherwise add a stub task.
+            // TODO(b/249371338): Figure out why DesktopTask only have a single runningTask.
+            return taskView.containsMultipleTasks() && !taskView.isDesktopTask();
         }
     }
 
