@@ -121,7 +121,6 @@ public class TaplUninstallRemoveTest extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/326130648
     public void testUninstallFromAllApps() throws Exception {
         installDummyAppAndWaitForUIUpdate();
         try {
