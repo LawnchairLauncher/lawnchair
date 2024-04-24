@@ -94,6 +94,7 @@ import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarManager;
+import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarNavButtonCallbacks;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -470,6 +471,18 @@ public class TouchInteractionService extends Service {
 
     private final ScreenOnTracker.ScreenOnListener mScreenOnListener = this::onScreenOnChanged;
 
+    private final TaskbarNavButtonCallbacks mNavCallbacks = new TaskbarNavButtonCallbacks() {
+        @Override
+        public void onNavigateHome() {
+            mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_HOME);
+        }
+
+        @Override
+        public void onToggleOverview() {
+            mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_TOGGLE);
+        }
+    };
+
     private ActivityManagerWrapper mAM;
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewComponentObserver mOverviewComponentObserver;
@@ -500,7 +513,7 @@ public class TouchInteractionService extends Service {
         mDeviceState = new RecentsAnimationDeviceState(this, true);
         mAllAppsActionManager = new AllAppsActionManager(
                 this, UI_HELPER_EXECUTOR, this::createAllAppsPendingIntent);
-        mTaskbarManager = new TaskbarManager(this, mAllAppsActionManager);
+        mTaskbarManager = new TaskbarManager(this, mAllAppsActionManager, mNavCallbacks);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
 
