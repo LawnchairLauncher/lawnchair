@@ -16,7 +16,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
-import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
+import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.content.ContentValues;
@@ -259,7 +259,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
             }
             case 30: {
                 if (FeatureFlags.QSB_ON_FIRST_SCREEN
-                        && !shouldShowFirstPageWidget()) {
+                        && !SHOULD_SHOW_FIRST_PAGE_WIDGET) {
                     // Clean up first row in screen 0 as it might contain junk data.
                     Log.d(TAG, "Cleaning up first row");
                     db.delete(Favorites.TABLE_NAME,

@@ -17,8 +17,8 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
+import static com.android.launcher3.Flags.enableSmartspaceRemovalToggle;
 import static com.android.launcher3.Flags.enableWorkspaceInflation;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -327,7 +327,7 @@ public class BaseLauncherBinder {
             executeCallbacksTask(c -> {
                 c.clearPendingBinds();
                 c.startBinding();
-                if (ENABLE_SMARTSPACE_REMOVAL.get()) {
+                if (enableSmartspaceRemovalToggle()) {
                     c.setIsFirstPagePinnedItemEnabled(
                             mBgDataModel.isFirstPagePinnedItemEnabled);
                 }

@@ -17,7 +17,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
-import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
+import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -550,7 +550,8 @@ public class LoaderCursor extends CursorWrapper {
         if (!mOccupied.containsKey(item.screenId)) {
             GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
             if (item.screenId == Workspace.FIRST_SCREEN_ID && (FeatureFlags.QSB_ON_FIRST_SCREEN
-                    && !shouldShowFirstPageWidget() && isFirstPagePinnedItemEnabled)) {
+                    && !SHOULD_SHOW_FIRST_PAGE_WIDGET
+                    && isFirstPagePinnedItemEnabled)) {
                 // Mark the first X columns (X is width of the search container) in the first row as
                 // occupied (if the feature is enabled) in order to account for the search
                 // container.

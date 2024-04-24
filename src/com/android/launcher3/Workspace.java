@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
+import static com.android.launcher3.Flags.enableSmartspaceRemovalToggle;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -28,10 +29,9 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
+import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
-import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
@@ -600,7 +600,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void bindAndInitFirstWorkspaceScreen() {
         if ((!FeatureFlags.QSB_ON_FIRST_SCREEN
                 || !mLauncher.getIsFirstPagePinnedItemEnabled())
-                || shouldShowFirstPageWidget()) {
+                || SHOULD_SHOW_FIRST_PAGE_WIDGET) {
             mFirstPagePinnedItem = null;
             return;
         }
@@ -642,7 +642,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWorkspaceScreens.clear();
 
         // Ensure that the first page is always present
-        if (!ENABLE_SMARTSPACE_REMOVAL.get()) {
+        if (!enableSmartspaceRemovalToggle()) {
             bindAndInitFirstWorkspaceScreen();
         }
 
@@ -811,7 +811,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
             // We don't want to remove the first screen even if it's empty because that's where
             // first page pinned item would go if it gets turned back on.
-            if (ENABLE_SMARTSPACE_REMOVAL.get() && screenId == FIRST_SCREEN_ID) {
+            if (enableSmartspaceRemovalToggle() && screenId == FIRST_SCREEN_ID) {
                 continue;
             }
 
@@ -1040,7 +1040,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
             if (((!FeatureFlags.QSB_ON_FIRST_SCREEN
-                    || shouldShowFirstPageWidget())
+                    || SHOULD_SHOW_FIRST_PAGE_WIDGET)
                     || id > FIRST_SCREEN_ID)
                     && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
