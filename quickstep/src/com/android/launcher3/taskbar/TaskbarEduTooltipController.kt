@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -42,8 +43,10 @@ import com.android.launcher3.config.FeatureFlags.enableTaskbarPinning
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_EDU_OPEN
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
-import com.android.launcher3.util.OnboardingPrefs.TASKBAR_CIRCLE_TO_SEARCH_EDU_SEEN
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
+import com.android.launcher3.util.OnboardingPrefs.TASKBAR_SEARCH_EDU_SEEN
+import com.android.launcher3.util.ResourceBasedOverride
+import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.util.LottieAnimationColorUtils
 import java.io.PrintWriter
@@ -72,9 +75,11 @@ private const val TOS_BASE_URL = "https://policies.google.com/terms?hl="
 annotation class TaskbarEduTooltipStep
 
 /** Controls stepping through the Taskbar tooltip EDU. */
-class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
-    LoggableTaskbarController {
+open class TaskbarEduTooltipController(context: Context) :
+    ResourceBasedOverride, LoggableTaskbarController {
 
+    protected val activityContext: TaskbarActivityContext = ActivityContext.lookupContext(context)
+    open val shouldShowSearchEdu = false
     private val isTooltipEnabled: Boolean
         get() = !Utilities.isRunningInTestHarness() && !activityContext.isPhoneMode
     private val isOpen: Boolean
@@ -83,13 +88,13 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         get() = isTooltipEnabled && tooltipStep <= TOOLTIP_STEP_FEATURES
     private lateinit var controllers: TaskbarControllers
 
-    // Keep track of whether the user has seen the Circle to Search Edu
-    private var userHasSeenCircleToSearchEdu: Boolean
+    // Keep track of whether the user has seen the Search Edu
+    private var userHasSeenSearchEdu: Boolean
         get() {
-            return TASKBAR_CIRCLE_TO_SEARCH_EDU_SEEN.get(activityContext)
+            return TASKBAR_SEARCH_EDU_SEEN.get(activityContext)
         }
         private set(seen) {
-            LauncherPrefs.get(activityContext).put(TASKBAR_CIRCLE_TO_SEARCH_EDU_SEEN, seen)
+            LauncherPrefs.get(activityContext).put(TASKBAR_SEARCH_EDU_SEEN, seen)
         }
 
     @TaskbarEduTooltipStep
@@ -105,8 +110,8 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
 
     fun init(controllers: TaskbarControllers) {
         this.controllers = controllers
-        // We want to show the Circle To Search Edu right after pinning, so we post it here
-        activityContext.dragLayer.post { maybeShowCircleToSearchEdu() }
+        // We want to show the Search Edu right after pinning the taskbar, so we post it here
+        activityContext.dragLayer.post { maybeShowSearchEdu() }
     }
 
     /** Shows swipe EDU tooltip if it is the current [tooltipStep]. */
@@ -136,7 +141,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     fun maybeShowFeaturesEdu() {
         if (!isTooltipEnabled || tooltipStep > TOOLTIP_STEP_FEATURES) {
             maybeShowPinningEdu()
-            maybeShowCircleToSearchEdu()
+            maybeShowSearchEdu()
             return
         }
 
@@ -233,26 +238,26 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     }
 
     /**
-     * Shows standalone Circle To Search EDU tooltip if this EDU has not been seen.
+     * Shows standalone Search EDU tooltip if this EDU has not been seen.
      *
-     * We show this standalone edu for users to learn to how to trigger Circle To Search from the
-     * pinned taskbar
+     * We show this standalone edu for users to learn to how to trigger Search from the pinned
+     * taskbar
      */
-    fun maybeShowCircleToSearchEdu() {
+    fun maybeShowSearchEdu() {
         if (
             !enableTaskbarPinning() ||
                 !DisplayController.isPinnedTaskbar(activityContext) ||
                 !isTooltipEnabled ||
-                userHasSeenCircleToSearchEdu
+                !shouldShowSearchEdu ||
+                userHasSeenSearchEdu
         ) {
             return
         }
-        userHasSeenCircleToSearchEdu = true
-        inflateTooltip(R.layout.taskbar_edu_circle_to_search)
+        userHasSeenSearchEdu = true
+        inflateTooltip(R.layout.taskbar_edu_search)
         tooltip?.run {
-            requireViewById<LottieAnimationView>(R.id.circle_to_search_animation)
-                .supportLightTheme()
-            val eduSubtitle: TextView = requireViewById(R.id.circle_to_search_text)
+            requireViewById<LottieAnimationView>(R.id.search_edu_animation).supportLightTheme()
+            val eduSubtitle: TextView = requireViewById(R.id.search_edu_text)
             showDisclosureText(eduSubtitle)
             updateLayoutParams<BaseDragLayer.LayoutParams> {
                 if (DisplayController.isTransientTaskbar(activityContext)) {
@@ -285,7 +290,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
      */
     private fun TaskbarEduTooltip.showDisclosureText(
         textView: TextView,
-        stringId: Int = R.string.taskbar_edu_circle_to_search_disclosure,
+        stringId: Int = R.string.taskbar_edu_search_disclosure,
     ) {
         val locale = resources.configuration.locales[0]
         val text =
@@ -394,6 +399,17 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         pw?.println("$prefix\tisTooltipEnabled=$isTooltipEnabled")
         pw?.println("$prefix\tisOpen=$isOpen")
         pw?.println("$prefix\ttooltipStep=$tooltipStep")
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(context: Context): TaskbarEduTooltipController {
+            return ResourceBasedOverride.Overrides.getObject(
+                TaskbarEduTooltipController::class.java,
+                context,
+                R.string.taskbar_edu_tooltip_controller_class
+            )
+        }
     }
 }
 
