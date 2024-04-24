@@ -275,10 +275,10 @@
     <string name="taskbar_edu_pinning_title">Always show the Taskbar</string>
     <!-- Text in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 150] -->
     <string name="taskbar_edu_pinning_standalone">To always show the Taskbar on the bottom of your screen, touch &amp; hold the divider</string>
-    <!-- Title in dialog that shows a user how to invoke the Circle to Search feature. [CHAR_LIMIT 150] -->
-    <string name="taskbar_edu_circle_to_search_title">Touch &amp; hold the action key to search what\'s on your screen</string>
+    <!-- Title in dialog that shows a user how to invoke the Search feature. [CHAR_LIMIT 150] -->
+    <string name="taskbar_search_edu_title">Touch &amp; hold the action key to search what\'s on your screen</string>
     <!-- Message showed to user to disclose privacy information they need to accept in order to access the app. [CHAR LIMIT=200]-->
-    <string name="taskbar_edu_circle_to_search_disclosure">This product uses the selected part of your screen to search. Google\'s <xliff:g example="https://policies.google.com/privacy/embedded" id="begin_privacy_link">&lt;a href=\"%1$s\"&gt;</xliff:g>Privacy Policy<xliff:g id="end_privacy_link">&lt;/a&gt;</xliff:g> and <xliff:g example="https://policies.google.com/terms" id="begin_tos_link">&lt;a href=\"%2$s\"&gt;</xliff:g>Terms of Service<xliff:g id="end_tos_link">&lt;/a&gt;</xliff:g> apply.</string>
+    <string name="taskbar_edu_search_disclosure">This product uses the selected part of your screen to search. Google\'s <xliff:g example="https://policies.google.com/privacy/embedded" id="begin_privacy_link">&lt;a href=\"%1$s\"&gt;</xliff:g>Privacy Policy<xliff:g id="end_privacy_link">&lt;/a&gt;</xliff:g> and <xliff:g example="https://policies.google.com/terms" id="begin_tos_link">&lt;a href=\"%2$s\"&gt;</xliff:g>Terms of Service<xliff:g id="end_tos_link">&lt;/a&gt;</xliff:g> apply.</string>
     <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_close">Close</string>
     <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->

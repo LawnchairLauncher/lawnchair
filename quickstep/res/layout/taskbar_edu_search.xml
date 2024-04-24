@@ -23,35 +23,35 @@
         style="@style/TextAppearance.TaskbarEduTooltip.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/taskbar_edu_circle_to_search_title"
+        android:text="@string/taskbar_search_edu_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/circle_to_search_animation" />
+        app:layout_constraintBottom_toTopOf="@+id/search_edu_animation" />
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/circle_to_search_animation"
+        android:id="@+id/search_edu_animation"
         android:layout_width="@dimen/taskbar_edu_swipe_lottie_width"
         android:layout_height="@dimen/taskbar_edu_swipe_lottie_height"
         android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
-        app:layout_constraintBottom_toTopOf="@id/circle_to_search_text"
+        app:layout_constraintBottom_toTopOf="@id/search_edu_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
-        app:lottie_rawRes="@raw/taskbar_edu_circle_to_search"
+        app:lottie_rawRes="@raw/taskbar_edu_search"
         app:lottie_autoPlay="true"
         app:lottie_loop="true" />
 
     <TextView
-        android:id="@+id/circle_to_search_text"
+        android:id="@+id/search_edu_text"
         style="@style/TextAppearance.TaskbarEduTooltip.Subtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/taskbar_edu_circle_to_search_subtitle_text_size"
+        android:textSize="@dimen/taskbar_edu_search_subtitle_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/circle_to_search_animation"
+        app:layout_constraintTop_toBottomOf="@id/search_edu_animation"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

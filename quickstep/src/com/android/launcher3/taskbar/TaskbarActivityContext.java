@@ -306,7 +306,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarTranslationController(this),
                 new TaskbarSpringOnStashController(this),
                 createTaskbarRecentAppsController(isPcMode),
-                new TaskbarEduTooltipController(this),
+                TaskbarEduTooltipController.newInstance(this),
                 new KeyboardQuickSwitchController(),
                 new TaskbarPinningController(this),
                 bubbleControllersOptional);

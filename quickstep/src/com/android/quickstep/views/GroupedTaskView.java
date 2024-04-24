@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosi
 
 import kotlin.Unit;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
@@ -58,9 +60,11 @@ import java.util.function.Consumer;
  */
 public class GroupedTaskView extends TaskView {
 
+    private static final String TAG = TaskView.class.getSimpleName();
     @Nullable
     private Task mSecondaryTask;
-    private TaskThumbnailView mSnapshotView2;
+    // TODO(b/336612373): Support new TTV for GroupedTaskView
+    private TaskThumbnailViewDeprecated mSnapshotView2;
     private TaskViewIcon mIconView2;
     @Nullable
     private CancellableTask<ThumbnailData> mThumbnailLoadRequest2;
@@ -68,7 +72,8 @@ public class GroupedTaskView extends TaskView {
     private CancellableTask mIconLoadRequest2;
     private final float[] mIcon2CenterCoords = new float[2];
     private TransformingTouchDelegate mIcon2TouchDelegate;
-    @Nullable private SplitBounds mSplitBoundsConfig;
+    @Nullable
+    private SplitBounds mSplitBoundsConfig;
     private final DigitalWellBeingToast mDigitalWellBeingToast2;
 
     public GroupedTaskView(Context context) {
@@ -91,13 +96,17 @@ public class GroupedTaskView extends TaskView {
             return Unit.INSTANCE;
         }
         bounds.set(
-                Math.min(mSnapshotView.getLeft() + Math.round(mSnapshotView.getTranslationX()),
+                Math.min(mTaskThumbnailViewDeprecated.getLeft() + Math.round(
+                                mTaskThumbnailViewDeprecated.getTranslationX()),
                         mSnapshotView2.getLeft() + Math.round(mSnapshotView2.getTranslationX())),
-                Math.min(mSnapshotView.getTop() + Math.round(mSnapshotView.getTranslationY()),
+                Math.min(mTaskThumbnailViewDeprecated.getTop() + Math.round(
+                                mTaskThumbnailViewDeprecated.getTranslationY()),
                         mSnapshotView2.getTop() + Math.round(mSnapshotView2.getTranslationY())),
-                Math.max(mSnapshotView.getRight() + Math.round(mSnapshotView.getTranslationX()),
+                Math.max(mTaskThumbnailViewDeprecated.getRight() + Math.round(
+                                mTaskThumbnailViewDeprecated.getTranslationX()),
                         mSnapshotView2.getRight() + Math.round(mSnapshotView2.getTranslationX())),
-                Math.max(mSnapshotView.getBottom() + Math.round(mSnapshotView.getTranslationY()),
+                Math.max(mTaskThumbnailViewDeprecated.getBottom() + Math.round(
+                                mTaskThumbnailViewDeprecated.getTranslationY()),
                         mSnapshotView2.getBottom() + Math.round(mSnapshotView2.getTranslationY())));
         return Unit.INSTANCE;
     }
@@ -130,7 +139,7 @@ public class GroupedTaskView extends TaskView {
         if (mSplitBoundsConfig == null) {
             return;
         }
-        mSnapshotView.getPreviewPositionHelper().setSplitBounds(
+        mTaskThumbnailViewDeprecated.getPreviewPositionHelper().setSplitBounds(
                 convertLauncherSplitBoundsToShell(splitBoundsConfig),
                 PreviewPositionHelper.STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.getPreviewPositionHelper().setSplitBounds(
@@ -258,7 +267,6 @@ public class GroupedTaskView extends TaskView {
             InteractionJankMonitorWrapper.end(Cuj.CUJ_SPLIT_SCREEN_ENTER);
         }, false /* freezeTaskList */, true /*launchingExistingTaskview*/);
 
-
         // Callbacks get run from recentsView for case when recents animation already running
         recentsView.addSideTaskLaunchCallback(endCallback);
         return endCallback;
@@ -281,6 +289,8 @@ public class GroupedTaskView extends TaskView {
                 launchingExistingTaskView ? this : null, mTask.key.id,
                 mSecondaryTask.key.id, SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
                 callback, isQuickswitch, getSnapPosition());
+        Log.d(TAG, "launchTaskInternal - launchExistingSplitPair: " + Arrays.toString(
+                getTaskIds()));
     }
 
     @Override
@@ -304,8 +314,8 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    public TaskThumbnailView[] getThumbnails() {
-        return new TaskThumbnailView[]{mSnapshotView, mSnapshotView2};
+    public TaskThumbnailViewDeprecated[] getThumbnails() {
+        return new TaskThumbnailViewDeprecated[]{mTaskThumbnailViewDeprecated, mSnapshotView2};
     }
 
     @Override
@@ -349,20 +359,24 @@ public class GroupedTaskView extends TaskView {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(widthSize, heightSize);
-        if (mSplitBoundsConfig == null || mSnapshotView == null || mSnapshotView2 == null) {
+        if (mSplitBoundsConfig == null || mTaskThumbnailViewDeprecated == null
+                || mSnapshotView2 == null) {
             return;
         }
         int initSplitTaskId = getThisTaskCurrentlyInSplitSelection();
         if (initSplitTaskId == INVALID_TASK_ID) {
-            getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(mSnapshotView,
+            getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(
+                    mTaskThumbnailViewDeprecated,
                     mSnapshotView2, widthSize, heightSize, mSplitBoundsConfig,
                     mContainer.getDeviceProfile(), getLayoutDirection() == LAYOUT_DIRECTION_RTL);
             // Should we be having a separate translation step apart from the measuring above?
             // The following only applies to large screen for now, but for future reference
             // we'd want to abstract this out in PagedViewHandlers to get the primary/secondary
             // translation directions
-            mSnapshotView.applySplitSelectTranslateX(mSnapshotView.getTranslationX());
-            mSnapshotView.applySplitSelectTranslateY(mSnapshotView.getTranslationY());
+            mTaskThumbnailViewDeprecated.applySplitSelectTranslateX(
+                    mTaskThumbnailViewDeprecated.getTranslationX());
+            mTaskThumbnailViewDeprecated.applySplitSelectTranslateY(
+                    mTaskThumbnailViewDeprecated.getTranslationY());
             mSnapshotView2.applySplitSelectTranslateX(mSnapshotView2.getTranslationX());
             mSnapshotView2.applySplitSelectTranslateY(mSnapshotView2.getTranslationY());
         } else {
@@ -446,8 +460,9 @@ public class GroupedTaskView extends TaskView {
                     mSplitBoundsConfig);
         } else {
             getPagedOrientationHandler().setSplitIconParams(mIconView.asView(), mIconView2.asView(),
-                    taskIconHeight, mSnapshotView.getMeasuredWidth(),
-                    mSnapshotView.getMeasuredHeight(), getMeasuredHeight(), getMeasuredWidth(),
+                    taskIconHeight, mTaskThumbnailViewDeprecated.getMeasuredWidth(),
+                    mTaskThumbnailViewDeprecated.getMeasuredHeight(), getMeasuredHeight(),
+                    getMeasuredWidth(),
                     isRtl, deviceProfile, mSplitBoundsConfig);
         }
     }
@@ -510,12 +525,12 @@ public class GroupedTaskView extends TaskView {
     @Override
     void setThumbnailVisibility(int visibility, int taskId) {
         if (visibility == VISIBLE) {
-            mSnapshotView.setVisibility(visibility);
+            mTaskThumbnailViewDeprecated.setVisibility(visibility);
             mDigitalWellBeingToast.setBannerVisibility(visibility);
             mSnapshotView2.setVisibility(visibility);
             mDigitalWellBeingToast2.setBannerVisibility(visibility);
         } else if (taskId == getTaskIds()[0]) {
-            mSnapshotView.setVisibility(visibility);
+            mTaskThumbnailViewDeprecated.setVisibility(visibility);
             mDigitalWellBeingToast.setBannerVisibility(visibility);
         } else {
             mSnapshotView2.setVisibility(visibility);

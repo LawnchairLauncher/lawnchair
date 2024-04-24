@@ -231,6 +231,13 @@ flag {
 }
 
 flag {
+    name: "enable_refactor_task_thumbnail"
+    namespace: "launcher"
+    description: "Enables rewritten version of TaskThumbnailViews in Overview"
+    bug: "331753115"
+}
+
+flag {
   name: "enable_handle_delayed_gesture_callbacks"
   namespace: "launcher"
   description: "Enables additional handling for delayed mid-gesture callbacks"

@@ -56,7 +56,7 @@ import com.android.launcher3.views.ArrowTipView;
 import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.GoOverviewActionsView;
-import com.android.quickstep.views.TaskThumbnailView;
+import com.android.quickstep.views.TaskThumbnailViewDeprecated;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -101,7 +101,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     /**
      * Create a new overlay instance for the given View
      */
-    public TaskOverlayGo createOverlay(TaskThumbnailView thumbnailView) {
+    public TaskOverlayGo createOverlay(TaskThumbnailViewDeprecated thumbnailView) {
         return new TaskOverlayGo(thumbnailView, mContentRequester);
     }
 
@@ -120,7 +120,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private OverlayDialogGo mDialog;
         private ArrowTipView mArrowTipView;
 
-        private TaskOverlayGo(TaskThumbnailView taskThumbnailView,
+        private TaskOverlayGo(TaskThumbnailViewDeprecated taskThumbnailView,
                 AssistContentRequester assistContentRequester) {
             super(taskThumbnailView);
             mFactoryContentRequester = assistContentRequester;

@@ -65,7 +65,7 @@ import com.android.quickstep.views.IconAppChipView
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.RecentsViewContainer
 import com.android.quickstep.views.SplitInstructionsView
-import com.android.quickstep.views.TaskThumbnailView
+import com.android.quickstep.views.TaskThumbnailViewDeprecated
 import com.android.quickstep.views.TaskView
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
 import com.android.quickstep.views.TaskViewIcon
@@ -160,9 +160,9 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     /**
      * When selecting first app from split pair, second app's thumbnail remains. This animates the
      * second thumbnail by expanding it to take up the full taskViewWidth/Height and overlaying it
-     * with [TaskThumbnailView]'s splashView. Adds animations to the provided builder. Note: The app
-     * that **was not** selected as the first split app should be the container that's passed
-     * through.
+     * with [TaskThumbnailViewDeprecated]'s splashView. Adds animations to the provided builder.
+     * Note: The app that **was not** selected as the first split app should be the container that's
+     * passed through.
      *
      * @param builder Adds animation to this
      * @param taskIdAttributeContainer container of the app that **was not** selected
@@ -179,7 +179,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     ) {
         val thumbnail = taskIdAttributeContainer.thumbnailView
         val iconView: View = taskIdAttributeContainer.iconView.asView()
-        builder.add(ObjectAnimator.ofFloat(thumbnail, TaskThumbnailView.SPLASH_ALPHA, 1f))
+        builder.add(ObjectAnimator.ofFloat(thumbnail, TaskThumbnailViewDeprecated.SPLASH_ALPHA, 1f))
         thumbnail.setShowSplashForSplitSelection(true)
         // With the new `IconAppChipView`, we always want to keep the chip pinned to the
         // top left of the task / thumbnail.
@@ -202,7 +202,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             builder.add(
                 ObjectAnimator.ofFloat(
                     thumbnail,
-                    TaskThumbnailView.SPLIT_SELECT_TRANSLATE_X,
+                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_X,
                     centerThumbnailTranslationX
                 )
             )
@@ -224,7 +224,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             builder.add(
                 ObjectAnimator.ofFloat(
                     thumbnail,
-                    TaskThumbnailView.SPLIT_SELECT_TRANSLATE_Y,
+                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_Y,
                     translateYResetVal
                 )
             )
@@ -252,7 +252,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             builder.add(
                 ObjectAnimator.ofFloat(
                     thumbnail,
-                    TaskThumbnailView.SPLIT_SELECT_TRANSLATE_Y,
+                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_Y,
                     centerThumbnailTranslationY
                 )
             )
@@ -266,7 +266,11 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             // Reset other dimensions
             thumbnail.scaleX = 1f
             builder.add(
-                ObjectAnimator.ofFloat(thumbnail, TaskThumbnailView.SPLIT_SELECT_TRANSLATE_X, 0f)
+                ObjectAnimator.ofFloat(
+                    thumbnail,
+                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_X,
+                    0f
+                )
             )
         }
     }
@@ -276,43 +280,59 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      * [pendingAnimation]. Assumes that animation will be the final split placeholder launch anim.
      *
      * [secondPlaceholderEndingBounds] refers to the second placeholder view that gets added on
-     * screen, not the logical second app.
-     * For landscape it's the left app and for portrait the top one.
+     * screen, not the logical second app. For landscape it's the left app and for portrait the top
+     * one.
      */
-    fun addDividerPlaceholderViewToAnim(pendingAnimation: PendingAnimation,
-                                        container: RecentsViewContainer,
-                                        secondPlaceholderEndingBounds: Rect,
-                                        context: Context) : View {
+    fun addDividerPlaceholderViewToAnim(
+        pendingAnimation: PendingAnimation,
+        container: RecentsViewContainer,
+        secondPlaceholderEndingBounds: Rect,
+        context: Context
+    ): View {
         val mSplitDividerPlaceholderView = View(context)
         val recentsView = container.getOverviewPanel<RecentsView<*, *>>()
-        val dp : com.android.launcher3.DeviceProfile = container.getDeviceProfile()
+        val dp: com.android.launcher3.DeviceProfile = container.getDeviceProfile()
         // Add it before/under the most recently added first floating taskView
-        val firstAddedSplitViewIndex: Int = container.getDragLayer().indexOfChild(
-                recentsView.splitSelectController.firstFloatingTaskView)
+        val firstAddedSplitViewIndex: Int =
+            container
+                .getDragLayer()
+                .indexOfChild(recentsView.splitSelectController.firstFloatingTaskView)
         container.getDragLayer().addView(mSplitDividerPlaceholderView, firstAddedSplitViewIndex)
         val lp = mSplitDividerPlaceholderView.layoutParams as InsettableFrameLayout.LayoutParams
         lp.topMargin = 0
 
         if (dp.isLeftRightSplit) {
             lp.height = secondPlaceholderEndingBounds.height()
-            lp.width = container.asContext().resources.
-                getDimensionPixelSize(R.dimen.split_divider_handle_region_height)
-            mSplitDividerPlaceholderView.translationX = secondPlaceholderEndingBounds.right - lp.width / 2f
+            lp.width =
+                container
+                    .asContext()
+                    .resources
+                    .getDimensionPixelSize(R.dimen.split_divider_handle_region_height)
+            mSplitDividerPlaceholderView.translationX =
+                secondPlaceholderEndingBounds.right - lp.width / 2f
             mSplitDividerPlaceholderView.translationY = 0f
         } else {
-            lp.height = container.asContext().resources
+            lp.height =
+                container
+                    .asContext()
+                    .resources
                     .getDimensionPixelSize(R.dimen.split_divider_handle_region_height)
             lp.width = secondPlaceholderEndingBounds.width()
-            mSplitDividerPlaceholderView.translationY = secondPlaceholderEndingBounds.top - lp.height / 2f
+            mSplitDividerPlaceholderView.translationY =
+                secondPlaceholderEndingBounds.top - lp.height / 2f
             mSplitDividerPlaceholderView.translationX = 0f
         }
 
         mSplitDividerPlaceholderView.alpha = 0f
-        mSplitDividerPlaceholderView.setBackgroundColor(container.asContext().resources
-                .getColor(R.color.taskbar_background_dark))
+        mSplitDividerPlaceholderView.setBackgroundColor(
+            container.asContext().resources.getColor(R.color.taskbar_background_dark)
+        )
         val timings = AnimUtils.getDeviceSplitToConfirmTimings(dp.isTablet)
-        pendingAnimation.setViewAlpha(mSplitDividerPlaceholderView, 1f,
-                Interpolators.clampToProgress(timings.stagedRectScaleXInterpolator, 0.4f, 1f))
+        pendingAnimation.setViewAlpha(
+            mSplitDividerPlaceholderView,
+            1f,
+            Interpolators.clampToProgress(timings.stagedRectScaleXInterpolator, 0.4f, 1f)
+        )
         return mSplitDividerPlaceholderView
     }
 
