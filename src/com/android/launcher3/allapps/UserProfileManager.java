@@ -52,11 +52,11 @@ public abstract class UserProfileManager {
     @Retention(RetentionPolicy.SOURCE)
     public @interface UserProfileState { }
 
+    protected final StatsLogManager mStatsLogManager;
     @UserProfileState
     private int mCurrentState;
 
     private final UserManager mUserManager;
-    private final StatsLogManager mStatsLogManager;
     private final UserCache mUserCache;
 
     protected UserProfileManager(UserManager userManager,

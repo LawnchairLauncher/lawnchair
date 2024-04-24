@@ -28,8 +28,12 @@ import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_BEGIN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_END;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_BEGIN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
@@ -629,6 +633,11 @@ public class PrivateProfileManager extends UserProfileManager {
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                mStatsLogManager.logger().sendToInteractionJankMonitor(
+                        expand
+                                ? LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_BEGIN
+                                : LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_BEGIN,
+                        mAllApps.getActiveRecyclerView());
                 // Animate the collapsing of the text at the same time while updating lock button.
                 lockButton.findViewById(R.id.lock_text).setVisibility(expand ? VISIBLE : GONE);
                 setAnimationRunning(true);
@@ -637,6 +646,11 @@ public class PrivateProfileManager extends UserProfileManager {
         animatorSet.addListener(forEndCallback(() -> {
             setAnimationRunning(false);
             getMainRecyclerView().setChildAttachedConsumer(child -> child.setAlpha(1));
+            mStatsLogManager.logger().sendToInteractionJankMonitor(
+                    expand
+                            ? LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END
+                            : LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_END,
+                    mAllApps.getActiveRecyclerView());
             if (!expand) {
                 // Call onAppsUpdated() because it may be canceled when this animation occurs.
                 mAllApps.getPersonalAppList().onAppsUpdated();
