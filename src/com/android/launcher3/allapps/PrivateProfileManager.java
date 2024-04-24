@@ -112,6 +112,8 @@ public class PrivateProfileManager extends UserProfileManager {
     private Runnable mOnPSHeaderAdded;
     @Nullable
     private RelativeLayout mPSHeader;
+    private final String mLockedStateContentDesc;
+    private final String mUnLockedStateContentDesc;
 
     public PrivateProfileManager(UserManager userManager,
             ActivityAllAppsContainerView<?> allApps,
@@ -125,6 +127,10 @@ public class PrivateProfileManager extends UserProfileManager {
         UI_HELPER_EXECUTOR.post(() -> initializeInBackgroundThread(appContext));
         mPsHeaderHeight = mAllApps.getContext().getResources().getDimensionPixelSize(
                 R.dimen.ps_header_height);
+        mLockedStateContentDesc = mAllApps.getContext()
+                .getString(R.string.ps_container_lock_button_content_description);
+        mUnLockedStateContentDesc = mAllApps.getContext()
+                .getString(R.string.ps_container_unlock_button_content_description);
     }
 
     /** Adds Private Space Header to the layout. */
@@ -398,11 +404,13 @@ public class PrivateProfileManager extends UserProfileManager {
                 lockText.setVisibility(VISIBLE);
                 lockButton.setVisibility(VISIBLE);
                 lockButton.setOnClickListener(view -> lockingAction(/* lock */ true));
+                lockButton.setContentDescription(mUnLockedStateContentDesc);
             }
             case STATE_DISABLED -> {
                 lockText.setVisibility(GONE);
                 lockButton.setVisibility(VISIBLE);
                 lockButton.setOnClickListener(view -> lockingAction(/* lock */ false));
+                lockButton.setContentDescription(mLockedStateContentDesc);
             }
             default -> lockButton.setVisibility(GONE);
         }
@@ -412,9 +420,14 @@ public class PrivateProfileManager extends UserProfileManager {
         if (getCurrentState() == STATE_DISABLED) {
             header.setOnClickListener(view -> lockingAction(/* lock */ false));
             header.setClickable(true);
+            // Add header as accessibility target when disabled.
+            header.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+            header.setContentDescription(mLockedStateContentDesc);
         } else {
             header.setOnClickListener(null);
             header.setClickable(false);
+            // Remove header from accessibility target when enabled.
+            header.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         }
     }
 
