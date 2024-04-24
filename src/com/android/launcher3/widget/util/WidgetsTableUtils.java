@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 /** An utility class which groups {@link WidgetItem}s into a table. */
 public final class WidgetsTableUtils {
+    private static final int MAX_ITEMS_IN_ROW = 3;
 
     /**
      * Groups widgets in the following order:
@@ -125,7 +126,8 @@ public final class WidgetsTableUtils {
                 widgetItemsAtRow.add(widgetItem);
                 containerSizeForRow = containerSize;
                 currentRowWidth = containerWidth;
-            } else if ((currentRowWidth + containerWidth) <= rowPx
+            } else if (widgetItemsAtRow.size() < MAX_ITEMS_IN_ROW
+                    && (currentRowWidth + containerWidth) <= rowPx
                     && widgetItem.hasSameType(widgetItemsAtRow.get(numOfWidgetItems - 1))
                     && containerSize.equals(containerSizeForRow)) {
                 // Group items in the same row if
