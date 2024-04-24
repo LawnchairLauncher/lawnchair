@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosi
 
 import kotlin.Unit;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
@@ -58,6 +60,7 @@ import java.util.function.Consumer;
  */
 public class GroupedTaskView extends TaskView {
 
+    private static final String TAG = TaskView.class.getSimpleName();
     @Nullable
     private Task mSecondaryTask;
     private TaskThumbnailView mSnapshotView2;
@@ -258,7 +261,6 @@ public class GroupedTaskView extends TaskView {
             InteractionJankMonitorWrapper.end(Cuj.CUJ_SPLIT_SCREEN_ENTER);
         }, false /* freezeTaskList */, true /*launchingExistingTaskview*/);
 
-
         // Callbacks get run from recentsView for case when recents animation already running
         recentsView.addSideTaskLaunchCallback(endCallback);
         return endCallback;
@@ -281,6 +283,8 @@ public class GroupedTaskView extends TaskView {
                 launchingExistingTaskView ? this : null, mTask.key.id,
                 mSecondaryTask.key.id, SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
                 callback, isQuickswitch, getSnapPosition());
+        Log.d(TAG, "launchTaskInternal - launchExistingSplitPair: " + Arrays.toString(
+                getTaskIds()));
     }
 
     @Override

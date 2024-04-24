@@ -116,6 +116,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import kotlin.Unit;
+
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -123,8 +125,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -868,6 +868,8 @@ public class TaskView extends FrameLayout implements Reusable {
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
+                Log.d(TAG, "launchTaskAnimated - startActivityFromRecents: " + Arrays.toString(
+                        getTaskIds()));
                 ActiveGestureLog.INSTANCE.trackEvent(EXPECTING_TASK_APPEARED);
                 RecentsView recentsView = getRecentsView();
                 if (recentsView.getRunningTaskViewId() != -1) {
@@ -893,6 +895,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 return null;
             }
         } else {
+            Log.d(TAG, "launchTaskAnimated - mTask is null");
             return null;
         }
     }
@@ -1038,6 +1041,8 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             });
             anim.start();
+            Log.d(TAG, "launchTasks - composeRecentsLaunchAnimator: " + Arrays.toString(
+                    getTaskIds()));
             recentsView.onTaskLaunchedInLiveTileMode();
             return runnableList;
         } else {
