@@ -40,8 +40,8 @@ class FloatingAppPairView @JvmOverloads constructor(context: Context, attrs: Att
         fun getFloatingAppPairView(
             launcher: StatefulActivity<*>,
             originalView: View,
-            appIcon1: Drawable,
-            appIcon2: Drawable,
+            appIcon1: Drawable?,
+            appIcon2: Drawable?,
             dividerPos: Int
         ): FloatingAppPairView {
             val dragLayer: ViewGroup = launcher.getDragLayer()
@@ -64,8 +64,8 @@ class FloatingAppPairView @JvmOverloads constructor(context: Context, attrs: Att
     fun init(
         launcher: StatefulActivity<*>,
         originalView: View,
-        appIcon1: Drawable,
-        appIcon2: Drawable,
+        appIcon1: Drawable?,
+        appIcon2: Drawable?,
         dividerPos: Int
     ) {
         val viewBounds = Rect(0, 0, originalView.width, originalView.height)
@@ -92,7 +92,14 @@ class FloatingAppPairView @JvmOverloads constructor(context: Context, attrs: Att
         layoutParams = lp
 
         // Prepare to draw app pair icon background
-        background = FloatingAppPairBackground(context, this, appIcon1, appIcon2, dividerPos)
+        background = if (appIcon1 == null || appIcon2 == null) {
+            val iconToAnimate = appIcon1 ?: appIcon2
+            checkNotNull(iconToAnimate)
+            FloatingFullscreenAppPairBackground(context, this, iconToAnimate,
+                    dividerPos)
+        } else {
+            FloatingAppPairBackground(context, this, appIcon1, appIcon2, dividerPos)
+        }
         background.setBounds(0, 0, lp.width, lp.height)
     }
 
