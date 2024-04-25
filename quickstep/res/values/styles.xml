@@ -169,17 +169,17 @@
 
     <style name="TextAppearance.GestureTutorial.MainTitle.Home"
         parent="TextAppearance.GestureTutorial.MainTitle">
-        <item name="android:textColor">?attr/onSurfaceHome</item>
+        <item name="android:textColor">?attr/secondaryHome</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.MainTitle.Back"
         parent="TextAppearance.GestureTutorial.MainTitle">
-        <item name="android:textColor">?attr/onSurfaceBack</item>
+        <item name="android:textColor">?attr/secondaryBack</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.MainTitle.Overview"
         parent="TextAppearance.GestureTutorial.MainTitle">
-        <item name="android:textColor">?attr/onSurfaceOverview</item>
+        <item name="android:textColor">?attr/secondaryOverview</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.MainTitle.Success.Home"
