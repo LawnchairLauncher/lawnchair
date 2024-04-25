@@ -75,4 +75,6 @@ object OnboardingPrefs {
 
     @JvmField
     val HOTSEAT_LONGPRESS_TIP_SEEN = backedUpItem("launcher.hotseat_longpress_tip_seen", false)
+
+    @JvmField val TASKBAR_SEARCH_EDU_SEEN = backedUpItem("launcher.taskbar_search_edu_seen", false)
 }
