@@ -485,7 +485,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         super.onVisibilityAggregated(isVisible);
     }
 
-    protected boolean isPageInTransition() {
+    /**
+     * Returns true if the page is in the middle of transition to another page
+     */
+    public boolean isPageInTransition() {
         return mIsPageInTransition;
     }
 
