@@ -220,6 +220,11 @@ public class LauncherBackAnimationController {
                 }
             });
         }
+
+        @Override
+        public void setTriggerBack(boolean triggerBack) {
+            // TODO(b/261654570): track touch from the Launcher process.
+        }
     }
 
     private static class RemoteAnimationRunnerStub extends IRemoteAnimationRunner.Stub {
