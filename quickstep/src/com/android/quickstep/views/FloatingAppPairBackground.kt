@@ -36,17 +36,18 @@ import com.android.systemui.shared.system.QuickStepContract
  * animation. Consists of a rectangular background that splits into two, and two app icons that
  * increase in size during the animation.
  */
-class FloatingAppPairBackground(
-    context: Context,
-    private val floatingView: FloatingAppPairView, // the view that we will draw this background on
-    private val appIcon1: Drawable,
-    private val appIcon2: Drawable,
-    dividerPos: Int
+open class FloatingAppPairBackground(
+        context: Context,
+        // the view that we will draw this background on
+        protected val floatingView: FloatingAppPairView,
+        private val appIcon1: Drawable,
+        private val appIcon2: Drawable?,
+        dividerPos: Int
 ) : Drawable() {
     companion object {
         // Design specs -- app icons start small and expand during the animation
-        private val STARTING_ICON_SIZE_PX = Utilities.dpToPx(22f)
-        private val ENDING_ICON_SIZE_PX = Utilities.dpToPx(66f)
+        internal val STARTING_ICON_SIZE_PX = Utilities.dpToPx(22f)
+        internal val ENDING_ICON_SIZE_PX = Utilities.dpToPx(66f)
 
         // Null values to use with drawDoubleRoundRect(), since there doesn't seem to be any other
         // API for drawing rectangles with 4 different corner radii.
@@ -58,13 +59,13 @@ class FloatingAppPairBackground(
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     // Animation interpolators
-    private val expandXInterpolator: Interpolator
-    private val expandYInterpolator: Interpolator
+    protected val expandXInterpolator: Interpolator
+    protected val expandYInterpolator: Interpolator
     private val cellSplitInterpolator: Interpolator
-    private val iconFadeInterpolator: Interpolator
+    protected val iconFadeInterpolator: Interpolator
 
     // Device-specific measurements
-    private val deviceCornerRadius: Float
+    protected val deviceCornerRadius: Float
     private val deviceHalfDividerSize: Float
     private val desiredSplitRatio: Float
 
@@ -214,7 +215,7 @@ class FloatingAppPairBackground(
         canvas.save()
         canvas.translate(changingIcon2Left, changingIconTop)
         canvas.scale(changingIconScaleX, changingIconScaleY)
-        appIcon2.alpha = changingIconAlpha
+        appIcon2!!.alpha = changingIconAlpha
         appIcon2.draw(canvas)
         canvas.restore()
     }
@@ -312,7 +313,7 @@ class FloatingAppPairBackground(
         canvas.save()
         canvas.translate(changingIconLeft, changingIcon2Top)
         canvas.scale(changingIconScaleX, changingIconScaleY)
-        appIcon2.alpha = changingIconAlpha
+        appIcon2!!.alpha = changingIconAlpha
         appIcon2.draw(canvas)
         canvas.restore()
     }
@@ -325,7 +326,7 @@ class FloatingAppPairBackground(
      * @param radii An array of 8 radii for the corners: top left x, top left y, top right x, top
      *   right y, bottom right x, and so on.
      */
-    private fun drawCustomRoundedRect(c: Canvas, rect: RectF, radii: FloatArray) {
+    protected fun drawCustomRoundedRect(c: Canvas, rect: RectF, radii: FloatArray) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Canvas.drawDoubleRoundRect is supported from Q onward
             c.drawDoubleRoundRect(rect, radii, EMPTY_RECT, ARRAY_OF_ZEROES, backgroundPaint)
