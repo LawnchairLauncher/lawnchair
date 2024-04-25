@@ -62,6 +62,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarNavButtonCallbacks;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
@@ -70,7 +71,6 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.AllAppsActionManager;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SystemUiProxy;
-import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
@@ -209,15 +209,18 @@ public class TaskbarManager {
 
     @SuppressLint("WrongConstant")
     public TaskbarManager(
-            TouchInteractionService service, AllAppsActionManager allAppsActionManager) {
+            Context context,
+            AllAppsActionManager allAppsActionManager,
+            TaskbarNavButtonCallbacks navCallbacks) {
+
         Display display =
-                service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-        mContext = service.createWindowContext(display,
+                context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
+        mContext = context.createWindowContext(display,
                 ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL,
                 null);
         mAllAppsActionManager = allAppsActionManager;
         mNavigationBarPanelContext = ENABLE_TASKBAR_NAVBAR_UNIFICATION
-                ? service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null)
+                ? context.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null)
                 : null;
         if (enableTaskbarNoRecreate()) {
             mWindowManager = mContext.getSystemService(WindowManager.class);
@@ -234,8 +237,11 @@ public class TaskbarManager {
                 }
             };
         }
-        mNavButtonController = new TaskbarNavButtonController(service,
-                SystemUiProxy.INSTANCE.get(mContext), new Handler(),
+        mNavButtonController = new TaskbarNavButtonController(
+                context,
+                navCallbacks,
+                SystemUiProxy.INSTANCE.get(mContext),
+                new Handler(),
                 AssistUtils.newInstance(mContext));
         mComponentCallbacks = new ComponentCallbacks() {
             private Configuration mOldConfig = mContext.getResources().getConfiguration();

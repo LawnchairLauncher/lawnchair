@@ -31,6 +31,7 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -47,10 +48,8 @@ import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.quickstep.LauncherActivityInterface;
-import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
-import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.AssistUtils;
 
 import java.io.PrintWriter;
@@ -106,7 +105,8 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     private static final int SCREEN_UNPIN_COMBO = BUTTON_BACK | BUTTON_RECENTS;
     private int mLongPressedButtons = 0;
 
-    private final TouchInteractionService mService;
+    private final Context mContext;
+    private final TaskbarNavButtonCallbacks mCallbacks;
     private final SystemUiProxy mSystemUiProxy;
     private final Handler mHandler;
     private final AssistUtils mAssistUtils;
@@ -114,9 +114,14 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
 
     private final Runnable mResetLongPress = this::resetScreenUnpin;
 
-    public TaskbarNavButtonController(TouchInteractionService service,
-            SystemUiProxy systemUiProxy, Handler handler, AssistUtils assistUtils) {
-        mService = service;
+    public TaskbarNavButtonController(
+            Context context,
+            TaskbarNavButtonCallbacks callbacks,
+            SystemUiProxy systemUiProxy,
+            Handler handler,
+            AssistUtils assistUtils) {
+        mContext = context;
+        mCallbacks = callbacks;
         mSystemUiProxy = systemUiProxy;
         mHandler = handler;
         mAssistUtils = assistUtils;
@@ -286,7 +291,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
             desktopVisibilityController.onHomeActionTriggered();
         }
 
-        mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_HOME);
+        mCallbacks.onNavigateHome();
     }
 
     private void navigateToOverview() {
@@ -295,7 +300,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-        mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_TOGGLE);
+        mCallbacks.onToggleOverview();
     }
 
     private void executeBack() {
@@ -310,7 +315,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         if (longClick) {
             mSystemUiProxy.notifyAccessibilityButtonLongClicked();
         } else {
-            mSystemUiProxy.notifyAccessibilityButtonClicked(mService.getDisplayId());
+            mSystemUiProxy.notifyAccessibilityButtonClicked(mContext.getDisplayId());
         }
     }
 
@@ -332,5 +337,14 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
 
     private void showNotifications() {
         mSystemUiProxy.toggleNotificationPanel();
+    }
+
+    /** Callbacks for navigation buttons on Taskbar. */
+    public interface TaskbarNavButtonCallbacks {
+        /** Callback invoked when the home button is pressed. */
+        default void onNavigateHome() {}
+
+        /** Callback invoked when the overview button is pressed. */
+        default void onToggleOverview() {}
     }
 }
