@@ -33,11 +33,6 @@ public class AssistStateManager implements ResourceBasedOverride, SafeCloseable 
 
     public AssistStateManager() {}
 
-    /** Whether search supports haptic on invocation. */
-    public boolean supportsCommitHaptic() {
-        return false;
-    }
-
     /** Whether search is available. */
     public boolean isSearchAvailable() {
         return false;
@@ -88,6 +83,11 @@ public class AssistStateManager implements ResourceBasedOverride, SafeCloseable 
     /** Get the long press touch slop multiplier data source. */
     public int getSlopDataSource() {
         return 0;
+    }
+
+    /** Get the haptic bit overridden by AGSA. */
+    public Optional<Boolean> getShouldPlayHapticOverride() {
+        return Optional.empty();
     }
 
     /** Return {@code true} if the Settings toggle is enabled. */
