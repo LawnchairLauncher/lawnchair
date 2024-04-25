@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
 
 import android.graphics.Rect;
@@ -25,7 +23,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
@@ -48,7 +45,6 @@ public class TaplTestsPersistentTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @NavigationModeSwitch(mode = NavigationModeSwitchRule.Mode.THREE_BUTTON)
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
     public void testThreeButtonsTaskbarBoundsAfterConfigChangeDuringIme() {
         Rect taskbarBoundsBefore = getTaskbar().getVisibleBounds();
         // Go home and to an IME activity (any configuration change would do, as long as it
