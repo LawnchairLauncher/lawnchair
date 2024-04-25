@@ -1477,4 +1477,9 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         }
         return super.onCreateView(parent, name, context, attrs);
     }
+
+    @Override
+    public boolean isRecentsViewVisible() {
+        return getStateManager().getState().isRecentsViewVisible;
+    }
 }

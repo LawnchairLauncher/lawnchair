@@ -375,7 +375,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      */
     protected boolean isLaunchingFromRecents(@NonNull View v,
             @Nullable RemoteAnimationTarget[] targets) {
-        return mLauncher.getStateManager().getState().overviewUi
+        return mLauncher.getStateManager().getState().isRecentsViewVisible
                 && findTaskViewToLaunch(mLauncher.getOverviewPanel(), v, targets) != null;
     }
 

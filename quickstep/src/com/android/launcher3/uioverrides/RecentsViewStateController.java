@@ -67,7 +67,7 @@ public final class RecentsViewStateController extends
     @Override
     public void setState(@NonNull LauncherState state) {
         super.setState(state);
-        if (state.overviewUi) {
+        if (state.isRecentsViewVisible) {
             mRecentsView.updateEmptyMessage();
         } else {
             mRecentsView.resetTaskVisuals();
@@ -76,7 +76,7 @@ public final class RecentsViewStateController extends
         mRecentsView.setFullscreenProgress(state.getOverviewFullscreenProgress());
         // In Overview, we may be layering app surfaces behind Launcher, so we need to notify
         // DepthController to prevent optimizations which might occlude the layers behind
-        mLauncher.getDepthController().setHasContentBehindLauncher(state.overviewUi);
+        mLauncher.getDepthController().setHasContentBehindLauncher(state.isRecentsViewVisible);
 
         PendingAnimation builder =
                 new PendingAnimation(state.getTransitionDuration(mLauncher, true));
@@ -89,7 +89,7 @@ public final class RecentsViewStateController extends
             @NonNull StateAnimationConfig config, @NonNull PendingAnimation builder) {
         super.setStateWithAnimationInternal(toState, config, builder);
 
-        if (toState.overviewUi) {
+        if (toState.isRecentsViewVisible) {
             // While animating into recents, update the visible task data as needed
             builder.addOnFrameCallback(() -> mRecentsView.loadVisibleTaskData(FLAG_UPDATE_ALL));
             mRecentsView.updateEmptyMessage();
@@ -107,7 +107,8 @@ public final class RecentsViewStateController extends
         // In Overview, we may be layering app surfaces behind Launcher, so we need to notify
         // DepthController to prevent optimizations which might occlude the layers behind
         builder.addListener(AnimatorListeners.forSuccessCallback(() ->
-                mLauncher.getDepthController().setHasContentBehindLauncher(toState.overviewUi)));
+                mLauncher.getDepthController().setHasContentBehindLauncher(
+                        toState.isRecentsViewVisible)));
 
         handleSplitSelectionState(toState, builder, /* animate */true);
 

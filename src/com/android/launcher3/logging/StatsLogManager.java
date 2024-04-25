@@ -781,7 +781,19 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_BEGIN(1727),
 
         @UiEvent(doc = "Private space unlock animation finished")
-        LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END(1728)
+        LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END(1728),
+
+        @UiEvent(doc = "User rotates whilst in Overview / RecentsView")
+        LAUNCHER_OVERVIEW_ORIENTATION_CHANGED(1762),
+
+        @UiEvent(doc = "User launches Overview from 3 button navigation")
+        LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_3_BUTTON(1763),
+
+        @UiEvent(doc = "User launches Overview from alt+tab keyboard quick switch")
+        LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_QUICK_SWITCH(1764),
+
+        @UiEvent(doc = "User launches Overview from meta+tab keyboard shortcut")
+        LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_SHORTCUT(1765),
 
         // ADD MORE
         ;

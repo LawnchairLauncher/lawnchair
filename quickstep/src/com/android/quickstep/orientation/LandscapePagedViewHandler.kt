@@ -42,6 +42,7 @@ import com.android.launcher3.Flags
 import com.android.launcher3.LauncherAnimUtils
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer
 import com.android.launcher3.touch.PagedOrientationHandler.ChildBounds
 import com.android.launcher3.touch.PagedOrientationHandler.Float2DAction
 import com.android.launcher3.touch.PagedOrientationHandler.Int2DAction
@@ -610,6 +611,9 @@ open class LandscapePagedViewHandler : RecentsPagedOrientationHandler {
 
     override fun getFloatingTaskPrimaryTranslation(floatingTask: View, dp: DeviceProfile): Float =
         floatingTask.translationY
+
+    override fun getHandlerTypeForLogging(): TaskSwitcherContainer.OrientationHandler =
+        TaskSwitcherContainer.OrientationHandler.LANDSCAPE
 
     /**
      * Retrieves split icons position

@@ -47,7 +47,7 @@ public class OverviewState extends LauncherState {
     protected static final Rect sTempRect = new Rect();
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_WORKSPACE_INACCESSIBLE
+            | FLAG_DISABLE_RESTORE | FLAG_RECENTS_VIEW_VISIBLE | FLAG_WORKSPACE_INACCESSIBLE
             | FLAG_CLOSE_POPUPS;
 
     public OverviewState(int id) {
