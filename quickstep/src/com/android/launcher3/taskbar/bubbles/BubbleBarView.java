@@ -104,6 +104,8 @@ public class BubbleBarView extends FrameLayout {
      * updates the bounds and accounts for translation.
      */
     private final Rect mBubbleBarBounds = new Rect();
+    /** The bounds of the animating bubble in the coordinate space of the BubbleBarView. */
+    private final Rect mAnimatingBubbleBounds = new Rect();
     // The amount the bubbles overlap when they are stacked in the bubble bar
     private final float mIconOverlapAmount;
     // The spacing between the bubbles when bubble bar is expanded
@@ -458,6 +460,30 @@ public class BubbleBarView extends FrameLayout {
         mBubbleBarBounds.top = getTop() + (int) getTranslationY() + mPointerSize;
         mBubbleBarBounds.bottom = getBottom() + (int) getTranslationY();
         return mBubbleBarBounds;
+    }
+
+    /** Returns the bounds of the animating bubble, or {@code null} if no bubble is animating. */
+    @Nullable
+    public Rect getAnimatingBubbleBounds() {
+        if (mIsAnimatingNewBubble) {
+            return mAnimatingBubbleBounds;
+        }
+        return null;
+    }
+
+    /**
+     * Updates the animating bubble bounds. This should be called when the bubble is fully animated
+     * in so that we can include it in taskbar touchable region.
+     *
+     * <p>The bounds are adjusted to the coordinate space of BubbleBarView so that it can be used
+     * by taskbar.
+     */
+    public void updateAnimatingBubbleBounds(int left, int top, int width, int height) {
+        Rect bubbleBarBounds = getBubbleBarBounds();
+        mAnimatingBubbleBounds.left = bubbleBarBounds.left + left;
+        mAnimatingBubbleBounds.top = bubbleBarBounds.top + top;
+        mAnimatingBubbleBounds.right = mAnimatingBubbleBounds.left + width;
+        mAnimatingBubbleBounds.bottom = mAnimatingBubbleBounds.top + height;
     }
 
     /**
@@ -852,10 +878,15 @@ public class BubbleBarView extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!mIsBarExpanded) {
+        if (!mIsBarExpanded && !mIsAnimatingNewBubble) {
             // When the bar is collapsed, all taps on it should expand it.
             return true;
         }
         return super.onInterceptTouchEvent(ev);
+    }
+
+    /** Whether a new bubble is currently animating. */
+    public boolean isAnimatingNewBubble() {
+        return mIsAnimatingNewBubble;
     }
 }

@@ -35,6 +35,8 @@ constructor(
     private val scheduler: Scheduler = HandlerScheduler(bubbleBarView)
 ) {
 
+    private var animatingBubble: AnimatingBubble? = null
+
     private companion object {
         /** The time to show the flyout. */
         const val FLYOUT_DELAY_MS: Long = 2500
@@ -54,25 +56,39 @@ constructor(
         const val BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y = -20f
     }
 
+    /** Wrapper around the animating bubble with its show and hide animations. */
+    private data class AnimatingBubble(
+        val bubbleView: BubbleView,
+        val showAnimation: Runnable,
+        val hideAnimation: Runnable
+    )
+
     /** An interface for scheduling jobs. */
     interface Scheduler {
 
         /** Schedule the given [block] to run. */
-        fun post(block: () -> Unit)
+        fun post(block: Runnable)
 
         /** Schedule the given [block] to start with a delay of [delayMillis]. */
-        fun postDelayed(delayMillis: Long, block: () -> Unit)
+        fun postDelayed(delayMillis: Long, block: Runnable)
+
+        /** Cancel the given [block] if it hasn't started yet. */
+        fun cancel(block: Runnable)
     }
 
     /** A [Scheduler] that uses a Handler to run jobs. */
     private class HandlerScheduler(private val view: View) : Scheduler {
 
-        override fun post(block: () -> Unit) {
+        override fun post(block: Runnable) {
             view.post(block)
         }
 
-        override fun postDelayed(delayMillis: Long, block: () -> Unit) {
+        override fun postDelayed(delayMillis: Long, block: Runnable) {
             view.postDelayed(block, delayMillis)
+        }
+
+        override fun cancel(block: Runnable) {
+            view.removeCallbacks(block)
         }
     }
 
@@ -91,6 +107,7 @@ constructor(
         // and the second part hides it after a delay.
         val showAnimation = buildShowAnimation(bubbleView, b.key)
         val hideAnimation = buildHideAnimation(bubbleView)
+        animatingBubble = AnimatingBubble(bubbleView, showAnimation, hideAnimation)
         scheduler.post(showAnimation)
         scheduler.postDelayed(FLYOUT_DELAY_MS, hideAnimation)
     }
@@ -113,7 +130,7 @@ constructor(
     private fun buildShowAnimation(
         bubbleView: BubbleView,
         key: String,
-    ): () -> Unit = {
+    ) = Runnable {
         bubbleBarView.prepareForAnimatingBubbleWhileStashed(key)
         // calculate the initial translation x the bubble should have in order to align it with the
         // stash handle.
@@ -140,7 +157,7 @@ constructor(
 
                     // map the path [0, BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y] to [0,1]
                     val fraction = ty / BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y
-                    target.alpha = 1 - fraction / 2
+                    target.alpha = 1 - fraction
                 }
                 ty >= totalTranslationY -> {
                     // this is the second leg of the animation. the handle should be completely
@@ -173,6 +190,16 @@ constructor(
                 }
             }
         }
+        animator.addEndListener { _, _, _, _, _, _, _ ->
+            // the bubble is now fully settled in. make it touchable
+            bubbleBarView.updateAnimatingBubbleBounds(
+                bubbleView.left,
+                bubbleView.top,
+                bubbleView.width,
+                bubbleView.height
+            )
+            bubbleStashController.updateTaskbarTouchRegion()
+        }
         animator.start()
     }
 
@@ -189,7 +216,7 @@ constructor(
      * 1. In the second part the bubble is fully hidden and the handle animates in.
      * 1. The third part is the overshoot. The handle is made fully visible.
      */
-    private fun buildHideAnimation(bubbleView: BubbleView): () -> Unit = {
+    private fun buildHideAnimation(bubbleView: BubbleView) = Runnable {
         // this is the total distance that both the stashed handle and the bubble will be traveling
         val totalTranslationY =
             BUBBLE_ANIMATION_BUBBLE_TRANSLATION_Y + BUBBLE_ANIMATION_STASH_HANDLE_TRANSLATION_Y
@@ -230,6 +257,7 @@ constructor(
             }
         }
         animator.addEndListener { _, _, _, _, _, _, _ ->
+            animatingBubble = null
             bubbleView.alpha = 0f
             bubbleView.translationY = 0f
             bubbleView.scaleY = 1f
@@ -237,8 +265,17 @@ constructor(
                 bubbleBarView.alpha = 0f
             }
             bubbleBarView.onAnimatingBubbleCompleted()
+            bubbleStashController.updateTaskbarTouchRegion()
         }
         animator.start()
+    }
+
+    /** Handles clicking on the animating bubble while the animation is still playing. */
+    fun onBubbleClickedWhileAnimating() {
+        val hideAnimation = animatingBubble?.hideAnimation ?: return
+        scheduler.cancel(hideAnimation)
+        bubbleBarView.onAnimatingBubbleCompleted()
+        animatingBubble = null
     }
 }
 

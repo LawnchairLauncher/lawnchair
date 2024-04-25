@@ -138,6 +138,15 @@ public class BubbleBarViewController {
         if (bubble == null) {
             Log.e(TAG, "bubble click listener, bubble was null");
         }
+
+        if (mBarView.isAnimatingNewBubble()) {
+            mBubbleBarViewAnimator.onBubbleClickedWhileAnimating();
+            mBubbleStashController.showBubbleBarImmediate();
+            setExpanded(true);
+            mBubbleBarController.showAndSelectBubble(bubble);
+            return;
+        }
+
         final String currentlySelected = mBubbleBarController.getSelectedBubbleKey();
         if (mBarView.isExpanded() && Objects.equals(bubble.getKey(), currentlySelected)) {
             // Tapping the currently selected bubble while expanded collapses the view.
@@ -211,6 +220,12 @@ public class BubbleBarViewController {
      */
     public Rect getBubbleBarBounds() {
         return mBarView.getBubbleBarBounds();
+    }
+
+    /** The bounds of the animating bubble, or {@code null} if no bubble is animating. */
+    @Nullable
+    public Rect getAnimatingBubbleBounds() {
+        return mBarView.getAnimatingBubbleBounds();
     }
 
     /** The horizontal margin of the bubble bar from the edge of the screen. */
