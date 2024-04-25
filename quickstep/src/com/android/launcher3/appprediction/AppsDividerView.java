@@ -28,14 +28,15 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
-import com.android.launcher3.util.Themes;
 
 /**
  * A view which shows a horizontal divider
@@ -54,6 +55,7 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
 
     private final @ColorInt int mStrokeColor;
     private final @ColorInt int mAllAppsLabelTextColor;
+    private final AccessibilityManager mAccessibilityManager;
 
     private Layout mAllAppsLabelLayout;
     private boolean mShowAllAppsLabel;
@@ -87,7 +89,8 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
         mAllAppsLabelTextColor = ContextCompat.getColor(context,
                 R.color.material_color_on_surface_variant);
 
-        mShowAllAppsLabel = !ALL_APPS_VISITED_COUNT.hasReachedMax(context);
+        mAccessibilityManager = AccessibilityManager.getInstance(context);
+        setShowAllAppsLabel(!ALL_APPS_VISITED_COUNT.hasReachedMax(context));
     }
 
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] rows, boolean tabsHidden) {
@@ -99,6 +102,9 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
 
     /** {@code true} if all apps label should be shown in place of divider. */
     public void setShowAllAppsLabel(boolean showAllAppsLabel) {
+        if (mAccessibilityManager.isEnabled() && !Utilities.isRunningInTestHarness()) {
+            showAllAppsLabel = true;
+        }
         if (showAllAppsLabel != mShowAllAppsLabel) {
             mShowAllAppsLabel = showAllAppsLabel;
             updateDividerType();
@@ -148,6 +154,7 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
             mDividerType = dividerType;
             int topPadding;
             int bottomPadding;
+            setContentDescription(null);
             switch (dividerType) {
                 case LINE:
                     topPadding = 0;
@@ -161,6 +168,7 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
                     bottomPadding = getResources()
                             .getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding);
                     mPaint.setColor(mAllAppsLabelTextColor);
+                    setContentDescription(mAllAppsLabelLayout.getText());
                     break;
                 case NONE:
                 default:
