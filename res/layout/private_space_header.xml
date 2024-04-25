@@ -25,7 +25,9 @@
         android:clipToOutline="true"
         android:gravity="center_vertical"
         android:textDirection="locale"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:contentDescription="@string/ps_container_lock_button_content_description"
+        android:importantForAccessibility="yes">
 
     <LinearLayout
         android:id="@+id/settingsAndLockGroup"
@@ -49,7 +51,7 @@
             android:background="@drawable/ps_lock_background"
             android:gravity="center_vertical"
             android:layout_marginEnd="@dimen/ps_lock_button_margin_end"
-            android:contentDescription="@string/ps_container_lock_unlock_button">
+            android:contentDescription="@string/ps_container_lock_button_content_description">
             <ImageView
                 android:id="@+id/lock_icon"
                 android:layout_width="@dimen/ps_lock_icon_size"
@@ -95,6 +97,7 @@
         android:gravity="center_vertical"
         android:layout_marginStart="@dimen/ps_header_layout_margin"
         android:text="@string/ps_container_title"
-        android:theme="@style/PrivateSpaceHeaderTextStyle"/>
+        android:theme="@style/PrivateSpaceHeaderTextStyle"
+        android:importantForAccessibility="no"/>
 
 </RelativeLayout>

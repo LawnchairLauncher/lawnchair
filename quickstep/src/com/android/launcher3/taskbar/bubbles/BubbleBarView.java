@@ -120,6 +120,7 @@ public class BubbleBarView extends FrameLayout {
     // Whether the bar is expanded (i.e. the bubble activity is being displayed).
     private boolean mIsBarExpanded = false;
     // The currently selected bubble view.
+    @Nullable
     private BubbleView mSelectedBubbleView;
     private BubbleBarLocation mBubbleBarLocation = BubbleBarLocation.DEFAULT;
     // The click listener when the bubble bar is collapsed.
@@ -205,6 +206,7 @@ public class BubbleBarView extends FrameLayout {
                 // If the bar was just collapsed and the overflow was the last bubble that was
                 // selected, set the first bubble as selected.
                 if (!mIsBarExpanded && mUpdateSelectedBubbleAfterCollapse != null
+                        && mSelectedBubbleView != null
                         && mSelectedBubbleView.getBubble() instanceof BubbleBarOverflow) {
                     BubbleView firstBubble = (BubbleView) getChildAt(0);
                     mUpdateSelectedBubbleAfterCollapse.accept(firstBubble.getBubble().getKey());
@@ -534,6 +536,10 @@ public class BubbleBarView extends FrameLayout {
     @Override
     public void removeView(View view) {
         super.removeView(view);
+        if (view == mSelectedBubbleView) {
+            mSelectedBubbleView = null;
+            mBubbleBarBackground.showArrow(false);
+        }
         updateWidth();
     }
 
@@ -689,8 +695,12 @@ public class BubbleBarView extends FrameLayout {
      * Sets which bubble view should be shown as selected.
      */
     public void setSelectedBubble(BubbleView view) {
+        BubbleView previouslySelectedBubble = mSelectedBubbleView;
         mSelectedBubbleView = view;
-        updateArrowForSelected(/* shouldAnimate= */ true);
+        mBubbleBarBackground.showArrow(view != null);
+        // TODO: (b/283309949) remove animation should be implemented first, so than arrow
+        //  animation is adjusted, skip animation for now
+        updateArrowForSelected(previouslySelectedBubble != null);
     }
 
     /**
@@ -715,6 +725,10 @@ public class BubbleBarView extends FrameLayout {
         // Find the center of the bubble when it's expanded, set the arrow position to it.
         final float tx = arrowPositionForSelectedWhenExpanded();
         final float currentArrowPosition = mBubbleBarBackground.getArrowPositionX();
+        if (tx == currentArrowPosition) {
+            // arrow position remains unchanged
+            return;
+        }
         if (shouldAnimate && currentArrowPosition > expandedWidth()) {
             Log.d(TAG, "arrow out of bounds of expanded view, skip animation");
             shouldAnimate = false;

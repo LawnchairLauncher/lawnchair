@@ -23,6 +23,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -38,13 +39,13 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.RunnableList;
+import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -86,6 +87,8 @@ public class DesktopTaskView extends TaskView {
     private View mBackgroundView;
 
     private int mChildCountAtInflation;
+
+    private final PointF mTempPointF = new PointF();
 
     public DesktopTaskView(Context context) {
         this(context, null);
@@ -305,16 +308,7 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     protected void setThumbnailOrientation(RecentsOrientedState orientationState) {
-        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
-        int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-
-        LayoutParams snapshotParams = (LayoutParams) mTaskThumbnailViewDeprecated.getLayoutParams();
-        snapshotParams.topMargin = thumbnailTopMargin;
-
-        for (int i = 0; i < mSnapshotViewMap.size(); i++) {
-            TaskThumbnailViewDeprecated thumbnailView = mSnapshotViewMap.valueAt(i);
-            thumbnailView.setLayoutParams(snapshotParams);
-        }
+        // no-op
     }
 
     @Override
@@ -431,8 +425,10 @@ public class DesktopTaskView extends TaskView {
             return;
         }
 
-        int windowWidth = mContainer.getDeviceProfile().widthPx;
-        int windowHeight = mContainer.getDeviceProfile().heightPx;
+        BaseContainerInterface.getTaskDimension(mContext, mContainer.getDeviceProfile(),
+                mTempPointF);
+        int windowWidth = (int) mTempPointF.x;
+        int windowHeight = (int) mTempPointF.y;
 
         float scaleWidth = containerWidth / (float) windowWidth;
         float scaleHeight = containerHeight / (float) windowHeight;

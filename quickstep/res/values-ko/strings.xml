@@ -21,8 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"고정"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"자유 형식"</string>
-    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
-    <skip />
+    <string name="recent_task_option_desktop" msgid="8280879717125435668">"데스크톱"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"최근 항목이 없습니다."</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"앱 사용 설정"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"모두 삭제"</string>
@@ -139,6 +138,8 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"상단/왼쪽으로 이동"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"하단/오른쪽으로 이동"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{앱 #개 더 표시}other{앱 #개 더 표시}}"</string>
+    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
+    <skip />
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> 및 <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"데스크톱에 앱 추가하기"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"취소"</string>

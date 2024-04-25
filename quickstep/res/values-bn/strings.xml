@@ -21,8 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"পিন করুন"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ফ্রি-ফর্ম"</string>
-    <!-- no translation found for recent_task_option_desktop (8280879717125435668) -->
-    <skip />
+    <string name="recent_task_option_desktop" msgid="8280879717125435668">"ডেস্কটপ"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"কোনও সাম্প্রতিক আইটেম নেই"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"অ্যাপ ব্যবহারের সেটিংস"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"সবকিছু খালি করুন"</string>
@@ -139,6 +138,8 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"উপরে/বাঁদিকে সরান"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"নিচে/ডানদিকে সরান"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{আরও #টি অ্যাপ দেখুন।}one{আরও #টি অ্যাপ দেখুন।}other{আরও #টি অ্যাপ দেখুন।}}"</string>
+    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
+    <skip />
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ও <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"ডেস্কটপে অ্যাপ যোগ করা হচ্ছে"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"বাতিল করুন"</string>

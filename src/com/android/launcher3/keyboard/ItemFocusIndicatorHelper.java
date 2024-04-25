@@ -246,7 +246,8 @@ public abstract class ItemFocusIndicatorHelper<T> implements AnimatorUpdateListe
 
     protected void setCurrentItem(T item) {
         mCurrentItem = item;
-        mShift = 0;
+        // Set it to end value directly to skip the animation for outline
+        mShift = Flags.enableFocusOutline() ? 1 : 0;
         mTargetItem = null;
     }
 

@@ -460,10 +460,11 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
     }
 
     @Override
-    public void setOverrideHomeButtonLongPress(long duration, float slopMultiplier) {
+    public void setOverrideHomeButtonLongPress(long duration, float slopMultiplier,
+            boolean haptic) {
         if (mSystemUiProxy != null) {
             try {
-                mSystemUiProxy.setOverrideHomeButtonLongPress(duration, slopMultiplier);
+                mSystemUiProxy.setOverrideHomeButtonLongPress(duration, slopMultiplier, haptic);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setOverrideHomeButtonLongPress", e);
             }

@@ -209,6 +209,8 @@
     <dimen name="widget_list_left_pane_horizontal_margin">0dp</dimen>
     <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
     <dimen name="widget_picker_vertical_margin_right_pane">24dp</dimen>
+    <!-- Margin on sides of the widgets scrollview in widgets bottom sheet -->
+    <dimen name="widget_bottom_sheet_horizontal_margin">16dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
@@ -476,6 +478,7 @@
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
     <dimen name="bottom_sheet_handle_margin">16dp</dimen>
+    <dimen name="widgets_bottom_sheet_handle_margin">24dp</dimen>
     <dimen name="bottom_sheet_handle_corner_radius">2dp</dimen>
 
     <!-- State transition -->
