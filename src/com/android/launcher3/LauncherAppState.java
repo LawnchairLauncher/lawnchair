@@ -257,7 +257,7 @@ public class LauncherAppState implements SafeCloseable {
 
         @Override
         public void onSystemIconStateChanged(String iconState) {
-            IconShape.init(mContext);
+            IconShape.INSTANCE.get(mContext).pickBestShape(mContext);
             refreshAndReloadLauncher();
             LauncherPrefs.get(mContext).put(ICON_STATE, iconState);
         }

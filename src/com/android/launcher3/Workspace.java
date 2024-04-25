@@ -1955,7 +1955,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 // In order to keep everything continuous, we hand off the currently rendered
                 // folder background to the newly created icon. This preserves animation state.
                 fi.setFolderBackground(mFolderCreateBg);
-                mFolderCreateBg = new PreviewBackground();
+                mFolderCreateBg = new PreviewBackground(getContext());
                 fi.performCreateAnimation(destInfo, v, sourceInfo, d, folderLocation, scale);
             } else {
                 fi.prepareCreateAnimation(v);
@@ -2670,7 +2670,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         boolean userFolderPending = willCreateUserFolder(info, mDragOverView, false);
         if (mDragMode == DRAG_MODE_NONE && userFolderPending) {
 
-            mFolderCreateBg = new PreviewBackground();
+            mFolderCreateBg = new PreviewBackground(getContext());
             mFolderCreateBg.setup(mLauncher, mLauncher, null,
                     mDragOverView.getMeasuredWidth(), mDragOverView.getPaddingTop());
 

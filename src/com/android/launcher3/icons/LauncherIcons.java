@@ -78,7 +78,8 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     private MonochromeIconFactory mMonochromeIconFactory;
 
     protected LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId) {
-        super(context, fillResIconDpi, iconBitmapSize, IconShape.getShape().enableShapeDetection());
+        super(context, fillResIconDpi, iconBitmapSize,
+                IconShape.INSTANCE.get(context).getShape().enableShapeDetection());
         mMonoIconEnabled = Themes.isThemedIconEnabled(context);
         mPoolId = poolId;
     }

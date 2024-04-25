@@ -19,7 +19,6 @@ package com.android.launcher3.folder;
 import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
-import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -49,6 +48,8 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.celllayout.DelegatedCellDrawing;
+import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.graphics.IconShape.ShapeDelegate;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
@@ -66,6 +67,7 @@ public class PreviewBackground extends DelegatedCellDrawing {
     @VisibleForTesting protected static final float HOVER_SCALE = 1.1f;
     @VisibleForTesting protected static final int HOVER_ANIMATION_DURATION = 300;
 
+    private final Context mContext;
     private final PorterDuffXfermode mShadowPorterDuffXfermode
             = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
     private RadialGradient mShadowShader = null;
@@ -137,6 +139,10 @@ public class PreviewBackground extends DelegatedCellDrawing {
                     previewBackground.invalidate();
                 }
             };
+
+    public PreviewBackground(Context context) {
+        mContext = context;
+    }
 
     /**
      * Draws folder background under cell layout
@@ -252,6 +258,10 @@ public class PreviewBackground extends DelegatedCellDrawing {
 
         getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
         drawShadow(canvas);
+    }
+
+    private ShapeDelegate getShape() {
+        return IconShape.INSTANCE.get(mContext).getShape();
     }
 
     public void drawShadow(Canvas canvas) {
