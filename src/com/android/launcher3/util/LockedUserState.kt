@@ -56,12 +56,16 @@ class LockedUserState(private val mContext: Context) : SafeCloseable {
 
     private fun notifyUserUnlocked() {
         mUserUnlockedActions.executeAllAndDestroy()
-        mUserUnlockedReceiver.unregisterReceiverSafely(mContext)
+        Executors.THREAD_POOL_EXECUTOR.execute {
+            mUserUnlockedReceiver.unregisterReceiverSafely(mContext)
+        }
     }
 
     /** Stops the receiver from listening for ACTION_USER_UNLOCK broadcasts. */
     override fun close() {
-        mUserUnlockedReceiver.unregisterReceiverSafely(mContext)
+        Executors.THREAD_POOL_EXECUTOR.execute {
+            mUserUnlockedReceiver.unregisterReceiverSafely(mContext)
+        }
     }
 
     /**
