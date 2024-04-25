@@ -39,7 +39,6 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
@@ -309,16 +308,7 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     protected void setThumbnailOrientation(RecentsOrientedState orientationState) {
-        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
-        int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-
-        LayoutParams snapshotParams = (LayoutParams) mTaskThumbnailViewDeprecated.getLayoutParams();
-        snapshotParams.topMargin = thumbnailTopMargin;
-
-        for (int i = 0; i < mSnapshotViewMap.size(); i++) {
-            TaskThumbnailViewDeprecated thumbnailView = mSnapshotViewMap.valueAt(i);
-            thumbnailView.setLayoutParams(snapshotParams);
-        }
+        // no-op
     }
 
     @Override
