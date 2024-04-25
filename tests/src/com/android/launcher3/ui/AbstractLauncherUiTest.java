@@ -15,10 +15,7 @@
  */
 package com.android.launcher3.ui;
 
-import static android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD;
-import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
 import static android.platform.test.flag.junit.SetFlagsRule.DefaultInitValueType.DEVICE_DEFAULT;
-import static android.view.Display.DEFAULT_DISPLAY;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
@@ -29,7 +26,6 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -575,21 +571,6 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
                 true /* newTask */);
     }
 
-    /** alternative of startAppFast where app is guaranteed to launch in fullscreen mode */
-    public static void startAppFastInFullscreen(String packageName) {
-        ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchWindowingMode(WINDOWING_MODE_FULLSCREEN);
-        options.setLaunchDisplayId(DEFAULT_DISPLAY);
-        options.setLaunchActivityType(ACTIVITY_TYPE_STANDARD);
-
-        startIntent(
-                getInstrumentation().getContext().getPackageManager().getLaunchIntentForPackage(
-                        packageName),
-                By.pkg(packageName).depth(0),
-                true /* newTask */,
-                options);
-    }
-
     public static void startTestActivity(String activityName, String activityLabel) {
         final String packageName = getAppPackageName();
         final Intent intent = getInstrumentation().getContext().getPackageManager().
@@ -625,8 +606,7 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
                 false /* newTask */);
     }
 
-    private static void startIntent(
-            Intent intent, BySelector selector, boolean newTask, ActivityOptions options) {
+    private static void startIntent(Intent intent, BySelector selector, boolean newTask) {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         if (newTask) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -634,12 +614,7 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
             intent.addFlags(
                     Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         }
-
-        if (options != null) {
-            getInstrumentation().getTargetContext().startActivity(intent, options.toBundle());
-        } else {
-            getInstrumentation().getTargetContext().startActivity(intent);
-        }
+        getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
                 TestHelpers.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
 
@@ -648,10 +623,6 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
         Wait.atMost("Launcher activity didn't stop",
                 () -> !launcherInstrumentation.isLauncherActivityStarted(),
                 DEFAULT_ACTIVITY_TIMEOUT, launcherInstrumentation);
-    }
-
-    private static void startIntent(Intent intent, BySelector selector, boolean newTask) {
-        startIntent(intent, selector, newTask, null);
     }
 
     public static ActivityInfo resolveSystemAppInfo(String category) {
