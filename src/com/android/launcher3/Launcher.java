@@ -1701,7 +1701,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         AbstractFloatingView.closeAllOpenViews(this);
         getStateManager().goToState(ALL_APPS, alreadyOnHome);
         if (mAppsView.isSearching()) {
-            mAppsView.reset(alreadyOnHome);
+            mAppsView.getSearchUiManager().resetSearch();
         }
         if (mAppsView.getCurrentPage() != tab) {
             mAppsView.switchToTab(tab);
