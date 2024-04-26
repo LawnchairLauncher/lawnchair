@@ -1261,6 +1261,13 @@ public class Launcher extends StatefulActivity<LauncherState>
             getAllAppsExitEvent().ifPresent(getStatsLogManager().logger()::log);
             mAllAppsSessionLogId = null;
         }
+
+        // Set screen title for Talkback
+        if (state == ALL_APPS) {
+            setTitle(R.string.all_apps_label);
+        } else {
+            setTitle(R.string.home_screen);
+        }
     }
 
     /**
