@@ -4,8 +4,10 @@ import androidx.core.util.isEmpty
 import androidx.test.annotation.UiThreadTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.launcher3.util.rule.RobolectricUiThreadRule
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -13,6 +15,8 @@ import org.junit.runner.RunWith
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class StartupLatencyLoggerTest {
+
+    @get:Rule val roboUiThreadRule = RobolectricUiThreadRule()
 
     private val underTest = ColdRebootStartupLatencyLogger()
 
