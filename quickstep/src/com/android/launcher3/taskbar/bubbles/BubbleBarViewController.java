@@ -189,6 +189,10 @@ public class BubbleBarViewController {
         return mBubbleBarTranslationY;
     }
 
+    float getBubbleBarCollapsedHeight() {
+        return mBarView.getBubbleBarCollapsedHeight();
+    }
+
     /**
      * Whether the bubble bar is visible or not.
      */
@@ -222,10 +226,9 @@ public class BubbleBarViewController {
         return mBarView.getBubbleBarBounds();
     }
 
-    /** The bounds of the animating bubble, or {@code null} if no bubble is animating. */
-    @Nullable
-    public Rect getAnimatingBubbleBounds() {
-        return mBarView.getAnimatingBubbleBounds();
+    /** Whether a new bubble is animating. */
+    public boolean isAnimatingNewBubble() {
+        return mBarView.isAnimatingNewBubble();
     }
 
     /** The horizontal margin of the bubble bar from the edge of the screen. */

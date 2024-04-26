@@ -251,11 +251,6 @@ public class BubbleStashedHandleViewController {
         return mStashedHandleAlpha;
     }
 
-    /** Returns the x position of the center of the stashed handle. */
-    public float getStashedHandleCenterX() {
-        return mStashedHandleBounds.exactCenterX();
-    }
-
     /**
      * Creates and returns an Animator that updates the stashed handle  shape and size.
      * When stashed, the shape is a thin rounded pill. When unstashed, the shape morphs into

@@ -155,13 +155,16 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             )
 
             // if there's an animating bubble add it to the touch region so that it's clickable
-            val animatingBubbleBounds =
+            val isAnimatingNewBubble =
                 controllers.bubbleControllers
                     .getOrNull()
                     ?.bubbleBarViewController
-                    ?.animatingBubbleBounds
-            if (animatingBubbleBounds != null) {
-                defaultTouchableRegion.op(animatingBubbleBounds, Region.Op.UNION)
+                    ?.isAnimatingNewBubble
+                    ?: false
+            if (isAnimatingNewBubble) {
+                val iconBounds =
+                    controllers.bubbleControllers.get().bubbleBarViewController.bubbleBarBounds
+                defaultTouchableRegion.op(iconBounds, Region.Op.UNION)
             }
         }
 

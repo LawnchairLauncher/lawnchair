@@ -25,6 +25,7 @@ import android.view.InsetsController;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.StashedHandleViewController;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
@@ -77,11 +78,16 @@ public class BubbleStashController {
     private boolean mBubblesShowingOnOverview;
     private boolean mIsSysuiLocked;
 
+    private final float mHandleCenterFromScreenBottom;
+
     @Nullable
     private AnimatorSet mAnimator;
 
     public BubbleStashController(TaskbarActivityContext activity) {
         mActivity = activity;
+        // the handle is centered within the stashed taskbar area
+        mHandleCenterFromScreenBottom =
+                mActivity.getResources().getDimensionPixelSize(R.dimen.bubblebar_stashed_size) / 2f;
     }
 
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
@@ -266,7 +272,6 @@ public class BubbleStashController {
      */
     private AnimatorSet createStashAnimator(boolean isStashed, long duration) {
         AnimatorSet animatorSet = new AnimatorSet();
-        final float stashTranslation = (mUnstashedHeight - mStashedHeight) / 2f;
 
         AnimatorSet fullLengthAnimatorSet = new AnimatorSet();
         // Not exactly half and may overlap. See [first|second]HalfDurationScale below.
@@ -280,7 +285,8 @@ public class BubbleStashController {
             firstHalfDurationScale = 0.75f;
             secondHalfDurationScale = 0.5f;
 
-            fullLengthAnimatorSet.play(mIconTranslationYForStash.animateToValue(stashTranslation));
+            fullLengthAnimatorSet.play(
+                    mIconTranslationYForStash.animateToValue(getStashTranslation()));
 
             firstHalfAnimatorSet.playTogether(
                     mIconAlphaForStash.animateToValue(0),
@@ -329,6 +335,10 @@ public class BubbleStashController {
         return animatorSet;
     }
 
+    private float getStashTranslation() {
+        return (mUnstashedHeight - mStashedHeight) / 2f;
+    }
+
     private void onIsStashedChanged() {
         mControllers.runAfterInit(() -> {
             mHandleViewController.onIsStashedChanged();
@@ -336,7 +346,7 @@ public class BubbleStashController {
         });
     }
 
-    private float getBubbleBarTranslationYForTaskbar() {
+    public float getBubbleBarTranslationYForTaskbar() {
         return -mActivity.getDeviceProfile().taskbarBottomMargin;
     }
 
@@ -355,6 +365,25 @@ public class BubbleStashController {
                 : getBubbleBarTranslationYForTaskbar();
     }
 
+    /**
+     * The difference on the Y axis between the center of the handle and the center of the bubble
+     * bar.
+     */
+    public float getDiffBetweenHandleAndBarCenters() {
+        // the difference between the centers of the handle and the bubble bar is the difference
+        // between their distance from the bottom of the screen.
+
+        float barCenter = mBarViewController.getBubbleBarCollapsedHeight() / 2f;
+        return mHandleCenterFromScreenBottom - barCenter;
+    }
+
+    /** The distance the handle moves as part of the new bubble animation. */
+    public float getStashedHandleTranslationForNewBubbleAnimation() {
+        // the should move up to the top of the stashed taskbar area. it is centered within it so
+        // it should move the same distance as it is away from the bottom.
+        return -mHandleCenterFromScreenBottom;
+    }
+
     /** Checks whether the motion event is over the stash handle. */
     public boolean isEventOverStashHandle(MotionEvent ev) {
         return mHandleViewController.isEventOverHandle(ev);
@@ -363,11 +392,6 @@ public class BubbleStashController {
     /** Set a bubble bar location */
     public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
         mHandleViewController.setBubbleBarLocation(bubbleBarLocation);
-    }
-
-    /** Returns the x position of the center of the stashed handle. */
-    public float getStashedHandleCenterX() {
-        return mHandleViewController.getStashedHandleCenterX();
     }
 
     /** Returns the [PhysicsAnimator] for the stashed handle view. */
@@ -387,6 +411,16 @@ public class BubbleStashController {
         mIconAlphaForStash.setValue(1);
         mIconScaleForStash.updateValue(1);
         mIsStashed = false;
+        onIsStashedChanged();
+    }
+
+    /** Stashes the bubble bar immediately without animation. */
+    public void stashBubbleBarImmediate() {
+        mHandleViewController.setTranslationYForSwipe(0);
+        mIconAlphaForStash.setValue(0);
+        mIconTranslationYForStash.updateValue(getStashTranslation());
+        mIconScaleForStash.updateValue(STASHED_BAR_SCALE);
+        mIsStashed = true;
         onIsStashedChanged();
     }
 }

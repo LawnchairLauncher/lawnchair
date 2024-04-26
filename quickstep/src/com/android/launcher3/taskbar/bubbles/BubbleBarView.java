@@ -104,8 +104,6 @@ public class BubbleBarView extends FrameLayout {
      * updates the bounds and accounts for translation.
      */
     private final Rect mBubbleBarBounds = new Rect();
-    /** The bounds of the animating bubble in the coordinate space of the BubbleBarView. */
-    private final Rect mAnimatingBubbleBounds = new Rect();
     // The amount the bubbles overlap when they are stacked in the bubble bar
     private final float mIconOverlapAmount;
     // The spacing between the bubbles when bubble bar is expanded
@@ -185,7 +183,7 @@ public class BubbleBarView extends FrameLayout {
 
         setClipToPadding(false);
 
-        mBubbleBarBackground = new BubbleBarBackground(context, getBubbleBarHeight());
+        mBubbleBarBackground = new BubbleBarBackground(context, getBubbleBarExpandedHeight());
         setBackgroundDrawable(mBubbleBarBackground);
 
         mWidthAnimator.setDuration(WIDTH_ANIMATION_DURATION_MS);
@@ -246,7 +244,7 @@ public class BubbleBarView extends FrameLayout {
             params.width = (int) mIconSize;
             childView.setLayoutParams(params);
         }
-        mBubbleBarBackground.setHeight(getBubbleBarHeight());
+        mBubbleBarBackground.setHeight(getBubbleBarExpandedHeight());
         updateLayoutParams();
     }
 
@@ -462,30 +460,6 @@ public class BubbleBarView extends FrameLayout {
         return mBubbleBarBounds;
     }
 
-    /** Returns the bounds of the animating bubble, or {@code null} if no bubble is animating. */
-    @Nullable
-    public Rect getAnimatingBubbleBounds() {
-        if (mIsAnimatingNewBubble) {
-            return mAnimatingBubbleBounds;
-        }
-        return null;
-    }
-
-    /**
-     * Updates the animating bubble bounds. This should be called when the bubble is fully animated
-     * in so that we can include it in taskbar touchable region.
-     *
-     * <p>The bounds are adjusted to the coordinate space of BubbleBarView so that it can be used
-     * by taskbar.
-     */
-    public void updateAnimatingBubbleBounds(int left, int top, int width, int height) {
-        Rect bubbleBarBounds = getBubbleBarBounds();
-        mAnimatingBubbleBounds.left = bubbleBarBounds.left + left;
-        mAnimatingBubbleBounds.top = bubbleBarBounds.top + top;
-        mAnimatingBubbleBounds.right = mAnimatingBubbleBounds.left + width;
-        mAnimatingBubbleBounds.bottom = mAnimatingBubbleBounds.top + height;
-    }
-
     /**
      * Set bubble bar relative pivot value for X and Y, applied as a fraction of view width/height
      * respectively. If the value is not in range of 0 to 1 it will be normalized.
@@ -496,6 +470,11 @@ public class BubbleBarView extends FrameLayout {
         mRelativePivotX = Float.max(Float.min(x, 1), 0);
         mRelativePivotY = Float.max(Float.min(y, 1), 0);
         requestLayout();
+    }
+
+    /** Like {@link #setRelativePivot(float, float)} but only updates pivot y. */
+    public void setRelativePivotY(float y) {
+        setRelativePivot(mRelativePivotX, y);
     }
 
     /**
@@ -512,38 +491,14 @@ public class BubbleBarView extends FrameLayout {
         return mRelativePivotY;
     }
 
-    /** Prepares for animating a bubble while being stashed. */
-    public void prepareForAnimatingBubbleWhileStashed(String bubbleKey) {
+    /** Notifies the bubble bar that a new bubble animation is starting. */
+    public void onAnimatingBubbleStarted() {
         mIsAnimatingNewBubble = true;
-        // we're about to animate the new bubble in. the new bubble has already been added to this
-        // view, but we're currently stashed, so before we can start the animation we need make
-        // everything else in the bubble bar invisible, except for the bubble that's being animated.
-        setBackground(null);
-        for (int i = 0; i < getChildCount(); i++) {
-            final BubbleView view = (BubbleView) getChildAt(i);
-            final String key = view.getBubble().getKey();
-            if (!bubbleKey.equals(key)) {
-                view.setVisibility(INVISIBLE);
-            }
-        }
-        setVisibility(VISIBLE);
-        setAlpha(1);
-        setTranslationY(0);
-        setScaleX(1);
-        setScaleY(1);
     }
 
-    /** Resets the state after the bubble animation completed. */
+    /** Notifies the bubble bar that a new bubble animation is complete. */
     public void onAnimatingBubbleCompleted() {
         mIsAnimatingNewBubble = false;
-        // setting the background triggers relayout so no need to explicitly invalidate after the
-        // animation
-        setBackground(mBubbleBarBackground);
-        for (int i = 0; i < getChildCount(); i++) {
-            final BubbleView view = (BubbleView) getChildAt(i);
-            view.setVisibility(VISIBLE);
-            view.setAlpha(1f);
-        }
     }
 
     // TODO: (b/280605790) animate it
@@ -577,7 +532,7 @@ public class BubbleBarView extends FrameLayout {
 
     private void updateLayoutParams() {
         LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        lp.height = getBubbleBarHeight();
+        lp.height = (int) getBubbleBarExpandedHeight();
         lp.width = (int) (mIsBarExpanded ? expandedWidth() : collapsedWidth());
         setLayoutParams(lp);
     }
@@ -593,12 +548,6 @@ public class BubbleBarView extends FrameLayout {
      * on the expanded state.
      */
     private void updateChildrenRenderNodeProperties() {
-        if (mIsAnimatingNewBubble) {
-            // don't update bubbles if a new bubble animation is playing.
-            // the bubble bar will redraw itself via onLayout after the animation.
-            return;
-        }
-
         final float widthState = (float) mWidthAnimator.getAnimatedValue();
         final float currentWidth = getWidth();
         final float expandedWidth = expandedWidth();
@@ -864,8 +813,13 @@ public class BubbleBarView extends FrameLayout {
                 : mIconSize + horizontalPadding;
     }
 
-    private int getBubbleBarHeight() {
-        return (int) (mIconSize + mBubbleBarPadding * 2 + mPointerSize);
+    private float getBubbleBarExpandedHeight() {
+        return getBubbleBarCollapsedHeight() + mPointerSize;
+    }
+
+    float getBubbleBarCollapsedHeight() {
+        // the pointer is invisible when collapsed
+        return mIconSize + mBubbleBarPadding * 2;
     }
 
     /**
