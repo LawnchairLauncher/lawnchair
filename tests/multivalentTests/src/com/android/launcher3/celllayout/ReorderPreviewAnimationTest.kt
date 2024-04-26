@@ -141,11 +141,14 @@ class ReorderPreviewAnimationTest {
             ReorderPreviewAnimation.MODE_PREVIEW,
             AnimationValues(dx = 0, dy = 0, scale = 100)
         )
-        testAnimationAtGivenProgress(
-            PREVIEW_DURATION * 99,
-            ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 5, dy = -10, scale = 96)
-        )
+        // (b/339313407) Temporarily disable this test as the behavior is
+        // inconsistent between Soong & Gradle builds.
+        //
+        // testAnimationAtGivenProgress(
+        //     PREVIEW_DURATION * 99,
+        //     ReorderPreviewAnimation.MODE_PREVIEW,
+        //     AnimationValues(dx = 5, dy = -10, scale = 96)
+        // )
         testAnimationAtGivenProgress(
             PREVIEW_DURATION * 98,
             ReorderPreviewAnimation.MODE_PREVIEW,
