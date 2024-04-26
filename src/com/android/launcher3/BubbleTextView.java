@@ -631,7 +631,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (!mForceHideDot && (hasDot() || mDotParams.scale > 0)) {
             getIconBounds(mDotParams.iconBounds);
             Utilities.scaleRectAboutCenter(mDotParams.iconBounds,
-                    IconShape.getNormalizationScale());
+                    IconShape.INSTANCE.get(getContext()).getNormalizationScale());
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);

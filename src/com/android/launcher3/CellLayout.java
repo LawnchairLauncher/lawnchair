@@ -123,7 +123,7 @@ public class CellLayout extends ViewGroup {
     private OnTouchListener mInterceptTouchListener;
 
     private final ArrayList<DelegatedCellDrawing> mDelegatedCellDrawings = new ArrayList<>();
-    final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
+    final PreviewBackground mFolderLeaveBehind = new PreviewBackground(getContext());
 
     private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
     private static final int[] BACKGROUND_STATE_DEFAULT = EMPTY_STATE_SET;
