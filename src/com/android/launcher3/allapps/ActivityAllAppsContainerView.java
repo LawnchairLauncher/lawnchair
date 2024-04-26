@@ -499,18 +499,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * Exits search and returns to A-Z apps list. Scroll to the private space header.
      */
     public void resetAndScrollToPrivateSpaceHeader() {
-        if (mTouchHandler != null) {
-            mTouchHandler.endFastScrolling();
-        }
-
-        // Reset the base recycler view after transitioning home.
-        updateHeaderScroll(0);
-
         // Animate to A-Z with 0 time to reset the animation with proper state management.
+        // We can't rely on `animateToSearchState` with delay inside `resetSearch` because that will
+        // conflict with following scrolling to bottom, so we need it with 0 time here.
         animateToSearchState(false, 0);
 
         MAIN_EXECUTOR.getHandler().post(() -> {
             // Reset the search bar after transitioning home.
+            // When `resetSearch` is called after `animateToSearchState` is finished, the inside
+            // `animateToSearchState` with delay is a just no-op and return early.
             mSearchUiManager.resetSearch();
             // Switch to the main tab
             switchToTab(ActivityAllAppsContainerView.AdapterHolder.MAIN);
