@@ -83,7 +83,7 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
     private var alignedOptionIndex: Int = 0
     private val extraSpaceForRowAlignment: Int
         get() = optionMeasuredHeight * alignedOptionIndex
-    private val menuWidth = context.resources.getDimensionPixelSize(R.dimen.task_menu_width_grid)
+    private val menuPaddingEnd = context.resources.getDimensionPixelSize(R.dimen.task_card_margin)
 
     private lateinit var taskView: TaskView
     private lateinit var optionLayout: LinearLayout
@@ -213,7 +213,13 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
             menuOptionView.requireViewById(R.id.text)
         )
         val lp = menuOptionView.layoutParams as LayoutParams
-        lp.width = menuWidth
+        lp.width = LayoutParams.MATCH_PARENT
+        menuOptionView.setPaddingRelative(
+            menuOptionView.paddingStart,
+            menuOptionView.paddingTop,
+            menuPaddingEnd,
+            menuOptionView.paddingBottom
+        )
         menuOptionView.setOnClickListener { view: View? -> menuOption.onClick(view) }
         optionLayout.addView(menuOptionView)
     }
