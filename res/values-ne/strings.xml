@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"नोट लेख्ने कार्य"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"हाल्नुहोस्"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट हाल्नुहोस्"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"उपयोगी जानकारी सजिलै प्राप्त गर्नुहोस्"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"एपहरू नखोलिकनै जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"बुझेँ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेटका सेटिङ बदल्नुहोस्"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"एपहरू खोज्नुहोस्"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>

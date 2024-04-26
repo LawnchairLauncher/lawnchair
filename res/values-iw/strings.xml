@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"כתיבת הערות"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"הוספה"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"הוספת הווידג\'ט <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"קבלת מידע שימושי בהקשה"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"רוצה לקבל מידע בלי לפתוח אפליקציות? אפשר להוסיף ווידג\'טים למסך הבית"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"אפשר לשנות את הגדרות הווידג\'ט בהקשה"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"הבנתי"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"שינוי הגדרות הווידג\'ט"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"חיפוש אפליקציות"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"טעינת אפליקציות מתבצעת…"</string>

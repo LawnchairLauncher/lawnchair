@@ -320,11 +320,6 @@ class LauncherPrefs(private val encryptedContext: Context) : SafeCloseable {
         @JvmField
         val RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN =
             backedUpItem("launcher.reconfigurable_widget_education_tip_seen", false)
-        @JvmField
-        val WIDGETS_EDUCATION_DIALOG_SEEN =
-            backedUpItem("launcher.widgets_education_dialog_seen", false)
-        @JvmField
-        val WIDGETS_EDUCATION_TIP_SEEN = backedUpItem("launcher.widgets_education_tip_seen", false)
 
         @JvmStatic
         fun <T> backedUpItem(

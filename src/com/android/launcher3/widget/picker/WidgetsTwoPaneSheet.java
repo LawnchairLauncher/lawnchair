@@ -129,7 +129,6 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         mPrimaryWidgetListView.setClipToOutline(true);
 
         onWidgetsBound();
-        setUpEducationViewsIfNeeded();
 
         // Set the fast scroller as not visible for two pane layout.
         mFastScroller.setVisibility(GONE);
