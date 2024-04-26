@@ -24,10 +24,6 @@ import static com.android.window.flags.Flags.enableDesktopWindowingWallpaperActi
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.os.RemoteException;
-import android.util.Log;
-import android.view.TaskTransitionSpec;
-import android.view.WindowManagerGlobal;
 import android.window.RemoteTransition;
 
 import androidx.annotation.NonNull;
@@ -37,7 +33,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.logging.InstanceId;
@@ -139,7 +134,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mLauncher.setTaskbarUIController(null);
         mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
         mHomeState.removeListener(mVisibilityChangeListener);
-        updateTaskTransitionSpec(true);
     }
 
     private void onInAppDisplayProgressChanged() {
@@ -278,26 +272,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private void onStashedInAppChanged(DeviceProfile deviceProfile) {
         boolean taskbarStashedInApps = mControllers.taskbarStashController.isStashedInApp();
         deviceProfile.isTaskbarPresentInApps = !taskbarStashedInApps;
-        updateTaskTransitionSpec(taskbarStashedInApps);
-    }
-
-    private void updateTaskTransitionSpec(boolean taskbarIsHidden) {
-        try {
-            if (taskbarIsHidden) {
-                // Clear custom task transition settings when the taskbar is stashed
-                WindowManagerGlobal.getWindowManagerService().clearTaskTransitionSpec();
-            } else {
-                // Adjust task transition spec to account for taskbar being visible
-                WindowManagerGlobal.getWindowManagerService().setTaskTransitionSpec(
-                        new TaskTransitionSpec(
-                                mLauncher.getColor(R.color.taskbar_background)));
-            }
-        } catch (RemoteException e) {
-            // This shouldn't happen but if it does task animations won't look good until the
-            // taskbar stashing state is changed.
-            Log.e(TAG, "Failed to update task transition spec to account for new taskbar state",
-                    e);
-        }
     }
 
     /**
