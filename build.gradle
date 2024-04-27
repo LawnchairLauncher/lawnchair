@@ -154,6 +154,10 @@ android {
         }
     }
 
+    androidResources {
+        generateLocaleConfig true
+    }
+
     buildFeatures {
         aidl true
         buildConfig true
@@ -204,15 +208,18 @@ android {
         .toArray()
 
     buildTypes {
+        all {
+            signingConfig releaseSigning
+            pseudoLocalesEnabled true
+        }
+
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
-            signingConfig releaseSigning
         }
 
         release {
             resValue("string", "derived_app_name", "Lawnchair")
-            signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
             proguardFiles proguardFilesFromAosp + "proguard.pro"
@@ -408,7 +415,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.4.0'
 
     // Smartspacer
-    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.8') {
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.9') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 }
@@ -428,7 +435,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.3.15",
+            "io.nlopez.compose.rules:ktlint:0.3.18",
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
         ])

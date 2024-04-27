@@ -17,19 +17,19 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">Podesite Lawnchair kao podrazumevani pokretač da biste pristupali prečicama i drugim funkcijama</string>
     <string name="settings">Podešavanja</string>
     <string name="general_label">Opšte</string>
-    <string name="general_description">Boje, paketi ikona i tačke za obaveštenja</string>
+    <string name="general_description">Boja, paketi ikona i tačke za obaveštenja</string>
     <string name="home_screen_label">Početni ekran</string>
     <string name="home_screen_description">Fid, mreža, ikone</string>
-    <string name="what_to_show">Šta želite da se prikazuje?</string>
+    <string name="what_to_show">Informacije za prikaz</string>
     <string name="dock_label">Dok</string>
-    <string name="dock_description">Okvir za pretragu, broj ikona</string>
+    <string name="dock_description">Traka za pretragu, broj ikona</string>
     <string name="app_drawer_label">Lista aplikacija</string>
     <string name="app_drawer_description">Skrivene aplikacije, broj kolona, ikone</string>
-    <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="drawer_search_label">Pretraga na listi aplikacija</string>
+    <string name="drawer_search_description">Veb-predlozi, globalna pretraga</string>
     <string name="folders_label">Folderi</string>
     <string name="folders_description">Broj redova i kolona</string>
     <string name="gestures_label">Pokreti</string>
@@ -43,15 +43,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Prilagođavanje fonta</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">Ne utiče na sav tekst</string>
     <string name="smartspace_calendar_label">Prilagođavanje kalendara u vidžetu „Kratak pregled”</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="smartspace_calendar_description">Omogućava prikaz datuma u kalendarskim sistemima koji nisu gregorijanski</string>
+    <string name="workspace_increase_max_grid_size_label">Veća mreža početnog ekrana</string>
+    <string name="workspace_increase_max_grid_size_description">Povećava maksimalnu veličinu mreže početnog ekrana iz 10 × 10 u 20 × 20</string>
     <string name="always_reload_icons_label">Uvek učitavaj ikone iznova</string>
-    <string name="always_reload_icons_description">Izbegavaj korišćenje keširanih ikona iz paketa ikona</string>
+    <string name="always_reload_icons_description">Ne koristi keširane ikone iz paketa ikona</string>
     <string name="recents_lock_unlock">Zaključaj/otključaj</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <string name="recents_lock_unlock_description">Sprečite brisanje izabrane aplikacije kada dodirnete „Obriši sve”</string>
     <!-- Relating to label/icon size -->
     <string name="icons">Ikone</string>
     <string name="icon_size">Veličina ikona</string>
@@ -59,21 +59,21 @@
     <string name="label_size">Veličina oznaka</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotacija početnog ekrana</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
+    <string name="home_screen_rotation_description">Dozvoli rotiranje početnog ekrana kada je uređaj rotiran</string>
     <string name="font_label">Font (eksperimentalno)</string>
-    <string name="fontWorkspace">Opšta</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
+    <string name="fontWorkspace">Opšte</string>
+    <string name="fontHeading">Naslovi</string>
+    <string name="fontHeadingMedium">Naslovi (srednji)</string>
+    <string name="fontBody">Tekst</string>
+    <string name="fontBodyMedium">Tekst (srednji)</string>
     <string name="icon_style">Stil ikona</string>
-    <string name="transparent_background_icons">117788</string>
+    <string name="transparent_background_icons">Prozirne tematske ikone</string>
     <string name="transparent_background_icons_description">Koristi prozirnu pozadinu na tematskim ikonama</string>
     <string name="icon_shape_label">Oblik ikona</string>
     <string name="auto_adaptive_icons_label">Prilagodljive ikone</string>
-    <string name="auto_adaptive_icons_description">Za sve neprilagodljive ikone.</string>
+    <string name="auto_adaptive_icons_description">Za sve neprilagodljive ikone</string>
     <string name="background_lightness_label">Osvetljenost pozadine</string>
-    <string name="adaptive_icon_background_description">Koristi 100% osvetljenja pozadine za belu.</string>
+    <string name="adaptive_icon_background_description">Bela pozadina pri 100% osvetljenosti</string>
     <string name="reset_custom_icons">Resetuj prilagođene ikone</string>
     <string name="reset_custom_icons_confirmation">Sve prilagođene ikone će se resetovati. Želite li da nastavite?</string>
     <string name="notification_dots">Tačke za obaveštenja</string>
@@ -84,8 +84,8 @@
     <string name="notification_dots_color_contrast_warning_sometimes">Upozorenje: boje tačke i broja obaveštenja možda neće uvek imati dovoljno međusobnog kontrasta</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Pristup obaveštenjima</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
-    <string name="msg_missing_notification_access">Da biste koristili tačke za obaveštenja, dodelite aplikaciji <xliff:g id="name" example="My App">%1$s</xliff:g> pristup obaveštenjima.</string>
+    <string name="missing_notification_access_description">Potreban je pristup obaveštenjima</string>
+    <string name="msg_missing_notification_access">Da biste prikazivali tačke za obaveštenja, uključite obaveštenja za <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="title_change_settings">Promenite podešavanja</string>
     <string name="colors">Boje</string>
     <string name="theme_label">Tema</string>
@@ -119,7 +119,7 @@
     <string name="themed_icons_off_label">Isključeno</string>
     <string name="themed_icons_home_label">Početni ekran</string>
     <string name="themed_icons_home_and_drawer_label">Početni ekran i lista aplikacija</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="lawnicons_not_installed_description">Nema podržanih paketa ikona</string>
     <!-- IconPickerPreference -->
     <string name="icon_shape_system">Sistemski</string>
     <string name="icon_shape_circle">Krug</string>
@@ -136,8 +136,8 @@
     <string name="icon_shape_teardrop">Suza</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Dodaj fontove</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_add_fonts_summary">OTF i TTF fontovi su podržani</string>
+    <string name="pref_fonts_missing_font">Font nije pronađen</string>
     <string name="font_variant_italic">Kurziv</string>
     <string name="font_weight_thin">Najtanji</string>
     <string name="font_weight_extra_light">Veoma tanki</string>
@@ -162,35 +162,35 @@
     <string name="hsb_hue">Nijansa</string>
     <string name="hsb_saturation">Zasićenost</string>
     <string name="hsb_brightness">Osvetljenost</string>
-    <string name="hex">Hex</string>
+    <string name="hex">Heksadecimalni</string>
     <string name="color_sliders">Klizači</string>
     <string name="action_copy">Kopiraj</string>
     <string name="action_paste">Nalepi</string>
-    <string name="copied_toast">Kopirano u privremenu memoriju.</string>
+    <string name="copied_toast">Kopirano u privremenu memoriju</string>
     <string name="invalid_color">Nevažeća boja</string>
     <string name="launcher_default_color">Upravlja aplikacija Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početni ekran</string>
-    <string name="minus_one_enable">Prikaži vesti</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="minus_one_enable">Prikaži fid</string>
+    <string name="minus_one_unavailable">Nijedna aplikacija za fid nije instalirana</string>
     <string name="minus_one">Fid</string>
     <string name="feed_provider">Dobavljač fida</string>
     <string name="feed_default">Podrazumevano</string>
     <string name="wallpaper">Pozadina</string>
     <string name="wallpaper_scrolling_label">Pomeranje pozadine</string>
     <string name="wallpaper_depth_effect_label">Efekat dubine pozadine</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="wallpaper_depth_effect_description">Uvećajte ili umanjite prikaz pozadine pri prelazu između različitih delova pokretača</string>
     <string name="show_sys_ui_scrim">Gornja senka</string>
     <string name="layout">Raspored</string>
     <string name="home_screen_grid">Mreža početnog ekrana</string>
     <string name="home_screen_lock">Zaključaj početni ekran</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="home_screen_lock_description">Sprečite promenu rasporeda početnog ekrana</string>
     <string name="home_screen_unlock">Otključaj početni ekran</string>
-    <string name="home_screen_locked">Home Screen is locked</string>
-    <string name="show_dot_pagination_label">Use Dot Pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use New Popup Style</string>
-    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
+    <string name="home_screen_locked">Početni ekran je zaključan</string>
+    <string name="show_dot_pagination_label">Numeriši stranice tačkama</string>
+    <string name="show_dot_pagination_description">Koristite tačke umesto linija za prikaz broja stranica</string>
+    <string name="show_material_u_popup_label">Novi stil iskačućeg prozora</string>
+    <string name="show_material_u_popup_description">Koristite animirane i kompaktnije iskačuće prozore u skladu sa dizajnom Material You</string>
     <string name="popup_menu">Iskačući meni</string>
     <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje</string>
     <string name="show_system_settings_entry">Prikaži sistemsko podešavanje</string>
@@ -203,10 +203,10 @@
     <string name="color_dark">Tamna</string>
     <string name="force_rounded_widgets">Zaobljeni uglovi</string>
     <string name="allow_widget_overlap">Dozvoli preklapanje</string>
-    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_widget_resize_label">Forsiraj promenu veličine vidžeta</string>
+    <string name="force_widget_resize_description">Ukloni ograničenje za promenu veličine vidžeta</string>
+    <string name="widget_unlimited_size_label">Ukloni ograničenje veličine</string>
+    <string name="widget_unlimited_size_description">Uklonite ograničenje minimalne i maksimalne veličine vidžeta</string>
     <!-- HomeScreenGridPreferences -->
     <string name="columns">Kolone</string>
     <string name="rows">Redovi</string>
@@ -219,15 +219,15 @@
     <string name="battery_charging_percentage_charging_time">"%1$d%% — napunjen za %2$s"</string>
     <string name="accessibility_smartspace_page">Stranica %1$d od %2$d</string>
     <string name="smartspace_widget">Kratak pregled</string>
-    <string name="smartspace_widget_description">Šta želite da se prikazuje?</string>
-    <string name="smartspace_widget_placeholder_date">Pet, 3. mart</string>
+    <string name="smartspace_widget_description">Informacije za prikaz</string>
+    <string name="smartspace_widget_placeholder_date">Petak, 3. mart</string>
     <string name="preview_label">Pregled</string>
     <string name="smartspace_calendar">Kalendar</string>
     <string name="smartspace_date_and_time">Datum i vreme</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Vreme</string>
     <string name="smartspace_time_format">Vremenski format</string>
-    <string name="smartspace_time_follow_system">Prati sistemska podešavanja</string>
+    <string name="smartspace_time_follow_system">Na osnovu sistema</string>
     <string name="smartspace_time_12_hour_format">12-časovni format</string>
     <string name="smartspace_time_24_hour_format">24-časovni format</string>
     <string name="smartspace_weather">Vremenska prognoza</string>
@@ -240,14 +240,14 @@
     <string name="smartspace_calendar_persian">Persijski</string>
     <string name="smartspace_preferences">Podešavanja</string>
     <string name="smartspace_widget_toggle_label">Prikaži na početnom ekranu</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
+    <string name="smartspace_widget_toggle_description">„Kratak pregled” možete da dodate ručno postavljanjem vidžeta „Lawnchair”</string>
     <string name="smartspace_mode_label">Dobavljač za „Kratak pregled”</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google pretraga</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="show_hotseat_title">Prikaži dok</string>
-    <string name="search_bar_label">Okvir za pretragu</string>
+    <string name="search_bar_label">Traka za pretragu</string>
     <string name="hotseat_mode_label">Vidžet trake za pretragu</string>
     <string name="hotseat_mode_disabled">Onemogućeno</string>
     <string name="hotseat_mode_google_search">Google traka za pretragu</string>
@@ -255,30 +255,30 @@
     <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
     <string name="search_provider">Pretraživač</string>
     <string name="grid">Mreža</string>
-    <string name="dock_icons">Ikone u doku</string>
+    <string name="dock_icons">Ikone na doku</string>
     <string name="hotseat_bottom_space_label">Donji razmak</string>
     <!-- SearchProviderPreferences -->
     <string name="search_provider_app_search">Pretraga aplikacija</string>
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair ima ugovor o podeli prihoda.\n\nPretragom pomoću usluge %1$s podržavate Lawnchair.</string>
     <string name="app_label">Aplikacija</string>
-    <string name="website_label">Veb-sajt</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="website_label">Sajt</string>
+    <string name="qsb_search_provider_app_required">Potrebna je aplikacija</string>
     <!-- AppDrawerPrefences -->
     <string name="background_opacity">Prozirnost pozadine</string>
     <string name="hidden_apps_label">Skrivene aplikacije</string>
     <string name="show_enable_smart_hide">Prikaži po unosu punog imena</string>
     <string name="hide_hidden_apps_search">Sakrij u rezultatima pretrage</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Učitavaj aplikacije odjednom</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Sve ikone se odjednom učitavaju i prikazuju umesto pojedinačno. Može da reši probleme sa pretragom, ali povećava vreme učitavanja.</string>
     <string name="pref_all_apps_remember_position_title">Zapamti položaj</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
+    <string name="pref_all_apps_remember_position_description">Zapamti položaj na listi aplikacija</string>
     <string name="pref_all_apps_show_scrollbar_title">Prikaži klizač</string>
-    <string name="pref_category_search">Pretraga</string>
-    <string name="show_app_search_bar">Prikaži okvir za pretragu</string>
+    <string name="pref_category_search">Pretraži</string>
+    <string name="show_app_search_bar">Prikaži traku za pretragu</string>
     <string name="pref_search_auto_show_keyboard">Automatski prikazuj tastaturu</string>
     <string name="fuzzy_search_title">Približna pretraga</string>
-    <string name="fuzzy_search_desc">Približni rezultati pretrage na osnovu upita.</string>
-    <string name="clear_history">Clear Search History</string>
+    <string name="fuzzy_search_desc">Približni rezultati pretrage na osnovu upita</string>
+    <string name="clear_history">Obriši istoriju pretrage</string>
     <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
     <string name="row_height_label">Visina reda</string>
     <string name="app_drawer_indent_label">Horizontalni razmak</string>
@@ -292,8 +292,8 @@
     <!-- FolderPreferences -->
     <string name="folder_preview_bg_opacity_label">Neprozirnost pozadine ikona</string>
     <string name="folder_preview_bg_color_label">Pozadinska boja ikone</string>
-    <string name="max_folder_columns">Maximum Folder Columns</string>
-    <string name="max_folder_rows">Maximum Folder Rows</string>
+    <string name="max_folder_columns">Maksimalan broj kolona u folderu</string>
+    <string name="max_folder_rows">Maksimalan broj redova u folderu</string>
     <!-- GesturePreference -->
     <string name="gesture_double_tap">Dvostruki dodir</string>
     <string name="gesture_swipe_up">Prevlačenje nagore</string>
@@ -321,7 +321,7 @@
     <string name="override_window_corner_radius_label">Prilagođeni radijus ugla ekrana</string>
     <string name="window_corner_radius_description">Kada prevučete nagore i otvorite Nedavno, trenutna aplikacija će pratiti vaš prst i smanjiti se u karticu. Pomoću ovog klizača podesite radijus ugla kartice kada je skoro u režimu celog ekrana kako bi odgovarala uglovima ekrana.</string>
     <string name="taskbar_label">Traka zadataka</string>
-    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Prikaži traku zadataka (eksperimentalno)</string>
     <!-- about/About.kt -->
     <string name="news">Novosti</string>
     <string name="support">Podrška</string>
@@ -332,99 +332,99 @@
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Podrška i odnosi sa javnošću</string>
     <string name="acknowledgements">Priznanja</string>
-    <string name="translate">Prevođenje</string>
+    <string name="translate">Prevod</string>
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">Ikone</string>
     <string name="icon_picker_reset_to_default">Vrati na podrazumevano</string>
     <string name="icon_pack_external_picker">Otvori spoljni birač</string>
     <string name="pick_icon_from_label">Izaberi ikonu iz</string>
-    <string name="icon_picker_load_failed">Nije moguće učitati još ikona.</string>
+    <string name="icon_picker_load_failed">Nije moguće učitati još ikona</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Pretražite aplikacije</string>
     <string name="settings_button_text">Podešavanja početnog ekrana</string>
-    <string name="item_removed">Item removed</string>
-    <string name="all_apps_no_search_results">Nije pronađena aplikacija koja odgovara upitu „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="item_removed">Stavka je uklonjena</string>
+    <string name="all_apps_no_search_results">Nijedna aplikacija ne odgovara upitu „<xliff:g example="Android" id="query">%1$s</xliff:g>”</string>
     <string name="dt2s_admin_hint_title">Potrebne su administratorske dozvole</string>
     <string name="dt2s_admin_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, podesite Lawnchair kao aplikaciju za administratora uređaja. U podešavanjima dodirnite „Aktiviraj ovu aplikaciju za administratora uređaja”.</string>
-    <string name="dt2s_admin_warning">Funkcija „Dodirnite dvaput za stanje spavanja” će biti onemogućena.</string>
-    <string name="dt2s_a11y_hint_title">Uključite uslugu pristupačnosti</string>
+    <string name="dt2s_admin_warning">Funkcija „Dodirnite dvaput za stanje spavanja” će biti isključena</string>
+    <string name="dt2s_a11y_hint_title">Uključi uslugu pristupačnosti</string>
     <string name="dt2s_a11y_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, uključite uslugu pristupačnosti Lawnchaira. U podešavanjima izaberite Lawnchair i dodirnite „Koristi Lawnchair”.</string>
     <string name="dt2s_warning_open_settings">Otvori podešavanja</string>
-    <string name="loading">Učitavanje…</string>
+    <string name="loading">Učitava se…</string>
     <string name="system">Sistemska</string>
     <string name="customize_button_text">Prilagodi</string>
     <string name="label">Oznaka</string>
     <string name="hide_from_drawer">Sakrij sa liste aplikacija</string>
     <string name="suggestion_pref_screen_title">Predlozi</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
+    <string name="show_suggested_apps_at_drawer_top">Prikazuj predložene aplikacije na vrhu liste aplikacija</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Izveštaj o grešci u Lawnchairu</string>
     <string name="crash_report_notif_title">%1$s je otkazao</string>
     <string name="action_upload_crash_report">Otpremi evidenciju o otkazivanju</string>
     <string name="action_copy_link">Kopiraj link</string>
     <string name="action_upload_error">Otpremanje nije uspelo</string>
-    <string name="dogbin_uploading">Otpremanje…</string>
+    <string name="dogbin_uploading">Otprema se…</string>
     <string name="bugreport_channel_name">Izveštaji o greškama</string>
     <string name="status_channel_name">Status otpremanja</string>
-    <string name="bugreport_group_summary">%d novih izveštaja.</string>
-    <string name="bugreport_group_summary_multiple">Više novih izveštaja.</string>
+    <string name="bugreport_group_summary">%d novih izveštaja</string>
+    <string name="bugreport_group_summary_multiple">Nekoliko novih izveštaja</string>
     <!-- Search ig -->
     <string name="action_apply">Primeni</string>
     <string name="show_search_result_types">Prikaži u rezultatima pretrage</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Aplikacije i prečice</string>
     <string name="search_pref_result_shortcuts_title">Prečice aplikacije</string>
-    <string name="search_pref_result_people_title">Ljudi</string>
+    <string name="search_pref_result_people_title">Kontakti</string>
     <string name="search_pref_result_tips_title">Pixel saveti</string>
-    <string name="search_pref_result_settings_title">Android Settings</string>
+    <string name="search_pref_result_settings_title">Podešavanja Androida</string>
     <string name="search_pref_result_files_title">Fajlovi</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search History</string>
-    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_web_title">Veb-predlozi</string>
+    <string name="search_pref_result_history_title">Istorija pretrage</string>
+    <string name="search_pref_result_files_description">Mediji, fajlovi i drugo</string>
     <string name="search_pref_result_contacts_description">Kontakti i drugo</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
-    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
-    <string name="grant_requested_permissions">Grant Permissions</string>
+    <string name="search_pref_result_web_description">Pomoću usluge <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="warn_contact_permission_content">Da biste pretraživali kontakte, dodelite Lawnchairu dozvole Kontakti i Telefon</string>
+    <string name="warn_files_permission_content">Da biste pretraživali fajlove, dodelite Lawnchairu pristup memoriji</string>
+    <string name="grant_requested_permissions">Dodeli dozvole</string>
     <string name="pref_suggestion_label">Predlozi</string>
     <string name="all_apps_device_search_hint">Pretražite</string>
-    <string name="search_input_action_clear_results">Obriši okvir za pretragu</string>
+    <string name="search_input_action_clear_results">Obriši polje za pretragu</string>
     <string name="all_apps_search_result_suggestions">Veb</string>
     <string name="all_apps_search_result_contacts_from_device">Kontakti</string>
     <string name="all_apps_search_result_files">Fajlovi</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
-    <string name="label_search">Pretražite</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Iz podešavanja telefona</string>
+    <string name="label_search">Pretraži</string>
     <string name="label_lens">Google objektiv</string>
     <string name="label_voice_search">Glasovna pretraga</string>
     <string name="pref_advance_search_category">Napredna pretraga</string>
     <string name="perform_wide_search_title">Pretraga uređaja</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="max_apps_result_count_title">Maximum App Result Count</string>
-    <string name="max_people_result_count_title">Maximum People Result Count</string>
-    <string name="max_file_result_count_title">Maximum Files Result Count</string>
-    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
-    <string name="max_recent_result_count_title">Maximum Search History Count</string>
-    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
-    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+    <string name="perform_wide_search_description">Pretražite kontakte, fajlove i podešavanja</string>
+    <string name="max_apps_result_count_title">Maksimalan broj aplikacija u rezultatima pretrage</string>
+    <string name="max_people_result_count_title">Maksimalan broj kontakata u rezultatima pretrage</string>
+    <string name="max_file_result_count_title">Maksimalan broj fajlova u rezultatima pretrage</string>
+    <string name="max_settings_entry_result_count_title">Maksimalan broj podešavanja u rezultatima pretrage</string>
+    <string name="max_recent_result_count_title">Maksimalan broj stavki iz istorije u rezultatima pretrage</string>
+    <string name="max_suggestion_result_count_title">Maksimalan broj veb-predloga u rezultatima pretrage</string>
+    <string name="max_web_suggestion_delay">Maksimalno kašnjenje veb-predloga</string>
     <string name="all_apps_search_market_message">Pretražite više aplikacija</string>
     <string name="all_apps_search_startpage_message">Pretražuj pomoću usluge <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">Nije instalirana prodavnica aplikacija ili pregledač.</string>
-    <string name="quickstep_incompatible">Nekompatibilna integracija sa sistemom</string>
+    <string name="error_no_market_or_browser_installed">Nije instalirana prodavnica aplikacija ili pregledač</string>
+    <string name="quickstep_incompatible">Nekompatibilna sistemska integracija</string>
     <string name="quickstep_incompatible_description">Uređaj je podešen da koristi sistemske pokrete (poznate kao Quickstep), koje pruža %1$s, ali ova verzija aplikacije %1$s nije kompatibilna sa vašom verzijom Androida. Da biste nastavili da koristite uređaj, deinstalirajte ažuriranja aplikacije %1$s ili onemogućite %1$s kao dobavljača sistemskih pokreta.</string>
     <string name="delete">Izbriši</string>
     <!-- Backup -->
     <string name="create_backup">Napravi rezervnu kopiju</string>
     <string name="create_backup_action">Napravi</string>
-    <string name="what_to_backup">Šta želite da sačuvate?</string>
+    <string name="what_to_backup">Šta da se sačuva</string>
     <string name="backup_content_layout_and_settings">Raspored i podešavanja</string>
     <string name="backup_content_wallpaper">Pozadina</string>
-    <string name="backup_create_success">Rezervna kopija je napravljena.</string>
-    <string name="backup_create_error">Nije moguće napraviti rezervnu kopiju.</string>
+    <string name="backup_create_success">Rezervna kopija je napravljena</string>
+    <string name="backup_create_error">Nije moguće napraviti rezervnu kopiju</string>
     <string name="restore_backup">Vrati rezervnu kopiju</string>
     <string name="restore_backup_action">Vrati</string>
-    <string name="what_to_restore">Šta želite da vratite?</string>
-    <string name="backup_restore_success">Rezervna kopija je vraćena.</string>
-    <string name="backup_restore_error">Nije moguće vratiti rezervnu kopiju.</string>
-    <string name="invalid_backup_file">Nevažeći fajl rezervne kopije.</string>
+    <string name="what_to_restore">Šta da se vrati</string>
+    <string name="backup_restore_success">Rezervna kopija je vraćena</string>
+    <string name="backup_restore_error">Nije moguće vratiti rezervnu kopiju</string>
+    <string name="invalid_backup_file">Nevažeći fajl rezervne kopije</string>
     <!-- Miscellaneous -->
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s i %s</string>
