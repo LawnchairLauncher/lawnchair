@@ -34,7 +34,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.BorderAnimator;
 
@@ -136,6 +135,10 @@ public class ClearAllButton extends Button {
      * Enable or disable showing border on focus change
      */
     public void setBorderEnabled(boolean enabled) {
+        if (mBorderEnabled == enabled) {
+            return;
+        }
+
         mBorderEnabled = enabled;
         if (mFocusBorderAnimator != null) {
             mFocusBorderAnimator.setBorderVisibility(/* visible= */

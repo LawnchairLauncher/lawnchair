@@ -583,6 +583,10 @@ public class TaskView extends FrameLayout implements Reusable {
      * Enable or disable showing border on hover and focus change
      */
     public void setBorderEnabled(boolean enabled) {
+        if (mBorderEnabled == enabled) {
+            return;
+        }
+
         mBorderEnabled = enabled;
         // Set the animation correctly in case it misses the hover/focus event during state
         // transition
