@@ -291,6 +291,10 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
         return mLauncher.waitForObjectInContainer(allAppsContainer, "apps_list_view");
     }
 
+    protected UiObject2 getAllAppsHeader(UiObject2 allAppsContainer) {
+        return mLauncher.waitForObjectInContainer(allAppsContainer, "all_apps_header");
+    }
+
     protected UiObject2 getSearchBox(UiObject2 allAppsContainer) {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "search_container_all_apps");
     }
@@ -414,6 +418,14 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
                 verifyVisibleContainerOnDismiss();
             }
         }
+    }
+
+    /** Returns PredictionRow if present in view. */
+    @NonNull
+    public PredictionRow getPredictionRowView() {
+        final UiObject2 allAppsContainer = verifyActiveContainer();
+        final UiObject2 allAppsHeader = getAllAppsHeader(allAppsContainer);
+        return new PredictionRow(mLauncher, allAppsHeader);
     }
 
     /** Returns PrivateSpaceContainer if present in view. */
