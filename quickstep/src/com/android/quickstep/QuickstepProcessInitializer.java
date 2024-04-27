@@ -27,6 +27,7 @@ import android.view.ThreadedRenderer;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
+import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 @SuppressWarnings("unused")
@@ -64,6 +65,7 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
 
                 // Elevate GPU priority for Quickstep and Remote animations.
                 try {
+                        if (!Utilities.ATLEAST_Q) return;
                         ThreadedRenderer.setContextPriority(
                                         ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
                 } catch (Exception e) {
