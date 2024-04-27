@@ -123,6 +123,21 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
         psContainer.verifyInstalledAppIsPresent(INSTALLED_APP_NAME);
     }
 
+    @Test
+    @ScreenRecordRule.ScreenRecord // b/334946529
+    public void testPrivateSpaceAppLongPressUninstallMenu() throws IOException {
+        // Ensure that the App is not installed in main user otherwise, it may not be found in
+        // PS container.
+        TestUtil.uninstallDummyApp();
+        // Install the app in Private Profile
+        TestUtil.installDummyAppForUser(mProfileUserId);
+        waitForLauncherUIUpdate();
+        // Scroll to the bottom of All Apps
+        executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
+        // Get the "uninstall" menu item.
+        mLauncher.getAllApps().getAppIcon(INSTALLED_APP_NAME).openMenu().getMenuItem("Uninstall");
+    }
+
     private void waitForPrivateSpaceSetup() {
         waitForLauncherCondition("Private Profile not setup",
                 launcher -> launcher.getAppsView().hasPrivateProfile(),

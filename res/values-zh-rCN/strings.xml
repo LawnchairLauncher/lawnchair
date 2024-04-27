@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"记事"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"添加"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"添加“<xliff:g id="WIDGET_NAME">%1$s</xliff:g>”微件"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"实用信息触手可及"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"要想不打开应用就能获取信息，您可以将相应微件添加到主屏幕"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"点按即可更改微件设置"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"知道了"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"更改微件设置"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"搜索应用"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"正在加载应用…"</string>

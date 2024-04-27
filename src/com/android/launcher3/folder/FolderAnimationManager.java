@@ -21,7 +21,6 @@ import static android.view.View.ALPHA;
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
-import static com.android.launcher3.graphics.IconShape.getShape;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -45,6 +44,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.graphics.IconShape.ShapeDelegate;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -233,8 +234,9 @@ public class FolderAnimationManager {
         }
         play(a, getAnimator(mFolder.mFooter, ALPHA, 0, 1f), footerStartDelay, footerAlphaDuration);
 
+        ShapeDelegate shapeDelegate = IconShape.INSTANCE.get(mContext).getShape();
         // Create reveal animator for the folder background
-        play(a, getShape().createRevealAnimator(
+        play(a, shapeDelegate.createRevealAnimator(
                 mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         // Create reveal animator for the folder content (capture the top 4 icons 2x2)
@@ -246,9 +248,8 @@ public class FolderAnimationManager {
         int left = mContent.getPaddingLeft() + page * lp.width;
         Rect contentStart = new Rect(left, 0, left + width, height);
         Rect contentEnd = new Rect(left, 0, left + lp.width, lp.height);
-        play(a, getShape().createRevealAnimator(
+        play(a, shapeDelegate.createRevealAnimator(
                 mFolder.getContent(), contentStart, contentEnd, finalRadius, !mIsOpening));
-
 
         // Fade in the folder name, as the text can overlap the icons when grid size is small.
         mFolder.mFolderName.setAlpha(mIsOpening ? 0f : 1f);

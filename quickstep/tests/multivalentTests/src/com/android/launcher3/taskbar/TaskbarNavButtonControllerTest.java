@@ -12,9 +12,9 @@ import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HO
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.SCREEN_PIN_LONG_PRESS_THRESHOLD;
-import static com.android.quickstep.OverviewCommandHelper.TYPE_HOME;
-import static com.android.quickstep.OverviewCommandHelper.TYPE_TOGGLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
+
+import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -31,7 +31,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.quickstep.OverviewCommandHelper;
+import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarNavButtonCallbacks;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.AssistUtils;
@@ -52,8 +52,6 @@ public class TaskbarNavButtonControllerTest {
     @Mock
     TouchInteractionService mockService;
     @Mock
-    OverviewCommandHelper mockCommandHelper;
-    @Mock
     Handler mockHandler;
     @Mock
     AssistUtils mockAssistUtils;
@@ -68,13 +66,26 @@ public class TaskbarNavButtonControllerTest {
     @Mock
     View mockView;
 
+    private int mHomePressCount;
+    private int mOverviewToggleCount;
+    private final TaskbarNavButtonCallbacks mCallbacks = new TaskbarNavButtonCallbacks() {
+        @Override
+        public void onNavigateHome() {
+            mHomePressCount++;
+        }
+
+        @Override
+        public void onToggleOverview() {
+            mOverviewToggleCount++;
+        }
+    };
+
     private TaskbarNavButtonController mNavButtonController;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         when(mockService.getDisplayId()).thenReturn(DISPLAY_ID);
-        when(mockService.getOverviewCommandHelper()).thenReturn(mockCommandHelper);
         when(mockService.getApplicationContext())
                 .thenReturn(InstrumentationRegistry.getInstrumentation().getTargetContext()
                         .getApplicationContext());
@@ -82,8 +93,12 @@ public class TaskbarNavButtonControllerTest {
         when(mockTaskbarControllers.getTaskbarActivityContext())
                 .thenReturn(mockTaskbarActivityContext);
         doReturn(mockStatsLogManager).when(mockTaskbarActivityContext).getStatsLogManager();
-        mNavButtonController = new TaskbarNavButtonController(mockService,
-                mockSystemUiProxy, mockHandler, mockAssistUtils);
+        mNavButtonController = new TaskbarNavButtonController(
+                mockService,
+                mCallbacks,
+                mockSystemUiProxy,
+                mockHandler,
+                mockAssistUtils);
     }
 
     @Test
@@ -154,20 +169,20 @@ public class TaskbarNavButtonControllerTest {
     @Test
     public void testPressHome() {
         mNavButtonController.onButtonClick(BUTTON_HOME, mockView);
-        verify(mockCommandHelper, times(1)).addCommand(TYPE_HOME);
+        assertThat(mHomePressCount).isEqualTo(1);
     }
 
     @Test
     public void testPressRecents() {
         mNavButtonController.onButtonClick(BUTTON_RECENTS, mockView);
-        verify(mockCommandHelper, times(1)).addCommand(TYPE_TOGGLE);
+        assertThat(mOverviewToggleCount).isEqualTo(1);
     }
 
     @Test
-    public void testPressRecentsWithScreenPinned() {
+    public void testPressRecentsWithScreenPinned_noNavigationToOverview() {
         mNavButtonController.updateSysuiFlags(SYSUI_STATE_SCREEN_PINNING);
         mNavButtonController.onButtonClick(BUTTON_RECENTS, mockView);
-        verify(mockCommandHelper, times(0)).addCommand(TYPE_TOGGLE);
+        assertThat(mOverviewToggleCount).isEqualTo(0);
     }
 
     @Test

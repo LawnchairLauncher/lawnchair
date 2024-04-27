@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Aantekeningen maken"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"Toevoegen"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> toevoegen"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Nuttige informatie binnen handbereik"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Als je informatie wilt krijgen zonder apps te openen, kun je widgets toevoegen aan je startscherm"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tik om de widgetinstellingen te wijzigen"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Widgetinstellingen wijzigen"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Apps zoeken"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Apps laden…"</string>

@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"ការកត់ត្រា"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"បញ្ចូល"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"បញ្ចូលធាតុ​ក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"ទទួលបាន​ព័ត៌មានដែលមានប្រយោជន៍​យ៉ាងងាយស្រួល"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"ដើម្បីទទួលបាន​ព័ត៌មាន​ដោយមិនចាំបាច់​បើកកម្មវិធី អ្នកអាចបញ្ចូលធាតុ​ក្រាហ្វិកទៅក្នុង​អេក្រង់ដើម​របស់អ្នក"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ចុចដើម្បីប្ដូរការកំណត់ធាតុ​ក្រាហ្វិក"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"យល់ហើយ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ប្ដូរការកំណត់ធាតុ​ក្រាហ្វិក"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ស្វែងរក​កម្មវិធី"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"កំពុងផ្ទុកកម្មវិធី…"</string>

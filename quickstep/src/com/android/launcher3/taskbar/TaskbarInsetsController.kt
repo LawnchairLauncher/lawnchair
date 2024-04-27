@@ -153,6 +153,16 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 context.deviceProfile.widthPx,
                 windowLayoutParams.height
             )
+
+            // if there's an animating bubble add it to the touch region so that it's clickable
+            val animatingBubbleBounds =
+                controllers.bubbleControllers
+                    .getOrNull()
+                    ?.bubbleBarViewController
+                    ?.animatingBubbleBounds
+            if (animatingBubbleBounds != null) {
+                defaultTouchableRegion.op(animatingBubbleBounds, Region.Op.UNION)
+            }
         }
 
         // Pre-calculate insets for different providers across different rotations for this gravity

@@ -1380,12 +1380,14 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mContainer.getDeviceProfile().isTablet) {
+        DeviceProfile deviceProfile = mContainer.getDeviceProfile();
+        int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
+        if (deviceProfile.isTablet) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
-            setPivotY(getSnapshotView().getTop());
+            setPivotY(thumbnailTopMargin);
         } else {
             setPivotX((right - left) * 0.5f);
-            setPivotY(getSnapshotView().getTop() + getSnapshotView().getHeight() * 0.5f);
+            setPivotY(thumbnailTopMargin + (getHeight() - thumbnailTopMargin) * 0.5f);
         }
         SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
         setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);

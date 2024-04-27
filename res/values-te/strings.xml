@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"నోట్-టేకింగ్"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"జోడించండి"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> విడ్జెట్‌ను జోడించండి"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"మీ చేతివేళ్ల మీద ఉపయోగకరమైన సమాచారం"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"యాప్‌లను తెరవకుండా సమాచారాన్ని పొందడానికి, మీరు మీ మొదటి స్క్రీన్‌కు విడ్జెట్‌లను జోడించవచ్చు"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"విడ్జెట్ సెట్టింగ్‌లను మార్చడానికి ట్యాప్ చేయండి"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"అర్థమైంది"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"విడ్జెట్ సెట్టింగ్‌లను మార్చండి"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>

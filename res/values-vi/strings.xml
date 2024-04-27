@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Ghi chú"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"Thêm"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Thêm tiện ích <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Thông tin hữu ích ngay trong tầm tay bạn"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Để nhận thông tin mà không cần mở các ứng dụng, bạn có thể thêm tiện ích vào màn hình chính"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Nhấn để thay đổi chế độ cài đặt tiện ích"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"Tôi hiểu"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Thay đổi chế độ cài đặt tiện ích"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Tìm kiếm ứng dụng"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Đang tải ứng dụng…"</string>

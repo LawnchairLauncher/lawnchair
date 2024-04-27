@@ -50,39 +50,9 @@ import java.util.List;
  */
 public class WidgetsBottomSheet extends BaseWidgetSheet {
     private static final int DEFAULT_CLOSE_DURATION = 200;
-    private static final long EDUCATION_TIP_DELAY_MS = 300;
 
     private ItemInfo mOriginalItemInfo;
     @Px private int mMaxHorizontalSpan;
-
-    private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
-            new OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    if (hasSeenEducationTip()) {
-                        removeOnLayoutChangeListener(this);
-                        return;
-                    }
-                    // Widgets are loaded asynchronously, We are adding a delay because we only want
-                    // to show the tip when the widget preview has finished loading and rendering in
-                    // this view.
-                    removeCallbacks(mShowEducationTipTask);
-                    postDelayed(mShowEducationTipTask, EDUCATION_TIP_DELAY_MS);
-                }
-            };
-
-    private final Runnable mShowEducationTipTask = () -> {
-        if (hasSeenEducationTip()) {
-            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-            return;
-        }
-        View viewForTip = ((ViewGroup) ((TableLayout) findViewById(R.id.widgets_table))
-                                    .getChildAt(0)).getChildAt(0);
-        if (showEducationTipOnViewIfPossible(viewForTip) != null) {
-            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-        }
-    };
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -91,9 +61,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
-        if (!hasSeenEducationTip()) {
-            addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-        }
     }
 
     @Override

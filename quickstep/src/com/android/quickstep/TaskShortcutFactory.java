@@ -18,6 +18,7 @@ package com.android.quickstep;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
+import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 import static com.android.window.flags.Flags.enableDesktopWindowingMode;
@@ -39,6 +40,7 @@ import android.window.SplashScreen;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
@@ -50,6 +52,7 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
+import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
@@ -79,7 +82,17 @@ public interface TaskShortcutFactory {
         return null;
     }
 
-    default boolean showForSplitscreen() {
+    /**
+     * Returns {@code true} if it should be shown for grouped task; {@code false} otherwise.
+     */
+    default boolean showForGroupedTask() {
+        return false;
+    }
+
+    /**
+     * Returns {@code true} if it should be shown for desktop task; {@code false} otherwise.
+     */
+    default boolean showForDesktopTask() {
         return false;
     }
 
@@ -107,7 +120,7 @@ public interface TaskShortcutFactory {
         }
 
         @Override
-        public boolean showForSplitscreen() {
+        public boolean showForGroupedTask() {
             return true;
         }
     };
@@ -354,7 +367,7 @@ public interface TaskShortcutFactory {
         }
 
         @Override
-        public boolean showForSplitscreen() {
+        public boolean showForGroupedTask() {
             return true;
         }
     };
@@ -456,11 +469,29 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
                 TaskIdAttributeContainer taskContainer) {
+            boolean isTablet = container.getDeviceProfile().isTablet;
+            boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
+            // Extra conditions if it's not grid-only overview
+            if (!isGridOnlyOverview) {
+                RecentsOrientedState orientedState =
+                        taskContainer.getTaskView().getRecentsView().getPagedViewOrientedState();
+                boolean isFakeLandscape = !orientedState.isRecentsActivityRotationAllowed()
+                        && orientedState.getTouchRotation() != ROTATION_0;
+                if (!isFakeLandscape) {
+                    return null;
+                }
+            }
+
             SystemShortcut screenshotShortcut =
                     taskContainer.getThumbnailView().getTaskOverlay()
                             .getScreenshotShortcut(container, taskContainer.getItemInfo(),
                                     taskContainer.getTaskView());
             return createSingletonShortcutList(screenshotShortcut);
+        }
+
+        @Override
+        public boolean showForDesktopTask() {
+            return true;
         }
     };
 
@@ -468,6 +499,23 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
                 TaskIdAttributeContainer taskContainer) {
+            boolean isTablet = container.getDeviceProfile().isTablet;
+            boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
+            // Extra conditions if it's not grid-only overview
+            if (!isGridOnlyOverview) {
+                RecentsOrientedState orientedState =
+                        taskContainer.getTaskView().getRecentsView().getPagedViewOrientedState();
+                boolean isFakeLandscape = !orientedState.isRecentsActivityRotationAllowed()
+                        && orientedState.getTouchRotation() != ROTATION_0;
+                if (!isFakeLandscape) {
+                    return null;
+                }
+                // Disallow "Select" when swiping up from landscape due to rotated thumbnail.
+                if (orientedState.getDisplayRotation() != ROTATION_0) {
+                    return null;
+                }
+            }
+
             SystemShortcut modalStateSystemShortcut =
                     taskContainer.getThumbnailView().getTaskOverlay()
                             .getModalStateSystemShortcut(

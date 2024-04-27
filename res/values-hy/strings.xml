@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Նշումների ստեղծում"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"Ավելացնել"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Ավելացնել <xliff:g id="WIDGET_NAME">%1$s</xliff:g> վիջեթը"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Բոլոր կարևոր տեղեկությունները՝ ձեռքի տակ"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Ավելացրեք վիջեթներ ձեր հիմնական էկրանին, որպեսզի տեղեկություններ ստանաք՝ առանց հավելվածները բացելու։"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Հպեք՝ վիջեթի կարգավորումները փոփոխելու համար"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"Եղավ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Փոխել վիջեթի կարգավորումները"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Որոնել հավելվածներ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Հավելվածների բեռնում…"</string>

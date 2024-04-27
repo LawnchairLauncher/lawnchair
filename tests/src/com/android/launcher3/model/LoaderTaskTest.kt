@@ -56,7 +56,7 @@ class LoaderTaskTest {
 
     @Spy private var userManagerState: UserManagerState? = UserManagerState()
 
-    @get:Rule val setFlagsRule = SetFlagsRule().apply { initAllFlagsToReleaseConfigDefault() }
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @Before
     fun setup() {

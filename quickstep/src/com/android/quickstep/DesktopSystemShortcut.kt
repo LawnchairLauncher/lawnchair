@@ -73,7 +73,7 @@ class DesktopSystemShortcut(
                         )
                 }
 
-                override fun showForSplitscreen() = true
+                override fun showForGroupedTask() = true
             }
         }
     }

@@ -67,10 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Zapisovanie poznámok"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"Pridať"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Pridať miniaplikáciu <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Užitočné informácie poruke"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Ak chcete získavať informácie bez otvárania aplikácií, môžete si na plochu pridať miniaplikácie"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Klepnutím zmeňte nastavenia miniaplikácie"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"Dobre"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Zmena nastavení miniaplikácie"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Hľadať aplikácie"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Načítavajú sa aplikácie…"</string>

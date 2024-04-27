@@ -18,12 +18,11 @@ package com.android.launcher3.views;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.mapToRange;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 
 import static java.lang.Math.max;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -142,14 +141,10 @@ public class ClipIconView extends View implements ClipPathView {
         if (mIsAdaptiveIcon) {
             if (!isOpening && progress >= shapeProgressStart) {
                 if (mRevealAnimator == null) {
-                    mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(
-                            this, mStartRevealRect, mOutline, mTaskCornerRadius, !isOpening);
-                    mRevealAnimator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mRevealAnimator = null;
-                        }
-                    });
+                    mRevealAnimator = IconShape.INSTANCE.get(getContext()).getShape()
+                            .createRevealAnimator(this, mStartRevealRect,
+                                    mOutline, mTaskCornerRadius, !isOpening);
+                    mRevealAnimator.addListener(forEndCallback(() -> mRevealAnimator = null));
                     mRevealAnimator.start();
                     // We pause here so we can set the current fraction ourselves.
                     mRevealAnimator.pause();
@@ -230,7 +225,8 @@ public class ClipIconView extends View implements ClipPathView {
             mStartRevealRect.set(0, 0, originalWidth, originalHeight);
 
             if (!isFolderIcon) {
-                Utilities.scaleRectAboutCenter(mStartRevealRect, IconShape.getNormalizationScale());
+                Utilities.scaleRectAboutCenter(mStartRevealRect,
+                        IconShape.INSTANCE.get(getContext()).getNormalizationScale());
             }
 
             if (dp.isLandscape) {

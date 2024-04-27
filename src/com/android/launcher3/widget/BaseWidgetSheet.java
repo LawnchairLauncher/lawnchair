@@ -17,7 +17,6 @@ package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.Flags.enableWidgetTapToAdd;
-import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_TIP_SEEN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
 
 import android.content.Context;
@@ -35,17 +34,14 @@ import android.view.animation.Interpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
-import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -53,7 +49,6 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.AbstractSlideInView;
-import com.android.launcher3.views.ArrowTipView;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -364,31 +359,6 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     protected SystemUiController getSystemUiController() {
         return mActivityContext.getSystemUiController();
-    }
-
-    /** Shows education tip on top center of {@code view} if view is laid out. */
-    @Nullable
-    protected ArrowTipView showEducationTipOnViewIfPossible(@Nullable View view) {
-        if (view == null || !ViewCompat.isLaidOut(view)) {
-            return null;
-        }
-        int[] coords = new int[2];
-        view.getLocationOnScreen(coords);
-        ArrowTipView arrowTipView =
-                new ArrowTipView(mActivityContext,  /* isPointingUp= */ false).showAtLocation(
-                        getContext().getString(R.string.long_press_widget_to_add),
-                        /* arrowXCoord= */coords[0] + view.getWidth() / 2,
-                        /* yCoord= */coords[1]);
-        if (arrowTipView != null) {
-            LauncherPrefs.get(getContext()).put(WIDGETS_EDUCATION_TIP_SEEN, true);
-        }
-        return arrowTipView;
-    }
-
-    /** Returns {@code true} if tip has previously been shown on any of {@link BaseWidgetSheet}. */
-    protected boolean hasSeenEducationTip() {
-        return LauncherPrefs.get(getContext()).get(WIDGETS_EDUCATION_TIP_SEEN)
-                || Utilities.isRunningInTestHarness();
     }
 
     @Override

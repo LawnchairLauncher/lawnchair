@@ -130,18 +130,90 @@ class BubbleBarViewAnimatorTest {
         assertThat(handle.translationY).isEqualTo(0)
     }
 
-    private class TestBubbleBarViewAnimatorScheduler : BubbleBarViewAnimator.Scheduler {
+    @Test
+    fun animateBubbleInForStashed_tapAnimatingBubble() {
+        lateinit var overflowView: BubbleView
+        lateinit var bubbleView: BubbleView
+        lateinit var bubble: BubbleBarBubble
+        val bubbleBarView = BubbleBarView(context)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            bubbleBarView.layoutParams = FrameLayout.LayoutParams(0, 0)
+            val inflater = LayoutInflater.from(context)
 
-        var delayedBlock: (() -> Unit)? = null
-            private set
+            val bitmap = ColorDrawable(Color.WHITE).toBitmap(width = 20, height = 20)
+            overflowView =
+                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
+            overflowView.setOverflow(BubbleBarOverflow(overflowView), bitmap)
+            bubbleBarView.addView(overflowView)
 
-        override fun post(block: () -> Unit) {
-            block.invoke()
+            val bubbleInfo = BubbleInfo("key", 0, null, null, 0, context.packageName, null, false)
+            bubbleView =
+                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
+            bubble =
+                BubbleBarBubble(bubbleInfo, bubbleView, bitmap, bitmap, Color.WHITE, Path(), "")
+            bubbleView.setBubble(bubble)
+            bubbleBarView.addView(bubbleView)
+        }
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+
+        val bubbleStashController = mock<BubbleStashController>()
+        whenever(bubbleStashController.isStashed).thenReturn(true)
+
+        val handle = View(context)
+        val handleAnimator = PhysicsAnimator.getInstance(handle)
+        whenever(bubbleStashController.stashedHandlePhysicsAnimator).thenReturn(handleAnimator)
+
+        val animator =
+            BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.animateBubbleInForStashed(bubble)
         }
 
-        override fun postDelayed(delayMillis: Long, block: () -> Unit) {
+        // let the animation start and wait for it to complete
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
+
+        assertThat(handle.alpha).isEqualTo(0)
+        assertThat(handle.translationY).isEqualTo(-70)
+        assertThat(overflowView.visibility).isEqualTo(INVISIBLE)
+        assertThat(bubbleBarView.visibility).isEqualTo(VISIBLE)
+        assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
+        assertThat(bubbleView.alpha).isEqualTo(1)
+        assertThat(bubbleView.translationY).isEqualTo(-20)
+        assertThat(bubbleView.scaleY).isEqualTo(1)
+
+        // verify the hide bubble animation is pending
+        assertThat(animatorScheduler.delayedBlock).isNotNull()
+
+        animator.onBubbleClickedWhileAnimating()
+
+        assertThat(animatorScheduler.delayedBlock).isNull()
+        assertThat(overflowView.visibility).isEqualTo(VISIBLE)
+        assertThat(overflowView.alpha).isEqualTo(1)
+        assertThat(bubbleView.alpha).isEqualTo(1)
+        assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
+        assertThat(bubbleBarView.background).isNotNull()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+    }
+
+    private class TestBubbleBarViewAnimatorScheduler : BubbleBarViewAnimator.Scheduler {
+
+        var delayedBlock: Runnable? = null
+            private set
+
+        override fun post(block: Runnable) {
+            block.run()
+        }
+
+        override fun postDelayed(delayMillis: Long, block: Runnable) {
             check(delayedBlock == null) { "there is already a pending block waiting to run" }
             delayedBlock = block
+        }
+
+        override fun cancel(block: Runnable) {
+            check(delayedBlock == block) { "the pending block does not match the canceled block" }
+            delayedBlock = null
         }
     }
 }

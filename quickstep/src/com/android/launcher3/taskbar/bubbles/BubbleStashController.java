@@ -347,7 +347,7 @@ public class BubbleStashController {
                 hotseatCellHeight - mUnstashedHeight) / 2;
     }
 
-    float getBubbleBarTranslationY() {
+    public float getBubbleBarTranslationY() {
         // If we're on home, adjust the translation so the bubble bar aligns with hotseat.
         // Otherwise we're either showing in an app or in overview. In either case adjust it so
         // the bubble bar aligns with the taskbar.
@@ -373,5 +373,20 @@ public class BubbleStashController {
     /** Returns the [PhysicsAnimator] for the stashed handle view. */
     public PhysicsAnimator<View> getStashedHandlePhysicsAnimator() {
         return mHandleViewController.getPhysicsAnimator();
+    }
+
+    /** Notifies taskbar that it should update its touchable region. */
+    public void updateTaskbarTouchRegion() {
+        mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
+    }
+
+    /** Shows the bubble bar immediately without animation. */
+    public void showBubbleBarImmediate() {
+        mHandleViewController.setTranslationYForSwipe(0);
+        mIconTranslationYForStash.updateValue(getBubbleBarTranslationY());
+        mIconAlphaForStash.setValue(1);
+        mIconScaleForStash.updateValue(1);
+        mIsStashed = false;
+        onIsStashedChanged();
     }
 }

@@ -104,6 +104,8 @@ public class BubbleBarView extends FrameLayout {
      * updates the bounds and accounts for translation.
      */
     private final Rect mBubbleBarBounds = new Rect();
+    /** The bounds of the animating bubble in the coordinate space of the BubbleBarView. */
+    private final Rect mAnimatingBubbleBounds = new Rect();
     // The amount the bubbles overlap when they are stacked in the bubble bar
     private final float mIconOverlapAmount;
     // The spacing between the bubbles when bubble bar is expanded
@@ -460,6 +462,30 @@ public class BubbleBarView extends FrameLayout {
         return mBubbleBarBounds;
     }
 
+    /** Returns the bounds of the animating bubble, or {@code null} if no bubble is animating. */
+    @Nullable
+    public Rect getAnimatingBubbleBounds() {
+        if (mIsAnimatingNewBubble) {
+            return mAnimatingBubbleBounds;
+        }
+        return null;
+    }
+
+    /**
+     * Updates the animating bubble bounds. This should be called when the bubble is fully animated
+     * in so that we can include it in taskbar touchable region.
+     *
+     * <p>The bounds are adjusted to the coordinate space of BubbleBarView so that it can be used
+     * by taskbar.
+     */
+    public void updateAnimatingBubbleBounds(int left, int top, int width, int height) {
+        Rect bubbleBarBounds = getBubbleBarBounds();
+        mAnimatingBubbleBounds.left = bubbleBarBounds.left + left;
+        mAnimatingBubbleBounds.top = bubbleBarBounds.top + top;
+        mAnimatingBubbleBounds.right = mAnimatingBubbleBounds.left + width;
+        mAnimatingBubbleBounds.bottom = mAnimatingBubbleBounds.top + height;
+    }
+
     /**
      * Set bubble bar relative pivot value for X and Y, applied as a fraction of view width/height
      * respectively. If the value is not in range of 0 to 1 it will be normalized.
@@ -581,6 +607,8 @@ public class BubbleBarView extends FrameLayout {
         final float ty = (mBubbleBarBounds.height() - mIconSize) / 2f;
         final boolean animate = getVisibility() == VISIBLE;
         final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
+        // elevation state is opposite to widthState - when expanded all icons are flat
+        float elevationState = (1 - widthState);
         for (int i = 0; i < bubbleCount; i++) {
             BubbleView bv = (BubbleView) getChildAt(i);
             bv.setTranslationY(ty);
@@ -599,17 +627,20 @@ public class BubbleBarView extends FrameLayout {
                 expandedX = i * (mIconSize + mExpandedBarIconsSpacing);
                 collapsedX = i == 0 ? 0 : mIconOverlapAmount;
             }
-
+            if (bv == mDraggedBubbleView) {
+                // if bubble is dragged set the elevation to bubble drag elevation
+                bv.setZ(mDragElevation);
+            } else {
+                // otherwise slowly animate elevation while keeping correct Z ordering
+                float fullElevationForChild = (MAX_BUBBLES * mBubbleElevation) - i;
+                bv.setZ(fullElevationForChild * elevationState);
+            }
             if (mIsBarExpanded) {
                 // If bar is on the right, account for bubble bar expanding and shifting left
                 final float expandedBarShift = onLeft ? 0 : currentWidth - expandedWidth;
                 // where the bubble will end up when the animation ends
                 final float targetX = expandedX + expandedBarShift;
                 bv.setTranslationX(widthState * (targetX - collapsedX) + collapsedX);
-                // if we're fully expanded, set the z level to 0 or to bubble elevation if dragged
-                if (widthState == 1f) {
-                    bv.setZ(bv == mDraggedBubbleView ? mBubbleElevation : 0);
-                }
                 // When we're expanded, we're not stacked so we're not behind the stack
                 bv.setBehindStack(false, animate);
                 bv.setAlpha(1);
@@ -618,7 +649,6 @@ public class BubbleBarView extends FrameLayout {
                 final float collapsedBarShift = onLeft ? 0 : currentWidth - collapsedWidth;
                 final float targetX = collapsedX + collapsedBarShift;
                 bv.setTranslationX(widthState * (expandedX - targetX) + targetX);
-                bv.setZ((MAX_BUBBLES * mBubbleElevation) - i);
                 // If we're not the first bubble we're behind the stack
                 bv.setBehindStack(i > 0, animate);
                 // If we're fully collapsed, hide all bubbles except for the first 2. If there are
@@ -852,10 +882,15 @@ public class BubbleBarView extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!mIsBarExpanded) {
+        if (!mIsBarExpanded && !mIsAnimatingNewBubble) {
             // When the bar is collapsed, all taps on it should expand it.
             return true;
         }
         return super.onInterceptTouchEvent(ev);
+    }
+
+    /** Whether a new bubble is currently animating. */
+    public boolean isAnimatingNewBubble() {
+        return mIsAnimatingNewBubble;
     }
 }

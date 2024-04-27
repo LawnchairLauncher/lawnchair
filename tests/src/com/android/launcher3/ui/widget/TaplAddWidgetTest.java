@@ -86,7 +86,6 @@ public class TaplAddWidgetTest extends AbstractLauncherUiTest<Launcher> {
      * A custom shortcut is a 1x1 widget that launches a specific intent when user tap on it.
      * Custom shortcuts are replaced by deep shortcuts after api 25.
      */
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
     @Test
     @PortraitLandscape
     public void testDragCustomShortcut() throws Throwable {
