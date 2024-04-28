@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Ustaw Lawnchair jako domyślny launcher aby uzyskać dostęp do skrótów i więcej.</string>
+    <string name="set_default_launcher_tip">Ustaw Lawnchair jako domyślny launcher, aby uzyskać dostęp do skrótów i więcej.</string>
     <string name="settings">Ustawienia</string>
     <string name="general_label">Ogólne</string>
     <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>

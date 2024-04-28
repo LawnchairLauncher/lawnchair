@@ -189,8 +189,8 @@
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة</string>
     <string name="show_dot_pagination_label">استخدام محدد صفحات بشكل نُقَط</string>
     <string name="show_dot_pagination_description">استخدم النقاط بدلاً من الأسطر لإظهار رقم الصفحة</string>
-    <string name="show_material_u_popup_label">Use New Popup Style</string>
-    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
+    <string name="show_material_u_popup_label">استخدام شكل منبثق جديد</string>
+    <string name="show_material_u_popup_description">استخدم المواد التي ترتد عليها ونمط منبثق مدمج قليلا</string>
     <string name="popup_menu">قائمة منبثقة</string>
     <string name="home_screen_lock_toggle_from_home_popup">عرض زر القُفل</string>
     <string name="show_system_settings_entry">إظهار إدخال إعدادات النظام</string>
@@ -240,7 +240,7 @@
     <string name="smartspace_calendar_persian">التقويم الفارسي</string>
     <string name="smartspace_preferences">التفضيلات</string>
     <string name="smartspace_widget_toggle_label">إظهار على الشاشة الرئيسية</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
+    <string name="smartspace_widget_toggle_description">يمكن إضافة اللمحة السريعة يدويًا عن طريق وضع أداة لون تشير</string>
     <string name="smartspace_mode_label">مزود اللمحة السريعة</string>
     <string name="smartspace_mode_google">جوجل</string>
     <string name="smartspace_mode_google_search">بحث جوجل</string>
@@ -313,7 +313,7 @@
     <string name="gesture_handler_open_search">فتح البحث</string>
     <string name="pick_app_for_gesture">اختر التطبيق</string>
     <!-- QuickstepPreferences -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">سيتم تجاهل هذه الإعدادات لأن Lawnchair لم يتم تعيينه كموفر التطبيقات الأخيرة.</string>
     <string name="translucent_background">خلفية شفافة</string>
     <string name="recents_actions_label">إجراءات سريعة</string>
     <string name="action_share">مشاركة</string>
@@ -400,16 +400,16 @@
     <string name="label_voice_search">البحث الصوتي</string>
     <string name="pref_advance_search_category">بحث متقدم</string>
     <string name="perform_wide_search_title">بحث الجهاز</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="max_apps_result_count_title">Maximum App Result Count</string>
-    <string name="max_people_result_count_title">Maximum People Result Count</string>
-    <string name="max_file_result_count_title">Maximum Files Result Count</string>
-    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
-    <string name="max_recent_result_count_title">Maximum Search History Count</string>
-    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
-    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+    <string name="perform_wide_search_description">البحث عن جهات الاتصال والملفات والإعدادات الخاصة بالهاتف</string>
+    <string name="max_apps_result_count_title">الحد الأقصى لعدد نتائج التطبيقات</string>
+    <string name="max_people_result_count_title">الحد الأقصى لعدد نتائج الأشخاص</string>
+    <string name="max_file_result_count_title">الحد الأقصى للملفات</string>
+    <string name="max_settings_entry_result_count_title">الحد الأقصى لعدد نتائج الإعدادات</string>
+    <string name="max_recent_result_count_title">الحد الأقصى لتاريخ البحث</string>
+    <string name="max_suggestion_result_count_title">الحد الأقصى لاقتراحات الويب عدد النتائج</string>
+    <string name="max_web_suggestion_delay">الحد الأقصى لاقتراحات الويب تأخير</string>
     <string name="all_apps_search_market_message">البحث عن مزيد من التطبيقات</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">البحث في <xliff:g id="startpage">صفحة البداية</xliff:g></string>
     <string name="error_no_market_or_browser_installed">لا يوجد متجر تطبيقات أو متصفح مثبت.</string>
     <string name="quickstep_incompatible">تكامل النظام غير متوافق</string>
     <string name="quickstep_incompatible_description">تم تكوين جهازك بحيث يحتوي على إيماءات النظام (المعروفة باسم Quickstep) المقدمة من قبل %1$s, لكن هذا الإصدار من %1$s غير متوافق مع إصدار الأندرويد الخاص بك. للاستمرار في استخدام جهازك، الرجاء إلغاء تثبيت %1$s تحديثات أو تعطيل %1$s كموفر إيماءات النظام.</string>
