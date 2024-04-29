@@ -47,6 +47,16 @@ fun QuickstepPreferences(
                 adapter = prefs.recentsTranslucentBackground.getAdapter(),
                 label = stringResource(id = R.string.translucent_background),
             )
+            val recentsTranslucentBackground by prefs.recentsTranslucentBackground.observeAsState()
+            ExpandAndShrink(visible = recentsTranslucentBackground) {
+                SliderPreference(
+                    adapter = prefs.recentsTranslucentBackgroundAlpha.getAdapter(),
+                    label = stringResource(id = R.string.translucent_background_alpha),
+                    step = 0f,
+                    valueRange = 0f..1f,
+                    showAsPercentage = true,
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.recents_actions_label)) {
             if (!isOnePlusStock) {

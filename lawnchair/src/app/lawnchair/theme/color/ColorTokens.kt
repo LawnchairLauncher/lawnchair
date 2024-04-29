@@ -76,7 +76,8 @@ object ColorTokens {
     @JvmField val OverviewScrim = DayNightColorToken(Neutral2_500.setLStar(87.0), Neutral1_800)
         .withPreferences { prefs ->
             val translucent = prefs.recentsTranslucentBackground.get()
-            if (translucent) setAlpha(0.8f) else this
+            val translucentIntensity = prefs.recentsTranslucentBackgroundAlpha.get()
+            if (translucent) setAlpha(translucentIntensity) else this
         }
 
     @JvmField val SearchboxHighlight = DayNightColorToken(SurfaceVariantLight, Neutral1_800)

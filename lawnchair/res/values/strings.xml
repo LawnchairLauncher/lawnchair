@@ -388,7 +388,7 @@
     <string name="pick_app_for_gesture">Pick App</string>
 
     <!-- QuickstepPreferences -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair Launcher is not set as the Recents provider.</string>
 
     <string name="translucent_background">Translucent Background</string>
     <string name="translucent_background_alpha">Translucent Intensity</string>
