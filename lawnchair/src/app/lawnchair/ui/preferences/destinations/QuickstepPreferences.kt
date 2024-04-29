@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getAdapter
@@ -36,12 +37,11 @@ fun QuickstepPreferences(
         context.packageManager.getLaunchIntentForPackage("com.google.ar.lens") != null
     }
 
-    if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
-
     PreferenceLayout(
         label = stringResource(id = R.string.quickstep_label),
         modifier = modifier,
     ) {
+        if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 adapter = prefs.recentsTranslucentBackground.getAdapter(),
@@ -103,6 +103,7 @@ fun QuickstepPreferences(
     }
 }
 
+@Preview
 @Composable
 fun QuickSwitchIgnoredWarning(
     modifier: Modifier = Modifier,
