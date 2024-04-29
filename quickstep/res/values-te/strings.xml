@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"టాస్క్‌బార్‌తో మరిన్ని చేయండి"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"టాస్క్‌బార్‌ను నిరంతరం చూపండి"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"మీ స్క్రీన్ దిగువున టాస్క్‌బార్‌ను నిరంతరం చూపడానికి, డివైడర్‌ను తాకి, నొక్కి ఉంచండి"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"మీ స్క్రీన్‌లో ఏం ఉందో సెర్చ్ చేయడానికి యాక్షన్ కీని తాకి ఉంచండి"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"ఈ ప్రోడక్ట్, సెర్చ్ చేయడానికి మీ స్క్రీన్‌లో ఎంచుకున్న భాగాన్ని ఉపయోగిస్తుంది. Google <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>గోప్యతా పాలసీ<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g>, <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>సర్వీస్ నియమాలు<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> వర్తిస్తాయి."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"మూసివేయండి"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"పూర్తయింది"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"మొదటి ట్యాబ్"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ఎగువ/ఎడమ వైపునకు తరలించండి"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"దిగువ/కుడి వైపునకు తరలించండి"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{మరో # యాప్‌ను చూడండి.}other{మరో # యాప్‌లను చూడండి.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# డెస్క్‌టాప్ యాప్‌ను చూపండి.}other{# డెస్క్‌టాప్ యాప్‌లను చూపండి.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g>, <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"డెస్క్‌టాప్‌నకు యాప్‌ను జోడిస్తోంది"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"రద్దు చేయండి"</string>
