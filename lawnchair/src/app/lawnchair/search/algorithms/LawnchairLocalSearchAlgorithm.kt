@@ -16,13 +16,13 @@ import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.LOADING
 import app.lawnchair.search.adapter.SETTINGS
 import app.lawnchair.search.adapter.SPACE
+import app.lawnchair.search.adapter.SearchResult
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.WEB_SUGGESTION
 import app.lawnchair.search.adapter.createSearchTarget
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
-import app.lawnchair.search.adapter.SearchResult
 import app.lawnchair.search.algorithms.data.SettingInfo
 import app.lawnchair.search.algorithms.data.findContactsByName
 import app.lawnchair.search.algorithms.data.findSettingsByNameAndAction
@@ -46,6 +46,7 @@ import com.android.launcher3.search.StringMatcherUtility
 import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
@@ -55,7 +56,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
-import java.util.Locale
 
 class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -148,7 +148,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             normalSearch(apps, query)
         }
 
-        val LocalSearchResults = performDeviceLocalSearch(query, prefs)
+        val localSearchResults = performDeviceLocalSearch(query, prefs)
 
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
@@ -166,37 +166,38 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             }
         }
 
-        val contacts = filterByType(LocalSearchResults, CONTACT)
+        val contacts = filterByType(localSearchResults, CONTACT)
         if (contacts.isNotEmpty()) {
             val contactsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
             searchTargets.add(contactsHeader)
             searchTargets.addAll(contacts.map { generateSearchTarget.getContactSearchItem(it.resultData as ContactInfo) })
         }
 
-        val settings = filterByType(LocalSearchResults, SETTINGS)
+        val settings = filterByType(localSearchResults, SETTINGS)
         if (settings.isNotEmpty()) {
             val settingsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
             searchTargets.add(settingsHeader)
             searchTargets.addAll(settings.mapNotNull { generateSearchTarget.getSettingSearchItem(it.resultData as SettingInfo) })
         }
 
-        val recentKeyword = filterByType(LocalSearchResults, HISTORY)
+        val recentKeyword = filterByType(localSearchResults, HISTORY)
         if (recentKeyword.isNotEmpty()) {
-            val recentKeywordHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.search_pref_result_history_title),
-                HEADER_JUSTIFY
+            val recentKeywordHeader = generateSearchTarget.getHeaderTarget(
+                context.getString(R.string.search_pref_result_history_title),
+                HEADER_JUSTIFY,
             )
             searchTargets.add(recentKeywordHeader)
             searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword) })
         }
 
-        val suggestions = filterByType(LocalSearchResults, WEB_SUGGESTION)
+        val suggestions = filterByType(localSearchResults, WEB_SUGGESTION)
         if (suggestions.isNotEmpty()) {
             val suggestionsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
             searchTargets.add(suggestionsHeader)
             searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
         }
 
-        val files = filterByType(LocalSearchResults, FILES)
+        val files = filterByType(localSearchResults, FILES)
         if (files.isNotEmpty()) {
             val filesHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_files))
             searchTargets.add(filesHeader)
@@ -277,7 +278,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             val contactDeferred = async {
                 if (prefs.searchResultPeople.get() && requestContactPermissionGranted(
                         context,
-                        prefs
+                        prefs,
                     )
                 ) {
                     findContactsByName(context, query, maxPeopleCount)
@@ -290,7 +291,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             val filesDeferred = async {
                 if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(
                         context,
-                        prefs
+                        prefs,
                     )
                 ) {
                     queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount)
@@ -313,7 +314,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                         if (prefs.searchResultStartPageSuggestion.get()) {
                             getStartPageSuggestions(query, maxWebSuggestionsCount).map {
                                 SearchResult(
-                                    WEB_SUGGESTION, it
+                                    WEB_SUGGESTION,
+                                    it,
                                 )
                             }
                         } else {

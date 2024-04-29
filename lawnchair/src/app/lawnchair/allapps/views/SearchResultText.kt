@@ -9,12 +9,12 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
 import app.lawnchair.launcher
-import app.lawnchair.search.adapter.HEADER_JUSTIFY
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
+import app.lawnchair.search.adapter.HEADER_JUSTIFY
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SPACE_MINI
-import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchResultActionCallBack
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
 
@@ -53,7 +53,7 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
                 val suggestionsRecent = SearchRecentSuggestions(
                     launcher,
                     LawnchairRecentSuggestionProvider.AUTHORITY,
-                    LawnchairRecentSuggestionProvider.MODE
+                    LawnchairRecentSuggestionProvider.MODE,
                 )
                 suggestionsRecent.clearHistory()
                 callBack?.action()

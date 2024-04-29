@@ -2,7 +2,6 @@ package app.lawnchair.ui.preferences.destinations
 
 import android.content.Context
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,7 +49,7 @@ fun SearchPreferences() {
     PreferenceLayout(label = stringResource(id = R.string.drawer_search_label)) {
         MainSwitchPreference(
             adapter = showDrawerSearchBar,
-            label = stringResource(id = R.string.show_app_search_bar)
+            label = stringResource(id = R.string.show_app_search_bar),
         ) {
             PreferenceGroup(heading = stringResource(R.string.general_label)) {
                 ExpandAndShrink(visible = hiddenApps.isNotEmpty()) {
@@ -61,7 +60,7 @@ fun SearchPreferences() {
                     label = stringResource(id = R.string.pref_search_auto_show_keyboard),
                 )
                 SearchProvider(
-                    context = context
+                    context = context,
                 )
             }
 
@@ -118,7 +117,7 @@ private fun ASISearchSettings(prefs: PreferenceManager) {
 
 @Composable
 private fun SearchProvider(
-    context: Context
+    context: Context,
 ) {
     val searchAlgorithmEntries = sequenceOf(
         ListPreferenceEntry(LawnchairSearchAlgorithm.APP_SEARCH) { stringResource(R.string.search_algorithm_app_search) },
@@ -138,7 +137,6 @@ private fun SearchProvider(
     )
 }
 
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun LocalSearchSettings(
@@ -147,11 +145,11 @@ private fun LocalSearchSettings(
     context: Context,
 ) {
     val contactsPermissionState = rememberPermissionState(
-        android.Manifest.permission.READ_CONTACTS
+        android.Manifest.permission.READ_CONTACTS,
     )
     val filesPermissionState =
         rememberPermissionState(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
         )
 
     SearchSuggestionPreference(

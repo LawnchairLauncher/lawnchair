@@ -6,10 +6,10 @@ import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAdapterProvider
-import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
-import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchTargetCompat
+import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
+import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
 import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
@@ -25,9 +25,6 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
 import com.patrykmichalik.opto.core.firstBlocking
-import com.patrykmichalik.opto.core.onEach
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
@@ -159,7 +156,6 @@ sealed class LawnchairSearchAlgorithm(
             }
             return prefs.deviceSearch.get()
         }
-
 
         fun create(context: Context): LawnchairSearchAlgorithm {
             val prefs = PreferenceManager2.getInstance(context)

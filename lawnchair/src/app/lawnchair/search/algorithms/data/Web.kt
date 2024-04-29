@@ -1,7 +1,6 @@
 package app.lawnchair.search.algorithms.data
 
 import android.util.Log
-import app.lawnchair.search.algorithms.data.StartPageService
 import app.lawnchair.util.kotlinxJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -152,7 +152,7 @@ class GenerateSearchTarget(private val context: Context) {
         val id = "marketSearch:$query"
         val action = SearchActionCompat.Builder(
             id,
-            context.getString(R.string.all_apps_search_market_message)
+            context.getString(R.string.all_apps_search_market_message),
         )
             .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
             .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
@@ -170,7 +170,7 @@ class GenerateSearchTarget(private val context: Context) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val action = SearchActionCompat.Builder(
             id,
-            context.getString(R.string.all_apps_search_startpage_message)
+            context.getString(R.string.all_apps_search_startpage_message),
         )
             .setIcon(Icon.createWithResource(context, R.drawable.ic_startpage))
             .setIntent(browserIntent)

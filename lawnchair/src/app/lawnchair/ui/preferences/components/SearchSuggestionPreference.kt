@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +34,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SearchSuggestionPreference(
@@ -44,9 +42,7 @@ fun SearchSuggestionPreference(
     maxCountRange: ClosedRange<Int>,
     label: String,
     maxCountLabel: String,
-
     description: String? = null,
-
     permissionState: PermissionState? = null,
     permissionRationale: String? = null,
     content: @Composable (() -> Unit)? = null,

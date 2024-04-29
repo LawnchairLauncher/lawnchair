@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
 import app.lawnchair.launcher
-import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchResultActionCallBack
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.util.AppInfo
 import app.lawnchair.util.AppInfoHelper
 import app.lawnchair.util.ImageViewWrapper
@@ -63,9 +63,13 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             avatar.visibility = GONE
             preview.visibility = VISIBLE
         }
-        val heightRes = if (isSmall) resources.getDimensionPixelSize(R.dimen.search_result_small_row_height) else resources.getDimensionPixelSize(
-            R.dimen.search_result_files_row_height
-        )
+        val heightRes = if (isSmall) {
+            resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
+        } else {
+            resources.getDimensionPixelSize(
+                R.dimen.search_result_files_row_height,
+            )
+        }
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
             heightRes,
