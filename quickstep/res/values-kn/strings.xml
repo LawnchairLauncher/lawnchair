@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ಟಾಸ್ಕ್‌ಬಾರ್ ಮೂಲಕ ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ಯಾವಾಗಲೂ ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ತೋರಿಸಿ"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ಯಾವಾಗಲೂ ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗದಲ್ಲಿ ಟಾಸ್ಕ್ ಬಾರ್ ಅನ್ನು ತೋರಿಸಲು, ಡಿವೈಡರ್ ಅನ್ನು ಸ್ಪರ್ಶಿಸಿ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳಿ"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಮೇಲೆ ಏನಿದೆ ಎಂಬುದನ್ನು ಹುಡುಕಲು ಆ್ಯಕ್ಷನ್ ಕೀಯನ್ನು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಒತ್ತಿ ಹಿಡಿದುಕೊಳ್ಳಿ"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"ಈ ಉತ್ಪನ್ನವು ಹುಡುಕಲು ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಆಯ್ದ ಭಾಗವನ್ನು ಬಳಸುತ್ತದೆ. Google ನ <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>ಗೌಪ್ಯತೆ ನೀತಿ<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> ಮತ್ತು <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>ಸೇವಾ ನಿಯಮಗಳು<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> ಅನ್ವಯಿಸುತ್ತವೆ."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಆಯಿತು"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ಮೇಲಿನ/ಎಡಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ಕೆಳಗಿನ/ಬಲಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{ಇನ್ನೂ # ಆ್ಯಪ್ ಅನ್ನು ತೋರಿಸಿ.}one{ಇನ್ನೂ # ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}other{ಇನ್ನೂ # ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# ಡೆಸ್ಕ್‌ಟಾಪ್ ಆ್ಯಪ್ ತೋರಿಸಿ.}one{# ಡೆಸ್ಕ್‌ಟಾಪ್ ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}other{# ಡೆಸ್ಕ್‌ಟಾಪ್ ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ಮತ್ತು <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"ಡೆಸ್ಕ್‌ಟಾಪ್‌ಗೆ ಆ್ಯಪ್ ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ರದ್ದುಮಾಡಿ"</string>

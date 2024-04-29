@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"إنجاز المزيد باستخدام شريط التطبيقات"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"عرض \"شريط التطبيقات\" دائمًا"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"انقر مع الاستمرار على أداة تقسيم الشاشة لعرض \"شريط التطبيقات\" دائمًا في أسفل الشاشة."</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"انقر مع الاستمرار على مفتاح الإجراء للبحث عن المحتوى الذي يظهر على شاشتك"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"‏يستخدم هذا المنتج الجزء المحدّد من الشاشة للبحث. تسري <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>سياسة الخصوصية<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> و<xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>بنود الخدمة<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> في Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"إغلاق"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"تم"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"الرئيسية"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"الانتقال إلى يمين الشاشة أو أعلاها"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"الانتقال إلى يسار الشاشة أو أسفلها"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{إظهار تطبيق واحد آخر}zero{إظهار # تطبيق آخر}two{إظهار تطبيقَين آخرَين}few{إظهار # تطبيقات أخرى}many{إظهار # تطبيقًا آخر}other{إظهار # تطبيق آخر}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{عرض تطبيق واحد متوافق مع الكمبيوتر المكتبي}zero{عرض # تطبيق متوافق مع الكمبيوتر المكتبي}two{عرض تطبيقَين متوافقين مع الكمبيوتر المكتبي}few{عرض # تطبيقات متوافقة مع الكمبيوتر المكتبي}many{عرض # تطبيقًا متوافقًا مع الكمبيوتر المكتبي}other{عرض # تطبيق متوافق مع الكمبيوتر المكتبي}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"\"<xliff:g id="APP_NAME_1">%1$s</xliff:g>\" و\"<xliff:g id="APP_NAME_2">%2$s</xliff:g>\""</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"إضافة تطبيق إلى سطح المكتب"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"إلغاء"</string>

@@ -80,6 +80,13 @@ class DesktopTaskbarRunningAppsController(
         return newHotseatItemInfos.toTypedArray()
     }
 
+    override fun getRunningApps(): Set<String> {
+        if (!isInDesktopMode) {
+            return emptySet()
+        }
+        return allRunningDesktopAppInfos?.mapNotNull { it.targetPackage }?.toSet() ?: emptySet()
+    }
+
     @VisibleForTesting
     public override fun updateRunningApps(hotseatItems: SparseArray<ItemInfo>?) {
         if (!isInDesktopMode) {

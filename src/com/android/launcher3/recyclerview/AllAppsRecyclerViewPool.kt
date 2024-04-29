@@ -26,7 +26,9 @@ import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.util.CancellableTask
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.VIEW_PREINFLATION_EXECUTOR
+import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
+import com.android.launcher3.views.ActivityContext.ActivityContextDelegate
 
 const val PREINFLATE_ICONS_ROW_COUNT = 4
 const val EXTRA_ICONS_COUNT = 2
@@ -52,12 +54,28 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
             return
         }
 
+        // Create a separate context dedicated for all apps preinflation thread. The goal is to
+        // create a separate AssetManager obj internally to avoid lock contention with
+        // AssetManager obj that is associated with the launcher context on the main thread.
+        val allAppsPreInflationContext =
+            ActivityContextDelegate(
+                context.createConfigurationContext(context.resources.configuration),
+                Themes.getActivityThemeRes(context),
+                context
+            )
+
         // Because we perform onCreateViewHolder() on worker thread, we need a separate
         // adapter/inflator object as they are not thread-safe. Note that the adapter
         // just need to perform onCreateViewHolder(parent, VIEW_TYPE_ICON) so it doesn't need
         // data source information.
         val adapter: RecyclerView.Adapter<BaseAllAppsAdapter.ViewHolder> =
-            object : BaseAllAppsAdapter<T>(context, context.appsView.layoutInflater, null, null) {
+            object :
+                BaseAllAppsAdapter<T>(
+                    context,
+                    context.appsView.layoutInflater.cloneInContext(allAppsPreInflationContext),
+                    null,
+                    null
+                ) {
                 override fun setAppsPerRow(appsPerRow: Int) = Unit
                 override fun getLayoutManager(): RecyclerView.LayoutManager? = null
             }

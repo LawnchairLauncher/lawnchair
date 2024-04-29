@@ -15,12 +15,16 @@
  */
 package com.android.launcher3.taskbar;
 
+import static java.util.Collections.emptySet;
+
 import android.util.SparseArray;
 
 import androidx.annotation.CallSuper;
 
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+
+import java.util.Set;
 
 /**
  * Base class for providing recent apps functionality
@@ -43,7 +47,8 @@ public class TaskbarRecentAppsController {
     }
 
     /** Stores the current {@link AppInfo} instances, no-op except in desktop environment. */
-    protected void setApps(AppInfo[] apps) { }
+    protected void setApps(AppInfo[] apps) {
+    }
 
     /**
      * Indicates whether recent apps functionality is enabled, should return false except in
@@ -59,5 +64,11 @@ public class TaskbarRecentAppsController {
     }
 
     /** Called to update the list of currently running apps, no-op except in desktop environment. */
-    protected void updateRunningApps(SparseArray<ItemInfo> hotseatItems) { }
+    protected void updateRunningApps(SparseArray<ItemInfo> hotseatItems) {
+    }
+
+    /** Returns the currently running apps, or an empty Set if outside of Desktop environment. */
+    public Set<String> getRunningApps() {
+        return emptySet();
+    }
 }
