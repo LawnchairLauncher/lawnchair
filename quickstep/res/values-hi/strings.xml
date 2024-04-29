@@ -116,6 +116,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार के साथ कई और काम करें"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"टास्कबार को हमेशा दिखाएं"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"टास्कबार को हमेशा अपनी स्क्रीन के नीचे दिखाने के लिए, डिवाइडर दबाकर रखें"</string>
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"स्क्रीन पर दिख रहे कॉन्टेंट को खोजने के लिए, ऐक्शन बटन को दबाकर रखें"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"यह प्रॉडक्ट, स्क्रीन के चुनिंदा हिस्से पर कॉन्टेंट खोजता है. Google की <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>निजता नीति<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> और <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>सेवा की शर्तें<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> लागू."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करें"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"हो गया"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>

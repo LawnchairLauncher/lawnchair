@@ -116,6 +116,10 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Doen meer met die Taakbalk"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Wys altyd die Taakbalk"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Raak en hou die verdeler in om altyd die Taakbalk onderaan jou skerm te wys"</string>
+    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
+    <skip />
     <string name="taskbar_edu_close" msgid="887022990168191073">"Maak toe"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Tuis"</string>
