@@ -21,7 +21,6 @@
     android:layout_height="@dimen/search_box_container_height"
     android:clickable="true"
     android:focusable="true">
-
     <FrameLayout
         android:id="@+id/search_wrapper"
         android:layout_width="match_parent"
@@ -31,11 +30,11 @@
         android:clickable="false"
         android:focusable="true"
         android:padding="0dp">
-
         <TextView
             android:id="@+id/hint"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_marginStart="28dp"
             android:layout_marginEnd="28dp"
             android:clickable="false"
             android:ellipsize="end"
@@ -50,6 +49,7 @@
             android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="28dp"
             android:layout_marginEnd="28dp"
             android:background="@android:color/transparent"
             android:ellipsize="end"
@@ -66,6 +66,18 @@
             android:textSize="20sp" />
 
     </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/search_icon"
+        android:layout_width="@dimen/search_box_height"
+        android:layout_height="@dimen/search_box_height"
+        android:layout_gravity="bottom|center|start"
+        android:background="@drawable/pill_ripple"
+        android:clickable="true"
+        android:contentDescription="@string/search_bar_label"
+        android:scaleType="center"
+        android:src="@drawable/ic_allapps_search"
+        app:tint="?android:textColorSecondary" />
 
     <ImageButton
         android:id="@+id/action_btn"

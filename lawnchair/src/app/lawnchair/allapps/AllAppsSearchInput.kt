@@ -17,6 +17,7 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
@@ -54,6 +55,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private lateinit var hint: TextView
     private lateinit var input: FallbackSearchInputView
     private lateinit var actionButton: ImageButton
+    private lateinit var searchIcon: ImageButton
 
     private val qsbMarginTopAdjusting = resources.getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting)
     private val allAppsSearchVerticalOffset = resources.getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset)
@@ -105,6 +107,11 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             setOnClickListener {
                 input.reset()
             }
+        }
+
+        searchIcon = ViewCompat.requireViewById(this, R.id.search_icon)
+        with(searchIcon) {
+            isVisible = true
         }
 
         if (prefs.searchResulRecentSuggestion.get()) {

@@ -777,14 +777,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             return;
         }
 
-        float prog = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
         boolean bgVisible = mSearchUiManager.getBackgroundVisibility();
-        if (scrolledOffset == 0 && !isSearching()) {
+        if (!isSearching()) {
             bgVisible = true;
-        } else if (scrolledOffset > mHeaderThreshold) {
+        } else {
             bgVisible = false;
         }
-        mSearchUiManager.setBackgroundVisibility(bgVisible, 1 - prog);
+        mSearchUiManager.setBackgroundVisibility(bgVisible, 1);
     }
 
     protected int getHeaderColor(float blendRatio) {
