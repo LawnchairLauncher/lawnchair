@@ -130,11 +130,10 @@ public class TaskbarModeSwitchRule implements TestRule {
             boolean condition, Description description) {
         launcher.checkForAnomaly(true, true);
         if (!condition) {
-            final AssertionError assertionError = new AssertionError(message);
             if (description != null) {
-                FailureWatcher.onError(launcher, description, assertionError);
+                FailureWatcher.onError(launcher, description);
             }
-            throw assertionError;
+            throw new AssertionError(message);
         }
     }
 }

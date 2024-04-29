@@ -57,7 +57,7 @@ public class PortraitLandscapeRunner<LAUNCHER_TYPE extends Launcher> implements 
                                         true));
 
                     } catch (Throwable e) {
-                        FailureWatcher.onError(mTest.mLauncher, description, e);
+                        FailureWatcher.onError(mTest.mLauncher, description);
                         throw e;
                     }
 
