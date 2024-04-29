@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.destinations
 
 import android.content.Context
 import android.os.Build
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,8 +20,11 @@ import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
 import app.lawnchair.ui.preferences.components.SearchSuggestionPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -28,12 +32,11 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.util.checkAndRequestFilesPermission
-import app.lawnchair.util.contactPermissionGranted
 import app.lawnchair.util.filesAndStorageGranted
-import app.lawnchair.util.requestContactPermissionGranted
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun SearchPreferences() {
@@ -57,13 +60,14 @@ fun SearchPreferences() {
                     adapter = prefs2.autoShowKeyboardInDrawer.getAdapter(),
                     label = stringResource(id = R.string.pref_search_auto_show_keyboard),
                 )
+                SearchProvider(
+                    context = context
+                )
             }
 
-            val isLocalSearch = prefs2.performLocalSearch.getAdapter().state.value
-            val isASISearch = prefs.deviceSearch.getAdapter().state.value
-
             PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
-                if (!isASISearch) {
+                val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
+                if (searchAlgorithm != LawnchairSearchAlgorithm.ASI_SEARCH) {
                     @OptIn(ExperimentalPermissionsApi::class)
                     SearchSuggestionPreference(
                         adapter = prefs.searchResultApps.getAdapter(),
@@ -79,15 +83,15 @@ fun SearchPreferences() {
                         )
                     }
                 }
-                when {
-                    isLocalSearch -> {
+                when (searchAlgorithm) {
+                    LawnchairSearchAlgorithm.LOCAL_SEARCH -> {
                         LocalSearchSettings(
                             prefs = prefs,
                             prefs2 = prefs2,
                             context = context,
                         )
                     }
-                    isASISearch -> {
+                    LawnchairSearchAlgorithm.ASI_SEARCH -> {
                         ASISearchSettings(prefs)
                     }
                 }
@@ -111,6 +115,29 @@ private fun ASISearchSettings(prefs: PreferenceManager) {
         label = stringResource(id = R.string.search_pref_result_tips_title),
     )
 }
+
+@Composable
+private fun SearchProvider(
+    context: Context
+) {
+    val searchAlgorithmEntries = sequenceOf(
+        ListPreferenceEntry(LawnchairSearchAlgorithm.APP_SEARCH) { stringResource(R.string.search_algorithm_app_search) },
+        ListPreferenceEntry(LawnchairSearchAlgorithm.LOCAL_SEARCH) { stringResource(R.string.search_algorithm_global_search_on_device) },
+        ListPreferenceEntry(LawnchairSearchAlgorithm.ASI_SEARCH) { stringResource(R.string.search_algorithm_global_search_via_asi) },
+    ).filter {
+        when (it.value) {
+            LawnchairSearchAlgorithm.ASI_SEARCH -> LawnchairSearchAlgorithm.isASISearchEnabled(context)
+            else -> true
+        }
+    }.toPersistentList()
+
+    ListPreference(
+        adapter = preferenceManager2().searchAlgorithm.getAdapter(),
+        entries = searchAlgorithmEntries,
+        label = stringResource(R.string.app_search_algorithm),
+    )
+}
+
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

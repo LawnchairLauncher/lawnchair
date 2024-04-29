@@ -24,6 +24,7 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
+import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -141,6 +142,10 @@ sealed class LawnchairSearchAlgorithm(
 
     companion object {
 
+        const val APP_SEARCH = "appSearch"
+        const val LOCAL_SEARCH = "localSearch"
+        const val ASI_SEARCH = "globalSearch"
+
         private var ranCompatibilityCheck = false
 
         fun isASISearchEnabled(context: Context): Boolean {
@@ -155,21 +160,16 @@ sealed class LawnchairSearchAlgorithm(
             return prefs.deviceSearch.get()
         }
 
-        fun isLocalSearchEnabled(context: Context): Boolean {
+
+        fun create(context: Context): LawnchairSearchAlgorithm {
             val prefs = PreferenceManager2.getInstance(context)
-            val coroutineScope = CoroutineScope(context = Dispatchers.IO)
-            var enableLocalSearch = false
+            val searchAlgorithm = prefs.searchAlgorithm.firstBlocking()
 
-            prefs.performLocalSearch.onEach(launchIn = coroutineScope) {
-                enableLocalSearch = it
+            return when {
+                searchAlgorithm == ASI_SEARCH && isASISearchEnabled(context) -> LawnchairASISearchAlgorithm(context)
+                searchAlgorithm == LOCAL_SEARCH -> LawnchairLocalSearchAlgorithm(context)
+                else -> LawnchairAppSearchAlgorithm(context)
             }
-            return enableLocalSearch
-        }
-
-        fun create(context: Context): LawnchairSearchAlgorithm = when {
-            isASISearchEnabled(context) -> LawnchairASISearchAlgorithm(context)
-            isLocalSearchEnabled(context) -> LawnchairLocalSearchAlgorithm(context)
-            else -> LawnchairAppSearchAlgorithm(context)
         }
     }
 }

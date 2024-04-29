@@ -45,6 +45,7 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShape as L3IconShape
+import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
@@ -269,6 +270,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.recreate() },
     )
 
+    val searchAlgorithm = preference(
+        key = stringPreferencesKey(name = "search_algorithm"),
+        defaultValue = LawnchairSearchAlgorithm.APP_SEARCH,
+        onSet = { reloadHelper.recreate() },
+    )
+
     val showSuggestedAppsInDrawer = preference(
         key = booleanPreferencesKey(name = "show_suggested_apps_at_drawer_top"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_suggested_apps_at_drawer_top),
@@ -294,11 +301,6 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val autoShowKeyboardInDrawer = preference(
         key = booleanPreferencesKey(name = "auto_show_keyboard_in_drawer"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
-    )
-
-    val performLocalSearch = preference(
-        key = booleanPreferencesKey(name = "performLocalSearch"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_perform_wide_search),
     )
 
     val workspaceTextColor = preference(

@@ -90,7 +90,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         input = ViewCompat.requireViewById(this, R.id.input)
         with(input) {
-            if (prefs2.performLocalSearch.firstBlocking()) {
+            if (prefs2.searchAlgorithm.firstBlocking() != LawnchairSearchAlgorithm.APP_SEARCH) {
                 setHint(R.string.all_apps_device_search_hint)
             } else {
                 setHint(R.string.all_apps_search_bar_hint)
