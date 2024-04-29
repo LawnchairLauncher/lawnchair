@@ -30,6 +30,8 @@ import java.util.zip.ZipOutputStream;
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
     private static boolean sSavedBugreport = false;
+    private static Description sDescriptionForLastSavedArtifacts;
+
     private final LauncherInstrumentation mLauncher;
     @NonNull
     private final Supplier<ExportedData> mViewCaptureDataSupplier;
@@ -38,6 +40,18 @@ public class FailureWatcher extends TestWatcher {
             @NonNull Supplier<ExportedData> viewCaptureDataSupplier) {
         mLauncher = launcher;
         mViewCaptureDataSupplier = viewCaptureDataSupplier;
+    }
+
+    @Override
+    protected void starting(Description description) {
+        mLauncher.setOnFailure(() -> onError(mLauncher, description, mViewCaptureDataSupplier));
+        super.starting(description);
+    }
+
+    @Override
+    protected void finished(Description description) {
+        super.finished(description);
+        mLauncher.setOnFailure(null);
     }
 
     @Override
@@ -70,7 +84,7 @@ public class FailureWatcher extends TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        onError(mLauncher, description, e, mViewCaptureDataSupplier);
+        onError(mLauncher, description, mViewCaptureDataSupplier);
     }
 
     static File diagFile(Description description, String prefix, String ext) {
@@ -79,13 +93,18 @@ public class FailureWatcher extends TestWatcher {
                         + description.getMethodName() + "." + ext);
     }
 
-    public static void onError(LauncherInstrumentation launcher, Description description,
-            Throwable e) {
-        onError(launcher, description, e, null);
+    /** Action executed when an error condition is expected. Saves artifacts. */
+    public static void onError(LauncherInstrumentation launcher, Description description) {
+        onError(launcher, description, null);
     }
 
     private static void onError(LauncherInstrumentation launcher, Description description,
-            Throwable e, @Nullable Supplier<ExportedData> viewCaptureDataSupplier) {
+            @Nullable Supplier<ExportedData> viewCaptureDataSupplier) {
+        if (description.equals(sDescriptionForLastSavedArtifacts)) {
+            // This test has already saved its artifacts.
+            return;
+        }
+        sDescriptionForLastSavedArtifacts = description;
 
         final File sceenshot = diagFile(description, "TestScreenshot", "png");
         final File hierarchy = diagFile(description, "Hierarchy", "zip");
@@ -114,7 +133,7 @@ public class FailureWatcher extends TestWatcher {
         Log.e(TAG, "Failed test " + description.getMethodName()
                 + ",\nscreenshot will be saved to " + sceenshot
                 + ",\nUI dump at: " + hierarchy
-                + " (use go/web-hv to open the dump file)", e);
+                + " (use go/web-hv to open the dump file)");
         final UiDevice device = launcher.getDevice();
         device.takeScreenshot(sceenshot);
 
