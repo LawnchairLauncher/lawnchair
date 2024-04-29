@@ -52,7 +52,7 @@ fun SearchPreferences() {
             val isASISearch = prefs.deviceSearch.getAdapter().state.value
 
             PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
-                if (!isASISearch){
+                if (!isASISearch) {
                     SearchSuggestionPreference(
                         adapter = prefs.searchResultApps.getAdapter(),
                         maxCountAdapter = prefs2.maxAppSearchResultCount.getAdapter(),

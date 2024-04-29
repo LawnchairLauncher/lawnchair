@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<app.lawnchair.allapps.SearchResultIconRow xmlns:android="http://schemas.android.com/apk/res/android"
+<app.lawnchair.allapps.views.SearchResultIconRow xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_result_small_icon_row"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:paddingStart="8dp">
 
-    <app.lawnchair.allapps.SearchResultIcon
+    <app.lawnchair.allapps.views.SearchResultIcon
         android:id="@+id/icon"
         style="@style/BaseIcon"
         android:layout_width="@dimen/search_row_icon_size"
@@ -69,4 +69,4 @@
             android:textColor="?android:textColorSecondary"
             android:textSize="@dimen/search_result_hero_subtitle_size" />
     </LinearLayout>
-</app.lawnchair.allapps.SearchResultIconRow>
+</app.lawnchair.allapps.views.SearchResultIconRow>
