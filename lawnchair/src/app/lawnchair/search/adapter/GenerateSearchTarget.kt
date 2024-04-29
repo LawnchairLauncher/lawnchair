@@ -78,7 +78,7 @@ class GenerateSearchTarget(private val context: Context) {
         return createCalculatorTarget(
             id,
             action,
-            extras
+            extras,
         )
     }
 

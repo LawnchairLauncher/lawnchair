@@ -122,7 +122,7 @@ class LawnchairSearchAdapterProvider(
             LayoutType.THUMBNAIL to SEARCH_RESULT_FILE_TILE,
             LayoutType.ICON_SLICE to SEARCH_RESULT_SETTINGS_TILE,
             LayoutType.WIDGET_LIVE to SEARCH_RESULT_RECENT_TILE,
-            LayoutType.CALCULATOR to SEARCH_RESULT_CALCULATOR
+            LayoutType.CALCULATOR to SEARCH_RESULT_CALCULATOR,
         )
 
         fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {

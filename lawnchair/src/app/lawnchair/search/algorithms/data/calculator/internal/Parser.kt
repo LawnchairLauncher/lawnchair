@@ -1,7 +1,28 @@
 package app.lawnchair.search.algorithms.data.calculator.internal
 
 import app.lawnchair.search.algorithms.data.calculator.ExpressionException
-import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.*
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.AMP_AMP
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.ASSIGN
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.BAR_BAR
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.COMMA
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EOF
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EQUAL_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EXPONENT
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.GREATER
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.GREATER_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.IDENTIFIER
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LEFT_PAREN
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LESS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LESS_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.MINUS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.MODULO
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.NOT_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.NUMBER
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.PLUS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.RIGHT_PAREN
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.SLASH
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.SQUARE_ROOT
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.STAR
 import java.math.BigDecimal
 
 internal class Parser(private val tokens: List<Token>) {
@@ -243,5 +264,4 @@ internal class Parser(private val tokens: List<Token>) {
     private fun previous() = tokens[current - 1]
 
     private fun previousTwo() = Pair(tokens[current - 2], tokens[current - 1])
-
 }

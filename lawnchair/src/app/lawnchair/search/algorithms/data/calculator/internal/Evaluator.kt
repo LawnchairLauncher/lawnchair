@@ -1,12 +1,28 @@
 package app.lawnchair.search.algorithms.data.calculator.internal
 
 import app.lawnchair.search.algorithms.data.calculator.ExpressionException
-import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.*
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.AMP_AMP
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.BAR_BAR
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EQUAL_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EXPONENT
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.GREATER
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.GREATER_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LESS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LESS_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.MINUS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.MODULO
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.NOT_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.PLUS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.SLASH
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.SQUARE_ROOT
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.STAR
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
+import java.util.Locale
+import kotlin.math.pow
 
-internal class Evaluator() : ExprVisitor<BigDecimal> {
+internal class Evaluator : ExprVisitor<BigDecimal> {
     internal var mathContext: MathContext = MathContext.DECIMAL64
 
     private val variables: LinkedHashMap<String, BigDecimal> = linkedMapOf()
@@ -17,13 +33,13 @@ internal class Evaluator() : ExprVisitor<BigDecimal> {
     }
 
     fun define(name: String, expr: Expr): Evaluator {
-        define(name.toLowerCase(), eval(expr))
+        define(name.lowercase(Locale.ROOT), eval(expr))
 
         return this
     }
 
     fun addFunction(name: String, function: Function): Evaluator {
-        functions += name.toLowerCase() to function
+        functions += name.lowercase(Locale.ROOT) to function
 
         return this
     }
@@ -48,7 +64,8 @@ internal class Evaluator() : ExprVisitor<BigDecimal> {
             BAR_BAR -> left or right
             AMP_AMP -> left and right
             else -> throw ExpressionException(
-                "Invalid logical operator '${expr.operator.lexeme}'")
+                "Invalid logical operator '${expr.operator.lexeme}'",
+            )
         }
     }
 
@@ -70,7 +87,8 @@ internal class Evaluator() : ExprVisitor<BigDecimal> {
             LESS -> (left < right).toBigDecimal()
             LESS_EQUAL -> (left <= right).toBigDecimal()
             else -> throw ExpressionException(
-                "Invalid binary operator '${expr.operator.lexeme}'")
+                "Invalid binary operator '${expr.operator.lexeme}'",
+            )
         }
     }
 
@@ -90,8 +108,8 @@ internal class Evaluator() : ExprVisitor<BigDecimal> {
 
     override fun visitCallExpr(expr: CallExpr): BigDecimal {
         val name = expr.name
-        val function = functions[name.toLowerCase()] ?:
-        throw ExpressionException("Undefined function '$name'")
+        val function = functions[name.lowercase(Locale.ROOT)]
+            ?: throw ExpressionException("Undefined function '$name'")
 
         return function.call(expr.arguments.map { eval(it) })
     }
@@ -103,8 +121,8 @@ internal class Evaluator() : ExprVisitor<BigDecimal> {
     override fun visitVariableExpr(expr: VariableExpr): BigDecimal {
         val name = expr.name.lexeme
 
-        return variables[name.toLowerCase()] ?:
-        throw ExpressionException("Undefined variable '$name'")
+        return variables[name.lowercase(Locale.ROOT)]
+            ?: throw ExpressionException("Undefined variable '$name'")
     }
 
     override fun visitGroupingExpr(expr: GroupingExpr): BigDecimal {
@@ -144,14 +162,13 @@ internal class Evaluator() : ExprVisitor<BigDecimal> {
         val remainderOfRight = right.remainder(BigDecimal.ONE)
         val n2IntPart = right.subtract(remainderOfRight)
         val intPow = pow(n2IntPart.intValueExact(), mathContext)
-        val doublePow = BigDecimal(Math
-            .pow(toDouble(), remainderOfRight.toDouble()))
+        val doublePow = BigDecimal(toDouble().pow(remainderOfRight.toDouble()))
 
         var result = intPow.multiply(doublePow, mathContext)
-        if (signOfRight == -1) result = BigDecimal
-            .ONE.divide(result, mathContext.precision, RoundingMode.HALF_UP)
+        if (signOfRight == -1) {
+            result = BigDecimal.ONE.divide(result, mathContext.precision, RoundingMode.HALF_UP)
+        }
 
         return result
     }
-
 }

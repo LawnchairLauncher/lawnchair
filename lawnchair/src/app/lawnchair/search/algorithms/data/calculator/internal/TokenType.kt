@@ -33,6 +33,5 @@ internal enum class TokenType {
     NUMBER,
     IDENTIFIER,
 
-    EOF
-
+    EOF,
 }

@@ -236,7 +236,7 @@ private fun HexColorPicker(
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Characters,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 imeAction = ImeAction.Done,
             ),
             keyboardActions = KeyboardActions(

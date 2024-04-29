@@ -2,8 +2,7 @@ package app.lawnchair.search.algorithms.data.calculator.internal
 
 import java.math.BigDecimal
 
-abstract class Function {
+fun interface Function {
 
-    abstract fun call(arguments: List<BigDecimal>): BigDecimal
-
+    fun call(arguments: List<BigDecimal>): BigDecimal
 }

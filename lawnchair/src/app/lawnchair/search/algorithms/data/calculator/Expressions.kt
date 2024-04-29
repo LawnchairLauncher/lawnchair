@@ -1,13 +1,17 @@
 package app.lawnchair.search.algorithms.data.calculator
 
-import app.lawnchair.search.algorithms.data.calculator.internal.*
+import app.lawnchair.search.algorithms.data.calculator.internal.Evaluator
+import app.lawnchair.search.algorithms.data.calculator.internal.Expr
 import app.lawnchair.search.algorithms.data.calculator.internal.Function
+import app.lawnchair.search.algorithms.data.calculator.internal.Parser
+import app.lawnchair.search.algorithms.data.calculator.internal.Scanner
+import app.lawnchair.search.algorithms.data.calculator.internal.Token
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 
-class ExpressionException(message: String)
-    : RuntimeException(message)
+class ExpressionException(message: String) :
+    RuntimeException(message)
 
 @Suppress("unused")
 class Expressions {
@@ -17,87 +21,92 @@ class Expressions {
         define("pi", Math.PI)
         define("e", Math.E)
 
-        evaluator.addFunction("abs", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                if (arguments.size != 1) throw ExpressionException(
-                    "abs requires one argument")
-
-                return arguments.first().abs()
+        evaluator.addFunction("abs") { arguments ->
+            if (arguments.size != 1) {
+                throw ExpressionException(
+                    "abs requires one argument",
+                )
             }
-        })
 
-        evaluator.addFunction("sum", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                if (arguments.isEmpty()) throw ExpressionException(
-                    "sum requires at least one argument")
+            arguments.first().abs()
+        }
 
-                return arguments.reduce { sum, bigDecimal ->
-                    sum.add(bigDecimal)
-                }
+        evaluator.addFunction("sum") { arguments ->
+            if (arguments.isEmpty()) {
+                throw ExpressionException(
+                    "sum requires at least one argument",
+                )
             }
-        })
 
-        evaluator.addFunction("floor", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                if (arguments.size != 1) throw ExpressionException(
-                    "floor requires one argument")
-
-                return arguments.first().setScale(0, RoundingMode.FLOOR)
+            arguments.reduce { sum, bigDecimal ->
+                sum.add(bigDecimal)
             }
-        })
+        }
 
-        evaluator.addFunction("ceil", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                if (arguments.size != 1) throw ExpressionException(
-                    "ceil requires one argument")
-
-                return arguments.first().setScale(0, RoundingMode.CEILING)
+        evaluator.addFunction("floor") { arguments ->
+            if (arguments.size != 1) {
+                throw ExpressionException(
+                    "floor requires one argument",
+                )
             }
-        })
 
-        evaluator.addFunction("round", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                if (arguments.size !in listOf(1, 2)) throw ExpressionException(
-                    "round requires either one or two arguments")
+            arguments.first().setScale(0, RoundingMode.FLOOR)
+        }
 
-                val value = arguments.first()
-                val scale = if (arguments.size == 2) arguments.last().toInt() else 0
-
-                return value.setScale(scale, roundingMode)
+        evaluator.addFunction("ceil") { arguments ->
+            if (arguments.size != 1) {
+                throw ExpressionException(
+                    "ceil requires one argument",
+                )
             }
-        })
 
-        evaluator.addFunction("min", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                if (arguments.isEmpty()) throw ExpressionException(
-                    "min requires at least one argument")
+            arguments.first().setScale(0, RoundingMode.CEILING)
+        }
 
-                return arguments.minOrNull()!!
+        evaluator.addFunction("round") { arguments ->
+            if (arguments.size !in listOf(1, 2)) {
+                throw ExpressionException(
+                    "round requires either one or two arguments",
+                )
             }
-        })
 
-        evaluator.addFunction("max", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                if (arguments.isEmpty()) throw ExpressionException(
-                    "max requires at least one argument")
+            val value = arguments.first()
+            val scale = if (arguments.size == 2) arguments.last().toInt() else 0
 
-                return arguments.maxOrNull()!!
+            value.setScale(scale, roundingMode)
+        }
+
+        evaluator.addFunction("min") { arguments ->
+            if (arguments.isEmpty()) {
+                throw ExpressionException(
+                    "min requires at least one argument",
+                )
             }
-        })
 
-        evaluator.addFunction("if", object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                val condition = arguments[0]
-                val thenValue = arguments[1]
-                val elseValue = arguments[2]
+            arguments.minOrNull()!!
+        }
 
-                return if (condition != BigDecimal.ZERO) {
-                    thenValue
-                } else {
-                    elseValue
-                }
+        evaluator.addFunction("max") { arguments ->
+            if (arguments.isEmpty()) {
+                throw ExpressionException(
+                    "max requires at least one argument",
+                )
             }
-        })
+
+            arguments.maxOrNull()!!
+        }
+
+        evaluator.addFunction("if") { arguments ->
+            val condition = arguments[0]
+            val thenValue = arguments[1]
+            val elseValue = arguments[2]
+
+            if (condition != BigDecimal.ZERO) {
+                thenValue
+            } else {
+                elseValue
+            }
+        }
     }
 
     val precision: Int
@@ -108,7 +117,6 @@ class Expressions {
 
     fun setPrecision(precision: Int): Expressions {
         evaluator.mathContext = MathContext(precision, roundingMode)
-
 
         return this
     }
@@ -151,12 +159,7 @@ class Expressions {
     }
 
     fun addFunction(name: String, func: (List<BigDecimal>) -> BigDecimal): Expressions {
-        evaluator.addFunction(name, object : Function() {
-            override fun call(arguments: List<BigDecimal>): BigDecimal {
-                return func(arguments)
-            }
-
-        })
+        evaluator.addFunction(name) { arguments -> func(arguments) }
 
         return this
     }
@@ -175,7 +178,7 @@ class Expressions {
         return try {
             evaluator.eval(parse(expression)).round(evaluator.mathContext).stripTrailingZeros()
                 .toEngineeringString()
-        }catch (e:Throwable){
+        } catch (e: Throwable) {
             e.cause?.message ?: e.message ?: "unknown error"
         }
     }

@@ -118,7 +118,7 @@ sealed class LawnchairSearchAlgorithm(
         fileIndices: List<Int>,
         settingIndices: List<Int>,
         recentIndices: List<Int>,
-        calculator: List<Int>
+        calculator: List<Int>,
     ): SearchItemBackground = when {
         layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
         layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)

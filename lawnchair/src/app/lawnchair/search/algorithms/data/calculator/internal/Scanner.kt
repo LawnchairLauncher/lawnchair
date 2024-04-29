@@ -1,15 +1,38 @@
 package app.lawnchair.search.algorithms.data.calculator.internal
 
-import java.math.MathContext
 import app.lawnchair.search.algorithms.data.calculator.ExpressionException
-import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.*
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.AMP_AMP
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.ASSIGN
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.BAR_BAR
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.COMMA
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EOF
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EQUAL_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.EXPONENT
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.GREATER
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.GREATER_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.IDENTIFIER
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LEFT_PAREN
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LESS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.LESS_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.MINUS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.MODULO
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.NOT_EQUAL
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.NUMBER
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.PLUS
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.RIGHT_PAREN
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.SLASH
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.SQUARE_ROOT
+import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.STAR
+import java.math.MathContext
 
 private fun invalidToken(c: Char) {
     throw ExpressionException("Invalid token '$c'")
 }
 
-internal class Scanner(private val source: String,
-                       private val mathContext: MathContext) {
+internal class Scanner(
+    private val source: String,
+    private val mathContext: MathContext,
+) {
 
     private val tokens: MutableList<Token> = mutableListOf()
     private var start = 0
@@ -30,12 +53,11 @@ internal class Scanner(private val source: String,
 
     private fun scanToken() {
         start = current
-        val c = advance()
-
-        when (c) {
+        when (val c = advance()) {
             ' ',
             '\r',
-            '\t' -> {
+            '\t',
+            -> {
                 // Ignore whitespace.
             }
             '+' -> addToken(PLUS)
@@ -64,14 +86,16 @@ internal class Scanner(private val source: String,
         }
     }
 
-    private fun isDigit(char: Char,
-                        previousChar: Char = '\u0000',
-                        nextChar: Char = '\u0000'): Boolean {
+    private fun isDigit(
+        char: Char,
+        previousChar: Char = '\u0000',
+        nextChar: Char = '\u0000',
+    ): Boolean {
         return char.isDigit() || when (char) {
-            '.'      -> true
+            '.' -> true
             'e', 'E' -> previousChar.isDigit() && (nextChar.isDigit() || nextChar == '+' || nextChar == '-')
             '+', '-' -> (previousChar == 'e' || previousChar == 'E') && nextChar.isDigit()
-            else     -> false
+            else -> false
         }
     }
 
@@ -133,10 +157,9 @@ internal class Scanner(private val source: String,
 
     private fun Char.isAlphaNumeric() = isAlpha() || isDigit()
 
-    private fun Char.isAlpha() = this in 'a'..'z'
-        || this in 'A'..'Z'
-        || this == '_'
+    private fun Char.isAlpha() = this in 'a'..'z' ||
+        this in 'A'..'Z' ||
+        this == '_'
 
     private fun Char.isDigit() = this == '.' || this in '0'..'9'
-
 }
