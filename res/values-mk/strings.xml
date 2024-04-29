@@ -125,7 +125,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"За да се прикажуваат „Точки за известување“, вклучете ги известувањата за апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Промени ги поставките"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Прикажувај точки за известување"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Опции за програмери"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Програмерски опции"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Додавај икони за апликации на почетниот екран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"За нови апликации"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Непознато"</string>
