@@ -115,7 +115,7 @@ fun QuickstepPreferences(
 
 @Preview
 @Composable
-fun QuickSwitchIgnoredWarning(
+private fun QuickSwitchIgnoredWarning(
     modifier: Modifier = Modifier,
 ) {
     Surface(
