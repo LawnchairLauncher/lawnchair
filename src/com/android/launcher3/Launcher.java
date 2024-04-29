@@ -96,7 +96,9 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.testing.shared.TestProtocol.CLOCK_ICON_DRAWABLE_LEAKING;
 import static com.android.launcher3.testing.shared.TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 import static com.android.launcher3.util.SettingsCache.TOUCHPAD_NATURAL_SCROLLING;
@@ -421,6 +423,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     @TargetApi(Build.VERSION_CODES.S)
     protected void onCreate(Bundle savedInstanceState) {
+        testLogD(CLOCK_ICON_DRAWABLE_LEAKING, "onCreate: instance=" + this);
         mStartupLatencyLogger = createStartupLatencyLogger(
                 sIsNewProcess
                         ? LockedUserState.get(this).isUserUnlockedAtLauncherStartup()
@@ -1079,6 +1082,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onStart() {
+        testLogD(CLOCK_ICON_DRAWABLE_LEAKING, "onStart: instance=" + this);
         TraceHelper.INSTANCE.beginSection(ON_START_EVT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
@@ -1092,6 +1096,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     @CallSuper
     protected void onDeferredResumed() {
+        testLogD(CLOCK_ICON_DRAWABLE_LEAKING, "onDeferredResumed: instance=" + this);
         logStopAndResume(true /* isResume */);
 
         // Process any items that were added while Launcher was away.
@@ -1279,6 +1284,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onResume() {
+        testLogD(CLOCK_ICON_DRAWABLE_LEAKING, "onResume: instance=" + this);
         TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT);
         super.onResume();
 
@@ -1294,6 +1300,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onPause() {
+        testLogD(CLOCK_ICON_DRAWABLE_LEAKING, "onPause: instance=" + this);
         // Ensure that items added to Launcher are queued until Launcher returns
         ItemInstallQueue.INSTANCE.get(this).pauseModelPush(FLAG_ACTIVITY_PAUSED);
 
@@ -1776,6 +1783,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void onDestroy() {
+        testLogD(CLOCK_ICON_DRAWABLE_LEAKING, "onDestroy: instance=" + this);
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
 
