@@ -1,9 +1,18 @@
 package app.lawnchair.ui.preferences.destinations
 
 import android.content.Context
+import android.os.Build
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
@@ -23,6 +32,8 @@ import app.lawnchair.util.contactPermissionGranted
 import app.lawnchair.util.filesAndStorageGranted
 import app.lawnchair.util.requestContactPermissionGranted
 import com.android.launcher3.R
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 fun SearchPreferences() {
@@ -53,6 +64,7 @@ fun SearchPreferences() {
 
             PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                 if (!isASISearch) {
+                    @OptIn(ExperimentalPermissionsApi::class)
                     SearchSuggestionPreference(
                         adapter = prefs.searchResultApps.getAdapter(),
                         maxCountAdapter = prefs2.maxAppSearchResultCount.getAdapter(),
@@ -100,12 +112,21 @@ private fun ASISearchSettings(prefs: PreferenceManager) {
     )
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun LocalSearchSettings(
     prefs: PreferenceManager,
     prefs2: PreferenceManager2,
     context: Context,
 ) {
+    val contactsPermissionState = rememberPermissionState(
+        android.Manifest.permission.READ_CONTACTS
+    )
+    val filesPermissionState =
+        rememberPermissionState(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+
     SearchSuggestionPreference(
         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
         maxCountAdapter = prefs2.maxSuggestionResultCount.getAdapter(),
@@ -129,21 +150,51 @@ private fun LocalSearchSettings(
         label = stringResource(id = R.string.search_pref_result_people_title),
         maxCountLabel = stringResource(id = R.string.max_people_result_count_title),
         description = stringResource(id = R.string.search_pref_result_contacts_description),
-        isPermissionGranted = contactPermissionGranted(context),
-        onPermissionRequest = { requestContactPermissionGranted(context, prefs) },
-        requestPermissionDescription = stringResource(id = R.string.warn_contact_permission_content),
+        permissionState = contactsPermissionState,
+        permissionRationale = stringResource(id = R.string.warn_contact_permission_content),
     )
-    SearchSuggestionPreference(
-        adapter = prefs.searchResultFiles.getAdapter(),
-        maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
-        maxCountRange = 3..10,
-        label = stringResource(id = R.string.search_pref_result_files_title),
-        maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
-        description = stringResource(id = R.string.search_pref_result_files_description),
-        isPermissionGranted = filesAndStorageGranted(context),
-        onPermissionRequest = { checkAndRequestFilesPermission(context, prefs) },
-        requestPermissionDescription = stringResource(id = R.string.warn_files_permission_content),
-    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val state by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+        var isGranted by remember { mutableStateOf(filesAndStorageGranted(context)) }
+        // TODO refactor permission handling of all files access
+
+        LaunchedEffect(state) {
+            if (!filesAndStorageGranted(context)) {
+                isGranted = false
+                prefs.searchResultFiles.set(false)
+            }
+
+            if (state == Lifecycle.State.RESUMED) {
+                isGranted = filesAndStorageGranted(context)
+            }
+        }
+
+        SearchSuggestionPreference(
+            adapter = prefs.searchResultFiles.getAdapter(),
+            maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
+            maxCountRange = 3..10,
+            label = stringResource(id = R.string.search_pref_result_files_title),
+            maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
+            description = stringResource(id = R.string.search_pref_result_files_description),
+            isGranted = filesAndStorageGranted(context),
+            onRequestPermission = {
+                checkAndRequestFilesPermission(context, prefs)
+            },
+            permissionRationale = stringResource(id = R.string.warn_files_permission_content),
+        )
+    } else {
+        SearchSuggestionPreference(
+            adapter = prefs.searchResultFiles.getAdapter(),
+            maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
+            maxCountRange = 3..10,
+            label = stringResource(id = R.string.search_pref_result_files_title),
+            maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
+            description = stringResource(id = R.string.search_pref_result_files_description),
+            permissionState = filesPermissionState,
+            permissionRationale = stringResource(id = R.string.warn_files_permission_content),
+        )
+    }
     SearchSuggestionPreference(
         adapter = prefs.searchResultSettingsEntry.getAdapter(),
         maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
