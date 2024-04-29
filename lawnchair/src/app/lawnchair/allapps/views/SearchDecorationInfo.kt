@@ -1,4 +1,4 @@
-package app.lawnchair.allapps
+package app.lawnchair.allapps.views
 
 import com.android.launcher3.allapps.DecorationInfo
 

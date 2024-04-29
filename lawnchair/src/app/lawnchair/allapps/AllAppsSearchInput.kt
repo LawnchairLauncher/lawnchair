@@ -112,6 +112,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         searchIcon = ViewCompat.requireViewById(this, R.id.search_icon)
         with(searchIcon) {
             isVisible = true
+            // todo implement search feature
         }
 
         if (prefs.searchResulRecentSuggestion.get()) {

@@ -1,4 +1,4 @@
-package app.lawnchair.allapps
+package app.lawnchair.allapps.views
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import app.lawnchair.allapps.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.font.FontManager
 import app.lawnchair.search.RECENT_KEYWORD
 import app.lawnchair.search.SETTING

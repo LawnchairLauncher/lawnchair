@@ -1,4 +1,4 @@
-package app.lawnchair.allapps
+package app.lawnchair.allapps.views
 
 import android.content.Context
 import android.provider.SearchRecentSuggestions
@@ -50,7 +50,11 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
         clearHistory.visibility = if (target.packageName == HEADER_JUSTIFY) VISIBLE else INVISIBLE
         if (target.packageName == HEADER_JUSTIFY) {
             clearHistory.setOnClickListener {
-                val suggestionsRecent = SearchRecentSuggestions(launcher, LawnchairRecentSuggestionProvider.AUTHORITY, LawnchairRecentSuggestionProvider.MODE)
+                val suggestionsRecent = SearchRecentSuggestions(
+                    launcher,
+                    LawnchairRecentSuggestionProvider.AUTHORITY,
+                    LawnchairRecentSuggestionProvider.MODE
+                )
                 suggestionsRecent.clearHistory()
                 callBack?.action()
             }

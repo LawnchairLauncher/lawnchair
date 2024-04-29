@@ -1,4 +1,4 @@
-package app.lawnchair.allapps
+package app.lawnchair.allapps.views
 
 import android.content.ComponentName
 import android.content.Context
@@ -25,16 +25,11 @@ import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.PackageItemInfo
 import com.android.launcher3.model.data.SearchActionItemInfo
-import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_BADGE_WITH_COMPONENT_NAME
-import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_BADGE_WITH_PACKAGE
-import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_PRIMARY_ICON_FROM_TITLE
-import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_SHOULD_START
-import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.touch.ItemClickHandler
 import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.Executors.MODEL_EXECUTOR
+import com.android.launcher3.util.Executors
 
 class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     BubbleTextView(context, attrs),
@@ -137,23 +132,23 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         val extras = action.extras
         if (extras != null) {
             if (extras.getBoolean("should_start_for_result") || target.resultType == 16) {
-                info.setFlags(FLAG_SHOULD_START_FOR_RESULT)
+                info.setFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)
             } else if (extras.getBoolean("should_start")) {
-                info.setFlags(FLAG_SHOULD_START)
+                info.setFlags(SearchActionItemInfo.FLAG_SHOULD_START)
             }
             if (extras.getBoolean("badge_with_package")) {
-                info.setFlags(FLAG_BADGE_WITH_PACKAGE)
+                info.setFlags(SearchActionItemInfo.FLAG_BADGE_WITH_PACKAGE)
             }
             if (extras.getBoolean("badge_with_component_name")) {
-                info.setFlags(FLAG_BADGE_WITH_COMPONENT_NAME)
+                info.setFlags(SearchActionItemInfo.FLAG_BADGE_WITH_COMPONENT_NAME)
             }
             if (extras.getBoolean("primary_icon_from_title")) {
-                info.setFlags(FLAG_PRIMARY_ICON_FROM_TITLE)
+                info.setFlags(SearchActionItemInfo.FLAG_PRIMARY_ICON_FROM_TITLE)
             }
         }
         notifyApplied(info)
         if (bindIcon) {
-            MODEL_EXECUTOR.handler.postAtFrontOfQueue {
+            Executors.MODEL_EXECUTOR.handler.postAtFrontOfQueue {
                 populateSearchActionItemInfo(target, info)
                 runOnMainThread { applyFromItemInfoWithIcon(info) }
             }
@@ -185,7 +180,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         applyFromWorkspaceItem(si)
         notifyApplied(si)
         val cache = LauncherAppState.getInstance(launcher).iconCache
-        MODEL_EXECUTOR.handler.postAtFrontOfQueue {
+        Executors.MODEL_EXECUTOR.handler.postAtFrontOfQueue {
             cache.getShortcutIcon(si, shortcutInfo)
             runOnMainThread { applyFromWorkspaceItem(si) }
         }
@@ -211,15 +206,16 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
             val packageIcon = getPackageIcon(target.packageName, target.userHandle)
 
             info.bitmap = when {
-                info.hasFlags(FLAG_PRIMARY_ICON_FROM_TITLE) ->
+                info.hasFlags(SearchActionItemInfo.FLAG_PRIMARY_ICON_FROM_TITLE) ->
                     li.createIconBitmap("${info.title}", packageIcon.color)
                 icon == null -> packageIcon
                 else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, target.packageName != SHORTCUT)
             }
-            if (info.hasFlags(FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {
+            if (info.hasFlags(SearchActionItemInfo.FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {
                 try {
                     val iconProvider = IconProvider(context)
-                    val componentName = ComponentName(target.packageName, target.extras.getString("class")!!)
+                    val componentName =
+                        ComponentName(target.packageName, target.extras.getString("class")!!)
                     val activityInfo = context.packageManager.getActivityInfo(componentName, 0)
                     val activityIcon = iconProvider.getIcon(activityInfo)
                     val bitmap = li.createIconBitmap(activityIcon, 1f, iconSize)
@@ -227,7 +223,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
                     info.bitmap = li.badgeBitmap(info.bitmap.icon, bitmapInfo)
                 } catch (_: PackageManager.NameNotFoundException) {
                 }
-            } else if (info.hasFlags(FLAG_BADGE_WITH_PACKAGE) && info.bitmap != packageIcon) {
+            } else if (info.hasFlags(SearchActionItemInfo.FLAG_BADGE_WITH_PACKAGE) && info.bitmap != packageIcon) {
                 info.bitmap = li.badgeBitmap(info.bitmap.icon, packageIcon)
             }
         }

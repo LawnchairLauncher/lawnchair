@@ -6,7 +6,7 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.View
-import app.lawnchair.allapps.SearchItemBackground
+import app.lawnchair.allapps.views.SearchItemBackground
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 
 data class SearchAdapterItem(

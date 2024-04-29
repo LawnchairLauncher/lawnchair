@@ -12,7 +12,7 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.os.bundleOf
-import app.lawnchair.allapps.SearchResultView
+import app.lawnchair.allapps.views.SearchResultView
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.FileInfo
 import app.lawnchair.search.data.FileInfo.Companion.isImageType

@@ -2,7 +2,7 @@ package app.lawnchair.search
 
 import android.content.Context
 import app.lawnchair.LawnchairApp
-import app.lawnchair.allapps.SearchItemBackground
+import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION

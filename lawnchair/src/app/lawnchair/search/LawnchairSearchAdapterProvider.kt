@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.contains
-import app.lawnchair.allapps.SearchItemDecorator
-import app.lawnchair.allapps.SearchResultView
-import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
+import app.lawnchair.allapps.views.SearchItemDecorator
+import app.lawnchair.allapps.views.SearchResultView
+import app.lawnchair.allapps.views.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import app.lawnchair.search.data.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.DeviceProfile

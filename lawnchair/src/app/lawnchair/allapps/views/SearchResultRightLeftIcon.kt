@@ -1,4 +1,4 @@
-package app.lawnchair.allapps
+package app.lawnchair.allapps.views
 
 import android.content.Context
 import android.content.Intent
@@ -63,7 +63,9 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             avatar.visibility = GONE
             preview.visibility = VISIBLE
         }
-        val heightRes = if (isSmall) resources.getDimensionPixelSize(R.dimen.search_result_small_row_height) else resources.getDimensionPixelSize(R.dimen.search_result_files_row_height)
+        val heightRes = if (isSmall) resources.getDimensionPixelSize(R.dimen.search_result_small_row_height) else resources.getDimensionPixelSize(
+            R.dimen.search_result_files_row_height
+        )
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
             heightRes,
