@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import app.lawnchair.search.CONTACT
-import app.lawnchair.search.FILES
-import app.lawnchair.search.MARKET_STORE
-import app.lawnchair.search.START_PAGE
-import app.lawnchair.search.SUGGESTION
-import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.adapter.CONTACT
+import app.lawnchair.search.adapter.FILES
+import app.lawnchair.search.adapter.MARKET_STORE
+import app.lawnchair.search.adapter.START_PAGE
+import app.lawnchair.search.adapter.SUGGESTION
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.data.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 

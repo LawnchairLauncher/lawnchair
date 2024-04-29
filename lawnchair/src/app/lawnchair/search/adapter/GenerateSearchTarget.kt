@@ -1,4 +1,4 @@
-package app.lawnchair.search
+package app.lawnchair.search.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -150,7 +150,10 @@ class GenerateSearchTarget(private val context: Context) {
     internal fun getMarketSearchItem(query: String): SearchTargetCompat? {
         if (marketSearchComponent == null) return null
         val id = "marketSearch:$query"
-        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_market_message))
+        val action = SearchActionCompat.Builder(
+            id,
+            context.getString(R.string.all_apps_search_market_message)
+        )
             .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
             .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
             .build()
@@ -165,7 +168,10 @@ class GenerateSearchTarget(private val context: Context) {
         val url = getStartPageUrl(query)
         val id = "browser:$query"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_startpage_message))
+        val action = SearchActionCompat.Builder(
+            id,
+            context.getString(R.string.all_apps_search_startpage_message)
+        )
             .setIcon(Icon.createWithResource(context, R.drawable.ic_startpage))
             .setIntent(browserIntent)
             .build()

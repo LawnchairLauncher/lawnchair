@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.BaseAllAppsAdapter

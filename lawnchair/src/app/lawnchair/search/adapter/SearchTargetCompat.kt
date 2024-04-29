@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.lawnchair.search
+package app.lawnchair.search.adapter
 
 import android.app.search.SearchTarget
 import android.app.slice.SliceManager
@@ -27,7 +27,7 @@ import android.os.Parcelable
 import android.os.UserHandle
 import androidx.annotation.FloatRange
 import androidx.annotation.IntDef
-import app.lawnchair.search.SearchTargetCompat.SearchResultType
+import app.lawnchair.search.adapter.SearchTargetCompat.SearchResultType
 import com.android.app.search.LayoutType.SearchLayoutType
 import kotlinx.parcelize.Parcelize
 

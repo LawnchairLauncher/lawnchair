@@ -5,6 +5,16 @@ import android.content.pm.ShortcutInfo
 import android.os.Handler
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.search.adapter.CONTACT
+import app.lawnchair.search.adapter.FILES
+import app.lawnchair.search.adapter.GenerateSearchTarget
+import app.lawnchair.search.adapter.HEADER_JUSTIFY
+import app.lawnchair.search.adapter.RECENT_KEYWORD
+import app.lawnchair.search.adapter.SETTING
+import app.lawnchair.search.adapter.SPACE
+import app.lawnchair.search.adapter.SUGGESTION
+import app.lawnchair.search.adapter.SearchTargetCompat
+import app.lawnchair.search.adapter.createSearchTarget
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.search.data.RecentKeyword

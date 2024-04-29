@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.lawnchair.search
+package app.lawnchair.search.adapter
 
 import android.app.PendingIntent
 import android.app.search.SearchAction

@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import app.lawnchair.font.FontManager
-import app.lawnchair.search.RECENT_KEYWORD
-import app.lawnchair.search.SETTING
-import app.lawnchair.search.SUGGESTION
-import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.adapter.RECENT_KEYWORD
+import app.lawnchair.search.adapter.SETTING
+import app.lawnchair.search.adapter.SUGGESTION
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.data.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.R

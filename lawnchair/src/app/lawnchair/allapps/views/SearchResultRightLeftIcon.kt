@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
 import app.lawnchair.launcher
-import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.data.SearchResultActionCallBack
 import app.lawnchair.util.AppInfo
 import app.lawnchair.util.AppInfoHelper

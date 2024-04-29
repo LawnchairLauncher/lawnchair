@@ -1,4 +1,4 @@
-package app.lawnchair.search
+package app.lawnchair.search.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.drawable.InsetDrawable
@@ -7,6 +7,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.View
 import app.lawnchair.allapps.views.SearchItemBackground
+import app.lawnchair.search.LawnchairSearchAdapterProvider
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 
 data class SearchAdapterItem(

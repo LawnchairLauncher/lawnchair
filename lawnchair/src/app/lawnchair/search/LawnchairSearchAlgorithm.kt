@@ -5,8 +5,17 @@ import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
-import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
+import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
+import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
+import app.lawnchair.search.adapter.CONTACT
+import app.lawnchair.search.adapter.ERROR
+import app.lawnchair.search.adapter.FILES
+import app.lawnchair.search.adapter.LOADING
+import app.lawnchair.search.adapter.RECENT_KEYWORD
+import app.lawnchair.search.adapter.SETTING
+import app.lawnchair.search.adapter.SUGGESTION
+import app.lawnchair.search.adapter.SearchAdapterItem
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.data.SearchCallback
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.findContactsByName
@@ -228,7 +237,8 @@ sealed class LawnchairSearchAlgorithm(
                 val timeout = maxWebSuggestionDelay.toLong()
                 val result = withTimeoutOrNull(timeout) {
                     if (prefs.searchResultStartPageSuggestion.get()) {
-                        getStartPageSuggestions(query, maxSuggestionCount).map { SearchResult(SUGGESTION, it) }
+                        getStartPageSuggestions(query, maxSuggestionCount).map { SearchResult(
+                            SUGGESTION, it) }
                     } else {
                         emptyList()
                     }

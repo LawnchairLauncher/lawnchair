@@ -5,7 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
-import app.lawnchair.search.SearchAdapterItem
+import app.lawnchair.search.adapter.SearchAdapterItem
 import com.android.launcher3.R
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
 

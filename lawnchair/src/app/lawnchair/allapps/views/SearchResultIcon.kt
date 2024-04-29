@@ -11,8 +11,8 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import app.lawnchair.launcher
-import app.lawnchair.search.SHORTCUT
-import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.search.adapter.SHORTCUT
+import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.data.SearchResultActionCallBack
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.BubbleTextView
