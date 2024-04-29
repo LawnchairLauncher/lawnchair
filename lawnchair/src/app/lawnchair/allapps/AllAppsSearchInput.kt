@@ -17,7 +17,6 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
@@ -27,7 +26,7 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
-import app.lawnchair.search.LawnchairSearchAlgorithm
+import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
@@ -91,7 +90,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         input = ViewCompat.requireViewById(this, R.id.input)
         with(input) {
-            if (prefs2.performWideSearch.firstBlocking()) {
+            if (prefs2.performLocalSearch.firstBlocking()) {
                 setHint(R.string.all_apps_device_search_hint)
             } else {
                 setHint(R.string.all_apps_search_bar_hint)

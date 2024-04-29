@@ -1,30 +1,15 @@
-package app.lawnchair.search
+package app.lawnchair.search.algorithms
 
 import android.content.Context
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
-import app.lawnchair.search.adapter.CONTACT
-import app.lawnchair.search.adapter.ERROR
-import app.lawnchair.search.adapter.FILES
-import app.lawnchair.search.adapter.LOADING
-import app.lawnchair.search.adapter.RECENT_KEYWORD
-import app.lawnchair.search.adapter.SETTING
-import app.lawnchair.search.adapter.SUGGESTION
 import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchTargetCompat
-import app.lawnchair.search.data.SearchCallback
-import app.lawnchair.search.data.SearchResult
-import app.lawnchair.search.data.findContactsByName
-import app.lawnchair.search.data.findSettingsByNameAndAction
-import app.lawnchair.search.data.getRecentKeyword
-import app.lawnchair.search.data.getStartPageSuggestions
-import app.lawnchair.search.data.queryFilesInMediaStore
-import app.lawnchair.util.checkAndRequestFilesPermission
-import app.lawnchair.util.requestContactPermissionGranted
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
 import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
@@ -42,10 +27,6 @@ import com.android.launcher3.search.SearchAlgorithm
 import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
@@ -102,8 +83,17 @@ sealed class LawnchairSearchAlgorithm(
             val isFirst = index == 0 || filtered[index - 1].isDivider
             val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
             val background = getBackground(
-                target.layoutType, index, isFirst, isLast,
-                smallIconIndices, iconRowIndices, peopleTileIndices, suggestionIndices, fileIndices, settingIndices, recentIndices,
+                target.layoutType,
+                index,
+                isFirst,
+                isLast,
+                smallIconIndices,
+                iconRowIndices,
+                peopleTileIndices,
+                suggestionIndices,
+                fileIndices,
+                settingIndices,
+                recentIndices,
             )
             SearchAdapterItem.createAdapterItem(target, background)
         }
@@ -153,132 +143,36 @@ sealed class LawnchairSearchAlgorithm(
 
         private var ranCompatibilityCheck = false
 
-        fun isDeviceSearchEnabled(context: Context): Boolean {
+        fun isASISearchEnabled(context: Context): Boolean {
             if (!Utilities.ATLEAST_S) return false
             if (!LawnchairApp.isRecentsEnabled) return false
 
             val prefs = PreferenceManager.getInstance(context)
             if (!ranCompatibilityCheck) {
                 ranCompatibilityCheck = true
-                LawnchairDeviceSearchAlgorithm.checkSearchCompatibility(context)
+                LawnchairASISearchAlgorithm.checkSearchCompatibility(context)
             }
             return prefs.deviceSearch.get()
         }
 
+        fun isLocalSearchEnabled(context: Context): Boolean {
+            val prefs = PreferenceManager2.getInstance(context)
+            val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+            var enableLocalSearch = false
+
+            prefs.performLocalSearch.onEach(launchIn = coroutineScope) {
+                enableLocalSearch = it
+            }
+            return enableLocalSearch
+        }
+
         fun create(context: Context): LawnchairSearchAlgorithm = when {
-            isDeviceSearchEnabled(context) -> LawnchairDeviceSearchAlgorithm(context)
+            isASISearchEnabled(context) -> LawnchairASISearchAlgorithm(context)
+            isLocalSearchEnabled(context) -> LawnchairLocalSearchAlgorithm(context)
             else -> LawnchairAppSearchAlgorithm(context)
         }
     }
-
-    private var maxPeopleCount = 10
-    private var maxSuggestionCount = 3
-    private var maxFilesCount = 3
-    private var maxSettingsEntryCount = 5
-    private var maxRecentResultCount = 2
-    private var maxWebSuggestionDelay = 200
-    val coroutineScope = CoroutineScope(context = Dispatchers.IO)
-    val pref2 = PreferenceManager2.getInstance(context)
-
-    init {
-        pref2.maxFileResultCount.onEach(launchIn = coroutineScope) {
-            maxFilesCount = it
-        }
-        pref2.maxPeopleResultCount.onEach(launchIn = coroutineScope) {
-            maxPeopleCount = it
-        }
-        pref2.maxSuggestionResultCount.onEach(launchIn = coroutineScope) {
-            maxSuggestionCount = it
-        }
-        pref2.maxSettingsEntryResultCount.onEach(launchIn = coroutineScope) {
-            maxSettingsEntryCount = it
-        }
-        pref2.maxRecentResultCount.onEach(launchIn = coroutineScope) {
-            maxRecentResultCount = it
-        }
-        pref2.maxWebSuggestionDelay.onEach(launchIn = coroutineScope) {
-            maxWebSuggestionDelay = it
-        }
-    }
-
-    protected suspend fun performDeviceWideSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> = withContext(Dispatchers.IO) {
-        val results = ArrayList<SearchResult>()
-
-        val contactDeferred = async {
-            if (prefs.searchResultPeople.get() && requestContactPermissionGranted(context, prefs)) {
-                findContactsByName(context, query, maxPeopleCount)
-                    .map { SearchResult(CONTACT, it) }
-            } else {
-                emptyList()
-            }
-        }
-
-        val filesDeferred = async {
-            if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(context, prefs)) {
-                queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount)
-                    .toList()
-                    .map { SearchResult(FILES, it) }
-            } else {
-                emptyList()
-            }
-        }
-
-        val settingsDeferred = async {
-            if (prefs.searchResultSettings.get()) {
-                findSettingsByNameAndAction(query, maxSettingsEntryCount)
-                    .map { SearchResult(SETTING, it) }
-            } else {
-                emptyList()
-            }
-        }
-
-        val startPageSuggestionsDeferred = async {
-            try {
-                val timeout = maxWebSuggestionDelay.toLong()
-                val result = withTimeoutOrNull(timeout) {
-                    if (prefs.searchResultStartPageSuggestion.get()) {
-                        getStartPageSuggestions(query, maxSuggestionCount).map { SearchResult(
-                            SUGGESTION, it) }
-                    } else {
-                        emptyList()
-                    }
-                }
-                result ?: emptyList()
-            } catch (e: TimeoutCancellationException) {
-                emptyList()
-            }
-        }
-
-        if (prefs.searchResulRecentSuggestion.get()) {
-            getRecentKeyword(
-                context,
-                query,
-                maxRecentResultCount,
-                object : SearchCallback {
-                    override fun onSearchLoaded(items: List<Any>) {
-                        results.addAll(items.map { SearchResult(RECENT_KEYWORD, it) })
-                    }
-
-                    override fun onSearchFailed(error: String) {
-                        results.add(SearchResult(ERROR, error))
-                    }
-
-                    override fun onLoading() {
-                        results.add(SearchResult(LOADING, "Loading"))
-                    }
-                },
-            )
-        }
-
-        results.addAll(contactDeferred.await())
-        results.addAll(filesDeferred.await())
-        results.addAll(settingsDeferred.await())
-        results.addAll(startPageSuggestionsDeferred.await())
-
-        results
-    }
 }
-
 private fun Sequence<SearchTargetCompat>.removeDuplicateDividers(): Sequence<SearchTargetCompat> {
     var previousWasDivider = true
     return filter { item ->

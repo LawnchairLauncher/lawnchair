@@ -13,13 +13,13 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.core.os.bundleOf
 import app.lawnchair.allapps.views.SearchResultView
-import app.lawnchair.search.data.ContactInfo
-import app.lawnchair.search.data.FileInfo
-import app.lawnchair.search.data.FileInfo.Companion.isImageType
-import app.lawnchair.search.data.FolderInfo
-import app.lawnchair.search.data.IFileInfo
-import app.lawnchair.search.data.RecentKeyword
-import app.lawnchair.search.data.SettingInfo
+import app.lawnchair.search.algorithms.data.ContactInfo
+import app.lawnchair.search.algorithms.data.FileInfo
+import app.lawnchair.search.algorithms.data.FileInfo.Companion.isImageType
+import app.lawnchair.search.algorithms.data.FolderInfo
+import app.lawnchair.search.algorithms.data.IFileInfo
+import app.lawnchair.search.algorithms.data.RecentKeyword
+import app.lawnchair.search.algorithms.data.SettingInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.file2Uri
@@ -53,7 +53,7 @@ class GenerateSearchTarget(private val context: Context) {
             action,
             LayoutType.HORIZONTAL_MEDIUM_TEXT,
             SearchTargetCompat.RESULT_TYPE_SUGGESTIONS,
-            SUGGESTION,
+            WEB_SUGGESTION,
         )
     }
 
@@ -74,7 +74,7 @@ class GenerateSearchTarget(private val context: Context) {
             action,
             LayoutType.WIDGET_LIVE,
             SearchTargetCompat.RESULT_TYPE_SUGGESTIONS,
-            RECENT_KEYWORD,
+            HISTORY,
         )
     }
 
@@ -127,7 +127,7 @@ class GenerateSearchTarget(private val context: Context) {
             actionBuilder,
             LayoutType.ICON_SLICE,
             SearchTargetCompat.RESULT_TYPE_SETTING_TILE,
-            SETTING,
+            SETTINGS,
         )
     }
 

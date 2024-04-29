@@ -14,7 +14,7 @@ import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SPACE_MINI
 import app.lawnchair.search.adapter.SearchTargetCompat
-import app.lawnchair.search.data.SearchResultActionCallBack
+import app.lawnchair.search.adapter.SearchResultActionCallBack
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
 

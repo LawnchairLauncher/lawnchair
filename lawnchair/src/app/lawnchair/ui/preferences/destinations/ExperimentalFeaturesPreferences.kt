@@ -43,7 +43,7 @@ fun ExperimentalFeaturesPreferences(
                 description = stringResource(id = R.string.always_reload_icons_description),
             )
             SwitchPreference(
-                adapter = prefs2.performWideSearch.getAdapter(),
+                adapter = prefs2.performLocalSearch.getAdapter(),
                 label = stringResource(id = R.string.perform_wide_search_title),
                 description = stringResource(id = R.string.perform_wide_search_description),
             )

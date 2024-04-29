@@ -1,4 +1,4 @@
-package app.lawnchair.search.data
+package app.lawnchair.search.algorithms.data
 
 interface SearchCallback {
     fun onSearchLoaded(items: List<Any>)

@@ -296,8 +296,8 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
     )
 
-    val performWideSearch = preference(
-        key = booleanPreferencesKey(name = "performWideSearch"),
+    val performLocalSearch = preference(
+        key = booleanPreferencesKey(name = "performLocalSearch"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_perform_wide_search),
     )
 
@@ -386,7 +386,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
     )
 
-    val maxSearchResultCount = preference(
+    val maxAppSearchResultCount = preference(
         key = intPreferencesKey(name = "max_search_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
     )

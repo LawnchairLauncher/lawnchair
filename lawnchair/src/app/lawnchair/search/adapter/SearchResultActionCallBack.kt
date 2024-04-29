@@ -1,4 +1,4 @@
-package app.lawnchair.search.data
+package app.lawnchair.search.adapter
 
 interface SearchResultActionCallBack {
     fun action()

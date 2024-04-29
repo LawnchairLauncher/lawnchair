@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import app.lawnchair.font.FontManager
-import app.lawnchair.search.adapter.RECENT_KEYWORD
-import app.lawnchair.search.adapter.SETTING
-import app.lawnchair.search.adapter.SUGGESTION
+import app.lawnchair.search.adapter.HISTORY
+import app.lawnchair.search.adapter.SETTINGS
+import app.lawnchair.search.adapter.WEB_SUGGESTION
 import app.lawnchair.search.adapter.SearchTargetCompat
-import app.lawnchair.search.data.SearchResultActionCallBack
+import app.lawnchair.search.adapter.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.touch.ItemClickHandler
@@ -85,11 +85,11 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         }
         val isSuggestion = (target.layoutType == LayoutType.HORIZONTAL_MEDIUM_TEXT || target.layoutType == LayoutType.WIDGET_LIVE) &&
             target.resultType == SearchTargetCompat.RESULT_TYPE_SUGGESTIONS &&
-            (target.packageName == SUGGESTION || target.packageName == RECENT_KEYWORD)
+            (target.packageName == WEB_SUGGESTION || target.packageName == HISTORY)
 
         val isSetting = target.layoutType == LayoutType.ICON_SLICE &&
             target.resultType == SearchTargetCompat.RESULT_TYPE_SETTING_TILE &&
-            target.packageName == SETTING
+            target.packageName == SETTINGS
 
         bindShortcuts(shortcuts)
         var showDelimiter = true

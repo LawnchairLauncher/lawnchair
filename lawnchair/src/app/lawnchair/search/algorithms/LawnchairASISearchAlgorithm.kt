@@ -1,4 +1,4 @@
-package app.lawnchair.search
+package app.lawnchair.search.algorithms
 
 import android.app.search.Query
 import android.app.search.SearchContext
@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.LauncherAppState
@@ -21,7 +22,7 @@ import com.android.launcher3.util.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
-class LawnchairDeviceSearchAlgorithm(context: Context) :
+class LawnchairASISearchAlgorithm(context: Context) :
     LawnchairSearchAlgorithm(context),
     PreferenceChangeListener {
     private val prefs: PreferenceManager
