@@ -69,13 +69,7 @@ public class ActivityAllAppsContainerViewTest {
     private WorkProfileManager mWorkManager;
     private Context mContext;
 
-    @Rule public final SetFlagsRule mSetFlagsRule = getFlagsRule();
-
-    private SetFlagsRule getFlagsRule() {
-        SetFlagsRule flagsRule = new SetFlagsRule();
-        flagsRule.initAllFlagsToReleaseConfigDefault();
-        return flagsRule;
-    }
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Before
     public void setUp() {
