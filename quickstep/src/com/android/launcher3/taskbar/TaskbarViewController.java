@@ -71,6 +71,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.views.IconButtonView;
 
 import java.io.PrintWriter;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -505,6 +506,15 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     public View getTaskbarDividerView() {
         return mTaskbarView.getTaskbarDividerView();
+    }
+
+    /** Updates which icons are marked as running given the Set of currently running packages. */
+    public void updateIconViewsRunningStates(Set<String> runningPackages) {
+        for (View iconView : getIconViews()) {
+            if (iconView instanceof BubbleTextView btv) {
+                btv.updateRunningState(runningPackages.contains(btv.getTargetPackageName()));
+            }
+        }
     }
 
     /**

@@ -394,6 +394,9 @@
     <dimen name="min_hotseat_icon_space">18dp</dimen>
     <dimen name="max_hotseat_icon_space">50dp</dimen>
     <dimen name="min_hotseat_qsb_width">0dp</dimen>
+    <dimen name="taskbar_running_app_indicator_height">0dp</dimen>
+    <dimen name="taskbar_running_app_indicator_width">0dp</dimen>
+    <dimen name="taskbar_running_app_indicator_top_margin">0dp</dimen>
 
     <!-- Transient taskbar (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="transient_taskbar_padding">0dp</dimen>

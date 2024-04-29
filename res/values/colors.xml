@@ -90,6 +90,8 @@
     <color name="drop_target_hover_button_color_light">#D3E3FD</color>
     <color name="drop_target_hover_button_color_dark">#0842A0</color>
 
+    <color name="taskbar_running_app_indicator_color">#000000</color>
+
     <color name="preload_icon_accent_color_light">#00668B</color>
     <color name="preload_icon_background_color_light">#B5CAD7</color>
     <color name="preload_icon_accent_color_dark">#4BB6E8</color>
