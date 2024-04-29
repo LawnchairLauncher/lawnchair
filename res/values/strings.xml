@@ -456,4 +456,5 @@
     <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
     <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
     <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="all_apps_search_result_calculator">Calculator</string>
 </resources>

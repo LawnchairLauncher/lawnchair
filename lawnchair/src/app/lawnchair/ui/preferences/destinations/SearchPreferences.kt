@@ -234,4 +234,8 @@ private fun LocalSearchSettings(
         label = stringResource(id = R.string.search_pref_result_history_title),
         maxCountLabel = stringResource(id = R.string.max_recent_result_count_title),
     )
+    SwitchPreference(
+        adapter = prefs.searchResultCalculator.getAdapter(),
+        label = stringResource(R.string.all_apps_search_result_calculator),
+    )
 }

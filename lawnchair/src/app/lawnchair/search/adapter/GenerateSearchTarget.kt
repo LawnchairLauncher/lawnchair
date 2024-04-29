@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.core.os.bundleOf
 import app.lawnchair.allapps.views.SearchResultView
+import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.FileInfo
 import app.lawnchair.search.algorithms.data.FileInfo.Companion.isImageType
@@ -54,6 +55,30 @@ class GenerateSearchTarget(private val context: Context) {
             LayoutType.HORIZONTAL_MEDIUM_TEXT,
             SearchTargetCompat.RESULT_TYPE_SUGGESTIONS,
             WEB_SUGGESTION,
+        )
+    }
+
+    internal fun getCalculationTarget(
+        calculation: Calculation,
+    ): SearchTargetCompat {
+        val result = calculation.result
+        val equation = calculation.equation
+        val id = "calculator:$result"
+        val action = SearchActionCompat.Builder(id, result)
+            .setIcon(
+                Icon.createWithResource(context, R.drawable.calculator)
+                    .setTint(ColorTokens.TextColorSecondary.resolveColor(context)),
+            )
+            .setSubtitle(equation)
+            .setIntent(Intent())
+            .build()
+
+        val extras = bundleOf()
+
+        return createCalculatorTarget(
+            id,
+            action,
+            extras
         )
     }
 

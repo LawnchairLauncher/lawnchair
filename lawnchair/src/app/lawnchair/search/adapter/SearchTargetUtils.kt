@@ -60,6 +60,23 @@ fun createSearchTarget(
         .build()
 }
 
+fun createCalculatorTarget(
+    id: String,
+    action: SearchActionCompat,
+    extras: Bundle = Bundle(),
+): SearchTargetCompat {
+    return SearchTargetCompat.Builder(
+        SearchTargetCompat.RESULT_TYPE_CALCULATOR,
+        LayoutType.CALCULATOR,
+        generateHashKey(id),
+    )
+        .setPackageName("")
+        .setUserHandle(Process.myUserHandle())
+        .setSearchAction(action)
+        .setExtras(extras)
+        .build()
+}
+
 fun createSearchTarget(
     id: String,
     action: SearchActionCompat,
@@ -105,3 +122,4 @@ const val SETTINGS = "setting"
 const val SHORTCUT = "shortcut"
 const val HISTORY = "recent_keyword"
 const val HEADER_JUSTIFY = "header_justify"
+const val CALCULATOR = "calculator"

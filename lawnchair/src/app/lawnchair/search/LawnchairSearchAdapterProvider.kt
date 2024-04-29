@@ -36,6 +36,7 @@ class LawnchairSearchAdapterProvider(
         append(SEARCH_RESULT_SUGGESTION_TILE, R.layout.search_result_small_icon_row)
         append(SEARCH_RESULT_SETTINGS_TILE, R.layout.search_result_small_icon_row)
         append(SEARCH_RESULT_RECENT_TILE, R.layout.search_result_small_icon_row)
+        append(SEARCH_RESULT_CALCULATOR, R.layout.search_result_tall_icon_row)
     }
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
@@ -108,6 +109,7 @@ class LawnchairSearchAdapterProvider(
         private const val SEARCH_RESULT_SUGGESTION_TILE = 1 shl 15
         private const val SEARCH_RESULT_SETTINGS_TILE = 1 shl 16
         private const val SEARCH_RESULT_RECENT_TILE = 1 shl 17
+        private const val SEARCH_RESULT_CALCULATOR = 1 shl 18
 
         val viewTypeMap = mapOf(
             LayoutType.ICON_SINGLE_VERTICAL_TEXT to SEARCH_RESULT_ICON,
@@ -120,6 +122,7 @@ class LawnchairSearchAdapterProvider(
             LayoutType.THUMBNAIL to SEARCH_RESULT_FILE_TILE,
             LayoutType.ICON_SLICE to SEARCH_RESULT_SETTINGS_TILE,
             LayoutType.WIDGET_LIVE to SEARCH_RESULT_RECENT_TILE,
+            LayoutType.CALCULATOR to SEARCH_RESULT_CALCULATOR
         )
 
         fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {

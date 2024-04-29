@@ -10,6 +10,7 @@ import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
+import com.android.app.search.LayoutType.CALCULATOR
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
 import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
@@ -76,6 +77,7 @@ sealed class LawnchairSearchAlgorithm(
         val fileIndices = findIndices(filtered, THUMBNAIL)
         val settingIndices = findIndices(filtered, ICON_SLICE)
         val recentIndices = findIndices(filtered, WIDGET_LIVE)
+        val calculator = findIndices(filtered, CALCULATOR)
 
         return filtered.mapIndexedNotNull { index, target ->
             val isFirst = index == 0 || filtered[index - 1].isDivider
@@ -92,6 +94,7 @@ sealed class LawnchairSearchAlgorithm(
                 fileIndices,
                 settingIndices,
                 recentIndices,
+                calculator,
             )
             SearchAdapterItem.createAdapterItem(target, background)
         }
@@ -115,6 +118,7 @@ sealed class LawnchairSearchAlgorithm(
         fileIndices: List<Int>,
         settingIndices: List<Int>,
         recentIndices: List<Int>,
+        calculator: List<Int>
     ): SearchItemBackground = when {
         layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
         layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)
@@ -124,6 +128,7 @@ sealed class LawnchairSearchAlgorithm(
         layoutType == THUMBNAIL -> getGroupedBackground(index, fileIndices)
         layoutType == ICON_SLICE -> getGroupedBackground(index, settingIndices)
         layoutType == WIDGET_LIVE -> getGroupedBackground(index, recentIndices)
+        layoutType == CALCULATOR && calculator.isNotEmpty() -> normalBackground
         isFirst && isLast -> normalBackground
         isFirst -> topBackground
         isLast -> bottomBackground

@@ -7,6 +7,7 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAdapterProvider
+import app.lawnchair.search.adapter.CALCULATOR
 import app.lawnchair.search.adapter.CONTACT
 import app.lawnchair.search.adapter.ERROR
 import app.lawnchair.search.adapter.FILES
@@ -20,10 +21,12 @@ import app.lawnchair.search.adapter.SearchResult
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.WEB_SUGGESTION
 import app.lawnchair.search.adapter.createSearchTarget
+import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
+import app.lawnchair.search.algorithms.data.calculateEquationFromString
 import app.lawnchair.search.algorithms.data.findContactsByName
 import app.lawnchair.search.algorithms.data.findSettingsByNameAndAction
 import app.lawnchair.search.algorithms.data.getRecentKeyword
@@ -166,6 +169,21 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             }
         }
 
+        val suggestions = filterByType(localSearchResults, WEB_SUGGESTION)
+        if (suggestions.isNotEmpty()) {
+            searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
+        }
+
+        val calculator = filterByType(localSearchResults, CALCULATOR).first()
+        val calcData = calculator.resultData as Calculation
+        if (calcData.isValid) {
+            val calculatorHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_calculator))
+            searchTargets.add(calculatorHeader)
+            searchTargets.add(
+                generateSearchTarget.getCalculationTarget(calcData),
+            )
+        }
+
         val contacts = filterByType(localSearchResults, CONTACT)
         if (contacts.isNotEmpty()) {
             val contactsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
@@ -188,13 +206,6 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             )
             searchTargets.add(recentKeywordHeader)
             searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword) })
-        }
-
-        val suggestions = filterByType(localSearchResults, WEB_SUGGESTION)
-        if (suggestions.isNotEmpty()) {
-            val suggestionsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
-            searchTargets.add(suggestionsHeader)
-            searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
         }
 
         val files = filterByType(localSearchResults, FILES)
@@ -274,6 +285,11 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     protected suspend fun performDeviceLocalSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> =
         withContext(Dispatchers.IO) {
             val results = ArrayList<SearchResult>()
+
+            if (prefs.searchResultCalculator.get()) {
+                val calculations = calculateEquationFromString(query)
+                results.add(SearchResult(CALCULATOR, calculations))
+            }
 
             val contactDeferred = async {
                 if (prefs.searchResultPeople.get() && requestContactPermissionGranted(
