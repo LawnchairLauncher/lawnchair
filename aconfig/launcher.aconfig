@@ -253,3 +253,17 @@ flag {
     description: "Enables fallback recents opening inside of a window instead of an activity."
     bug: "292269949"
 }
+
+flag {
+    name: "enable_smartspace_as_a_widget"
+    namespace: "launcher"
+    description: "Enables smartspace as a widget"
+    bug: "300140279"
+}
+
+flag {
+    name: "enable_smartspace_removal_toggle"
+    namespace: "launcher"
+    description: "Enables smartspace removal toggle"
+    bug: "303471576"
+}

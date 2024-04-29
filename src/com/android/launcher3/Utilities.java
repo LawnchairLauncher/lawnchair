@@ -18,6 +18,8 @@ package com.android.launcher3;
 
 import static android.graphics.drawable.AdaptiveIconDrawable.getExtraInsetFraction;
 
+import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
+import static com.android.launcher3.Flags.enableSmartspaceAsAWidget;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
@@ -147,6 +149,9 @@ public final class Utilities {
     public static final int TRANSLATE_DOWN = 1;
     public static final int TRANSLATE_LEFT = 2;
     public static final int TRANSLATE_RIGHT = 3;
+
+    public static final boolean SHOULD_SHOW_FIRST_PAGE_WIDGET =
+            enableSmartspaceAsAWidget() && WIDGET_ON_FIRST_SCREEN;
 
     @IntDef({TRANSLATE_UP, TRANSLATE_DOWN, TRANSLATE_LEFT, TRANSLATE_RIGHT})
     public @interface AdjustmentDirection{}

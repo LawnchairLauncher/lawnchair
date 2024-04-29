@@ -19,9 +19,9 @@ package com.android.launcher3;
 import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURCE_UPDATED;
 import static android.content.Context.RECEIVER_EXPORTED;
 
+import static com.android.launcher3.Flags.enableSmartspaceRemovalToggle;
 import static com.android.launcher3.LauncherPrefs.ICON_STATE;
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.model.LoaderTask.SMARTSPACE_ON_HOME_SCREEN;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
@@ -126,7 +126,7 @@ public class LauncherAppState implements SafeCloseable {
                 .addUserEventListener(mModel::onUserEvent);
         mOnTerminateCallback.add(userChangeListener::close);
 
-        if (ENABLE_SMARTSPACE_REMOVAL.get()) {
+        if (enableSmartspaceRemovalToggle()) {
             OnSharedPreferenceChangeListener firstPagePinnedItemListener =
                     new OnSharedPreferenceChangeListener() {
                         @Override
