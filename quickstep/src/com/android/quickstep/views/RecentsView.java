@@ -2019,7 +2019,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         mClearAllButton.setFullscreenProgress(fullscreenProgress);
 
         // Fade out the actions view quickly (0.1 range)
-        mActionsView.getFullscreenAlpha().setValue(
+        mActionsView.getFullscreenAlphaSetter().accept(
                 mapToRange(fullscreenProgress, 0, 0.1f, 1f, 0f, LINEAR));
     }
 
@@ -2270,8 +2270,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     }
 
     private void animateActionsViewAlpha(float alphaValue, long duration) {
-        mActionsViewAlphaAnimator = ObjectAnimator.ofFloat(
-                mActionsView.getVisibilityAlpha(), MULTI_PROPERTY_VALUE, alphaValue);
+        mActionsViewAlphaAnimator = ObjectAnimator.ofFloat(mActionsView.getVisibilityAlphaSetter(),
+                OverviewActionsView.FLOAT_SETTER, alphaValue);
         mActionsViewAlphaAnimatorFinalValue = alphaValue;
         mActionsViewAlphaAnimator.setDuration(duration);
         // Set autocancel to prevent race-conditiony setting of alpha from other animations
@@ -2290,7 +2290,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         mClearAllButton.onRecentsViewScroll(scroll, mOverviewGridEnabled);
 
         // Clear all button alpha was set by the previous line.
-        mActionsView.getIndexScrollAlpha().setValue(1 - mClearAllButton.getScrollAlpha());
+        mActionsView.getIndexScrollAlphaSetter().accept(1 - mClearAllButton.getScrollAlpha());
     }
 
     @Override
@@ -4295,7 +4295,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         int alphaInt = Math.round(alpha * 255);
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
-        mActionsView.getContentAlpha().setValue(mContentAlpha);
+        mActionsView.getContentAlphaSetter().accept(mContentAlpha);
 
         if (alpha > 0) {
             setVisibility(VISIBLE);

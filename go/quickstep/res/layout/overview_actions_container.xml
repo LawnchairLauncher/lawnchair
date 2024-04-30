@@ -121,6 +121,17 @@
             android:layout_weight="1"
             android:visibility="gone" />
 
+    </LinearLayout>
+
+    <!-- Unused. Included only for compatibility with parent class. -->
+    <LinearLayout
+        android:id="@+id/group_action_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/overview_actions_height"
+        android:layout_gravity="top|center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/action_save_app_pair"
             style="@style/GoOverviewActionButton"
@@ -128,8 +139,8 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_save_app_pair_up_down"
             android:text="@string/action_save_app_pair"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor"
-            android:visibility="gone" />
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+
     </LinearLayout>
 
 </com.android.quickstep.views.GoOverviewActionsView>
