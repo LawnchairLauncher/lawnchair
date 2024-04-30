@@ -312,7 +312,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         if (enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps()) {
             return new DesktopTaskbarRunningAppsController(
                     RecentsModel.INSTANCE.get(this),
-                    LauncherActivityInterface.INSTANCE.getDesktopVisibilityController());
+                    LauncherActivityInterface.INSTANCE::getDesktopVisibilityController);
         }
         return TaskbarRecentAppsController.DEFAULT;
     }
