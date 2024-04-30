@@ -864,7 +864,8 @@ public class TaskView extends FrameLayout implements Reusable {
         RunnableList callbackList = launchTasks();
         Log.d("b/310064698", mTask + " - onClick - callbackList: " + callbackList);
         if (callbackList != null) {
-            callbackList.add(() -> Log.d("b/310064698", mTask + " - onClick - launchCompleted"));
+            callbackList.add(() -> Log.d("b/310064698", Arrays.toString(
+                    getTaskIds()) + " - onClick - launchCompleted"));
         }
         mContainer.getStatsLogManager().logger().withItemInfo(getItemInfo())
                 .log(LAUNCHER_TASK_LAUNCH_TAP);
@@ -936,7 +937,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 return null;
             }
         } else {
-            Log.d(TAG, "launchTaskAnimated - mTask is null");
+            Log.d(TAG, "launchTaskAnimated - mTask is null" + Arrays.toString(getTaskIds()));
             return null;
         }
     }
@@ -1006,9 +1007,12 @@ public class TaskView extends FrameLayout implements Reusable {
                         callback.accept(false);
                     });
                 }
+                Log.d(TAG,
+                        "launchTask - startActivityFromRecents: " + Arrays.toString(getTaskIds()));
             });
         } else {
             callback.accept(false);
+            Log.d(TAG, "launchTask - mTask is null" + Arrays.toString(getTaskIds()));
         }
     }
 

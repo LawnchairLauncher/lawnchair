@@ -1707,6 +1707,12 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             return;
         }
 
+        if (taskGroups == null) {
+            Log.d(TAG, "applyLoadPlan - taskGroups is null");
+        } else {
+            Log.d(TAG, "applyLoadPlan - taskGroups: " + taskGroups.stream().map(
+                    GroupTask::toString).toList());
+        }
         mLoadPlanEverApplied = true;
         if (taskGroups == null || taskGroups.isEmpty()) {
             removeTasksViewsAndClearAllButton();
@@ -2587,7 +2593,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      */
     public void onGestureAnimationStart(
             Task[] runningTasks, RotationTouchHelper rotationTouchHelper) {
-        Log.d(TAG, "onGestureAnimationStart");
+        Log.d(TAG, "onGestureAnimationStart - runningTasks: " + Arrays.toString(runningTasks));
         mActiveGestureRunningTasks = runningTasks;
         // This needs to be called before the other states are set since it can create the task view
         if (mOrientationState.setGestureActive(true)) {
@@ -2761,6 +2767,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * is called.  Also scrolls the view to this task.
      */
     private void showCurrentTask(Task[] runningTasks) {
+        Log.d(TAG, "showCurrentTask - runningTasks: " + Arrays.toString(runningTasks));
         if (runningTasks.length == 0) {
             return;
         }
@@ -5457,8 +5464,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * Called when a running recents animation has finished or canceled.
      */
     public void onRecentsAnimationComplete() {
-        Log.d(TAG, "onRecentsAnimationComplete - mRecentsAnimationController: "
-                + mRecentsAnimationController);
+        Log.d(TAG, "onRecentsAnimationComplete "
+                + "- mRecentsAnimationController: " + mRecentsAnimationController
+                + ", mSideTaskLaunchCallback: " + mSideTaskLaunchCallback);
         // At this point, the recents animation is not running and if the animation was canceled
         // by a display rotation then reset this state to show the screenshot
         setRunningTaskViewShowScreenshot(true);
@@ -6012,7 +6020,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     }
 
     public void cleanupRemoteTargets() {
-        Log.d(TAG, "cleanupRemoteTargets");
+        Log.d(TAG, "cleanupRemoteTargets - mRemoteTargetHandles: " + Arrays.toString(
+                mRemoteTargetHandles));
         mRemoteTargetHandles = null;
     }
 
