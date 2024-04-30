@@ -54,7 +54,9 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         super.setup()
         userHandle = Process.myUserHandle()
         taskbarRunningAppsController =
-            DesktopTaskbarRunningAppsController(mockRecentsModel, mockDesktopVisibilityController)
+            DesktopTaskbarRunningAppsController(mockRecentsModel) {
+                mockDesktopVisibilityController
+            }
         taskbarRunningAppsController.init(taskbarControllers)
         taskbarRunningAppsController.setApps(
             ALL_APP_PACKAGES.map { createTestAppInfo(packageName = it) }.toTypedArray()

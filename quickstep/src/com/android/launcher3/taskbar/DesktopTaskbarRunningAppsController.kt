@@ -40,11 +40,16 @@ import kotlin.collections.filterNotNull
  */
 class DesktopTaskbarRunningAppsController(
     private val recentsModel: RecentsModel,
-    private val desktopVisibilityController: DesktopVisibilityController?,
+    // Pass a provider here instead of the actual DesktopVisibilityController instance since that
+    // instance might not be available when this constructor is called.
+    private val desktopVisibilityControllerProvider: () -> DesktopVisibilityController?,
 ) : TaskbarRecentAppsController() {
 
     private var apps: Array<AppInfo>? = null
     private var allRunningDesktopAppInfos: List<AppInfo>? = null
+
+    private val desktopVisibilityController: DesktopVisibilityController?
+        get() = desktopVisibilityControllerProvider()
 
     private val isInDesktopMode: Boolean
         get() = desktopVisibilityController?.areDesktopTasksVisible() ?: false
