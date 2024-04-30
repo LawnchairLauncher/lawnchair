@@ -45,14 +45,24 @@
             android:theme="@style/ThemeControlHighlightWorkspaceColor"
             android:visibility="gone" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/group_action_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/overview_actions_height"
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/action_save_app_pair"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/action_save_app_pair"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor"
-            android:visibility="gone" />
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+
     </LinearLayout>
 
 </com.android.quickstep.views.OverviewActionsView>

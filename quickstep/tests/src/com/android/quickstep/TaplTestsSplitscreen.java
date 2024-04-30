@@ -123,12 +123,15 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
 
         createAndLaunchASplitPair();
 
-        assertTrue("Save app pair menu item is missing",
-                mLauncher.goHome()
-                        .switchToOverview()
-                        .getCurrentTask()
-                        .tapMenu()
-                        .hasMenuItem("Save app pair"));
+        Overview overview = mLauncher.goHome().switchToOverview();
+        if (mLauncher.isGridOnlyOverviewEnabled() || !mLauncher.isTablet()) {
+            assertTrue("Save app pair menu item is missing",
+                    overview.getCurrentTask()
+                            .tapMenu()
+                            .hasMenuItem("Save app pair"));
+        } else {
+            overview.getOverviewGroupActions().assertHasAction("Save app pair");
+        }
     }
 
     @Test
