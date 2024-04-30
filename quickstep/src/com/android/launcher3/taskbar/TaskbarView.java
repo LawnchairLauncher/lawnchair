@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_TASKBAR;
@@ -157,23 +156,21 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         // Needed to draw folder leave-behind when opening one.
         setWillNotDraw(false);
 
-        if (!mActivityContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
-            mAllAppsButton = (IconButtonView) LayoutInflater.from(context)
-                    .inflate(R.layout.taskbar_all_apps_button, this, false);
-            mAllAppsButton.setIconDrawable(resources.getDrawable(
-                    getAllAppsButton(isTransientTaskbar)));
-            mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
-            mAllAppsButton.setForegroundTint(
-                    mActivityContext.getColor(R.color.all_apps_button_color));
+        mAllAppsButton = (IconButtonView) LayoutInflater.from(context)
+                .inflate(R.layout.taskbar_all_apps_button, this, false);
+        mAllAppsButton.setIconDrawable(resources.getDrawable(
+                getAllAppsButton(isTransientTaskbar)));
+        mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
+        mAllAppsButton.setForegroundTint(
+                mActivityContext.getColor(R.color.all_apps_button_color));
 
-            if (enableTaskbarPinning()) {
-                mTaskbarDivider = (IconButtonView) LayoutInflater.from(context).inflate(
-                        R.layout.taskbar_divider,
-                        this, false);
-                mTaskbarDivider.setIconDrawable(
-                        resources.getDrawable(R.drawable.taskbar_divider_button));
-                mTaskbarDivider.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
-            }
+        if (enableTaskbarPinning()) {
+            mTaskbarDivider = (IconButtonView) LayoutInflater.from(context).inflate(
+                    R.layout.taskbar_divider,
+                    this, false);
+            mTaskbarDivider.setIconDrawable(
+                    resources.getDrawable(R.drawable.taskbar_divider_button));
+            mTaskbarDivider.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
         }
 
         // TODO: Disable touch events on QSB otherwise it can crash.

@@ -45,7 +45,6 @@ class DesktopTaskbarRunningAppsController(
 
     private var apps: Array<AppInfo>? = null
     private var allRunningDesktopAppInfos: List<AppInfo>? = null
-    private var runningDesktopAppInfosExceptHotseatItems: List<ItemInfo>? = null
 
     private val isInDesktopMode: Boolean
         get() = desktopVisibilityController?.areDesktopTasksVisible() ?: false
@@ -63,20 +62,24 @@ class DesktopTaskbarRunningAppsController(
     override fun isEnabled() = true
 
     @VisibleForTesting
-    public override fun updateHotseatItemInfos(hotseatItems: Array<ItemInfo>?): Array<ItemInfo>? {
-        val actualHotseatItems = hotseatItems ?: return super.updateHotseatItemInfos(null)
+    public override fun updateHotseatItemInfos(hotseatItems: Array<ItemInfo?>): Array<ItemInfo?> {
         if (!isInDesktopMode) {
             Log.d(TAG, "updateHotseatItemInfos: not in Desktop Mode")
             return hotseatItems
         }
         val newHotseatItemInfos =
-            actualHotseatItems
+            hotseatItems
+                .filterNotNull()
                 // Ignore predicted apps - we show running apps instead
                 .filter { itemInfo -> !itemInfo.isPredictedItem }
                 .toMutableList()
         val runningDesktopAppInfos =
-            runningDesktopAppInfosExceptHotseatItems ?: return newHotseatItemInfos.toTypedArray()
-        newHotseatItemInfos.addAll(runningDesktopAppInfos)
+            allRunningDesktopAppInfos?.let {
+                getRunningDesktopAppInfosExceptHotseatApps(it, newHotseatItemInfos.toList())
+            }
+        if (runningDesktopAppInfos != null) {
+            newHotseatItemInfos.addAll(runningDesktopAppInfos)
+        }
         return newHotseatItemInfos.toTypedArray()
     }
 
@@ -88,19 +91,13 @@ class DesktopTaskbarRunningAppsController(
     }
 
     @VisibleForTesting
-    public override fun updateRunningApps(hotseatItems: SparseArray<ItemInfo>?) {
+    public override fun updateRunningApps() {
         if (!isInDesktopMode) {
             Log.d(TAG, "updateRunningApps: not in Desktop Mode")
             mControllers.taskbarViewController.commitRunningAppsToUI()
             return
         }
-        val allRunningDesktopAppInfos = getRunningDesktopAppInfos()
-        this.allRunningDesktopAppInfos = allRunningDesktopAppInfos
-        runningDesktopAppInfosExceptHotseatItems =
-            hotseatItems?.let {
-                getRunningDesktopAppInfosExceptHotseatApps(allRunningDesktopAppInfos, it.toList())
-            }
-
+        allRunningDesktopAppInfos = getRunningDesktopAppInfos()
         mControllers.taskbarViewController.commitRunningAppsToUI()
     }
 

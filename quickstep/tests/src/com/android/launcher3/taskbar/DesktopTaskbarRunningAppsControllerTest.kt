@@ -23,7 +23,6 @@ import android.content.Intent
 import android.os.Process
 import android.os.UserHandle
 import android.testing.AndroidTestingRunner
-import android.util.SparseArray
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.statehandlers.DesktopVisibilityController
@@ -63,20 +62,13 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
     }
 
     @Test
-    fun updateHotseatItemInfos_null_returnsNull() {
-        assertThat(taskbarRunningAppsController.updateHotseatItemInfos(/* hotseatItems= */ null))
-            .isNull()
-    }
-
-    @Test
     fun updateHotseatItemInfos_notInDesktopMode_returnsExistingHotseatItems() {
         setInDesktopMode(false)
         val hotseatItems =
             createHotseatItemsFromPackageNames(listOf(HOTSEAT_PACKAGE_1, HOTSEAT_PACKAGE_2))
-                .toTypedArray()
 
-        assertThat(taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems))
-            .isEqualTo(hotseatItems)
+        assertThat(taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray()))
+            .isEqualTo(hotseatItems.toTypedArray())
     }
 
     @Test
@@ -87,23 +79,22 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps(createSparseArray(hotseatItems))
+        taskbarRunningAppsController.updateRunningApps()
 
         val newHotseatItems =
             taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
 
-        assertThat(newHotseatItems?.map { it.targetPackage }).isEqualTo(hotseatPackages)
+        assertThat(newHotseatItems.map { it?.targetPackage }).isEqualTo(hotseatPackages)
     }
 
     @Test
     fun updateHotseatItemInfos_noRunningApps_returnsExistingHotseatItems() {
         setInDesktopMode(true)
-        val hotseatItems: Array<ItemInfo> =
+        val hotseatItems =
             createHotseatItemsFromPackageNames(listOf(HOTSEAT_PACKAGE_1, HOTSEAT_PACKAGE_2))
-                .toTypedArray()
 
-        assertThat(taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems))
-            .isEqualTo(hotseatItems)
+        assertThat(taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray()))
+            .isEqualTo(hotseatItems.toTypedArray())
     }
 
     @Test
@@ -114,7 +105,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps(createSparseArray(hotseatItems))
+        taskbarRunningAppsController.updateRunningApps()
 
         val newHotseatItems =
             taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
@@ -126,7 +117,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
                 RUNNING_APP_PACKAGE_1,
                 RUNNING_APP_PACKAGE_2,
             )
-        assertThat(newHotseatItems?.map { it.targetPackage }).isEqualTo(expectedPackages)
+        assertThat(newHotseatItems.map { it?.targetPackage }).isEqualTo(expectedPackages)
     }
 
     @Test
@@ -139,7 +130,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
                 listOf(HOTSEAT_PACKAGE_1, RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2)
             )
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps(createSparseArray(hotseatItems))
+        taskbarRunningAppsController.updateRunningApps()
 
         val newHotseatItems =
             taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
@@ -151,7 +142,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
                 RUNNING_APP_PACKAGE_1,
                 RUNNING_APP_PACKAGE_2,
             )
-        assertThat(newHotseatItems?.map { it.targetPackage }).isEqualTo(expectedPackages)
+        assertThat(newHotseatItems.map { it?.targetPackage }).isEqualTo(expectedPackages)
     }
 
     @Test
@@ -160,7 +151,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps(createSparseArray(emptyList()))
+        taskbarRunningAppsController.updateRunningApps()
 
         assertThat(taskbarRunningAppsController.runningApps).isEqualTo(emptySet<String>())
     }
@@ -171,7 +162,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps(createSparseArray(emptyList()))
+        taskbarRunningAppsController.updateRunningApps()
 
         assertThat(taskbarRunningAppsController.runningApps)
             .isEqualTo(setOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
@@ -202,12 +193,6 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
 
     private fun setInDesktopMode(inDesktopMode: Boolean) {
         whenever(mockDesktopVisibilityController.areDesktopTasksVisible()).thenReturn(inDesktopMode)
-    }
-
-    private fun createSparseArray(itemInfos: List<ItemInfo>): SparseArray<ItemInfo> {
-        val sparseArray = SparseArray<ItemInfo>()
-        itemInfos.forEachIndexed { index, itemInfo -> sparseArray[index] = itemInfo }
-        return sparseArray
     }
 
     private companion object {
