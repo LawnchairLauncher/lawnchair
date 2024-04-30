@@ -76,6 +76,8 @@
     <attr name="widgetPickerCollapseHandleColor" format="color"/>
     <attr name="widgetPickerAddButtonBackgroundColor" format="color"/>
     <attr name="widgetPickerAddButtonTextColor" format="color"/>
+    <attr name="widgetCellTitleColor" format="color" />
+    <attr name="widgetCellSubtitleColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
