@@ -17,6 +17,7 @@ package com.android.launcher3.tapl;
 
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import androidx.test.uiautomator.By;
@@ -116,5 +117,29 @@ public class SearchResultFromQsb implements SearchInputSource {
     @Override
     public SearchResultFromQsb getSearchResultForInput() {
         return this;
+    }
+
+    /** Verify a tile is present by checking its title and subtitle. */
+    public void verifyTileIsPresent(String title, String subtitle) {
+        ArrayList<UiObject2> searchResults =
+                new ArrayList<>(mLauncher.waitForObjectsInContainer(
+                        mLauncher.waitForSystemLauncherObject(SEARCH_CONTAINER_RES_ID),
+                        By.clazz(TextView.class)));
+        boolean foundTitle = false;
+        boolean foundSubtitle = false;
+        for (UiObject2 uiObject: searchResults) {
+            String currentString = uiObject.getText();
+            if (TextUtils.equals(currentString, title)) {
+                foundTitle = true;
+            } else if (TextUtils.equals(currentString, subtitle)) {
+                foundSubtitle = true;
+            }
+        }
+        if (!foundTitle) {
+            mLauncher.fail("Tile not found for title: " + title);
+        }
+        if (!foundSubtitle) {
+            mLauncher.fail("Tile not found for subtitle: " + subtitle);
+        }
     }
 }
