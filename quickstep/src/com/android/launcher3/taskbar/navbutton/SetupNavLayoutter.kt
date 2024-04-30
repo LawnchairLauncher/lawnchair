@@ -27,7 +27,6 @@ import android.widget.Space
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarActivityContext
-import com.android.systemui.shared.rotation.RotationButton
 
 const val SQUARE_ASPECT_RATIO_BOTTOM_BOUND = 0.95
 const val SQUARE_ASPECT_RATIO_UPPER_BOUND = 1.05
@@ -39,7 +38,6 @@ class SetupNavLayoutter(
     endContextualContainer: ViewGroup,
     startContextualContainer: ViewGroup,
     imeSwitcher: ImageView?,
-    rotationButton: RotationButton?,
     a11yButton: ImageView?,
     space: Space?
 ) :
@@ -49,7 +47,6 @@ class SetupNavLayoutter(
         endContextualContainer,
         startContextualContainer,
         imeSwitcher,
-        rotationButton,
         a11yButton,
         space
     ) {
@@ -115,10 +112,6 @@ class SetupNavLayoutter(
         if (a11yButton != null) {
             endContextualContainer.addView(a11yButton)
             a11yButton.layoutParams = getParamsToCenterView()
-        }
-        if (rotationButton != null) {
-            endContextualContainer.addView(rotationButton.currentView)
-            rotationButton.currentView.layoutParams = getParamsToCenterView()
         }
     }
 }

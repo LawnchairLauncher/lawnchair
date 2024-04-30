@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar;
 
 import static android.content.Context.RECEIVER_NOT_EXPORTED;
-import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
@@ -426,9 +425,6 @@ public class TaskbarManager {
      */
     private TaskbarUIController createTaskbarUIControllerForActivity(StatefulActivity activity) {
         if (activity instanceof QuickstepLauncher) {
-            if (mTaskbarActivityContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
-                return new DesktopTaskbarUIController((QuickstepLauncher) activity);
-            }
             return new LauncherTaskbarUIController((QuickstepLauncher) activity);
         }
         if (activity instanceof RecentsActivity) {

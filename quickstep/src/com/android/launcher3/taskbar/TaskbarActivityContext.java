@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -248,8 +247,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         mAccessibilityDelegate = new TaskbarShortcutMenuAccessibilityDelegate(this);
 
-        final boolean isPcMode = getPackageManager().hasSystemFeature(FEATURE_PC);
-
         // If Bubble bar is present, TaskbarControllers depends on it so build it first.
         Optional<BubbleControllers> bubbleControllersOptional = Optional.empty();
         BubbleBarController.onTaskbarRecreated();
@@ -280,11 +277,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers = new TaskbarControllers(this,
                 new TaskbarDragController(this),
                 buttonController,
-                isPcMode
-                        ? new DesktopNavbarButtonsViewController(this, mNavigationBarPanelContext,
-                                navButtonsView)
-                        : new NavbarButtonsViewController(this, mNavigationBarPanelContext,
-                                navButtonsView),
+                new NavbarButtonsViewController(this, mNavigationBarPanelContext, navButtonsView),
                 rotationButtonController,
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
@@ -305,7 +298,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new VoiceInteractionWindowController(this),
                 new TaskbarTranslationController(this),
                 new TaskbarSpringOnStashController(this),
-                createTaskbarRecentAppsController(isPcMode),
+                createTaskbarRecentAppsController(),
                 TaskbarEduTooltipController.newInstance(this),
                 new KeyboardQuickSwitchController(),
                 new TaskbarPinningController(this),
@@ -314,16 +307,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mLauncherPrefs = LauncherPrefs.get(this);
     }
 
-    private TaskbarRecentAppsController createTaskbarRecentAppsController(boolean isPcMode) {
-        if (isPcMode) return new DesktopTaskbarRecentAppsController(this);
+    private TaskbarRecentAppsController createTaskbarRecentAppsController() {
         // TODO(b/335401172): unify DesktopMode checks in Launcher
-        final boolean showRunningAppsInDesktopMode = enableDesktopWindowingMode()
-                && enableDesktopWindowingTaskbarRunningApps();
-        return showRunningAppsInDesktopMode
-                        ? new DesktopTaskbarRunningAppsController(
-                                RecentsModel.INSTANCE.get(this),
-                                LauncherActivityInterface.INSTANCE.getDesktopVisibilityController())
-                        : TaskbarRecentAppsController.DEFAULT;
+        if (enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps()) {
+            return new DesktopTaskbarRunningAppsController(
+                    RecentsModel.INSTANCE.get(this),
+                    LauncherActivityInterface.INSTANCE::getDesktopVisibilityController);
+        }
+        return TaskbarRecentAppsController.DEFAULT;
     }
 
     /** Updates {@link DeviceProfile} instances for any Taskbar windows. */

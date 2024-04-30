@@ -25,10 +25,11 @@ import android.widget.LinearLayout
 import android.widget.Space
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.taskbar.TaskbarActivityContext
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_CONTEXTUAL_BUTTONS
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_END_NAV_BUTTONS
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.ID_START_CONTEXTUAL_BUTTONS
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.Companion
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
-import com.android.systemui.shared.rotation.RotationButton
 
 /**
  * Select the correct layout for nav buttons
@@ -58,7 +59,6 @@ class NavButtonLayoutFactory {
             deviceProfile: DeviceProfile,
             navButtonsView: NearestTouchFrame,
             imeSwitcher: ImageView?,
-            rotationButton: RotationButton?,
             a11yButton: ImageView?,
             space: Space?,
             resources: Resources,
@@ -86,7 +86,6 @@ class NavButtonLayoutFactory {
                             endContextualContainer,
                             startContextualContainer,
                             imeSwitcher,
-                            rotationButton,
                             a11yButton,
                             space
                         )
@@ -98,7 +97,6 @@ class NavButtonLayoutFactory {
                             endContextualContainer,
                             startContextualContainer,
                             imeSwitcher,
-                            rotationButton,
                             a11yButton,
                             space
                         )
@@ -110,7 +108,6 @@ class NavButtonLayoutFactory {
                             endContextualContainer,
                             startContextualContainer,
                             imeSwitcher,
-                            rotationButton,
                             a11yButton,
                             space
                         )
@@ -123,7 +120,6 @@ class NavButtonLayoutFactory {
                         endContextualContainer,
                         startContextualContainer,
                         imeSwitcher,
-                        rotationButton,
                         a11yButton,
                         space
                     )
@@ -138,7 +134,6 @@ class NavButtonLayoutFactory {
                                 endContextualContainer,
                                 startContextualContainer,
                                 imeSwitcher,
-                                rotationButton,
                                 a11yButton,
                                 space
                             )
@@ -150,7 +145,6 @@ class NavButtonLayoutFactory {
                                 endContextualContainer,
                                 startContextualContainer,
                                 imeSwitcher,
-                                rotationButton,
                                 a11yButton,
                                 space
                             )
@@ -162,7 +156,6 @@ class NavButtonLayoutFactory {
                                 endContextualContainer,
                                 startContextualContainer,
                                 imeSwitcher,
-                                rotationButton,
                                 a11yButton,
                                 space
                             )

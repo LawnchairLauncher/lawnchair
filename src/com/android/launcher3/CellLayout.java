@@ -33,7 +33,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -115,7 +114,6 @@ public class CellLayout extends ViewGroup {
     @Thunk final int[] mTempLocation = new int[2];
 
     @Thunk final Rect mTempOnDrawCellToRect = new Rect();
-    final PointF mTmpPointF = new PointF();
 
     protected GridOccupancy mOccupied;
     public GridOccupancy mTmpOccupied;
@@ -197,16 +195,11 @@ public class CellLayout extends ViewGroup {
     public static final int REORDER_ANIMATION_DURATION = 150;
     @Thunk final float mReorderPreviewAnimationMagnitude;
 
-    private final ArrayList<View> mIntersectingViews = new ArrayList<>();
-    private final Rect mOccupiedRect = new Rect();
     public final int[] mDirectionVector = new int[2];
 
     ItemConfiguration mPreviousSolution = null;
-    private static final int INVALID_DIRECTION = -100;
 
     private final Rect mTempRect = new Rect();
-    private final RectF mTempRectF = new RectF();
-    private final float[] mTmpFloatArray = new float[4];
 
     private static final Paint sPaint = new Paint();
 
@@ -1163,9 +1156,6 @@ public class CellLayout extends ViewGroup {
             mDragCellSpan[0] = spanX;
             mDragCellSpan[1] = spanY;
 
-            // Apply color extraction on a widget when dragging.
-            applyColorExtractionOnWidget(dragObject, mDragCell, spanX, spanY);
-
             final int oldIndex = mDragOutlineCurrent;
             mDragOutlineAnims[oldIndex].animateOut();
             mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
@@ -1183,19 +1173,6 @@ public class CellLayout extends ViewGroup {
                 dragObject.stateAnnouncer.announce(getItemMoveDescription(cellX, cellY));
             }
 
-        }
-    }
-
-    /** Applies the local color extraction to a dragging widget object. */
-    private void applyColorExtractionOnWidget(DropTarget.DragObject dragObject, int[] targetCell,
-            int spanX, int spanY) {
-        // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
-        View view = dragObject.dragView.getContentView();
-        if (view instanceof LauncherAppWidgetHostView) {
-            int screenId = mCellLayoutContainer.getCellLayoutId(this);
-            cellToRect(targetCell[0], targetCell[1], spanX, spanY, mTempRect);
-
-            ((LauncherAppWidgetHostView) view).handleDrag(mTempRect, this, screenId);
         }
     }
 

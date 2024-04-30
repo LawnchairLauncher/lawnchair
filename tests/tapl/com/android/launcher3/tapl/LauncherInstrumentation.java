@@ -204,6 +204,7 @@ public final class LauncherInstrumentation {
     private Runnable mTestAnomalyChecker;
 
     private boolean mCheckEventsForSuccessfulGestures = false;
+    private Runnable mOnFailure;
     private Runnable mOnLauncherCrashed;
 
     private TrackpadGestureType mTrackpadGestureType = TrackpadGestureType.NONE;
@@ -340,6 +341,11 @@ public final class LauncherInstrumentation {
 
     public void enableCheckEventsForSuccessfulGestures() {
         mCheckEventsForSuccessfulGestures = true;
+    }
+
+    /** Sets a runnable that will be invoked upon assertion failures. */
+    public void setOnFailure(Runnable onFailure) {
+        mOnFailure = onFailure;
     }
 
     public void setOnLauncherCrashed(Runnable onLauncherCrashed) {
@@ -623,6 +629,7 @@ public final class LauncherInstrumentation {
         final String systemAnomalyMessage =
                 getSystemAnomalyMessage(ignoreNavmodeChangeStates, ignoreOnlySystemUiViews);
         if (systemAnomalyMessage != null) {
+            if (mOnFailure != null) mOnFailure.run();
             Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                     "http://go/tapl : Tests are broken by a non-Launcher system error: "
                             + systemAnomalyMessage, false)));
@@ -742,6 +749,7 @@ public final class LauncherInstrumentation {
 
     void fail(String message) {
         checkForAnomaly();
+        if (mOnFailure != null) mOnFailure.run();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                 "http://go/tapl test failure: " + message + ";\nContext: " + getContextDescription()
                         + "; now visible state is " + getVisibleStateMessage(), true)));

@@ -22,7 +22,6 @@ import android.graphics.Path
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import androidx.core.graphics.drawable.toBitmap
@@ -45,6 +44,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @SmallTest
@@ -87,6 +87,12 @@ class BubbleBarViewAnimatorTest {
 
         val bubbleStashController = mock<BubbleStashController>()
         whenever(bubbleStashController.isStashed).thenReturn(true)
+        whenever(bubbleStashController.diffBetweenHandleAndBarCenters)
+            .thenReturn(DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS)
+        whenever(bubbleStashController.stashedHandleTranslationForNewBubbleAnimation)
+            .thenReturn(HANDLE_TRANSLATION)
+        whenever(bubbleStashController.bubbleBarTranslationYForTaskbar)
+            .thenReturn(BAR_TRANSLATION_Y_FOR_TASKBAR)
 
         val handle = View(context)
         val handleAnimator = PhysicsAnimator.getInstance(handle)
@@ -104,13 +110,13 @@ class BubbleBarViewAnimatorTest {
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
 
         assertThat(handle.alpha).isEqualTo(0)
-        assertThat(handle.translationY).isEqualTo(-70)
-        assertThat(overflowView.visibility).isEqualTo(INVISIBLE)
+        assertThat(handle.translationY)
+            .isEqualTo(DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS + BAR_TRANSLATION_Y_FOR_TASKBAR)
         assertThat(bubbleBarView.visibility).isEqualTo(VISIBLE)
-        assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
-        assertThat(bubbleView.alpha).isEqualTo(1)
-        assertThat(bubbleView.translationY).isEqualTo(-20)
-        assertThat(bubbleView.scaleY).isEqualTo(1)
+        assertThat(bubbleBarView.scaleX).isEqualTo(1)
+        assertThat(bubbleBarView.scaleY).isEqualTo(1)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
+        assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
 
         // execute the hide bubble animation
         assertThat(animatorScheduler.delayedBlock).isNotNull()
@@ -120,14 +126,11 @@ class BubbleBarViewAnimatorTest {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
 
-        assertThat(bubbleView.alpha).isEqualTo(1)
-        assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
-        assertThat(bubbleView.translationY).isEqualTo(0)
-        assertThat(bubbleBarView.alpha).isEqualTo(0)
-        assertThat(overflowView.alpha).isEqualTo(1)
-        assertThat(overflowView.visibility).isEqualTo(VISIBLE)
         assertThat(handle.alpha).isEqualTo(1)
         assertThat(handle.translationY).isEqualTo(0)
+        assertThat(bubbleBarView.alpha).isEqualTo(0)
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+        verify(bubbleStashController).stashBubbleBarImmediate()
     }
 
     @Test
@@ -158,6 +161,12 @@ class BubbleBarViewAnimatorTest {
 
         val bubbleStashController = mock<BubbleStashController>()
         whenever(bubbleStashController.isStashed).thenReturn(true)
+        whenever(bubbleStashController.diffBetweenHandleAndBarCenters)
+            .thenReturn(DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS)
+        whenever(bubbleStashController.stashedHandleTranslationForNewBubbleAnimation)
+            .thenReturn(HANDLE_TRANSLATION)
+        whenever(bubbleStashController.bubbleBarTranslationYForTaskbar)
+            .thenReturn(BAR_TRANSLATION_Y_FOR_TASKBAR)
 
         val handle = View(context)
         val handleAnimator = PhysicsAnimator.getInstance(handle)
@@ -175,13 +184,15 @@ class BubbleBarViewAnimatorTest {
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
 
         assertThat(handle.alpha).isEqualTo(0)
-        assertThat(handle.translationY).isEqualTo(-70)
-        assertThat(overflowView.visibility).isEqualTo(INVISIBLE)
+        assertThat(handle.translationY)
+            .isEqualTo(DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS + BAR_TRANSLATION_Y_FOR_TASKBAR)
         assertThat(bubbleBarView.visibility).isEqualTo(VISIBLE)
-        assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
-        assertThat(bubbleView.alpha).isEqualTo(1)
-        assertThat(bubbleView.translationY).isEqualTo(-20)
-        assertThat(bubbleView.scaleY).isEqualTo(1)
+        assertThat(bubbleBarView.scaleX).isEqualTo(1)
+        assertThat(bubbleBarView.scaleY).isEqualTo(1)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
+        assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
+
+        verify(bubbleStashController).updateTaskbarTouchRegion()
 
         // verify the hide bubble animation is pending
         assertThat(animatorScheduler.delayedBlock).isNotNull()
@@ -189,11 +200,9 @@ class BubbleBarViewAnimatorTest {
         animator.onBubbleClickedWhileAnimating()
 
         assertThat(animatorScheduler.delayedBlock).isNull()
-        assertThat(overflowView.visibility).isEqualTo(VISIBLE)
-        assertThat(overflowView.alpha).isEqualTo(1)
-        assertThat(bubbleView.alpha).isEqualTo(1)
-        assertThat(bubbleView.visibility).isEqualTo(VISIBLE)
-        assertThat(bubbleBarView.background).isNotNull()
+        assertThat(bubbleBarView.alpha).isEqualTo(1)
+        assertThat(bubbleBarView.visibility).isEqualTo(VISIBLE)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
         assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
     }
 
@@ -217,3 +226,7 @@ class BubbleBarViewAnimatorTest {
         }
     }
 }
+
+private const val DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS = -20f
+private const val HANDLE_TRANSLATION = -30f
+private const val BAR_TRANSLATION_Y_FOR_TASKBAR = -50f

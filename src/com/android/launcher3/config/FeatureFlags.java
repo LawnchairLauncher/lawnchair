@@ -16,7 +16,6 @@
 
 package com.android.launcher3.config;
 
-import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.config.FeatureFlags.BooleanFlag.DISABLED;
 import static com.android.launcher3.config.FeatureFlags.BooleanFlag.ENABLED;
 import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
@@ -134,17 +133,6 @@ public final class FeatureFlags {
     public static final BooleanFlag MULTI_SELECT_EDIT_MODE = getDebugFlag(270709220,
             "MULTI_SELECT_EDIT_MODE", DISABLED, "Enable new multi-select edit mode "
                     + "for home screen");
-
-    public static final BooleanFlag SMARTSPACE_AS_A_WIDGET = getDebugFlag(299181941,
-            "SMARTSPACE_AS_A_WIDGET", DISABLED, "Enable SmartSpace as a widget");
-
-    public static boolean shouldShowFirstPageWidget() {
-        return SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN;
-    }
-
-    public static final BooleanFlag ENABLE_SMARTSPACE_REMOVAL = getDebugFlag(290799975,
-            "ENABLE_SMARTSPACE_REMOVAL", DISABLED, "Enable SmartSpace removal for "
-            + "home screen");
 
     // TODO(Block 11): Clean up flags
     public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(270395274,

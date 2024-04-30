@@ -16,7 +16,7 @@
 
 package com.android.launcher3.widget.custom;
 
-import static com.android.launcher3.config.FeatureFlags.SMARTSPACE_AS_A_WIDGET;
+import static com.android.launcher3.Flags.enableSmartspaceAsAWidget;
 import static com.android.launcher3.model.data.LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
 import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.CLS_CUSTOM_WIDGET_PREFIX;
 
@@ -70,7 +70,7 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin>, 
         PluginManagerWrapper.INSTANCE.get(context)
                 .addPluginListener(this, CustomWidgetPlugin.class, true);
 
-        if (SMARTSPACE_AS_A_WIDGET.get()) {
+        if (enableSmartspaceAsAWidget()) {
             for (String s: context.getResources()
                     .getStringArray(R.array.custom_widget_providers)) {
                 try {
