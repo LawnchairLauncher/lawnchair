@@ -26,7 +26,6 @@ import android.widget.LinearLayout
 import android.widget.Space
 import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarActivityContext
-import com.android.systemui.shared.rotation.RotationButton
 
 /** Layoutter for rendering task bar in large screen, both in 3-button and gesture nav mode. */
 class TaskbarNavLayoutter(
@@ -35,7 +34,6 @@ class TaskbarNavLayoutter(
     endContextualContainer: ViewGroup,
     startContextualContainer: ViewGroup,
     imeSwitcher: ImageView?,
-    rotationButton: RotationButton?,
     a11yButton: ImageView?,
     space: Space?
 ) :
@@ -45,7 +43,6 @@ class TaskbarNavLayoutter(
         endContextualContainer,
         startContextualContainer,
         imeSwitcher,
-        rotationButton,
         a11yButton,
         space
     ) {
@@ -136,10 +133,6 @@ class TaskbarNavLayoutter(
             if (a11yButton != null) {
                 endContextualContainer.addView(a11yButton)
                 a11yButton.layoutParams = getParamsToCenterView()
-            }
-            if (rotationButton != null) {
-                endContextualContainer.addView(rotationButton.currentView)
-                rotationButton.currentView.layoutParams = getParamsToCenterView()
             }
         }
     }

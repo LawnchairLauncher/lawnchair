@@ -317,38 +317,28 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             mPropertyHolders.add(new StatePropertyHolder(
                     mControllers.taskbarDragLayerController.getNavbarBackgroundAlpha(),
                     flags -> (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
-
-            // Rotation button
-            RotationButton rotationButton = new RotationButtonImpl(
-                    addButton(mEndContextualContainer, R.id.rotate_suggestion,
-                            R.layout.taskbar_contextual_button));
-            rotationButton.hide();
-            mControllers.rotationButtonController.setRotationButton(rotationButton, null);
-        } else {
-            mFloatingRotationButton = new FloatingRotationButton(
-                    ENABLE_TASKBAR_NAVBAR_UNIFICATION ? mNavigationBarPanelContext : mContext,
-                    R.string.accessibility_rotate_button,
-                    R.layout.rotate_suggestion,
-                    R.id.rotate_suggestion,
-                    R.dimen.floating_rotation_button_min_margin,
-                    R.dimen.rounded_corner_content_padding,
-                    R.dimen.floating_rotation_button_taskbar_left_margin,
-                    R.dimen.floating_rotation_button_taskbar_bottom_margin,
-                    R.dimen.floating_rotation_button_diameter,
-                    R.dimen.key_button_ripple_max_width,
-                    R.bool.floating_rotation_button_position_left);
-            mControllers.rotationButtonController.setRotationButton(mFloatingRotationButton,
-                    mRotationButtonListener);
-
-            if (!mIsImeRenderingNavButtons) {
-                View imeDownButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
-                        mStartContextualContainer, mControllers.navButtonController, R.id.back);
-                imeDownButton.setRotation(Utilities.isRtl(resources) ? 90 : -90);
-                // Only show when IME is visible.
-                mPropertyHolders.add(new StatePropertyHolder(imeDownButton,
-                        flags -> (flags & FLAG_IME_VISIBLE) != 0));
-            }
+        } else if (!mIsImeRenderingNavButtons) {
+            View imeDownButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
+                    mStartContextualContainer, mControllers.navButtonController, R.id.back);
+            imeDownButton.setRotation(Utilities.isRtl(resources) ? 90 : -90);
+            // Only show when IME is visible.
+            mPropertyHolders.add(new StatePropertyHolder(imeDownButton,
+                    flags -> (flags & FLAG_IME_VISIBLE) != 0));
         }
+        mFloatingRotationButton = new FloatingRotationButton(
+                ENABLE_TASKBAR_NAVBAR_UNIFICATION ? mNavigationBarPanelContext : mContext,
+                R.string.accessibility_rotate_button,
+                R.layout.rotate_suggestion,
+                R.id.rotate_suggestion,
+                R.dimen.floating_rotation_button_min_margin,
+                R.dimen.rounded_corner_content_padding,
+                R.dimen.floating_rotation_button_taskbar_left_margin,
+                R.dimen.floating_rotation_button_taskbar_bottom_margin,
+                R.dimen.floating_rotation_button_diameter,
+                R.dimen.key_button_ripple_max_width,
+                R.bool.floating_rotation_button_position_left);
+        mControllers.rotationButtonController.setRotationButton(mFloatingRotationButton,
+                mRotationButtonListener);
 
         applyState();
         mPropertyHolders.forEach(StatePropertyHolder::endAnimation);
@@ -791,7 +781,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             NavButtonLayoutter navButtonLayoutter =
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
                             dp, mNavButtonsView, mImeSwitcherButton,
-                            mControllers.rotationButtonController.getRotationButton(),
                             mA11yButton, mSpace, res, isInKidsMode, isInSetup, isThreeButtonNav,
                             mContext.isPhoneMode(), mWindowManagerProxy.getRotation(mContext));
             navButtonLayoutter.layoutButtons(mContext, isA11yButtonPersistent());
