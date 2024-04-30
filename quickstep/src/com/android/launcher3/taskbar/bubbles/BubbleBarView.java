@@ -153,8 +153,6 @@ public class BubbleBarView extends FrameLayout {
 
     private int mPreviousLayoutDirection = LayoutDirection.UNDEFINED;
 
-    private boolean mLocationChangePending;
-
     public BubbleBarView(Context context) {
         this(context, null);
     }
@@ -188,7 +186,7 @@ public class BubbleBarView extends FrameLayout {
 
         mWidthAnimator.setDuration(WIDTH_ANIMATION_DURATION_MS);
         mWidthAnimator.addUpdateListener(animation -> {
-            updateChildrenRenderNodeProperties();
+            updateChildrenRenderNodeProperties(mBubbleBarLocation);
             invalidate();
         });
         mWidthAnimator.addListener(new Animator.AnimatorListener() {
@@ -262,7 +260,7 @@ public class BubbleBarView extends FrameLayout {
         setPivotY(mRelativePivotY * getHeight());
 
         // Position the views
-        updateChildrenRenderNodeProperties();
+        updateChildrenRenderNodeProperties(mBubbleBarLocation);
     }
 
     @Override
@@ -278,7 +276,6 @@ public class BubbleBarView extends FrameLayout {
 
     @SuppressLint("RtlHardcoded")
     private void onBubbleBarLocationChanged() {
-        mLocationChangePending = false;
         final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
         mBubbleBarBackground.setAnchorLeft(onLeft);
         mRelativePivotX = onLeft ? 0f : 1f;
@@ -299,11 +296,18 @@ public class BubbleBarView extends FrameLayout {
     /**
      * Update {@link BubbleBarLocation}
      */
-    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation, boolean animate) {
-        if (animate) {
-            animateToBubbleBarLocation(bubbleBarLocation);
-        } else {
-            setBubbleBarLocationInternal(bubbleBarLocation);
+    public void setBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
+        if (mBubbleBarLocationAnimator != null) {
+            mBubbleBarLocationAnimator.removeAllListeners();
+            mBubbleBarLocationAnimator.cancel();
+            mBubbleBarLocationAnimator = null;
+        }
+        setTranslationX(0f);
+        setAlpha(1f);
+        if (bubbleBarLocation != mBubbleBarLocation) {
+            mBubbleBarLocation = bubbleBarLocation;
+            onBubbleBarLocationChanged();
+            invalidate();
         }
     }
 
@@ -316,51 +320,37 @@ public class BubbleBarView extends FrameLayout {
         }
         mDragging = dragging;
         setElevation(dragging ? mDragElevation : mBubbleElevation);
-        if (!dragging && mLocationChangePending) {
-            // During drag finish animation we may update the translation x value to shift the
-            // bubble to the new drop target. Clear the translation here.
-            setTranslationX(0f);
-            onBubbleBarLocationChanged();
-        }
     }
 
     /**
-     * Adjust resting position for the bubble bar while it is being dragged.
-     * <p>
-     * Bubble bar is laid out on left or right side of the screen. When it is being dragged to
-     * the opposite side, the resting position should be on that side. Calculate any additional
-     * translation that may be required to move the bubble bar to the new side.
+     * Get translation for bubble bar when drag is released and it needs to animate back to the
+     * resting position.
+     * Resting position is based on the supplied location. If the supplied location is different
+     * from the internal location that was used to lay out the bubble bar, translation values are
+     * calculated to position the bar at the desired location.
      *
-     * @param restingPosition relative resting position of the bubble bar from the laid out position
+     * @param initialTranslation initial bubble bar translation at the start of drag
+     * @param location           desired location of the bubble bar when drag is released
+     * @return point with x and y values representing translation on x and y-axis
      */
-    @SuppressLint("RtlHardcoded")
-    void adjustRelativeRestingPosition(PointF restingPosition) {
-        final boolean locationOnLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
-        // Bubble bar is placed left or right with gravity. Check where it is currently.
-        final int absoluteGravity = Gravity.getAbsoluteGravity(
-                ((LayoutParams) getLayoutParams()).gravity, getLayoutDirection());
-        final boolean gravityOnLeft =
-                (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.LEFT;
-
-        // Bubble bar is pinned to the same side per gravity and the desired location.
-        // Resting translation does not need to be adjusted.
-        if (locationOnLeft == gravityOnLeft) {
-            return;
-        }
-
+    public PointF getBubbleBarDragReleaseTranslation(PointF initialTranslation,
+            BubbleBarLocation location) {
+        // Start with the initial translation. Value on y-axis can be reused.
+        final PointF dragEndTranslation = new PointF(initialTranslation);
         // Bubble bar is laid out on left or right side of the screen. And the desired new
-        // location is on the other side. Calculate x translation value required to shift the
+        // location is on the other side. Calculate x translation value required to shift
         // bubble bar from one side to the other.
-        float x = getDistanceFromOtherSide();
-        if (locationOnLeft) {
+        final float shift = getDistanceFromOtherSide();
+        if (location.isOnLeft(isLayoutRtl())) {
             // New location is on the left, shift left
             // before -> |......ooo.| after -> |.ooo......|
-            restingPosition.x = -x;
+            dragEndTranslation.x = -shift;
         } else {
             // New location is on the right, shift right
             // before -> |.ooo......| after -> |......ooo.|
-            restingPosition.x = x;
+            dragEndTranslation.x = shift;
         }
+        return dragEndTranslation;
     }
 
     private float getDistanceFromOtherSide() {
@@ -374,49 +364,40 @@ public class BubbleBarView extends FrameLayout {
         return (float) (displayWidth - getWidth() - margin);
     }
 
-    private void setBubbleBarLocationInternal(BubbleBarLocation bubbleBarLocation) {
-        if (bubbleBarLocation != mBubbleBarLocation) {
-            mBubbleBarLocation = bubbleBarLocation;
-            if (mDragging) {
-                mLocationChangePending = true;
-            } else {
-                onBubbleBarLocationChanged();
-                invalidate();
-            }
-        }
-    }
-
-    private void animateToBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
-        if (bubbleBarLocation == mBubbleBarLocation) {
-            // nothing to do, already at expected location
-            return;
-        }
+    /**
+     * Animate bubble bar to the given location transiently. Does not modify the layout or the value
+     * returned by {@link #getBubbleBarLocation()}.
+     */
+    public void animateToBubbleBarLocation(BubbleBarLocation bubbleBarLocation) {
         if (mBubbleBarLocationAnimator != null && mBubbleBarLocationAnimator.isRunning()) {
+            mBubbleBarLocationAnimator.removeAllListeners();
             mBubbleBarLocationAnimator.cancel();
         }
 
         // Location animation uses two separate animators.
         // First animator hides the bar.
-        // After it completes, location update is sent to layout the bar in the new location.
+        // After it completes, bubble positions in the bar and arrow position is updated.
         // Second animator is started to show the bar.
-        mBubbleBarLocationAnimator = getLocationUpdateFadeOutAnimator();
+        mBubbleBarLocationAnimator = getLocationUpdateFadeOutAnimator(bubbleBarLocation);
         mBubbleBarLocationAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                // Bubble bar is not visible, update the location
-                setBubbleBarLocationInternal(bubbleBarLocation);
+                updateChildrenRenderNodeProperties(bubbleBarLocation);
+                mBubbleBarBackground.setAnchorLeft(bubbleBarLocation.isOnLeft(isLayoutRtl()));
+
                 // Animate it in
-                mBubbleBarLocationAnimator = getLocationUpdateFadeInAnimator();
+                mBubbleBarLocationAnimator = getLocationUpdateFadeInAnimator(bubbleBarLocation);
                 mBubbleBarLocationAnimator.start();
             }
         });
         mBubbleBarLocationAnimator.start();
     }
 
-    private AnimatorSet getLocationUpdateFadeOutAnimator() {
+    private Animator getLocationUpdateFadeOutAnimator(BubbleBarLocation bubbleBarLocation) {
         final float shift =
                 getResources().getDisplayMetrics().widthPixels * FADE_OUT_ANIM_POSITION_SHIFT;
-        final float tx = mBubbleBarLocation.isOnLeft(isLayoutRtl()) ? shift : -shift;
+        final boolean onLeft = bubbleBarLocation.isOnLeft(isLayoutRtl());
+        final float tx = getTranslationX() + (onLeft ? shift : -shift);
 
         ObjectAnimator positionAnim = ObjectAnimator.ofFloat(this, TRANSLATION_X, tx)
                 .setDuration(FADE_OUT_ANIM_POSITION_DURATION_MS);
@@ -431,14 +412,31 @@ public class BubbleBarView extends FrameLayout {
         return animatorSet;
     }
 
-    private Animator getLocationUpdateFadeInAnimator() {
+    private Animator getLocationUpdateFadeInAnimator(BubbleBarLocation animatedLocation) {
         final float shift =
                 getResources().getDisplayMetrics().widthPixels * FADE_IN_ANIM_POSITION_SHIFT;
-        final float startTx = mBubbleBarLocation.isOnLeft(isLayoutRtl()) ? shift : -shift;
+
+        final boolean onLeft = animatedLocation.isOnLeft(isLayoutRtl());
+        final float startTx;
+        final float finalTx;
+        if (animatedLocation == mBubbleBarLocation) {
+            // Animated location matches layout location.
+            finalTx = 0;
+        } else {
+            // We are animating in to a transient location, need to move the bar accordingly.
+            finalTx = getDistanceFromOtherSide() * (onLeft ? -1 : 1);
+        }
+        if (onLeft) {
+            // Bar will be shown on the left side. Start point is shifted right.
+            startTx = finalTx + shift;
+        } else {
+            // Bar will be shown on the right side. Start point is shifted left.
+            startTx = finalTx - shift;
+        }
 
         ValueAnimator positionAnim = new SpringAnimationBuilder(getContext())
                 .setStartValue(startTx)
-                .setEndValue(0)
+                .setEndValue(finalTx)
                 .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
                 .setStiffness(FADE_IN_ANIM_POSITION_SPRING_STIFFNESS)
                 .build(this, VIEW_TRANSLATE_X);
@@ -547,7 +545,7 @@ public class BubbleBarView extends FrameLayout {
      * Updates the z order, positions, and badge visibility of the bubble views in the bar based
      * on the expanded state.
      */
-    private void updateChildrenRenderNodeProperties() {
+    private void updateChildrenRenderNodeProperties(BubbleBarLocation bubbleBarLocation) {
         final float widthState = (float) mWidthAnimator.getAnimatedValue();
         final float currentWidth = getWidth();
         final float expandedWidth = expandedWidth();
@@ -555,7 +553,7 @@ public class BubbleBarView extends FrameLayout {
         int bubbleCount = getChildCount();
         final float ty = (mBubbleBarBounds.height() - mIconSize) / 2f;
         final boolean animate = getVisibility() == VISIBLE;
-        final boolean onLeft = mBubbleBarLocation.isOnLeft(isLayoutRtl());
+        final boolean onLeft = bubbleBarLocation.isOnLeft(isLayoutRtl());
         // elevation state is opposite to widthState - when expanded all icons are flat
         float elevationState = (1 - widthState);
         for (int i = 0; i < bubbleCount; i++) {
@@ -613,8 +611,9 @@ public class BubbleBarView extends FrameLayout {
         }
 
         // update the arrow position
-        final float collapsedArrowPosition = arrowPositionForSelectedWhenCollapsed();
-        final float expandedArrowPosition = arrowPositionForSelectedWhenExpanded();
+        final float collapsedArrowPosition = arrowPositionForSelectedWhenCollapsed(
+                bubbleBarLocation);
+        final float expandedArrowPosition = arrowPositionForSelectedWhenExpanded(bubbleBarLocation);
         final float interpolatedWidth =
                 widthState * (expandedWidth - collapsedWidth) + collapsedWidth;
         final float arrowPosition;
@@ -661,7 +660,7 @@ public class BubbleBarView extends FrameLayout {
                     addViewInLayout(child, i, child.getLayoutParams());
                 }
             }
-            updateChildrenRenderNodeProperties();
+            updateChildrenRenderNodeProperties(mBubbleBarLocation);
         }
     }
 
@@ -702,7 +701,7 @@ public class BubbleBarView extends FrameLayout {
             return;
         }
         // Find the center of the bubble when it's expanded, set the arrow position to it.
-        final float tx = arrowPositionForSelectedWhenExpanded();
+        final float tx = arrowPositionForSelectedWhenExpanded(mBubbleBarLocation);
         final float currentArrowPosition = mBubbleBarBackground.getArrowPositionX();
         if (tx == currentArrowPosition) {
             // arrow position remains unchanged
@@ -727,10 +726,10 @@ public class BubbleBarView extends FrameLayout {
         }
     }
 
-    private float arrowPositionForSelectedWhenExpanded() {
+    private float arrowPositionForSelectedWhenExpanded(BubbleBarLocation bubbleBarLocation) {
         final int index = indexOfChild(mSelectedBubbleView);
         final int bubblePosition;
-        if (mBubbleBarLocation.isOnLeft(isLayoutRtl())) {
+        if (bubbleBarLocation.isOnLeft(isLayoutRtl())) {
             // Bubble positions are reversed. First bubble is on the right.
             bubblePosition = getChildCount() - index - 1;
         } else {
@@ -740,10 +739,10 @@ public class BubbleBarView extends FrameLayout {
                 + mIconSize / 2f;
     }
 
-    private float arrowPositionForSelectedWhenCollapsed() {
+    private float arrowPositionForSelectedWhenCollapsed(BubbleBarLocation bubbleBarLocation) {
         final int index = indexOfChild(mSelectedBubbleView);
         final int bubblePosition;
-        if (mBubbleBarLocation.isOnLeft(isLayoutRtl())) {
+        if (bubbleBarLocation.isOnLeft(isLayoutRtl())) {
             // Bubble positions are reversed. First bubble may be shifted, if there are more
             // bubbles than the current bubble and overflow.
             bubblePosition = index == 0 && getChildCount() > 2 ? 1 : 0;

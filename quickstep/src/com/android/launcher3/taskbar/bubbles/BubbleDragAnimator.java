@@ -110,25 +110,25 @@ public class BubbleDragAnimator {
     /**
      * Animates the dragged bubble movement back to the initial position.
      *
-     * @param initialPosition the position to animate to
+     * @param restingPosition the position to animate to
      * @param velocity        the initial velocity to use for the spring animation
      * @param endActions      gets called when the animation completes or gets cancelled
      */
-    public void animateToInitialState(@NonNull PointF initialPosition, @NonNull PointF velocity,
+    public void animateToRestingState(@NonNull PointF restingPosition, @NonNull PointF velocity,
             @Nullable Runnable endActions) {
         mBubbleAnimator.cancel();
         mBubbleAnimator
                 .spring(DynamicAnimation.SCALE_X, 1f)
                 .spring(DynamicAnimation.SCALE_Y, 1f)
-                .spring(DynamicAnimation.TRANSLATION_X, initialPosition.x, velocity.x,
+                .spring(DynamicAnimation.TRANSLATION_X, restingPosition.x, velocity.x,
                         mTranslationConfig)
-                .spring(DynamicAnimation.TRANSLATION_Y, initialPosition.y, velocity.y,
+                .spring(DynamicAnimation.TRANSLATION_Y, restingPosition.y, velocity.y,
                         mTranslationConfig)
                 .addEndListener((View target, @NonNull FloatPropertyCompat<? super View> property,
                         boolean wasFling, boolean canceled, float finalValue, float finalVelocity,
                         boolean allRelevantPropertyAnimationsEnded) -> {
                     if (canceled || allRelevantPropertyAnimationsEnded) {
-                        resetAnimatedViews(initialPosition);
+                        resetAnimatedViews(restingPosition);
                         if (endActions != null) {
                             endActions.run();
                         }
