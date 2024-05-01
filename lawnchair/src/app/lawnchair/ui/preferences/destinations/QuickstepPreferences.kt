@@ -113,7 +113,7 @@ fun QuickstepPreferences(
     }
 }
 
-@PreviewLawnchair
+@Preview
 @Composable
 private fun QuickSwitchIgnoredWarning(
     modifier: Modifier = Modifier,
