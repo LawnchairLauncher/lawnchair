@@ -253,6 +253,7 @@ class LauncherPrefs(private val encryptedContext: Context) : SafeCloseable {
         @JvmStatic fun get(context: Context): LauncherPrefs = INSTANCE.get(context)
 
         const val TASKBAR_PINNING_KEY = "TASKBAR_PINNING_KEY"
+        const val TASKBAR_PINNING_DESKTOP_MODE_KEY = "TASKBAR_PINNING_DESKTOP_MODE_KEY"
         const val SHOULD_SHOW_SMARTSPACE_KEY = "SHOULD_SHOW_SMARTSPACE_KEY"
         @JvmField
         val ICON_STATE = nonRestorableItem("pref_icon_shape_path", "", EncryptionType.ENCRYPTED)
@@ -272,6 +273,9 @@ class LauncherPrefs(private val encryptedContext: Context) : SafeCloseable {
         @JvmField
         val TASKBAR_PINNING =
             backedUpItem(TASKBAR_PINNING_KEY, false, EncryptionType.DEVICE_PROTECTED)
+        @JvmField
+        val TASKBAR_PINNING_IN_DESKTOP_MODE =
+            backedUpItem(TASKBAR_PINNING_DESKTOP_MODE_KEY, true, EncryptionType.DEVICE_PROTECTED)
 
         @JvmField
         val DEVICE_TYPE =

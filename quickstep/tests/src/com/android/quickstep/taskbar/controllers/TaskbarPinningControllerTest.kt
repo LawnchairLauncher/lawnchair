@@ -22,6 +22,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
+import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING_IN_DESKTOP_MODE
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN
@@ -53,7 +54,13 @@ import org.mockito.kotlin.whenever
 class TaskbarPinningControllerTest : TaskbarBaseTestCase() {
     private val taskbarDragLayer = mock<TaskbarDragLayer>()
     private val taskbarSharedState = mock<TaskbarSharedState>()
-    private val launcherPrefs = mock<LauncherPrefs> { on { get(TASKBAR_PINNING) } doReturn false }
+    private var isInDesktopMode = false
+    private val isInDesktopModeProvider = { isInDesktopMode }
+    private val launcherPrefs =
+        mock<LauncherPrefs> {
+            on { get(TASKBAR_PINNING) } doReturn false
+            on { get(TASKBAR_PINNING_IN_DESKTOP_MODE) } doReturn false
+        }
     private val statsLogger = mock<StatsLogManager.StatsLogger>()
     private val statsLogManager = mock<StatsLogManager> { on { logger() } doReturn statsLogger }
     private lateinit var pinningController: TaskbarPinningController
@@ -64,7 +71,8 @@ class TaskbarPinningControllerTest : TaskbarBaseTestCase() {
         whenever(taskbarActivityContext.launcherPrefs).thenReturn(launcherPrefs)
         whenever(taskbarActivityContext.dragLayer).thenReturn(taskbarDragLayer)
         whenever(taskbarActivityContext.statsLogManager).thenReturn(statsLogManager)
-        pinningController = spy(TaskbarPinningController(taskbarActivityContext))
+        pinningController =
+            spy(TaskbarPinningController(taskbarActivityContext, isInDesktopModeProvider))
         pinningController.init(taskbarControllers, taskbarSharedState)
     }
 
@@ -95,7 +103,7 @@ class TaskbarPinningControllerTest : TaskbarBaseTestCase() {
     }
 
     @Test
-    fun testOnCloseCallback_whenPreferenceChanged_shouldAnimateToPinnedTaskbar() {
+    fun testOnCloseCallback_whenLauncherPreferenceChanged_shouldAnimateToPinnedTaskbar() {
         whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(false)
         doNothing().whenever(pinningController).animateTaskbarPinning(any())
 
@@ -106,7 +114,7 @@ class TaskbarPinningControllerTest : TaskbarBaseTestCase() {
     }
 
     @Test
-    fun testOnCloseCallback_whenPreferenceChanged_shouldAnimateToTransientTaskbar() {
+    fun testOnCloseCallback_whenLauncherPreferenceChanged_shouldAnimateToTransientTaskbar() {
         whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(true)
         doNothing().whenever(pinningController).animateTaskbarPinning(any())
 
@@ -198,5 +206,14 @@ class TaskbarPinningControllerTest : TaskbarBaseTestCase() {
         verify(taskbarDragLayer, times(1)).setAnimatingTaskbarPinning(false)
         assertThat(pinningController.isAnimatingTaskbarPinning).isFalse()
         verify(launcherPrefs, times(1)).put(TASKBAR_PINNING, true)
+    }
+
+    @Test
+    fun testRecreateTaskbarAndUpdatePinningValue_whenAnimationEnds_shouldUpdateTaskbarPinningDesktopModePref() {
+        isInDesktopMode = true
+        pinningController.recreateTaskbarAndUpdatePinningValue()
+        verify(taskbarDragLayer, times(1)).setAnimatingTaskbarPinning(false)
+        assertThat(pinningController.isAnimatingTaskbarPinning).isFalse()
+        verify(launcherPrefs, times(1)).put(TASKBAR_PINNING_IN_DESKTOP_MODE, true)
     }
 }

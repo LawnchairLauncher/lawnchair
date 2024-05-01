@@ -23,6 +23,7 @@ import androidx.core.animation.doOnEnd
 import com.android.app.animation.Interpolators
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
+import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING_IN_DESKTOP_MODE
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_PINNED
@@ -31,8 +32,10 @@ import com.android.launcher3.taskbar.TaskbarDividerPopupView.Companion.createAnd
 import java.io.PrintWriter
 
 /** Controls taskbar pinning through a popup view. */
-class TaskbarPinningController(private val context: TaskbarActivityContext) :
-    TaskbarControllers.LoggableTaskbarController {
+class TaskbarPinningController(
+    private val context: TaskbarActivityContext,
+    private val isInDesktopModeProvider: () -> Boolean,
+) : TaskbarControllers.LoggableTaskbarController {
 
     private lateinit var controllers: TaskbarControllers
     private lateinit var taskbarSharedState: TaskbarSharedState
@@ -54,14 +57,22 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
                 if (!didPreferenceChange) {
                     return
                 }
+                val shouldPinTaskbar =
+                    if (isInDesktopModeProvider()) {
+                        !launcherPrefs.get(TASKBAR_PINNING_IN_DESKTOP_MODE)
+                    } else {
+                        !launcherPrefs.get(TASKBAR_PINNING)
+                    }
+
                 val animateToValue =
-                    if (!launcherPrefs.get(TASKBAR_PINNING)) {
+                    if (shouldPinTaskbar) {
                         statsLogManager.logger().log(LAUNCHER_TASKBAR_PINNED)
                         PINNING_PERSISTENT
                     } else {
                         statsLogManager.logger().log(LAUNCHER_TASKBAR_UNPINNED)
                         PINNING_TRANSIENT
                     }
+
                 taskbarSharedState.taskbarWasPinned = animateToValue == PINNING_TRANSIENT
                 animateTaskbarPinning(animateToValue)
             }
@@ -123,13 +134,24 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
     @VisibleForTesting
     fun recreateTaskbarAndUpdatePinningValue() {
         updateIsAnimatingTaskbarPinningAndNotifyTaskbarDragLayer(false)
-        launcherPrefs.put(TASKBAR_PINNING, !launcherPrefs.get(TASKBAR_PINNING))
+        if (isInDesktopModeProvider()) {
+            launcherPrefs.put(
+                TASKBAR_PINNING_IN_DESKTOP_MODE,
+                !launcherPrefs.get(TASKBAR_PINNING_IN_DESKTOP_MODE)
+            )
+        } else {
+            launcherPrefs.put(TASKBAR_PINNING, !launcherPrefs.get(TASKBAR_PINNING))
+        }
     }
 
     override fun dumpLogs(prefix: String, pw: PrintWriter) {
         pw.println(prefix + "TaskbarPinningController:")
         pw.println("$prefix\tisAnimatingTaskbarPinning=$isAnimatingTaskbarPinning")
         pw.println("$prefix\tTASKBAR_PINNING shared pref =" + launcherPrefs.get(TASKBAR_PINNING))
+        pw.println(
+            "$prefix\tTASKBAR_PINNING_IN_DESKTOP_MODE shared pref in desktop mode =" +
+                launcherPrefs.get(TASKBAR_PINNING_IN_DESKTOP_MODE)
+        )
     }
 
     companion object {
