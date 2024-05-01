@@ -301,9 +301,13 @@ public class DesktopTaskView extends TaskView {
         DesktopRecentsTransitionController recentsController =
                 recentsView.getDesktopRecentsController();
         if (recentsController != null) {
-            recentsController.launchDesktopFromRecents(this, success -> {
-                endCallback.executeAllAndDestroy();
-            });
+            recentsController.launchDesktopFromRecents(this,
+                    success -> endCallback.executeAllAndDestroy());
+            Log.d(TAG, "launchTaskAnimated - launchDesktopFromRecents: " + Arrays.toString(
+                    getTaskIds()));
+        } else {
+            Log.d(TAG, "launchTaskAnimated - recentsController is null: " + Arrays.toString(
+                    getTaskIds()));
         }
 
         // Callbacks get run from recentsView for case when recents animation already running

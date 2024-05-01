@@ -70,4 +70,10 @@ public class GroupTask {
                 task2 != null ? new Task(task2) : null,
                 mSplitBounds);
     }
+
+    @Override
+    public String toString() {
+        return "type=" + taskViewType + " task1=" + task1 + " task2=" + task2;
+    }
+
 }

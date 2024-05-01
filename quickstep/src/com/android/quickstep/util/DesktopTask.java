@@ -56,4 +56,10 @@ public class DesktopTask extends GroupTask {
     public DesktopTask copy() {
         return new DesktopTask(tasks);
     }
+
+    @Override
+    public String toString() {
+        return "type=" + taskViewType + " tasks=" + tasks;
+    }
+
 }
