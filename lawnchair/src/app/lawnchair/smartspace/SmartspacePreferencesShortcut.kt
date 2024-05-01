@@ -9,7 +9,7 @@ class SmartspacePreferencesShortcut : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivity(PreferenceActivity.createIntent(this, "${Routes.SMARTSPACE_WIDGET}"))
+        startActivity(PreferenceActivity.createIntent(this, Routes.SMARTSPACE_WIDGET))
         finish()
     }
 }

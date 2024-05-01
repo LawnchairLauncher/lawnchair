@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.contains
-import app.lawnchair.allapps.SearchItemDecorator
-import app.lawnchair.allapps.SearchResultView
-import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
-import app.lawnchair.search.data.SearchResultActionCallBack
+import app.lawnchair.allapps.views.SearchItemDecorator
+import app.lawnchair.allapps.views.SearchResultView
+import app.lawnchair.allapps.views.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
+import app.lawnchair.search.adapter.SearchAdapterItem
+import app.lawnchair.search.adapter.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
@@ -35,6 +36,7 @@ class LawnchairSearchAdapterProvider(
         append(SEARCH_RESULT_SUGGESTION_TILE, R.layout.search_result_small_icon_row)
         append(SEARCH_RESULT_SETTINGS_TILE, R.layout.search_result_small_icon_row)
         append(SEARCH_RESULT_RECENT_TILE, R.layout.search_result_small_icon_row)
+        append(SEARCH_RESULT_CALCULATOR, R.layout.search_result_tall_icon_row)
     }
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
@@ -68,11 +70,17 @@ class LawnchairSearchAdapterProvider(
         viewType: Int,
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
-
         val grid: DeviceProfile = mLauncher.deviceProfile
+        val horizontalMargin = if (grid.isTablet) grid.allAppsLeftRightPadding + 48 else grid.allAppsLeftRightPadding
+
         if (viewType != SEARCH_RESULT_ICON) {
             val layoutParams = ViewGroup.MarginLayoutParams(view.layoutParams)
-            val horizontalMargin = grid.allAppsLeftRightMargin
+            layoutParams.leftMargin = horizontalMargin
+            layoutParams.rightMargin = horizontalMargin
+            view.layoutParams = layoutParams
+        }
+        if (viewType == SEARCH_TEXT_HEADER) {
+            val layoutParams: ViewGroup.MarginLayoutParams = ViewGroup.MarginLayoutParams(0, 0)
             layoutParams.leftMargin = horizontalMargin
             layoutParams.rightMargin = horizontalMargin
             view.layoutParams = layoutParams
@@ -101,6 +109,7 @@ class LawnchairSearchAdapterProvider(
         private const val SEARCH_RESULT_SUGGESTION_TILE = 1 shl 15
         private const val SEARCH_RESULT_SETTINGS_TILE = 1 shl 16
         private const val SEARCH_RESULT_RECENT_TILE = 1 shl 17
+        private const val SEARCH_RESULT_CALCULATOR = 1 shl 18
 
         val viewTypeMap = mapOf(
             LayoutType.ICON_SINGLE_VERTICAL_TEXT to SEARCH_RESULT_ICON,
@@ -113,6 +122,7 @@ class LawnchairSearchAdapterProvider(
             LayoutType.THUMBNAIL to SEARCH_RESULT_FILE_TILE,
             LayoutType.ICON_SLICE to SEARCH_RESULT_SETTINGS_TILE,
             LayoutType.WIDGET_LIVE to SEARCH_RESULT_RECENT_TILE,
+            LayoutType.CALCULATOR to SEARCH_RESULT_CALCULATOR,
         )
 
         fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {

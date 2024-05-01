@@ -121,6 +121,7 @@
     <bool name="config_default_live_information_show_announcements">true</bool>
     <bool name="config_default_enable_dot_pagination">true</bool>
     <bool name="config_default_enable_material_u_popup">true</bool>
+    <bool name="config_default_enable_two_line_allapps">true</bool>
 
     <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
@@ -136,7 +137,7 @@
     <item name="config_default_suggestion_max_result_count" type="dimen" format="integer">3</item>
     <item name="config_default_settings_entry_max_result_count" type="dimen" format="integer">5</item>
     <item name="config_default_recent_max_result_count" type="dimen" format="integer">2</item>
-    <item name="config_default_max_web_suggestion_delay" type="dimen" format="integer">200</item>
+    <item name="config_default_max_web_suggestion_delay" type="dimen" format="integer">1000</item>
     <item name="config_default_hotseat_bottom_factor" type="dimen" format="float">1.0</item>
 
 

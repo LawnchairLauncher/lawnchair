@@ -47,7 +47,7 @@ class SmartspaceProvider private constructor(context: Context) {
         headerAction = SmartspaceAction(
             id = "smartspaceSetupAction",
             title = context.getString(R.string.smartspace_requires_setup),
-            intent = PreferenceActivity.createIntent(context, "${Routes.SMARTSPACE}"),
+            intent = PreferenceActivity.createIntent(context, Routes.SMARTSPACE),
         ),
         score = 999f,
         featureType = SmartspaceTarget.FeatureType.FEATURE_TIPS,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<app.lawnchair.allapps.SearchResultText xmlns:android="http://schemas.android.com/apk/res/android"
+<app.lawnchair.allapps.views.SearchResultText xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/search_result_text"
     android:layout_width="match_parent"
     android:layout_height="@dimen/search_result_text_height"
@@ -46,4 +46,4 @@
         android:visibility="gone"
         android:textStyle="normal"
         android:contentDescription="@string/recents_clear_all" />
-</app.lawnchair.allapps.SearchResultText>
+</app.lawnchair.allapps.views.SearchResultText>

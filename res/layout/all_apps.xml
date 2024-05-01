@@ -15,7 +15,7 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<app.lawnchair.allapps.SearchContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+<app.lawnchair.allapps.views.SearchContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

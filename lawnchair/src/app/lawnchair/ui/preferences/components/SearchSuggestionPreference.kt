@@ -16,8 +16,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,6 +29,46 @@ import app.lawnchair.ui.theme.dividerColor
 import app.lawnchair.ui.util.PreviewLawnchair
 import app.lawnchair.ui.util.bottomSheetHandler
 import com.android.launcher3.R
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun SearchSuggestionPreference(
+    adapter: PreferenceAdapter<Boolean>,
+    maxCountAdapter: PreferenceAdapter<Int>,
+    maxCountRange: ClosedRange<Int>,
+    label: String,
+    maxCountLabel: String,
+    description: String? = null,
+    permissionState: PermissionState? = null,
+    permissionRationale: String? = null,
+    content: @Composable (() -> Unit)? = null,
+) {
+    val isGranted = permissionState?.status?.isGranted ?: true
+
+    LaunchedEffect("") {
+        if (!isGranted) {
+            adapter.onChange(false)
+        }
+    }
+
+    SearchSuggestionPreference(
+        adapter = adapter,
+        maxCountAdapter = maxCountAdapter,
+        maxCountRange = maxCountRange,
+        label = label,
+        maxCountLabel = maxCountLabel,
+        description = description,
+        isGranted = isGranted,
+        onRequestPermission = {
+            permissionState?.launchPermissionRequest()
+        },
+        permissionRationale = permissionRationale,
+        content = content,
+    )
+}
 
 @Composable
 fun SearchSuggestionPreference(
@@ -39,26 +77,26 @@ fun SearchSuggestionPreference(
     maxCountRange: ClosedRange<Int>,
     label: String,
     maxCountLabel: String,
-    preventSwitchChange: Boolean = false,
+    onRequestPermission: (() -> Unit)?,
+    isGranted: Boolean = true,
     description: String? = null,
-    isPermissionGranted: Boolean = true,
-    onPermissionRequest: (() -> Unit)? = null,
-    requestPermissionDescription: String? = null,
+    permissionRationale: String? = null,
     content: @Composable (() -> Unit)? = null,
 ) {
     val bottomSheetHandler = bottomSheetHandler
+    val preventSwitchChange = false
 
     SearchSuggestionsSwitchPreference(
         label = label,
         description = description,
         checked = adapter.state.value,
-        enabled = isPermissionGranted,
+        enabled = isGranted,
         preventSwitchChange = preventSwitchChange,
         onClick = {
             bottomSheetHandler.show {
                 BottomSheetContent(
                     onHide = { bottomSheetHandler.hide() },
-                    isPermissionGranted = isPermissionGranted,
+                    isPermissionGranted = isGranted,
                     adapterValue = adapter.state.value,
                     adapterOnChange = adapter::onChange,
                     label = label,
@@ -67,10 +105,8 @@ fun SearchSuggestionPreference(
                     maxCountAdapter = maxCountAdapter,
                     maxCountRange = maxCountRange,
                     content = content,
-                    onPermissionRequest = onPermissionRequest,
-                    onPermissionDenied = {},
-                    onPermissionGranted = {},
-                    requestPermissionDescription = requestPermissionDescription,
+                    onRequestPermission = onRequestPermission,
+                    permissionRationale = permissionRationale,
                     preventSwitchChange = preventSwitchChange,
                 )
             }
@@ -80,8 +116,6 @@ fun SearchSuggestionPreference(
 
 @Composable
 private fun BottomSheetContent(
-    onHide: () -> Unit,
-    isPermissionGranted: Boolean,
     adapterValue: Boolean,
     adapterOnChange: (Boolean) -> Unit,
     label: String,
@@ -90,20 +124,14 @@ private fun BottomSheetContent(
     maxCountAdapter: PreferenceAdapter<Int>,
     maxCountRange: ClosedRange<Int>,
     content: @Composable (() -> Unit)?,
-    onPermissionRequest: (() -> Unit)?,
+    isPermissionGranted: Boolean,
+
+    onHide: () -> Unit,
+    onRequestPermission: (() -> Unit)?,
     // TODO optimize permission requesting code
-    onPermissionDenied: (() -> Unit)?,
-    onPermissionGranted: (() -> Unit)?,
-    requestPermissionDescription: String?,
+    permissionRationale: String?,
     preventSwitchChange: Boolean = false,
 ) {
-    val latestOnClick by rememberUpdatedState(adapterOnChange)
-    LaunchedEffect(Unit) {
-        if (!isPermissionGranted && adapterValue) {
-            latestOnClick(false)
-        }
-    }
-
     ModalBottomSheetContent(
         buttons = {
             OutlinedButton(onClick = { onHide() }) {
@@ -134,7 +162,7 @@ private fun BottomSheetContent(
                 }
             }
             if (!isPermissionGranted) {
-                if (onPermissionRequest != null && requestPermissionDescription != null) {
+                if (onRequestPermission != null && permissionRationale != null) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -145,12 +173,12 @@ private fun BottomSheetContent(
                                 .padding(16.dp),
                         ) {
                             Text(
-                                text = requestPermissionDescription,
+                                text = permissionRationale,
                             )
                             Button(
                                 onClick = {
                                     onHide()
-                                    onPermissionRequest()
+                                    onRequestPermission()
                                 },
                             ) {
                                 Text(text = stringResource(id = R.string.grant_requested_permissions))

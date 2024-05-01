@@ -124,7 +124,7 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
         R.drawable.ic_setting,
         StatsLogManager.LauncherEvent.IGNORE,
     ) {
-        context.startActivity(PreferenceActivity.createIntent(context, "${Routes.SMARTSPACE}"))
+        context.startActivity(PreferenceActivity.createIntent(context, Routes.SMARTSPACE))
         true
     }
 }
