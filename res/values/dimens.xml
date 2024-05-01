@@ -192,11 +192,14 @@
     <dimen name="widget_cell_app_icon_padding">8dp</dimen>
     <dimen name="widget_cell_add_button_height">48dp</dimen>
     <dimen name="widget_cell_add_button_start_padding">8dp</dimen>
+    <dimen name="widget_cell_add_icon_button_start_padding">16dp</dimen>
     <dimen name="widget_cell_add_button_end_padding">16dp</dimen>
     <dimen name="widget_cell_add_button_scroll_padding">24dp</dimen>
     <dimen name="widget_cell_add_button_font_size">14sp</dimen>
     <integer name="widget_cell_add_button_font_weight">500</integer>
     <dimen name="widget_cell_add_button_line_height">20sp</dimen>
+    <dimen name="widget_cell_add_button_drawable_padding">8dp</dimen>
+    <dimen name="widget_cell_add_button_drawable_width">19dp</dimen>
 
     <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>

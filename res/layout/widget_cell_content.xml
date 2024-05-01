@@ -104,8 +104,9 @@
             android:gravity="center"
             android:visibility="gone"
             android:drawableStart="@drawable/ic_plus"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/widget_cell_add_button_drawable_padding"
             android:drawableTint="?attr/widgetPickerAddButtonTextColor"
+            android:maxLines="1"
             android:background="@drawable/widget_cell_add_button_background" />
     </FrameLayout>
 </merge>

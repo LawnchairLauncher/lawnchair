@@ -29,6 +29,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -544,9 +545,44 @@ public class WidgetCell extends LinearLayout {
         if (mIsShowingAddButton) return;
         mIsShowingAddButton = true;
 
+        setupIconOrTextButton();
         mWidgetAddButton.setOnClickListener(callback);
         fadeThrough(/* hide= */ mWidgetTextContainer, /* show= */ mWidgetAddButton,
                 ADD_BUTTON_FADE_DURATION_MS, Interpolators.LINEAR);
+    }
+
+    /**
+     * Depending on the width of the cell, set up the add button to be icon-only or icon+text.
+     */
+    private void setupIconOrTextButton() {
+        String addText = getResources().getString(R.string.widget_add_button_label);
+        Rect textSize = new Rect();
+        mWidgetAddButton.getPaint().getTextBounds(addText, 0, addText.length(), textSize);
+        int startPadding = getResources()
+                .getDimensionPixelSize(R.dimen.widget_cell_add_button_start_padding);
+        int endPadding = getResources()
+                .getDimensionPixelSize(R.dimen.widget_cell_add_button_end_padding);
+        int drawableWidth = getResources()
+                .getDimensionPixelSize(R.dimen.widget_cell_add_button_drawable_width);
+        int drawablePadding = getResources()
+                .getDimensionPixelSize(R.dimen.widget_cell_add_button_drawable_padding);
+        int textButtonWidth = textSize.width() + startPadding + endPadding + drawableWidth
+                + drawablePadding;
+        if (textButtonWidth > getMeasuredWidth()) {
+            // Setup icon-only button
+            mWidgetAddButton.setText(null);
+            int startIconPadding = getResources()
+                    .getDimensionPixelSize(R.dimen.widget_cell_add_icon_button_start_padding);
+            mWidgetAddButton.setPaddingRelative(/* start= */ startIconPadding, /* top= */ 0,
+                    /* end= */ endPadding, /* bottom= */ 0);
+            mWidgetAddButton.setCompoundDrawablePadding(0);
+        } else {
+            // Setup icon + text button
+            mWidgetAddButton.setText(addText);
+            mWidgetAddButton.setPaddingRelative(/* start= */ startPadding, /* top= */ 0,
+                    /* end= */ endPadding, /* bottom= */ 0);
+            mWidgetAddButton.setCompoundDrawablePadding(drawablePadding);
+        }
     }
 
     /**
