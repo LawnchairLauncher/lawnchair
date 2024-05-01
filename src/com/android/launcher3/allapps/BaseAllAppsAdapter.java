@@ -44,7 +44,6 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -273,8 +272,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                             privateProfileManager.isPrivateSpaceItem(adapterItem);
                     if (icon.getAlpha() == 0 || icon.getAlpha() == 1) {
                         icon.setAlpha(isPrivateSpaceItem
-                                && privateProfileManager.getAnimationScrolling()
-                                && privateProfileManager.getAnimate()
+                                && (privateProfileManager.getAnimationScrolling() ||
+                                    privateProfileManager.getAnimate())
                                 && privateProfileManager.getCurrentState() == STATE_ENABLED
                                 ? 0 : 1);
                     }
