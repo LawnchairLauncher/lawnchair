@@ -26,9 +26,10 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
@@ -50,7 +51,7 @@ import java.util.Objects;
 /**
  * Task to add auto-created workspace items.
  */
-public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
+public class AddWorkspaceItemsTask implements ModelUpdateTask {
 
     private static final String LOG = "AddWorkspaceItemsTask";
 
@@ -77,16 +78,17 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         mItemSpaceFinder = itemSpaceFinder;
     }
 
+
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList apps) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
         if (mItemList.isEmpty()) {
             return;
         }
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final IntArray addedWorkspaceScreensFinal = new IntArray();
-        final Context context = app.getContext();
+        final Context context = taskController.getApp().getContext();
 
         synchronized (dataModel) {
             IntArray workspaceScreens = dataModel.collectWorkspaceScreens();
@@ -128,8 +130,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
-                int[] coords = mItemSpaceFinder.findSpaceForItem(app, dataModel, workspaceScreens,
-                        addedWorkspaceScreensFinal, item.spanX, item.spanY);
+                int[] coords = mItemSpaceFinder.findSpaceForItem(taskController.getApp(), dataModel,
+                        workspaceScreens, addedWorkspaceScreensFinal, item.spanX, item.spanY);
                 int screenId = coords[0];
 
                 ItemInfo itemInfo;
@@ -176,8 +178,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     if (hasActivity) {
                         // App was installed while launcher was in the background,
                         // or app was already installed for another user.
-                        itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
-                                .makeWorkspaceItem(app.getContext());
+                        itemInfo = new AppInfo(context, activities.get(0), item.user)
+                                .makeWorkspaceItem(context);
 
                         if (shortcutExists(dataModel, itemInfo.getIntent(), itemInfo.user)) {
                             // We need this additional check here since we treat all auto added
@@ -187,16 +189,17 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             continue;
                         }
 
+                        IconCache cache = taskController.getApp().getIconCache();
                         WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
                         wii.title = "";
-                        wii.bitmap = app.getIconCache().getDefaultIcon(item.user);
-                        app.getIconCache().getTitleAndIcon(wii,
+                        wii.bitmap = cache.getDefaultIcon(item.user);
+                        cache.getTitleAndIcon(wii,
                                 ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
                     }
                 }
 
                 // Add the shortcut to the db
-                getModelWriter().addItemToDatabase(itemInfo,
+                taskController.getModelWriter().addItemToDatabase(itemInfo,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
                         coords[1], coords[2]);
 
@@ -209,7 +212,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         }
 
         if (!addedItemsFinal.isEmpty()) {
-            scheduleCallbackTask(new CallbackTask() {
+            taskController.scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(@NonNull Callbacks callbacks) {
                     final ArrayList<ItemInfo> addAnimated = new ArrayList<>();
