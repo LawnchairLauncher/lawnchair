@@ -6,6 +6,7 @@ import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.quickstep.util.SplitScreenUtils.convertLauncherSplitBoundsToShell;
 
+import android.app.ActivityTaskManager;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -46,6 +47,7 @@ import kotlin.Unit;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -60,7 +62,7 @@ import java.util.function.Consumer;
  */
 public class GroupedTaskView extends TaskView {
 
-    private static final String TAG = TaskView.class.getSimpleName();
+    private static final String TAG = GroupedTaskView.class.getSimpleName();
     @Nullable
     private Task mSecondaryTask;
     // TODO(b/336612373): Support new TTV for GroupedTaskView
@@ -129,9 +131,11 @@ public class GroupedTaskView extends TaskView {
             @Nullable SplitBounds splitBoundsConfig) {
         super.bind(primary, orientedState);
         mSecondaryTask = secondary;
-        mTaskIdContainer[1] = secondary.key.id;
-        mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2,
-                mIconView2, STAGE_POSITION_BOTTOM_OR_RIGHT);
+        mTaskIdContainer = new int[]{mTaskIdContainer[0], secondary.key.id};
+        mTaskIdAttributeContainer = new TaskIdAttributeContainer[]{
+                mTaskIdAttributeContainer[0],
+                new TaskIdAttributeContainer(secondary, mSnapshotView2,
+                        mIconView2, STAGE_POSITION_BOTTOM_OR_RIGHT)};
         mTaskIdAttributeContainer[0].setStagePosition(
                 SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.bind(secondary);
@@ -154,6 +158,9 @@ public class GroupedTaskView extends TaskView {
     public void setUpShowAllInstancesListener() {
         // sets up the listener for the left/top task
         super.setUpShowAllInstancesListener();
+        if (mTaskIdAttributeContainer.length < 2) {
+            return;
+        }
 
         // right/bottom task's base package name
         String taskPackageName = mTaskIdAttributeContainer[1].getTask().key.getPackageName();
@@ -308,14 +315,18 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    public boolean containsTaskId(int taskId) {
-        return (mTask != null && mTask.key.id == taskId)
-                || (mSecondaryTask != null && mSecondaryTask.key.id == taskId);
-    }
-
-    @Override
     public TaskThumbnailViewDeprecated[] getThumbnails() {
         return new TaskThumbnailViewDeprecated[]{mTaskThumbnailViewDeprecated, mSnapshotView2};
+    }
+
+    /**
+     * Returns taskId that split selection was initiated with,
+     * {@link ActivityTaskManager#INVALID_TASK_ID} if no tasks in this TaskView are part of
+     * split selection
+     */
+    protected int getThisTaskCurrentlyInSplitSelection() {
+        int initialTaskId = getRecentsView().getSplitSelectController().getInitialTaskId();
+        return containsTaskId(initialTaskId) ? initialTaskId : INVALID_TASK_ID;
     }
 
     @Override
@@ -382,13 +393,15 @@ public class GroupedTaskView extends TaskView {
         } else {
             // Currently being split with this taskView, let the non-split selected thumbnail
             // take up full thumbnail area
-            TaskIdAttributeContainer container =
-                    mTaskIdAttributeContainer[initSplitTaskId == mTask.key.id ? 1 : 0];
-            container.getThumbnailView().measure(widthMeasureSpec,
-                    View.MeasureSpec.makeMeasureSpec(
-                            heightSize -
-                                    mContainer.getDeviceProfile().overviewTaskThumbnailTopMarginPx,
-                            MeasureSpec.EXACTLY));
+            Optional<TaskIdAttributeContainer> nonSplitContainer = Arrays.stream(
+                    mTaskIdAttributeContainer).filter(
+                            container -> container.getTask().key.id != initSplitTaskId).findAny();
+            nonSplitContainer.ifPresent(
+                    taskIdAttributeContainer -> taskIdAttributeContainer.getThumbnailView().measure(
+                            widthMeasureSpec, MeasureSpec.makeMeasureSpec(
+                                    heightSize - mContainer.getDeviceProfile()
+                                            .overviewTaskThumbnailTopMarginPx,
+                                    MeasureSpec.EXACTLY)));
         }
         if (!enableOverviewIconMenu()) {
             updateIconPlacement();
@@ -529,7 +542,7 @@ public class GroupedTaskView extends TaskView {
             mDigitalWellBeingToast.setBannerVisibility(visibility);
             mSnapshotView2.setVisibility(visibility);
             mDigitalWellBeingToast2.setBannerVisibility(visibility);
-        } else if (taskId == getTaskIds()[0]) {
+        } else if (mTaskIdContainer.length > 0 && mTaskIdContainer[0] == taskId) {
             mTaskThumbnailViewDeprecated.setVisibility(visibility);
             mDigitalWellBeingToast.setBannerVisibility(visibility);
         } else {

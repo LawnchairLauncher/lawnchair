@@ -626,7 +626,6 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      */
     protected int mRunningTaskViewId = -1;
     private int mTaskViewIdCount;
-    private final int[] INVALID_TASK_IDS = new int[]{-1, -1};
     protected boolean mRunningTaskTileHidden;
     @Nullable
     private Task[] mTmpRunningTasks;
@@ -1413,7 +1412,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      */
     @Nullable
     public TaskView getTaskViewByTaskIds(int[] taskIds) {
-        if (!hasAnyValidTaskIds(taskIds)) {
+        if (!hasAllValidTaskIds(taskIds)) {
             return null;
         }
 
@@ -1432,9 +1431,11 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         return null;
     }
 
-    /** Returns false if {@code taskIds} is null or contains invalid values, true otherwise */
-    private boolean hasAnyValidTaskIds(int[] taskIds) {
-        return taskIds != null && !Arrays.equals(taskIds, INVALID_TASK_IDS);
+    /** Returns false if {@code taskIds} is null or contains any invalid values, true otherwise */
+    private boolean hasAllValidTaskIds(int[] taskIds) {
+        return taskIds != null
+                && taskIds.length > 0
+                && Arrays.stream(taskIds).noneMatch(taskId -> taskId == INVALID_TASK_ID);
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
@@ -1707,6 +1708,12 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             return;
         }
 
+        if (taskGroups == null) {
+            Log.d(TAG, "applyLoadPlan - taskGroups is null");
+        } else {
+            Log.d(TAG, "applyLoadPlan - taskGroups: " + taskGroups.stream().map(
+                    GroupTask::toString).toList());
+        }
         mLoadPlanEverApplied = true;
         if (taskGroups == null || taskGroups.isEmpty()) {
             removeTasksViewsAndClearAllButton();
@@ -1720,10 +1727,12 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             return;
         }
 
-        int[] currentTaskId = INVALID_TASK_IDS;
+        int[] currentTaskIds;
         TaskView currentTaskView = getTaskViewAt(mCurrentPage);
         if (currentTaskView != null && currentTaskView.getTask() != null) {
-            currentTaskId = currentTaskView.getTaskIds();
+            currentTaskIds = currentTaskView.getTaskIds();
+        } else {
+            currentTaskIds = new int[0];
         }
 
         // Unload existing visible task data
@@ -1735,8 +1744,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
 
         // Save running task ID if it exists before rebinding all taskViews, otherwise the task from
         // the runningTaskView currently bound could get assigned to another TaskView
-        int[] runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId);
-        int[] focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId);
+        int[] runningTaskIds = getTaskIdsForTaskViewId(mRunningTaskViewId);
+        int[] focusedTaskIds = getTaskIdsForTaskViewId(mFocusedTaskViewId);
 
         // Reset the focused task to avoiding initializing TaskViews layout as focused task during
         // binding. The focused task view will be updated after all the TaskViews are bound.
@@ -1819,7 +1828,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         }
 
         // Keep same previous focused task
-        TaskView newFocusedTaskView = getTaskViewByTaskIds(focusedTaskId);
+        TaskView newFocusedTaskView = getTaskViewByTaskIds(focusedTaskIds);
         // If the list changed, maybe the focused task doesn't exist anymore
         if (newFocusedTaskView == null && getTaskViewCount() > 0) {
             newFocusedTaskView = getTaskViewAt(0);
@@ -1830,10 +1839,10 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         updateChildTaskOrientations();
 
         TaskView newRunningTaskView = null;
-        if (hasAnyValidTaskIds(runningTaskId)) {
+        if (hasAllValidTaskIds(runningTaskIds)) {
             // Update mRunningTaskViewId to be the new TaskView that was assigned by binding
             // the full list of tasks to taskViews
-            newRunningTaskView = getTaskViewByTaskIds(runningTaskId);
+            newRunningTaskView = getTaskViewByTaskIds(runningTaskIds);
             if (newRunningTaskView != null) {
                 setRunningTaskViewId(newRunningTaskView.getTaskViewId());
             } else {
@@ -1853,8 +1862,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         if (mNextPage != INVALID_PAGE) {
             // Restore mCurrentPage but don't call setCurrentPage() as that clobbers the scroll.
             mCurrentPage = previousCurrentPage;
-            if (hasAnyValidTaskIds(currentTaskId)) {
-                currentTaskView = getTaskViewByTaskIds(currentTaskId);
+            if (hasAllValidTaskIds(currentTaskIds)) {
+                currentTaskView = getTaskViewByTaskIds(currentTaskIds);
                 if (currentTaskView != null) {
                     targetPage = indexOfChild(currentTaskView);
                 }
@@ -1863,7 +1872,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             targetPage = previousFocusedPage;
         } else {
             // Set the current page to the running task, but not if settling on new task.
-            if (hasAnyValidTaskIds(runningTaskId)) {
+            if (hasAllValidTaskIds(runningTaskIds)) {
                 targetPage = indexOfChild(newRunningTaskView);
             } else if (getTaskViewCount() > 0) {
                 targetPage = indexOfChild(requireTaskViewAt(0));
@@ -1963,7 +1972,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     public void resetTaskVisuals() {
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView taskView = requireTaskViewAt(i);
-            if (mIgnoreResetTaskId != taskView.getTaskIds()[0]) {
+            if (Arrays.stream(taskView.getTaskIds()).noneMatch(
+                    taskId -> taskId == mIgnoreResetTaskId)) {
                 taskView.resetViewTransforms();
                 taskView.setIconScaleAndDim(mTaskIconScaledDown ? 0 : 1);
                 taskView.setStableAlpha(mContentAlpha);
@@ -2343,7 +2353,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
             TaskIdAttributeContainer[] containers = taskView.getTaskIdAttributeContainers();
-            if (containers[0] == null && containers[1] == null) {
+            if (containers.length == 0) {
                 continue;
             }
             int index = indexOfChild(taskView);
@@ -2498,7 +2508,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         // For now 2 distinct task IDs is max for split screen
         TaskView runningTaskView = getTaskViewFromTaskViewId(taskViewId);
         if (runningTaskView == null) {
-            return INVALID_TASK_IDS;
+            return new int[0];
         }
 
         return runningTaskView.getTaskIds();
@@ -2587,7 +2597,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      */
     public void onGestureAnimationStart(
             Task[] runningTasks, RotationTouchHelper rotationTouchHelper) {
-        Log.d(TAG, "onGestureAnimationStart");
+        Log.d(TAG, "onGestureAnimationStart - runningTasks: " + Arrays.toString(runningTasks));
         mActiveGestureRunningTasks = runningTasks;
         // This needs to be called before the other states are set since it can create the task view
         if (mOrientationState.setGestureActive(true)) {
@@ -2736,22 +2746,19 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * Returns true if we should add a stub taskView for the running task id
      */
     protected boolean shouldAddStubTaskView(Task[] runningTasks) {
-        TaskView taskView = getTaskViewByTaskId(runningTasks[0].key.id);
-        if (taskView == null) {
-            // No TaskView found, add a stub task.
-            return true;
-        }
-
-        if (runningTasks.length > 1) {
-            // Ensure all taskIds matches the TaskView, otherwise add a stub task.
-            return Arrays.stream(runningTasks).anyMatch(
-                    runningTask -> !taskView.containsTaskId(runningTask.key.id));
+        int[] runningTaskIds = Arrays.stream(runningTasks).mapToInt(task -> task.key.id).toArray();
+        TaskView matchingTaskView = null;
+        if (hasDesktopTask(runningTasks) && runningTaskIds.length == 1) {
+            // TODO(b/249371338): Unsure if it's expected, desktop runningTasks only have a single
+            // taskId, therefore we match any DesktopTaskView that contains the runningTaskId.
+            TaskView taskview = getTaskViewByTaskId(runningTaskIds[0]);
+            if (taskview instanceof DesktopTaskView) {
+                matchingTaskView = taskview;
+            }
         } else {
-            // Ensure the TaskView only contains a single taskId, or is a DesktopTask,
-            // otherwise add a stub task.
-            // TODO(b/249371338): Figure out why DesktopTask only have a single runningTask.
-            return taskView.containsMultipleTasks() && !taskView.isDesktopTask();
+            matchingTaskView = getTaskViewByTaskIds(runningTaskIds);
         }
+        return matchingTaskView == null;
     }
 
     /**
@@ -2761,6 +2768,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * is called.  Also scrolls the view to this task.
      */
     private void showCurrentTask(Task[] runningTasks) {
+        Log.d(TAG, "showCurrentTask - runningTasks: " + Arrays.toString(runningTasks));
         if (runningTasks.length == 0) {
             return;
         }
@@ -4273,13 +4281,10 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         alpha = Utilities.boundToRange(alpha, 0, 1);
         mContentAlpha = alpha;
 
-        int runningTaskId = getTaskIdsForRunningTaskView()[0];
+        TaskView runningTaskView = getRunningTaskView();
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView child = requireTaskViewAt(i);
-            int[] childTaskIds = child.getTaskIds();
-            if (runningTaskId != INVALID_TASK_ID
-                    && mRunningTaskTileHidden
-                    && (childTaskIds[0] == runningTaskId || childTaskIds[1] == runningTaskId)) {
+            if (runningTaskView != null && mRunningTaskTileHidden && child == runningTaskView) {
                 continue;
             }
             child.setStableAlpha(alpha);
@@ -4753,7 +4758,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
 
         // Prevent dismissing whole task if we're only initiating from one of 2 tasks in split pair
         mSplitSelectStateController.setDismissingFromSplitPair(mSplitHiddenTaskView != null
-                && mSplitHiddenTaskView.containsMultipleTasks());
+                && mSplitHiddenTaskView instanceof GroupedTaskView);
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
                 splitSelectSource.position.stagePosition, splitSelectSource.itemInfo,
                 splitSelectSource.splitEvent, splitSelectSource.alreadyRunningTaskId);
@@ -4774,14 +4779,14 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 mSplitSelectStateController.isAnimateCurrentTaskDismissal();
         boolean isInitiatingTaskViewSplitPair =
                 mSplitSelectStateController.isDismissingFromSplitPair();
-        if (isInitiatingSplitFromTaskView && isInitiatingTaskViewSplitPair) {
+        if (isInitiatingSplitFromTaskView && isInitiatingTaskViewSplitPair
+                && mSplitHiddenTaskView instanceof GroupedTaskView) {
             // Splitting from Overview for split pair task
             createInitialSplitSelectAnimation(builder);
 
             // Animate pair thumbnail into full thumbnail
-            boolean primaryTaskSelected =
-                    mSplitHiddenTaskView.getTaskIdAttributeContainers()[0].getTask().key.id ==
-                            mSplitSelectStateController.getInitialTaskId();
+            boolean primaryTaskSelected = mSplitHiddenTaskView.getTaskIds()[0]
+                    == mSplitSelectStateController.getInitialTaskId();
             TaskIdAttributeContainer taskIdAttributeContainer = mSplitHiddenTaskView
                     .getTaskIdAttributeContainers()[primaryTaskSelected ? 1 : 0];
             TaskThumbnailViewDeprecated thumbnail = taskIdAttributeContainer.getThumbnailView();
@@ -5232,7 +5237,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         mPendingAnimation.addOnFrameCallback(this::redrawLiveTile);
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
-                if (tv.getTaskIds()[1] != -1 && mRemoteTargetHandles != null) {
+                if (tv instanceof GroupedTaskView && hasAllValidTaskIds(tv.getTaskIds())
+                        && mRemoteTargetHandles != null) {
                     // TODO(b/194414938): make this part of the animations instead.
                     TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
                             mRemoteTargetHandles[0].getTransformParams().getTargetSet().nonApps,
@@ -5457,8 +5463,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * Called when a running recents animation has finished or canceled.
      */
     public void onRecentsAnimationComplete() {
-        Log.d(TAG, "onRecentsAnimationComplete - mRecentsAnimationController: "
-                + mRecentsAnimationController);
+        Log.d(TAG, "onRecentsAnimationComplete "
+                + "- mRecentsAnimationController: " + mRecentsAnimationController
+                + ", mSideTaskLaunchCallback: " + mSideTaskLaunchCallback);
         // At this point, the recents animation is not running and if the animation was canceled
         // by a display rotation then reset this state to show the screenshot
         setRunningTaskViewShowScreenshot(true);
@@ -5879,8 +5886,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         }
 
         taskView.setShowScreenshot(true);
-        for (TaskIdAttributeContainer container :
-                taskView.getTaskIdAttributeContainers()) {
+        for (TaskIdAttributeContainer container : taskView.getTaskIdAttributeContainers()) {
             if (container == null) {
                 continue;
             }
@@ -6012,7 +6018,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     }
 
     public void cleanupRemoteTargets() {
-        Log.d(TAG, "cleanupRemoteTargets");
+        Log.d(TAG, "cleanupRemoteTargets - mRemoteTargetHandles: " + Arrays.toString(
+                mRemoteTargetHandles));
         mRemoteTargetHandles = null;
     }
 

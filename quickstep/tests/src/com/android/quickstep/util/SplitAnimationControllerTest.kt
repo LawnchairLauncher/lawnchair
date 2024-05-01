@@ -17,6 +17,8 @@
 
 package com.android.quickstep.util
 
+import android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN
+import android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.ContextThemeWrapper
@@ -39,8 +41,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
@@ -273,6 +277,9 @@ class SplitAnimationControllerTest {
         doNothing()
             .whenever(spySplitAnimationController)
             .composeIconSplitLaunchAnimator(any(), any(), any(), any())
+        doReturn(-1)
+                .whenever(spySplitAnimationController)
+                .hasChangesForBothAppPairs(any(), any())
 
         spySplitAnimationController.playSplitLaunchAnimation(
             null /* launchingTaskView */,
@@ -294,13 +301,45 @@ class SplitAnimationControllerTest {
     }
 
     @Test
-    fun playsAppropriateSplitLaunchAnimation_playsIconLaunchFromTaskbarContextCorrectly() {
+    fun playsAppropriateSplitLaunchAnimation_playsIconFullscreenLaunchCorrectly() {
+        val spySplitAnimationController = spy(splitAnimationController)
+        whenever(mockAppPairIcon.context).thenReturn(mockContextThemeWrapper)
+        doNothing()
+                .whenever(spySplitAnimationController)
+                .composeFullscreenIconSplitLaunchAnimator(any(), any(), any(), any(), any())
+        doReturn(0)
+                .whenever(spySplitAnimationController)
+                .hasChangesForBothAppPairs(any(), any())
+
+        spySplitAnimationController.playSplitLaunchAnimation(
+                null /* launchingTaskView */,
+                mockAppPairIcon,
+                taskId,
+                taskId2,
+                null /* apps */,
+                null /* wallpapers */,
+                null /* nonApps */,
+                stateManager,
+                depthController,
+                transitionInfo,
+                transaction,
+                {} /* finishCallback */
+        )
+
+        verify(spySplitAnimationController)
+                .composeFullscreenIconSplitLaunchAnimator(any(), any(), any(), any(), eq(0))
+    }
+
+    @Test
+    fun playsAppropriateSplitLaunchAnimation_playsIconLaunchFromTaskbarCMultiWindow() {
         val spySplitAnimationController = spy(splitAnimationController)
         whenever(mockAppPairIcon.context).thenReturn(mockTaskbarActivityContext)
         doNothing()
             .whenever(spySplitAnimationController)
-            .composeScaleUpLaunchAnimation(any(), any(), any())
-
+            .composeScaleUpLaunchAnimation(any(), any(), any(), any())
+        doReturn(-1)
+                .whenever(spySplitAnimationController)
+                .hasChangesForBothAppPairs(any(), any())
         spySplitAnimationController.playSplitLaunchAnimation(
             null /* launchingTaskView */,
             mockAppPairIcon,
@@ -316,7 +355,37 @@ class SplitAnimationControllerTest {
             {} /* finishCallback */
         )
 
-        verify(spySplitAnimationController).composeScaleUpLaunchAnimation(any(), any(), any())
+        verify(spySplitAnimationController).composeScaleUpLaunchAnimation(any(), any(), any(),
+                eq(WINDOWING_MODE_MULTI_WINDOW))
+    }
+
+    @Test
+    fun playsAppropriateSplitLaunchAnimation_playsIconLaunchFromTaskbarFullscreen() {
+        val spySplitAnimationController = spy(splitAnimationController)
+        whenever(mockAppPairIcon.context).thenReturn(mockTaskbarActivityContext)
+        doNothing()
+                .whenever(spySplitAnimationController)
+                .composeScaleUpLaunchAnimation(any(), any(), any(), any())
+        doReturn(0)
+                .whenever(spySplitAnimationController)
+                .hasChangesForBothAppPairs(any(), any())
+        spySplitAnimationController.playSplitLaunchAnimation(
+                null /* launchingTaskView */,
+                mockAppPairIcon,
+                taskId,
+                taskId2,
+                null /* apps */,
+                null /* wallpapers */,
+                null /* nonApps */,
+                stateManager,
+                depthController,
+                transitionInfo,
+                transaction,
+                {} /* finishCallback */
+        )
+
+        verify(spySplitAnimationController).composeScaleUpLaunchAnimation(any(), any(), any(),
+                eq(WINDOWING_MODE_FULLSCREEN))
     }
 
     @Test

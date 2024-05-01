@@ -109,6 +109,8 @@ public final class OverviewComponentObserver {
      * Sets a listener for changes in {@link #isHomeAndOverviewSame()}
      */
     public void setOverviewChangeListener(Consumer<Boolean> overviewChangeListener) {
+        // TODO(b/337861962): This method should be able to support multiple listeners instead of
+        // one so that we can reuse the same instance of this class across multiple places
         mOverviewChangeListener = overviewChangeListener;
     }
 

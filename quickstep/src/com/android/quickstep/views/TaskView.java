@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -48,7 +47,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.IdRes;
 import android.app.ActivityOptions;
-import android.app.ActivityTaskManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -127,6 +125,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -150,7 +149,8 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     @Retention(SOURCE)
     @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL, FLAG_UPDATE_CORNER_RADIUS})
-    public @interface TaskDataChanges {}
+    public @interface TaskDataChanges {
+    }
 
     /**
      * Type of task view
@@ -371,12 +371,9 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mStableAlpha = 1;
 
     private int mTaskViewId = -1;
-    /**
-     * Index 0 will contain taskID of left/top task, index 1 will contain taskId of bottom/right
-     */
-    protected int[] mTaskIdContainer = new int[]{-1, -1};
+    protected int[] mTaskIdContainer = new int[0];
     protected TaskIdAttributeContainer[] mTaskIdAttributeContainer =
-            new TaskIdAttributeContainer[2];
+            new TaskIdAttributeContainer[0];
 
     private boolean mShowScreenshot;
     private boolean mBorderEnabled;
@@ -395,9 +392,11 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private boolean mIsClickableAsLiveTile = true;
 
-    @Nullable private final BorderAnimator mFocusBorderAnimator;
+    @Nullable
+    private final BorderAnimator mFocusBorderAnimator;
 
-    @Nullable private final BorderAnimator mHoverBorderAnimator;
+    @Nullable
+    private final BorderAnimator mHoverBorderAnimator;
 
     public TaskView(Context context) {
         this(context, null);
@@ -674,10 +673,10 @@ public class TaskView extends FrameLayout implements Reusable {
     public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
         mTask = task;
-        mTaskIdContainer[0] = mTask.key.id;
-        mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task,
-                mTaskThumbnailViewDeprecated, mIconView,
-                STAGE_POSITION_UNDEFINED);
+        mTaskIdContainer = new int[]{mTask.key.id};
+        mTaskIdAttributeContainer = new TaskIdAttributeContainer[]{
+                new TaskIdAttributeContainer(task, mTaskThumbnailViewDeprecated, mIconView,
+                        STAGE_POSITION_UNDEFINED)};
         if (enableRefactorTaskThumbnail()) {
             bindTaskThumbnailView();
         } else {
@@ -696,6 +695,9 @@ public class TaskView extends FrameLayout implements Reusable {
      * Sets up an on-click listener and the visibility for show_windows icon on top of the task.
      */
     public void setUpShowAllInstancesListener() {
+        if (mTaskIdAttributeContainer.length == 0) {
+            return;
+        }
         String taskPackageName = mTaskIdAttributeContainer[0].mTask.key.getPackageName();
 
         // icon of the top/left task
@@ -751,19 +753,18 @@ public class TaskView extends FrameLayout implements Reusable {
      * Check if given {@code taskId} is tracked in this view
      */
     public boolean containsTaskId(int taskId) {
-        return mTask != null && mTask.key.id == taskId;
+        return Arrays.stream(mTaskIdContainer).anyMatch(myTaskId -> myTaskId == taskId);
     }
 
     /**
-     * @return integer array of two elements to be size consistent with max number of tasks possible
-     *         index 0 will contain the taskId, index 1 will be -1 indicating a null taskID value
+     * Returns a copy of integer array containing taskIds of all tasks in the TaskView.
      */
     public int[] getTaskIds() {
         return Arrays.copyOf(mTaskIdContainer, mTaskIdContainer.length);
     }
 
     public boolean containsMultipleTasks() {
-        return mTaskIdContainer[1] != -1;
+        return mTaskIdContainer.length > 1;
     }
 
     /**
@@ -833,25 +834,6 @@ public class TaskView extends FrameLayout implements Reusable {
         return super.dispatchTouchEvent(ev);
     }
 
-    /**
-     * @return taskId that split selection was initiated with,
-     *         {@link ActivityTaskManager#INVALID_TASK_ID} if no tasks in this TaskView are part of
-     *         split selection
-     */
-    protected int getThisTaskCurrentlyInSplitSelection() {
-        SplitSelectStateController splitSelectController =
-                getRecentsView().getSplitSelectController();
-        int initSplitTaskId = INVALID_TASK_ID;
-        for (TaskIdAttributeContainer container : getTaskIdAttributeContainers()) {
-            int taskId = container.getTask().key.id;
-            if (taskId == splitSelectController.getInitialTaskId()) {
-                initSplitTaskId = taskId;
-                break;
-            }
-        }
-        return initSplitTaskId;
-    }
-
     private void onClick(View view) {
         if (getTask() == null) {
             Log.d("b/310064698", "onClick - task is null");
@@ -864,7 +846,8 @@ public class TaskView extends FrameLayout implements Reusable {
         RunnableList callbackList = launchTasks();
         Log.d("b/310064698", mTask + " - onClick - callbackList: " + callbackList);
         if (callbackList != null) {
-            callbackList.add(() -> Log.d("b/310064698", mTask + " - onClick - launchCompleted"));
+            callbackList.add(() -> Log.d("b/310064698", Arrays.toString(
+                    getTaskIds()) + " - onClick - launchCompleted"));
         }
         mContainer.getStatsLogManager().logger().withItemInfo(getItemInfo())
                 .log(LAUNCHER_TASK_LAUNCH_TAP);
@@ -872,10 +855,13 @@ public class TaskView extends FrameLayout implements Reusable {
 
     /**
      * @return {@code true} if user is already in split select mode and this tap was to choose the
-     *         second app. {@code false} otherwise
+     * second app. {@code false} otherwise
      */
     protected boolean confirmSecondSplitSelectApp() {
         int index = getLastSelectedChildTaskIndex();
+        if (index >= mTaskIdAttributeContainer.length) {
+            return false;
+        }
         TaskIdAttributeContainer container = mTaskIdAttributeContainer[index];
         if (container != null) {
             return getRecentsView().confirmSplitSelect(this, container.getTask(),
@@ -897,6 +883,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     /**
      * Starts the task associated with this view and animates the startup.
+     *
      * @return CompletionStage to indicate the animation completion or null if the launch failed.
      */
     @Nullable
@@ -904,7 +891,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (mTask != null) {
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
-            ActivityOptionsWrapper opts =  mContainer.getActivityLaunchOptions(this, null);
+            ActivityOptionsWrapper opts = mContainer.getActivityLaunchOptions(this, null);
             opts.options.setLaunchDisplayId(
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (ActivityManagerWrapper.getInstance()
@@ -936,7 +923,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 return null;
             }
         } else {
-            Log.d(TAG, "launchTaskAnimated - mTask is null");
+            Log.d(TAG, "launchTaskAnimated - mTask is null" + Arrays.toString(getTaskIds()));
             return null;
         }
     }
@@ -1006,9 +993,12 @@ public class TaskView extends FrameLayout implements Reusable {
                         callback.accept(false);
                     });
                 }
+                Log.d(TAG,
+                        "launchTask - startActivityFromRecents: " + Arrays.toString(getTaskIds()));
             });
         } else {
             callback.accept(false);
+            Log.d(TAG, "launchTask - mTask is null" + Arrays.toString(getTaskIds()));
         }
     }
 
@@ -1092,6 +1082,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     /**
      * See {@link TaskDataChanges}
+     *
      * @param visible If this task view will be visible to the user in overview or hidden
      */
     public void onTaskListVisibilityChanged(boolean visible) {
@@ -1100,6 +1091,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     /**
      * See {@link TaskDataChanges}
+     *
      * @param visible If this task view will be visible to the user in overview or hidden
      */
     public void onTaskListVisibilityChanged(boolean visible, @TaskDataChanges int changes) {
@@ -1188,29 +1180,34 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected boolean showTaskMenuWithContainer(TaskViewIcon iconView) {
-        TaskIdAttributeContainer menuContainer =
-                mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1];
+        Optional<TaskIdAttributeContainer> menuContainer = Arrays.stream(
+                mTaskIdAttributeContainer).filter(
+                        container -> container.getIconView() == iconView).findAny();
+        if (menuContainer.isEmpty()) {
+            return false;
+        }
         DeviceProfile dp = mContainer.getDeviceProfile();
         if (enableOverviewIconMenu() && iconView instanceof IconAppChipView) {
             ((IconAppChipView) iconView).revealAnim(/* isRevealing= */ true);
-            return TaskMenuView.showForTask(menuContainer,
+            return TaskMenuView.showForTask(menuContainer.get(),
                     () -> ((IconAppChipView) iconView).revealAnim(/* isRevealing= */ false));
         } else if (dp.isTablet) {
             int alignedOptionIndex = 0;
-            if (getRecentsView().isOnGridBottomRow(menuContainer.getTaskView()) && dp.isLandscape) {
+            if (getRecentsView().isOnGridBottomRow(menuContainer.get().getTaskView())
+                    && dp.isLandscape) {
                 if (Flags.enableGridOnlyOverview()) {
                     // With no focused task, there is less available space below the tasks, so align
                     // the arrow to the third option in the menu.
                     alignedOptionIndex = 2;
-                } else  {
+                } else {
                     // Bottom row of landscape grid aligns arrow to second option to avoid clipping
                     alignedOptionIndex = 1;
                 }
             }
-            return TaskMenuViewWithArrow.Companion.showForTask(menuContainer,
+            return TaskMenuViewWithArrow.Companion.showForTask(menuContainer.get(),
                     alignedOptionIndex);
         } else {
-            return TaskMenuView.showForTask(menuContainer);
+            return TaskMenuView.showForTask(menuContainer.get());
         }
     }
 
@@ -1664,9 +1661,6 @@ public class TaskView extends FrameLayout implements Reusable {
 
         final Context context = getContext();
         for (TaskIdAttributeContainer taskContainer : mTaskIdAttributeContainer) {
-            if (taskContainer == null) {
-                continue;
-            }
             for (SystemShortcut s : TraceHelper.allowIpcs(
                     "TV.a11yInfo", () -> getEnabledShortcuts(this, taskContainer))) {
                 info.addAction(s.createAccessibilityAction(context));
@@ -1702,9 +1696,6 @@ public class TaskView extends FrameLayout implements Reusable {
         }
 
         for (TaskIdAttributeContainer taskContainer : mTaskIdAttributeContainer) {
-            if (taskContainer == null) {
-                continue;
-            }
             for (SystemShortcut s : getEnabledShortcuts(this,
                     taskContainer)) {
                 if (s.hasHandlerForAction(action)) {
@@ -1903,13 +1894,13 @@ public class TaskView extends FrameLayout implements Reusable {
 
 
     private int getRootViewDisplayId() {
-        Display  display = getRootView().getDisplay();
+        Display display = getRootView().getDisplay();
         return display != null ? display.getDisplayId() : DEFAULT_DISPLAY;
     }
 
     /**
-     *  Sets visibility for the thumbnail and associated elements (DWB banners and action chips).
-     *  IconView is unaffected.
+     * Sets visibility for the thumbnail and associated elements (DWB banners and action chips).
+     * IconView is unaffected.
      *
      * @param taskId is only used when setting visibility to a non-{@link View#VISIBLE} value
      */
@@ -1966,7 +1957,8 @@ public class TaskView extends FrameLayout implements Reusable {
         }
 
         @Override
-        public void close() { }
+        public void close() {
+        }
     }
 
     public class TaskIdAttributeContainer {

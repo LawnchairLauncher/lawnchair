@@ -204,18 +204,14 @@ public class DesktopTaskView extends TaskView {
     }
 
     private void updateTaskIdContainer() {
-        // TODO(b/249371338): TaskView expects the array to have at least 2 elements.
-        // At least 2 elements in the array
-        mTaskIdContainer = new int[Math.max(mTasks.size(), 2)];
+        mTaskIdContainer = new int[mTasks.size()];
         for (int i = 0; i < mTasks.size(); i++) {
             mTaskIdContainer[i] = mTasks.get(i).key.id;
         }
     }
 
     private void updateTaskIdAttributeContainer() {
-        // TODO(b/249371338): TaskView expects the array to have at least 2 elements.
-        // At least 2 elements in the array
-        mTaskIdAttributeContainer = new TaskIdAttributeContainer[Math.max(mTasks.size(), 2)];
+        mTaskIdAttributeContainer = new TaskIdAttributeContainer[mTasks.size()];
         for (int i = 0; i < mTasks.size(); i++) {
             Task task = mTasks.get(i);
             TaskThumbnailViewDeprecated thumbnailView = mSnapshotViewMap.get(task.key.id);
@@ -245,12 +241,6 @@ public class DesktopTaskView extends TaskView {
         }
         // Return the place holder snapshot views. Callers expect this to be non-null
         return mTaskThumbnailViewDeprecated;
-    }
-
-    @Override
-    public boolean containsTaskId(int taskId) {
-        // Thumbnail map contains taskId -> thumbnail map. Use the keys for contains
-        return mSnapshotViewMap.contains(taskId);
     }
 
     @Override
@@ -311,9 +301,13 @@ public class DesktopTaskView extends TaskView {
         DesktopRecentsTransitionController recentsController =
                 recentsView.getDesktopRecentsController();
         if (recentsController != null) {
-            recentsController.launchDesktopFromRecents(this, success -> {
-                endCallback.executeAllAndDestroy();
-            });
+            recentsController.launchDesktopFromRecents(this,
+                    success -> endCallback.executeAllAndDestroy());
+            Log.d(TAG, "launchTaskAnimated - launchDesktopFromRecents: " + Arrays.toString(
+                    getTaskIds()));
+        } else {
+            Log.d(TAG, "launchTaskAnimated - recentsController is null: " + Arrays.toString(
+                    getTaskIds()));
         }
 
         // Callbacks get run from recentsView for case when recents animation already running
