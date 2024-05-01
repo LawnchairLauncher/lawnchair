@@ -48,6 +48,7 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
     private final BaseContainerInterface<?, T> mContainerInterface;
     private final BaseDragLayer mTarget;
     private final InputMonitorCompat mInputMonitor;
+    private final GestureState mGestureState;
 
     private final int[] mLocationOnScreen = new int[2];
 
@@ -62,6 +63,7 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
         mInputMonitor = inputMonitor;
         mStartingInActivityBounds = startingInActivityBounds;
         mContainerInterface = gestureState.getContainerInterface();
+        mGestureState = gestureState;
 
         mTarget = container.getDragLayer();
         mTarget.getLocationOnScreen(mLocationOnScreen);
@@ -84,7 +86,10 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
             ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
         }
         ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-        boolean handled = mTarget.proxyTouchEvent(ev, mStartingInActivityBounds);
+        boolean handled = false;
+        if (mGestureState == null || !mGestureState.isInExtendedSlopRegion()) {
+            handled = mTarget.proxyTouchEvent(ev, mStartingInActivityBounds);
+        }
         ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
         ev.setEdgeFlags(flags);
 

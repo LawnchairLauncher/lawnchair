@@ -31,6 +31,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.DeviceConfigWrapper;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.NavHandle;
 import com.android.quickstep.RecentsAnimationDeviceState;
@@ -61,13 +62,14 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     private final NavHandle mNavHandle;
     private final StatsLogManager mStatsLogManager;
     private final TopTaskTracker mTopTaskTracker;
+    private final GestureState mGestureState;
 
     private MotionEvent mCurrentDownEvent;
     private boolean mDeepPressLogged;  // Whether deep press has been logged for the current touch.
 
     public NavHandleLongPressInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, RecentsAnimationDeviceState deviceState,
-            NavHandle navHandle) {
+            NavHandle navHandle, GestureState gestureState) {
         super(delegate, inputMonitor);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;
         mDeepPressEnabled = DeviceConfigWrapper.get().getEnableLpnhDeepPress();
@@ -82,6 +84,8 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         mTouchSlopSquaredOriginal = deviceState.getSquaredTouchSlop();
         mTouchSlopSquared = mTouchSlopSquaredOriginal;
         mOuterTouchSlopSquared = mTouchSlopSquared * (twoStageMultiplier * twoStageMultiplier);
+        mGestureState = gestureState;
+        mGestureState.setIsInExtendedSlopRegion(false);
         if (DEBUG_NAV_HANDLE) {
             Log.d(TAG, "mLongPressTimeout=" + mLongPressTimeout);
             Log.d(TAG, "mOuterLongPressTimeout=" + mOuterLongPressTimeout);
@@ -126,6 +130,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                 }
                 mCurrentDownEvent = MotionEvent.obtain(ev);
                 mTouchSlopSquared = mTouchSlopSquaredOriginal;
+                mGestureState.setIsInExtendedSlopRegion(false);
                 mDeepPressLogged = false;
                 if (isInNavBarHorizontalArea(ev.getRawX())) {
                     mNavHandleLongPressHandler.onTouchStarted(mNavHandle);
@@ -154,6 +159,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                                 - (int) (ev.getEventTime() - ev.getDownTime());
                         MAIN_EXECUTOR.getHandler().postDelayed(mTriggerLongPress, delay);
                         mTouchSlopSquared = mOuterTouchSlopSquared;
+                        mGestureState.setIsInExtendedSlopRegion(true);
                         if (DEBUG_NAV_HANDLE) {
                             Log.d(TAG, "Touch in middle region!");
                         }
@@ -219,6 +225,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         if (DEBUG_NAV_HANDLE) {
             Log.d(TAG, "cancelLongPress");
         }
+        mGestureState.setIsInExtendedSlopRegion(false);
         MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
         mNavHandleLongPressHandler.onTouchFinished(mNavHandle, reason);
     }

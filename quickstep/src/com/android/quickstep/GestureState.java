@@ -186,6 +186,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private final long mSwipeUpStartTimeMs = SystemClock.uptimeMillis();
 
     private boolean mHandlingAtomicEvent;
+    private boolean mIsInExtendedSlopRegion;
 
     public GestureState(OverviewComponentObserver componentObserver, int gestureId) {
         mHomeIntent = componentObserver.getHomeIntent();
@@ -491,6 +492,25 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         mStateCallback.setState(STATE_RECENTS_ANIMATION_FINISHED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+    }
+
+    /**
+     * Set whether it's in long press nav handle (LPNH)'s extended touch slop region, e.g., second
+     * stage region in order to continue respect LPNH and ignore other touch slop logic.
+     * This will only be set to true when flag ENABLE_LPNH_TWO_STAGES is turned on.
+     */
+    public void setIsInExtendedSlopRegion(boolean isInExtendedSlopRegion) {
+        if (DeviceConfigWrapper.get().getEnableLpnhTwoStages()) {
+            mIsInExtendedSlopRegion = isInExtendedSlopRegion;
+        }
+    }
+
+    /**
+     * Returns whether it's in LPNH's extended touch slop region. This is only valid when flag
+     * ENABLE_LPNH_TWO_STAGES is turned on.
+     */
+    public boolean isInExtendedSlopRegion() {
+        return mIsInExtendedSlopRegion;
     }
 
     /**

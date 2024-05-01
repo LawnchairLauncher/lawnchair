@@ -1018,7 +1018,7 @@ public class TouchInteractionService extends Service {
                             .append("TaskbarActivityContext != null, ")
                             .append("using TaskbarUnstashInputConsumer");
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
-                            mOverviewCommandHelper);
+                            mOverviewCommandHelper, mGestureState);
                 }
             }
             if (enableBubblesLongPressNavHandle()) {
@@ -1046,7 +1046,7 @@ public class TouchInteractionService extends Service {
                 }
                 reasonString.append("using NavHandleLongPressInputConsumer");
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat,
-                        mDeviceState, navHandle);
+                        mDeviceState, navHandle, mGestureState);
             }
 
             if (!enableBubblesLongPressNavHandle()) {
