@@ -90,7 +90,6 @@ import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
-import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SplitSelectionListener;
@@ -646,8 +645,13 @@ public class SplitSelectStateController {
         }
     }
 
-    public void initSplitFromDesktopController(QuickstepLauncher launcher) {
-        initSplitFromDesktopController(new SplitFromDesktopController(launcher));
+    /**
+     * Init {@code SplitFromDesktopController}
+     */
+    public void initSplitFromDesktopController(QuickstepLauncher launcher,
+            OverviewComponentObserver overviewComponentObserver) {
+        initSplitFromDesktopController(
+                new SplitFromDesktopController(launcher, overviewComponentObserver));
     }
 
     @VisibleForTesting
@@ -956,12 +960,10 @@ public class SplitSelectStateController {
         private ISplitSelectListener mSplitSelectListener;
         private Drawable mAppIcon;
 
-        public SplitFromDesktopController(QuickstepLauncher launcher) {
+        public SplitFromDesktopController(QuickstepLauncher launcher,
+                OverviewComponentObserver overviewComponentObserver) {
             mLauncher = launcher;
-            RecentsAnimationDeviceState deviceState = new RecentsAnimationDeviceState(
-                    launcher.getApplicationContext());
-            mOverviewComponentObserver =
-                    new OverviewComponentObserver(launcher.getApplicationContext(), deviceState);
+            mOverviewComponentObserver = overviewComponentObserver;
             mSplitPlaceholderSize = mLauncher.getResources().getDimensionPixelSize(
                     R.dimen.split_placeholder_size);
             mSplitPlaceholderInset = mLauncher.getResources().getDimensionPixelSize(

@@ -166,6 +166,8 @@ import com.android.launcher3.util.StartActivityParams;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.quickstep.OverviewCommandHelper;
+import com.android.quickstep.OverviewComponentObserver;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
@@ -264,6 +266,10 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
                         getDepthController(), getStatsLogManager(),
                         systemUiProxy, RecentsModel.INSTANCE.get(this),
                         () -> onStateBack());
+        RecentsAnimationDeviceState deviceState = new RecentsAnimationDeviceState(asContext());
+        // TODO(b/337863494): Explore use of the same OverviewComponentObserver across launcher
+        OverviewComponentObserver overviewComponentObserver = new OverviewComponentObserver(
+                asContext(), deviceState);
         if (enableDesktopWindowingMode()) {
             mDesktopRecentsTransitionController = new DesktopRecentsTransitionController(
                     getStateManager(), systemUiProxy, getIApplicationThread(),
@@ -272,7 +278,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         overviewPanel.init(mActionsView, mSplitSelectStateController,
                 mDesktopRecentsTransitionController);
         mSplitWithKeyboardShortcutController = new SplitWithKeyboardShortcutController(this,
-                mSplitSelectStateController);
+                mSplitSelectStateController, overviewComponentObserver, deviceState);
         mSplitToWorkspaceController = new SplitToWorkspaceController(this,
                 mSplitSelectStateController);
         mActionsView.updateDimension(getDeviceProfile(), overviewPanel.getLastComputedTaskSize());
@@ -287,7 +293,8 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         if (enableDesktopWindowingMode()) {
             mDesktopVisibilityController = new DesktopVisibilityController(this);
             mDesktopVisibilityController.registerSystemUiListener();
-            mSplitSelectStateController.initSplitFromDesktopController(this);
+            mSplitSelectStateController.initSplitFromDesktopController(this,
+                    overviewComponentObserver);
         }
         mHotseatPredictionController = new HotseatPredictionController(this);
 
