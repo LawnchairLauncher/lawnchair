@@ -52,8 +52,8 @@ fun QuickstepPreferences(
                 SliderPreference(
                     adapter = prefs.recentsTranslucentBackgroundAlpha.getAdapter(),
                     label = stringResource(id = R.string.translucent_background_alpha),
-                    step = 0f,
-                    valueRange = 0f..1f,
+                    step = 0.05f,
+                    valueRange = 0f..0.95f,
                     showAsPercentage = true,
                 )
             }
