@@ -37,14 +37,14 @@ import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.Themes
 import com.android.quickstep.TaskOverlayFactory
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
+import com.android.quickstep.views.TaskView.TaskContainer
 
 class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T : Context {
     companion object {
         const val TAG = "TaskMenuViewWithArrow"
 
         fun <T> showForTask(
-            taskContainer: TaskIdAttributeContainer,
+            taskContainer: TaskContainer,
             alignedOptionIndex: Int = 0
         ): Boolean where T : RecentsViewContainer, T : Context {
             val container: RecentsViewContainer =
@@ -87,7 +87,7 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
 
     private lateinit var taskView: TaskView
     private lateinit var optionLayout: LinearLayout
-    private lateinit var taskContainer: TaskIdAttributeContainer
+    private lateinit var taskContainer: TaskContainer
 
     private var optionMeasuredHeight = 0
     private val arrowHorizontalPadding: Int
@@ -141,7 +141,7 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
     }
 
     private fun populateAndShowForTask(
-        taskContainer: TaskIdAttributeContainer,
+        taskContainer: TaskContainer,
         alignedOptionIndex: Int
     ): Boolean {
         if (isAttachedToWindow) {
