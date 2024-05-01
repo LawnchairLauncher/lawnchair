@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     public static final String TAG = "StateManager";
-    // b/279059025
+    // b/279059025, b/325463989
     private static final boolean DEBUG = true;
 
     private final AnimationState mConfig = new AnimationState();
@@ -240,16 +240,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     private void goToState(
             STATE_TYPE state, boolean animated, long delay, AnimatorListener listener) {
         if (DEBUG) {
-            String stackTrace = Log.getStackTraceString(new Exception("tracing state transition"));
-            String truncatedTrace =
-                    Arrays.stream(stackTrace.split("\\n"))
-                            .limit(5)
-                            .skip(1) // Removes the line "java.lang.Exception: tracing state
-                            // transition"
-                            .filter(traceLine -> !traceLine.contains("StateManager.goToState"))
-                            .collect(Collectors.joining("\n"));
             Log.d(TAG, "goToState - fromState: " + mState + ", toState: " + state
-                    + ", partial trace:\n" + truncatedTrace);
+                    + ", partial trace:\n" + getTrimmedStackTrace("StateManager.goToState"));
         }
 
         animated &= areAnimatorsEnabled();
@@ -336,17 +328,9 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     public AnimatorSet createAtomicAnimation(
             STATE_TYPE fromState, STATE_TYPE toState, StateAnimationConfig config) {
         if (DEBUG) {
-            String stackTrace = Log.getStackTraceString(new Exception("tracing state transition"));
-            String truncatedTrace =
-                    Arrays.stream(stackTrace.split("\\n"))
-                            .limit(5)
-                            .skip(1) // Removes the line "java.lang.Exception: tracing state
-                            // transition"
-                            .filter(traceLine -> !traceLine.contains(
-                                    "StateManager.createAtomicAnimation"))
-                            .collect(Collectors.joining("\n"));
             Log.d(TAG, "createAtomicAnimation - fromState: " + fromState + ", toState: " + toState
-                    + ", partial trace:\n" + truncatedTrace);
+                    + ", partial trace:\n" + getTrimmedStackTrace(
+                            "StateManager.createAtomicAnimation"));
         }
 
         PendingAnimation builder = new PendingAnimation(config.duration);
@@ -481,7 +465,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      */
     public void cancelAnimation() {
         if (DEBUG && mConfig.currentAnimation != null) {
-            Log.d(TAG, "cancelAnimation - with ongoing animation");
+            Log.d(TAG, "cancelAnimation - with ongoing animation"
+                    + ", partial trace:\n" + getTrimmedStackTrace("StateManager.cancelAnimation"));
         }
         mConfig.reset();
         // It could happen that a new animation is set as a result of an endListener on the
@@ -577,6 +562,15 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             mConfig.currentAnimation = null;
         }
         mConfig.playbackController = null;
+    }
+
+    private String getTrimmedStackTrace(String callingMethodName) {
+        String stackTrace = Log.getStackTraceString(new Exception());
+        return Arrays.stream(stackTrace.split("\\n"))
+                .skip(2) // Removes the line "java.lang.Exception" and "getTrimmedStackTrace".
+                .filter(traceLine -> !traceLine.contains(callingMethodName))
+                .limit(3)
+                .collect(Collectors.joining("\n"));
     }
 
     private class StartAnimRunnable implements Runnable {
