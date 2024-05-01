@@ -319,8 +319,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, isStashedInAppAuto);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
-        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, mActivity.isPhoneMode()
-                && !mActivity.isThreeButtonNav());
+        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, mActivity.isPhoneGestureNavMode());
         // For now, assume we're in an app, since LauncherTaskbarUIController won't be able to tell
         // us that we're paused until a bit later. This avoids flickering upon recreating taskbar.
         updateStateForFlag(FLAG_IN_APP, true);
@@ -356,6 +355,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         boolean hideTaskbar = isVisible || !mActivity.isUserSetupComplete();
         updateStateForFlag(FLAG_IN_SETUP, hideTaskbar);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, hideTaskbar);
+        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, mActivity.isPhoneGestureNavMode());
         applyState(hideTaskbar ? 0 : getStashDuration());
     }
 
