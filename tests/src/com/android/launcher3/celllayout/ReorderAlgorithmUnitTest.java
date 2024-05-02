@@ -215,9 +215,11 @@ public class ReorderAlgorithmUnitTest {
                 testCase.spanX, testCase.spanY, testCase.minSpanX, testCase.minSpanY,
                 isMultiCellLayout);
         assertEquals("should be a valid solution", solution.isSolution, testCase.isValidSolution);
+        Log.d(TAG, "test case:" + testCase);
         if (testCase.isValidSolution) {
             CellLayoutBoard finishBoard = boardFromSolution(solution,
                     testCase.startBoard.getWidth(), testCase.startBoard.getHeight());
+            Log.d(TAG, "finishBoard case:" + finishBoard);
             assertTrue("End result and test case result board doesn't match ",
                     finishBoard.compareTo(testCase.endBoard) == 0);
         }
