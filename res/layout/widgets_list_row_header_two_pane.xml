@@ -51,7 +51,9 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="?attr/widgetPickerHeaderAppTitleColor"
-            android:textSize="16sp"
+            android:textSize="@dimen/widget_picker_header_app_title_font_size"
+            android:textFontWeight="@integer/widget_picker_header_app_title_font_weight"
+            android:lineHeight="@dimen/widget_picker_header_app_title_line_height"
             android:duplicateParentState="true"
             tools:text="App name" />
 
@@ -62,7 +64,9 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="?attr/widgetPickerHeaderAppSubtitleColor"
-            android:alpha="0.7"
+            android:textSize="@dimen/widget_picker_header_app_subtitle_font_size"
+            android:textFontWeight="@integer/widget_picker_header_app_subtitle_font_weight"
+            android:lineHeight="@dimen/widget_picker_header_app_subtitle_line_height"
             android:duplicateParentState="true"
             tools:text="m widgets, n shortcuts" />
 

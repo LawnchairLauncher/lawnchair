@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="19dp"
+    android:width="@dimen/widget_cell_add_button_drawable_width"
     android:height="18dp"
     android:viewportWidth="19"
     android:viewportHeight="18">

@@ -179,19 +179,39 @@
     <!-- Widget tray -->
     <dimen name="widget_cell_vertical_padding">8dp</dimen>
     <dimen name="widget_cell_horizontal_padding">8dp</dimen>
-    <dimen name="widget_cell_font_size">14sp</dimen>
+    <dimen name="widget_cell_title_font_size">14sp</dimen>
+    <integer name="widget_cell_title_font_weight">500</integer>
+    <dimen name="widget_cell_title_line_height">20sp</dimen>
+    <dimen name="widget_cell_dims_font_size">14sp</dimen>
+    <integer name="widget_cell_dims_font_weight">400</integer>
+    <dimen name="widget_cell_dims_line_height">20sp</dimen>
+    <dimen name="widget_cell_description_font_size">12sp</dimen>
+    <integer name="widget_cell_description_font_weight">400</integer>
+    <dimen name="widget_cell_description_line_height">16sp</dimen>
     <dimen name="widget_cell_app_icon_size">24dp</dimen>
     <dimen name="widget_cell_app_icon_padding">8dp</dimen>
     <dimen name="widget_cell_add_button_height">48dp</dimen>
     <dimen name="widget_cell_add_button_start_padding">8dp</dimen>
+    <dimen name="widget_cell_add_icon_button_start_padding">16dp</dimen>
     <dimen name="widget_cell_add_button_end_padding">16dp</dimen>
     <dimen name="widget_cell_add_button_scroll_padding">24dp</dimen>
+    <dimen name="widget_cell_add_button_font_size">14sp</dimen>
+    <integer name="widget_cell_add_button_font_weight">500</integer>
+    <dimen name="widget_cell_add_button_line_height">20sp</dimen>
+    <dimen name="widget_cell_add_button_drawable_padding">8dp</dimen>
+    <dimen name="widget_cell_add_button_drawable_width">19dp</dimen>
 
     <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
     <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
+    <dimen name="widget_picker_header_app_title_font_size">16sp</dimen>
+    <integer name="widget_picker_header_app_title_font_weight">500</integer>
+    <dimen name="widget_picker_header_app_title_line_height">24sp</dimen>
+    <dimen name="widget_picker_header_app_subtitle_font_size">14sp</dimen>
+    <integer name="widget_picker_header_app_subtitle_font_weight">400</integer>
+    <dimen name="widget_picker_header_app_subtitle_line_height">20sp</dimen>
     <dimen name="widget_recommendations_table_vertical_padding">8dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container without work profile -->
     <dimen name="search_and_recommended_widgets_container_bottom_margin">16dp</dimen>
