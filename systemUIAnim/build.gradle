@@ -22,7 +22,7 @@ addFrameworkJar('framework-14.jar')
 compileOnlyCommonJars()
 
 dependencies {
-    implementation "androidx.core:core-animation:1.0.0-rc01"
+    implementation "androidx.core:core-animation:1.0.0"
     compileOnly projects.animationlib
 
 }
