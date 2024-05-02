@@ -179,7 +179,17 @@ constructor(
                 }
             }
         }
-        animator.addEndListener { _, _, _, _, _, _, _ ->
+        animator.addEndListener { _, _, _, canceled, _, _, _ ->
+            // if the show animation was canceled, also cancel the hide animation. this is typically
+            // canceled in this class, but could potentially be canceled elsewhere.
+            if (canceled) {
+                val hideAnimation = animatingBubble?.hideAnimation ?: return@addEndListener
+                scheduler.cancel(hideAnimation)
+                animatingBubble = null
+                bubbleBarView.onAnimatingBubbleCompleted()
+                bubbleBarView.relativePivotY = 1f
+                return@addEndListener
+            }
             // the bubble bar is now fully settled in. update taskbar touch region so it's touchable
             bubbleStashController.updateTaskbarTouchRegion()
         }
@@ -200,6 +210,7 @@ constructor(
      * 3. The third part is the overshoot. The handle is made fully visible.
      */
     private fun buildHideAnimation() = Runnable {
+        if (animatingBubble == null) return@Runnable
         val offset = bubbleStashController.diffBetweenHandleAndBarCenters
         val stashedHandleTranslationY =
             bubbleStashController.stashedHandleTranslationForNewBubbleAnimation
@@ -238,9 +249,9 @@ constructor(
                 }
             }
         }
-        animator.addEndListener { _, _, _, _, _, _, _ ->
+        animator.addEndListener { _, _, _, canceled, _, _, _ ->
             animatingBubble = null
-            bubbleStashController.stashBubbleBarImmediate()
+            if (!canceled) bubbleStashController.stashBubbleBarImmediate()
             bubbleBarView.onAnimatingBubbleCompleted()
             bubbleBarView.relativePivotY = 1f
             bubbleStashController.updateTaskbarTouchRegion()
@@ -255,5 +266,19 @@ constructor(
         bubbleBarView.onAnimatingBubbleCompleted()
         bubbleBarView.relativePivotY = 1f
         animatingBubble = null
+    }
+
+    /** Notifies the animator that the taskbar area was touched during an animation. */
+    fun onStashStateChangingWhileAnimating() {
+        val hideAnimation = animatingBubble?.hideAnimation ?: return
+        scheduler.cancel(hideAnimation)
+        animatingBubble = null
+        bubbleStashController.stashedHandlePhysicsAnimator.cancel()
+        bubbleBarView.onAnimatingBubbleCompleted()
+        bubbleBarView.relativePivotY = 1f
+        bubbleStashController.onNewBubbleAnimationInterrupted(
+            /* isStashed= */ bubbleBarView.alpha == 0f,
+            bubbleBarView.translationY
+        )
     }
 }

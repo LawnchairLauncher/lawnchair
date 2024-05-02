@@ -250,6 +250,11 @@ public class BubbleStashController {
                 && !mBubblesShowingOnHome
                 && !mBubblesShowingOnOverview;
         if (mIsStashed != isStashed) {
+            // notify the view controller that the stash state is about to change so that it can
+            // cancel an ongoing animation if there is one.
+            // note that this has to be called before updating mIsStashed with the new value,
+            // otherwise interrupting an ongoing animation may update it again with the wrong state
+            mBarViewController.onStashStateChanging();
             mIsStashed = isStashed;
             if (mAnimator != null) {
                 mAnimator.cancel();
@@ -421,6 +426,31 @@ public class BubbleStashController {
         mIconTranslationYForStash.updateValue(getStashTranslation());
         mIconScaleForStash.updateValue(STASHED_BAR_SCALE);
         mIsStashed = true;
+        onIsStashedChanged();
+    }
+
+    /**
+     * Updates the values of the internal animators after the new bubble animation was interrupted
+     *
+     * @param isStashed whether the current state should be stashed
+     * @param bubbleBarTranslationY the current bubble bar translation. this is only used if the
+     *                              bubble bar is showing to ensure that the stash animator runs
+     *                              smoothly.
+     */
+    public void onNewBubbleAnimationInterrupted(boolean isStashed, float bubbleBarTranslationY) {
+        if (isStashed) {
+            mBubbleStashedHandleAlpha.setValue(1);
+            mIconAlphaForStash.setValue(0);
+            mIconScaleForStash.updateValue(STASHED_BAR_SCALE);
+            mIconTranslationYForStash.updateValue(getStashTranslation());
+        } else {
+            mBubbleStashedHandleAlpha.setValue(0);
+            mHandleViewController.setTranslationYForSwipe(0);
+            mIconAlphaForStash.setValue(1);
+            mIconScaleForStash.updateValue(1);
+            mIconTranslationYForStash.updateValue(bubbleBarTranslationY);
+        }
+        mIsStashed = isStashed;
         onIsStashedChanged();
     }
 }
