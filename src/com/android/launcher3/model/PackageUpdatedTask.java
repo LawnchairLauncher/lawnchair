@@ -36,9 +36,9 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
@@ -71,7 +71,7 @@ import java.util.stream.Collectors;
  * or when a user availability changes.
  */
 @SuppressWarnings("NewApi")
-public class PackageUpdatedTask extends BaseModelUpdateTask {
+public class PackageUpdatedTask implements ModelUpdateTask {
 
     // TODO(b/290090023): Set to false after root causing is done.
     private static final boolean DEBUG = true;
@@ -102,8 +102,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList appsList) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList appsList) {
+        final LauncherAppState app = taskController.getApp();
         final Context context = app.getContext();
         final IconCache iconCache = app.getIconCache();
 
@@ -192,7 +193,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
         }
 
-        bindApplicationsIfNeeded();
+        taskController.bindApplicationsIfNeeded();
 
         final IntSet removedShortcuts = new IntSet();
         // Shortcuts to keep even if the corresponding app was removed
@@ -305,7 +306,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         updatedWorkspaceItems.add(si);
                     }
                     if (infoUpdated && si.id != ItemInfo.NO_ID) {
-                        getModelWriter().updateItemInDatabase(si);
+                        taskController.getModelWriter().updateItemInDatabase(si);
                     }
                 });
 
@@ -324,20 +325,20 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         widgetInfo.restoreStatus |= LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
 
                         widgets.add(widgetInfo);
-                        getModelWriter().updateItemInDatabase(widgetInfo);
+                        taskController.getModelWriter().updateItemInDatabase(widgetInfo);
                     }
                 }
             }
 
-            bindUpdatedWorkspaceItems(updatedWorkspaceItems);
+            taskController.bindUpdatedWorkspaceItems(updatedWorkspaceItems);
             if (!removedShortcuts.isEmpty()) {
-                deleteAndBindComponentsRemoved(
+                taskController.deleteAndBindComponentsRemoved(
                         ItemInfoMatcher.ofItemIds(removedShortcuts),
                         "removed because the target component is invalid");
             }
 
             if (!widgets.isEmpty()) {
-                scheduleCallbackTask(c -> c.bindWidgetsRestored(widgets));
+                taskController.scheduleCallbackTask(c -> c.bindWidgetsRestored(widgets));
             }
         }
 
@@ -363,7 +364,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     ItemInfoMatcher.ofPackages(removedPackages, mUser)
                             .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
                             .and(ItemInfoMatcher.ofItemIds(forceKeepShortcuts).negate());
-            deleteAndBindComponentsRemoved(removeMatch,
+            taskController.deleteAndBindComponentsRemoved(removeMatch,
                     "removed because the corresponding package or component is removed. "
                             + "mOp=" + mOp + " removedPackages=" + removedPackages.stream().collect(
                                     Collectors.joining(",", "[", "]"))
@@ -382,7 +383,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             for (int i = 0; i < N; i++) {
                 dataModel.widgetsModel.update(app, new PackageUserKey(packages[i], mUser));
             }
-            bindUpdatedWidgets(dataModel);
+            taskController.bindUpdatedWidgets(dataModel);
         }
     }
 

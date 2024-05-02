@@ -24,7 +24,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.model.data.ItemInfo;
@@ -41,7 +41,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /** Task to update model as a result of predicted widgets update */
-public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
+public final class WidgetsPredictionUpdateTask implements ModelUpdateTask {
     private final PredictorState mPredictorState;
     private final List<AppTarget> mTargets;
 
@@ -58,8 +58,8 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
      * workspace.
      */
     @Override
-    public void execute(@NonNull final LauncherAppState appState,
-            @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
         Set<ComponentKey> widgetsInWorkspace = dataModel.appWidgets.stream().map(
                 widget -> new ComponentKey(widget.providerName, widget.user)).collect(
                 Collectors.toSet());
@@ -98,7 +98,7 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
 
         List<ItemInfo> items;
         if (enableCategorizedWidgetSuggestions()) {
-            Context context = appState.getContext();
+            Context context = taskController.getApp().getContext();
             WidgetRecommendationCategoryProvider categoryProvider =
                     WidgetRecommendationCategoryProvider.newInstance(context);
             items = servicePredictedItems.stream()
@@ -115,7 +115,7 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
                 new FixedContainerItems(mPredictorState.containerId, items);
 
         dataModel.extraItems.put(mPredictorState.containerId, fixedContainerItems);
-        bindExtraContainerItems(fixedContainerItems);
+        taskController.bindExtraContainerItems(fixedContainerItems);
 
         // Don't store widgets prediction to disk because it is not used frequently.
     }

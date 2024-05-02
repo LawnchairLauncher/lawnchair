@@ -28,11 +28,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.AllAppsList;
-import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.ModelTaskController;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.CollectionInfo;
@@ -191,10 +192,11 @@ public class FolderNameProvider implements ResourceBasedOverride {
         nameInfos.setLabel(labels.length - 1, label, 1.0f);
     }
 
-    private class FolderNameWorker extends BaseModelUpdateTask {
+    private class FolderNameWorker implements ModelUpdateTask {
+
         @Override
-        public void execute(@NonNull final LauncherAppState app,
-                @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
+        public void execute(@NonNull ModelTaskController taskController,
+                @NonNull BgDataModel dataModel, @NonNull AllAppsList apps) {
             mCollectionInfos = dataModel.collections.clone();
             mAppInfos = Arrays.asList(apps.copyData());
         }
