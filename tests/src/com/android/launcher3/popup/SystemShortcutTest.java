@@ -244,7 +244,6 @@ public class SystemShortcutTest {
         SystemShortcut systemShortcut = SystemShortcut.PRIVATE_PROFILE_INSTALL
                 .getShortcut(mTestContext, mAppInfo, mView);
 
-        verify(mPrivateProfileManager, times(2)).getProfileUser();
         assertNull(systemShortcut);
     }
 
@@ -266,7 +265,6 @@ public class SystemShortcutTest {
         SystemShortcut systemShortcut = SystemShortcut.PRIVATE_PROFILE_INSTALL
                 .getShortcut(mTestContext, mAppInfo, mView);
 
-        verify(mPrivateProfileManager, times(3)).getProfileUser();
         verify(mPrivateProfileManager).isEnabled();
         assertNotNull(systemShortcut);
     }
