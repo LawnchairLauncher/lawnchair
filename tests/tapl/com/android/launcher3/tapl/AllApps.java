@@ -433,7 +433,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
     public PrivateSpaceContainer getPrivateSpaceUnlockedView() {
         final UiObject2 allAppsContainer = verifyActiveContainer();
         final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
-        return new PrivateSpaceContainer(mLauncher, appListRecycler);
+        return new PrivateSpaceContainer(mLauncher, appListRecycler, this);
     }
 
     protected abstract void verifyVisibleContainerOnDismiss();
