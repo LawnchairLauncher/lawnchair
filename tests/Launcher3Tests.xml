@@ -44,6 +44,8 @@
         <option name="run-command" value="settings put global airplane_mode_on 1" />
         <option name="run-command" value="am broadcast -a android.intent.action.AIRPLANE_MODE" />
 
+        <option name="run-command" value="setprop debug.wm.disable_deprecated_target_sdk_dialog 1"/>
+
         <option name="run-command" value="settings put system pointer_location 1" />
         <option name="run-command" value="settings put system show_touches 1" />
     </target_preparer>
