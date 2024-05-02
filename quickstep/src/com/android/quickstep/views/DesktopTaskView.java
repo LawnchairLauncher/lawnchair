@@ -141,9 +141,14 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    protected Unit updateBorderBounds(@NonNull Rect bounds) {
-        bounds.set(mBackgroundView.getLeft(), mBackgroundView.getTop(), mBackgroundView.getRight(),
-                mBackgroundView.getBottom());
+    public Unit getThumbnailBounds(@NonNull Rect bounds, boolean relativeToDragLayer) {
+        if (relativeToDragLayer) {
+            mContainer.getDragLayer().getDescendantRectRelativeToSelf(mBackgroundView, bounds);
+        } else {
+            bounds.set(mBackgroundView.getLeft(), mBackgroundView.getTop(),
+                    mBackgroundView.getRight(),
+                    mBackgroundView.getBottom());
+        }
         return Unit.INSTANCE;
     }
 

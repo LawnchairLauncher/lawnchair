@@ -43,6 +43,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ObjectWrapper;
+import com.android.launcher3.views.ClipIconView;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -55,7 +56,8 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.InputConsumerController;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Temporary class to allow easier refactoring
@@ -72,9 +74,13 @@ public class LauncherSwipeHandlerV2 extends
 
 
     @Override
-    protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
-            long duration, boolean isTargetTranslucent, boolean appCanEnterPip,
-            RemoteAnimationTarget runningTaskTarget) {
+    protected HomeAnimationFactory createHomeAnimationFactory(
+            List<IBinder> launchCookies,
+            long duration,
+            boolean isTargetTranslucent,
+            boolean appCanEnterPip,
+            RemoteAnimationTarget runningTaskTarget,
+            @Nullable TaskView targetTaskView) {
         if (mContainer == null) {
             mStateCallback.addChangeListener(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                     isPresent -> mRecentsView.startHome());
@@ -86,8 +92,14 @@ public class LauncherSwipeHandlerV2 extends
             };
         }
 
-        final View workspaceView = findWorkspaceView(launchCookies,
-                mRecentsView.getRunningTaskView());
+        TaskView sourceTaskView = mRecentsView == null && targetTaskView == null
+                ? null
+                : targetTaskView == null
+                        ? mRecentsView.getRunningTaskView()
+                        : targetTaskView;
+        final View workspaceView = findWorkspaceView(
+                targetTaskView == null ? launchCookies : Collections.emptyList(),
+                sourceTaskView);
         boolean canUseWorkspaceView = workspaceView != null
                 && workspaceView.isAttachedToWindow()
                 && workspaceView.getHeight() > 0
@@ -100,16 +112,24 @@ public class LauncherSwipeHandlerV2 extends
         }
 
         if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
-            return new LauncherHomeAnimationFactory();
+            return new LauncherHomeAnimationFactory() {
+
+                @Nullable
+                @Override
+                public TaskView getTargetTaskView() {
+                    return targetTaskView;
+                }
+            };
         }
         if (workspaceView instanceof LauncherAppWidgetHostView) {
             return createWidgetHomeAnimationFactory((LauncherAppWidgetHostView) workspaceView,
                     isTargetTranslucent, runningTaskTarget);
         }
-        return createIconHomeAnimationFactory(workspaceView);
+        return createIconHomeAnimationFactory(workspaceView, targetTaskView);
     }
 
-    private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
+    private HomeAnimationFactory createIconHomeAnimationFactory(
+            View workspaceView, @Nullable TaskView targetTaskView) {
         RectF iconLocation = new RectF();
         FloatingIconView floatingIconView = getFloatingIconView(mContainer, workspaceView, null,
                 mContainer.getTaskbarUIController() == null
@@ -175,10 +195,35 @@ public class LauncherSwipeHandlerV2 extends
             }
 
             @Override
-            public void update(RectF currentRect, float progress, float radius) {
-                super.update(currentRect, progress, radius);
+            public void update(
+                    RectF currentRect,
+                    float progress,
+                    float radius,
+                    int overlayAlpha) {
                 floatingIconView.update(1f /* alpha */, currentRect, progress, windowAlphaThreshold,
-                        radius, false);
+                        radius, false, overlayAlpha);
+            }
+
+            @Override
+            public boolean isAnimationReady() {
+                return floatingIconView.isLaidOut();
+            }
+
+            @Override
+            public void setTaskViewArtist(ClipIconView.TaskViewArtist taskViewArtist) {
+                super.setTaskViewArtist(taskViewArtist);
+                floatingIconView.setOverlayArtist(taskViewArtist);
+            }
+
+            @Override
+            public boolean isAnimatingIntoIcon() {
+                return true;
+            }
+
+            @Nullable
+            @Override
+            public TaskView getTargetTaskView() {
+                return targetTaskView;
             }
         };
     }
@@ -232,8 +277,8 @@ public class LauncherSwipeHandlerV2 extends
             }
 
             @Override
-            public void update(RectF currentRect, float progress, float radius) {
-                super.update(currentRect, progress, radius);
+            public void update(RectF currentRect, float progress, float radius, int overlayAlpha) {
+                super.update(currentRect, progress, radius, overlayAlpha);
                 final float fallbackBackgroundAlpha =
                         1 - mapBoundToRange(progress, 0.8f, 1, 0, 1, EXAGGERATED_EASE);
                 final float foregroundAlpha =
@@ -254,13 +299,14 @@ public class LauncherSwipeHandlerV2 extends
      * associated with the running task.
      */
     @Nullable
-    private View findWorkspaceView(ArrayList<IBinder> launchCookies, TaskView runningTaskView) {
+    private View findWorkspaceView(List<IBinder> launchCookies, TaskView sourceTaskView) {
         if (mIsSwipingPipToHome) {
             // Disable if swiping to PIP
             return null;
         }
-        if (runningTaskView == null || runningTaskView.getTask() == null
-                || runningTaskView.getTask().key.getComponent() == null) {
+        if (sourceTaskView == null
+                || sourceTaskView.getTask() == null
+                || sourceTaskView.getTask().key.getComponent() == null) {
             // Disable if it's an invalid task
             return null;
         }
@@ -277,8 +323,8 @@ public class LauncherSwipeHandlerV2 extends
         }
 
         return mContainer.getFirstMatchForAppClose(launchCookieItemId,
-                runningTaskView.getTask().key.getComponent().getPackageName(),
-                UserHandle.of(runningTaskView.getTask().key.userId),
+                sourceTaskView.getTask().key.getComponent().getPackageName(),
+                UserHandle.of(sourceTaskView.getTask().key.userId),
                 false /* supportsAllAppsState */);
     }
 

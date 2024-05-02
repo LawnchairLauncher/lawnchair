@@ -382,7 +382,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 }
 
                 @Override
-                public void update(RectF rect, float progress, float radius) {
+                public void update(RectF rect, float progress, float radius, int overlayAlpha) {
                     mFakeIconView.setVisibility(View.VISIBLE);
                     mFakeIconView.update(rect, progress,
                             1f - SHAPE_PROGRESS_DURATION /* shapeProgressStart */,

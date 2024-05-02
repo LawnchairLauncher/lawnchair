@@ -55,7 +55,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
@@ -146,23 +145,41 @@ public class FloatingIconView extends FrameLayout implements
     }
 
     /**
-     * Positions this view to match the size and location of {@param rect}.
-     * @param alpha The alpha[0, 1] of the entire floating view.
-     * @param progress A value from [0, 1] that represents the animation progress.
-     * @param shapeProgressStart The progress value at which to start the shape reveal.
-     * @param cornerRadius The corner radius of {@param rect}.
-     * @param isOpening True if view is used for app open animation, false for app close animation.
+     * Positions this view to match the size and location of {@code rect}.
      */
     public void update(float alpha, RectF rect, float progress, float shapeProgressStart,
             float cornerRadius, boolean isOpening) {
-        setAlpha(alpha);
+        update(alpha, rect, progress, shapeProgressStart, cornerRadius, isOpening, 0);
+    }
+
+    /**
+     * Positions this view to match the size and location of {@code rect}.
+     * <p>
+     * @param alpha The alpha[0, 1] of the entire floating view.
+     * @param progress A value from [0, 1] that represents the animation progress.
+     * @param shapeProgressStart The progress value at which to start the shape reveal.
+     * @param cornerRadius The corner radius of {@code rect}.
+     * @param isOpening True if view is used for app open animation, false for app close animation.
+     * @param taskViewDrawAlpha the drawn {@link com.android.quickstep.views.TaskView} alpha
+     */
+    public void update(float alpha, RectF rect, float progress, float shapeProgressStart,
+            float cornerRadius, boolean isOpening, int taskViewDrawAlpha) {
+        setAlpha(isLaidOut() ? alpha : 0f);
         mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, isOpening, this,
-                mLauncher.getDeviceProfile());
+                mLauncher.getDeviceProfile(), taskViewDrawAlpha);
 
         if (mFadeOutView != null) {
             // The alpha goes from 1 to 0 when progress is 0 and 0.33 respectively.
             mFadeOutView.setAlpha(1 - Math.min(1f, mapToRange(progress, 0, 0.33f, 0, 1, LINEAR)));
         }
+    }
+
+    /**
+     * Sets a {@link com.android.quickstep.views.TaskView} that will draw a
+     * {@link com.android.quickstep.views.TaskView} within the {@code mClipIconView} clip bounds
+     */
+    public void setOverlayArtist(ClipIconView.TaskViewArtist taskViewArtist) {
+        mClipIconView.setTaskViewArtist(taskViewArtist);
     }
 
     @Override
@@ -179,8 +196,8 @@ public class FloatingIconView extends FrameLayout implements
     }
 
     /**
-     * Sets the size and position of this view to match {@param v}.
-     *
+     * Sets the size and position of this view to match {@code v}.
+     * <p>
      * @param v The view to copy
      * @param positionOut Rect that will hold the size and position of v.
      */
@@ -254,10 +271,11 @@ public class FloatingIconView extends FrameLayout implements
 
     /**
      * Loads the icon and saves the results to {@link #sIconLoadResult}.
+     * <p>
      * Runs onIconLoaded callback (if any), which signifies that the FloatingIconView is
      * ready to display the icon. Otherwise, the FloatingIconView will grab the results when its
      * initialized.
-     *
+     * <p>
      * @param originalView The View that the FloatingIconView will replace.
      * @param info ItemInfo of the originalView
      * @param pos The position of the view.
@@ -324,8 +342,8 @@ public class FloatingIconView extends FrameLayout implements
     }
 
     /**
-     * Sets the drawables of the {@param originalView} onto this view.
-     *
+     * Sets the drawables of the {@code originalView} onto this view.
+     * <p>
      * @param drawable The drawable of the original view.
      * @param badge The badge of the original view.
      * @param iconOffset The amount of offset needed to match this view with the original view.
@@ -368,11 +386,11 @@ public class FloatingIconView extends FrameLayout implements
 
     /**
      * Draws the drawable of the BubbleTextView behind ClipIconView
-     *
+     * <p>
      * This is used to:
      * - Have icon displayed while Adaptive Icon is loading
      * - Displays the built in shadow to ensure a clean handoff
-     *
+     * <p>
      * Allows nullable as this may be cleared when drawing is deferred to ClipIconView.
      */
     private void setOriginalDrawableBackground(@Nullable Supplier<Drawable> btvIcon) {
@@ -573,11 +591,12 @@ public class FloatingIconView extends FrameLayout implements
     }
 
     /**
-     * Creates a floating icon view for {@param originalView}.
+     * Creates a floating icon view for {@code originalView}.
+     * <p>
      * @param originalView The view to copy
      * @param visibilitySyncView A view whose visibility should update in sync with originalView.
      * @param fadeOutView A view that will fade out as the animation progresses.
-     * @param hideOriginal If true, it will hide {@param originalView} while this view is visible.
+     * @param hideOriginal If true, it will hide {@code originalView} while this view is visible.
      *                     Else, we will not draw anything in this view.
      * @param positionOut Rect that will hold the size and position of v.
      * @param isOpening True if this view replaces the icon for app open animation.

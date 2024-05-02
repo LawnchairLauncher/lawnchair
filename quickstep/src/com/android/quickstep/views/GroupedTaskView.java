@@ -32,6 +32,7 @@ import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskThumbnailCache;
@@ -92,25 +93,35 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    protected Unit updateBorderBounds(@NonNull Rect bounds) {
+    public Unit getThumbnailBounds(@NonNull Rect bounds, boolean relativeToDragLayer) {
         if (mSplitBoundsConfig == null) {
-            super.updateBorderBounds(bounds);
+            super.getThumbnailBounds(bounds, relativeToDragLayer);
             return Unit.INSTANCE;
         }
-        bounds.set(
-                Math.min(mTaskThumbnailViewDeprecated.getLeft() + Math.round(
-                                mTaskThumbnailViewDeprecated.getTranslationX()),
-                        mSnapshotView2.getLeft() + Math.round(mSnapshotView2.getTranslationX())),
-                Math.min(mTaskThumbnailViewDeprecated.getTop() + Math.round(
-                                mTaskThumbnailViewDeprecated.getTranslationY()),
-                        mSnapshotView2.getTop() + Math.round(mSnapshotView2.getTranslationY())),
-                Math.max(mTaskThumbnailViewDeprecated.getRight() + Math.round(
-                                mTaskThumbnailViewDeprecated.getTranslationX()),
-                        mSnapshotView2.getRight() + Math.round(mSnapshotView2.getTranslationX())),
-                Math.max(mTaskThumbnailViewDeprecated.getBottom() + Math.round(
-                                mTaskThumbnailViewDeprecated.getTranslationY()),
-                        mSnapshotView2.getBottom() + Math.round(mSnapshotView2.getTranslationY())));
+        if (relativeToDragLayer) {
+            Rect firstThumbnailBounds = new Rect();
+            Rect secondThumbnailBounds = new Rect();
+            BaseDragLayer dragLayer = mContainer.getDragLayer();
+            dragLayer.getDescendantRectRelativeToSelf(
+                    mTaskThumbnailViewDeprecated, firstThumbnailBounds);
+            dragLayer.getDescendantRectRelativeToSelf(mSnapshotView2, secondThumbnailBounds);
+
+            bounds.set(firstThumbnailBounds);
+            bounds.union(secondThumbnailBounds);
+        } else {
+            bounds.set(getSnapshotViewBounds(mTaskThumbnailViewDeprecated));
+            bounds.union(getSnapshotViewBounds(mSnapshotView2));
+        }
         return Unit.INSTANCE;
+    }
+
+    private Rect getSnapshotViewBounds(@NonNull View snapshotView) {
+        int snapshotViewX = Math.round(snapshotView.getX());
+        int snapshotViewY = Math.round(snapshotView.getY());
+        return new Rect(snapshotViewX,
+                snapshotViewY,
+                snapshotViewX + snapshotView.getWidth(),
+                snapshotViewY + snapshotView.getHeight());
     }
 
     @Override

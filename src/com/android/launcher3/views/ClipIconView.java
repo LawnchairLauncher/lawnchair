@@ -40,6 +40,7 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewOutlineProvider;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -74,6 +75,8 @@ public class ClipIconView extends View implements ClipPathView {
     private final Rect mOutline = new Rect();
     private final Rect mFinalDrawableBounds = new Rect();
 
+    @Nullable private TaskViewArtist mTaskViewArtist;
+
     public ClipIconView(Context context) {
         this(context, null);
     }
@@ -90,10 +93,28 @@ public class ClipIconView extends View implements ClipPathView {
     }
 
     /**
+     * Sets a {@link TaskViewArtist} that will draw a {@link com.android.quickstep.views.TaskView}
+     * within the clip bounds of this view.
+     */
+    public void setTaskViewArtist(TaskViewArtist taskViewArtist) {
+        mTaskViewArtist = taskViewArtist;
+        invalidate();
+    }
+
+    /**
      * Update the icon UI to match the provided parameters during an animation frame
      */
     public void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
             boolean isOpening, View container, DeviceProfile dp) {
+        update(rect, progress, shapeProgressStart, cornerRadius, isOpening, container, dp, 255);
+    }
+
+    /**
+     * Update the icon UI to match the provided parameters during an animation frame, optionally
+     * varying the alpha of the {@link TaskViewArtist}
+     */
+    public void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
+            boolean isOpening, View container, DeviceProfile dp, int taskViewDrawAlpha) {
         MarginLayoutParams lp = (MarginLayoutParams) container.getLayoutParams();
 
         float dX = mIsRtl
@@ -107,6 +128,14 @@ public class ClipIconView extends View implements ClipPathView {
         float scaleX = rect.width() / minSize;
         float scaleY = rect.height() / minSize;
         float scale = Math.max(1f, Math.min(scaleX, scaleY));
+        if (mTaskViewArtist != null) {
+            mTaskViewArtist.taskViewDrawWidth = lp.width;
+            mTaskViewArtist.taskViewDrawHeight = lp.height;
+            mTaskViewArtist.taskViewDrawAlpha = taskViewDrawAlpha;
+            mTaskViewArtist.taskViewDrawScale = (mTaskViewArtist.drawForPortraitLayout
+                    ? Math.min(lp.height, lp.width) : Math.max(lp.height, lp.width))
+                    / mTaskViewArtist.taskViewMinSize;
+        }
 
         if (Float.isNaN(scale) || Float.isInfinite(scale)) {
             // Views are no longer laid out, do not update.
@@ -287,6 +316,19 @@ public class ClipIconView extends View implements ClipPathView {
         if (mForeground != null) {
             mForeground.draw(canvas);
         }
+        if (mTaskViewArtist != null) {
+            canvas.saveLayerAlpha(
+                    0,
+                    0,
+                    mTaskViewArtist.taskViewDrawWidth,
+                    mTaskViewArtist.taskViewDrawHeight,
+                    mTaskViewArtist.taskViewDrawAlpha);
+            float drawScale = mTaskViewArtist.taskViewDrawScale;
+            canvas.translate(drawScale * mTaskViewArtist.taskViewTranslationX,
+                    drawScale * mTaskViewArtist.taskViewTranslationY);
+            canvas.scale(drawScale, drawScale);
+            mTaskViewArtist.taskViewDrawCallback.accept(canvas);
+        }
         canvas.restoreToCount(count);
     }
 
@@ -303,5 +345,37 @@ public class ClipIconView extends View implements ClipPathView {
         mRevealAnimator = null;
         mTaskCornerRadius = 0;
         mOutline.setEmpty();
+        mTaskViewArtist = null;
+    }
+
+    /**
+     * Utility class to help draw a {@link com.android.quickstep.views.TaskView} within
+     * a {@link ClipIconView} bounds.
+     */
+    public static class TaskViewArtist {
+
+        public final Consumer<Canvas> taskViewDrawCallback;
+        public final float taskViewTranslationX;
+        public final float taskViewTranslationY;
+        public final float taskViewMinSize;
+        public final boolean drawForPortraitLayout;
+
+        public int taskViewDrawAlpha;
+        public float taskViewDrawScale;
+        public int taskViewDrawWidth;
+        public int taskViewDrawHeight;
+
+        public TaskViewArtist(
+                Consumer<Canvas> taskViewDrawCallback,
+                float taskViewTranslationX,
+                float taskViewTranslationY,
+                float taskViewMinSize,
+                boolean drawForPortraitLayout) {
+            this.taskViewDrawCallback = taskViewDrawCallback;
+            this.taskViewTranslationX = taskViewTranslationX;
+            this.taskViewTranslationY = taskViewTranslationY;
+            this.taskViewMinSize = taskViewMinSize;
+            this.drawForPortraitLayout = drawForPortraitLayout;
+        }
     }
 }
