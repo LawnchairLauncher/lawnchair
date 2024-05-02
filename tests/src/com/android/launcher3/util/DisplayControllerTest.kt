@@ -31,6 +31,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
+import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING_IN_DESKTOP_MODE
 import com.android.launcher3.util.DisplayController.CHANGE_DENSITY
 import com.android.launcher3.util.DisplayController.CHANGE_ROTATION
 import com.android.launcher3.util.DisplayController.CHANGE_TASKBAR_PINNING
@@ -94,6 +95,7 @@ class DisplayControllerTest {
         whenever(context.getObject(eq(WindowManagerProxy.INSTANCE))).thenReturn(windowManagerProxy)
         whenever(context.getObject(eq(LauncherPrefs.INSTANCE))).thenReturn(launcherPrefs)
         whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(false)
+        whenever(launcherPrefs.get(TASKBAR_PINNING_IN_DESKTOP_MODE)).thenReturn(true)
 
         // Mock WindowManagerProxy
         val displayInfo = CachedDisplayInfo(Point(width, height), Surface.ROTATION_0)
@@ -166,6 +168,15 @@ class DisplayControllerTest {
     @UiThreadTest
     fun testTaskbarPinning() {
         whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(true)
+        displayController.handleInfoChange(display)
+        verify(displayInfoChangeListener)
+            .onDisplayInfoChanged(any(), any(), eq(CHANGE_TASKBAR_PINNING))
+    }
+
+    @Test
+    @UiThreadTest
+    fun testTaskbarPinningChangeInDesktopMode() {
+        whenever(launcherPrefs.get(TASKBAR_PINNING_IN_DESKTOP_MODE)).thenReturn(false)
         displayController.handleInfoChange(display)
         verify(displayInfoChangeListener)
             .onDisplayInfoChanged(any(), any(), eq(CHANGE_TASKBAR_PINNING))

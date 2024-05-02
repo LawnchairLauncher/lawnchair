@@ -443,7 +443,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
                     /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
                             R.dimen.keyboard_quick_switch_border_width),
-                    /* boundsBuilder= */ this::updateBorderBounds,
+                    /* boundsBuilder= */ this::getThumbnailBounds,
                     /* targetView= */ this,
                     /* borderColor= */ styledAttrs.getColor(
                             R.styleable.TaskView_focusBorderColor, DEFAULT_BORDER_COLOR))
@@ -458,7 +458,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
                     /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
                             R.dimen.task_hover_border_width),
-                    /* boundsBuilder= */ this::updateBorderBounds,
+                    /* boundsBuilder= */ this::getThumbnailBounds,
                     /* targetView= */ this,
                     /* borderColor= */ styledAttrs.getColor(
                             R.styleable.TaskView_hoverBorderColor, DEFAULT_BORDER_COLOR))
@@ -467,12 +467,23 @@ public class TaskView extends FrameLayout implements Reusable {
         styledAttrs.recycle();
     }
 
-    protected Unit updateBorderBounds(@NonNull Rect bounds) {
+    /** Returns the thumbnail's bounds relative to this view. */
+    public Unit getThumbnailBounds(@NonNull Rect bounds) {
+        return getThumbnailBounds(bounds, false);
+    }
+
+    /** Returns the thumbnail's bounds, optionally relative to the screen. */
+    public Unit getThumbnailBounds(@NonNull Rect bounds, boolean relativeToDragLayer) {
         View snapshotView = getSnapshotView();
-        bounds.set(snapshotView.getLeft() + Math.round(snapshotView.getTranslationX()),
-                snapshotView.getTop() + Math.round(snapshotView.getTranslationY()),
-                snapshotView.getRight() + Math.round(snapshotView.getTranslationX()),
-                snapshotView.getBottom() + Math.round(snapshotView.getTranslationY()));
+
+        if (relativeToDragLayer) {
+            mContainer.getDragLayer().getDescendantRectRelativeToSelf(snapshotView, bounds);
+        } else {
+            bounds.set(snapshotView.getLeft() + Math.round(snapshotView.getTranslationX()),
+                    snapshotView.getTop() + Math.round(snapshotView.getTranslationY()),
+                    snapshotView.getRight() + Math.round(snapshotView.getTranslationX()),
+                    snapshotView.getBottom() + Math.round(snapshotView.getTranslationY()));
+        }
         return Unit.INSTANCE;
     }
 
@@ -582,6 +593,10 @@ public class TaskView extends FrameLayout implements Reusable {
      * Enable or disable showing border on hover and focus change
      */
     public void setBorderEnabled(boolean enabled) {
+        if (mBorderEnabled == enabled) {
+            return;
+        }
+
         mBorderEnabled = enabled;
         // Set the animation correctly in case it misses the hover/focus event during state
         // transition

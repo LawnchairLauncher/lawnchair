@@ -44,15 +44,12 @@ import android.provider.Settings;
 import android.test.mock.MockContentResolver;
 import android.util.ArrayMap;
 
-import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherModel.ModelUpdateTask;
-import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.testing.TestInformationProvider;
@@ -66,7 +63,6 @@ import java.io.OutputStreamWriter;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 
 /**
  * Utility class to help manage Launcher Model and related objects for test.
@@ -115,17 +111,9 @@ public class LauncherModelHelper {
 
     public synchronized BgDataModel getBgDataModel() {
         if (mDataModel == null) {
-            getModel().enqueueModelUpdateTask(new ModelUpdateTask() {
-                @Override
-                public void init(@NonNull LauncherAppState app, @NonNull LauncherModel model,
-                        @NonNull BgDataModel dataModel, @NonNull AllAppsList allAppsList,
-                        @NonNull Executor uiExecutor) {
-                    mDataModel = dataModel;
-                }
-
-                @Override
-                public void run() { }
-            });
+            getModel().enqueueModelUpdateTask((taskController, dataModel, apps) ->
+                    mDataModel = dataModel);
+            runOnExecutorSync(Executors.MODEL_EXECUTOR, () -> { });
         }
         return mDataModel;
     }

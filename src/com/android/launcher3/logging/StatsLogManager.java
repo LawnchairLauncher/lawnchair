@@ -1205,7 +1205,7 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Creates a new instance of {@link StatsLogManager} based on provided context.
      */
     public static StatsLogManager newInstance(Context context) {
-        return Overrides.getObject(StatsLogManager.class,
-                context.getApplicationContext(), R.string.stats_log_manager_class);
+        return Overrides.getObject(
+                StatsLogManager.class, context, R.string.stats_log_manager_class);
     }
 }

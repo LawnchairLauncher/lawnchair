@@ -15,12 +15,13 @@
  */
 package com.android.launcher3.model;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -33,7 +34,7 @@ import java.util.List;
 /**
  * Handles changes due to a sessions updates for a currently installing app.
  */
-public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
+public class PackageInstallStateChangedTask implements ModelUpdateTask {
 
     @NonNull
     private final PackageInstallInfo mInstallInfo;
@@ -43,16 +44,17 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList apps) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
         if (mInstallInfo.state == PackageInstallInfo.STATUS_INSTALLED) {
             try {
                 // For instant apps we do not get package-add. Use setting events to update
                 // any pinned icons.
-                ApplicationInfo ai = app.getContext()
+                Context context = taskController.getApp().getContext();
+                ApplicationInfo ai = context
                         .getPackageManager().getApplicationInfo(mInstallInfo.packageName, 0);
-                if (InstantAppResolver.newInstance(app.getContext()).isInstantApp(ai)) {
-                    app.getModel().newModelCallbacks()
+                if (InstantAppResolver.newInstance(context).isInstantApp(ai)) {
+                    taskController.getApp().getModel().newModelCallbacks()
                             .onPackageAdded(ai.packageName, mInstallInfo.user);
                 }
             } catch (PackageManager.NameNotFoundException e) {
@@ -66,10 +68,11 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
             List<AppInfo> updatedAppInfos = apps.updatePromiseInstallInfo(mInstallInfo);
             if (!updatedAppInfos.isEmpty()) {
                 for (AppInfo appInfo : updatedAppInfos) {
-                    scheduleCallbackTask(c -> c.bindIncrementalDownloadProgressUpdated(appInfo));
+                    taskController.scheduleCallbackTask(
+                            c -> c.bindIncrementalDownloadProgressUpdated(appInfo));
                 }
             }
-            bindApplicationsIfNeeded();
+            taskController.bindApplicationsIfNeeded();
         }
 
         synchronized (dataModel) {
@@ -90,7 +93,8 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
             }
 
             if (!updates.isEmpty()) {
-                scheduleCallbackTask(callbacks -> callbacks.bindRestoreItemsChange(updates));
+                taskController.scheduleCallbackTask(
+                        callbacks -> callbacks.bindRestoreItemsChange(updates));
             }
         }
     }

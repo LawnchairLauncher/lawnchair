@@ -30,11 +30,13 @@ public class PrivateSpaceContainer {
 
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mAppListRecycler;
+    private final AllApps mAppList;
 
     PrivateSpaceContainer(LauncherInstrumentation launcherInstrumentation,
-            UiObject2 appListRecycler) {
+            UiObject2 appListRecycler, AllApps appList) {
         mLauncher = launcherInstrumentation;
         mAppListRecycler = appListRecycler;
+        mAppList = appList;
 
         verifyHeaderIsPresent();
         verifyInstallAppButtonIsPresent();
@@ -52,7 +54,7 @@ public class PrivateSpaceContainer {
 
     // Assert Install App Item is present in view.
     private void verifyInstallAppButtonIsPresent() {
-        mLauncher.getAllApps().getAppIcon(INSTALL_APP_TITLE);
+        mAppList.getAppIcon(INSTALL_APP_TITLE);
     }
 
     // Assert Sys App Divider is present in view.
@@ -64,7 +66,7 @@ public class PrivateSpaceContainer {
      * Verifies that a user installed app is present above the divider.
      */
     public void verifyInstalledAppIsPresent(String appName) {
-        HomeAppIcon appIcon = mLauncher.getAllApps().getAppIcon(appName);
+        AppIcon appIcon = mAppList.getAppIcon(appName);
         final Point iconCenter = appIcon.mObject.getVisibleCenter();
         UiObject2 divider = mLauncher.waitForObjectInContainer(mAppListRecycler, DIVIDER_RES_ID);
         final Point dividerCenter = divider.getVisibleCenter();

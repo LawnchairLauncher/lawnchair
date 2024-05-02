@@ -17,9 +17,11 @@
 package com.android.quickstep;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,7 +36,6 @@ import android.view.MotionEvent;
 
 import androidx.test.filters.SmallTest;
 
-import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.BorderAnimator;
 import com.android.quickstep.views.TaskView;
@@ -74,6 +75,7 @@ public class TaskViewTest {
 
     @Test
     public void notShowBorderOnBorderDisabled() {
+        presetBorderStatus(/* enabled= */ true);
         mTaskView.setBorderEnabled(/* enabled= */ false);
         MotionEvent event = MotionEvent.obtain(0, 0, MotionEvent.ACTION_HOVER_ENTER, 0.0f, 0.0f, 0);
         mTaskView.onHoverEvent(MotionEvent.obtain(event));
@@ -86,7 +88,7 @@ public class TaskViewTest {
     }
 
     @Test
-    public void showBorderOnBorderEnabled() {
+    public void showBorderOnHoverEvent() {
         mTaskView.setBorderEnabled(/* enabled= */ true);
         MotionEvent event = MotionEvent.obtain(0, 0, MotionEvent.ACTION_HOVER_ENTER, 0.0f, 0.0f, 0);
         mTaskView.onHoverEvent(MotionEvent.obtain(event));
@@ -98,7 +100,18 @@ public class TaskViewTest {
     }
 
     @Test
+    public void showBorderOnBorderEnabled() {
+        presetBorderStatus(/* enabled= */ false);
+        mTaskView.setBorderEnabled(/* enabled= */ true);
+        verify(mHoverAnimator, times(1)).setBorderVisibility(/* visible= */ true, /* animated= */
+                true);
+        verify(mFocusAnimator, times(1)).setBorderVisibility(/* visible= */ true, /* animated= */
+                true);
+    }
+
+    @Test
     public void hideBorderOnBorderDisabled() {
+        presetBorderStatus(/* enabled= */ true);
         mTaskView.setBorderEnabled(/* enabled= */ false);
         verify(mHoverAnimator, times(1)).setBorderVisibility(/* visible= */ false, /* animated= */
                 true);
@@ -107,13 +120,35 @@ public class TaskViewTest {
     }
 
     @Test
+    public void notTriggerAnimatorWhenEnableStatusUnchanged() {
+        presetBorderStatus(/* enabled= */ false);
+        // Border is disabled by default, no animator is triggered after it is disabled again
+        mTaskView.setBorderEnabled(/* enabled= */ false);
+        verify(mHoverAnimator, never()).setBorderVisibility(/* visible= */
+                anyBoolean(), /* animated= */ anyBoolean());
+        verify(mFocusAnimator, never()).setBorderVisibility(/* visible= */
+                anyBoolean(), /* animated= */ anyBoolean());
+    }
+
+    private void presetBorderStatus(boolean enabled) {
+        // Make the task view focused and hovered
+        MotionEvent event = MotionEvent.obtain(0, 0, MotionEvent.ACTION_HOVER_ENTER, 0.0f, 0.0f, 0);
+        mTaskView.onHoverEvent(MotionEvent.obtain(event));
+        mTaskView.requestFocus();
+        mTaskView.setBorderEnabled(/* enabled= */ enabled);
+        // Reset invocation count after presetting status
+        reset(mHoverAnimator);
+        reset(mFocusAnimator);
+    }
+
+    @Test
     public void notShowBorderByDefault() {
         MotionEvent event = MotionEvent.obtain(0, 0, MotionEvent.ACTION_HOVER_ENTER, 0.0f, 0.0f, 0);
         mTaskView.onHoverEvent(MotionEvent.obtain(event));
-        verify(mHoverAnimator, never()).setBorderVisibility(/* visible= */ false, /* animated= */
-                true);
+        verify(mHoverAnimator, never()).setBorderVisibility(/* visible= */
+                anyBoolean(), /* animated= */ anyBoolean());
         mTaskView.onFocusChanged(true, 0, new Rect());
-        verify(mHoverAnimator, never()).setBorderVisibility(/* visible= */ false, /* animated= */
-                true);
+        verify(mHoverAnimator, never()).setBorderVisibility(/* visible= */
+                anyBoolean(), /* animated= */ anyBoolean());
     }
 }
