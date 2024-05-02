@@ -378,6 +378,12 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                     return (flags & FLAG_DISABLE_BACK) == 0
                             && ((flags & FLAG_KEYGUARD_VISIBLE) == 0 || showingOnKeyguard);
                 }));
+        // Hide back button in SUW if keyboard is showing (IME draws its own back).
+        if (mIsImeRenderingNavButtons) {
+            mPropertyHolders.add(new StatePropertyHolder(
+                    mBackButtonAlpha.get(ALPHA_INDEX_SUW),
+                    flags -> (flags & FLAG_IME_VISIBLE) == 0));
+        }
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
                 flags -> (flags & FLAG_IME_VISIBLE) != 0,
                 ROTATION_DRAWABLE_PERCENT, 1f, 0f));
@@ -791,13 +797,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
         if (isInSetup) {
             handleSetupUi();
-
-            // Hide back button in SUW if keyboard is showing (IME draws its own back).
-            if (mIsImeRenderingNavButtons) {
-                mPropertyHolders.add(new StatePropertyHolder(
-                        mBackButtonAlpha.get(ALPHA_INDEX_SUW),
-                        flags -> (flags & FLAG_IME_VISIBLE) == 0));
-            }
         } else if (isInKidsMode) {
             int iconSize = res.getDimensionPixelSize(
                     R.dimen.taskbar_icon_size_kids);
