@@ -142,6 +142,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
                     row.forEach(widgetItem -> {
                         WidgetCell widget = addItemCell(tableRow);
                         widget.applyFromCellItem(widgetItem);
+                        if (widget.matchesItem(getLastSelectedWidgetItem())) {
+                            widget.callOnClick();
+                        }
                     });
                     widgetsTable.addView(tableRow);
                 });

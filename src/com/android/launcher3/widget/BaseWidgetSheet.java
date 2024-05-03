@@ -42,6 +42,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -74,6 +75,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     private boolean mDisableNavBarScrim = false;
 
     @Nullable private WidgetCell mWidgetCellWithAddButton = null;
+    @Nullable private WidgetItem mLastSelectedWidgetItem = null;
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -161,6 +163,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
             }
 
             mWidgetCellWithAddButton = mWidgetCellWithAddButton != wc ? wc : null;
+            if (mWidgetCellWithAddButton != null) {
+                mLastSelectedWidgetItem = mWidgetCellWithAddButton.getWidgetItem();
+            } else {
+                mLastSelectedWidgetItem = null;
+            }
         } else {
             mActivityContext.getItemOnClickListener().onClick(wc);
         }
@@ -234,6 +241,14 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
      */
     protected int getHeaderTopClip(@NonNull WidgetCell cell) {
         return 0;
+    }
+
+    /**
+     * Returns the component of the widget that is currently showing an add button, if any.
+     */
+    @Nullable
+    protected WidgetItem getLastSelectedWidgetItem() {
+        return mLastSelectedWidgetItem;
     }
 
     @Override

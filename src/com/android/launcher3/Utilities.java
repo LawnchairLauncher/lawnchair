@@ -70,6 +70,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.ChecksSdkIntAtLeast;
@@ -104,6 +105,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -834,5 +836,28 @@ public final class Utilities {
             default:
                 // No-Op
         }
+    }
+
+    /**
+     * Does a depth-first search through the View hierarchy starting at root, to find a view that
+     * matches the predicate. Returns null if no View was found. View has a findViewByPredicate
+     * member function but it is currently a @hide API.
+     */
+    @Nullable
+    public static <T extends View> T findViewByPredicate(@NonNull View root,
+            @NonNull Predicate<View> predicate) {
+        if (predicate.test(root)) {
+            return (T) root;
+        }
+        if (root instanceof ViewGroup parent) {
+            int count = parent.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View view = findViewByPredicate(parent.getChildAt(i), predicate);
+                if (view != null) {
+                    return (T) view;
+                }
+            }
+        }
+        return null;
     }
 }
