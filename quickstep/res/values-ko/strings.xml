@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"태스크 바 최대한 활용하기"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"태스크 바 항상 표시"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"화면 하단에 태스크 바를 항상 표시하려면 구분선을 길게 터치하세요."</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"화면 내용을 검색하려면 작업 키 길게 터치"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"이 제품은 사용자가 화면에서 선택한 부분을 사용하여 검색하며, Google <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>개인정보처리방침<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> 및 <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>서비스 약관<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>이 적용됩니다."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"닫기"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"완료"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"홈"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"상단/왼쪽으로 이동"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"하단/오른쪽으로 이동"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{앱 #개 더 표시}other{앱 #개 더 표시}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{데스크톱 앱 #개를 표시합니다.}other{데스크톱 앱 #개를 표시합니다.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> 및 <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"데스크톱에 앱 추가하기"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"취소"</string>

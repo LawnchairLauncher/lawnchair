@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Используйте все возможности панели задач"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Закрепите панель задач внизу экрана"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Для этого нажмите на разделитель и удерживайте его."</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Чтобы найти информацию об объекте на экране, нажмите и удерживайте клавишу действия"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Этот продукт использует выделенную часть экрана для поиска. При этом действуют <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Политика конфиденциальности<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> и <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Условия использования<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрыть"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Главный экран"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Переместить вверх или влево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Переместить вниз или вправо"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Показать ещё # приложение}one{Показать ещё # приложение}few{Показать ещё # приложения}many{Показать ещё # приложений}other{Показать ещё # приложения}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Показать # компьютерное приложение.}one{Показать # компьютерное приложение.}few{Показать # компьютерных приложения.}many{Показать # компьютерных приложений.}other{Показать # компьютерного приложения.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Добавление приложения на компьютер"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Отмена"</string>

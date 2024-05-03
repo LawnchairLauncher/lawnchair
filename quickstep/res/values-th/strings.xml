@@ -92,7 +92,7 @@
     <string name="allset_button_hint" msgid="2395219947744706291">"แตะปุ่มหน้าแรกเพื่อไปที่หน้าจอหลัก"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"คุณเริ่มใช้<xliff:g id="DEVICE">%1$s</xliff:g>ได้แล้ว"</string>
     <string name="default_device_name" msgid="6660656727127422487">"อุปกรณ์"</string>
-    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"การตั้งค่าการนำทางของระบบ"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"การตั้งค่าการไปยังส่วนต่างๆ ของระบบ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"แชร์"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ภาพหน้าจอ"</string>
     <string name="action_split" msgid="2098009717623550676">"แยก"</string>
@@ -138,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ย้ายไปที่ด้านบนหรือด้านซ้าย"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ย้ายไปที่ด้านล่างหรือด้านขวา"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{แสดงเพิ่มเติมอีก # แอป}other{แสดงเพิ่มเติมอีก # แอป}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{แสดงแอปบนเดสก์ท็อป # รายการ}other{แสดงแอปบนเดสก์ท็อป # รายการ}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> และ <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"การเพิ่มแอปไปยังเดสก์ท็อป"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ยกเลิก"</string>

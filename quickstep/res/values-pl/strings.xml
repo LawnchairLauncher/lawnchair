@@ -90,7 +90,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Wszystko gotowe"</string>
     <string name="allset_hint" msgid="459504134589971527">"Aby przejść na stronę główną, przesuń w górę"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Kliknij przycisk ekranu głównego, aby otworzyć ekran główny"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Teraz możesz zacząć używać urządzenia <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> jest gotowe – możesz zacząć z niego korzystać"</string>
     <string name="default_device_name" msgid="6660656727127422487">"urządzenie"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Ustawienia nawigacji w systemie"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Udostępnij"</string>
@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Wykorzystaj potencjał paska aplikacji"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Zawsze wyświetlaj pasek aplikacji"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Aby zawsze wyświetlać pasek aplikacji u dołu ekranu, naciśnij i przytrzymaj linię dzielenia ekranu"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Aby rozpocząć wyszukiwanie na podstawie zawartości ekranu, naciśnij i przytrzymaj klawisz działania"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Usługa przy wyszukiwaniu używa zaznaczonego fragmentu ekranu. Obowiązują zapisy <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Polityki prywatności<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> i <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Warunków korzystania z usług<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zamknij"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gotowe"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Ekran główny"</string>

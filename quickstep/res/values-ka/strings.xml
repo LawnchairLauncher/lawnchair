@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"გააკეთეთ მეტი ამოცანათა ზოლის მეშვეობით"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ამოცანათა ზოლის მუდმივად ჩვენება"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"თქვენი ეკრანის ქვედა ნაწილში ამოცანათა ზოლის მუდმივად საჩვენებლად, ხანგრძლივად შეეხეთ გამყოფს"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"შეეხეთ და გეჭიროთ მოქმედების ღილაკი, რათა მოძებნოთ ის, რაც თქვენს ეკრანზეა"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"ეს პროდუქტი ძიებისთვის იყენებს თქვენი ეკრანის არჩეულ ნაწილს. მოქმედებს Google-ის <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>კონფიდენციალურობის დებულება<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> და <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>მომსახურებს პირობები<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"დახურვა"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"მზადაა"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"მთავარი"</string>
