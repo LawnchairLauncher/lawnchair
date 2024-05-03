@@ -135,6 +135,7 @@ import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
@@ -1258,8 +1259,8 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                 ? mRecentsView.getNextPageTaskView() : null;
         TaskView currentPageTaskView = mRecentsView != null
                 ? mRecentsView.getCurrentPageTaskView() : null;
-        if (((nextPageTaskView != null && nextPageTaskView.isDesktopTask())
-                || (currentPageTaskView != null && currentPageTaskView.isDesktopTask()))
+        if ((nextPageTaskView instanceof DesktopTaskView
+                || currentPageTaskView instanceof DesktopTaskView)
                 && endTarget == NEW_TASK) {
             // TODO(b/268075592): add support for quickswitch to/from desktop
             return LAST_TASK;
@@ -1422,7 +1423,7 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
             setClampScrollOffset(false);
         };
         if (mRecentsView != null && (mRecentsView.getCurrentPageTaskView() != null
-                && !mRecentsView.getCurrentPageTaskView().isDesktopTask())) {
+                && !(mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView))) {
             ActiveGestureLog.INSTANCE.trackEvent(ActiveGestureErrorDetector.GestureEvent
                     .SET_ON_PAGE_TRANSITION_END_CALLBACK);
             // TODO(b/268075592): add support for quickswitch to/from desktop
@@ -2250,10 +2251,8 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                     mRecentsAnimationController, mRecentsAnimationTargets);
         });
 
-        if ((mRecentsView.getNextPageTaskView() != null
-                && mRecentsView.getNextPageTaskView().isDesktopTask())
-                || (mRecentsView.getCurrentPageTaskView() != null
-                && mRecentsView.getCurrentPageTaskView().isDesktopTask())) {
+        if (mRecentsView.getNextPageTaskView() instanceof DesktopTaskView
+                || mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView) {
             // TODO(b/268075592): add support for quickswitch to/from desktop
             mRecentsViewScrollLinked = false;
             return;
