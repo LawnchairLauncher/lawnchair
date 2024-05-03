@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getAdapter
@@ -22,6 +21,7 @@ import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.ui.util.PreviewLawnchair
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -113,7 +113,7 @@ fun QuickstepPreferences(
     }
 }
 
-@Preview
+@PreviewLawnchair
 @Composable
 private fun QuickSwitchIgnoredWarning(
     modifier: Modifier = Modifier,
