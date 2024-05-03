@@ -66,6 +66,9 @@ public class BubbleView extends ConstraintLayout {
     private final ImageView mAppIcon;
     private final int mBubbleSize;
 
+    private float mBubbleBarTranslationX = 0f;
+    private float mTranslationX = 0f;
+
     private DotRenderer mDotRenderer;
     private DotRenderer.DrawParams mDrawParams;
     private int mDotColor;
@@ -124,6 +127,35 @@ public class BubbleView extends ConstraintLayout {
         final int normalizedSize = IconNormalizer.getNormalizedCircleSize(mBubbleSize);
         final int inset = (mBubbleSize - normalizedSize) / 2;
         outline.setOval(inset, inset, inset + normalizedSize, inset + normalizedSize);
+    }
+
+    @Override
+    public void setTranslationX(float translationX) {
+        // Overriding setting translationX as it can be a combination of the parent translation
+        // and current view translation.
+        // When a BubbleView is being dragged to pin the bubble bar to other side, we animate the
+        // bar to the new location during the drag.
+        // One part of the animation is updating the translation of the bubble bar. But doing
+        // that also updates the translation for the child views, like the dragged bubble.
+        // To get around that, we instead apply translation on each child view of bubble bar. It
+        // is applied as bubble bar translation. This results in BubbleView's translation being a
+        // sum of the translation it has and the parent bubble bar translation.
+        mTranslationX = translationX;
+        applyTranslation();
+    }
+
+    /**
+     * Translation of the bubble bar that hosts this bubble.
+     * Is applied together with translation applied on the view through
+     * {@link #setTranslationX(float)}.
+     */
+    void setBubbleBarTranslationX(float translationX) {
+        mBubbleBarTranslationX = translationX;
+        applyTranslation();
+    }
+
+    private void applyTranslation() {
+        super.setTranslationX(mTranslationX + mBubbleBarTranslationX);
     }
 
     @Override

@@ -20,6 +20,7 @@ import static android.view.View.VISIBLE;
 
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -468,7 +469,8 @@ public class BubbleBarViewController {
      */
     public void onDragStart(@NonNull BubbleView bubbleView) {
         if (bubbleView.getBubble() == null) return;
-        mSystemUiProxy.onBubbleDrag(bubbleView.getBubble().getKey(), /* isBeingDragged = */ true);
+
+        mSystemUiProxy.startBubbleDrag(bubbleView.getBubble().getKey());
         mBarView.setDraggedBubble(bubbleView);
     }
 
@@ -476,16 +478,43 @@ public class BubbleBarViewController {
      * Notifies SystemUI to expand the selected bubble when the bubble is released.
      * @param bubbleView dragged bubble view
      */
-    public void onDragRelease(@NonNull BubbleView bubbleView) {
+    public void onDragRelease(@NonNull BubbleView bubbleView, BubbleBarLocation location) {
         if (bubbleView.getBubble() == null) return;
-        mSystemUiProxy.onBubbleDrag(bubbleView.getBubble().getKey(), /* isBeingDragged = */ false);
+        // TODO(b/330585402): send new bubble bar bounds to shell for the animation
+        mSystemUiProxy.stopBubbleDrag(bubbleView.getBubble().getKey(), location);
     }
 
     /**
-     * Removes the dragged bubble view in the bubble bar view
+     * Notifies {@link BubbleBarView} that drag and all animations are finished.
      */
     public void onDragEnd() {
         mBarView.setDraggedBubble(null);
+    }
+
+    /**
+     * Get translation for bubble bar when drag is released.
+     *
+     * @see BubbleBarView#getBubbleBarDragReleaseTranslation(PointF, BubbleBarLocation)
+     */
+    public PointF getBubbleBarDragReleaseTranslation(PointF initialTranslation,
+            BubbleBarLocation location) {
+        if (location == mBarView.getBubbleBarLocation()) {
+            return initialTranslation;
+        }
+        return mBarView.getBubbleBarDragReleaseTranslation(initialTranslation, location);
+    }
+
+    /**
+     * Get translation for bubble view when drag is released.
+     *
+     * @see BubbleBarView#getDraggedBubbleReleaseTranslation(PointF, BubbleBarLocation)
+     */
+    public PointF getDraggedBubbleReleaseTranslation(PointF initialTranslation,
+            BubbleBarLocation location) {
+        if (location == mBarView.getBubbleBarLocation()) {
+            return initialTranslation;
+        }
+        return mBarView.getDraggedBubbleReleaseTranslation(initialTranslation, location);
     }
 
     /**
