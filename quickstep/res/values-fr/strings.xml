@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Faites-en plus avec la barre des tâches"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Toujours afficher la barre des tâches"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Pour toujours afficher la barre des tâches en bas de votre écran, appuyez sur le séparateur de manière prolongée."</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Appuyez de manière prolongée sur la touche d\'action pour rechercher ce qui se trouve à l\'écran"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Ce produit utilise la zone sélectionnée de l\'écran pour rechercher. Les <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Règles de confidentialité<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> et les <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Conditions d\'utilisation<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> de Google s\'appliquent."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fermer"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"OK"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Accueil"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Déplacer en haut ou à gauche"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Déplacer en bas ou à droite"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Afficher # autre appli}one{Afficher # autre appli}other{Afficher # autre applis}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Afficher # application de bureau.}one{Afficher # application de bureau.}other{Afficher # applications de bureau.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> et <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Ajout de l\'appli au bureau"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Annuler"</string>

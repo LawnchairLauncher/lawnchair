@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"\'টাস্কবার\' ফিচারের সাহায্যে আরও অনেক কিছু করুন"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"টাস্কবার সবসময় দেখানো"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"স্ক্রিনের নিচে টাস্কবার সবসময় দেখাতে ডিভাইডার টাচ করে ধরে থাকুন"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"আপনার স্ক্রিনে দেখতে পাওয়া কন্টেন্ট সার্চ করতে অ্যাকশন কী স্পর্শ করে ধরে রাখুন"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"সার্চ করার জন্য এই প্রোডাক্ট স্ক্রিনের বেছে নেওয়া অংশটুকু ব্যবহার করে। Google-এর <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>গোপনীয়তা নীতি<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> এবং <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>পরিষেবার শর্তাবলী<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> প্রযোজ্য।"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ করুন"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হয়ে গেছে"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"হোম"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"উপরে/বাঁদিকে সরান"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"নিচে/ডানদিকে সরান"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{আরও #টি অ্যাপ দেখুন।}one{আরও #টি অ্যাপ দেখুন।}other{আরও #টি অ্যাপ দেখুন।}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{#টি ডেস্কটপ অ্যাপ দেখুন।}one{#টি ডেস্কটপ অ্যাপ দেখুন।}other{#টি ডেস্কটপ অ্যাপ দেখুন।}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ও <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"ডেস্কটপে অ্যাপ যোগ করা হচ্ছে"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"বাতিল করুন"</string>

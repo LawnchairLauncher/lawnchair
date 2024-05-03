@@ -138,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Премести горе лево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести доле десно"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Прикажи још # апликацију.}one{Прикажи још # апликацију.}few{Прикажи још # апликације.}other{Прикажи још # апликација.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Прикажи # апликацију за рачунаре.}one{Прикажи # апликацију за рачунаре.}few{Прикажи # апликације за рачунаре.}other{Прикажи # апликација за рачунаре.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Додаје се апликација на радну поврршину"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Откажи"</string>

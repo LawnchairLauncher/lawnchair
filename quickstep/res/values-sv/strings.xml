@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Gör mer med aktivitetsfältet"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Visa alltid aktivitetsfältet"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Tryck länge på avgränsaren för att alltid visa aktivitetsfältet längst ned på skärmen"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Tryck länge på åtgärdstangenten för att söka efter det som finns på skärmen"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Den här produkten använder den valda delen av skärmen för att söka. Googles <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>integritetspolicy<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> och <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>användarvillkor<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> gäller."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Stäng"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klar"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Startsida"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytta högst upp/till vänster"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytta längst ned/till höger"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Visa # app till.}other{Visa # appar till.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Visa # datorapp.}other{Visa # datorappar.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> och <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Lägger till appen på skrivbordet"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Avbryt"</string>

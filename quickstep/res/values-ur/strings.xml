@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ٹاسک بار سے بہت کچھ کریں"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ہمیشہ ٹاسک بار دکھائیں"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ٹاسک بار کو ہمیشہ اپنی اسکرین کے نیچے دکھانے کے لیے، ڈیوائیڈر کو ٹچ کریں اور دبائے رکھیں"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"آپ کی اسکرین پر جو کچھ ہے اسے تلاش کرنے کے لیے ایکشن کلید کو ٹچ کریں اور دبائے رکھیں"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"‏یہ پروڈکٹ تلاش کرنے کے لیے آپ کی اسکرین کا منتخب حصہ استعمال کرتا ہے۔ Google کی <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>رازداری کی پالیسی<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> اور <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>سروس کی شرائط<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> لاگو ہوتی ہیں۔"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"بند کریں"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ہو گیا"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ہوم"</string>

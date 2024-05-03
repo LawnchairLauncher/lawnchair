@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"செயல் பட்டி மூலம் மேலும் பலவற்றைச் செய்யுங்கள்"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"செயல் பட்டியை எப்போதும் காட்டுதல்"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"திரையின் கீழ்ப்பகுதியில் செயல் பட்டியை எப்போதும் காட்டுவதற்கு, பிரிப்பானைத் தொட்டுப் பிடித்திருக்கவும்"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"உங்கள் திரையில் உள்ளவற்றைத் தேடுவதற்கு ஆக்ஷன் பட்டனைத் தொட்டுப் பிடியுங்கள்"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"தேடுவதற்கு உங்கள் திரையின் தேர்ந்தெடுக்கப்பட்ட பகுதியை இந்தத் தயாரிப்பு பயன்படுத்துகிறது. Googleளின் <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>தனியுரிமைக் கொள்கையும்<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>சேவை விதிமுறைகளும்<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> பொருந்தும்."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"மூடுக"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"முடிந்தது"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"முகப்பு"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"மேலே/இடதுபுறம் நகர்த்தும்"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"கீழே/வலதுபுறம் நகர்த்தும்"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{மேலும் # ஆப்ஸைக் காட்டு.}other{மேலும் # ஆப்ஸைக் காட்டு.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# டெஸ்க்டாப் ஆப்ஸைக் காட்டு.}other{# டெஸ்க்டாப் ஆப்ஸைக் காட்டு.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> மற்றும் <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"ஆப்ஸை டெஸ்க்டாப்பில் சேர்க்கிறது"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ரத்துசெய்"</string>

@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ટાસ્કબાર વડે બીજું ઘણું કરો"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ટાસ્કબાર હંમેશાં બતાવો"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ટાસ્કબાર હંમેશાં તમારી સ્ક્રીનમાં સૌથી નીચે દેખાય તે માટે વિભાજકને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"તમારી સ્ક્રીન પર જે હોય તે શોધવા માટે, ઍક્શન કી ટચ કરીને દબાવી રાખો"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"શોધવા માટે, આ પ્રોડક્ટ તમારી સ્ક્રીનના પસંદ કરેલા ભાગનો ઉપયોગ કરે છે. Googleની <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>પ્રાઇવસી પૉલિસી<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> અને <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>સેવાની શરતો<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> લાગુ થાય છે."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"બંધ કરો"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"થઈ ગયું"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"હોમ"</string>

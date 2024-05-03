@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Lakukan lebih banyak perkara dengan Bar Tugas"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Sentiasa paparkan Bar Tugas"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Untuk sentiasa memaparkan Bar Tugas pada bahagian bawah skrin, sentuh &amp; tahan pembahagi"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Sentuh &amp; tahan kekunci tindakan untuk mencari kandungan yang dipaparkan pada skrin anda"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Produk ini menggunakan bahagian yang dipilih pada skrin anda untuk membuat carian. <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Dasar Privasi<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> dan <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Syarat Perkhidmatan<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> Google digunakan."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Tutup"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Selesai"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Laman Utama"</string>

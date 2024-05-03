@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Plašākas iespējas, izmantojot uzdevumu joslu"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vienmēr rādīt uzdevumu joslu"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Lai uzdevumu joslu rādītu apakšdaļā, pieskarieties atdalītājam un turiet"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Pieskarieties darbību taustiņam un turiet to, lai meklētu ekrānā redzamo saturu"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Šajā produktā atlasītā ekrāna daļa tiek izmantota meklēšanai. Ir spēkā Google <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>konfidencialitātes politika<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> un <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>pakalpojumu sniegšanas noteikumi<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Aizvērt"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gatavs"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Sākums"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Pārvietot uz augšējo/kreiso stūri"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Pārvietot uz apakšējo/labo stūri"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Rādīt vēl # lietotni}zero{Rādīt vēl # lietotnes}one{Rādīt vēl # lietotni}other{Rādīt vēl # lietotnes}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Rādīt # datora lietotni.}zero{Rādīt # datora lietotnes.}one{Rādīt # datora lietotni.}other{Rādīt # datora lietotnes.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"“<xliff:g id="APP_NAME_1">%1$s</xliff:g>” un “<xliff:g id="APP_NAME_2">%2$s</xliff:g>”"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Notiek lietotnes pievienošana datoram"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Atcelt"</string>
