@@ -185,7 +185,7 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Xato: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Shaxsiy xona"</string>
     <string name="private_space_secondary_label" msgid="611902414159280263">"Maxfiy ilovalar qulflangan va yashirin saqlansin"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Yopiq"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Maxfiy"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Shaxsiy xona sozlamalari"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Shaxsiy xonani ochish/qulflash"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Qulflash"</string>
