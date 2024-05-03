@@ -123,14 +123,13 @@ private fun BottomSheetContent(
     maxCountLabel: String,
     maxCountAdapter: PreferenceAdapter<Int>,
     maxCountRange: ClosedRange<Int>,
-    content: @Composable (() -> Unit)?,
     isPermissionGranted: Boolean,
-
     onHide: () -> Unit,
     onRequestPermission: (() -> Unit)?,
     // TODO optimize permission requesting code
     permissionRationale: String?,
     preventSwitchChange: Boolean = false,
+    content: @Composable (() -> Unit)?,
 ) {
     ModalBottomSheetContent(
         buttons = {
