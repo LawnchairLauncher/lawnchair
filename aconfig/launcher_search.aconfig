@@ -1,4 +1,5 @@
 package: "com.android.launcher3"
+container: "system_ext"
 
 flag {
     name: "enable_private_space"
