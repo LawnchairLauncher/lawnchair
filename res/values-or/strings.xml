@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"ସେଟ ଅପ କରିବା କିମ୍ବା ଖୋଲିବାକୁ ଟାପ କରନ୍ତୁ"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ପ୍ରାଇଭେଟ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ପ୍ରାଇଭେଟ ସ୍ପେସ ସେଟିଂସ"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"ପ୍ରାଇଭେଟ, ଅନଲକ କରାଯାଇଛି।"</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ପ୍ରାଇଭେଟ, ଲକ କରାଯାଇଛି।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ଲକ କରନ୍ତୁ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ପ୍ରାଇଭେଟ ସ୍ପେସ ଟ୍ରାଞ୍ଜିସନିଂ"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ଆପ୍ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ"</string>

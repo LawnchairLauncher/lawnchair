@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Tryk for at konfigurere eller åbne"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privat"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Indstillinger for privat rum"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Privat, oplåst."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privat, låst."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Lås"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Ændringer af tilstanden for det private område"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Installer apps"</string>

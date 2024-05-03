@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Tik om op te stel of oop te maak"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privaat"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Privaat Ruimte-instellings"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Privaat, ontsluit."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privaat, gesluit."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Sluit"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Privaat Ruimte-oorgang"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Installeer apps"</string>

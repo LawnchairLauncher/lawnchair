@@ -86,7 +86,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Հեռացնել"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Ապատեղադրել"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Հավելվածի մասին"</string>
-    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Տեղադրել անձնականում"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Տեղադրել մասնավորում"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Տեղադրել"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Չառաջարկել"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Ամրացնել առաջարկվող հավելվածը"</string>
@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Հպեք կարգավորելու կամ բացելու համար"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Մասնավոր"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Անձնական տարածքի կարգավորումներ"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Անձնական, ապակողպված է։"</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Անձնական, կողպված է։"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Կողպում"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Անցում մասնավոր տարածք"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Հավելվածների տեղադրում"</string>

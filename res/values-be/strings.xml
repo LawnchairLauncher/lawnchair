@@ -185,14 +185,12 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Актываваць"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Фільтр"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не ўдалося: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Прыватная вобласць"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Прыватная прастора"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Націсніце, каб наладзіць або адкрыць"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Прыватная"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Налады прыватнай вобласці"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Прыватная прастора, разблакіравана."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Прыватная прастора, заблакіравана."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Заблакіраваць"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Пераход у прыватную вобласць"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Усталяваць праграмы"</string>

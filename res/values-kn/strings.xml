@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"ಸೆಟಪ್ ಮಾಡಲು ಅಥವಾ ತೆರೆಯಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ಖಾಸಗಿ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"ಖಾಸಗಿ, ಅನ್‌ಲಾಕ್ ಮಾಡಲಾಗಿದೆ."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ಖಾಸಗಿ, ಲಾಕ್ ಮಾಡಲಾಗಿದೆ."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ಲಾಕ್ ಮಾಡಿ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಪರಿವರ್ತನೆಯಾಗುತ್ತಿದೆ"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ಆ್ಯಪ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>

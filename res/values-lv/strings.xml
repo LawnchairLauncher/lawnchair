@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Pieskarieties, lai iestatītu vai atvērtu"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privātā mape"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Privātās mapes iestatījumi"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Privāta un nav bloķēta."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privāta un bloķēta."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloķēšana"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Pāriet uz privāto mapi"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Lietotņu instalēšana"</string>

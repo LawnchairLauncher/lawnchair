@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"அமைக்கவோ திறக்கவோ தட்டுங்கள்"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"தனிப்பட்டது"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"தனிப்பட்ட சேமிப்பிட அமைப்புகள்"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"தனிப்பட்டது, அன்லாக் செய்யப்பட்டுள்ளது."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"தனிப்பட்டது, லாக் செய்யப்பட்டுள்ளது."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"பூட்டு"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"தனிப்பட்ட சேமிப்பிடத்திற்கு மாற்றுகிறது"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ஆப்ஸை நிறுவுதல்"</string>
