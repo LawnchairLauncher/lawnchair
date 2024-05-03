@@ -194,6 +194,7 @@ import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 import com.android.systemui.unfold.config.UnfoldTransitionConfig;
+import com.android.systemui.unfold.dagger.UnfoldMain;
 import com.android.systemui.unfold.progress.RemoteUnfoldTransitionReceiver;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 
@@ -1047,6 +1048,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
                         getMainExecutor(),
                         getMainThreadHandler(),
                         /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
+                        /* bgHandler= */ UI_HELPER_EXECUTOR.getHandler(),
                         /* tracingTagPrefix= */ "launcher",
                         getSystemService(DisplayManager.class)
                 );
@@ -1066,7 +1068,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
     }
 
     private void initUnfoldAnimationController(UnfoldTransitionProgressProvider progressProvider,
-            RotationChangeProvider rotationChangeProvider) {
+            @UnfoldMain RotationChangeProvider rotationChangeProvider) {
         mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
                 /* launcher= */ this,
                 getWindowManager(),

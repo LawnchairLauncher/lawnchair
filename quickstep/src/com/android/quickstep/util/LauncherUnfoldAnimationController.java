@@ -39,6 +39,7 @@ import com.android.quickstep.util.unfold.LauncherJankMonitorTransitionProgressLi
 import com.android.quickstep.util.unfold.PreemptiveUnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.dagger.UnfoldMain;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
@@ -76,7 +77,7 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
             QuickstepLauncher launcher,
             WindowManager windowManager,
             UnfoldTransitionProgressProvider unfoldTransitionProgressProvider,
-            RotationChangeProvider rotationChangeProvider) {
+            @UnfoldMain RotationChangeProvider rotationChangeProvider) {
         mLauncher = launcher;
 
         if (FeatureFlags.PREEMPTIVE_UNFOLD_ANIMATION_START.get()) {
