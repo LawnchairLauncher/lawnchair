@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"سیٹ اپ کرنے یا کھولنے کے لیے تھپتھپائیں"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"نجی"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"نجی اسپیس کی ترتیبات"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"نجی اسپیس غیر مقفل ہے۔"</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"نجی اسپیس مقفل ہے۔"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"مقفل کریں"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"نجی اسپیس کی منتقلی"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ایپس انسٹال کریں"</string>

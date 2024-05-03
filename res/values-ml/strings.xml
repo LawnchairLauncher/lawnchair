@@ -88,7 +88,7 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ആപ്പ് വിവരങ്ങൾ"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"സ്വകാര്യമായി ഇൻസ്റ്റാൾ ചെയ്യൂ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ഇൻസ്‌റ്റാൾ ചെയ്യുക"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ആപ്പ് നിർദ്ദേശിക്കരുത്"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ആപ്പ് നിർദ്ദേശിക്കേണ്ട"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"പ്രവചനം പിൻ ചെയ്യുക"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"കുറുക്കുവഴികൾ ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ഉപയോക്തൃ ഇടപെടൽ ഇല്ലാതെ കുറുക്കുവഴികൾ ചേർക്കാൻ അപ്ലിക്കേഷനെ അനുവദിക്കുന്നു."</string>
@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"സജ്ജീകരിക്കാനോ തുറക്കാനോ ടാപ്പ് ചെയ്യുക"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"സ്വകാര്യം"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"സ്വകാര്യ സ്‌പേസ് ക്രമീകരണം"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"സ്വകാര്യം, അൺലോക്ക് ചെയ്തിരിക്കുന്നു."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"സ്വകാര്യം, ലോക്ക് ചെയ്തു."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ലോക്ക് ചെയ്യുക"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"പ്രൈവറ്റ് സ്‌പേസ് ട്രാൻസിഷനിംഗ്"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>

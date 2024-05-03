@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"सेट अप करने या खोलने के लिए टैप करें"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"निजी"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"प्राइवेट स्पेस सेटिंग"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"प्राइवेट स्पेस को अनलॉक किया गया."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"प्राइवेट स्पेस को लॉक किया गया."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"लॉक"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"प्राइवेट स्पेस की सेटिंग में बदलाव किया जा रहा है"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ऐप्लिकेशन इंस्टॉल करें"</string>

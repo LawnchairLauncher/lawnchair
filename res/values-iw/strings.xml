@@ -186,13 +186,11 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"סינון"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"הפעולה נכשלה: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"מרחב פרטי"</string>
-    <string name="private_space_secondary_label" msgid="9203933341714508907">"אפשר להקיש כדי להגדיר או לפתוח"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"יש להקיש כדי להגדיר או לפתוח"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"פרטי"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"הגדרות המרחב הפרטי"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"פרטי, פתוח."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"פרטי, נעול."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"נעילה"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"מעבר למרחב הפרטי"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"התקנת אפליקציות"</string>

@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"ចុចដើម្បីរៀបចំ ឬបើក"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ឯកជន"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ការកំណត់ Private Space"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"ឯកជន បានដោះសោ។"</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ឯកជន ជាប់សោ។"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ចាក់សោ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ការផ្លាស់ប្ដូរ Private Space"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"ដំឡើង​កម្មវិធី"</string>

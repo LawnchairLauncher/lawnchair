@@ -187,12 +187,10 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Xato: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Shaxsiy xona"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Sozlash yoki ochish uchun bosing"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Yopiq"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Maxfiy"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Shaxsiy xona sozlamalari"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Shaxsiy, ochildi."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Shaxsiy, qulflandi."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Qulflash"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Maxfiy joyga almashtirish"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Ilovalar oʻrnatish"</string>
