@@ -107,6 +107,7 @@
             android:drawablePadding="@dimen/widget_cell_add_button_drawable_padding"
             android:drawableTint="?attr/widgetPickerAddButtonTextColor"
             android:maxLines="1"
+            style="@style/Button.Rounded.Colored"
             android:background="@drawable/widget_cell_add_button_background" />
     </FrameLayout>
 </merge>
