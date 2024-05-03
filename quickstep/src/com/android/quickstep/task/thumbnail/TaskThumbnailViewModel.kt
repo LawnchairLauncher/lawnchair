@@ -16,20 +16,32 @@
 
 package com.android.quickstep.task.thumbnail
 
+import com.android.quickstep.recents.viewmodel.RecentsViewData
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.LiveTile
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.Uninitialized
+import com.android.quickstep.task.viewmodel.TaskViewData
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 
-class TaskThumbnailViewModel {
-    private val _uiState: MutableStateFlow<TaskThumbnailUiState> =
-        MutableStateFlow(TaskThumbnailUiState.Uninitialized)
-    val uiState: StateFlow<TaskThumbnailUiState> = _uiState
+class TaskThumbnailViewModel(recentsViewData: RecentsViewData, taskViewData: TaskViewData) {
+    private val task = MutableStateFlow<TaskThumbnail?>(null)
+
+    val recentsFullscreenProgress = recentsViewData.fullscreenProgress
+    val inheritedScale =
+        combine(recentsViewData.scale, taskViewData.scale) { recentsScale, taskScale ->
+            recentsScale * taskScale
+        }
+    val uiState =
+        task.map { taskVal ->
+            when {
+                taskVal == null -> Uninitialized
+                taskVal.isRunning -> LiveTile
+                else -> Uninitialized
+            }
+        }
 
     fun bind(task: TaskThumbnail) {
-        _uiState.value =
-            if (task.isRunning) {
-                TaskThumbnailUiState.LiveTile
-            } else {
-                TaskThumbnailUiState.Uninitialized
-            }
+        this.task.value = task
     }
 }
