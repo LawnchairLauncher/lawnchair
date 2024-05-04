@@ -78,7 +78,7 @@ def generate_summary(repository: str = None, task_name: str = None, markdown_tab
   return content
 
 
-api_token = "AIzaSyCRl6oJATW1Q1BEUmskA-holrAsSjMR0e4" or os.getenv("API_TOKEN")
+api_token = os.getenv("API_TOKEN")
 repository = os.getenv("GITHUB_REPOSITORY") or os.getenv("CI_REPOSITORY_URL") or "LawnchairLauncher/Lawnchair"
 job_name = "Update Google Font"
 
