@@ -17,6 +17,7 @@
 package com.android.launcher3.widget.picker.search;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo;
@@ -163,7 +164,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
                 .when(mDataProvider)
                 .getAllWidgets();
         mSimpleWidgetsSearchAlgorithm.doSearch("Ca", mSearchCallback);
-        MAIN_EXECUTOR.submit(() -> { }).get();
+        getInstrumentation().waitForIdleSync();
         verify(mSearchCallback).onSearchResult(
                 matches("Ca"), argThat(a -> a != null && !a.isEmpty()));
     }
