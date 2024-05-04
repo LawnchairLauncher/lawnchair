@@ -43,8 +43,8 @@ def write_to_local_file(data: json, file_path: str, dev: bool = True) -> None:
   if dev is False:
     with open(file_path, "w") as file:
       json.dump(data, file)
-      print(f'🥞 (Successful) Write on: {file_path}')
-  print(f'🗿 (Warn) dev is True passed, assuming task successful on: {file_path}')
+      print(f'Successful write on: {file_path}')
+  print(f'dev is True passed, assuming task successful on: {file_path}')
 
 
 def generate_summary(repository: str = None, task_name: str = None, markdown_table: str = None, error: str = None) -> list:
@@ -63,17 +63,17 @@ def generate_summary(repository: str = None, task_name: str = None, markdown_tab
   content.append(f"## {font_job_heading}")
   content.append(font_job_body)
   if markdown_table is None:
-    content.append("🗿 (Warn) The summary of the changes was not passed to me so this will remains blank")
+    content.append("The summary of the changes was not passed to me so this will remains blank")
   else:
     content.append(markdown_table)
   if error is not None:
-    content.append(f"💥 (Error) {error}")
+    content.append(f"Error {error}")
     if stack_trace := traceback.format_exc():
       content.append("```")
       content.append(stack_trace)
       content.append("```")
     else:
-      content.append("🤨 (What a Terrible Failure) No stack trace available?")
+      content.append("... No stack trace available?")
 
   return content
 
@@ -86,12 +86,6 @@ local_file_path = "lawnchair/assets/google_fonts.json"
 
 local_fonts_data = get_local_fonts(local_file_path)
 new_fonts_data = get_google_fonts(api_token)
-
-
-# 🥞 Task successful
-# 🗿 Warn
-# 💥 Error
-# 🤨 What a Terrible Failure (WTF)
 
 
 if not api_token:
