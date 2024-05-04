@@ -18,7 +18,7 @@ package com.android.launcher3.util.rule
 
 import androidx.test.annotation.UiThreadTest
 import androidx.test.platform.app.InstrumentationRegistry
-import java.util.Locale
+import com.android.launcher3.util.EmulatedDeviceAndroidJUnit.Companion.isRunningInRobolectric
 import java.util.concurrent.atomic.AtomicReference
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -35,7 +35,7 @@ class RobolectricUiThreadRule : TestRule {
         if (!shouldRunOnUiThread(description)) base else UiThreadStatement(base)
 
     private fun shouldRunOnUiThread(description: Description): Boolean {
-        if (!isRunningInRobolectric()) {
+        if (!isRunningInRobolectric) {
             // If not running in robolectric, let the default runner handle this
             return false
         }
@@ -56,21 +56,6 @@ class RobolectricUiThreadRule : TestRule {
             clazz = clazz.superclass ?: return false
         }
         return true
-    }
-
-    private fun isRunningInRobolectric(): Boolean {
-        if (
-            System.getProperty("java.runtime.name")
-                .lowercase(Locale.getDefault())
-                .contains("android")
-        )
-            return false
-        return try {
-            // Check if robolectric runner exists
-            Class.forName("org.robolectric.RobolectricTestRunner") != null
-        } catch (e: ClassNotFoundException) {
-            false
-        }
     }
 
     private class UiThreadStatement(val base: Statement) : Statement() {
