@@ -67,7 +67,7 @@ def generate_summary(
     markdown_table: str = None,
     error: str = None,
 ) -> list:
-    """Generate a markdown summary message based on the comparison table"""
+    """Generate a markdown summary message"""
 
     content = []
 
