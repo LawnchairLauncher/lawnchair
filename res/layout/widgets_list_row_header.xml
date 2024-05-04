@@ -48,8 +48,10 @@
             android:layout_gravity="start|center_vertical"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="16sp"
+            android:textColor="?attr/widgetPickerHeaderAppTitleColor"
+            android:textSize="@dimen/widget_picker_header_app_title_font_size"
+            android:textFontWeight="@integer/widget_picker_header_app_title_font_weight"
+            android:lineHeight="@dimen/widget_picker_header_app_title_line_height"
             tools:text="App name" />
 
         <TextView
@@ -58,8 +60,10 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="?android:attr/textColorSecondary"
-            android:alpha="0.7"
+            android:textColor="?attr/widgetPickerHeaderAppSubtitleColor"
+            android:textSize="@dimen/widget_picker_header_app_subtitle_font_size"
+            android:textFontWeight="@integer/widget_picker_header_app_subtitle_font_weight"
+            android:lineHeight="@dimen/widget_picker_header_app_subtitle_line_height"
             tools:text="m widgets, n shortcuts" />
 
     </LinearLayout>

@@ -106,6 +106,7 @@ import com.android.launcher3.taskbar.bubbles.BubbleBarViewController;
 import com.android.launcher3.taskbar.bubbles.BubbleControllers;
 import com.android.launcher3.taskbar.bubbles.BubbleDismissController;
 import com.android.launcher3.taskbar.bubbles.BubbleDragController;
+import com.android.launcher3.taskbar.bubbles.BubblePinController;
 import com.android.launcher3.taskbar.bubbles.BubbleStashController;
 import com.android.launcher3.taskbar.bubbles.BubbleStashedHandleViewController;
 import com.android.launcher3.taskbar.navbutton.NearestTouchFrame;
@@ -259,6 +260,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     new BubbleDragController(this),
                     new BubbleDismissController(this, mDragLayer),
                     new BubbleBarPinController(this, mDragLayer,
+                            () -> getDeviceProfile().getDisplayInfo().currentSize),
+                    new BubblePinController(this, mDragLayer,
                             () -> getDeviceProfile().getDisplayInfo().currentSize)
             ));
         }
@@ -272,7 +275,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 R.drawable.ic_sysbar_rotate_button_cw_start_0,
                 R.drawable.ic_sysbar_rotate_button_cw_start_90,
                 () -> getDisplay().getRotation());
-        rotationButtonController.setBgExecutor(Executors.THREAD_POOL_EXECUTOR);
+        rotationButtonController.setBgExecutor(Executors.UI_HELPER_EXECUTOR);
 
         mControllers = new TaskbarControllers(this,
                 new TaskbarDragController(this),

@@ -31,6 +31,7 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
 import com.android.launcher3.views.ActivityContext;
@@ -143,7 +144,7 @@ public class AllAppsSearchBarController
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        if (!hasFocus) {
+        if (!hasFocus && !FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             mInput.hideKeyboard();
         }
     }

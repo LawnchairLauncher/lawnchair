@@ -31,6 +31,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.UserHandle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -79,7 +80,8 @@ public final class WidgetsListHeaderViewHolderBinderTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mContext = new ActivityContextWrapper(getApplicationContext());
+        mContext = new ActivityContextWrapper(new ContextThemeWrapper(getApplicationContext(),
+                R.style.WidgetContainerTheme));
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;

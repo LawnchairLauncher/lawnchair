@@ -268,6 +268,10 @@
             @color/widget_picker_add_button_background_color_light</item>
         <item name="widgetPickerAddButtonTextColor">
             @color/widget_picker_add_button_text_color_light</item>
+        <item name="widgetCellTitleColor">
+            @color/widget_cell_title_color_light</item>
+        <item name="widgetCellSubtitleColor">
+            @color/widget_cell_subtitle_color_light</item>
     </style>
     <style name="WidgetContainerTheme.Dark" parent="AppTheme.Dark">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
@@ -303,6 +307,10 @@
             @color/widget_picker_add_button_background_color_dark</item>
         <item name="widgetPickerAddButtonTextColor">
             @color/widget_picker_add_button_text_color_dark</item>
+        <item name="widgetCellTitleColor">
+            @color/widget_cell_title_color_dark</item>
+        <item name="widgetCellSubtitleColor">
+            @color/widget_cell_subtitle_color_dark</item>
     </style>
 
     <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">

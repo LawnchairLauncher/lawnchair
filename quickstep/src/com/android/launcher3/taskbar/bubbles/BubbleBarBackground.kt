@@ -131,21 +131,15 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
 
         // Draw background.
         val radius = backgroundHeight / 2f
-        val left = if (anchorLeft) 0f else bounds.width().toFloat() - width
-        val right = if (anchorLeft) width else bounds.width().toFloat()
-        canvas.drawRoundRect(
-            left,
-            pointerVisibleHeight,
-            right,
-            bounds.height().toFloat(),
-            radius,
-            radius,
-            paint
-        )
+        val left = bounds.left + (if (anchorLeft) 0f else bounds.width().toFloat() - width)
+        val right = bounds.left + (if (anchorLeft) width else bounds.width().toFloat())
+        val top = bounds.top + pointerVisibleHeight
+        val bottom = bounds.top + bounds.height().toFloat()
+        canvas.drawRoundRect(left, top, right, bottom, radius, radius, paint)
 
         if (showingArrow) {
             // Draw arrow.
-            val transX = arrowPositionX - pointerWidth / 2f
+            val transX = bounds.left + arrowPositionX - pointerWidth / 2f
             canvas.translate(transX, 0f)
             arrowDrawable.draw(canvas)
         }

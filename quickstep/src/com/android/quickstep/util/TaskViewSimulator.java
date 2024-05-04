@@ -245,7 +245,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mSplitBounds == null) {
             mStagePosition = STAGE_POSITION_UNDEFINED;
         } else {
-            mStagePosition = mThumbnailPosition.equals(splitInfo.leftTopBounds)
+            mStagePosition = runningTarget.taskId == splitInfo.leftTopTaskId
                     ? STAGE_POSITION_TOP_OR_LEFT : STAGE_POSITION_BOTTOM_OR_RIGHT;
             mPositionHelper.setSplitBounds(convertLauncherSplitBoundsToShell(mSplitBounds),
                     mStagePosition);

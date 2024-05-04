@@ -58,12 +58,13 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
 
     public WidgetsRecommendationTableLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // There are 1 row for title, 1 row for dimension and 2 rows for description.
+        // There are 1 row for title, 1 row for dimension and max 3 rows for description.
         mWidgetsRecommendationTableVerticalPadding = 2 * getResources()
                 .getDimensionPixelSize(R.dimen.widget_recommendations_table_vertical_padding);
         mWidgetCellVerticalPadding = 2 * getResources()
                 .getDimensionPixelSize(R.dimen.widget_cell_vertical_padding);
-        mWidgetCellTextViewsHeight = 4 * getResources().getDimension(R.dimen.widget_cell_font_size);
+        mWidgetCellTextViewsHeight =
+                getResources().getDimension(R.dimen.widget_cell_title_line_height);
     }
 
     /** Sets a {@link android.view.View.OnLongClickListener} for all widget cells in this table. */

@@ -179,7 +179,6 @@ public final class TestProtocol {
     public static final String WIDGET_CONFIG_NULL_EXTRA_INTENT = "b/324419890";
     public static final String ACTIVITY_NOT_RESUMED_AFTER_BACK = "b/322823209";
     public static final String OVERVIEW_SELECT_TOOLTIP_MISALIGNED = "b/332485341";
-
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
     public static final String REQUEST_IS_EMULATE_DISPLAY_RUNNING = "is-emulate-display-running";

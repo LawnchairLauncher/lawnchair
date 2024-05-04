@@ -136,6 +136,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private final Rect mWidgetViewNewRect = new Rect();
     private final @Nullable LauncherAppWidgetHostView.CellChildViewPreLayoutListener
             mCellChildViewPreLayoutListener;
+    private final @NonNull OnLayoutChangeListener mWidgetViewLayoutListener;
 
     private int mXDown, mYDown;
 
@@ -177,6 +178,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDragAcrossTwoPanelOpacityMargin = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.resize_frame_invalid_drag_across_two_panel_opacity_margin);
         mDragLayerRelativeCoordinateHelper = new ViewGroupFocusHelper(mLauncher.getDragLayer());
+
+        mWidgetViewLayoutListener =
+                (v, l, t, r, b, oldL, oldT, oldR, oldB) -> setCornerRadiusFromWidget();
     }
 
     @Override
@@ -211,21 +215,24 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         DragLayer dl = launcher.getDragLayer();
         AppWidgetResizeFrame frame = (AppWidgetResizeFrame) launcher.getLayoutInflater()
                 .inflate(R.layout.app_widget_resize_frame, dl, false);
-        if (widget.hasEnforcedCornerRadius()) {
-            float enforcedCornerRadius = widget.getEnforcedCornerRadius();
-            ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
-            Drawable d = imageView.getDrawable();
-            if (d instanceof GradientDrawable) {
-                GradientDrawable gd = (GradientDrawable) d.mutate();
-                gd.setCornerRadius(enforcedCornerRadius);
-            }
-        }
         frame.setupForWidget(widget, cellLayout, dl);
         ((DragLayer.LayoutParams) frame.getLayoutParams()).customPosition = true;
 
         dl.addView(frame);
         frame.mIsOpen = true;
         frame.post(() -> frame.snapToWidget(false));
+    }
+
+    private void setCornerRadiusFromWidget() {
+        if (mWidgetView != null && mWidgetView.hasEnforcedCornerRadius()) {
+            float enforcedCornerRadius = mWidgetView.getEnforcedCornerRadius();
+            ImageView imageView = findViewById(R.id.widget_resize_frame);
+            Drawable d = imageView.getDrawable();
+            if (d instanceof GradientDrawable) {
+                GradientDrawable gd = (GradientDrawable) d.mutate();
+                gd.setCornerRadius(enforcedCornerRadius);
+            }
+        }
     }
 
     private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
@@ -317,6 +324,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 .log(LAUNCHER_WIDGET_RESIZE_STARTED);
 
         setOnKeyListener(this);
+
+        setCornerRadiusFromWidget();
+        mWidgetView.addOnLayoutChangeListener(mWidgetViewLayoutListener);
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {
@@ -729,6 +739,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mWidgetView.setLayoutTransition(null);
         }
         mDragLayer.removeView(this);
+        mWidgetView.removeOnLayoutChangeListener(mWidgetViewLayoutListener);
     }
 
     private void updateInvalidResizeEffect(CellLayout cellLayout, CellLayout pairedCellLayout,
