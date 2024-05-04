@@ -1,0 +1,44 @@
+name: Crowdin Download
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  synchronize-with-google-fonts:
+    name: Update Google Fonts
+    if: github.repository_owner == 'LawnchairLauncher'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Update Google Fonts
+        run: python .github/tools/google_fonts.py >> $GITHUB_STEP_SUMMARY
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+
+      - name: Commit & Push changes
+        uses: actions-js/push@v1.5
+        with:
+          github_token: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
+          message: ${{ env.GITHUB_STEP_SUMMARY }}
+          author_email: 115872683+lawnchair-bot@users.noreply.github.com
+          author_name: Lawnchair Bot
+          branch: fonts-maintenance
+
+      - name: Create Pull Request
+        run: |
+          gh pr create --title "Update Google Fonts" --body "${{ env.GITHUB_STEP_SUMMARY }}" --base 14-dev --head lawnchair-bot:fonts-maintenance
