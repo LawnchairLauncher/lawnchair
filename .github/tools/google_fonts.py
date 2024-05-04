@@ -69,12 +69,12 @@ def generate_summary(repository: str = None, task_name: str = None, markdown_tab
   content.append(f"## {font_job_heading}")
   content.append(font_job_body)
   if markdown_table is None:
-    content.append("The summary of the changes was not passed to me so this will remains blank")
+    content.append("\nThe summary of the changes was not passed to me so this will remains blank\n")
   else:
     content.append(markdown_table)
   if error is not None:
-    content.append(f"Error {error}")
-    if stack_trace := traceback.format_exc():
+    content.append(f"Error: {error}")
+    if stack_trace := traceback.print_exc():
       content.append("```")
       content.append(stack_trace)
       content.append("```")
