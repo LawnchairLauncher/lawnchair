@@ -135,7 +135,9 @@ final def quickstepMaxSdk = "34"
 android {
     namespace "com.android.launcher3"
     defaultConfig {
-        versionCode 15
+        // Lawnchair Launcher 14.0 Beta 2
+        // Android 14, Minor 0, Lawnchair Stage 2 (Beta), Update No 2
+        versionCode 14_00_02_02
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
