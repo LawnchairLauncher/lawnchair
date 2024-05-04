@@ -108,7 +108,6 @@ api_token = os.getenv("API_TOKEN")
 repository = (
     os.getenv("GITHUB_REPOSITORY")
     or os.getenv("CI_REPOSITORY_URL")
-    or "LawnchairLauncher/Lawnchair"
 )
 job_name = "Update Google Font"
 
