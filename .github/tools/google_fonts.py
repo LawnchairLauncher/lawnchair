@@ -9,7 +9,13 @@ def get_google_fonts(api_token: str) -> json:
   """GET font data from Google Fonts API"""
 
   url = f"https://www.googleapis.com/webfonts/v1/webfonts?key={api_token}"
-  return requests.get(url).json()
+  content = requests.get(url)
+
+  if content.status_code == 429:
+    raise Exception("Rate limit exceeded, please try again later")
+  if content.status_code != 200:
+    raise Exception(f"Failed to fetch data from Google Fonts API due to {content.status_code}")
+  return content.json()
 
 
 def get_local_fonts(file_path: str) -> json:
@@ -84,12 +90,19 @@ job_name = "Update Google Font"
 
 local_file_path = "lawnchair/assets/google_fonts.json"
 
-local_fonts_data = get_local_fonts(local_file_path)
-new_fonts_data = get_google_fonts(api_token)
-
 
 if not api_token:
   summary = generate_summary(repository, job_name, error="This script requires Google Fonts API, please set the API_TOKEN env variable")
+  for string in summary:
+    print(string)
+  exit(1)
+
+
+local_fonts_data = get_local_fonts(local_file_path)
+try:
+  new_fonts_data = get_google_fonts(api_token)
+except Exception as e:
+  summary = generate_summary(repository, job_name, error=f"Failed to fetch data from Google Fonts API: {e}")
   for string in summary:
     print(string)
   exit(1)
