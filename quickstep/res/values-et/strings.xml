@@ -90,7 +90,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Valmis!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Avalehele liikumiseks pühkige üles"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Avakuvale liikumiseks puudutage avakuva nuppu"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Olete valmis oma seadet <xliff:g id="DEVICE">%1$s</xliff:g> kasutama"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> on nüüd kasutamiseks valmis"</string>
     <string name="default_device_name" msgid="6660656727127422487">"seade"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Süsteemi navigeerimisseaded"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Jaga"</string>
@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Tehke tegumiriba abil enamat"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Alati kuvatud tegumiriba"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Puudutage pikalt jaoturit, et tegumiriba oleks ekraani allosas alati kuvatud"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Puudutage pikalt toiminguklahvi, et ekraanil kuvatut otsida"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"See toode kasutab otsingu jaoks ekraani valitud osa. Kehtivad Google\'i <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>privaatsuseeskirjad<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> ja <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>teenusetingimused<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sule"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Valmis"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Avaleht"</string>

@@ -86,7 +86,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Alih keluar"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Nyahpasang"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Maklumat apl"</string>
-    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Pasang dalam peribadi"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Pasang dalam persendirian"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Pasang"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Jangan cadangkan apl"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Sematkan Ramalan"</string>
@@ -187,12 +187,10 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Gagal: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Ruang privasi"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Ketik untuk menyediakan atau membuka"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Peribadi"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Persendirian"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Tetapan Ruang Peribadi"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Peribadi, tidak berkunci."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Peribadi, dikunci."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Kunci"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Peralihan Ruang Peribadi"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Pasang apl"</string>

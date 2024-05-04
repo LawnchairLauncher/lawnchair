@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Egin gauza gehiago zereginen barrarekin"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Erakutsi beti zereginen barra"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Pantailaren behealdeko zereginen barra beti erakusteko, eduki sakatuta zatitzailea"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Eduki sakatuta ekintza-tekla pantailan dagoena bilatzeko"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Produktu honek pantailan hautatutako zatia erabiltzen du bilaketa egiteko. Google-ren <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Pribatutasun-gidalerroak<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> eta <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Zerbitzu-baldintzak<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> aplikatzen dira."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Itxi"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Eginda"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Hasiera"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Eraman gora, ezkerretara"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Eraman behera, eskuinetara"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Erakutsi beste # aplikazio.}other{Erakutsi beste # aplikazio.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Erakutsi ordenagailuetarako # aplikazio.}other{Erakutsi ordenagailuetarako # aplikazio.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> eta <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Aplikazioa mahaigainean gehitzen"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Utzi"</string>

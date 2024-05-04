@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"කාර්ය තීරුව සමග තවත් කරන්න"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"සෑම විටම කාර්ය තීරුව පෙන්වන්න"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"සෑම විටම ඔබේ තිරයේ පතුලේ ඇති කාර්ය තීරුව පෙන්වීමට, බෙදුම්කරු ස්පර්ශ කර අල්ලාගෙන සිටින්න"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"ඔබේ තිරයෙහි ඇති දේ සෙවීමට ක්‍රියා යතුර ස්පර්ශ කර සිටින්න"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"මෙම නිෂ්පාදනය සෙවීමට ඔබේ තිරයෙහි තෝරන ලද කොටස භාවිතා කරයි. Google හි <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>පෞද්ගලිකත්ව ප්‍රතිපත්තිය<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> සහ <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>සේවා නියමයන්<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> අදාළ වේ."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"වසන්න"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"නිමයි"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"මුල් පිටුව"</string>

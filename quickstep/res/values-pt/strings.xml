@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Aproveite ainda mais a Barra de tarefas"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Sempre mostrar a Barra de tarefas"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Toque e pressione o divisor para sempre mostrar a Barra de tarefas na parte de baixo da tela"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Toque na tecla de ação e pressione para pesquisar o que está na tela"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"O produto usa a parte selecionada da tela para pesquisar. O uso desses dados está sujeito à <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Política de Privacidade<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> e aos <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Termos de Serviço<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> do Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fechar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Concluído"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Início"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover para cima/para a esquerda"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover para baixo/para a direita"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Mostrar mais # app.}one{Mostrar mais # app.}other{Mostrar mais # apps.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Mostrar # app para computador.}one{Mostrar # app para computador.}other{Mostrar # apps para computador.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> e <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Adicionando app ao computador"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Cancelar"</string>

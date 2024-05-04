@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार प्रयोग गरेर अझ धेरै कार्य गर्नुहोस्"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"टास्कबार सधैँ देखाउनुहोस्"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"आफ्नो स्क्रिनको पुछारमा टास्कबार सधैँ देखाइराख्न डिभाइडर टच एन्ड होल्ड गर्नुहोस्"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"आफ्नो स्क्रिनमा भएका कुराहरू खोज्न एक्सन कीमा टच एन्ड होल्ड गर्नुहोस्"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"यो उत्पादनले तपाईंले चयन गर्नुभएको स्क्रिनको भाग प्रयोग गरेर खोजी गर्छ। Google को <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>गोपनीयता नीति<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> र <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>सेवाका सर्तहरू<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> लागू हुन्छन्।"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बन्द गर्नुहोस्"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"सम्पन्न भयो"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>

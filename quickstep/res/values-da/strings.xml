@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Få mere fra hånden med proceslinjen"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vis altid proceslinjen"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Hvis du vil have, at proceslinjen altid vises nederst på din skærm, skal du holde fingeren på skillelinjen"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Hold fingeren på handlingstasten for at søge efter det, der vises på din skærm"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Dette produkt bruger den valgte del af din skærm til at søge. Googles <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>privatlivspolitik<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> og <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>servicevilkår<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> er gældende."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Luk"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Luk"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Hjem"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flyt til toppen eller venstre side"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flyt til bunden eller højre side"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Vis # app mere.}one{Vis # app mere.}other{Vis # apps mere.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Vis # computerprogram.}one{Vis # computerprogram.}other{Vis # computerprogrammer.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> og <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Appen føjes til computeren"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Annuller"</string>

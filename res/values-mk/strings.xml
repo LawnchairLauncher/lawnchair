@@ -88,7 +88,7 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Инф. за апликација"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Инстал. во приватен"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Инсталирај"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не предлагај апликација"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не предлагај апл."</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Закачи го предвидувањето"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"инсталирање кратенки"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Овозможува апликацијата да додава кратенки без интервенција на корисникот."</string>
@@ -189,10 +189,8 @@
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Допрете за да поставите или отворите"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Приватен простор"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Поставки за „Приватен простор“"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Приватно, отклучено."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Приватно, заклучено."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Заклучи"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Префрлање на „Приватен простор“"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Инсталирајте апликации"</string>

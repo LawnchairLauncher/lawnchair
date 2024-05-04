@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Taskbar ဖြင့် ပိုမိုလုပ်ဆောင်နိုင်ခြင်း"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Taskbar ကို အမြဲပြပါ"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Taskbar ကို စခရင်အောက်ခြေတွင် အမြဲပြရန် ခွဲခြားမျဉ်းကို တို့ထိ၍ ဖိထားပါ"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"သင့်စခရင်ပေါ်ရှိအရာကို ရှာရန် လုပ်ဆောင်ချက်ကီးကို ထိ၍ဖိထားပါ"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"ဤကုန်ပစ္စည်းသည် သင့်စခရင်၌ ရွေးထားသောအပိုင်းကိုသုံး၍ ရှာဖွေသည်။ Google ၏ <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>ကိုယ်ရေးအချက်အလက်လုံခြုံမှုဆိုင်ရာ မူဝါဒ<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> နှင့် <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>ဝန်ဆောင်မှုစည်းမျဉ်းများ<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> အကျုံးဝင်သည်။"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ပိတ်ရန်"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ပြီးပြီ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ပင်မစာမျက်နှာ"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"အပေါ်/ဘယ်ဘက်သို့ ရွှေ့ရန်"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"အောက်ခြေ/ညာဘက်သို့ ရွှေ့ရန်"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{နောက်ထပ်အက်ပ် # ခု ပြပါ။}other{နောက်ထပ်အက်ပ် # ခု ပြပါ။}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{ဒက်စတော့ အက်ပ် # ခု ပြပါ။}other{ဒက်စတော့ အက်ပ် # ခု ပြပါ။}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> နှင့် <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"‘ဒက်စ်တော့’ တွင် အက်ပ်ကို ထည့်ခြင်း"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"မလုပ်တော့"</string>

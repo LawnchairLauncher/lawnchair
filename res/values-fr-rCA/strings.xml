@@ -88,7 +88,7 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Détails de l\'appli"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Installer dans privé"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installer"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne pas suggérer d\'application"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne pas suggérer d\'appli"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Épingler la prédiction"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installer des raccourcis"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet à une application d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur."</string>
@@ -186,13 +186,11 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrer"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Espace privé"</string>
-    <string name="private_space_secondary_label" msgid="9203933341714508907">"Toucher pour configurer ou ouvrir"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Touchez pour configurer ou ouvrir"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privé"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Paramètres de l\'Espace privé"</string>
-    <!-- no translation found for ps_container_unlock_button_content_description (9181551784092204234) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_button_content_description (5961993384382649530) -->
-    <skip />
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Privé, déverrouillé."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privé, verrouillé."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Verrouiller"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Transition vers l\'Espace privé"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Installer des applications"</string>

@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Tapşırıq paneli ilə daha çox şey edin"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"İşləmə panelini həmişə göstərin"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"İşləmə panelini həmişə ekranın aşağısında göstərmək üçün ayırıcı üzərinə toxunun və saxlayın"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Ekranda axtarış etmək üçün fəaliyyət açarına toxunub saxlayın"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Bu məhsul axtarış üçün ekranın seçilmiş hissəsindən istifadə edir. Google <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Məxfilik Siyasəti<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> və <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Xidmət Şərtləri<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> tətbiq edilir."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Bağlayın"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hazırdır"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Ev"</string>

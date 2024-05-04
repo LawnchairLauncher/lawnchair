@@ -138,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ଶୀର୍ଷ/ବାମକୁ ମୁଭ କରନ୍ତୁ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ନିମ୍ନ/ଡାହାଣକୁ ମୁଭ କରନ୍ତୁ"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{ଅଧିକ #ଟି ଆପ ଦେଖାନ୍ତୁ।}other{ଅଧିକ #ଟି ଆପ୍ସ ଦେଖାନ୍ତୁ।}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# ଡେସ୍କଟପ ଆପ ଦେଖାନ୍ତୁ।}other{# ଡେସ୍କଟପ ଆପ୍ସ ଦେଖାନ୍ତୁ।}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ଏବଂ <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"ଡେସ୍କଟପରେ ଆପ ଯୋଗ କରାଯାଉଛି"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ବାତିଲ କରନ୍ତୁ"</string>

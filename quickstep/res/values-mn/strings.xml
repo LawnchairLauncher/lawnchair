@@ -117,10 +117,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Ажлын хэсгийн тусламжтай илүү ихийг хийгээрэй"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Ажлын хэсгийг үргэлж харуулах"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Дэлгэцийнхээ доод талд Ажлын хэсгийг үргэлж харуулахын тулд хуваагч дээр хүрээд удаан дарна уу"</string>
-    <!-- no translation found for taskbar_search_edu_title (5569194922234364530) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_search_disclosure (8734536088447779686) -->
-    <skip />
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Дэлгэц дээрээ байгаа зүйлийг хайхын тулд тусгай товчлуурыг удаан дарна уу"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Энэ бүтээгдэхүүн хайхын тулд таны дэлгэцийн сонгосон хэсгийг ашигладаг. Google-н <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>нууцлалын бодлого<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> болон <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>үйлчилгээний нөхцөл<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> хэрэгжинэ."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Хаах"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Дууссан"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Гэр"</string>
@@ -140,8 +138,7 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Зүүн дээд хэсэг рүү зөөх"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Баруун доод хэсэг рүү зөөх"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Өөр # аппыг харуулна уу.}other{Өөр # аппыг харуулна уу.}}"</string>
-    <!-- no translation found for quick_switch_desktop (4834587349322698616) -->
-    <skip />
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Компьютерын # аппыг харуулна уу.}other{Компьютерын # аппыг харуулна уу.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> болон <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="desktop_select_app_toast" msgid="2306057322833956910">"Компьютерт апп нэмж байна"</string>
     <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Цуцлах"</string>

@@ -88,9 +88,9 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"أحسنت"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"الدليل التوجيهي <xliff:g id="CURRENT">%1$d</xliff:g> من إجمالي <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"اكتملت عملية الإعداد"</string>
-    <string name="allset_hint" msgid="459504134589971527">"يمكنك التمرير السريع إلى الأعلى للانتقال إلى الشاشة الرئيسية."</string>
+    <string name="allset_hint" msgid="459504134589971527">"يمكنك التمرير سريعًا إلى الأعلى للانتقال إلى الشاشة الرئيسية"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"انقر على زر الشاشة الرئيسية للانتقال إلى الشاشة الرئيسية."</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"يمكنك الآن بدء استخدام \"<xliff:g id="DEVICE">%1$s</xliff:g>\"."</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"يمكنك الآن بدء استخدام <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"الجهاز"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"إعدادات التنقّل داخل النظام"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"مشاركة"</string>
