@@ -99,6 +99,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val recentsActionClearAll = BoolPref("pref_clearAllAsAction", false)
     val recentsActionLocked = BoolPref("pref_lockedAsAction", false)
     val recentsTranslucentBackground = BoolPref("pref_recentsTranslucentBackground", false, recreate)
+    val recentsTranslucentBackgroundAlpha = FloatPref("pref_recentTranslucentBackgroundAlpha", .8f, recreate)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

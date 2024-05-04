@@ -21,6 +21,7 @@ import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.ui.util.PreviewLawnchair
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -36,17 +37,26 @@ fun QuickstepPreferences(
         context.packageManager.getLaunchIntentForPackage("com.google.ar.lens") != null
     }
 
-    if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
-
     PreferenceLayout(
         label = stringResource(id = R.string.quickstep_label),
         modifier = modifier,
     ) {
+        if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 adapter = prefs.recentsTranslucentBackground.getAdapter(),
                 label = stringResource(id = R.string.translucent_background),
             )
+            val recentsTranslucentBackground by prefs.recentsTranslucentBackground.observeAsState()
+            ExpandAndShrink(visible = recentsTranslucentBackground) {
+                SliderPreference(
+                    adapter = prefs.recentsTranslucentBackgroundAlpha.getAdapter(),
+                    label = stringResource(id = R.string.translucent_background_alpha),
+                    step = 0.05f,
+                    valueRange = 0f..0.95f,
+                    showAsPercentage = true,
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.recents_actions_label)) {
             if (!isOnePlusStock) {
@@ -103,8 +113,9 @@ fun QuickstepPreferences(
     }
 }
 
+@PreviewLawnchair
 @Composable
-fun QuickSwitchIgnoredWarning(
+private fun QuickSwitchIgnoredWarning(
     modifier: Modifier = Modifier,
 ) {
     Surface(
