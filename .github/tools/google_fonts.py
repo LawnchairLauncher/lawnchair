@@ -5,6 +5,13 @@ import json
 import sys
 
 
+api_token = os.getenv("API_TOKEN")
+repository = os.getenv("GITHUB_REPOSITORY") or os.getenv("CI_REPOSITORY_URL")
+job_name = "Update Google Font"
+
+local_file_path = "lawnchair/assets/google_fonts.json"
+
+
 def get_google_fonts(api_token: str) -> json:
     """GET font data from Google Fonts API"""
 
@@ -21,7 +28,7 @@ def get_google_fonts(api_token: str) -> json:
 
 
 def get_local_fonts(file_path: str) -> json:
-    """Loads font data from Lawnchair local JSON file"""
+    """Loads font data from local JSON file"""
 
     with open(file_path, "r") as file:
         return json.load(file)
@@ -102,16 +109,6 @@ def generate_summary(
             content.append("... No stack trace available?")
 
     return content
-
-
-api_token = os.getenv("API_TOKEN")
-repository = (
-    os.getenv("GITHUB_REPOSITORY")
-    or os.getenv("CI_REPOSITORY_URL")
-)
-job_name = "Update Google Font"
-
-local_file_path = "lawnchair/assets/google_fonts.json"
 
 
 if not api_token:
