@@ -110,7 +110,7 @@ if local_fonts_data and new_fonts_data:
     exit(3)
 
   try:
-    write_to_local_file(new_fonts_data, local_file_path, True)
+    write_to_local_file(new_fonts_data, local_file_path, False)
   except Exception as e:
     summary = generate_summary(repository, job_name, error=f"Failed to write to local file: {e}")
     for string in summary:
