@@ -264,7 +264,7 @@
     <string name="website_label">Сајт</string>
     <string name="qsb_search_provider_app_required">Потребна је апликација</string>
     <!-- AppDrawerPrefences -->
-    <string name="background_opacity">Прозирност позадине</string>
+    <string name="background_opacity">Непрозирност позадине</string>
     <string name="hidden_apps_label">Скривене апликације</string>
     <string name="show_enable_smart_hide">Прикажи по уносу пуног имена</string>
     <string name="hide_hidden_apps_search">Сакриј у резултатима претраге</string>
@@ -312,6 +312,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Ова подешавања ће бити игнорисана јер Lawnchair није подешен као добављач недавних апликација.</string>
     <string name="translucent_background">Полупрозирна позадина</string>
+    <string name="translucent_background_alpha">Непрозирност позадине</string>
     <string name="recents_actions_label">Брзе радње</string>
     <string name="action_share">Дели</string>
     <string name="action_lens">Објектив</string>
@@ -431,4 +432,14 @@
     <string name="system_settings">Подешавања система</string>
     <string name="action_unlock">Откључај</string>
     <string name="action_lock">Закључај</string>
+    <string name="allapps_twoline_label">Приказуј у више редова</string>
+    <string name="hidden_apps_show_always">Увек</string>
+    <string name="hidden_apps_show_name_typed">Ако је унет пун назив</string>
+    <string name="hidden_apps_show_never">Никад</string>
+    <string name="show_hidden_apps_in_search_results">Приказуј скривене апликације у резултатима претраге</string>
+    <string name="search_algorithm_app_search">Претрага апликација</string>
+    <string name="search_algorithm_global_search_on_device">Глобална претрага (на уређају)</string>
+    <string name="search_algorithm_global_search_via_asi">Глобална претрага (помоћу ASI-ја)</string>
+    <string name="app_search_algorithm">Алгоритам претраге</string>
+    <string name="all_apps_search_result_calculator">Калкулатор</string>
 </resources>

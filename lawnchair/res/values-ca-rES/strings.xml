@@ -311,6 +311,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Aquests ajustaments seran ignorats, ja que Lawnchair no està configurat al proveïdor de recents.</string>
     <string name="translucent_background">Fons Translúcid</string>
+    <string name="translucent_background_alpha">Opacitat del fons</string>
     <string name="recents_actions_label">Accions ràpides</string>
     <string name="action_share">Comparteix</string>
     <string name="action_lens">Lens</string>
@@ -381,7 +382,7 @@
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contactes i més</string>
     <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
+    <string name="warn_contact_permission_content">Per buscar contactes, permet el permís de Contactes i Telèfon a Lawnchair.</string>
     <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
     <string name="grant_requested_permissions">Grant Permissions</string>
     <string name="pref_suggestion_label">Suggeriments</string>
@@ -428,6 +429,16 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Configuració del sistema</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">Desbloquejar</string>
+    <string name="action_lock">Bloquejar</string>
+    <string name="allapps_twoline_label">Utilitzar múltiples línies</string>
+    <string name="hidden_apps_show_always">Sempre</string>
+    <string name="hidden_apps_show_name_typed">Si Nom Complet és escrit</string>
+    <string name="hidden_apps_show_never">Mai</string>
+    <string name="show_hidden_apps_in_search_results">Mostrar apps amagades als resultats de la cerca</string>
+    <string name="search_algorithm_app_search">Buscar aplicacions</string>
+    <string name="search_algorithm_global_search_on_device">Cerca global (al-dispositiu)</string>
+    <string name="search_algorithm_global_search_via_asi">Cerca Global (amb ASI)</string>
+    <string name="app_search_algorithm">Algoritme de Cerca</string>
+    <string name="all_apps_search_result_calculator">Calculador</string>
 </resources>

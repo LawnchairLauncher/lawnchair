@@ -264,7 +264,7 @@
     <string name="website_label">Sajt</string>
     <string name="qsb_search_provider_app_required">Potrebna je aplikacija</string>
     <!-- AppDrawerPrefences -->
-    <string name="background_opacity">Prozirnost pozadine</string>
+    <string name="background_opacity">Neprozirnost pozadine</string>
     <string name="hidden_apps_label">Skrivene aplikacije</string>
     <string name="show_enable_smart_hide">Prikaži po unosu punog imena</string>
     <string name="hide_hidden_apps_search">Sakrij u rezultatima pretrage</string>
@@ -312,6 +312,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Ova podešavanja će biti ignorisana jer Lawnchair nije podešen kao dobavljač nedavnih aplikacija.</string>
     <string name="translucent_background">Poluprozirna pozadina</string>
+    <string name="translucent_background_alpha">Neprozirnost pozadine</string>
     <string name="recents_actions_label">Brze radnje</string>
     <string name="action_share">Deli</string>
     <string name="action_lens">Objektiv</string>
@@ -431,4 +432,14 @@
     <string name="system_settings">Podešavanja sistema</string>
     <string name="action_unlock">Otključaj</string>
     <string name="action_lock">Zaključaj</string>
+    <string name="allapps_twoline_label">Prikazuj u više redova</string>
+    <string name="hidden_apps_show_always">Uvek</string>
+    <string name="hidden_apps_show_name_typed">Ako je unet pun naziv</string>
+    <string name="hidden_apps_show_never">Nikad</string>
+    <string name="show_hidden_apps_in_search_results">Prikazuj skrivene aplikacije u rezultatima pretrage</string>
+    <string name="search_algorithm_app_search">Pretraga aplikacija</string>
+    <string name="search_algorithm_global_search_on_device">Globalna pretraga (na uređaju)</string>
+    <string name="search_algorithm_global_search_via_asi">Globalna pretraga (pomoću ASI-ja)</string>
+    <string name="app_search_algorithm">Algoritam pretrage</string>
+    <string name="all_apps_search_result_calculator">Kalkulator</string>
 </resources>

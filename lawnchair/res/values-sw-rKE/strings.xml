@@ -311,6 +311,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">Mandharinyuma angavu</string>
+    <string name="translucent_background_alpha">Uwazi wa Mandharinyuma</string>
     <string name="recents_actions_label">Vitendo vya Haraka</string>
     <string name="action_share">Gawa</string>
     <string name="action_lens">Lenzi</string>
@@ -430,4 +431,14 @@
     <string name="system_settings">System Settings</string>
     <string name="action_unlock">Unlock</string>
     <string name="action_lock">Lock</string>
+    <string name="allapps_twoline_label">Use Multiple Lines</string>
+    <string name="hidden_apps_show_always">Always</string>
+    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
+    <string name="hidden_apps_show_never">Never</string>
+    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="search_algorithm_app_search">Utafutaji wa Programu</string>
+    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
+    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
+    <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="all_apps_search_result_calculator">Calculator</string>
 </resources>

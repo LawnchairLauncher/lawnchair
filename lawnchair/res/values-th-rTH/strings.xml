@@ -310,6 +310,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">การตั้งค่าเหล่านี้จะถูกเพิกเฉยเนื่องจาก Lawnchair ไม่ได้ถูกตั้งค่าเป็นผู้ให้บริการล่าสุด</string>
     <string name="translucent_background">พื้นหลังโปร่งแสง</string>
+    <string name="translucent_background_alpha">ความทึบของพื้นหลัง</string>
     <string name="recents_actions_label">การกระทำด่วน</string>
     <string name="action_share">แชร์</string>
     <string name="action_lens">เลนส์</string>
@@ -429,4 +430,14 @@
     <string name="system_settings">ตั้งค่าระบบ</string>
     <string name="action_unlock">ปลดล็อค</string>
     <string name="action_lock">ล็อค</string>
+    <string name="allapps_twoline_label">Use Multiple Lines</string>
+    <string name="hidden_apps_show_always">Always</string>
+    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
+    <string name="hidden_apps_show_never">Never</string>
+    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="search_algorithm_app_search">ค้นหาแอพ</string>
+    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
+    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
+    <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="all_apps_search_result_calculator">เครื่องคิดเลข</string>
 </resources>

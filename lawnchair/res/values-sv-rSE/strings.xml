@@ -172,7 +172,7 @@
     <!-- HomeScreenPreferences -->
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <string name="minus_one_enable">Visa Flöde</string>
-    <string name="minus_one_unavailable">Inga flödesappar är installerade</string>
+    <string name="minus_one_unavailable">Inga flödesappar installerade</string>
     <string name="minus_one">Flöde</string>
     <string name="feed_provider">Flödesleverantör</string>
     <string name="feed_default">Förvald</string>
@@ -311,6 +311,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Dessa inställningar kommer att ignoreras eftersom Lawnchair inte är inställd som Senaste-leverantör.</string>
     <string name="translucent_background">Genomlysande bakgrund</string>
+    <string name="translucent_background_alpha">Bakgrundens ogenomskinlighet</string>
     <string name="recents_actions_label">Snabbåtgärder</string>
     <string name="action_share">Dela</string>
     <string name="action_lens">Lins</string>
@@ -430,4 +431,14 @@
     <string name="system_settings">Systeminställningar</string>
     <string name="action_unlock">Lås upp</string>
     <string name="action_lock">Lås</string>
+    <string name="allapps_twoline_label">Använd flera rader</string>
+    <string name="hidden_apps_show_always">Alltid</string>
+    <string name="hidden_apps_show_name_typed">Om hela namnet skrivs</string>
+    <string name="hidden_apps_show_never">Aldrig</string>
+    <string name="show_hidden_apps_in_search_results">Visa dolda appar i sökresultat</string>
+    <string name="search_algorithm_app_search">Appsökning</string>
+    <string name="search_algorithm_global_search_on_device">Global sökning (på enheten)</string>
+    <string name="search_algorithm_global_search_via_asi">Global sökning (via ASI)</string>
+    <string name="app_search_algorithm">Sökalgoritm</string>
+    <string name="all_apps_search_result_calculator">Kalkylator</string>
 </resources>
