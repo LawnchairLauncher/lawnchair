@@ -951,7 +951,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 mWindowLayoutParams.paramsForRotation[rot].height = size;
             }
         }
-        mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
+        mControllers.runAfterInit(
+                mControllers.taskbarInsetsController
+                        ::onTaskbarOrBubblebarWindowHeightOrInsetsChanged);
         notifyUpdateLayoutParams();
     }
 
@@ -1416,7 +1418,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         });
     }
 
-    protected boolean isUserSetupComplete() {
+    public boolean isUserSetupComplete() {
         return mIsUserSetupComplete;
     }
 

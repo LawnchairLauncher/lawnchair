@@ -24,8 +24,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
 
 /**
@@ -71,6 +73,23 @@ abstract class AbstractNavButtonLayoutter(
             )
         params.gravity = Gravity.CENTER
         return params
+    }
+
+    fun adjustForSetupInPhoneMode(
+        navButtonsLayoutParams: FrameLayout.LayoutParams,
+        navButtonsViewLayoutParams: FrameLayout.LayoutParams,
+        deviceProfile: DeviceProfile
+    ) {
+        val phoneOrPortraitSetupMargin =
+            resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_margin)
+        navButtonsLayoutParams.marginStart = phoneOrPortraitSetupMargin
+        navButtonsLayoutParams.bottomMargin =
+            if (!deviceProfile.isLandscape) 0
+            else
+                phoneOrPortraitSetupMargin -
+                        resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size) / 2
+        navButtonsViewLayoutParams.height =
+            resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_height)
     }
 
     open fun repositionContextualContainer(
