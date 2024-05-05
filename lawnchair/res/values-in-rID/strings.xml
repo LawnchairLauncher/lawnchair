@@ -310,6 +310,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Pengaturan ini akan diabaikan karena Lawnchair tidak diatur sebagai penyedia Terbaru.</string>
     <string name="translucent_background">Latar Belakang Tembus</string>
+    <string name="translucent_background_alpha">Transparansi Latar Belakang</string>
     <string name="recents_actions_label">Tindakan Cepat</string>
     <string name="action_share">Bagikan</string>
     <string name="action_lens">Lens</string>
@@ -429,4 +430,14 @@
     <string name="system_settings">Pengaturan Sistem</string>
     <string name="action_unlock">Buka kunci</string>
     <string name="action_lock">Kunci</string>
+    <string name="allapps_twoline_label">Use Multiple Lines</string>
+    <string name="hidden_apps_show_always">Always</string>
+    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
+    <string name="hidden_apps_show_never">Never</string>
+    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="search_algorithm_app_search">Pencarian Aplikasi</string>
+    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
+    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
+    <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="all_apps_search_result_calculator">Calculator</string>
 </resources>

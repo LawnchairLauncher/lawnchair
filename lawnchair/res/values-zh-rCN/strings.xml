@@ -310,6 +310,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">部分设置不可用，因为 Lawnchair 不能访问最近任务。</string>
     <string name="translucent_background">半透明背景</string>
+    <string name="translucent_background_alpha">背景不透明度</string>
     <string name="recents_actions_label">快捷功能</string>
     <string name="action_share">分享</string>
     <string name="action_lens">相机</string>
@@ -429,4 +430,14 @@
     <string name="system_settings">系统设置</string>
     <string name="action_unlock">解锁</string>
     <string name="action_lock">锁定</string>
+    <string name="allapps_twoline_label">使用多行</string>
+    <string name="hidden_apps_show_always">总是</string>
+    <string name="hidden_apps_show_name_typed">如果输入完整名称</string>
+    <string name="hidden_apps_show_never">从不</string>
+    <string name="show_hidden_apps_in_search_results">在搜索中显示隐藏的应用</string>
+    <string name="search_algorithm_app_search">应用搜索</string>
+    <string name="search_algorithm_global_search_on_device">全局搜索（设备）</string>
+    <string name="search_algorithm_global_search_via_asi">全局搜索（通过 ASI）</string>
+    <string name="app_search_algorithm">搜索算法</string>
+    <string name="all_apps_search_result_calculator">计算器</string>
 </resources>

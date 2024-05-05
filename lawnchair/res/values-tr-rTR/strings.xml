@@ -28,7 +28,7 @@
     <string name="dock_description">Arama Çubuğu, Simge Sayısı</string>
     <string name="app_drawer_label">Uygulama Çekmecesi</string>
     <string name="app_drawer_description">Gizlenmiş Uygulamalar, Sütun Sayısı, Simgeler</string>
-    <string name="drawer_search_label">Drawer Search</string>
+    <string name="drawer_search_label">Uygulama Menüsü Araması</string>
     <string name="drawer_search_description">Web Önerileri, Küresel Arama</string>
     <string name="folders_label">Klasörler</string>
     <string name="folders_description">Satır ve Sütun Sayısı</string>
@@ -311,6 +311,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Lawnchair, Son Kullanılanlar sağlayıcısı olarak ayarlanmadığından bu ayarlar göz ardı edilecektir.</string>
     <string name="translucent_background">Hafif Saydam Arka Plan</string>
+    <string name="translucent_background_alpha">Arka Plan Opaklığı</string>
     <string name="recents_actions_label">Hızlı Eylemler</string>
     <string name="action_share">Paylaş</string>
     <string name="action_lens">Lens</string>
@@ -430,4 +431,14 @@
     <string name="system_settings">Sistem ayarları</string>
     <string name="action_unlock">Kilidi aç</string>
     <string name="action_lock">Kilitle</string>
+    <string name="allapps_twoline_label">Use Multiple Lines</string>
+    <string name="hidden_apps_show_always">Daima</string>
+    <string name="hidden_apps_show_name_typed">Tam adı yazıldığında</string>
+    <string name="hidden_apps_show_never">Asla</string>
+    <string name="show_hidden_apps_in_search_results">Arama sonuçlarında gizli uygulamaları göster</string>
+    <string name="search_algorithm_app_search">Uygulama Araması</string>
+    <string name="search_algorithm_global_search_on_device">Cihaz geneli arama</string>
+    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
+    <string name="app_search_algorithm">Arama algoritması</string>
+    <string name="all_apps_search_result_calculator">Hesap makinesi</string>
 </resources>

@@ -310,6 +310,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">尚未設定 Lawnchair 為預設 [最近使用的應用程式] 服務，這些設定將無法生效。</string>
     <string name="translucent_background">透明背景</string>
+    <string name="translucent_background_alpha">背景透明度</string>
     <string name="recents_actions_label">快速操作</string>
     <string name="action_share">分享</string>
     <string name="action_lens">智慧鏡頭</string>
@@ -429,4 +430,14 @@
     <string name="system_settings">系統設定</string>
     <string name="action_unlock">解除鎖定</string>
     <string name="action_lock">鎖定</string>
+    <string name="allapps_twoline_label">允許換行</string>
+    <string name="hidden_apps_show_always">永遠顯示</string>
+    <string name="hidden_apps_show_name_typed">僅在輸入應用程式全名時顯示</string>
+    <string name="hidden_apps_show_never">不要顯示</string>
+    <string name="show_hidden_apps_in_search_results">在搜尋結果中顯示已隱藏的應用程式</string>
+    <string name="search_algorithm_app_search">應用程式搜尋</string>
+    <string name="search_algorithm_global_search_on_device">全域搜尋（離線）</string>
+    <string name="search_algorithm_global_search_via_asi">全域搜尋（由 ASI 提供）</string>
+    <string name="app_search_algorithm">搜尋演算法</string>
+    <string name="all_apps_search_result_calculator">計算</string>
 </resources>

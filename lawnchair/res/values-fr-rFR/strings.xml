@@ -35,7 +35,7 @@
     <string name="gestures_label">Gestes</string>
     <string name="gestures_description">Appuis et balayages</string>
     <string name="quickstep_label">Récents</string>
-    <string name="quickstep_description">Bouton « Tout effacer », rayon d\'angle</string>
+    <string name="quickstep_description">Bouton « Tout effacer », rayon d\'angle</string>
     <string name="about_label">À propos</string>
     <string name="app_info_drop_target_label">Infos sur l\'appli</string>
     <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
@@ -51,7 +51,7 @@
     <string name="always_reload_icons_label">Toujours recharger les icônes</string>
     <string name="always_reload_icons_description">Éviter d\'utiliser les icônes en cache provenant des packs d\'icônes</string>
     <string name="recents_lock_unlock">Verrouiller/déverrouiller</string>
-    <string name="recents_lock_unlock_description">Empêcher l\'application sélectionnée d\'être fermée lorsque vous appuyez sur « Tout effacer »</string>
+    <string name="recents_lock_unlock_description">Empêcher l\'application sélectionnée d\'être fermée lorsque vous appuyez sur « Tout effacer »</string>
     <!-- Relating to label/icon size -->
     <string name="icons">Icônes</string>
     <string name="icon_size">Taille des icônes</string>
@@ -240,7 +240,7 @@
     <string name="smartspace_calendar_persian">Persan</string>
     <string name="smartspace_preferences">Préférences</string>
     <string name="smartspace_widget_toggle_label">Afficher sur l\'écran d\'accueil</string>
-    <string name="smartspace_widget_toggle_description">Aperçu peut être ajouté manuellement à l\'écran d\'accueil en plaçant le widget « Lawnchair »</string>
+    <string name="smartspace_widget_toggle_description">Aperçu peut être ajouté manuellement à l\'écran d\'accueil en plaçant le widget « Lawnchair »</string>
     <string name="smartspace_mode_label">Fournisseur d\'Aperçu</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Recherche Google</string>
@@ -311,6 +311,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Ces paramètres seront ignorés car Lawnchair n\'est pas défini comme fournisseur de Récents.</string>
     <string name="translucent_background">Arrière-plan translucide</string>
+    <string name="translucent_background_alpha">Opacité de l\'arrière-plan</string>
     <string name="recents_actions_label">Actions rapides</string>
     <string name="action_share">Partager</string>
     <string name="action_lens">Lens</string>
@@ -342,9 +343,9 @@
     <string name="all_apps_search_bar_hint">Rechercher des applications</string>
     <string name="settings_button_text">Paramètres de l\'accueil</string>
     <string name="item_removed">Élément supprimé</string>
-    <string name="all_apps_no_search_results">Aucune application ne correspond à « <xliff:g example="Android" id="query">%1$s</xliff:g> ».</string>
+    <string name="all_apps_no_search_results">Aucune application correspondant à « <xliff:g example="Android" id="query">%1$s</xliff:g> » n\'a pu être trouvée.</string>
     <string name="dt2s_admin_hint_title">Autorisations d\'administration requises</string>
-    <string name="dt2s_admin_hint">Pour mettre en veille votre appareil à l\'aide d\'un double appui, définissez Lawnchair comme application d\'administration de l\'appareil. Appuyez sur Ouvrir les paramètres puis appuyez sur « Activer l\'appli d\'administration de cet appareil ».</string>
+    <string name="dt2s_admin_hint">Pour mettre en veille votre appareil à l\'aide d\'un double appui, définissez Lawnchair comme application d\'administration de l\'appareil. Appuyez sur Ouvrir les paramètres puis appuyez sur « Activer l\'appli d\'administration de cet appareil ».</string>
     <string name="dt2s_admin_warning">Vous ne pourrez plus mettre en veille votre appareil à l\'aide d\'un double appui.</string>
     <string name="dt2s_a11y_hint_title">Activez le service d\'accessibilité</string>
     <string name="dt2s_a11y_hint">Pour mettre en veille votre appareil à l\'aide d\'un double appui, activez le service d\'accessibilité Lawnchair. Appuyez sur Ouvrir les paramètres, sélectionnez Lawnchair puis activez Utiliser Lawnchair.</string>
@@ -430,4 +431,14 @@
     <string name="system_settings">Paramètres du système</string>
     <string name="action_unlock">Déverrouiller</string>
     <string name="action_lock">Verrouiller</string>
+    <string name="allapps_twoline_label">Utiliser plusieurs lignes</string>
+    <string name="hidden_apps_show_always">Toujours</string>
+    <string name="hidden_apps_show_name_typed">Si le nom complet est saisi</string>
+    <string name="hidden_apps_show_never">Jamais</string>
+    <string name="show_hidden_apps_in_search_results">Afficher les applications masquées dans les résultats de recherche</string>
+    <string name="search_algorithm_app_search">Recherche d\'applications</string>
+    <string name="search_algorithm_global_search_on_device">Recherche globale (appareil)</string>
+    <string name="search_algorithm_global_search_via_asi">Recherche globale (via ASI)</string>
+    <string name="app_search_algorithm">Algorithme de recherche</string>
+    <string name="all_apps_search_result_calculator">Calculatrice</string>
 </resources>

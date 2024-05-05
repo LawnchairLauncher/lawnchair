@@ -313,6 +313,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Эти настройки будут проигнорированы, так как Lawnchair не установлен как провайдер недавних приложений.</string>
     <string name="translucent_background">Полупрозрачный фон</string>
+    <string name="translucent_background_alpha">Прозрачность фона</string>
     <string name="recents_actions_label">Быстрые действия</string>
     <string name="action_share">Поделиться</string>
     <string name="action_lens">Lens</string>
@@ -432,4 +433,14 @@
     <string name="system_settings">Системные настройки</string>
     <string name="action_unlock">Разблокировать</string>
     <string name="action_lock">Заблокировать</string>
+    <string name="allapps_twoline_label">Bir nechta qatordan foydalanish</string>
+    <string name="hidden_apps_show_always">Always</string>
+    <string name="hidden_apps_show_name_typed">Agar to\'liq ism yozilsa</string>
+    <string name="hidden_apps_show_never">Never</string>
+    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="search_algorithm_app_search">Поиск приложений</string>
+    <string name="search_algorithm_global_search_on_device">Global qidiruv (qurilmada)</string>
+    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
+    <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="all_apps_search_result_calculator">Kalkulyator</string>
 </resources>
