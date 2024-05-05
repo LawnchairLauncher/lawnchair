@@ -77,16 +77,11 @@ class SetupNavLayoutter(
             navButtonsLayoutParams.height =
                 resources.getDimensionPixelSize(R.dimen.taskbar_back_button_suw_height)
         } else {
-            val phoneOrPortraitSetupMargin =
-                resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_margin)
-            navButtonsLayoutParams.marginStart = phoneOrPortraitSetupMargin
-            navButtonsLayoutParams.bottomMargin =
-                if (!deviceProfile.isLandscape) 0
-                else
-                    phoneOrPortraitSetupMargin -
-                        resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size) / 2
-            navButtonsViewLayoutParams.height =
-                resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_height)
+            adjustForSetupInPhoneMode(
+                navButtonsLayoutParams,
+                navButtonsViewLayoutParams,
+                deviceProfile
+            )
         }
         mNavButtonsView.layoutParams = navButtonsViewLayoutParams
         navButtonContainer.layoutParams = navButtonsLayoutParams
