@@ -311,6 +311,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
     <string name="translucent_background">Sfondo semitrasparente</string>
+    <string name="translucent_background_alpha">Opacità dello sfondo</string>
     <string name="recents_actions_label">Azioni rapide</string>
     <string name="action_share">Condividi</string>
     <string name="action_lens">Lens</string>
@@ -430,4 +431,14 @@
     <string name="system_settings">Impostazioni di sistema</string>
     <string name="action_unlock">Unlock</string>
     <string name="action_lock">Lock</string>
+    <string name="allapps_twoline_label">Usa Righe Multiple</string>
+    <string name="hidden_apps_show_always">Sempre</string>
+    <string name="hidden_apps_show_name_typed">Se il nome completo è digitato</string>
+    <string name="hidden_apps_show_never">Mai</string>
+    <string name="show_hidden_apps_in_search_results">Mostra applicazioni nascoste nei risultati di ricerca</string>
+    <string name="search_algorithm_app_search">Ricerca app</string>
+    <string name="search_algorithm_global_search_on_device">Ricerca Globale (sul dispositivo)</string>
+    <string name="search_algorithm_global_search_via_asi">Ricerca globale (via ASI)</string>
+    <string name="app_search_algorithm">Algoritmo di ricerca</string>
+    <string name="all_apps_search_result_calculator">Calcolatrice</string>
 </resources>

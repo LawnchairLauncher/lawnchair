@@ -311,6 +311,7 @@
     <!-- QuickstepPreferences -->
     <string name="quickswitch_ignored_warning">Diese Einstellungen werden ignoriert, da Lawnchair nicht als \"Recents-Provider\" eingestellt ist.</string>
     <string name="translucent_background">Transluzenter Hintergrund</string>
+    <string name="translucent_background_alpha">Hintergrundtransparenz</string>
     <string name="recents_actions_label">Schnelle Aktionen</string>
     <string name="action_share">Teilen</string>
     <string name="action_lens">Lens</string>
@@ -430,4 +431,14 @@
     <string name="system_settings">Systemeinstellungen</string>
     <string name="action_unlock">Entsperren</string>
     <string name="action_lock">Anpinnen</string>
+    <string name="allapps_twoline_label">Verwende mehrere Zeilen</string>
+    <string name="hidden_apps_show_always">Immer</string>
+    <string name="hidden_apps_show_name_typed">Wenn der vollständige Name eingegeben wird</string>
+    <string name="hidden_apps_show_never">Nie</string>
+    <string name="show_hidden_apps_in_search_results">Versteckte Apps in Suchergebnissen anzeigen</string>
+    <string name="search_algorithm_app_search">App-Suche</string>
+    <string name="search_algorithm_global_search_on_device">Globale Suche (auf dem Gerät)</string>
+    <string name="search_algorithm_global_search_via_asi">Globale Suche (über ASI)</string>
+    <string name="app_search_algorithm">Such-Algorithmus</string>
+    <string name="all_apps_search_result_calculator">Rechner</string>
 </resources>
