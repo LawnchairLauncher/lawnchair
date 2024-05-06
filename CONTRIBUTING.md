@@ -1,6 +1,6 @@
 # Lawnchair Launcher Contributing Guidelines
 
-<img src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/lawnchair_round.png" width="100" data-align="inline">
+<img src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/lawnchair_round.png" alt="" width="100" data-align="inline">
 
 First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! This document will contain everything you'll need to contribute to the **Lawnchair Launcher** project.
 
@@ -18,9 +18,9 @@ Here are few tips for starters:
 
 -   Lawnchair uses title case for some English UI text while other languages do not use title case; opt for sentence case instead;
 
--   Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of `bottom row` for `dock`;
+-   Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_;
 
--   Some languages (e.g. `French`) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
+-   Some languages (e.g. French) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
 ### Code
 
@@ -38,7 +38,7 @@ Here are some contribution tips to help you get started:
 
 -   Always make sure that you're up-to-date with **Lawnchair Launcher** by setting your branch to `14-dev` or newer;
 
--   Make sure your code is logical and well-formatted. If using Kotlin, see `Coding conventions` in the [Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
+-   Make sure your code is logical and well-formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
 
 -   [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
 
@@ -46,13 +46,13 @@ Here are some contribution tips to help you get started:
 
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), the **Lawnchair Launcher** version code is separated by four sectors:
 
-1. `Android`'s major version
+1. Android's major version
 
-2. `Android`'s minor version
+2. Android's minor version
 
-3. **Lawnchair Launcher**'s development status
+3. Lawnchair Launcher's development status
 
-4. **Lawnchair Launcher**'s development version
+4. Lawnchair Launcher's development version
 
 ##### Android's major & minor versions
 
