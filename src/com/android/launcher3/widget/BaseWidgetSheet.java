@@ -166,6 +166,13 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         }
     }
 
+    @Override
+    protected float getShiftRange() {
+        // We add the extra height added during predictive back / swipe up to the shift range, so
+        // that the idle interpolator knows to animate the view off fully.
+        return mContent.getHeight() + getBottomOffsetPx();
+    }
+
     /**
      * Click handler for tap to add button.
      */
