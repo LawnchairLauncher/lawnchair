@@ -43,6 +43,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -52,47 +53,23 @@ import org.mockito.kotlin.whenever
 class BubbleBarViewAnimatorTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val animatorScheduler = TestBubbleBarViewAnimatorScheduler()
+    private lateinit var animatorScheduler: TestBubbleBarViewAnimatorScheduler
+    private lateinit var overflowView: BubbleView
+    private lateinit var bubbleView: BubbleView
+    private lateinit var bubble: BubbleBarBubble
+    private lateinit var bubbleBarView: BubbleBarView
+    private lateinit var bubbleStashController: BubbleStashController
 
     @Before
     fun setUp() {
+        animatorScheduler = TestBubbleBarViewAnimatorScheduler()
         PhysicsAnimatorTestUtils.prepareForTest()
     }
 
     @Test
     fun animateBubbleInForStashed() {
-        lateinit var overflowView: BubbleView
-        lateinit var bubbleView: BubbleView
-        lateinit var bubble: BubbleBarBubble
-        val bubbleBarView = BubbleBarView(context)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            bubbleBarView.layoutParams = FrameLayout.LayoutParams(0, 0)
-            val inflater = LayoutInflater.from(context)
-
-            val bitmap = ColorDrawable(Color.WHITE).toBitmap(width = 20, height = 20)
-            overflowView =
-                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
-            overflowView.setOverflow(BubbleBarOverflow(overflowView), bitmap)
-            bubbleBarView.addView(overflowView)
-
-            val bubbleInfo = BubbleInfo("key", 0, null, null, 0, context.packageName, null, false)
-            bubbleView =
-                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
-            bubble =
-                BubbleBarBubble(bubbleInfo, bubbleView, bitmap, bitmap, Color.WHITE, Path(), "")
-            bubbleView.setBubble(bubble)
-            bubbleBarView.addView(bubbleView)
-        }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
-
-        val bubbleStashController = mock<BubbleStashController>()
-        whenever(bubbleStashController.isStashed).thenReturn(true)
-        whenever(bubbleStashController.diffBetweenHandleAndBarCenters)
-            .thenReturn(DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS)
-        whenever(bubbleStashController.stashedHandleTranslationForNewBubbleAnimation)
-            .thenReturn(HANDLE_TRANSLATION)
-        whenever(bubbleStashController.bubbleBarTranslationYForTaskbar)
-            .thenReturn(BAR_TRANSLATION_Y_FOR_TASKBAR)
+        setUpBubbleBar()
+        setUpBubbleStashController()
 
         val handle = View(context)
         val handleAnimator = PhysicsAnimator.getInstance(handle)
@@ -106,7 +83,7 @@ class BubbleBarViewAnimatorTest {
         }
 
         // let the animation start and wait for it to complete
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
 
         assertThat(handle.alpha).isEqualTo(0)
@@ -123,7 +100,7 @@ class BubbleBarViewAnimatorTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(animatorScheduler.delayedBlock!!)
 
         // let the animation start and wait for it to complete
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
 
         assertThat(handle.alpha).isEqualTo(1)
@@ -135,38 +112,8 @@ class BubbleBarViewAnimatorTest {
 
     @Test
     fun animateBubbleInForStashed_tapAnimatingBubble() {
-        lateinit var overflowView: BubbleView
-        lateinit var bubbleView: BubbleView
-        lateinit var bubble: BubbleBarBubble
-        val bubbleBarView = BubbleBarView(context)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            bubbleBarView.layoutParams = FrameLayout.LayoutParams(0, 0)
-            val inflater = LayoutInflater.from(context)
-
-            val bitmap = ColorDrawable(Color.WHITE).toBitmap(width = 20, height = 20)
-            overflowView =
-                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
-            overflowView.setOverflow(BubbleBarOverflow(overflowView), bitmap)
-            bubbleBarView.addView(overflowView)
-
-            val bubbleInfo = BubbleInfo("key", 0, null, null, 0, context.packageName, null, false)
-            bubbleView =
-                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
-            bubble =
-                BubbleBarBubble(bubbleInfo, bubbleView, bitmap, bitmap, Color.WHITE, Path(), "")
-            bubbleView.setBubble(bubble)
-            bubbleBarView.addView(bubbleView)
-        }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
-
-        val bubbleStashController = mock<BubbleStashController>()
-        whenever(bubbleStashController.isStashed).thenReturn(true)
-        whenever(bubbleStashController.diffBetweenHandleAndBarCenters)
-            .thenReturn(DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS)
-        whenever(bubbleStashController.stashedHandleTranslationForNewBubbleAnimation)
-            .thenReturn(HANDLE_TRANSLATION)
-        whenever(bubbleStashController.bubbleBarTranslationYForTaskbar)
-            .thenReturn(BAR_TRANSLATION_Y_FOR_TASKBAR)
+        setUpBubbleBar()
+        setUpBubbleStashController()
 
         val handle = View(context)
         val handleAnimator = PhysicsAnimator.getInstance(handle)
@@ -180,7 +127,7 @@ class BubbleBarViewAnimatorTest {
         }
 
         // let the animation start and wait for it to complete
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
 
         assertThat(handle.alpha).isEqualTo(0)
@@ -204,6 +151,151 @@ class BubbleBarViewAnimatorTest {
         assertThat(bubbleBarView.visibility).isEqualTo(VISIBLE)
         assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
         assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+    }
+
+    @Test
+    fun animateBubbleInForStashed_touchTaskbarArea_whileShowing() {
+        setUpBubbleBar()
+        setUpBubbleStashController()
+
+        val handle = View(context)
+        val handleAnimator = PhysicsAnimator.getInstance(handle)
+        whenever(bubbleStashController.stashedHandlePhysicsAnimator).thenReturn(handleAnimator)
+
+        val animator =
+            BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.animateBubbleInForStashed(bubble)
+        }
+
+        // wait for the animation to start
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        PhysicsAnimatorTestUtils.blockUntilFirstAnimationFrameWhereTrue(handleAnimator) { true }
+
+        assertThat(handleAnimator.isRunning()).isTrue()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
+        // verify the hide bubble animation is pending
+        assertThat(animatorScheduler.delayedBlock).isNotNull()
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.onStashStateChangingWhileAnimating()
+        }
+
+        // verify that the hide animation was canceled
+        assertThat(animatorScheduler.delayedBlock).isNull()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+        verify(bubbleStashController).onNewBubbleAnimationInterrupted(any(), any())
+
+        // PhysicsAnimatorTestUtils posts the cancellation to the main thread so we need to wait
+        // again
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        assertThat(handleAnimator.isRunning()).isFalse()
+    }
+
+    @Test
+    fun animateBubbleInForStashed_touchTaskbarArea_whileHiding() {
+        setUpBubbleBar()
+        setUpBubbleStashController()
+
+        val handle = View(context)
+        val handleAnimator = PhysicsAnimator.getInstance(handle)
+        whenever(bubbleStashController.stashedHandlePhysicsAnimator).thenReturn(handleAnimator)
+
+        val animator =
+            BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.animateBubbleInForStashed(bubble)
+        }
+
+        // let the animation start and wait for it to complete
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
+
+        // execute the hide bubble animation
+        assertThat(animatorScheduler.delayedBlock).isNotNull()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(animatorScheduler.delayedBlock!!)
+
+        // wait for the hide animation to start
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        assertThat(handleAnimator.isRunning()).isTrue()
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.onStashStateChangingWhileAnimating()
+        }
+
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+        verify(bubbleStashController).onNewBubbleAnimationInterrupted(any(), any())
+
+        // PhysicsAnimatorTestUtils posts the cancellation to the main thread so we need to wait
+        // again
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        assertThat(handleAnimator.isRunning()).isFalse()
+    }
+
+    @Test
+    fun animateBubbleInForStashed_showAnimationCanceled() {
+        setUpBubbleBar()
+        setUpBubbleStashController()
+
+        val handle = View(context)
+        val handleAnimator = PhysicsAnimator.getInstance(handle)
+        whenever(bubbleStashController.stashedHandlePhysicsAnimator).thenReturn(handleAnimator)
+
+        val animator =
+            BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.animateBubbleInForStashed(bubble)
+        }
+
+        // wait for the animation to start
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        PhysicsAnimatorTestUtils.blockUntilFirstAnimationFrameWhereTrue(handleAnimator) { true }
+
+        assertThat(handleAnimator.isRunning()).isTrue()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
+        assertThat(animatorScheduler.delayedBlock).isNotNull()
+
+        handleAnimator.cancel()
+        assertThat(handleAnimator.isRunning()).isFalse()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+        assertThat(animatorScheduler.delayedBlock).isNull()
+    }
+
+    private fun setUpBubbleBar() {
+        bubbleBarView = BubbleBarView(context)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            bubbleBarView.layoutParams = FrameLayout.LayoutParams(0, 0)
+            val inflater = LayoutInflater.from(context)
+
+            val bitmap = ColorDrawable(Color.WHITE).toBitmap(width = 20, height = 20)
+            overflowView =
+                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
+            overflowView.setOverflow(BubbleBarOverflow(overflowView), bitmap)
+            bubbleBarView.addView(overflowView)
+
+            val bubbleInfo = BubbleInfo("key", 0, null, null, 0, context.packageName, null, false)
+            bubbleView =
+                inflater.inflate(R.layout.bubblebar_item_view, bubbleBarView, false) as BubbleView
+            bubble =
+                BubbleBarBubble(bubbleInfo, bubbleView, bitmap, bitmap, Color.WHITE, Path(), "")
+            bubbleView.setBubble(bubble)
+            bubbleBarView.addView(bubbleView)
+        }
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+    }
+
+    private fun setUpBubbleStashController() {
+        bubbleStashController = mock<BubbleStashController>()
+        whenever(bubbleStashController.isStashed).thenReturn(true)
+        whenever(bubbleStashController.diffBetweenHandleAndBarCenters)
+            .thenReturn(DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS)
+        whenever(bubbleStashController.stashedHandleTranslationForNewBubbleAnimation)
+            .thenReturn(HANDLE_TRANSLATION)
+        whenever(bubbleStashController.bubbleBarTranslationYForTaskbar)
+            .thenReturn(BAR_TRANSLATION_Y_FOR_TASKBAR)
     }
 
     private class TestBubbleBarViewAnimatorScheduler : BubbleBarViewAnimator.Scheduler {
