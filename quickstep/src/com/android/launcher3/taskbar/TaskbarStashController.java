@@ -355,7 +355,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         boolean hideTaskbar = isVisible || !mActivity.isUserSetupComplete();
         updateStateForFlag(FLAG_IN_SETUP, hideTaskbar);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, hideTaskbar);
-        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, mActivity.isPhoneGestureNavMode());
         applyState(hideTaskbar ? 0 : getStashDuration());
     }
 
@@ -547,11 +546,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *                            sub-animations are properly coordinated. This duration should not
      *                            actually be used since this animation tracks a swipe progress.
      */
-    protected void addUnstashToHotseatAnimation(AnimatorSet animation, int placeholderDuration) {
+    protected void addUnstashToHotseatAnimationFromSuw(AnimatorSet animation,
+            int placeholderDuration) {
         // Defer any UI updates now to avoid the UI becoming stale when the animation plays.
         mControllers.taskbarViewController.setDeferUpdatesForSUW(true);
         createAnimToIsStashed(
-                /* isStashed= */ false,
+                /* isStashed= */ mActivity.isPhoneMode(),
                 placeholderDuration,
                 TRANSITION_UNSTASH_SUW_MANUAL,
                 /* jankTag= */ "SUW_MANUAL");
