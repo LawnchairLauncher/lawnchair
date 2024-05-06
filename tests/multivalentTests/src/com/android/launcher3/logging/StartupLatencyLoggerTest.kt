@@ -2,21 +2,17 @@ package com.android.launcher3.logging
 
 import androidx.core.util.isEmpty
 import androidx.test.annotation.UiThreadTest
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.android.launcher3.util.rule.RobolectricUiThreadRule
+import com.android.launcher3.util.LauncherMultivalentJUnit
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 /** Unit test for [ColdRebootStartupLatencyLogger]. */
 @SmallTest
-@RunWith(AndroidJUnit4::class)
+@RunWith(LauncherMultivalentJUnit::class)
 class StartupLatencyLoggerTest {
-
-    @get:Rule val roboUiThreadRule = RobolectricUiThreadRule()
 
     private val underTest = ColdRebootStartupLatencyLogger()
 

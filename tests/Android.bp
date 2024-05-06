@@ -23,7 +23,8 @@ filegroup {
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
-        ":launcher3-robo-src",
+        "multivalentTests/src/**/*.java",
+        "multivalentTests/src/**/*.kt",
     ],
     exclude_srcs: [
         ":launcher-non-quickstep-tests-src",
@@ -37,6 +38,8 @@ filegroup {
     srcs: [
         "multivalentTests/src/**/*.java",
         "multivalentTests/src/**/*.kt",
+        "src_deviceless/**/*.java",
+        "src_deviceless/**/*.kt",
     ],
 }
 

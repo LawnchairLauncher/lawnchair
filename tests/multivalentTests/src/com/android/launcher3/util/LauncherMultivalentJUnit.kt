@@ -24,23 +24,24 @@ import org.junit.runner.Runner
 import org.junit.runners.Suite
 
 /**
- * A custom runner which emulates multiple devices when running in robolectric framework. Runs
- * normally when running on device
+ * A custom runner for multivalent tests with launcher specific features
+ * 1) Adds support for @UiThread annotations in deviceless tests
+ * 2) Allows emulating multiple devices when running in deviceless mode
  */
-class EmulatedDeviceAndroidJUnit(klass: Class<*>?) : Suite(klass, ImmutableList.of()) {
+class LauncherMultivalentJUnit(klass: Class<*>?) : Suite(klass, ImmutableList.of()) {
 
     val runners: List<Runner> =
-        testClass.getAnnotation(Devices::class.java)?.value?.let { devices ->
-            if (devices.isEmpty() || !isRunningInRobolectric) {
+        (testClass.getAnnotation(EmulatedDevices::class.java)?.value ?: emptyArray()).let { devices
+            ->
+            if (!isRunningInRobolectric) {
                 return@let null
             }
             try {
                 (testClass.javaClass.classLoader.loadClass(ROBOLECTRIC_RUNNER) as Class<Runner>)
                     .getConstructor(Class::class.java, String::class.java)
                     .let { ctor ->
-                        devices.map { deviceName ->
-                            ctor.newInstance(testClass.javaClass, deviceName)
-                        }
+                        if (devices.isEmpty()) listOf(ctor.newInstance(testClass.javaClass, null))
+                        else devices.map { ctor.newInstance(testClass.javaClass, it) }
                     }
             } catch (e: Exception) {
                 null
@@ -50,11 +51,13 @@ class EmulatedDeviceAndroidJUnit(klass: Class<*>?) : Suite(klass, ImmutableList.
 
     override fun getChildren() = runners
 
-    @Retention(RUNTIME) @Target(CLASS) annotation class Devices(val value: Array<String>)
+    /**
+     * Annotation to be added to a test so run it on a list of emulated devices for deviceless test
+     */
+    @Retention(RUNTIME) @Target(CLASS) annotation class EmulatedDevices(val value: Array<String>)
 
     companion object {
-        private const val ROBOLECTRIC_RUNNER =
-            "com.android.launcher3.util.RobolectricEmulatedDeviceRunner"
+        private const val ROBOLECTRIC_RUNNER = "com.android.launcher3.util.RobolectricDeviceRunner"
 
         val isRunningInRobolectric: Boolean
             get() =
