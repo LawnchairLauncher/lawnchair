@@ -31,16 +31,24 @@ public class PrivateSpaceContainer {
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mAppListRecycler;
     private final AllApps mAppList;
+    private final boolean mPrivateSpaceEnabled;
 
     PrivateSpaceContainer(LauncherInstrumentation launcherInstrumentation,
-            UiObject2 appListRecycler, AllApps appList) {
+            UiObject2 appListRecycler, AllApps appList, boolean privateSpaceEnabled) {
         mLauncher = launcherInstrumentation;
         mAppListRecycler = appListRecycler;
         mAppList = appList;
+        mPrivateSpaceEnabled = privateSpaceEnabled;
 
-        verifyHeaderIsPresent();
-        verifyInstallAppButtonIsPresent();
-        verifyDividerIsPresent();
+        if (mPrivateSpaceEnabled) {
+            verifyHeaderIsPresent();
+            verifyInstallAppButtonIsPresent();
+            verifyDividerIsPresent();
+        } else {
+            verifyHeaderIsPresent();
+            verifyInstallAppButtonIsNotPresent();
+            verifyDividerIsNotPresent();
+        }
     }
 
     // Assert PS Header is in view.
@@ -48,7 +56,7 @@ public class PrivateSpaceContainer {
     private void verifyHeaderIsPresent() {
         final UiObject2 psHeader = mLauncher.waitForObjectInContainer(mAppListRecycler,
                 PS_HEADER_RES_ID);
-        new PrivateSpaceHeader(mLauncher, psHeader, true);
+        new PrivateSpaceHeader(mLauncher, psHeader, mPrivateSpaceEnabled);
     }
 
 
@@ -57,9 +65,19 @@ public class PrivateSpaceContainer {
         mAppList.getAppIcon(INSTALL_APP_TITLE);
     }
 
+    // Assert Install App Item is not present in view.
+    private void verifyInstallAppButtonIsNotPresent() {
+        mLauncher.waitUntilLauncherObjectGone(DIVIDER_RES_ID);
+    }
+
     // Assert Sys App Divider is present in view.
     private void verifyDividerIsPresent() {
         mLauncher.waitForObjectInContainer(mAppListRecycler, DIVIDER_RES_ID);
+    }
+
+    // Assert Sys App Divider is not present in view.
+    private void verifyDividerIsNotPresent() {
+        mLauncher.waitUntilLauncherObjectGone(DIVIDER_RES_ID);
     }
 
     /**
