@@ -403,9 +403,6 @@ public class BubbleBarController extends IBubblesListener.Stub {
         }
         if (bubbleToSelect != null) {
             setSelectedBubbleInternal(bubbleToSelect);
-            if (previouslySelectedBubble == null) {
-                mBubbleStashController.animateToInitialState(update.expanded);
-            }
         }
         if (update.shouldShowEducation) {
             mBubbleBarViewController.prepareToShowEducation();

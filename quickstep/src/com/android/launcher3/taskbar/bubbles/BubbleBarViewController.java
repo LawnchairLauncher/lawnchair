@@ -406,10 +406,21 @@ public class BubbleBarViewController {
                 return;
             }
 
+            if (!(b instanceof BubbleBarBubble bubble)) {
+                return;
+            }
+
             boolean isInApp = mTaskbarStashController.isInApp();
+            // if this is the first bubble, animate to the initial state. one bubble is the overflow
+            // so check for at most 2 children.
+            if (mBarView.getChildCount() <= 2) {
+                mBubbleBarViewAnimator.animateToInitialState(bubble, isInApp, isExpanding);
+                return;
+            }
+
             // only animate the new bubble if we're in an app and not auto expanding
-            if (b instanceof BubbleBarBubble && isInApp && !isExpanding && !isExpanded()) {
-                mBubbleBarViewAnimator.animateBubbleInForStashed((BubbleBarBubble) b);
+            if (isInApp && !isExpanding && !isExpanded()) {
+                mBubbleBarViewAnimator.animateBubbleInForStashed(bubble);
             }
         } else {
             Log.w(TAG, "addBubble, bubble was null!");

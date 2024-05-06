@@ -264,6 +264,120 @@ class BubbleBarViewAnimatorTest {
         assertThat(animatorScheduler.delayedBlock).isNull()
     }
 
+    @Test
+    fun animateToInitialState_inApp() {
+        setUpBubbleBar()
+        setUpBubbleStashController()
+        whenever(bubbleStashController.bubbleBarTranslationY)
+            .thenReturn(BAR_TRANSLATION_Y_FOR_TASKBAR)
+
+        val handle = View(context)
+        val handleAnimator = PhysicsAnimator.getInstance(handle)
+        whenever(bubbleStashController.stashedHandlePhysicsAnimator).thenReturn(handleAnimator)
+
+        val barAnimator = PhysicsAnimator.getInstance(bubbleBarView)
+
+        val animator =
+            BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.animateToInitialState(bubble, isInApp = true, isExpanding = false)
+        }
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
+
+        assertThat(barAnimator.isRunning()).isFalse()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
+        assertThat(bubbleBarView.alpha).isEqualTo(1)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
+
+        assertThat(animatorScheduler.delayedBlock).isNotNull()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(animatorScheduler.delayedBlock!!)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
+
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+        assertThat(bubbleBarView.alpha).isEqualTo(0)
+        assertThat(handle.translationY).isEqualTo(0)
+        assertThat(handle.alpha).isEqualTo(1)
+
+        verify(bubbleStashController).stashBubbleBarImmediate()
+    }
+
+    @Test
+    fun animateToInitialState_inApp_autoExpanding() {
+        setUpBubbleBar()
+        setUpBubbleStashController()
+        whenever(bubbleStashController.bubbleBarTranslationY)
+            .thenReturn(BAR_TRANSLATION_Y_FOR_TASKBAR)
+
+        val handle = View(context)
+        val handleAnimator = PhysicsAnimator.getInstance(handle)
+        whenever(bubbleStashController.stashedHandlePhysicsAnimator).thenReturn(handleAnimator)
+
+        val barAnimator = PhysicsAnimator.getInstance(bubbleBarView)
+
+        val animator =
+            BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.animateToInitialState(bubble, isInApp = true, isExpanding = true)
+        }
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
+
+        assertThat(barAnimator.isRunning()).isFalse()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
+        assertThat(bubbleBarView.alpha).isEqualTo(1)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
+
+        assertThat(animatorScheduler.delayedBlock).isNotNull()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(animatorScheduler.delayedBlock!!)
+
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+        assertThat(bubbleBarView.alpha).isEqualTo(1)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
+
+        verify(bubbleStashController).showBubbleBarImmediate()
+    }
+
+    @Test
+    fun animateToInitialState_inHome() {
+        setUpBubbleBar()
+        setUpBubbleStashController()
+        whenever(bubbleStashController.bubbleBarTranslationY)
+            .thenReturn(BAR_TRANSLATION_Y_FOR_HOTSEAT)
+
+        val barAnimator = PhysicsAnimator.getInstance(bubbleBarView)
+
+        val animator =
+            BubbleBarViewAnimator(bubbleBarView, bubbleStashController, animatorScheduler)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            animator.animateToInitialState(bubble, isInApp = false, isExpanding = false)
+        }
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+        PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
+
+        assertThat(barAnimator.isRunning()).isFalse()
+        assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
+        assertThat(bubbleBarView.alpha).isEqualTo(1)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_HOTSEAT)
+
+        assertThat(animatorScheduler.delayedBlock).isNotNull()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(animatorScheduler.delayedBlock!!)
+
+        assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
+        assertThat(bubbleBarView.alpha).isEqualTo(1)
+        assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_HOTSEAT)
+
+        verify(bubbleStashController).showBubbleBarImmediate()
+    }
+
     private fun setUpBubbleBar() {
         bubbleBarView = BubbleBarView(context)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -322,3 +436,4 @@ class BubbleBarViewAnimatorTest {
 private const val DIFF_BETWEEN_HANDLE_AND_BAR_CENTERS = -20f
 private const val HANDLE_TRANSLATION = -30f
 private const val BAR_TRANSLATION_Y_FOR_TASKBAR = -50f
+private const val BAR_TRANSLATION_Y_FOR_HOTSEAT = -40f
