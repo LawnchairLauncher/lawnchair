@@ -89,7 +89,15 @@ import java.util.function.Predicate;
  */
 public class PrivateProfileManager extends UserProfileManager {
     private static final int EXPAND_COLLAPSE_DURATION = 800;
-    private static final int SETTINGS_OPACITY_DURATION = 160;
+    private static final int SETTINGS_OPACITY_DURATION = 400;
+    private static final int TEXT_UNLOCK_OPACITY_DURATION = 300;
+    private static final int TEXT_LOCK_OPACITY_DURATION = 50;
+    private static final int APP_OPACITY_DURATION = 400;
+    private static final int APP_OPACITY_DELAY = 400;
+    private static final int SETTINGS_AND_LOCK_GROUP_TRANSITION_DELAY = 400;
+    private static final int SETTINGS_OPACITY_DELAY = 400;
+    private static final int LOCK_TEXT_OPACITY_DELAY = 500;
+    private static final int NO_DELAY = 0;
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private final int mPsHeaderHeight;
@@ -445,7 +453,6 @@ public class PrivateProfileManager extends UserProfileManager {
         if (getCurrentState() == STATE_ENABLED
                 && isPrivateSpaceSettingsAvailable()) {
             settingsButton.setVisibility(VISIBLE);
-            settingsButton.setAlpha(1f);
             settingsButton.setOnClickListener(
                     view -> {
                         logEvents(LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP);
@@ -590,7 +597,9 @@ public class PrivateProfileManager extends UserProfileManager {
         List<BaseAllAppsAdapter.AdapterItem> allAppsAdapterItems =
                 mAllApps.getActiveRecyclerView().getApps().getAdapterItems();
         ValueAnimator alphaAnim = ObjectAnimator.ofFloat(from, to);
-        alphaAnim.setDuration(EXPAND_COLLAPSE_DURATION);
+        alphaAnim.setDuration(APP_OPACITY_DURATION)
+                .setStartDelay(isExpanding ? APP_OPACITY_DELAY : NO_DELAY);
+        alphaAnim.setInterpolator(Interpolators.LINEAR);
         alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -627,20 +636,25 @@ public class PrivateProfileManager extends UserProfileManager {
         }
         ViewGroup settingsAndLockGroup = mPSHeader.findViewById(R.id.settingsAndLockGroup);
         ViewGroup lockButton = mPSHeader.findViewById(R.id.ps_lock_unlock_button);
+        TextView lockText = lockButton.findViewById(R.id.lock_text);
         if (settingsAndLockGroup.getLayoutTransition() == null) {
             // Set a new transition if the current ViewGroup does not already contain one as each
             // transition should only happen once when applied.
             enableLayoutTransition(settingsAndLockGroup);
         }
+        settingsAndLockGroup.getLayoutTransition().setStartDelay(
+                LayoutTransition.CHANGING,
+                expand ? SETTINGS_AND_LOCK_GROUP_TRANSITION_DELAY : NO_DELAY);
         PropertySetter headerSetter = new AnimatedPropertySetter();
         ImageButton settingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
         updateSettingsGearAlpha(settingsButton, expand, headerSetter);
+        updateLockTextAlpha(lockText, expand, headerSetter);
         AnimatorSet animatorSet = headerSetter.buildAnim();
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 // Animate the collapsing of the text at the same time while updating lock button.
-                lockButton.findViewById(R.id.lock_text).setVisibility(expand ? VISIBLE : GONE);
+                lockText.setVisibility(expand ? VISIBLE : GONE);
                 setAnimationRunning(true);
             }
         });
@@ -696,6 +710,8 @@ public class PrivateProfileManager extends UserProfileManager {
         LayoutTransition settingsAndLockTransition = new LayoutTransition();
         settingsAndLockTransition.enableTransitionType(LayoutTransition.CHANGING);
         settingsAndLockTransition.setDuration(EXPAND_COLLAPSE_DURATION);
+        settingsAndLockTransition.setInterpolator(LayoutTransition.CHANGING,
+                Interpolators.STANDARD);
         settingsAndLockTransition.addTransitionListener(new LayoutTransition.TransitionListener() {
             @Override
             public void startTransition(LayoutTransition transition, ViewGroup viewGroup,
@@ -716,7 +732,15 @@ public class PrivateProfileManager extends UserProfileManager {
             PropertySetter setter) {
         float toAlpha = expand ? 1 : 0;
         setter.setFloat(settingsButton, VIEW_ALPHA, toAlpha, Interpolators.LINEAR)
-                .setDuration(SETTINGS_OPACITY_DURATION).setStartDelay(0);
+                .setDuration(SETTINGS_OPACITY_DURATION).setStartDelay(expand ?
+                        SETTINGS_OPACITY_DELAY : NO_DELAY);
+    }
+
+    private void updateLockTextAlpha(TextView textView, boolean expand, PropertySetter setter) {
+        float toAlpha = expand ? 1 : 0;
+        setter.setFloat(textView, VIEW_ALPHA, toAlpha, Interpolators.LINEAR)
+                .setDuration(expand ? TEXT_UNLOCK_OPACITY_DURATION : TEXT_LOCK_OPACITY_DURATION)
+                .setStartDelay(expand ? LOCK_TEXT_OPACITY_DELAY : NO_DELAY);
     }
 
     void expandPrivateSpace() {
