@@ -57,6 +57,10 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public static final int ALPHA_INDEX_HIDDEN_WHILE_DREAMING = 3;
     private static final int NUM_ALPHA_CHANNELS = 4;
 
+    // Values for long press animations, picked to most closely match navbar spec.
+    private static final float SCALE_TOUCH_ANIMATION_SHRINK = 0.85f;
+    private static final float SCALE_TOUCH_ANIMATION_EXPAND = 1.18f;
+
     /**
      * The SharedPreferences key for whether the stashed handle region is dark.
      */
@@ -324,7 +328,13 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
 
     @Override
     public void animateNavBarLongPress(boolean isTouchDown, boolean shrink, long durationMs) {
-        // TODO(b/308693847): Animate similarly to NavigationHandle.java (SysUI).
+        float targetScale;
+        if (isTouchDown) {
+            targetScale = shrink ? SCALE_TOUCH_ANIMATION_SHRINK : SCALE_TOUCH_ANIMATION_EXPAND;
+        } else {
+            targetScale = 1f;
+        }
+        mStashedHandleView.animateScale(targetScale, durationMs);
     }
 
     @Override
