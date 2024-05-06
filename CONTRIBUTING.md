@@ -1,8 +1,8 @@
 # Lawnchair Launcher Contributing Guidelines
 
-<img title="Lawnchair Launcher logo" alt="Lawnchair Launcher logo" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/lawnchair_round.png" width="100" data-align="inline">
+<img src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/lawnchair_round.png" width="100" data-align="inline">
 
-First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! This document will contain everything you'll need to contribute to the `Lawnchair Launcher` project.
+First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! This document will contain everything you'll need to contribute to the **Lawnchair Launcher**   project.
 
 ## Before you start!
 
@@ -20,11 +20,11 @@ Here are few tips for starters:
 
 -   Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of `bottom row` for `dock`;
 
--   Some languages (e.g. `French`) has variations of words depending if it's masculine or feminine (gender-specific); we recommend to opt for gender-neutral words instead.
+-   Some languages (e.g. `French`) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
 ### Code
 
-For code, it's highly recommended that you use an `Integrated Development Environment` (`IDE`), know `Java` (or preferably `Kotlin`), and `Git` which is a powerful source management control tool for collaborating with multiple programmers.
+For code, it's highly recommended that you use an IDE (e.g. [Android Studio](https://developer.android.com/studio)), know [Java](https://www.java.com) (or preferably [Kotlin](https://kotlinlang.org/)), and [Git](https://git-scm.com/) which is a powerful source management control tool for collaborating with multiple programmers.
 
 To clone the repository, you must clone the repository and its submodules using the recursive flag:
 
@@ -32,11 +32,11 @@ To clone the repository, you must clone the repository and its submodules using 
 git clone --recursive https://github.com/LawnchairLauncher/lawnchair.git
 ```
 
-To build `Lawnchair Launcher`, select the `lawnWithQuickstepDebug` build type. Should you face errors relating to the `iconloaderlib` and `searchuilib` projects, run `git submodule update --init --recursive`.
+To build **Lawnchair Launcher**, select the `lawnWithQuickstepDebug` build type. Should you face errors relating to the `iconloaderlib` and `searchuilib` projects, run `git submodule update --init --recursive`.
 
 Here are some contribution tips to help you get started:
 
--   Always make sure that you're up-to-date with `Lawnchair Launcher` by setting your branch to `14-dev` or newer;
+-   Always make sure that you're up-to-date with **Lawnchair Launcher** by setting your branch to `14-dev` or newer;
 
 -   Make sure your code is logical and well-formatted. If using Kotlin, see `Coding conventions` in the [Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
 
@@ -44,29 +44,29 @@ Here are some contribution tips to help you get started:
 
 #### Version
 
-As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), the `Lawnchair Launcher` version code is separated by four sectors:
+As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), the **Lawnchair Launcher** version code is separated by four sectors:
 
 1. `Android`'s major version
 
 2. `Android`'s minor version
 
-3. `Lawnchair Launcher`'s development status
+3. **Lawnchair Launcher**'s development status
 
-4. `Lawnchair Launcher`'s development version
+4. **Lawnchair Launcher**'s development version
 
 ##### Android's major & minor versions
 
-These makes up the first two sectors of the version code, `Android 11` will be `11_00_XX_XX` while `Android 12.1` will be `12_01_XX_XX`.
+These makes up the first two sectors of the version code, Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
 ##### Development status & version
 
-Depending on which status the `Lawnchair Launcher` is on, it will have an impact on the 3rd and 4th sectors of the version code. For example, alpha 4 for the `Lawnchair Launcher` will be `XX_XX_01_04`.
+Depending on which status the **Lawnchair Launcher** is on, it will have an impact on the 3rd and 4th sectors of the version code. For example, alpha 4 for the **Lawnchair Launcher** will be `XX_XX_01_04`.
 
 | Status            | Fields 3 |
 | ----------------- | -------- |
 | Alpha             | 01       |
 | Beta              | 02       |
-| Release candidate | 03       |
+| Release Candidate | 03       |
 | Release           | 04       |
 
 ## Quick links
