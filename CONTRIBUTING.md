@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/lawnchair_round.png" width="100" data-align="inline">
 
-First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! This document will contain everything you'll need to contribute to the **Lawnchair Launcher**   project.
+First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! This document will contain everything you'll need to contribute to the **Lawnchair Launcher** project.
 
 ## Before you start!
 
