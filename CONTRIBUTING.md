@@ -60,9 +60,11 @@ These makes up the first two sectors of the version code, Android 11 will be `11
 
 ##### Development status & version
 
-Depending on which status the **Lawnchair Launcher** is on, it will have an impact on the 3rd and 4th sectors of the version code. For example, alpha 4 for the **Lawnchair Launcher** will be `XX_XX_01_04`.
+Depending on which status the **Lawnchair Launcher** is on, it will have an impact on the 3rd and 4th sectors of the version code. For example, alpha 4 for the **Lawnchair Launcher** will be `XX_XX_01_04`. 
 
-| Status            | Fields 3 |
+Below is a table explaining the third field (release type):
+
+| Status            | Value    |
 | ----------------- | -------- |
 | Alpha             | 01       |
 | Beta              | 02       |
